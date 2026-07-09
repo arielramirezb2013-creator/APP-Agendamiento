@@ -56,12 +56,18 @@ async def crear(data: SolicitudCreate, user: UserOut = Depends(get_current_user)
     """Crea una solicitud nueva desde el portal solicitante.
     O17 · marca destinatarios de notificación a operaciones."""
     repo = get_repo()
-    existing = repo.query("solicitudes", "SELECT VALUE COUNT(1) FROM c")
-    next_num = (existing[0] if existing else 0) + 1
-    nuevo_id = f"SOL-{next_num:03d}"
+    # ID a partir del mayor SOL-### existente (COUNT no sirve: cuenta y no refleja huecos).
+    ids = repo.query("solicitudes", "SELECT VALUE c.id FROM c WHERE IS_DEFINED(c.solicitante_email)")
+    max_num = 0
+    for sid in ids:
+        try:
+            max_num = max(max_num, int(str(sid).rsplit("-", 1)[-1]))
+        except (ValueError, IndexError):
+            continue
+    next_num = max_num + 1
 
     record = {
-        "id": nuevo_id,
+        "id": f"SOL-{next_num:03d}",
         "solicitante_email": user.email.lower(),
         "empresa_cliente": data.empresa_cliente,
         "servicio": data.servicio,
@@ -82,7 +88,17 @@ async def crear(data: SolicitudCreate, user: UserOut = Depends(get_current_user)
         "notificada_en": _now_iso(),
         "editada": False,
     }
-    repo.upsert("solicitudes", record)
+    # create_item (no upsert) para no sobrescribir si dos peticiones chocan.
+    from azure.cosmos import exceptions as _cx
+    for _ in range(25):
+        try:
+            repo.create("solicitudes", record)
+            break
+        except _cx.CosmosResourceExistsError:
+            next_num += 1
+            record["id"] = f"SOL-{next_num:03d}"
+    else:
+        raise HTTPException(status_code=500, detail="No se pudo generar un id único para la solicitud")
     return record
 
 

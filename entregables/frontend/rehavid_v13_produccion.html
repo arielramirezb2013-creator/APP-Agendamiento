@@ -3416,17 +3416,22 @@ async function sincronizarDatosIniciales() {
 
   try {
     console.log('[sync] Cargando datos desde backend...');
-    const [reservas, equipos, paquetes, planes] = await Promise.all([
+    const [reservas, equipos, paquetes, planes, solicitudes] = await Promise.all([
       API.listarReservas(),
       API.listarEquipos(),
       API.listarPaquetes(),
       API.listarPlanes(),
+      API.listarSolicitudes().catch(() => null),  // O11/O17 · puede no aplicar según nivel
     ]);
     // Reemplazar arrays locales
     RESERVAS.length = 0; RESERVAS.push(...reservas);
     EQUIPOS.length = 0; EQUIPOS.push(...equipos);
     PAQUETES.length = 0; PAQUETES.push(...paquetes);
     PLANES.length = 0; PLANES.push(...planes);
+    if (Array.isArray(solicitudes) && typeof SOLICITUDES !== 'undefined') {
+      SOLICITUDES.length = 0; SOLICITUDES.push(...solicitudes);
+    }
+    if (typeof actualizarBadgeSolicitudes === 'function') actualizarBadgeSolicitudes();
     console.log(`[sync] OK · ${reservas.length} reservas, ${equipos.length} equipos, ${paquetes.length} paquetes`);
   } catch (e) {
     console.error('[sync] Error:', e.message);
@@ -4843,7 +4848,7 @@ function notificarOperadorNuevaSolicitud(solicitud) {
   console.log('[notificacion] Nueva solicitud ' + solicitud.id + ' notificada a operaciones');
 }
 
-function enviarSolicitud() {
+async function enviarSolicitud() {
   const serv = document.getElementById('sol-servicio').value;
   const ciudad = document.getElementById('sol-ciudad').value;
   const empresa = document.getElementById('sol-empresa').value.trim();
@@ -4904,6 +4909,26 @@ function enviarSolicitud() {
     // O16 · accesorios solicitados
     accesorios_solicitados: accesoriosSolicitados
   };
+  if (USE_BACKEND) {
+    // Producción · persistir en el backend y usar el registro devuelto (id real).
+    try {
+      const creada = await API.crearSolicitud({
+        empresa_cliente: empresa, servicio: serv, ciudad, personas,
+        fecha_sugerida: fecha, dias_estimados: dias, notas: obs,
+        profesional: nuevo.profesional,
+        accesorios_solicitados: accesoriosSolicitados,
+      });
+      SOLICITUDES.push(creada);
+      if (typeof actualizarBadgeSolicitudes === 'function') actualizarBadgeSolicitudes();
+      toast('Solicitud ' + creada.id + ' enviada · Rehavid confirmará en 24h hábiles');
+      limpiarSolicitud();
+      goTo('mis-solicitudes');
+    } catch (e) {
+      toast(e.message || 'No se pudo enviar la solicitud', 'error');
+    }
+    return;
+  }
+
   SOLICITUDES.push(nuevo);
 
   // O17 · notificar al operador (badge contador + bandeja)
@@ -4982,11 +5007,11 @@ function renderMisSolicitudes() {
 }
 
 // O11 · Acciones del solicitante sobre sus propias solicitudes
-function cancelarMiSolicitud(id, requiere48h) {
+async function cancelarMiSolicitud(id, requiere48h) {
   const s = SOLICITUDES.find(x => x.id === id);
   if (!s) return;
   if (requiere48h) {
-    const fechaEvento = s.fecha_confirmada || s.fecha_solicitud;
+    const fechaEvento = s.fecha_sugerida || s.fecha_confirmada || s.fecha_solicitud;
     const horasFaltantes = (new Date(fechaEvento) - new Date('2026-05-22')) / 36e5;
     if (horasFaltantes < 48) {
       toast('No se puede cancelar · faltan menos de 48 horas para el evento. Contacte a operaciones.', 'error');
@@ -4998,6 +5023,16 @@ function cancelarMiSolicitud(id, requiere48h) {
   }
   const motivo = prompt('Motivo de cancelación (opcional):', '');
   if (motivo === null) return;
+  if (USE_BACKEND) {
+    try {
+      const upd = await API.cancelarSolicitud(id, motivo);
+      const idx = SOLICITUDES.findIndex(x => x.id === id);
+      if (idx >= 0) SOLICITUDES[idx] = upd;
+      toast(`Solicitud ${id} cancelada`, 'success');
+      renderMisSolicitudes();
+    } catch (e) { toast(e.message || 'No se pudo cancelar', 'error'); }
+    return;
+  }
   s.estado = 'cancelada';
   s.motivo_cancelacion = motivo;
   s.cancelada_por = currentUser.email;
@@ -5006,13 +5041,23 @@ function cancelarMiSolicitud(id, requiere48h) {
   renderMisSolicitudes();
 }
 
-function editarMiSolicitud(id) {
+async function editarMiSolicitud(id) {
   const s = SOLICITUDES.find(x => x.id === id);
   if (!s) return;
   const nuevaPersonas = prompt('Número de personas (actualizado):', s.personas);
   if (nuevaPersonas === null) return;
   const n = parseInt(nuevaPersonas);
   if (isNaN(n) || n < 1) { toast('Cantidad inválida', 'error'); return; }
+  if (USE_BACKEND) {
+    try {
+      const upd = await API.editarSolicitud(id, { personas: n });
+      const idx = SOLICITUDES.findIndex(x => x.id === id);
+      if (idx >= 0) SOLICITUDES[idx] = upd;
+      toast(`Solicitud ${id} actualizada · ahora ${n} personas`, 'success');
+      renderMisSolicitudes();
+    } catch (e) { toast(e.message || 'No se pudo editar', 'error'); }
+    return;
+  }
   s.personas = n;
   s.editada = true;
   s.editada_por = currentUser.email;
@@ -5020,11 +5065,20 @@ function editarMiSolicitud(id) {
   renderMisSolicitudes();
 }
 
-function agregarObservacion(id) {
+async function agregarObservacion(id) {
   const s = SOLICITUDES.find(x => x.id === id);
   if (!s) return;
   const obs = prompt('Agregar observación (visible para coordinador):', '');
   if (!obs) return;
+  if (USE_BACKEND) {
+    try {
+      const upd = await API.observarSolicitud(id, obs);
+      const idx = SOLICITUDES.findIndex(x => x.id === id);
+      if (idx >= 0) SOLICITUDES[idx] = upd;
+      toast(`Observación añadida a ${id}`, 'success');
+    } catch (e) { toast(e.message || 'No se pudo añadir la observación', 'error'); }
+    return;
+  }
   s.observaciones = s.observaciones || [];
   s.observaciones.push({ fecha: new Date().toISOString().slice(0,10), autor: currentUser.email, texto: obs });
   toast(`Observación añadida a ${id}`, 'success');
@@ -5829,10 +5883,20 @@ function renderBandejaEntrada() {
   }).join('');
 }
 
-function atenderSolicitud(id) {
+async function atenderSolicitud(id) {
   const s = SOLICITUDES.find(x => x.id === id);
   if (!s) return;
   if (!confirm(`¿Marcar como atendida la solicitud ${id} (${s.empresa_cliente})?\nEsto la moverá al estado "confirmada" y disparará la creación de la reserva.`)) return;
+  if (USE_BACKEND) {
+    try {
+      const upd = await API.atenderSolicitud(id);
+      const idx = SOLICITUDES.findIndex(x => x.id === id);
+      if (idx >= 0) SOLICITUDES[idx] = upd;
+      toast(`Solicitud ${id} confirmada · operador: ${currentUser.nombre}`, 'success');
+      renderReservas();
+    } catch (e) { toast(e.message || 'No se pudo atender la solicitud', 'error'); }
+    return;
+  }
   s.estado = 'confirmada';
   s.operador = currentUser.nombre;
   s.fecha_confirmada = '2026-05-22';
@@ -6480,16 +6544,23 @@ function renderAlertasLogisticas() {
   }).join('');
 }
 
-function enviarAlertaLogistica(tipo, canal) {
+async function enviarAlertaLogistica(tipo, canal) {
   const c = CANALES_ALERTAS[canal];
   if (!c || !c.activo) {
     toast(`El canal ${canal} no está activo · configúrelo primero`, 'error');
     return;
   }
-  // Simulación de envío (en producción → API/webhook)
   const destinos = canal === 'whatsapp' ? c.numero : canal === 'email' ? c.direccion : c.canal;
+  if (USE_BACKEND) {
+    // Producción · el backend registra el envío (y llamará al proveedor real).
+    try {
+      const res = await API.enviarAlerta({ tipo, canal, mensaje: `Alerta logística · ${tipo}` });
+      toast(`✓ Alerta "${tipo}" enviada por ${c.label} a ${res.destino || destinos}`, 'success');
+    } catch (e) { toast(e.message || 'No se pudo enviar la alerta', 'error'); }
+    return;
+  }
+  // Demo · simulación de envío
   toast(`✓ Alerta "${tipo}" enviada por ${c.label} a ${destinos}`, 'success');
-  // Registrar en log
   console.log(`[alerta-logistica] tipo=${tipo} canal=${canal} destino=${destinos} ts=${new Date().toISOString()}`);
 }
 
@@ -6535,13 +6606,23 @@ function configurarCanalesAlertas() {
   document.body.appendChild(modal);
 }
 
-function guardarCanales() {
+async function guardarCanales() {
   CANALES_ALERTAS.whatsapp.activo = document.getElementById('canal-whatsapp').checked;
   CANALES_ALERTAS.whatsapp.numero = document.getElementById('canal-whatsapp-numero').value;
   CANALES_ALERTAS.email.activo = document.getElementById('canal-email').checked;
   CANALES_ALERTAS.email.direccion = document.getElementById('canal-email-dir').value;
   CANALES_ALERTAS.teams.activo = document.getElementById('canal-teams').checked;
   CANALES_ALERTAS.teams.canal = document.getElementById('canal-teams-canal').value;
+  if (USE_BACKEND) {
+    // Producción · persistir en el backend (mapear numero/direccion/canal → destino).
+    try {
+      await API.actualizarCanales({
+        whatsapp: { activo: CANALES_ALERTAS.whatsapp.activo, label: CANALES_ALERTAS.whatsapp.label, destino: CANALES_ALERTAS.whatsapp.numero },
+        email:    { activo: CANALES_ALERTAS.email.activo,    label: CANALES_ALERTAS.email.label,    destino: CANALES_ALERTAS.email.direccion },
+        teams:    { activo: CANALES_ALERTAS.teams.activo,    label: CANALES_ALERTAS.teams.label,    destino: CANALES_ALERTAS.teams.canal },
+      });
+    } catch (e) { toast(e.message || 'No se pudo guardar en el backend', 'error'); }
+  }
   document.getElementById('canales-modal').remove();
   toast('Configuración de canales guardada', 'success');
   renderAlertasLogisticas();

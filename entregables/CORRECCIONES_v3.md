@@ -112,31 +112,34 @@ críticos y de alto impacto fueron corregidos y verificados.
 16. **Manejo de 401 hacía `reload()` duro** · frontend. Ahora vuelve al login sin
     recargar toda la app.
 
+17. **Cableado en producción del Portal Solicitante (O11/O17/O19) y Alertas (O21)** ·
+    frontend. `sincronizarDatosIniciales()` ahora también trae las solicitudes; y
+    crear/editar/cancelar/observar/atender solicitudes y guardar canales/enviar
+    alertas llaman al backend cuando `USE_BACKEND=true` (mapeando las formas de
+    payload), manteniendo intacto el modo demo. La generación de IDs de solicitud
+    se hizo robusta igual que en reservas (max + `create_item` con reintento).
+
 ### Bajas / limpieza
 
-17. **ML · `antiguedad_cliente` se colapsaba a `antiguedad`** · `ml/score.py`.
+18. **ML · `antiguedad_cliente` se colapsaba a `antiguedad`** · `ml/score.py`.
     El split por `_` rompía las features numéricas con guion bajo. Nuevo helper
     `_base_feature()` con match exacto + prefijo de categoría.
 
-18. **ML · `use_label_encoder` obsoleto** (removido en xgboost ≥ 2.0) ·
+19. **ML · `use_label_encoder` obsoleto** (removido en xgboost ≥ 2.0) ·
     `ml/entrenamiento_modelo.py`. Eliminado.
 
-19. **ML · `xgboost` ausente del requirements del endpoint** ·
+20. **ML · `xgboost` ausente del requirements del endpoint** ·
     `ml/requirements_azureml.txt`. Añadido.
 
-20. **`requirements.txt` con `pydantic` duplicado** · backend. Limpiado.
+21. **`requirements.txt` con `pydantic` duplicado** · backend. Limpiado.
 
-21. **README · conteo de routers desactualizado** (7 → 9, con `/solicitudes` y
+22. **README · conteo de routers desactualizado** (7 → 9, con `/solicitudes` y
     `/alertas`). Actualizado.
 
 ---
 
 ## Limitaciones conocidas (trabajo recomendado, no incluido)
 
-- **Cableado completo de las funciones v2 en producción.** Se añadieron los
-  métodos de API, pero la UI del Portal Solicitante y de Alertas todavía opera
-  sobre arrays locales cuando `USE_BACKEND=true` (solo reservas/equipos tienen
-  interceptores). Falta enganchar esos módulos a sus endpoints.
 - **XSS por `innerHTML`** con datos importados de Excel: conviene escapar la
   entrada del usuario antes de renderizarla. Riesgo bajo en herramienta interna,
   pero recomendable.
