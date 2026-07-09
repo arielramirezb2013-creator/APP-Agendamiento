@@ -311,6 +311,9 @@ class PrediccionRequest(BaseModel):
     personas: int
     sector: str | None = None
     jornada: str | None = None
+    # Feature del modelo (meses del cliente con Rehavid). Si no se envía, el
+    # endpoint la trata como 0; alinear cuando el dato esté disponible.
+    antiguedad_cliente: int | None = None
 
 
 class PrediccionResponse(BaseModel):

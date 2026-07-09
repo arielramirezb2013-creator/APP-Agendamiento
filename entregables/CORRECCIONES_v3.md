@@ -136,21 +136,37 @@ críticos y de alto impacto fueron corregidos y verificados.
 22. **README · conteo de routers desactualizado** (7 → 9, con `/solicitudes` y
     `/alertas`). Actualizado.
 
+### Endurecimiento de seguridad (segunda pasada)
+
+23. **Rate limiting en `/auth/login`** · `backend/app/routers/auth.py`.
+    Límite deslizante de 5 intentos fallidos por IP+correo en 15 min (429 al
+    superarlo, se limpia al autenticar bien). Nota: es por-proceso; con varias
+    réplicas conviene Redis o el rate limiting de API Management/App Gateway.
+
+24. **Validación de `state` (CSRF) en el SSO** · `auth.py` (router + servicio).
+    El `state` ahora se firma en el servidor (JWT de 10 min) y se verifica en el
+    callback; un atacante no puede fabricarlo.
+
+25. **Escapado anti-XSS** · frontend. Nuevo helper `escapeHtml()` aplicado a los
+    render de equipos, solicitudes (bandeja + "mis solicitudes") y reservas; y
+    saneo de celdas de Excel al importarlas (`sanitizarCeldaImport`, quita `<`/`>`).
+
+26. **Feature `antiguedad_cliente` alineada** · `prediccion_service.py` +
+    `schemas.py`. El backend ahora envía al modelo exactamente sus columnas
+    (incluida `antiguedad_cliente`, opcional en `PrediccionRequest`) en vez de
+    `cliente` (que el modelo no usa).
+
 ---
 
 ## Limitaciones conocidas (trabajo recomendado, no incluido)
 
-- **XSS por `innerHTML`** con datos importados de Excel: conviene escapar la
-  entrada del usuario antes de renderizarla. Riesgo bajo en herramienta interna,
-  pero recomendable.
-- **Rate limiting en `/auth/login`** y **validación de `state` (CSRF) en el
-  callback SSO**: recomendable para exposición pública.
-- **`antiguedad_cliente`** es una feature del modelo que el backend no envía en la
-  predicción (llega siempre como 0). Alinear el contrato de features antes de
-  activar el modelo real.
+- **Dato de `antiguedad_cliente`**: el contrato ya la contempla, pero mientras la
+  UI/negocio no capture la antigüedad real del cliente, el modelo la recibe como 0.
 - **Concurrencia de reservas**: la generación de IDs mejorada evita sobrescrituras,
   pero la doble-reserva en condiciones de alta concurrencia requeriría
   concurrencia optimista (ETag) o un stored procedure de Cosmos.
+- **Rate limiting multi-instancia**: el actual es por-proceso; con autoescalado usar
+  un store compartido.
 
 ---
 

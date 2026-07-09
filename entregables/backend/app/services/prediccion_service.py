@@ -63,14 +63,16 @@ async def _real_prediccion(req: PrediccionRequest) -> PrediccionResponse:
         "Content-Type": "application/json",
         "azureml-model-deployment": settings.azure_ml_deployment,
     }
+    # Se envían exactamente las features que el modelo espera (score.py · FEATURES_ALL),
+    # incluida antiguedad_cliente. 'cliente' no es feature del modelo, se omite.
     payload = {
         "input_data": {
-            "columns": ["servicio", "ciudad", "cliente", "personas", "sector", "jornada"],
+            "columns": ["personas", "antiguedad_cliente", "servicio", "ciudad", "sector", "jornada"],
             "data": [[
+                req.personas,
+                req.antiguedad_cliente if req.antiguedad_cliente is not None else 0,
                 req.servicio,
                 req.ciudad,
-                req.cliente,
-                req.personas,
                 req.sector or "",
                 req.jornada or "",
             ]],

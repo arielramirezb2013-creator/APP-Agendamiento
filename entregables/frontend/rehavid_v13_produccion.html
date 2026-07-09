@@ -3248,6 +3248,21 @@ main {
 const API_BASE_URL = window.REHAVID_API_URL || 'http://localhost:8000';
 const USE_BACKEND = window.REHAVID_USE_BACKEND === true; // false = modo demo local
 
+// ─── Seguridad · escapado anti-XSS ─────────────────────────────
+// Para interpolar texto controlable por el usuario dentro de innerHTML.
+function escapeHtml(v) {
+  if (v === null || v === undefined) return '';
+  return String(v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+// Saneo de celdas de Excel al importar: quita '<' y '>' (evita inyección de
+// etiquetas) y limita longitud. Los no-strings (números) pasan tal cual.
+function sanitizarCeldaImport(v) {
+  if (typeof v !== 'string') return v;
+  return v.replace(/[<>]/g, '').trim().slice(0, 300);
+}
+
 const API = {
   // ─── Token management ───────────────────────────────────────
   setToken(token) { sessionStorage.setItem('rehavid_token', token); },
@@ -4992,14 +5007,14 @@ function renderMisSolicitudes() {
     }
     return `
     <tr>
-      <td><strong>${s.id}</strong></td>
-      <td>${s.fecha_solicitud}</td>
-      <td>${s.servicio}</td>
-      <td>${s.ciudad}</td>
-      <td>${s.empresa_cliente}</td>
-      <td style="text-align:center;">${s.personas}</td>
-      <td>${s.fecha_confirmada || '—'}</td>
-      <td>${s.operador || '—'}</td>
+      <td><strong>${escapeHtml(s.id)}</strong></td>
+      <td>${escapeHtml(s.fecha_solicitud)}</td>
+      <td>${escapeHtml(s.servicio)}</td>
+      <td>${escapeHtml(s.ciudad)}</td>
+      <td>${escapeHtml(s.empresa_cliente)}</td>
+      <td style="text-align:center;">${escapeHtml(s.personas)}</td>
+      <td>${escapeHtml(s.fecha_confirmada || '—')}</td>
+      <td>${escapeHtml(s.operador || '—')}</td>
       <td>${estadoSolicitudPill(s.estado)}</td>
       <td>${acciones}</td>
     </tr>`;
@@ -5868,12 +5883,12 @@ function renderBandejaEntrada() {
     const horas = Math.floor((new Date('2026-05-22') - new Date(s.fecha_solicitud)) / 36e5);
     const urgente = horas >= 12;
     const profInfo = s.profesional
-      ? ` · ${s.profesional.cantidad} prof. ${s.profesional.perfil || ''}`
+      ? ` · ${escapeHtml(s.profesional.cantidad)} prof. ${escapeHtml(s.profesional.perfil || '')}`
       : '';
     return `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;background:white;border-radius:8px;border-left:3px solid ${urgente ? 'var(--bad)' : 'var(--brand)'};">
       <div style="flex:1;">
-        <div style="font-size:12.5px;font-weight:700;color:var(--ink);">${s.id} · ${s.servicio} · ${s.empresa_cliente}</div>
-        <div style="font-size:11px;color:var(--ink-3);margin-top:2px;">${s.ciudad} · ${s.personas} persona(s)${profInfo} · Solicitada ${s.fecha_solicitud}</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--ink);">${escapeHtml(s.id)} · ${escapeHtml(s.servicio)} · ${escapeHtml(s.empresa_cliente)}</div>
+        <div style="font-size:11px;color:var(--ink-3);margin-top:2px;">${escapeHtml(s.ciudad)} · ${escapeHtml(s.personas)} persona(s)${profInfo} · Solicitada ${escapeHtml(s.fecha_solicitud)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <span style="font-size:11px;color:${urgente ? 'var(--bad)' : 'var(--ink-3)'};font-weight:600;">${horas}h sin atender</span>
@@ -5935,12 +5950,12 @@ function renderReservas() {
           : `<button class="row-action" onclick="reprogramarReservaUI('${r.id}')">Reprogramar</button> <button class="row-action danger" onclick="cancelarReservaUI('${r.id}')">Cancelar</button>`)
       : '';
     return `<tr style="${r.cancelada ? 'opacity:0.55;' : ''}">
-      <td class="num">${r.id}</td>
-      <td><strong>${r.servicio}</strong></td>
-      <td style="font-size:11.5px;color:var(--ink-3);">${equipo}</td>
-      <td>${r.cliente}</td>
-      <td>${r.ciudad}</td>
-      <td style="font-size:11.5px;">${r.fecha_salida}</td>
+      <td class="num">${escapeHtml(r.id)}</td>
+      <td><strong>${escapeHtml(r.servicio)}</strong></td>
+      <td style="font-size:11.5px;color:var(--ink-3);">${escapeHtml(equipo)}</td>
+      <td>${escapeHtml(r.cliente)}</td>
+      <td>${escapeHtml(r.ciudad)}</td>
+      <td style="font-size:11.5px;">${escapeHtml(r.fecha_salida)}</td>
       <td style="font-size:11.5px;">${r.fecha_retorno_esp}</td>
       <td class="num">${r.personas}</td>
       <td><span class="status ${estadoCls}"><span class="dot"></span>${estadoTxt}</span></td>
@@ -6116,23 +6131,23 @@ function renderEquipos() {
       return `<div style="background:white;border:1.5px solid var(--line);border-radius:12px;padding:14px;border-top:4px solid ${estInfo.color};">
         <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:8px;">
           <div>
-            <div style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:var(--ink-4);font-weight:600;">${e.id}</div>
-            <div style="font-family:'Outfit',Arial,sans-serif;font-size:13.5px;font-weight:700;color:var(--ink);margin-top:2px;">${e.modelo}</div>
+            <div style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:var(--ink-4);font-weight:600;">${escapeHtml(e.id)}</div>
+            <div style="font-family:'Outfit',Arial,sans-serif;font-size:13.5px;font-weight:700;color:var(--ink);margin-top:2px;">${escapeHtml(e.modelo)}</div>
             <div style="font-family:'Outfit',Arial,sans-serif;font-size:10.5px;color:var(--ink-3);margin-top:2px;font-family:'JetBrains Mono',monospace;">
-              <a href="javascript:void(0)" onclick="abrirFichaEquipo('${e.id}')" style="color:var(--brand);text-decoration:underline;">${e.serial}</a>
+              <a href="javascript:void(0)" onclick="abrirFichaEquipo('${escapeHtml(e.id)}')" style="color:var(--brand);text-decoration:underline;">${escapeHtml(e.serial)}</a>
             </div>
           </div>
-          <span class="status" style="background:${estInfo.bg};color:${estInfo.color};white-space:nowrap;font-size:10.5px;"><span class="dot" style="background:${estInfo.color};"></span>${estInfo.label}</span>
+          <span class="status" style="background:${estInfo.bg};color:${estInfo.color};white-space:nowrap;font-size:10.5px;"><span class="dot" style="background:${estInfo.color};"></span>${escapeHtml(estInfo.label)}</span>
         </div>
-        <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:8px;">${e.ciudad_base} · ${e.responsable}</div>
+        <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:8px;">${escapeHtml(e.ciudad_base)} · ${escapeHtml(e.responsable)}</div>
         <details style="margin-top:10px;border-top:1px dashed var(--line);padding-top:8px;">
           <summary style="cursor:pointer;color:var(--brand);font-weight:600;font-size:12px;list-style:none;">
             Ver kit completo (${accCount} accesorios · ${totalUnidades} piezas)
           </summary>
           <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;">
             ${accs.map(a => `<div style="display:flex;justify-content:space-between;padding:4px 6px;background:#FAFAFB;border-radius:4px;font-size:11px;">
-              <span style="color:var(--ink-2);">${a.nombre}</span>
-              <span style="color:var(--ink-3);font-weight:600;">x${a.cantidad}${a.requiere_lavado ? ' 🧺' : ''}${a.consumible ? ' 📦' : ''}</span>
+              <span style="color:var(--ink-2);">${escapeHtml(a.nombre)}</span>
+              <span style="color:var(--ink-3);font-weight:600;">x${escapeHtml(a.cantidad)}${a.requiere_lavado ? ' 🧺' : ''}${a.consumible ? ' 📦' : ''}</span>
             </div>`).join('')}
           </div>
           <div style="margin-top:10px;font-size:10.5px;color:var(--ink-4);border-top:1px dashed var(--line);padding-top:6px;">
@@ -7617,7 +7632,7 @@ function importarXLSX(tipo, file, onSuccess) {
         const o = {};
         schema.columnas.forEach(c => {
           const idx = headers.indexOf(c.campo);
-          o[c.key] = idx >= 0 ? r[idx] : '';
+          o[c.key] = idx >= 0 ? sanitizarCeldaImport(r[idx]) : '';  // anti-XSS en ingesta
         });
         return o;
       });

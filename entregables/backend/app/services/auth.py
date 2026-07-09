@@ -49,6 +49,32 @@ def create_access_token(data: dict) -> str:
     return jwt.encode(to_encode, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 
+# ────────────────────────────────────────────────────────────
+# CSRF · state firmado para el flujo SSO (Entra ID)
+# ────────────────────────────────────────────────────────────
+def create_sso_state(cliente_state: str = "") -> str:
+    """Genera un `state` firmado y de corta vida para el flujo OAuth.
+    Al firmarlo con el secreto del servidor, un atacante no puede forjarlo,
+    lo que mitiga CSRF de login. Expira a los 10 minutos."""
+    payload = {
+        "purpose": "sso_state",
+        "nonce": secrets.token_urlsafe(16),
+        "cli": cliente_state or "",
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=10),
+    }
+    return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
+
+
+def verify_sso_state(state: str) -> bool:
+    """Valida que el `state` devuelto por Entra ID fue emitido por este backend
+    y no ha expirado."""
+    try:
+        payload = jwt.decode(state, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
+        return payload.get("purpose") == "sso_state"
+    except JWTError:
+        return False
+
+
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> UserOut:
     """Dependency que extrae el usuario del JWT en cada request protegido."""
     credentials_exception = HTTPException(
