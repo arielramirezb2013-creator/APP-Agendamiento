@@ -12,5 +12,8 @@ entregables/ml/modelo/*.png
 entregables/ml/modelo/metricas.json
 entregables/ml/modelo/REPORTE_ENTRENAMIENTO.md
 
+# Paquetes de entrega (artefactos de build · el código ya está versionado)
+*.zip
+
 # OS
 .DS_Store
