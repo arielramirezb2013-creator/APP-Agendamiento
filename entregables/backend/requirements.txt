@@ -1,0 +1,39 @@
+# ============================================================
+# Rehavid Operaciones · Backend FastAPI
+# Python 3.11+
+# ============================================================
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+pydantic[email]==2.9.2
+email-validator==2.2.0
+pydantic-settings==2.5.2
+
+# Azure SDKs
+azure-cosmos==4.7.0
+azure-storage-blob==12.23.0
+azure-identity==1.18.0
+azure-monitor-opentelemetry==1.6.4
+
+# Auth (Microsoft Entra ID)
+msal==1.31.0
+python-jose[cryptography]==3.3.0
+python-multipart==0.0.12
+
+# Excel I/O
+openpyxl==3.1.5
+pandas==2.2.3
+
+# ML model loading (sklearn .pkl, SHAP)
+scikit-learn==1.5.2
+shap==0.46.0
+joblib==1.4.2
+numpy==2.1.2
+
+# HTTP client (call Azure ML endpoint)
+httpx==0.27.2
+
+# Dev
+python-dotenv==1.0.1
+pytest==8.3.3
+pytest-asyncio==0.24.0

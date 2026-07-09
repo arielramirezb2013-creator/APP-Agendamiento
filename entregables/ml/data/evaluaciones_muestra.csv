@@ -1,0 +1,401 @@
+id_estudio,servicio,ciudad,cliente,sector,personas,jornada,antiguedad_cliente,hallazgo_msk
+E-0000,Dinamómetro,Medellín,Crystal,manufactura,5,diurna,3,1
+E-0001,Dinamómetro,Funza,Mattelsa,minería,10,diurna,0,1
+E-0002,GoPro,Pasto,Imbanaco,minería,20,diurna,3,1
+E-0003,Xsens,Cali,El Retiro,salud,5,rotativa,48,0
+E-0004,Tobii,Zipaquirá,Colanta,servicios,3,nocturna,3,0
+E-0005,Tumeke,Soacha,Cetelsa,salud,8,diurna,48,1
+E-0006,Tumeke,Urabá,Colanta,alimentos,20,nocturna,0,0
+E-0007,GoPro,Medellín,Alpina,servicios,8,rotativa,24,1
+E-0008,Dinamómetro,Medellín,Imbanaco,agroindustria,2,nocturna,48,1
+E-0009,EMG,Funza,Crystal,salud,8,rotativa,3,1
+E-0010,EMG,Pasto,El Retiro,alimentos,2,rotativa,24,0
+E-0011,Xsens,Pasto,Mattelsa,agroindustria,10,nocturna,6,0
+E-0012,Dinamómetro,Zipaquirá,Imbanaco,servicios,4,diurna,48,1
+E-0013,EMG,Urabá,Ura Industries,manufactura,8,diurna,3,1
+E-0014,Dinamómetro,Pasto,Peldar,salud,5,diurna,3,1
+E-0015,EMG,Funza,Solla,alimentos,10,rotativa,24,1
+E-0016,GoPro,Cali,Cetelsa,salud,1,diurna,48,1
+E-0017,Dinamómetro,Antioquia,Peldar,salud,2,rotativa,12,0
+E-0018,EMG,Soacha,Cetelsa,minería,2,diurna,36,0
+E-0019,Dinamómetro,Bogotá,El Retiro,servicios,5,diurna,12,1
+E-0020,Dinamómetro,Soacha,Linea Directa,servicios,3,rotativa,24,0
+E-0021,Dinamómetro,Cali,Peldar,minería,4,rotativa,3,1
+E-0022,GoPro,Zipaquirá,Ura Industries,manufactura,8,rotativa,12,1
+E-0023,EMG,Medellín,El Retiro,agroindustria,4,diurna,24,0
+E-0024,Tobii,Antioquia,Peldar,logística,20,diurna,48,1
+E-0025,Xsens,Funza,El Retiro,servicios,10,rotativa,3,0
+E-0026,EMG,Antioquia,Colanta,salud,8,rotativa,12,0
+E-0027,Xsens,Funza,Pronavicola,agroindustria,8,diurna,0,1
+E-0028,Xsens,Bogotá,Linea Directa,manufactura,1,diurna,3,1
+E-0029,EMG,Funza,Peldar,manufactura,4,rotativa,6,1
+E-0030,Xsens,Urabá,Mattelsa,alimentos,15,rotativa,3,1
+E-0031,Tumeke,Antioquia,Linea Directa,manufactura,10,rotativa,6,1
+E-0032,Dinamómetro,Zipaquirá,Cetelsa,manufactura,2,rotativa,0,1
+E-0033,Tumeke,Urabá,Solla,agroindustria,4,diurna,24,1
+E-0034,EMG,Pasto,Colanta,salud,2,diurna,12,0
+E-0035,Tumeke,Funza,Solla,alimentos,1,rotativa,0,0
+E-0036,Tobii,Bogotá,Solla,salud,4,nocturna,48,0
+E-0037,Tobii,Soacha,Imbanaco,manufactura,5,nocturna,48,0
+E-0038,Dinamómetro,Funza,Alpina,alimentos,15,rotativa,3,1
+E-0039,GoPro,Bogotá,Pronavicola,alimentos,1,rotativa,36,0
+E-0040,Tobii,Medellín,Linea Directa,minería,3,rotativa,0,0
+E-0041,Xsens,Urabá,Colanta,manufactura,2,rotativa,36,0
+E-0042,GoPro,Entrerrios,Pronavicola,agroindustria,1,rotativa,24,1
+E-0043,GoPro,Funza,Sodexo,servicios,4,nocturna,36,0
+E-0044,Tobii,Medellín,Alpina,agroindustria,5,rotativa,12,1
+E-0045,Tobii,Pasto,Sodexo,minería,2,rotativa,0,0
+E-0046,Xsens,Antioquia,Linea Directa,servicios,4,diurna,6,1
+E-0047,GoPro,Pasto,Sodexo,alimentos,20,nocturna,0,1
+E-0048,Dinamómetro,Pasto,Solla,manufactura,5,diurna,0,0
+E-0049,EMG,Soacha,Peldar,servicios,4,rotativa,36,1
+E-0050,Tobii,Soacha,Alpina,servicios,2,diurna,36,0
+E-0051,Tumeke,Pasto,El Retiro,servicios,5,diurna,3,0
+E-0052,Tobii,Cali,Peldar,minería,2,diurna,0,0
+E-0053,Tumeke,Bogotá,Sodexo,logística,20,nocturna,3,1
+E-0054,EMG,Medellín,Tennis,logística,8,diurna,3,0
+E-0055,GoPro,Cali,Ura Industries,logística,3,nocturna,3,0
+E-0056,Tobii,Funza,Sodexo,manufactura,8,diurna,48,0
+E-0057,Xsens,Antioquia,Mattelsa,logística,2,rotativa,12,0
+E-0058,Xsens,Funza,Mattelsa,logística,8,nocturna,6,0
+E-0059,Tumeke,Medellín,Cetelsa,alimentos,10,diurna,6,1
+E-0060,EMG,Pasto,Tennis,servicios,20,rotativa,12,1
+E-0061,Tumeke,Soacha,Alpina,manufactura,3,nocturna,24,0
+E-0062,Tumeke,Urabá,Pronavicola,minería,8,nocturna,36,0
+E-0063,GoPro,Urabá,Alpina,manufactura,4,nocturna,6,1
+E-0064,GoPro,Zipaquirá,Pronavicola,logística,4,rotativa,6,1
+E-0065,EMG,Urabá,Tennis,alimentos,5,diurna,24,1
+E-0066,Tobii,Urabá,Crystal,alimentos,20,nocturna,3,1
+E-0067,Dinamómetro,Bogotá,Sodexo,agroindustria,5,rotativa,12,1
+E-0068,EMG,Funza,Peldar,agroindustria,8,nocturna,12,1
+E-0069,Tobii,Pasto,Crystal,logística,3,rotativa,36,1
+E-0070,Dinamómetro,Funza,Crystal,minería,2,nocturna,48,0
+E-0071,EMG,Antioquia,Pronavicola,agroindustria,3,diurna,0,1
+E-0072,Tumeke,Antioquia,Imbanaco,salud,4,nocturna,36,0
+E-0073,Xsens,Medellín,Cetelsa,agroindustria,1,rotativa,48,0
+E-0074,Tobii,Funza,Ura Industries,agroindustria,20,diurna,12,1
+E-0075,Tumeke,Pasto,Pronavicola,salud,15,diurna,36,1
+E-0076,EMG,Pasto,Mineros,logística,20,nocturna,12,1
+E-0077,Xsens,Soacha,Cetelsa,alimentos,15,nocturna,6,1
+E-0078,GoPro,Soacha,Mattelsa,salud,4,rotativa,6,1
+E-0079,EMG,Funza,Imbanaco,servicios,20,nocturna,0,1
+E-0080,Dinamómetro,Zipaquirá,Peldar,agroindustria,4,rotativa,0,1
+E-0081,Tobii,Entrerrios,El Retiro,salud,4,diurna,48,0
+E-0082,Tumeke,Zipaquirá,Sodexo,logística,10,rotativa,12,1
+E-0083,Tobii,Entrerrios,Ura Industries,logística,20,nocturna,36,1
+E-0084,Xsens,Urabá,Tennis,salud,5,diurna,12,0
+E-0085,Dinamómetro,Cali,Pronavicola,alimentos,3,nocturna,48,0
+E-0086,GoPro,Cali,Linea Directa,manufactura,1,nocturna,0,0
+E-0087,Tobii,Antioquia,Tennis,agroindustria,5,diurna,12,1
+E-0088,EMG,Urabá,Sodexo,logística,5,nocturna,48,0
+E-0089,Tumeke,Zipaquirá,Mattelsa,salud,20,diurna,0,0
+E-0090,Dinamómetro,Funza,Mattelsa,manufactura,1,rotativa,48,1
+E-0091,Tumeke,Medellín,Pronavicola,minería,4,diurna,3,1
+E-0092,Xsens,Entrerrios,Pronavicola,salud,5,rotativa,48,1
+E-0093,Dinamómetro,Bogotá,Ura Industries,alimentos,3,diurna,6,1
+E-0094,EMG,Funza,Colanta,minería,10,rotativa,12,0
+E-0095,GoPro,Soacha,Linea Directa,alimentos,4,rotativa,0,0
+E-0096,Dinamómetro,Zipaquirá,Colanta,minería,1,diurna,6,0
+E-0097,GoPro,Antioquia,Colanta,alimentos,1,nocturna,48,0
+E-0098,Tobii,Cali,El Retiro,servicios,15,rotativa,36,1
+E-0099,GoPro,Urabá,Linea Directa,alimentos,20,nocturna,48,1
+E-0100,Dinamómetro,Medellín,Sodexo,minería,8,nocturna,48,1
+E-0101,Tobii,Zipaquirá,Solla,agroindustria,10,nocturna,6,1
+E-0102,Tobii,Entrerrios,El Retiro,agroindustria,5,nocturna,6,1
+E-0103,EMG,Urabá,Mineros,minería,20,diurna,3,1
+E-0104,GoPro,Antioquia,Cetelsa,logística,15,diurna,36,1
+E-0105,Tumeke,Soacha,Crystal,manufactura,4,nocturna,12,0
+E-0106,GoPro,Pasto,Tennis,servicios,20,nocturna,24,1
+E-0107,EMG,Medellín,El Retiro,alimentos,5,nocturna,6,1
+E-0108,Xsens,Funza,Mattelsa,servicios,20,diurna,48,1
+E-0109,Dinamómetro,Medellín,Linea Directa,salud,20,nocturna,24,1
+E-0110,Xsens,Pasto,Solla,servicios,8,diurna,3,1
+E-0111,EMG,Cali,Crystal,manufactura,20,diurna,6,1
+E-0112,Tobii,Zipaquirá,Solla,manufactura,5,diurna,12,1
+E-0113,Tumeke,Antioquia,Colanta,servicios,2,nocturna,48,1
+E-0114,GoPro,Entrerrios,Sodexo,alimentos,1,rotativa,3,1
+E-0115,Tumeke,Entrerrios,Cetelsa,agroindustria,20,diurna,48,1
+E-0116,GoPro,Soacha,Linea Directa,agroindustria,10,rotativa,12,0
+E-0117,GoPro,Medellín,Cetelsa,salud,1,nocturna,24,0
+E-0118,Xsens,Funza,Solla,alimentos,5,diurna,36,1
+E-0119,GoPro,Entrerrios,Mineros,manufactura,1,diurna,12,0
+E-0120,EMG,Antioquia,Colanta,manufactura,5,diurna,36,1
+E-0121,Dinamómetro,Funza,Crystal,agroindustria,4,nocturna,12,1
+E-0122,Xsens,Soacha,Pronavicola,servicios,2,diurna,0,1
+E-0123,Dinamómetro,Soacha,El Retiro,logística,5,rotativa,12,1
+E-0124,Tobii,Entrerrios,Alpina,servicios,20,rotativa,12,1
+E-0125,Tobii,Entrerrios,Pronavicola,alimentos,5,nocturna,0,1
+E-0126,Tumeke,Cali,Mineros,logística,5,rotativa,24,1
+E-0127,GoPro,Urabá,Crystal,alimentos,5,nocturna,3,0
+E-0128,Tobii,Medellín,Linea Directa,manufactura,8,nocturna,12,1
+E-0129,Xsens,Urabá,Linea Directa,servicios,15,nocturna,6,1
+E-0130,GoPro,Medellín,Cetelsa,manufactura,2,nocturna,6,1
+E-0131,Tobii,Antioquia,Imbanaco,logística,1,rotativa,36,0
+E-0132,Tumeke,Antioquia,Cetelsa,agroindustria,8,rotativa,24,0
+E-0133,Tumeke,Antioquia,Ura Industries,agroindustria,20,nocturna,3,0
+E-0134,Dinamómetro,Funza,El Retiro,salud,1,diurna,36,0
+E-0135,Xsens,Funza,Linea Directa,servicios,1,rotativa,24,0
+E-0136,Tumeke,Soacha,Peldar,salud,3,diurna,12,0
+E-0137,Dinamómetro,Pasto,Solla,servicios,15,nocturna,12,1
+E-0138,Tobii,Medellín,Sodexo,agroindustria,20,rotativa,36,1
+E-0139,Tobii,Soacha,Linea Directa,servicios,5,rotativa,48,1
+E-0140,GoPro,Pasto,Mineros,minería,15,rotativa,48,1
+E-0141,EMG,Zipaquirá,Linea Directa,servicios,20,rotativa,12,1
+E-0142,Xsens,Urabá,Alpina,alimentos,10,diurna,3,0
+E-0143,EMG,Cali,Mineros,alimentos,10,nocturna,12,0
+E-0144,Tumeke,Antioquia,Colanta,agroindustria,8,rotativa,48,1
+E-0145,GoPro,Cali,Colanta,salud,3,diurna,12,0
+E-0146,Tobii,Medellín,Linea Directa,logística,8,nocturna,24,0
+E-0147,EMG,Antioquia,Linea Directa,logística,20,rotativa,12,0
+E-0148,GoPro,Soacha,Mattelsa,manufactura,2,rotativa,3,0
+E-0149,Dinamómetro,Medellín,Mineros,manufactura,2,nocturna,48,0
+E-0150,Xsens,Bogotá,Sodexo,alimentos,1,nocturna,0,1
+E-0151,EMG,Entrerrios,Crystal,servicios,3,nocturna,3,0
+E-0152,Xsens,Entrerrios,Crystal,agroindustria,2,diurna,24,0
+E-0153,Xsens,Soacha,Mineros,salud,3,rotativa,3,1
+E-0154,EMG,Cali,Colanta,alimentos,15,diurna,6,1
+E-0155,Tobii,Soacha,Mineros,servicios,5,rotativa,36,0
+E-0156,EMG,Entrerrios,Tennis,agroindustria,15,nocturna,0,1
+E-0157,GoPro,Urabá,Sodexo,servicios,5,rotativa,0,0
+E-0158,Tumeke,Soacha,Cetelsa,minería,1,rotativa,24,0
+E-0159,Xsens,Soacha,Crystal,minería,4,nocturna,36,1
+E-0160,Dinamómetro,Bogotá,Sodexo,logística,3,rotativa,36,1
+E-0161,Tobii,Soacha,Tennis,manufactura,8,rotativa,36,1
+E-0162,Dinamómetro,Zipaquirá,Peldar,salud,4,diurna,3,0
+E-0163,GoPro,Soacha,El Retiro,servicios,5,diurna,48,0
+E-0164,EMG,Funza,Linea Directa,logística,15,diurna,0,1
+E-0165,Dinamómetro,Zipaquirá,Colanta,alimentos,10,rotativa,48,0
+E-0166,Tobii,Soacha,Pronavicola,manufactura,20,nocturna,0,1
+E-0167,Tobii,Antioquia,Alpina,logística,8,rotativa,0,0
+E-0168,GoPro,Antioquia,Ura Industries,minería,4,nocturna,36,1
+E-0169,Dinamómetro,Bogotá,Sodexo,servicios,10,rotativa,0,1
+E-0170,Tobii,Antioquia,Tennis,manufactura,4,diurna,24,1
+E-0171,Dinamómetro,Cali,Ura Industries,alimentos,20,rotativa,12,1
+E-0172,Tobii,Soacha,Alpina,alimentos,15,diurna,24,1
+E-0173,Dinamómetro,Zipaquirá,Colanta,servicios,15,diurna,12,0
+E-0174,Dinamómetro,Funza,Colanta,servicios,8,rotativa,0,1
+E-0175,Tobii,Bogotá,Alpina,manufactura,4,rotativa,36,0
+E-0176,EMG,Pasto,Mattelsa,agroindustria,4,diurna,0,0
+E-0177,GoPro,Entrerrios,Alpina,agroindustria,8,diurna,48,1
+E-0178,EMG,Cali,Colanta,logística,3,diurna,24,1
+E-0179,Dinamómetro,Funza,Pronavicola,logística,3,diurna,0,0
+E-0180,EMG,Urabá,Peldar,manufactura,5,diurna,0,1
+E-0181,Tumeke,Pasto,Pronavicola,alimentos,15,diurna,12,1
+E-0182,Tumeke,Pasto,Sodexo,salud,4,rotativa,24,1
+E-0183,Tobii,Urabá,Crystal,alimentos,1,diurna,12,0
+E-0184,Tumeke,Zipaquirá,Pronavicola,salud,15,rotativa,0,1
+E-0185,Xsens,Pasto,El Retiro,manufactura,5,diurna,24,0
+E-0186,EMG,Entrerrios,Imbanaco,salud,20,rotativa,6,1
+E-0187,Tumeke,Pasto,El Retiro,logística,2,rotativa,48,0
+E-0188,Xsens,Antioquia,Imbanaco,salud,4,nocturna,12,1
+E-0189,Tobii,Soacha,Tennis,alimentos,8,diurna,12,1
+E-0190,Xsens,Medellín,Imbanaco,alimentos,2,nocturna,0,0
+E-0191,Tumeke,Bogotá,Pronavicola,alimentos,8,rotativa,48,1
+E-0192,GoPro,Urabá,Linea Directa,minería,2,nocturna,12,1
+E-0193,Dinamómetro,Pasto,Mattelsa,manufactura,5,nocturna,6,1
+E-0194,Xsens,Pasto,Tennis,alimentos,4,nocturna,48,1
+E-0195,Tumeke,Pasto,Cetelsa,logística,4,nocturna,48,0
+E-0196,GoPro,Soacha,Alpina,minería,20,rotativa,0,1
+E-0197,Xsens,Cali,Linea Directa,servicios,5,rotativa,6,1
+E-0198,Xsens,Bogotá,Colanta,minería,10,rotativa,0,1
+E-0199,Dinamómetro,Cali,Tennis,minería,10,diurna,12,1
+E-0200,EMG,Entrerrios,Alpina,alimentos,2,nocturna,0,1
+E-0201,Dinamómetro,Entrerrios,Mineros,manufactura,15,nocturna,36,1
+E-0202,Tobii,Medellín,Sodexo,servicios,20,diurna,0,1
+E-0203,Dinamómetro,Bogotá,Mattelsa,alimentos,15,rotativa,24,1
+E-0204,Tobii,Funza,Cetelsa,minería,1,diurna,3,1
+E-0205,Xsens,Antioquia,El Retiro,logística,5,nocturna,6,1
+E-0206,Tobii,Pasto,Peldar,agroindustria,10,diurna,24,0
+E-0207,Dinamómetro,Bogotá,Imbanaco,logística,2,nocturna,12,0
+E-0208,Tumeke,Urabá,El Retiro,salud,8,diurna,24,1
+E-0209,Dinamómetro,Zipaquirá,Solla,salud,2,nocturna,12,1
+E-0210,GoPro,Medellín,Mattelsa,salud,8,rotativa,0,1
+E-0211,Tobii,Soacha,El Retiro,minería,20,nocturna,0,1
+E-0212,EMG,Medellín,Peldar,agroindustria,3,nocturna,0,1
+E-0213,GoPro,Cali,Mattelsa,agroindustria,8,nocturna,36,0
+E-0214,Tumeke,Medellín,Solla,agroindustria,4,nocturna,3,0
+E-0215,Dinamómetro,Entrerrios,Crystal,salud,15,nocturna,36,0
+E-0216,Dinamómetro,Antioquia,Mineros,minería,8,nocturna,3,1
+E-0217,Dinamómetro,Soacha,Mineros,servicios,1,nocturna,6,0
+E-0218,Tobii,Medellín,Pronavicola,manufactura,8,diurna,48,1
+E-0219,GoPro,Bogotá,Mineros,minería,15,nocturna,24,1
+E-0220,GoPro,Cali,Alpina,alimentos,8,diurna,24,1
+E-0221,Tobii,Bogotá,Mattelsa,manufactura,2,nocturna,24,0
+E-0222,Dinamómetro,Zipaquirá,Tennis,salud,20,nocturna,24,1
+E-0223,EMG,Zipaquirá,Colanta,salud,8,nocturna,36,1
+E-0224,EMG,Entrerrios,Linea Directa,manufactura,10,rotativa,6,1
+E-0225,Xsens,Urabá,Solla,servicios,3,diurna,6,1
+E-0226,GoPro,Zipaquirá,Linea Directa,alimentos,5,diurna,24,1
+E-0227,Xsens,Urabá,Peldar,alimentos,20,rotativa,0,1
+E-0228,EMG,Zipaquirá,Cetelsa,manufactura,5,nocturna,3,0
+E-0229,Tobii,Medellín,Peldar,agroindustria,3,diurna,3,1
+E-0230,GoPro,Entrerrios,Solla,logística,20,rotativa,0,1
+E-0231,GoPro,Entrerrios,Cetelsa,salud,3,diurna,3,0
+E-0232,Xsens,Funza,Mineros,alimentos,1,nocturna,12,0
+E-0233,GoPro,Soacha,Cetelsa,servicios,15,rotativa,3,1
+E-0234,Tobii,Antioquia,Mineros,logística,8,diurna,36,0
+E-0235,EMG,Cali,Linea Directa,logística,20,nocturna,24,1
+E-0236,Xsens,Antioquia,Linea Directa,logística,3,rotativa,48,1
+E-0237,EMG,Medellín,Cetelsa,minería,20,diurna,48,1
+E-0238,Xsens,Medellín,Ura Industries,servicios,20,nocturna,3,1
+E-0239,Xsens,Urabá,Peldar,logística,8,nocturna,0,1
+E-0240,EMG,Zipaquirá,Ura Industries,agroindustria,2,nocturna,6,1
+E-0241,Tumeke,Bogotá,Sodexo,logística,8,rotativa,48,1
+E-0242,Tobii,Medellín,Alpina,alimentos,15,diurna,12,1
+E-0243,EMG,Urabá,Colanta,agroindustria,20,diurna,36,1
+E-0244,EMG,Entrerrios,Mineros,agroindustria,2,nocturna,0,1
+E-0245,Tumeke,Entrerrios,Mattelsa,manufactura,20,nocturna,0,1
+E-0246,Dinamómetro,Funza,Pronavicola,agroindustria,10,nocturna,0,1
+E-0247,Tobii,Medellín,Peldar,agroindustria,2,rotativa,24,0
+E-0248,GoPro,Antioquia,Alpina,minería,20,rotativa,0,1
+E-0249,Dinamómetro,Medellín,Tennis,salud,5,nocturna,36,1
+E-0250,Xsens,Zipaquirá,Solla,alimentos,2,rotativa,48,0
+E-0251,Tumeke,Antioquia,El Retiro,servicios,8,rotativa,48,0
+E-0252,Tobii,Antioquia,Alpina,alimentos,3,diurna,0,0
+E-0253,EMG,Soacha,Peldar,agroindustria,4,diurna,0,1
+E-0254,Tobii,Funza,Sodexo,logística,15,rotativa,6,1
+E-0255,EMG,Zipaquirá,Imbanaco,logística,8,diurna,6,1
+E-0256,Tobii,Antioquia,El Retiro,alimentos,10,nocturna,6,0
+E-0257,Tobii,Urabá,Colanta,servicios,5,rotativa,48,1
+E-0258,Tobii,Medellín,Tennis,minería,20,diurna,6,1
+E-0259,Dinamómetro,Cali,El Retiro,servicios,15,nocturna,24,1
+E-0260,Tobii,Zipaquirá,Pronavicola,servicios,1,nocturna,36,0
+E-0261,Tobii,Urabá,Tennis,servicios,1,rotativa,0,0
+E-0262,GoPro,Entrerrios,Crystal,logística,3,rotativa,0,1
+E-0263,Tobii,Zipaquirá,Tennis,manufactura,2,diurna,3,0
+E-0264,Tobii,Zipaquirá,Tennis,minería,3,diurna,36,0
+E-0265,Tobii,Zipaquirá,Crystal,logística,3,diurna,24,0
+E-0266,EMG,Pasto,Imbanaco,agroindustria,1,diurna,36,1
+E-0267,GoPro,Entrerrios,Sodexo,manufactura,5,nocturna,36,1
+E-0268,Dinamómetro,Antioquia,Solla,salud,2,diurna,3,0
+E-0269,Dinamómetro,Medellín,Peldar,salud,8,diurna,36,1
+E-0270,GoPro,Cali,Cetelsa,servicios,3,nocturna,36,0
+E-0271,EMG,Funza,Cetelsa,minería,2,diurna,3,0
+E-0272,Tobii,Pasto,Solla,manufactura,20,nocturna,24,1
+E-0273,GoPro,Antioquia,Peldar,manufactura,5,diurna,12,0
+E-0274,Tobii,Medellín,Mineros,logística,2,nocturna,3,0
+E-0275,Tobii,Pasto,Crystal,alimentos,8,rotativa,3,0
+E-0276,GoPro,Bogotá,Linea Directa,agroindustria,10,diurna,24,0
+E-0277,Tumeke,Funza,Tennis,minería,5,diurna,3,1
+E-0278,GoPro,Pasto,Sodexo,servicios,5,diurna,3,0
+E-0279,Xsens,Cali,Pronavicola,alimentos,20,nocturna,0,1
+E-0280,GoPro,Bogotá,Linea Directa,agroindustria,8,diurna,48,0
+E-0281,Tumeke,Entrerrios,Imbanaco,manufactura,5,diurna,36,1
+E-0282,GoPro,Soacha,Mineros,alimentos,15,diurna,36,1
+E-0283,Xsens,Bogotá,Solla,logística,10,rotativa,6,1
+E-0284,Tobii,Cali,Tennis,salud,15,nocturna,3,1
+E-0285,Dinamómetro,Zipaquirá,Peldar,servicios,8,rotativa,12,1
+E-0286,GoPro,Antioquia,Mattelsa,manufactura,4,nocturna,12,1
+E-0287,Xsens,Urabá,Mattelsa,manufactura,5,diurna,12,0
+E-0288,Xsens,Antioquia,Peldar,logística,8,nocturna,3,0
+E-0289,Tobii,Urabá,Peldar,salud,15,nocturna,0,1
+E-0290,Tobii,Antioquia,Pronavicola,agroindustria,8,diurna,0,1
+E-0291,Dinamómetro,Medellín,Imbanaco,alimentos,5,nocturna,24,1
+E-0292,Xsens,Bogotá,Imbanaco,servicios,8,rotativa,48,1
+E-0293,Tumeke,Medellín,Imbanaco,minería,4,rotativa,6,1
+E-0294,GoPro,Entrerrios,Colanta,salud,5,rotativa,48,0
+E-0295,Xsens,Pasto,Tennis,manufactura,8,nocturna,48,0
+E-0296,Xsens,Bogotá,Alpina,agroindustria,20,rotativa,12,1
+E-0297,Xsens,Entrerrios,Ura Industries,alimentos,15,nocturna,24,1
+E-0298,GoPro,Entrerrios,El Retiro,agroindustria,8,nocturna,3,1
+E-0299,EMG,Antioquia,El Retiro,minería,20,nocturna,48,1
+E-0300,GoPro,Medellín,Imbanaco,servicios,1,nocturna,6,0
+E-0301,GoPro,Entrerrios,Pronavicola,servicios,1,rotativa,24,0
+E-0302,Xsens,Entrerrios,Cetelsa,alimentos,15,diurna,3,1
+E-0303,Tobii,Medellín,Mattelsa,agroindustria,4,rotativa,0,1
+E-0304,Tumeke,Funza,Imbanaco,salud,10,nocturna,3,1
+E-0305,GoPro,Bogotá,El Retiro,logística,15,rotativa,48,1
+E-0306,Xsens,Antioquia,Peldar,minería,20,diurna,6,0
+E-0307,Tobii,Zipaquirá,Crystal,servicios,15,diurna,24,1
+E-0308,Dinamómetro,Funza,Sodexo,alimentos,5,rotativa,24,0
+E-0309,GoPro,Funza,El Retiro,servicios,5,diurna,48,1
+E-0310,Dinamómetro,Soacha,Sodexo,salud,15,nocturna,6,1
+E-0311,Tumeke,Urabá,Linea Directa,minería,20,rotativa,12,1
+E-0312,EMG,Medellín,Tennis,logística,5,diurna,0,1
+E-0313,Tobii,Pasto,Sodexo,alimentos,15,nocturna,3,1
+E-0314,GoPro,Entrerrios,Mattelsa,alimentos,3,nocturna,0,0
+E-0315,Xsens,Bogotá,Colanta,manufactura,20,rotativa,3,1
+E-0316,Tobii,Cali,Alpina,servicios,15,rotativa,0,1
+E-0317,GoPro,Soacha,Tennis,agroindustria,15,nocturna,12,1
+E-0318,EMG,Pasto,El Retiro,alimentos,2,diurna,36,0
+E-0319,Dinamómetro,Cali,Ura Industries,logística,3,diurna,12,0
+E-0320,Tumeke,Soacha,Ura Industries,logística,15,nocturna,3,0
+E-0321,Tumeke,Pasto,Peldar,manufactura,2,nocturna,6,1
+E-0322,Tobii,Medellín,Tennis,agroindustria,15,rotativa,6,1
+E-0323,Xsens,Zipaquirá,Cetelsa,alimentos,5,nocturna,36,1
+E-0324,EMG,Urabá,Linea Directa,minería,4,rotativa,3,1
+E-0325,Tobii,Cali,Solla,minería,2,nocturna,12,0
+E-0326,Tobii,Antioquia,Cetelsa,servicios,1,diurna,6,0
+E-0327,EMG,Funza,Alpina,servicios,1,nocturna,6,0
+E-0328,Dinamómetro,Pasto,Ura Industries,manufactura,5,nocturna,3,1
+E-0329,Dinamómetro,Soacha,Tennis,logística,2,nocturna,36,0
+E-0330,GoPro,Entrerrios,Tennis,agroindustria,3,diurna,12,1
+E-0331,Tobii,Funza,Cetelsa,alimentos,15,rotativa,48,1
+E-0332,Xsens,Zipaquirá,Colanta,alimentos,2,rotativa,24,0
+E-0333,GoPro,Pasto,Solla,manufactura,20,diurna,24,1
+E-0334,Xsens,Entrerrios,Mineros,servicios,15,rotativa,0,1
+E-0335,Tumeke,Urabá,Mineros,minería,1,nocturna,12,1
+E-0336,GoPro,Bogotá,Imbanaco,manufactura,15,rotativa,36,1
+E-0337,EMG,Urabá,Tennis,logística,4,diurna,24,1
+E-0338,Dinamómetro,Antioquia,Alpina,manufactura,1,rotativa,0,0
+E-0339,EMG,Urabá,Tennis,salud,3,diurna,48,0
+E-0340,Tobii,Pasto,Solla,salud,10,nocturna,0,0
+E-0341,Dinamómetro,Urabá,Peldar,logística,2,nocturna,3,0
+E-0342,Xsens,Soacha,Mineros,alimentos,1,diurna,48,1
+E-0343,Dinamómetro,Funza,Mattelsa,alimentos,10,rotativa,24,1
+E-0344,Tobii,Medellín,Alpina,servicios,5,diurna,3,0
+E-0345,Dinamómetro,Medellín,Pronavicola,salud,1,rotativa,3,1
+E-0346,Tumeke,Urabá,Mineros,salud,1,rotativa,3,0
+E-0347,Xsens,Soacha,Mattelsa,minería,1,diurna,3,0
+E-0348,Dinamómetro,Cali,Crystal,minería,8,nocturna,3,1
+E-0349,GoPro,Entrerrios,Ura Industries,agroindustria,5,nocturna,6,1
+E-0350,Dinamómetro,Zipaquirá,Crystal,agroindustria,10,rotativa,24,1
+E-0351,Dinamómetro,Cali,Sodexo,salud,8,rotativa,36,1
+E-0352,Tobii,Soacha,Linea Directa,agroindustria,15,rotativa,3,1
+E-0353,Dinamómetro,Urabá,Peldar,agroindustria,1,nocturna,24,0
+E-0354,GoPro,Medellín,Ura Industries,agroindustria,4,nocturna,6,1
+E-0355,Tobii,Funza,Alpina,logística,2,nocturna,24,0
+E-0356,EMG,Entrerrios,El Retiro,salud,1,rotativa,48,1
+E-0357,Dinamómetro,Zipaquirá,Sodexo,minería,15,diurna,3,1
+E-0358,Tumeke,Antioquia,Ura Industries,agroindustria,2,diurna,36,0
+E-0359,Xsens,Pasto,Tennis,alimentos,4,rotativa,12,0
+E-0360,EMG,Soacha,Tennis,salud,20,nocturna,36,1
+E-0361,GoPro,Antioquia,Cetelsa,salud,2,nocturna,48,0
+E-0362,EMG,Funza,El Retiro,agroindustria,8,nocturna,12,1
+E-0363,Xsens,Urabá,Sodexo,manufactura,20,nocturna,24,1
+E-0364,Xsens,Funza,Mineros,agroindustria,4,nocturna,12,0
+E-0365,GoPro,Antioquia,El Retiro,alimentos,8,rotativa,6,0
+E-0366,Dinamómetro,Zipaquirá,Solla,alimentos,15,nocturna,3,1
+E-0367,Xsens,Pasto,Crystal,alimentos,15,rotativa,3,1
+E-0368,Tumeke,Bogotá,Imbanaco,minería,2,diurna,48,0
+E-0369,Xsens,Bogotá,Mattelsa,logística,4,rotativa,0,0
+E-0370,GoPro,Entrerrios,Ura Industries,salud,1,nocturna,24,0
+E-0371,Tobii,Urabá,Alpina,alimentos,1,nocturna,0,0
+E-0372,Tumeke,Bogotá,Peldar,minería,5,rotativa,24,0
+E-0373,Dinamómetro,Pasto,Solla,alimentos,3,nocturna,0,0
+E-0374,Xsens,Soacha,Cetelsa,agroindustria,20,rotativa,6,1
+E-0375,Tobii,Funza,Sodexo,manufactura,10,nocturna,12,1
+E-0376,Dinamómetro,Urabá,Peldar,logística,1,diurna,0,0
+E-0377,Tobii,Antioquia,Linea Directa,manufactura,1,rotativa,36,1
+E-0378,Tobii,Funza,Mattelsa,alimentos,2,nocturna,24,0
+E-0379,Dinamómetro,Soacha,Ura Industries,minería,5,nocturna,0,0
+E-0380,GoPro,Zipaquirá,Alpina,minería,1,rotativa,3,0
+E-0381,Xsens,Entrerrios,Mattelsa,minería,10,diurna,0,1
+E-0382,GoPro,Cali,Cetelsa,logística,20,nocturna,6,1
+E-0383,Dinamómetro,Bogotá,Colanta,alimentos,20,diurna,36,0
+E-0384,Tobii,Entrerrios,Imbanaco,agroindustria,8,diurna,24,0
+E-0385,EMG,Antioquia,Mattelsa,manufactura,5,rotativa,48,0
+E-0386,EMG,Urabá,Colanta,minería,10,nocturna,3,1
+E-0387,GoPro,Urabá,El Retiro,servicios,2,diurna,0,1
+E-0388,Dinamómetro,Medellín,Alpina,agroindustria,10,rotativa,6,1
+E-0389,EMG,Cali,Imbanaco,salud,5,nocturna,0,1
+E-0390,Tobii,Medellín,Tennis,minería,20,rotativa,12,1
+E-0391,GoPro,Soacha,Imbanaco,manufactura,8,rotativa,48,1
+E-0392,Tobii,Cali,Crystal,logística,20,diurna,3,1
+E-0393,Tobii,Cali,Colanta,agroindustria,5,diurna,6,1
+E-0394,Xsens,Medellín,Tennis,salud,10,nocturna,6,1
+E-0395,EMG,Antioquia,Colanta,agroindustria,15,rotativa,24,1
+E-0396,Xsens,Urabá,Cetelsa,servicios,10,diurna,6,0
+E-0397,EMG,Entrerrios,Solla,salud,10,nocturna,48,0
+E-0398,EMG,Urabá,Tennis,servicios,4,rotativa,12,1
+E-0399,EMG,Zipaquirá,Imbanaco,alimentos,15,rotativa,24,1

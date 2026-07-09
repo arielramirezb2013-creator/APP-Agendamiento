@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+
+# ML model artifacts (generados por entrenamiento_modelo.py)
+entregables/ml/modelo/*.pkl
+entregables/ml/modelo/*.png
+entregables/ml/modelo/metricas.json
+entregables/ml/modelo/REPORTE_ENTRENAMIENTO.md
+
+# OS
+.DS_Store
