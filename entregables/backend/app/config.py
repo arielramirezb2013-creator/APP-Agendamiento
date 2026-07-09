@@ -71,6 +71,32 @@ class Settings(BaseSettings):
         env_file_encoding = "utf-8"
         case_sensitive = False
 
+    # Valores por defecto inseguros que NUNCA deben usarse en producción.
+    _DEFAULT_JWT_SECRET = "CHANGE-ME-IN-PRODUCTION-USE-KEY-VAULT"
+    _EMULATOR_COSMOS_KEY = (
+        "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="
+    )
+
+    def problemas_seguridad(self) -> list[str]:
+        """Lista de configuraciones inseguras detectadas (vacía = OK)."""
+        problemas: list[str] = []
+        if self.jwt_secret == self._DEFAULT_JWT_SECRET or len(self.jwt_secret) < 32:
+            problemas.append("JWT_SECRET usa el valor por defecto o es demasiado corto (<32).")
+        if self.cosmos_key == self._EMULATOR_COSMOS_KEY:
+            problemas.append("COSMOS_KEY es la clave pública del emulador, no la de producción.")
+        return problemas
+
+    def validar_para_arranque(self) -> None:
+        """En producción aborta el arranque si hay secretos inseguros (fail-fast);
+        en otros entornos solo advierte por consola."""
+        problemas = self.problemas_seguridad()
+        if not problemas:
+            return
+        if self.environment.lower() == "production":
+            raise RuntimeError("Configuración insegura en producción · " + " ".join(problemas))
+        for p in problemas:
+            print(f"[config][ADVERTENCIA] {p}")
+
 
 @lru_cache()
 def get_settings() -> Settings:

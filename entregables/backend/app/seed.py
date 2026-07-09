@@ -5,7 +5,9 @@ usuarios demo y datos base que el frontend espera.
 Ejecutar con:
     python -m app.seed
 """
+import os
 from app.db.cosmos import get_repo
+from app.config import get_settings
 from app.services.auth import hash_password
 from datetime import datetime, timezone
 
@@ -154,32 +156,49 @@ PAQUETES_SEED = [
      "equipos_requeridos": ["GoPro"], "duracion_dias": 2, "activo": True, "uso_30d": 3},
 ]
 
+# ⚠ SEGURIDAD: estas contraseñas son SOLO para el entorno local/demo.
+# No se deben committear contraseñas reales. En producción, sembrar usuarios
+# con SEED_PASSWORD (variable de entorno) y forzar cambio en el primer login,
+# o usar exclusivamente SSO (Entra ID) para los empleados internos.
+_DEMO_PWD = "rehavid-demo-2026"
+
 USERS_SEED = [
     {"email": "ariel.ramirez@rehavid.com.co", "nombre": "Ariel Ramírez",
      "empresa": "Rehavid S.A.S.", "rol": "Director Calidad e Innovación",
      "nivel": 1, "modulos_permitidos": None, "permisos_extra": [], "activo": True,
-     "pwd_plain": "13011976"},
+     "pwd_plain": _DEMO_PWD},
     {"email": "danna.villarraga@rehavid.com.co", "nombre": "Danna Villarraga",
      "empresa": "Rehavid S.A.S.", "rol": "Coordinadora General",
      "nivel": 1, "modulos_permitidos": None, "permisos_extra": [], "activo": True,
-     "pwd_plain": "demo123"},
+     "pwd_plain": _DEMO_PWD},
     {"email": "jhon.orrego@rehavid.com.co", "nombre": "Jhon Orrego",
      "empresa": "Rehavid S.A.S.", "rol": "Operador Senior",
      "nivel": 2, "modulos_permitidos": None, "permisos_extra": [], "activo": True,
-     "pwd_plain": "demo123"},
+     "pwd_plain": _DEMO_PWD},
     {"email": "liliana.hernandez@rehavid.com.co", "nombre": "Liliana Hernández",
      "empresa": "Rehavid S.A.S.", "rol": "Coordinadora Programación",
      "nivel": 3, "modulos_permitidos": ["calendario", "equipos", "paquetes"],
      "permisos_extra": ["agregar_equipos", "editar_inventario"], "activo": True,
-     "pwd_plain": "demo123"},
+     "pwd_plain": _DEMO_PWD},
     {"email": "monica.vargas@arlsura.com", "nombre": "Mónica Vargas",
      "empresa": "ARL SURA", "rol": "Solicitante",
      "nivel": 4, "modulos_permitidos": None, "permisos_extra": [], "activo": True,
-     "pwd_plain": "demo123"},
+     "pwd_plain": _DEMO_PWD},
 ]
 
 
 def seed():
+    settings = get_settings()
+    # Guarda: no sembrar usuarios demo en producción salvo override explícito.
+    if settings.environment.lower() == "production" and os.getenv("SEED_FORCE") != "1":
+        raise SystemExit(
+            "Seed abortado · ENVIRONMENT=production. Los usuarios demo NO deben "
+            "cargarse en producción. Use SSO/Entra ID o exporte SEED_FORCE=1 y "
+            "SEED_PASSWORD=<clave-fuerte> si realmente lo necesita."
+        )
+    # En producción con override, la contraseña sale de SEED_PASSWORD (nunca el demo).
+    pwd_override = os.getenv("SEED_PASSWORD")
+
     repo = get_repo()
     now = datetime.now(timezone.utc).isoformat()
 
@@ -193,7 +212,8 @@ def seed():
 
     print("Sembrando usuarios...")
     for u in USERS_SEED:
-        plain = u.pop("pwd_plain")
+        plain = pwd_override or u.get("pwd_plain", _DEMO_PWD)
+        u.pop("pwd_plain", None)
         u["id"] = u["email"]
         u["pwd_hash"] = hash_password(plain)
         u["creates"] = 0

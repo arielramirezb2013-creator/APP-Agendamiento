@@ -17,7 +17,7 @@ Antes de empezar, asegúrate de tener:
 - Los 3 archivos de este paquete:
   - `backend/` → código FastAPI
   - `ml/` → script de entrenamiento y `score.py`
-  - `frontend/rehavid_v12_produccion.html`
+  - `frontend/rehavid_v13_produccion.html`
 
 **Login en Azure CLI:**
 
@@ -443,13 +443,13 @@ az staticwebapp deploy \
 az storage blob service-properties update \
   --account-name $STORAGE \
   --static-website \
-  --index-document rehavid_v12_produccion.html
+  --index-document rehavid_v13_produccion.html
 
 az storage blob upload \
   --account-name $STORAGE \
   --container-name '$web' \
-  --name rehavid_v12_produccion.html \
-  --file ./frontend/rehavid_v12_produccion.html
+  --name rehavid_v13_produccion.html \
+  --file ./frontend/rehavid_v13_produccion.html
 ```
 
 ---

@@ -1625,7 +1625,7 @@ main {
       <h3>Iniciar sesión</h3>
       <p class="sub">Use su correo corporativo y la contraseña que le asignó el administrador. Si su empresa usa SSO, ingrese con Microsoft 365.</p>
 
-      <button class="btn-azure" onclick="loginDemo('admin')">
+      <button class="btn-azure" onclick="loginSSO()">
         <svg viewBox="0 0 24 24"><path fill="#F25022" d="M2 2h10v10H2z"/><path fill="#7FBA00" d="M12 2h10v10H12z"/><path fill="#00A4EF" d="M2 12h10v10H2z"/><path fill="#FFB900" d="M12 12h10v10H12z"/></svg>
         Iniciar con Microsoft 365 (SSO)
       </button>
@@ -3263,8 +3263,17 @@ const API = {
     const resp = await fetch(API_BASE_URL + path, { ...options, headers });
 
     if (resp.status === 401) {
+      // Sesión expirada/inválida · limpiar token y volver al login sin recargar
+      // toda la app (evita el bucle de reload cuando aún no hay sesión).
       this.clearToken();
-      window.location.reload();
+      try {
+        if (typeof currentUser !== 'undefined') currentUser = null;
+        const appEl = document.getElementById('app');
+        const loginEl = document.getElementById('login-screen');
+        if (appEl) appEl.style.display = 'none';
+        if (loginEl) loginEl.style.display = 'grid';
+        if (typeof toast === 'function') toast('Sesión expirada · inicie sesión de nuevo', 'error');
+      } catch (_) { /* noop */ }
       throw new Error('Sesión expirada');
     }
     if (!resp.ok) {
@@ -3344,10 +3353,58 @@ const API = {
   async listarPlanes() { return this.fetch('/planes'); },
   async crearPlan(plan) { return this.fetch('/planes', { method: 'POST', body: JSON.stringify(plan) }); },
 
+  // ─── Equipos · ficha (O04) y baja (O18) ─────────────────────
+  async fichaEquipo(id) { return this.fetch(`/equipos/${id}/ficha`); },
+  async darDeBajaEquipo(id, motivo) {
+    return this.fetch(`/equipos/${id}/baja`, { method: 'POST', body: JSON.stringify({ motivo }) });
+  },
+
+  // ─── Solicitudes · Portal Solicitante (O11, O17, O19) ───────
+  async listarSolicitudes(filtros = {}) {
+    const qs = new URLSearchParams(filtros).toString();
+    return this.fetch('/solicitudes' + (qs ? '?' + qs : ''));
+  },
+  async crearSolicitud(data) {
+    return this.fetch('/solicitudes', { method: 'POST', body: JSON.stringify(data) });
+  },
+  async editarSolicitud(id, data) {
+    return this.fetch(`/solicitudes/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+  },
+  async cancelarSolicitud(id, motivo) {
+    return this.fetch(`/solicitudes/${id}/cancelar`, { method: 'POST', body: JSON.stringify({ motivo }) });
+  },
+  async observarSolicitud(id, texto) {
+    return this.fetch(`/solicitudes/${id}/observacion`, { method: 'POST', body: JSON.stringify({ texto }) });
+  },
+  async atenderSolicitud(id) {
+    return this.fetch(`/solicitudes/${id}/atender`, { method: 'POST' });
+  },
+  async badgePendientes() { return this.fetch('/solicitudes/badge/pendientes'); },
+
+  // ─── Alertas logísticas (O21) ───────────────────────────────
+  async obtenerCanales() { return this.fetch('/alertas/canales'); },
+  async actualizarCanales(cfg) {
+    return this.fetch('/alertas/canales', { method: 'PUT', body: JSON.stringify(cfg) });
+  },
+  async detectarAlertas() { return this.fetch('/alertas/detectadas'); },
+  async enviarAlerta(envio) {
+    return this.fetch('/alertas/enviar', { method: 'POST', body: JSON.stringify(envio) });
+  },
+
   // ─── Admin ──────────────────────────────────────────────────
   async listarUsuarios() { return this.fetch('/admin/users'); },
   async crearUsuario(data) {
     return this.fetch('/admin/users', { method: 'POST', body: JSON.stringify(data) });
+  },
+  async actualizarUsuario(email, data) {
+    return this.fetch(`/admin/users/${encodeURIComponent(email)}`, { method: 'PUT', body: JSON.stringify(data) });
+  },
+  async desactivarUsuario(email) {
+    return this.fetch(`/admin/users/${encodeURIComponent(email)}/desactivar`, { method: 'POST' });
+  },
+  async listarAuditoria(filtros = {}) {
+    const qs = new URLSearchParams(filtros).toString();
+    return this.fetch('/admin/auditoria' + (qs ? '?' + qs : ''));
   },
 };
 
@@ -4345,18 +4402,48 @@ function loginDemo(role) {
   if (!currentUser) currentUser = USERS[0];
   initApp();
 }
-function loginWithPwd() {
+async function loginWithPwd() {
   const email = document.getElementById('login-email').value.trim().toLowerCase();
   const pwd = document.getElementById('login-pwd').value;
   if (!email || !pwd) { toast('Ingrese correo y contraseña', 'error'); return; }
+
+  if (USE_BACKEND) {
+    // Producción · autenticación real contra el backend (guarda el JWT y carga datos).
+    try {
+      currentUser = await API.login(email, pwd);
+      await sincronizarDatosIniciales();
+      initApp();
+    } catch (e) {
+      toast(e.message || 'No se pudo iniciar sesión', 'error');
+    }
+    return;
+  }
+
+  // Demo · validación local contra el array USERS.
   const u = USERS.find(x => x.email === email);
-  if (!u) { toast('Usuario no autorizado · contacte al admin', 'error'); return; }
+  if (!u) { toast('Usuario o contraseña inválidos', 'error'); return; }
   if (!u.activo) { toast('Usuario desactivado · contacte al admin', 'error'); return; }
-  if (u.pwd !== pwd) { toast('Contraseña incorrecta', 'error'); return; }
+  if (u.pwd !== pwd) { toast('Usuario o contraseña inválidos', 'error'); return; }
   currentUser = u;
   initApp();
 }
+// SSO con Microsoft Entra ID · en producción redirige al flujo real; en demo entra como interno.
+async function loginSSO() {
+  if (!USE_BACKEND) {
+    toast('SSO disponible solo en modo producción · usando acceso demo interno', 'info');
+    loginDemo('nivel2');
+    return;
+  }
+  try {
+    const redirectUri = window.location.origin + window.location.pathname;
+    const { auth_url } = await API.getSsoUrl(redirectUri);
+    window.location.href = auth_url;   // el backend valida el callback y emite el JWT
+  } catch (e) {
+    toast(e.message || 'SSO no configurado · use correo y contraseña', 'error');
+  }
+}
 function logout() {
+  if (typeof API !== 'undefined' && API.clearToken) API.clearToken();
   currentUser = null;
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'grid';
@@ -5794,7 +5881,7 @@ function renderReservas() {
       <td class="num">${r.personas}</td>
       <td><span class="status ${estadoCls}"><span class="dot"></span>${estadoTxt}</span></td>
       <td>${retornoCol}</td>
-      ${currentUser?.rol==='admin' ? '<td>'+acciones+'</td>' : '<td></td>'}
+      <td>${acciones}</td>
     </tr>`;
   }).join('');
 }
@@ -6571,7 +6658,8 @@ function openFicha(email) {
   document.getElementById('f-name').textContent = u.nombre;
   document.getElementById('f-email').textContent = u.email;
   document.getElementById('f-emp').textContent = u.empresa;
-  document.getElementById('f-rol').textContent = u.rol === 'admin' ? 'Administrador' : 'Usuario';
+  document.getElementById('f-rol').textContent =
+    (NIVELES[u.nivel] ? NIVELES[u.nivel].nombre + ' · ' : '') + (u.rol || '');
   document.getElementById('f-av').textContent = u.nombre.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
   document.getElementById('f-logins').textContent = u.logins30;
   document.getElementById('f-time').textContent = u.time;
@@ -6808,6 +6896,11 @@ function exportData(fmt) {
 // ARRANQUE
 // =================================================================
 window.addEventListener('DOMContentLoaded', () => {
+  // En producción (con backend) ocultar los accesos demo: sin login real no hay
+  // token JWT y toda llamada al backend devolvería 401.
+  if (typeof USE_BACKEND !== 'undefined' && USE_BACKEND) {
+    document.querySelectorAll('.demo-quick').forEach(el => { el.style.display = 'none'; });
+  }
   // Por defecto, login screen visible. Si quiere auto-demo, descomentar:
   // loginDemo('admin');
 });

@@ -63,13 +63,15 @@ def verificar_disponibilidad(
             equipos_libres=[],
         )
 
-    # 2) Filtrar mantenimiento y tránsito
-    # 2) Filtrar mantenimiento, tránsito y de baja (O18 · de_baja también bloquea)
-    equipos_op = [e for e in equipos_cat if e["estado"] not in ("en_mantenimiento", "en_transito", "de_baja")]
+    # 2) Filtrar equipos no operativos: mantenimiento, tránsito, de baja (O18) y
+    #    los que aún están en preparación/revisión post-uso (no se pueden reservar
+    #    hasta marcarse "listos"). Antes 'en_preparacion'/'en_revision' se colaban.
+    _BLOQUEADOS = ("en_mantenimiento", "en_transito", "de_baja", "en_preparacion", "en_revision")
+    equipos_op = [e for e in equipos_cat if e["estado"] not in _BLOQUEADOS]
     if not equipos_op:
         return DisponibilidadResponse(
             disponible=False,
-            motivo=f'Todos los equipos "{servicio}" están en mantenimiento o tránsito',
+            motivo=f'Todos los equipos "{servicio}" están en mantenimiento, tránsito o preparación',
             equipos_libres=[],
         )
 
@@ -82,10 +84,12 @@ def verificar_disponibilidad(
     for eq in equipos_op:
         reservas_eq = repo.query(
             "reservas",
+            # Cosmos NoSQL no soporta `IN (subquery)`; se usa NOT ARRAY_CONTAINS
+            # para excluir la propia reserva al reprogramar (@excl puede ir vacío).
             """SELECT * FROM c
                WHERE (c.equipo_id = @eid OR ARRAY_CONTAINS(c.equipos_ids, @eid))
                  AND c.cancelada = false
-                 AND c.id NOT IN (SELECT VALUE x FROM x IN @excl)""",
+                 AND (NOT ARRAY_CONTAINS(@excl, c.id))""",
             [
                 {"name": "@eid", "value": eq["id"]},
                 {"name": "@excl", "value": ids_excluir},
@@ -179,17 +183,23 @@ def crear_reserva(data: ReservaCreate, usuario_email: str) -> dict[str, Any]:
         if disp.equipos_libres:
             equipos_asignados = [disp.equipos_libres[0]]
 
-    # Generar ID
-    existing = repo.query("reservas", "SELECT VALUE COUNT(1) FROM c")
-    next_num = (existing[0] if existing else 0) + 1
-    nuevo_id = f"R-{next_num:03d}"
+    # Generar ID a partir del mayor R-### existente. COUNT(1) no sirve: cuenta
+    # también las canceladas y no refleja huecos, lo que produce colisiones.
+    ids = repo.query("reservas", "SELECT VALUE c.id FROM c")
+    max_num = 0
+    for rid in ids:
+        try:
+            max_num = max(max_num, int(str(rid).rsplit("-", 1)[-1]))
+        except (ValueError, IndexError):
+            continue
+    next_num = max_num + 1
 
     detalle_hist = f"Reserva creada · {data.servicio} · {data.cliente}"
     if data.paquete_id:
         detalle_hist += f" · paquete {data.paquete_id} ({len(equipos_asignados)} equipos)"
 
     nueva: dict[str, Any] = {
-        "id": nuevo_id,
+        "id": f"R-{next_num:03d}",
         "servicio": data.servicio,
         "cliente": data.cliente,
         "ciudad": data.ciudad,
@@ -217,7 +227,18 @@ def crear_reserva(data: ReservaCreate, usuario_email: str) -> dict[str, Any]:
         ],
     }
 
-    repo.upsert("reservas", nueva)
+    # create_item (no upsert) para no sobrescribir una reserva existente si dos
+    # peticiones concurrentes generan el mismo número; ante colisión, reintenta.
+    from azure.cosmos import exceptions as _cx
+    for _ in range(25):
+        try:
+            repo.create("reservas", nueva)
+            break
+        except _cx.CosmosResourceExistsError:
+            next_num += 1
+            nueva["id"] = f"R-{next_num:03d}"
+    else:
+        return {"ok": False, "error": "No se pudo generar un id único para la reserva"}
 
     # O08 · marcar TODOS los equipos del paquete como en_uso
     for eid in equipos_asignados:
@@ -291,12 +312,25 @@ def reprogramar_reserva(
     if r["cancelada"]:
         return {"ok": False, "error": "No se puede reprogramar una reserva cancelada"}
 
-    # Verificar disponibilidad excluyendo esta misma reserva
-    v = verificar_disponibilidad(
-        r["servicio"], nueva_fecha_salida, nueva_fecha_retorno, ids_excluir=[reserva_id]
-    )
-    if not v.disponible:
-        return {"ok": False, "error": f"No se puede reprogramar: {v.motivo}"}
+    # Verificar disponibilidad en las nuevas fechas, excluyendo esta misma reserva.
+    if r.get("paquete_id"):
+        # Reserva de paquete (O08): validar TODAS las categorías requeridas, no solo una.
+        pkg = repo.get("paquetes", item_id=r["paquete_id"], partition_key=r["paquete_id"])
+        categorias = pkg["equipos_requeridos"] if pkg else [r["servicio"]]
+        faltan = [
+            cat for cat in categorias
+            if not verificar_disponibilidad(
+                cat, nueva_fecha_salida, nueva_fecha_retorno, ids_excluir=[reserva_id]
+            ).disponible
+        ]
+        if faltan:
+            return {"ok": False, "error": f"No se puede reprogramar · sin stock para: {', '.join(faltan)}"}
+    else:
+        v = verificar_disponibilidad(
+            r["servicio"], nueva_fecha_salida, nueva_fecha_retorno, ids_excluir=[reserva_id]
+        )
+        if not v.disponible:
+            return {"ok": False, "error": f"No se puede reprogramar: {v.motivo}"}
 
     fecha_original = r["fecha_salida"]
     r["reprogramada_desde"] = fecha_original

@@ -47,7 +47,7 @@ entregables/
 │   └── modelo/                     ← (artefactos generados por el entrenamiento)
 │
 ├── frontend/                       ← Entregable 3 · HTML productivo
-│   └── rehavid_v12_produccion.html
+│   └── rehavid_v13_produccion.html
 │
 └── docs/                           ← Entregable 4 · Documentación de despliegue
     ├── instrucciones_azure_ingeniero.md
@@ -64,7 +64,7 @@ API REST en Python 3.11 con FastAPI. Contiene:
 
 - **Lógica de negocio completa R002–R009** (la misma que está en el HTML, ahora en Python).
 - Autenticación dual: email/password (clientes externos) + Microsoft Entra ID SSO (empleados de Rehavid).
-- 7 routers: `/auth`, `/reservas`, `/equipos`, `/paquetes`, `/predictivo`, `/planes`, `/admin`.
+- 9 routers: `/auth`, `/reservas`, `/equipos`, `/paquetes`, `/predictivo`, `/planes`, `/admin`, `/solicitudes` (O11/O17/O19), `/alertas` (O21).
 - Conexión a Cosmos DB con repositorio simple por container.
 - Dockerfile multi-stage para deployment en Azure App Service.
 - `docker-compose.yml` con Cosmos emulator para desarrollo local.
@@ -108,7 +108,7 @@ python entrenamiento_modelo.py --data data/evaluaciones_historicas.csv --output 
 
 ### 3 · Frontend productivo
 
-`rehavid_v12_produccion.html` · un único archivo HTML con toda la app.
+`rehavid_v13_produccion.html` · un único archivo HTML con toda la app.
 
 Modos:
 - **Demo local (default):** funciona con los arrays embebidos · útil para presentaciones y testing offline.
@@ -209,7 +209,7 @@ python -m py_compile $(find app -name "*.py")
 echo "Backend OK"
 
 # Frontend (debe encontrar ambos modos)
-grep -q "REHAVID_USE_BACKEND" frontend/rehavid_v12_produccion.html && echo "Frontend OK"
+grep -q "REHAVID_USE_BACKEND" frontend/rehavid_v13_produccion.html && echo "Frontend OK"
 
 # Docs
 test -f docs/instrucciones_azure_ingeniero.md && echo "Docs OK"

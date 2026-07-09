@@ -135,7 +135,7 @@ def entrenar(df: pd.DataFrame, modelo_tipo: str = "gradient_boosting"):
                 n_estimators=200,
                 max_depth=4,
                 learning_rate=0.08,
-                use_label_encoder=False,
+                # use_label_encoder se removió en xgboost >= 2.0 (ya no aplica).
                 eval_metric="logloss",
                 random_state=42,
             )

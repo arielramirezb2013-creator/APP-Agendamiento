@@ -38,7 +38,9 @@ async def listar(
     """Lista solicitudes. Si `mias=true` devuelve solo las del usuario.
     Los niveles 1-3 pueden ver todas; nivel 4 solo las propias."""
     repo = get_repo()
-    sql = "SELECT * FROM c WHERE 1=1"
+    # IS_DEFINED(solicitante_email) excluye cualquier documento que no sea una
+    # solicitud real (defensa ante docs de config que rompen el response_model).
+    sql = "SELECT * FROM c WHERE IS_DEFINED(c.solicitante_email)"
     params: list[dict] = []
     if mias or user.nivel == 4:
         sql += " AND c.solicitante_email = @e"
@@ -66,6 +68,7 @@ async def crear(data: SolicitudCreate, user: UserOut = Depends(get_current_user)
         "ciudad": data.ciudad,
         "personas": data.personas,
         "fecha_solicitud": _hoy(),
+        "fecha_sugerida": data.fecha_sugerida,  # fecha de servicio deseada (antes se descartaba)
         "fecha_confirmada": None,
         "operador": None,
         "estado": "pendiente",
@@ -103,11 +106,14 @@ async def cancelar(
     if s["estado"] == "finalizada":
         raise HTTPException(status_code=409, detail="Solicitudes finalizadas no se pueden cancelar")
 
-    # Regla 48h para confirmadas
+    # Regla 48h para confirmadas · se mide contra la fecha del servicio (fecha_sugerida).
     if s["estado"] == "confirmada":
-        fecha_ref = s.get("fecha_confirmada") or s.get("fecha_solicitud")
+        fecha_ref = s.get("fecha_sugerida") or s.get("fecha_confirmada") or s.get("fecha_solicitud")
         if fecha_ref:
-            horas_falt = (datetime.fromisoformat(fecha_ref) - datetime.now(timezone.utc)).total_seconds() / 3600
+            dt_ref = datetime.fromisoformat(fecha_ref)
+            if dt_ref.tzinfo is None:  # las fechas se guardan sin tz; asumir UTC para no romper la resta
+                dt_ref = dt_ref.replace(tzinfo=timezone.utc)
+            horas_falt = (dt_ref - datetime.now(timezone.utc)).total_seconds() / 3600
             if horas_falt < 48 and user.nivel == 4:
                 raise HTTPException(
                     status_code=409,

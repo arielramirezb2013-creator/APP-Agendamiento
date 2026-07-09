@@ -17,6 +17,7 @@ CONTAINERS = {
     "paquetes":     {"pk": "/id"},
     "planes":       {"pk": "/id"},
     "solicitudes":  {"pk": "/id"},
+    "config":       {"pk": "/id"},   # configuración operativa (canales de alertas, etc.)
     "auditoria":    {"pk": "/user_email"},
 }
 
@@ -43,6 +44,12 @@ class CosmosRepository:
     def upsert(self, container: str, item: dict) -> dict:
         """Crea o actualiza un documento."""
         return self.get_container(container).upsert_item(item)
+
+    def create(self, container: str, item: dict) -> dict:
+        """Crea un documento NUEVO. Falla si el id ya existe (a diferencia de
+        upsert, que sobreescribe silenciosamente). Se usa para generar reservas
+        con id único sin arriesgar sobrescribir una existente en una carrera."""
+        return self.get_container(container).create_item(item)
 
     def get(self, container: str, item_id: str, partition_key: str) -> dict | None:
         """Lee un documento por id."""

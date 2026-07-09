@@ -188,6 +188,7 @@ class Solicitud(BaseModel):
     ciudad: str
     personas: int = Field(ge=1, le=200)
     fecha_solicitud: str
+    fecha_sugerida: str | None = None  # fecha de servicio deseada por el solicitante
     fecha_confirmada: str | None = None
     operador: str | None = None
     estado: Literal["pendiente", "confirmada", "finalizada", "cancelada"] = "pendiente"

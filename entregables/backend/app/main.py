@@ -18,6 +18,7 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Inicializa Cosmos al arrancar. Carga seed data si la DB está vacía."""
+    settings.validar_para_arranque()  # aborta en producción si hay secretos por defecto
     repo = get_repo()
     print(f"[startup] {settings.app_name} v{settings.app_version}")
     print(f"[startup] Cosmos DB: {settings.cosmos_database}")
@@ -71,7 +72,10 @@ async def health():
         repo.query("users", "SELECT VALUE COUNT(1) FROM c")
         return {"status": "ok", "cosmos": "ok"}
     except Exception as exc:
-        return JSONResponse(status_code=503, content={"status": "degraded", "error": str(exc)})
+        # No exponer str(exc) al público; se loguea para App Insights y se
+        # devuelve un mensaje genérico.
+        print(f"[health] cosmos degradado: {exc}")
+        return JSONResponse(status_code=503, content={"status": "degraded", "cosmos": "error"})
 
 
 @app.exception_handler(Exception)

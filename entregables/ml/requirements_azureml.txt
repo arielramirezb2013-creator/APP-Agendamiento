@@ -3,3 +3,5 @@ shap==0.46.0
 joblib==1.4.2
 numpy==2.1.2
 pandas==2.2.3
+# Necesario en el endpoint solo si el modelo se entrenó con --modelo xgboost.
+xgboost==2.1.1

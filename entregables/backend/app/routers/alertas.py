@@ -41,7 +41,7 @@ def _today():
 async def obtener_canales(user: UserOut = Depends(get_current_user)):
     """Devuelve la configuración actual de canales de notificación."""
     repo = get_repo()
-    cfg = repo.get("solicitudes", item_id="__canales_alertas__", partition_key="__canales_alertas__")
+    cfg = repo.get("config", item_id="__canales_alertas__", partition_key="__canales_alertas__")
     if cfg is None:
         return _CONFIG_CANALES_DEFAULT
     cfg.pop("id", None)
@@ -57,7 +57,7 @@ async def actualizar_canales(
     repo = get_repo()
     record = cfg.model_dump()
     record["id"] = "__canales_alertas__"
-    repo.upsert("solicitudes", record)
+    repo.upsert("config", record)
     return cfg
 
 
@@ -137,7 +137,7 @@ async def enviar_alerta(
     Por ahora registra el envío en auditoría y devuelve un acuse.
     """
     repo = get_repo()
-    cfg_raw = repo.get("solicitudes", item_id="__canales_alertas__", partition_key="__canales_alertas__")
+    cfg_raw = repo.get("config", item_id="__canales_alertas__", partition_key="__canales_alertas__")
     cfg = cfg_raw if cfg_raw else _CONFIG_CANALES_DEFAULT
     canal_info = cfg.get(envio.canal, {})
     if not canal_info.get("activo"):

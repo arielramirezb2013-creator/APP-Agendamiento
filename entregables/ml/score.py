@@ -57,6 +57,18 @@ def init():
     print("✓ Modelo cargado")
 
 
+def _base_feature(fname: str) -> str:
+    """Mapea el nombre de una columna transformada a su feature de origen.
+    'personas' -> 'personas'; 'antiguedad_cliente' -> 'antiguedad_cliente';
+    'servicio_Xsens' -> 'servicio'."""
+    if fname in FEATURES_ALL:
+        return fname
+    for cat in FEATURES_CAT:
+        if fname.startswith(cat + "_"):
+            return cat
+    return fname
+
+
 def _factores_desde_shap(X_transformed, feature_names) -> list[dict]:
     """Calcula los factores top usando el explainer SHAP."""
     if EXPLAINER is None:
@@ -68,10 +80,12 @@ def _factores_desde_shap(X_transformed, feature_names) -> list[dict]:
     total = importancia.sum() or 1
     pcts = (importancia / total * 100).round(1)
 
-    # Agrupar por feature base (collapse one-hot)
+    # Agrupar por feature base (colapsar one-hot). Split simple por "_" rompe
+    # features numéricas con underscore (p.ej. 'antiguedad_cliente' -> 'antiguedad'),
+    # así que primero se intenta un match exacto y luego prefijo de categoría.
     agrupado: dict[str, float] = {}
     for fname, pct in zip(feature_names, pcts):
-        base = fname.split("_")[0] if "_" in fname else fname
+        base = _base_feature(fname)
         agrupado[base] = agrupado.get(base, 0) + float(pct)
 
     top = sorted(agrupado.items(), key=lambda x: -x[1])[:6]
