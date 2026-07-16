@@ -37,10 +37,18 @@ Firefox o Safari). No requiere servidor, ni conexión, ni dependencias.
   árbol de probabilidad, intervalo de confianza, chi-cuadrado, distribución t
   con zonas de rechazo, diagramas de cajas comparados (ANOVA), barras, circular,
   tabla de frecuencias y diagrama de puntos.
+- **Modo reto / cronómetro** (opcional): cuenta atrás de 30 s por pregunta con
+  **bonus por rapidez**; se activa con un interruptor en cada nivel.
+- **Tablero de puntajes** local (los 50 mejores intentos): puesto, jugador,
+  nivel, puntaje, precisión, estrellas y modo, con medallas 🥇🥈🥉 y exportación
+  a Excel.
 - **Descarga de resultados en Excel (`.xlsx` real)** con dos hojas:
   - **Resumen** (puntaje, aciertos, precisión y estrellas por nivel + total).
   - **Detalle** (cada pregunta con tu respuesta, la correcta y la corrección).
   - Si el navegador no permite `.xlsx`, cae automáticamente a `.csv`.
+- **Informe en PDF** imprimible (botón «🖨️ PDF»): abre un informe con el resumen
+  y todas las preguntas con sus correcciones; se guarda eligiendo «Guardar como
+  PDF» en el diálogo de impresión (funciona offline, sin librerías).
 - **Progreso guardado** en el navegador (localStorage) y efectos de juego
   (confeti, sonidos opcionales, puntos flotantes).
 

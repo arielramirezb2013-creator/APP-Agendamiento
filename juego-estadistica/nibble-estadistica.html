@@ -114,6 +114,21 @@ h1,h2,h3{font-family:var(--hand);color:var(--navy);margin:0}
 .pill-purple{background:var(--purple2);border-color:var(--purple)}
 .pill-sky{background:#d5eefb;border-color:var(--sky)}
 .pill-orange{background:#fde3cf;border-color:#e0662f}
+.chip.timer{background:#e9f6ff;border-color:#7cc5e8;color:#1f5aa8}
+.chip.timer.danger{background:#fdeaee;border-color:var(--red);color:var(--bad);animation:pulse .6s infinite alternate}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.14)}}
+.switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-weight:700;color:var(--navy2);font-size:13.5px;user-select:none}
+.switch input{display:none}
+.switch .track{width:44px;height:24px;border-radius:999px;background:#cfdcea;position:relative;transition:background .2s;flex:0 0 44px}
+.switch .track::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}
+.switch input:checked + .track{background:var(--green)}
+.switch input:checked + .track::after{left:22px}
+.board{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+.board th,.board td{padding:9px 8px;text-align:center;border-bottom:1px solid #e6eef6}
+.board th{background:var(--navy);color:#fff;position:sticky;top:0}
+.board tr:nth-child(even) td{background:#f6fafd}
+.board .rank{font-weight:800;font-family:var(--hand);font-size:16px}
+.board-wrap{max-height:460px;overflow:auto;border:1px solid #e6eef6;border-radius:14px}
 
 /* Top bar */
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;flex-wrap:wrap}
@@ -292,6 +307,9 @@ progress.stars=padArr(progress.stars,NL,0);
 progress.formDone=padArr(progress.formDone,NL,false);
 progress.results=padArr(progress.results,NL,null);
 if(typeof progress.sound!=='boolean') progress.sound=true;
+if(typeof progress.challenge!=='boolean') progress.challenge=false;
+if(!Array.isArray(progress.leaderboard)) progress.leaderboard=[];
+const QTIME=30; // segundos por pregunta en modo reto
 
 let state={view:'home',li:0,fi:0,quiz:null};
 
@@ -690,7 +708,9 @@ function viewHome(){
       </div>
       <div class="levels">${cards}</div>
       <div class="btnrow" style="justify-content:center;margin-top:22px">
-        ${anyResult?`<button class="btn yellow" onclick="downloadExcelAll()">⬇️ Descargar Excel de resultados</button>`:''}
+        <button class="btn pink" onclick="go('board')">🏅 Tablero de puntajes</button>
+        ${anyResult?`<button class="btn yellow" onclick="downloadExcelAll()">⬇️ Excel</button>`:''}
+        ${anyResult?`<button class="btn secondary" onclick="printReportAll()">🖨️ Informe PDF</button>`:''}
         ${anyResult?`<button class="btn ghost sm" onclick="resetProgress()">Reiniciar progreso</button>`:''}
       </div>
     </div></div>
@@ -724,7 +744,7 @@ function viewLevel(){
           <h3 style="margin:6px 0">Evaluación</h3>
           <p style="font-size:14px;color:#5b6b7d">${lv.questions.length} preguntas · con feedback</p>
           <button class="btn green" style="margin-top:8px" ${done?'':'disabled'} onclick="startQuiz()">${res?'Reintentar':'Comenzar'}</button>
-          ${done?'':'<div style="color:#a08300;font-weight:700;margin-top:8px;font-size:13px">🔒 Completa la formación</div>'}
+          ${done?`<label class="switch" style="margin-top:12px;justify-content:center" title="Cuenta atrás de ${QTIME}s por pregunta con bonus por rapidez"><input type="checkbox" ${progress.challenge?'checked':''} onchange="toggleChallenge(this.checked)"><span class="track"></span>⏱️ Modo reto</label>`:'<div style="color:#a08300;font-weight:700;margin-top:8px;font-size:13px">🔒 Completa la formación</div>'}
         </div>
       </div>
       ${res?`<div class="card" style="padding:14px;margin-top:14px">
@@ -917,9 +937,27 @@ function pgNormalRender(mu,sd){
 
 /* ---------- EVALUACIÓN ---------- */
 function startQuiz(){
-  const lv=DATA[state.li];
-  state.quiz={qi:0,score:0,streak:0,bestStreak:0,answers:[],answered:false};
+  state.quiz={qi:0,score:0,streak:0,bestStreak:0,answers:[],answered:false,challenge:!!progress.challenge,timerId:null,timeLeft:QTIME};
   go('quiz');
+}
+function stopTimer(){ if(state.quiz&&state.quiz.timerId){clearInterval(state.quiz.timerId);state.quiz.timerId=null;} }
+function updateTimerUI(){ const el=$('#timerChip'); if(el){ el.textContent='⏱️ '+state.quiz.timeLeft+'s'; el.className='chip timer'+(state.quiz.timeLeft<=5?' danger':''); } }
+function startTimer(){
+  stopTimer();
+  if(!state.quiz||!state.quiz.challenge||state.quiz.answered) return;
+  state.quiz.timeLeft=QTIME; updateTimerUI();
+  state.quiz.timerId=setInterval(()=>{
+    state.quiz.timeLeft--; updateTimerUI();
+    if(state.quiz.timeLeft<=0){ stopTimer(); timeoutAnswer(); }
+  },1000);
+}
+function timeoutAnswer(){
+  if(state.quiz.answered) return;
+  const q=DATA[state.li].questions[state.quiz.qi];
+  document.querySelectorAll('#optbox .opt').forEach(b=>{const bk=+b.dataset.k;b.disabled=true;if(bk===q.correctIndex)b.classList.add('correct');});
+  const inp=$('#numAns'); if(inp) inp.disabled=true;
+  beep('bad');
+  finishAnswer(q,false,'⏱️ Sin responder (tiempo agotado)');
 }
 function viewQuiz(){
   const i=state.li, lv=DATA[i], q=lv.questions[state.quiz.qi], qi=state.quiz.qi, n=lv.questions.length;
@@ -937,6 +975,7 @@ function viewQuiz(){
       <div class="qhead">
         <span class="chip ${LVCHIP[i]}">📝 Nivel ${i+1}</span>
         <div class="btnrow">
+          ${state.quiz.challenge?`<span class="chip timer" id="timerChip">⏱️ ${QTIME}s</span>`:''}
           <span class="chip pill-yellow">🏆 ${state.quiz.score}</span>
           <span class="chip ${state.quiz.streak>1?'pill-pink':''}">🔥 ${state.quiz.streak}</span>
         </div>
@@ -950,6 +989,7 @@ function viewQuiz(){
     </div></div>`;
   const inp=$('#numAns');
   if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter')answerNum();};}
+  startTimer();
 }
 function displayAns(q,val){
   if(q.type==='numeric') return String(val)+(q.unit?' '+q.unit:'');
@@ -985,12 +1025,14 @@ function answerNum(){
   finishAnswer(q,ok,displayAns(q,isNaN(val)?raw:val));
 }
 function finishAnswer(q,ok,givenText){
+  stopTimer();
   state.quiz.answered=true;
-  let earned=0;
+  let earned=0, tbonus=0;
   if(ok){
     state.quiz.streak++; state.quiz.bestStreak=Math.max(state.quiz.bestStreak,state.quiz.streak);
     const bonus=Math.min(15,(state.quiz.streak-1)*3);
-    earned=(q.points||10)+bonus;
+    if(state.quiz.challenge) tbonus=Math.max(0,state.quiz.timeLeft*2);
+    earned=(q.points||10)+bonus+tbonus;
     state.quiz.score+=earned;
     beep('ok'); floatPoints('+'+earned);
   } else { state.quiz.streak=0; beep('bad'); }
@@ -1002,7 +1044,7 @@ function finishAnswer(q,ok,givenText){
   const last=state.quiz.qi===DATA[state.li].questions.length-1;
   $('#fb').innerHTML=`
     <div class="feedback ${ok?'ok':'bad'}">
-      <h4>${ok?'✔ ¡Correcto! +'+earned+' pts':'✘ Incorrecto'}</h4>
+      <h4>${ok?'✔ ¡Correcto! +'+earned+' pts'+(tbonus>0?' ⚡ (incluye +'+tbonus+' por rapidez)':''):'✘ Incorrecto'}</h4>
       ${ok?'':`<div>Respuesta correcta: <b>${esc(correctAnsText(q))}</b></div>`}
       <div class="corr"><b>${ok?'💡 Explicación:':'✏️ Corrección:'}</b> ${md(q.correction).replace(/^<p>|<\/p>$/g,'')}</div>
     </div>
@@ -1016,6 +1058,7 @@ function nextQ(){
   else finishQuiz();
 }
 function finishQuiz(){
+  stopTimer();
   const i=state.li, lv=DATA[i], qz=state.quiz;
   const max=lv.questions.reduce((a,q)=>a+(q.points||10),0);
   const correct=qz.answers.filter(a=>a.isCorrect).length;
@@ -1023,12 +1066,15 @@ function finishQuiz(){
   const acc=Math.round(correct/total*100);
   const stars=acc>=90?3:acc>=75?2:acc>=60?1:0;
   const passed=acc>=60;
-  const res={level:i+1,player:progress.player,date:new Date().toLocaleString('es'),
+  const res={level:i+1,player:progress.player,date:new Date().toLocaleString('es'),challenge:!!qz.challenge,
     score:qz.score,max,correct,total,accuracy:acc,stars,bestStreak:qz.bestStreak,answers:qz.answers};
   progress.results[i]=res;
   progress.best[i]=Math.max(progress.best[i],qz.score);
   progress.stars[i]=Math.max(progress.stars[i],stars);
   if(passed&&i+1<DATA.length) progress.unlocked[i+1]=true;
+  progress.leaderboard.push({player:progress.player||'Anónimo',level:i+1,levelTitle:DATA[i].title,score:qz.score,accuracy:acc,stars,challenge:!!qz.challenge,date:res.date});
+  progress.leaderboard.sort((a,b)=>b.score-a.score);
+  if(progress.leaderboard.length>50) progress.leaderboard=progress.leaderboard.slice(0,50);
   save(progress);
   state.lastRes=res;
   if(passed){beep('win');confetti();}
@@ -1066,7 +1112,8 @@ function viewResults(){
         <div class="kpi"><div class="v">🔥 ${res.bestStreak}</div><div class="l">Mejor racha</div></div>
       </div>
       <div class="btnrow" style="justify-content:center">
-        <button class="btn yellow" onclick="downloadExcelLevel(${i})">⬇️ Descargar Excel</button>
+        <button class="btn yellow" onclick="downloadExcelLevel(${i})">⬇️ Excel</button>
+        <button class="btn pink" onclick="printReportLevel(${i})">🖨️ PDF</button>
         <button class="btn secondary" onclick="startQuizFrom(${i})">↻ Reintentar</button>
         ${unlockedNext?`<button class="btn green" onclick="openLevel(${i+1})">Siguiente nivel →</button>`:''}
         <button class="btn ghost" onclick="go('home')">Inicio</button>
@@ -1076,6 +1123,110 @@ function viewResults(){
     </div></div>`;
 }
 function startQuizFrom(i){ state.li=i; startQuiz(); }
+
+/* ---------- TABLERO DE PUNTAJES ---------- */
+function viewBoard(){
+  const lb=(progress.leaderboard||[]).slice();
+  const medal=k=>k===0?'🥇':k===1?'🥈':k===2?'🥉':(k+1);
+  let rows='';
+  if(!lb.length){
+    rows=`<tr><td colspan="7" style="padding:26px;color:#8493a5">Aún no hay registros. ¡Completa una evaluación para aparecer aquí!</td></tr>`;
+  } else {
+    lb.slice(0,25).forEach((e,k)=>{
+      rows+=`<tr>
+        <td class="rank">${medal(k)}</td>
+        <td style="text-align:left;font-weight:700">${esc(e.player||'Anónimo')}</td>
+        <td>Nivel ${e.level}</td>
+        <td style="font-weight:800;color:var(--navy2)">${e.score}</td>
+        <td>${e.accuracy}%</td>
+        <td>${starStr(e.stars)}</td>
+        <td>${e.challenge?'⏱️ Reto':'📝 Normal'}</td>
+      </tr>`;
+    });
+  }
+  const best=lb.length?lb[0]:null;
+  app.innerHTML = topbar() + `
+    <div class="paper"><div class="pad">
+      <div class="btnrow" style="justify-content:space-between">
+        <span class="chip pill-pink">🏅 Tablero de puntajes</span>
+        <a class="link" onclick="go('home')">← Inicio</a>
+      </div>
+      <h1 class="title" style="font-size:28px;margin-top:10px">Mejores intentos</h1>
+      <p style="color:#5b6b7d;margin-top:2px">Se guardan localmente en tu equipo (los 50 mejores). ${best?`Récord actual: <b>${best.score} pts</b> de ${esc(best.player||'Anónimo')}.`:''}</p>
+      <div class="board-wrap"><table class="board">
+        <thead><tr><th>#</th><th style="text-align:left">Jugador</th><th>Nivel</th><th>Puntaje</th><th>Precisión</th><th>Estrellas</th><th>Modo</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+      <div class="btnrow" style="justify-content:center;margin-top:16px">
+        ${lb.length?`<button class="btn yellow" onclick="downloadBoardExcel()">⬇️ Excel del tablero</button>`:''}
+        ${lb.length?`<button class="btn ghost sm" onclick="clearBoard()">Borrar tablero</button>`:''}
+        <button class="btn" onclick="go('home')">Volver</button>
+      </div>
+    </div></div>`;
+}
+function clearBoard(){ if(confirm('¿Borrar todos los registros del tablero?')){ progress.leaderboard=[]; save(progress); go('board'); } }
+function downloadBoardExcel(){
+  const lb=progress.leaderboard||[];
+  if(!lb.length){alert('El tablero está vacío.');return;}
+  try{
+    const H=1;
+    const rows=[
+      [S('NIBBLE · Tablero de puntajes',5)],
+      [S('Generado:',0),S(new Date().toLocaleString('es'),0)],
+      [],
+      [S('#',H),S('Jugador',H),S('Nivel',H),S('Tema',H),S('Puntaje',H),S('Precisión %',H),S('Estrellas',H),S('Modo',H),S('Fecha',H)]
+    ];
+    lb.forEach((e,k)=>rows.push([Nc(k+1,6),S(e.player||'Anónimo',2),Nc(e.level,6),S(e.levelTitle||'',2),Nc(e.score,6),Nc(e.accuracy,6),S('★'.repeat(e.stars)+'☆'.repeat(3-e.stars),6),S(e.challenge?'Reto':'Normal',6),S(e.date||'',2)]));
+    const bytes=buildXlsx([{name:'Tablero',rows,cols:[5,20,8,22,10,12,10,10,20]}]);
+    download(bytes,'Nibble_tablero.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  }catch(e){ alert('No se pudo exportar: '+e.message); }
+}
+
+/* ---------- INFORME PDF (imprimible, sin librerías) ---------- */
+function reportPlain(s){ return String(s==null?'':s).replace(/\*\*(.+?)\*\*/g,'$1').replace(/\$(.+?)\$/g,'$1'); }
+function buildReportHtml(list,title){
+  const rowsSum=list.map(r=>`<tr><td>Nivel ${r.level}</td><td>${esc(DATA[r.level-1]?DATA[r.level-1].title:'')}</td><td>${r.score}</td><td>${r.correct}/${r.total}</td><td>${r.accuracy}%</td><td>${'★'.repeat(r.stars)}${'☆'.repeat(3-r.stars)}</td></tr>`).join('');
+  const totScore=list.reduce((a,r)=>a+r.score,0), totC=list.reduce((a,r)=>a+r.correct,0), totT=list.reduce((a,r)=>a+r.total,0);
+  let detail='';
+  list.forEach(r=>{
+    detail+=`<h2>Nivel ${r.level} · ${esc(DATA[r.level-1]?DATA[r.level-1].title:'')}</h2>`;
+    r.answers.forEach((a,k)=>{
+      detail+=`<div class="q ${a.isCorrect?'ok':'bad'}">
+        <div class="qp"><b>${k+1}.</b> ${esc(reportPlain(a.prompt))}</div>
+        <div class="qa">Tu respuesta: <b class="${a.isCorrect?'g':'r'}">${esc(a.given)}</b> ${a.isCorrect?'✔':'&nbsp;·&nbsp; Correcta: <b class="g">'+esc(a.correct)+'</b> ✘'}</div>
+        <div class="qc"><b>${a.isCorrect?'Explicación:':'Corrección:'}</b> ${esc(reportPlain(a.correction))}</div>
+      </div>`;
+    });
+  });
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${esc(title)}</title><style>
+    *{box-sizing:border-box} body{font-family:Arial,Helvetica,sans-serif;color:#1f2a3a;margin:24px;font-size:13px}
+    h1{color:#173257;margin:0 0 4px} h2{color:#1f5aa8;border-bottom:2px solid #cfe0ee;padding-bottom:4px;margin:18px 0 8px;page-break-after:avoid}
+    .meta{color:#5b6b7d;margin-bottom:12px}
+    table{width:100%;border-collapse:collapse;margin:8px 0 4px} th,td{border:1px solid #cdd9e6;padding:6px 8px;text-align:center} th{background:#173257;color:#fff}
+    .q{border:1px solid #e0e7ef;border-left-width:5px;border-radius:6px;padding:8px 10px;margin:7px 0;page-break-inside:avoid}
+    .q.ok{border-left-color:#4f9a48;background:#f3fbf4} .q.bad{border-left-color:#d6455f;background:#fdf3f5}
+    .qa{margin-top:3px} .qc{margin-top:3px;color:#3a4a5c;background:#fff;border-radius:5px;padding:5px 7px}
+    .g{color:#2f9e63} .r{color:#d6455f}
+    @media print{ body{margin:12mm} .noprint{display:none} }
+    .bar{background:#eef5fb;border:1px solid #d5e6f4;border-radius:8px;padding:10px 12px;text-align:center;margin-bottom:12px}
+  </style></head><body>
+    <h1>Nibble · Informe de estadística</h1>
+    <div class="meta"><b>Jugador:</b> ${esc(progress.player||'—')} &nbsp;·&nbsp; <b>Fecha:</b> ${esc(new Date().toLocaleString('es'))}</div>
+    <div class="bar"><b>Total:</b> ${totScore} pts &nbsp;·&nbsp; ${totC}/${totT} aciertos &nbsp;·&nbsp; ${totT?Math.round(totC/totT*100):0}% de precisión</div>
+    <table><thead><tr><th>Nivel</th><th>Tema</th><th>Puntaje</th><th>Aciertos</th><th>Precisión</th><th>Estrellas</th></tr></thead><tbody>${rowsSum}</tbody></table>
+    <p class="noprint" style="color:#8493a5">Consejo: en el diálogo de impresión elige «Guardar como PDF» como destino.</p>
+    ${detail}
+  </body></html>`;
+}
+function printReport(list,title){
+  if(!list||!list.length){alert('Aún no hay resultados para el informe. ¡Completa una evaluación!');return;}
+  const w=window.open('','_blank');
+  if(!w){alert('Tu navegador bloqueó la ventana. Permite las ventanas emergentes para generar el PDF.');return;}
+  w.document.open(); w.document.write(buildReportHtml(list,title)); w.document.close(); w.focus();
+  setTimeout(()=>{ try{ w.print(); }catch(e){} },500);
+}
+function printReportLevel(i){ const r=progress.results[i]; printReport(r?[r]:[], 'Nibble · Nivel '+(i+1)); }
+function printReportAll(){ printReport((progress.results||[]).filter(Boolean), 'Nibble · Informe completo'); }
 
 /* ============================================================
    EXPORTACIÓN A EXCEL (.xlsx real, sin librerías)
@@ -1280,7 +1431,7 @@ function confetti(){
 /* ============================================================
    NAVEGACIÓN
    ============================================================ */
-function go(v){state.view=v;render();window.scrollTo({top:0,behavior:'smooth'});}
+function go(v){if(v!=='quiz')stopTimer();state.view=v;render();window.scrollTo({top:0,behavior:'smooth'});}
 function openLevel(i){state.li=i;go('level');}
 function render(){
   switch(state.view){
@@ -1289,14 +1440,16 @@ function render(){
     case 'form':viewForm();break;
     case 'quiz':viewQuiz();break;
     case 'results':viewResults();break;
+    case 'board':viewBoard();break;
     default:viewHome();
   }
 }
 function savePlayer(){const el=$('#playerName');if(el){progress.player=el.value.trim();save(progress);const b=event.target;b.textContent='✔';setTimeout(()=>b.textContent='Guardar',1000);}}
 function toggleSound(){progress.sound=!progress.sound;save(progress);render();}
+function toggleChallenge(v){progress.challenge=!!v;save(progress);}
 function resetProgress(){
   if(confirm('¿Reiniciar todo el progreso y resultados?')){
-    progress={player:progress.player,unlocked:padArr([],NL,i=>i===0),best:padArr([],NL,0),stars:padArr([],NL,0),formDone:padArr([],NL,false),results:padArr([],NL,null),sound:progress.sound};
+    progress={player:progress.player,unlocked:padArr([],NL,i=>i===0),best:padArr([],NL,0),stars:padArr([],NL,0),formDone:padArr([],NL,false),results:padArr([],NL,null),sound:progress.sound,challenge:progress.challenge,leaderboard:[]};
     save(progress);go('home');
   }
 }
