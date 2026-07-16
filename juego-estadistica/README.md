@@ -1,0 +1,55 @@
+# Nibble · Juego de Estadística 🎮📊
+
+App-juego educativa (100 % HTML, sin instalación) para aprender **estadística
+descriptiva, cualitativa e intermedia** jugando. Un solo archivo que corre en
+cualquier computador con navegador, **incluso sin internet**.
+
+## 🚀 Cómo usar
+
+Abre el archivo **`nibble-estadistica.html`** con doble clic (Chrome, Edge,
+Firefox o Safari). No requiere servidor, ni conexión, ni dependencias.
+
+## 🧩 Qué incluye
+
+- **3 niveles** con desbloqueo progresivo (hay que aprobar con ≥ 60 % para
+  avanzar):
+  1. **Fundamentos** — población/muestra, tipos de variable, escalas de
+     medición, tablas de frecuencia, gráficos de barras y circular.
+  2. **Medidas y Distribuciones** — media, mediana, moda, cuartiles, rango,
+     desviación estándar, coeficiente de variación, histograma, diagrama de
+     cajas, valores atípicos y asimetría.
+  3. **Estadística Intermedia** — distribución normal y regla 68-95-99.7,
+     probabilidad y árbol de probabilidad, correlación/dispersión, intervalo de
+     confianza, prueba de hipótesis y chi-cuadrado.
+- **Módulo de Formación** por nivel: lecciones claras con gráficos y una
+  **práctica interactiva** (clasificador de variables, calculadora de
+  media/mediana/moda en vivo, curva normal con sliders μ y σ).
+- **Módulo de Evaluación**: 33 preguntas en total (opción múltiple, numéricas y
+  verdadero/falso), con **puntuación**, rachas y bonus.
+- **Feedback inmediato**: si fallas, muestra la respuesta correcta y la
+  **corrección paso a paso**. Si aciertas, también explica el porqué.
+- **Gráficos vectoriales animados** al estilo de la lámina de referencia: curva
+  de campana, histograma, dispersión, diagrama de cajas, árbol de probabilidad,
+  intervalo de confianza, chi-cuadrado, barras, circular, tabla de frecuencias
+  y diagrama de puntos.
+- **Descarga de resultados en Excel (`.xlsx` real)** con dos hojas:
+  - **Resumen** (puntaje, aciertos, precisión y estrellas por nivel + total).
+  - **Detalle** (cada pregunta con tu respuesta, la correcta y la corrección).
+  - Si el navegador no permite `.xlsx`, cae automáticamente a `.csv`.
+- **Progreso guardado** en el navegador (localStorage) y efectos de juego
+  (confeti, sonidos opcionales, puntos flotantes).
+
+## ✅ Rigor del contenido
+
+Las 33 preguntas y sus respuestas fueron **verificadas numéricamente** una por
+una (media, mediana, moda, cuartiles, RIC, desviación estándar poblacional,
+frecuencias relativas/acumuladas, regla empírica, probabilidades con árbol,
+límites de intervalos de confianza, etc.).
+
+## 🛠️ Detalles técnicos
+
+- Un único archivo `.html` autocontenido: HTML + CSS + JavaScript, sin librerías
+  externas ni llamadas de red (política CSP-friendly).
+- Los gráficos son **SVG** dibujados dinámicamente; el `.xlsx` se genera con un
+  escritor ZIP/OOXML propio en JavaScript puro.
+- Responsive: funciona en computador, tablet y móvil.
