@@ -1,12 +1,13 @@
-# Nibble · Juego de Estadística 🎮📊
+# Ludatos · Juego de Estadística de Rehavid 🎮📊
 
-App-juego educativa (100 % HTML, sin instalación) para aprender **estadística
-descriptiva, cualitativa e intermedia** jugando. Un solo archivo que corre en
+**Ludatos** (de *lúdico* + *datos*) es una app-juego educativa de **Rehavid**
+(100 % HTML, sin instalación) para aprender **estadística descriptiva,
+cualitativa, intermedia y aplicada** jugando. Un solo archivo que corre en
 cualquier computador con navegador, **incluso sin internet**.
 
 ## 🚀 Cómo usar
 
-Abre el archivo **`nibble-estadistica.html`** con doble clic (Chrome, Edge,
+Abre el archivo **`ludatos-estadistica.html`** con doble clic (Chrome, Edge,
 Firefox o Safari). No requiere servidor, ni conexión, ni dependencias.
 
 ## 🧩 Qué incluye
