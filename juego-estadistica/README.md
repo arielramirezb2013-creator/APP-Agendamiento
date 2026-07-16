@@ -11,7 +11,7 @@ Firefox o Safari). No requiere servidor, ni conexión, ni dependencias.
 
 ## 🧩 Qué incluye
 
-- **3 niveles** con desbloqueo progresivo (hay que aprobar con ≥ 60 % para
+- **4 niveles** con desbloqueo progresivo (hay que aprobar con ≥ 60 % para
   avanzar):
   1. **Fundamentos** — población/muestra, tipos de variable, escalas de
      medición, tablas de frecuencia, gráficos de barras y circular.
@@ -21,17 +21,22 @@ Firefox o Safari). No requiere servidor, ni conexión, ni dependencias.
   3. **Estadística Intermedia** — distribución normal y regla 68-95-99.7,
      probabilidad y árbol de probabilidad, correlación/dispersión, intervalo de
      confianza, prueba de hipótesis y chi-cuadrado.
+  4. **Estadística Aplicada** — correlación de Pearson (r), regresión lineal
+     (ŷ = a + b·x) y predicción, coeficiente de determinación R², prueba t de
+     Student (H₀/H₁, valor p vs α) y ANOVA (comparación de 3+ medias).
 - **Módulo de Formación** por nivel: lecciones claras con gráficos y una
   **práctica interactiva** (clasificador de variables, calculadora de
-  media/mediana/moda en vivo, curva normal con sliders μ y σ).
-- **Módulo de Evaluación**: 33 preguntas en total (opción múltiple, numéricas y
+  media/mediana/moda en vivo, curva normal con sliders μ y σ, y laboratorio de
+  correlación/regresión que calcula r y R² en vivo al agregar puntos).
+- **Módulo de Evaluación**: 45 preguntas en total (opción múltiple, numéricas y
   verdadero/falso), con **puntuación**, rachas y bonus.
 - **Feedback inmediato**: si fallas, muestra la respuesta correcta y la
   **corrección paso a paso**. Si aciertas, también explica el porqué.
 - **Gráficos vectoriales animados** al estilo de la lámina de referencia: curva
-  de campana, histograma, dispersión, diagrama de cajas, árbol de probabilidad,
-  intervalo de confianza, chi-cuadrado, barras, circular, tabla de frecuencias
-  y diagrama de puntos.
+  de campana, histograma, dispersión con recta de regresión, diagrama de cajas,
+  árbol de probabilidad, intervalo de confianza, chi-cuadrado, distribución t
+  con zonas de rechazo, diagramas de cajas comparados (ANOVA), barras, circular,
+  tabla de frecuencias y diagrama de puntos.
 - **Descarga de resultados en Excel (`.xlsx` real)** con dos hojas:
   - **Resumen** (puntaje, aciertos, precisión y estrellas por nivel + total).
   - **Detalle** (cada pregunta con tu respuesta, la correcta y la corrección).
@@ -41,10 +46,11 @@ Firefox o Safari). No requiere servidor, ni conexión, ni dependencias.
 
 ## ✅ Rigor del contenido
 
-Las 33 preguntas y sus respuestas fueron **verificadas numéricamente** una por
+Las 45 preguntas y sus respuestas fueron **verificadas numéricamente** una por
 una (media, mediana, moda, cuartiles, RIC, desviación estándar poblacional,
 frecuencias relativas/acumuladas, regla empírica, probabilidades con árbol,
-límites de intervalos de confianza, etc.).
+límites de intervalos de confianza, predicciones de regresión, R² = r²,
+decisiones de prueba t y ANOVA, etc.).
 
 ## 🛠️ Detalles técnicos
 
