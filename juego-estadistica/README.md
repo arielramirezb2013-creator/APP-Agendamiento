@@ -49,6 +49,15 @@ Firefox o Safari). No requiere servidor, ni conexión, ni dependencias.
 - **Informe en PDF** imprimible (botón «🖨️ PDF»): abre un informe con el resumen
   y todas las preguntas con sus correcciones; se guarda eligiendo «Guardar como
   PDF» en el diálogo de impresión (funciona offline, sin librerías).
+- **Ficha acumulada por nivel** 📊: historial de intentos (evolución de la
+  precisión), **dominio por tema** (barras rojo/verde según tus aciertos) y una
+  sugerencia de qué reforzar.
+- **Avatar de progreso** 🐣→👑: un rango que evoluciona con tus estrellas
+  (Aprendiz curioso → Explorador → Analista → Estadístico → Experto → Maestro),
+  con barra hacia el siguiente rango.
+- **Tablero mejorado**: podio 🥇🥈🥉, filtro por nivel y avatar del jugador.
+- **Gráficos interactivos**: pasa el cursor sobre barras, puntos o sectores para
+  ver el valor exacto; animaciones de entrada y contador de puntaje animado.
 - **Progreso guardado** en el navegador (localStorage) y efectos de juego
   (confeti, sonidos opcionales, puntos flotantes).
 

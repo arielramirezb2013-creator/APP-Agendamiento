@@ -129,6 +129,25 @@ h1,h2,h3{font-family:var(--hand);color:var(--navy);margin:0}
 .board tr:nth-child(even) td{background:#f6fafd}
 .board .rank{font-weight:800;font-family:var(--hand);font-size:16px}
 .board-wrap{max-height:460px;overflow:auto;border:1px solid #e6eef6;border-radius:14px}
+/* Interactividad de gráficos */
+.chartbox svg rect:hover,.chartbox svg circle:hover{filter:brightness(1.1);cursor:pointer}
+@keyframes growx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.svg-barx{transform-box:fill-box;transform-origin:left;animation:growx .7s cubic-bezier(.2,.8,.2,1) both}
+/* Avatar / rango */
+.avatar{display:flex;align-items:center;gap:14px;background:var(--paper2);border:1px solid #e8e3d5;border-radius:16px;padding:12px 16px;box-shadow:var(--shadow-s)}
+.avatar .face{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:30px;flex:0 0 56px;box-shadow:inset 0 0 0 3px #fff,0 0 0 3px currentColor;background:#fff}
+.avatar .rt{font-family:var(--hand);font-size:19px;color:var(--navy)}
+.avatar .rankbar{height:9px;background:#e6eef6;border-radius:999px;overflow:hidden;margin-top:5px}
+.avatar .rankbar > i{display:block;height:100%;border-radius:999px;transition:width .5s}
+/* Filtros y podio */
+.filterchips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px;justify-content:center}
+.fchip{padding:6px 13px;border-radius:999px;border:1.5px solid #d9e6f2;background:#fff;font-weight:700;font-size:13px;color:var(--navy2);cursor:pointer}
+.fchip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:12px;margin:14px 0 6px}
+.pod{border-radius:14px 14px 0 0;padding:10px 10px 10px;text-align:center;color:#fff;width:98px;box-shadow:var(--shadow-s)}
+.pod .em{font-size:26px;line-height:1}
+.pod .nm{font-weight:800;font-size:13px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod .sc{font-size:12.5px;opacity:.97;font-weight:700}
 
 /* Top bar */
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;flex-wrap:wrap}
@@ -309,7 +328,40 @@ progress.results=padArr(progress.results,NL,null);
 if(typeof progress.sound!=='boolean') progress.sound=true;
 if(typeof progress.challenge!=='boolean') progress.challenge=false;
 if(!Array.isArray(progress.leaderboard)) progress.leaderboard=[];
+if(!Array.isArray(progress.history)) progress.history=[];
 const QTIME=30; // segundos por pregunta en modo reto
+/* ---- Rango / Avatar según progreso ---- */
+const RANKS=[
+  {min:0, emoji:'🐣', title:'Aprendiz curioso', color:'#77b06a'},
+  {min:2, emoji:'🐤', title:'Explorador de datos', color:'#2f7cc0'},
+  {min:5, emoji:'🦉', title:'Analista', color:'#e0a91f'},
+  {min:8, emoji:'🧠', title:'Estadístico', color:'#a487d6'},
+  {min:11,emoji:'🎓', title:'Experto en datos', color:'#ec6a9c'},
+  {min:99,emoji:'👑', title:'Maestro de la Estadística', color:'#c99a12'}
+];
+function currentRank(){
+  const s=progress.stars.reduce((a,b)=>a+b,0), maxS=NL*3;
+  let idx=0;
+  for(let k=0;k<RANKS.length-1;k++){ if(s>=RANKS[k].min) idx=k; }
+  if(s>=maxS) idx=RANKS.length-1; // "Maestro" solo con todas las estrellas
+  const rank=RANKS[idx];
+  const next=idx<RANKS.length-1?RANKS[idx+1]:null;
+  const nextMin=next?(next.min===99?maxS:next.min):maxS;
+  const prevMin=(rank.min===99)?maxS:rank.min;
+  const frac=next?clamp((s-prevMin)/Math.max(1,nextMin-prevMin),0,1):1;
+  return {rank,next,stars:s,maxStars:maxS,frac,nextMin};
+}
+function avatarHtml(){
+  const r=currentRank();
+  return `<div class="avatar">
+    <div class="face" style="color:${r.rank.color}">${r.rank.emoji}</div>
+    <div style="flex:1;min-width:0">
+      <div class="rt">${esc(r.rank.title)}</div>
+      <div style="font-size:12.5px;color:#5b6b7d;font-weight:700">⭐ ${r.stars}/${r.maxStars} estrellas ${r.next?`· ${r.nextMin-r.stars} para <b>${esc(r.next.title)}</b> ${r.next.emoji}`:'· ¡Rango máximo!'}</div>
+      <div class="rankbar"><i style="width:${Math.round(r.frac*100)}%;background:${r.rank.color}"></i></div>
+    </div>
+  </div>`;
+}
 
 let state={view:'home',li:0,fi:0,quiz:null};
 
@@ -356,6 +408,13 @@ function svgWrap(inner,w=460,h=260,cap){
   return `<div class="chartbox"><svg viewBox="0 0 ${w} ${h}" role="img">${inner}</svg>${cap?`<div class="chart-cap">${esc(cap)}</div>`:''}</div>`;
 }
 function axis(x0,y0,x1,y1){return `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="#9fb3c6" stroke-width="1.5"/>`;}
+/* Reparte etiquetas para que no se solapen: recibe puntos ordenados por x y devuelve lx separados >=minGap dentro de [xmin,xmax] */
+function placeLabels(items,minGap,xmin,xmax){
+  const a=items.map(o=>Object.assign({},o,{lx:o.x}));
+  for(let i=1;i<a.length;i++){ if(a[i].lx-a[i-1].lx<minGap) a[i].lx=a[i-1].lx+minGap; }
+  if(a.length){ a[a.length-1].lx=Math.min(a[a.length-1].lx,xmax); for(let i=a.length-2;i>=0;i--){ if(a[i+1].lx-a[i].lx<minGap) a[i].lx=a[i+1].lx-minGap; } if(a[0].lx<xmin){a[0].lx=xmin; for(let i=1;i<a.length;i++){ if(a[i].lx-a[i-1].lx<minGap) a[i].lx=a[i-1].lx+minGap; }} }
+  return a;
+}
 
 function renderChart(c){
   if(!c||!c.type) return '';
@@ -389,7 +448,7 @@ function chartBar(d){
   let bars='',labs='';
   vals.forEach((v,i)=>{
     const bh=ih*(v/max), x=L+gap*i+(gap-bw)/2, y=T+ih-bh;
-    bars+=`<rect class="svg-bar" style="animation-delay:${i*.08}s" x="${x}" y="${y}" width="${bw}" height="${Math.max(0,bh)}" rx="6" fill="${PAL[i%PAL.length]}"/>`;
+    bars+=`<rect class="svg-bar" style="animation-delay:${i*.08}s" x="${x}" y="${y}" width="${bw}" height="${Math.max(0,bh)}" rx="6" fill="${PAL[i%PAL.length]}"><title>${esc(labels[i]??'')}: ${esc(v)}</title></rect>`;
     bars+=`<text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="13" font-weight="700" fill="#2b3b4d">${esc(v)}</text>`;
     labs+=`<text x="${x+bw/2}" y="${T+ih+18}" text-anchor="middle" font-size="12" fill="#4b5b6d">${esc(labels[i]??'')}</text>`;
   });
@@ -407,7 +466,7 @@ function chartHist(d){
   const pts=[];
   bins.forEach((b,i)=>{
     const bh=ih*(Number(b.freq)/max),x=L+bw*i,y=T+ih-bh;
-    bars+=`<rect class="svg-bar" style="animation-delay:${i*.06}s" x="${x+1}" y="${y}" width="${bw-2}" height="${Math.max(0,bh)}" fill="#2f7cc0" opacity="${.55+.35*(Number(b.freq)/max)}" stroke="#1f5aa8"/>`;
+    bars+=`<rect class="svg-bar" style="animation-delay:${i*.06}s" x="${x+1}" y="${y}" width="${bw-2}" height="${Math.max(0,bh)}" fill="#2f7cc0" opacity="${.55+.35*(Number(b.freq)/max)}" stroke="#1f5aa8"><title>${esc(b.range??'')}: ${esc(b.freq)}</title></rect>`;
     bars+=`<text x="${x+bw/2}" y="${y-5}" text-anchor="middle" font-size="11" font-weight="700" fill="#2b3b4d">${esc(b.freq)}</text>`;
     labs+=`<text x="${x+bw/2}" y="${T+ih+16}" text-anchor="middle" font-size="10.5" fill="#4b5b6d">${esc(b.range??'')}</text>`;
     pts.push([x+bw/2,y]);
@@ -425,7 +484,7 @@ function chartPie(d){
     const ang=v/total*2*Math.PI,a2=a+ang;
     const x1=cx+r*Math.cos(a),y1=cy+r*Math.sin(a),x2=cx+r*Math.cos(a2),y2=cy+r*Math.sin(a2);
     const large=ang>Math.PI?1:0;
-    seg+=`<path class="svg-pop" style="animation-delay:${i*.1}s" d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${PAL[i%PAL.length]}" stroke="#fff" stroke-width="2"/>`;
+    seg+=`<path class="svg-pop" style="animation-delay:${i*.1}s" d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${PAL[i%PAL.length]}" stroke="#fff" stroke-width="2"><title>${esc(labels[i]??'')}: ${esc(v)} (${Math.round(v/total*100)}%)</title></path>`;
     const mid=(a+a2)/2, lx=cx+r*.62*Math.cos(mid), ly=cy+r*.62*Math.sin(mid);
     const pct=Math.round(v/total*100);
     if(pct>=6) seg+=`<text x="${lx}" y="${ly+4}" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">${pct}%</text>`;
@@ -445,16 +504,22 @@ function chartBox(d){
   const bh=44,by=axisY-bh/2;
   let ticks='';
   for(let i=0;i<=5;i++){const v=lo+(hi-lo)*i/5;const x=sx(v);ticks+=`<line x1="${x}" y1="${axisY+34}" x2="${x}" y2="${axisY+40}" stroke="#9fb3c6"/><text x="${x}" y="${axisY+54}" text-anchor="middle" font-size="10" fill="#9aabbc">${round(v,1)}</text>`;}
-  let o='';outs.forEach(v=>{o+=`<circle class="svg-fade" cx="${sx(v)}" cy="${axisY}" r="5" fill="#e0587a" stroke="#fff"/>`;});
-  const lab=(x,v,t)=>`<text x="${x}" y="${by-8}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#2b3b4d">${t}</text><text x="${x}" y="${by-20}" text-anchor="middle" font-size="10" fill="#6b7b8d">${round(v,1)}</text>`;
+  let o='';outs.forEach(v=>{o+=`<circle class="svg-fade" cx="${sx(v)}" cy="${axisY}" r="5" fill="#e0587a" stroke="#fff"><title>Atípico: ${round(v,2)}</title></circle>`;});
+  // Etiquetas anti-solape con línea guía
+  const pts5=placeLabels([{x:sx(min),v:min,t:'Mín'},{x:sx(q1),v:q1,t:'Q1'},{x:sx(med),v:med,t:'Md'},{x:sx(q3),v:q3,t:'Q3'},{x:sx(max),v:max,t:'Máx'}],38,L+8,W-R-8);
+  let labels='';
+  pts5.forEach(pp=>{
+    if(Math.abs(pp.lx-pp.x)>0.6) labels+=`<line x1="${pp.x}" y1="${by}" x2="${pp.lx}" y2="${by-12}" stroke="#cdd9e6" stroke-width="1"/>`;
+    labels+=`<text x="${pp.lx}" y="${by-14}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#2b3b4d">${pp.t}</text><text x="${pp.lx}" y="${by-26}" text-anchor="middle" font-size="10" fill="#6b7b8d">${round(pp.v,1)}</text>`;
+  });
   const svg=`
     <line x1="${sx(min)}" y1="${axisY}" x2="${sx(q1)}" y2="${axisY}" stroke="#4f9a48" stroke-width="2"/>
     <line x1="${sx(q3)}" y1="${axisY}" x2="${sx(max)}" y2="${axisY}" stroke="#4f9a48" stroke-width="2"/>
     <line x1="${sx(min)}" y1="${by+8}" x2="${sx(min)}" y2="${by+bh-8}" stroke="#4f9a48" stroke-width="2"/>
     <line x1="${sx(max)}" y1="${by+8}" x2="${sx(max)}" y2="${by+bh-8}" stroke="#4f9a48" stroke-width="2"/>
-    <rect class="svg-pop" x="${sx(q1)}" y="${by}" width="${Math.max(1,sx(q3)-sx(q1))}" height="${bh}" rx="6" fill="#bfe0ac" stroke="#4f9a48" stroke-width="2"/>
+    <rect class="svg-pop" x="${sx(q1)}" y="${by}" width="${Math.max(1,sx(q3)-sx(q1))}" height="${bh}" rx="6" fill="#bfe0ac" stroke="#4f9a48" stroke-width="2"><title>Q1=${round(q1,2)} · Mediana=${round(med,2)} · Q3=${round(q3,2)}</title></rect>
     <line x1="${sx(med)}" y1="${by}" x2="${sx(med)}" y2="${by+bh}" stroke="#256b1f" stroke-width="3"/>
-    ${lab(sx(min),min,'Mín')}${lab(sx(q1),q1,'Q1')}${lab(sx(med),med,'Md')}${lab(sx(q3),q3,'Q3')}${lab(sx(max),max,'Máx')}
+    ${labels}
     ${ticks}${o}`;
   return svgWrap(svg,W,H,d.title);
 }
@@ -466,7 +531,7 @@ function chartScatter(d){
   let xlo=Math.min(...xs),xhi=Math.max(...xs),ylo=Math.min(...ys),yhi=Math.max(...ys);
   const px=(xhi-xlo)*.08||1,py=(yhi-ylo)*.08||1; xlo-=px;xhi+=px;ylo-=py;yhi+=py;
   const sx=v=>L+(W-L-R)*((v-xlo)/(xhi-xlo)), sy=v=>T+(H-T-B)*(1-(v-ylo)/(yhi-ylo));
-  let dots='';pts.forEach((p,i)=>{dots+=`<circle class="svg-fade" style="animation-delay:${i*.03}s" cx="${sx(p[0])}" cy="${sy(p[1])}" r="5" fill="#2f7cc0" opacity=".8" stroke="#1f5aa8"/>`;});
+  let dots='';pts.forEach((p,i)=>{dots+=`<circle class="svg-fade" style="animation-delay:${i*.03}s" cx="${sx(p[0])}" cy="${sy(p[1])}" r="5" fill="#2f7cc0" opacity=".8" stroke="#1f5aa8"><title>(${round(p[0],2)}, ${round(p[1],2)})</title></circle>`;});
   let trend='';
   if(d.showTrend&&pts.length>1){
     const n=pts.length,sX=xs.reduce((a,b)=>a+b,0),sY=ys.reduce((a,b)=>a+b,0),sXY=pts.reduce((a,p)=>a+p[0]*p[1],0),sXX=pts.reduce((a,p)=>a+p[0]*p[0],0);
@@ -493,7 +558,7 @@ function chartNormal(d){
   const sx=v=>L+(W-L-R)*((v-(mean-4*sd))/(8*sd));
   const pts=normalPath(mean,sd,sx,null,peakY,baseY);
   const curve='M'+pts.map(p=>p.join(',')).join(' L');
-  let shade='',marks='',labels='';
+  let shade='',marks='',labels='',shadeLo=null,shadeHi=null;
   const regions=d.shade==='regions';
   if(regions){
     const cols=['#e0587a','#f6b6cd','#7cc5e8','#2b6fb0','#2b6fb0','#7cc5e8','#f6b6cd','#e0587a'];
@@ -510,13 +575,14 @@ function chartNormal(d){
     }
     for(let k=-3;k<=3;k++){const x=sx(mean+k*sd);marks+=`<line x1="${x}" y1="${baseY}" x2="${x}" y2="${baseY+6}" stroke="#7a8a9a"/><text x="${x}" y="${baseY+20}" text-anchor="middle" font-size="11" fill="#5b6b7d">${k===0?'μ':(k>0?'+':'')+k+'σ'}</text>`;}
   } else if(Array.isArray(d.shade)){
-    const [lo,hi]=d.shade;
+    const [lo,hi]=d.shade; shadeLo=lo; shadeHi=hi;
     const seg=pts.filter(p=>p[0]>=sx(lo)-1&&p[0]<=sx(hi)+1);
     if(seg.length){const path=`M${sx(lo)},${baseY} L`+seg.map(p=>p.join(',')).join(' L')+` L${sx(hi)},${baseY} Z`;shade+=`<path class="svg-fade" d="${path}" fill="#7cc5e8" opacity=".7"/>`;}
     marks+=`<line x1="${sx(lo)}" y1="${peakY-6}" x2="${sx(lo)}" y2="${baseY}" stroke="#2b6fb0" stroke-dasharray="4 3"/><line x1="${sx(hi)}" y1="${peakY-6}" x2="${sx(hi)}" y2="${baseY}" stroke="#2b6fb0" stroke-dasharray="4 3"/>`;
-    marks+=`<text x="${sx(lo)}" y="${baseY+16}" text-anchor="middle" font-size="11" fill="#2b6fb0">${round(lo,1)}</text><text x="${sx(hi)}" y="${baseY+16}" text-anchor="middle" font-size="11" fill="#2b6fb0">${round(hi,1)}</text>`;
+    // Solo etiquetar los límites aquí si NO hay marcadores (evita números duplicados)
+    if(!Array.isArray(d.markers)) marks+=`<text x="${sx(lo)}" y="${baseY+16}" text-anchor="middle" font-size="11" font-weight="700" fill="#2b6fb0">${round(lo,1)}</text><text x="${sx(hi)}" y="${baseY+16}" text-anchor="middle" font-size="11" font-weight="700" fill="#2b6fb0">${round(hi,1)}</text>`;
   }
-  if(Array.isArray(d.markers)){d.markers.forEach(m=>{const x=sx(m);marks+=`<line x1="${x}" y1="${baseY}" x2="${x}" y2="${baseY+5}" stroke="#7a8a9a"/><text x="${x}" y="${baseY+18}" text-anchor="middle" font-size="10.5" fill="#5b6b7d">${round(m,1)}</text>`;});}
+  if(Array.isArray(d.markers)){const eps=(sd||1)*0.01;d.markers.forEach(m=>{const x=sx(m);const isB=(shadeLo!=null&&Math.abs(m-shadeLo)<=eps)||(shadeHi!=null&&Math.abs(m-shadeHi)<=eps);marks+=`<line x1="${x}" y1="${baseY}" x2="${x}" y2="${baseY+5}" stroke="${isB?'#2b6fb0':'#7a8a9a'}"/><text x="${x}" y="${baseY+18}" text-anchor="middle" font-size="10.5" font-weight="${isB?'700':'400'}" fill="${isB?'#2b6fb0':'#5b6b7d'}">${round(m,1)}</text>`;});}
   const meanLine=`<line x1="${sx(mean)}" y1="${peakY-2}" x2="${sx(mean)}" y2="${baseY}" stroke="#17325c" stroke-width="1.5" stroke-dasharray="3 3"/>`;
   return svgWrap(`${shade}<path class="svg-draw" d="${curve}" fill="none" stroke="#17325c" stroke-width="3"/>${meanLine}<line x1="${L}" y1="${baseY}" x2="${W-R}" y2="${baseY}" stroke="#9fb3c6" stroke-width="1.5"/>${marks}${labels}`,W,H,d.title);
 }
@@ -621,7 +687,7 @@ function chartMultibox(d){
     boxes+=`<line x1="${cx}" y1="${sy(+g.min)}" x2="${cx}" y2="${sy(+g.max)}" stroke="${col}" stroke-width="2"/>`;
     boxes+=`<line x1="${cx-bw/2}" y1="${sy(+g.min)}" x2="${cx+bw/2}" y2="${sy(+g.min)}" stroke="${col}" stroke-width="2"/>`;
     boxes+=`<line x1="${cx-bw/2}" y1="${sy(+g.max)}" x2="${cx+bw/2}" y2="${sy(+g.max)}" stroke="${col}" stroke-width="2"/>`;
-    boxes+=`<rect class="svg-pop" style="animation-delay:${i*.08}s" x="${cx-bw/2}" y="${sy(+g.q3)}" width="${bw}" height="${Math.max(1,sy(+g.q1)-sy(+g.q3))}" rx="5" fill="${col}" opacity=".32" stroke="${col}" stroke-width="2"/>`;
+    boxes+=`<rect class="svg-pop" style="animation-delay:${i*.08}s" x="${cx-bw/2}" y="${sy(+g.q3)}" width="${bw}" height="${Math.max(1,sy(+g.q1)-sy(+g.q3))}" rx="5" fill="${col}" opacity=".32" stroke="${col}" stroke-width="2"><title>${esc(g.label)} · Q1=${round(+g.q1,1)} Md=${round(+g.median,1)} Q3=${round(+g.q3,1)}</title></rect>`;
     boxes+=`<line x1="${cx-bw/2}" y1="${sy(+g.median)}" x2="${cx+bw/2}" y2="${sy(+g.median)}" stroke="${col}" stroke-width="3"/>`;
     boxes+=`<text x="${cx}" y="${H-B+18}" text-anchor="middle" font-size="11" font-weight="700" fill="#4b5b6d">${esc(g.label)}</text>`;
   });
@@ -652,6 +718,23 @@ function chartTable(d){
   rows.forEach(r=>{s+='<tr>';r.forEach(c=>s+=`<td>${esc(c)}</td>`);s+='</tr>';});
   s+='</tbody></table></div>';
   return s;
+}
+/* Barras horizontales (p.ej. dominio por tema): items=[{label,value,max}] con value/max en 0..1 */
+function chartHBars(items,cap){
+  if(!items||!items.length) return '';
+  const W=480,rowH=32,pad=12,labelW=184,valW=50;
+  const H=pad*2+items.length*rowH;
+  const barX=labelW,barW=W-labelW-valW;
+  let s='';
+  items.forEach((it,i)=>{
+    const y=pad+i*rowH, frac=it.max?clamp(it.value/it.max,0,1):0;
+    const col=frac>=0.75?'#4f9a48':frac>=0.5?'#e0a91f':'#e0587a';
+    s+=`<text x="${labelW-10}" y="${y+rowH/2+4}" text-anchor="end" font-size="11.5" fill="#3a4a5c">${esc(it.label.length>28?it.label.slice(0,27)+'…':it.label)}</text>`;
+    s+=`<rect x="${barX}" y="${y+6}" width="${barW}" height="${rowH-16}" rx="6" fill="#eef3f8"/>`;
+    s+=`<rect class="svg-barx" style="animation-delay:${i*.06}s" x="${barX}" y="${y+6}" width="${Math.max(3,barW*frac)}" height="${rowH-16}" rx="6" fill="${col}"><title>${esc(it.label)}: ${it.value}/${it.max} (${Math.round(frac*100)}%)</title></rect>`;
+    s+=`<text x="${barX+barW+8}" y="${y+rowH/2+4}" font-size="12.5" font-weight="800" fill="#2b3b4d">${Math.round(frac*100)}%</text>`;
+  });
+  return svgWrap(s,W,H,cap);
 }
 
 /* ============================================================
@@ -706,6 +789,7 @@ function viewHome(){
         <div class="chip">👤 <input id="playerName" placeholder="Tu nombre" value="${esc(progress.player)}" style="border:none;outline:none;font-weight:700;color:var(--navy2);width:130px;background:transparent"></div>
         <button class="btn sm green" onclick="savePlayer()">Guardar</button>
       </div>
+      <div style="max-width:460px;margin:14px auto 0">${avatarHtml()}</div>
       <div class="levels">${cards}</div>
       <div class="btnrow" style="justify-content:center;margin-top:22px">
         <button class="btn pink" onclick="go('board')">🏅 Tablero de puntajes</button>
@@ -749,10 +833,11 @@ function viewLevel(){
       </div>
       ${res?`<div class="card" style="padding:14px;margin-top:14px">
         <b>Último intento:</b> ${res.score}/${res.max} pts · ${res.correct}/${res.total} aciertos · ${starStr(res.stars)}
-        <div class="btnrow" style="margin-top:10px"><button class="btn sm yellow" onclick="downloadExcelLevel(${i})">⬇️ Excel de este nivel</button><button class="btn sm ghost" onclick="showResults(${i})">Ver detalle</button></div>
+        <div class="btnrow" style="margin-top:10px"><button class="btn sm pink" onclick="openFicha(${i})">📊 Ficha del nivel</button><button class="btn sm yellow" onclick="downloadExcelLevel(${i})">⬇️ Excel</button><button class="btn sm ghost" onclick="showResults(${i})">Ver detalle</button></div>
       </div>`:''}
     </div></div>`;
 }
+function openFicha(i){ state.li=i; go('ficha'); }
 
 /* ---------- FORMACIÓN ---------- */
 function buildDeck(i){
@@ -1075,6 +1160,11 @@ function finishQuiz(){
   progress.leaderboard.push({player:progress.player||'Anónimo',level:i+1,levelTitle:DATA[i].title,score:qz.score,accuracy:acc,stars,challenge:!!qz.challenge,date:res.date});
   progress.leaderboard.sort((a,b)=>b.score-a.score);
   if(progress.leaderboard.length>50) progress.leaderboard=progress.leaderboard.slice(0,50);
+  // Historial acumulado por intento (para la ficha del nivel)
+  const topics={};
+  qz.answers.forEach(a=>{const t=a.topic||'General';(topics[t]=topics[t]||{c:0,n:0});topics[t].n++;if(a.isCorrect)topics[t].c++;});
+  progress.history.push({level:i+1,date:res.date,score:qz.score,max,accuracy:acc,correct,total,stars,challenge:!!qz.challenge,topics});
+  if(progress.history.length>300) progress.history=progress.history.slice(-300);
   save(progress);
   state.lastRes=res;
   if(passed){beep('win');confetti();}
@@ -1101,10 +1191,11 @@ function viewResults(){
       <div class="result-hero">
         <div style="font-size:20px;color:#5b6b7d;font-weight:700">Nivel ${i+1} · ${esc(DATA[i].title)}</div>
         <div class="stars-big">${starStr(res.stars)}</div>
-        <div class="big-score">${res.score}</div>
+        <div class="big-score" id="bigScore">0</div>
         <div style="color:#5b6b7d;font-weight:700">puntos</div>
         <div style="margin-top:6px;font-size:18px;font-weight:800;color:${passed?'var(--ok)':'var(--bad)'}">${passed?'¡Nivel superado! 🎉':'¡Casi! Necesitas 60% para avanzar'}</div>
       </div>
+      <div style="max-width:460px;margin:12px auto 0">${avatarHtml()}</div>
       <div class="grid2">
         <div class="kpi"><div class="v">${res.correct}/${res.total}</div><div class="l">Aciertos</div></div>
         <div class="kpi"><div class="v">${res.accuracy}%</div><div class="l">Precisión</div></div>
@@ -1114,6 +1205,7 @@ function viewResults(){
       <div class="btnrow" style="justify-content:center">
         <button class="btn yellow" onclick="downloadExcelLevel(${i})">⬇️ Excel</button>
         <button class="btn pink" onclick="printReportLevel(${i})">🖨️ PDF</button>
+        <button class="btn" onclick="openFicha(${i})">📊 Ficha</button>
         <button class="btn secondary" onclick="startQuizFrom(${i})">↻ Reintentar</button>
         ${unlockedNext?`<button class="btn green" onclick="openLevel(${i+1})">Siguiente nivel →</button>`:''}
         <button class="btn ghost" onclick="go('home')">Inicio</button>
@@ -1121,20 +1213,87 @@ function viewResults(){
       <h3 style="margin:22px 0 6px;font-size:22px">📋 Revisión y correcciones</h3>
       <div class="review">${review}</div>
     </div></div>`;
+  animateCount($('#bigScore'),res.score,900);
+}
+function animateCount(el,target,dur){
+  if(!el) return; const start=performance.now();
+  function step(t){ const p=clamp((t-start)/dur,0,1); const e=1-Math.pow(1-p,3); el.textContent=Math.round(target*e); if(p<1) requestAnimationFrame(step); else el.textContent=target; }
+  requestAnimationFrame(step);
 }
 function startQuizFrom(i){ state.li=i; startQuiz(); }
 
+/* ---------- FICHA ACUMULADA POR NIVEL ---------- */
+function viewFicha(){
+  const i=state.li, lv=DATA[i];
+  const hist=(progress.history||[]).filter(h=>h.level===i+1);
+  const n=hist.length;
+  // Agregado por tema
+  const topAgg={};
+  hist.forEach(h=>{ Object.keys(h.topics||{}).forEach(t=>{ (topAgg[t]=topAgg[t]||{c:0,n:0}); topAgg[t].c+=h.topics[t].c; topAgg[t].n+=h.topics[t].n; }); });
+  const topItems=Object.keys(topAgg).map(t=>({label:t,value:topAgg[t].c,max:topAgg[t].n})).sort((a,b)=>(a.value/a.max)-(b.value/b.max));
+  const bestScore=n?Math.max(...hist.map(h=>h.score)):0;
+  const bestAcc=n?Math.max(...hist.map(h=>h.accuracy)):0;
+  const avgAcc=n?Math.round(hist.reduce((a,h)=>a+h.accuracy,0)/n):0;
+  const lastAcc=n?hist[n-1].accuracy:0;
+  // Evolución (últimos 10 intentos): precisión por intento
+  const recent=hist.slice(-10);
+  const trend=recent.length>1?renderChart({type:'bar',data:{labels:recent.map((_,k)=>'#'+(hist.length-recent.length+k+1)),values:recent.map(h=>h.accuracy),ylabel:'Precisión %',title:''}}):'';
+  app.innerHTML = topbar() + `
+    <div class="paper"><div class="pad">
+      <div class="btnrow" style="justify-content:space-between">
+        <span class="chip ${LVCHIP[i]}">📊 Ficha · Nivel ${i+1} ${LEVEL_EMOJI[i]}</span>
+        <a class="link" onclick="openLevel(${i})">← Volver</a>
+      </div>
+      <h1 class="title" style="font-size:28px;margin-top:10px">${esc(lv.title)}</h1>
+      <div style="margin-top:12px">${avatarHtml()}</div>
+      ${n===0?`<p style="color:#5b6b7d;margin-top:16px">Aún no has hecho la evaluación de este nivel. ¡Complétala para ver tu ficha con historial y dominio por tema!</p>
+        <div class="btnrow" style="margin-top:10px"><button class="btn green" ${progress.formDone[i]?'':'disabled'} onclick="startQuizFrom(${i})">Comenzar evaluación</button></div>`
+      :`
+      <div class="grid2" style="margin-top:16px">
+        <div class="kpi"><div class="v">${n}</div><div class="l">Intentos</div></div>
+        <div class="kpi"><div class="v">${bestScore}</div><div class="l">Mejor puntaje</div></div>
+        <div class="kpi"><div class="v">${bestAcc}%</div><div class="l">Mejor precisión</div></div>
+        <div class="kpi"><div class="v">${avgAcc}%</div><div class="l">Precisión media</div></div>
+      </div>
+      ${trend?`<h3 style="margin:18px 0 4px;font-size:20px">📈 Evolución (precisión por intento)</h3>${trend}`:''}
+      <h3 style="margin:18px 0 4px;font-size:20px">🎯 Dominio por tema</h3>
+      <p style="color:#5b6b7d;font-size:14px;margin:0 0 6px">Aciertos acumulados en cada tema. Rojo = a reforzar, verde = dominado.</p>
+      ${chartHBars(topItems)}
+      ${topItems.length?`<div class="tip" style="margin-top:10px"><b>💡 Sugerencia:</b> repasa la formación de <b>${esc(topItems[0].label)}</b> (tu tema más flojo: ${Math.round(topItems[0].value/topItems[0].max*100)}%).</div>`:''}
+      <div class="btnrow" style="justify-content:center;margin-top:18px">
+        <button class="btn green" onclick="startQuizFrom(${i})">↻ Reintentar</button>
+        <button class="btn yellow" onclick="downloadExcelLevel(${i})">⬇️ Excel</button>
+        <button class="btn pink" onclick="printReportLevel(${i})">🖨️ PDF</button>
+        <button class="btn ghost" onclick="openLevel(${i})">Volver al nivel</button>
+      </div>`}
+    </div></div>`;
+}
+
 /* ---------- TABLERO DE PUNTAJES ---------- */
+function setBoardFilter(v){ state.boardFilter=(v==='all'?null:+v); viewBoard(); }
 function viewBoard(){
-  const lb=(progress.leaderboard||[]).slice();
-  const medal=k=>k===0?'🥇':k===1?'🥈':k===2?'🥉':(k+1);
+  const all=(progress.leaderboard||[]).slice();
+  const filt=state.boardFilter;
+  const lb=(filt==null?all:all.filter(e=>e.level===filt));
+  const podCols=['#f3c53f','#9fb3c6','#e0a06a'];
+  const podEm=['🥇','🥈','🥉'];
+  const top3=lb.slice(0,3);
+  // Podio (solo si hay >=1)
+  let podium='';
+  if(top3.length){
+    const order=[1,0,2]; // plata, oro, bronce visual
+    podium='<div class="podium">'+order.filter(k=>top3[k]).map(k=>{
+      const e=top3[k], h=k===0?96:k===1?76:64;
+      return `<div class="pod" style="background:linear-gradient(180deg,${podCols[k]},${podCols[k]}cc);height:${h}px"><div class="em">${podEm[k]}</div><div class="nm">${esc(e.player||'Anónimo')}</div><div class="sc">${e.score} pts</div></div>`;
+    }).join('')+'</div>';
+  }
   let rows='';
   if(!lb.length){
-    rows=`<tr><td colspan="7" style="padding:26px;color:#8493a5">Aún no hay registros. ¡Completa una evaluación para aparecer aquí!</td></tr>`;
+    rows=`<tr><td colspan="7" style="padding:26px;color:#8493a5">Aún no hay registros${filt!=null?' para este nivel':''}. ¡Completa una evaluación para aparecer aquí!</td></tr>`;
   } else {
     lb.slice(0,25).forEach((e,k)=>{
       rows+=`<tr>
-        <td class="rank">${medal(k)}</td>
+        <td class="rank">${k<3?podEm[k]:(k+1)}</td>
         <td style="text-align:left;font-weight:700">${esc(e.player||'Anónimo')}</td>
         <td>Nivel ${e.level}</td>
         <td style="font-weight:800;color:var(--navy2)">${e.score}</td>
@@ -1144,7 +1303,8 @@ function viewBoard(){
       </tr>`;
     });
   }
-  const best=lb.length?lb[0]:null;
+  const best=all.length?all.slice().sort((a,b)=>b.score-a.score)[0]:null;
+  const chips=`<div class="filterchips"><span class="fchip ${filt==null?'on':''}" onclick="setBoardFilter('all')">Todos</span>`+DATA.map((lv,k)=>`<span class="fchip ${filt===k+1?'on':''}" onclick="setBoardFilter(${k+1})">N${k+1}</span>`).join('')+`</div>`;
   app.innerHTML = topbar() + `
     <div class="paper"><div class="pad">
       <div class="btnrow" style="justify-content:space-between">
@@ -1152,14 +1312,17 @@ function viewBoard(){
         <a class="link" onclick="go('home')">← Inicio</a>
       </div>
       <h1 class="title" style="font-size:28px;margin-top:10px">Mejores intentos</h1>
-      <p style="color:#5b6b7d;margin-top:2px">Se guardan localmente en tu equipo (los 50 mejores). ${best?`Récord actual: <b>${best.score} pts</b> de ${esc(best.player||'Anónimo')}.`:''}</p>
+      <div style="max-width:460px;margin:12px auto 0">${avatarHtml()}</div>
+      <p style="color:#5b6b7d;margin-top:8px;text-align:center">Se guardan localmente en tu equipo (los 50 mejores). ${best?`Récord: <b>${best.score} pts</b> de ${esc(best.player||'Anónimo')}.`:''}</p>
+      ${chips}
+      ${podium}
       <div class="board-wrap"><table class="board">
         <thead><tr><th>#</th><th style="text-align:left">Jugador</th><th>Nivel</th><th>Puntaje</th><th>Precisión</th><th>Estrellas</th><th>Modo</th></tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
       <div class="btnrow" style="justify-content:center;margin-top:16px">
-        ${lb.length?`<button class="btn yellow" onclick="downloadBoardExcel()">⬇️ Excel del tablero</button>`:''}
-        ${lb.length?`<button class="btn ghost sm" onclick="clearBoard()">Borrar tablero</button>`:''}
+        ${all.length?`<button class="btn yellow" onclick="downloadBoardExcel()">⬇️ Excel del tablero</button>`:''}
+        ${all.length?`<button class="btn ghost sm" onclick="clearBoard()">Borrar tablero</button>`:''}
         <button class="btn" onclick="go('home')">Volver</button>
       </div>
     </div></div>`;
@@ -1441,6 +1604,7 @@ function render(){
     case 'quiz':viewQuiz();break;
     case 'results':viewResults();break;
     case 'board':viewBoard();break;
+    case 'ficha':viewFicha();break;
     default:viewHome();
   }
 }
@@ -1449,7 +1613,7 @@ function toggleSound(){progress.sound=!progress.sound;save(progress);render();}
 function toggleChallenge(v){progress.challenge=!!v;save(progress);}
 function resetProgress(){
   if(confirm('¿Reiniciar todo el progreso y resultados?')){
-    progress={player:progress.player,unlocked:padArr([],NL,i=>i===0),best:padArr([],NL,0),stars:padArr([],NL,0),formDone:padArr([],NL,false),results:padArr([],NL,null),sound:progress.sound,challenge:progress.challenge,leaderboard:[]};
+    progress={player:progress.player,unlocked:padArr([],NL,i=>i===0),best:padArr([],NL,0),stars:padArr([],NL,0),formDone:padArr([],NL,false),results:padArr([],NL,null),sound:progress.sound,challenge:progress.challenge,leaderboard:[],history:[]};
     save(progress);go('home');
   }
 }
