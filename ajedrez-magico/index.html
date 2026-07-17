@@ -1107,7 +1107,7 @@ function defaultProgress(){
     puzzlesSolved:[],
     points:0,
     gamesPlayed:0, gamesWon:0, gamesLost:0, gamesDrawn:0,
-    sound:true, voice:true, skin:'magic',
+    sound:true, voice:true,
     history:[]
   };
 }
@@ -1348,7 +1348,6 @@ function confetti(){
    ============================================================ */
 function boardHTML(opts){
   opts = opts || {};
-  const skin = progress.skin;
   const markers = opts.markers || new Set();
   const stickers = opts.stickers || [];
   let cells = '';
@@ -1374,10 +1373,8 @@ function boardHTML(opts){
       const clickAttr = clickable ? ' onclick="'+opts.onClick+'(\''+sqName+'\')"' : '';
       let inner='';
       if(piece){
-        const glyph = skin==='classic' ? PIECES[piece.t].classic[piece.c] : PIECES[piece.t].emoji;
-        const bgClass = skin==='classic' ? '' : (piece.c==='w'?'pc-bg-w':'pc-bg-b');
-        const crown = (skin!=='classic' && PIECES[piece.t].crown) ? '<span class="crown">👑</span>' : '';
-        inner = '<span class="pcwrap '+bgClass+'">'+crown+'<span class="pc">'+glyph+'</span></span>';
+        const glyph = PIECES[piece.t].classic[piece.c];
+        inner = '<span class="pcwrap"><span class="pc">'+glyph+'</span></span>';
       } else {
         const sticker = stickers.find(s=>s.sq===sqName);
         if(sticker) inner = '<span class="pc">'+sticker.glyph+'</span>';
@@ -1576,11 +1573,6 @@ function renderSettingsPanel(){
       '<label class="switch"><input type="checkbox" '+(progress.sound?'checked':'')+' onchange="toggleSound()"><span class="track"></span>🔊 Sonidos</label>'+
       '<label class="switch"><input type="checkbox" '+(progress.voice?'checked':'')+' onchange="toggleVoice()"><span class="track"></span>🗣️ Capi habla</label>'+
     '</div>'+
-    '<div class="skin-toggle-row" style="margin-top:14px">'+
-      '<span class="chip">Fichas:</span>'+
-      '<button class="btn sm '+(progress.skin==='magic'?'':'ghost')+'" onclick="setSkin(\'magic\')">Mágicas 🦄</button>'+
-      '<button class="btn sm '+(progress.skin==='classic'?'':'ghost')+'" onclick="setSkin(\'classic\')">Clásicas ♟️</button>'+
-    '</div>'+
     '<div class="btnrow" style="margin-top:16px">'+
       '<button class="btn secondary sm" onclick="resetProgress()">🔄 Reiniciar progreso</button>'+
     '</div>'+
@@ -1589,7 +1581,6 @@ function renderSettingsPanel(){
 function toggleSettings(){ state.showSettings=!state.showSettings; render(); }
 function toggleSound(){ progress.sound=!progress.sound; save(progress); beep('ok'); }
 function toggleVoice(){ progress.voice=!progress.voice; save(progress); if(progress.voice) speak('¡Ahora puedo hablar contigo!'); }
-function setSkin(s){ progress.skin=s; save(progress); render(); }
 function savePlayerName(){ const el=document.getElementById('playerName'); if(el){ progress.player=el.value.trim().slice(0,24); save(progress);} render(); }
 function resetProgress(){
   if(confirm('¿Reiniciar todo tu progreso, estrellas y puntos?')){
@@ -1839,7 +1830,7 @@ function capturedList(cs, color){
   let out='';
   Object.keys(initialCounts).forEach(t=>{
     const missing = Math.max(0, initialCounts[t]-counts[t]);
-    for(let i=0;i<missing;i++) out += '<span class="cp">'+(progress.skin==='classic'?PIECES[t].classic[color]:PIECES[t].emoji)+'</span>';
+    for(let i=0;i<missing;i++) out += '<span class="cp">'+PIECES[t].classic[color]+'</span>';
   });
   return out || '<span style="opacity:.5;font-size:13px">— ninguna —</span>';
 }
@@ -1944,9 +1935,9 @@ function aiMove(){
   checkGameEnd();
 }
 function renderPromotionModal(){
-  const choices = [{t:'Q',label:PIECES.Q.emoji,name:'Unicornio'},{t:'R',label:PIECES.R.emoji,name:'Castillo'},{t:'B',label:PIECES.B.emoji,name:'Gatito'},{t:'N',label:PIECES.N.emoji,name:'Caballito'}];
+  const choices = [{t:'Q',label:PIECES.Q.classic.w,name:PIECES.Q.name},{t:'R',label:PIECES.R.classic.w,name:PIECES.R.name},{t:'B',label:PIECES.B.classic.w,name:PIECES.B.name},{t:'N',label:PIECES.N.classic.w,name:PIECES.N.name}];
   return '<div class="promo-overlay"><div class="promo-box">'+
-    '<h3>¡Tu Capibara llegó al final, '+esc(playerName())+'! 🎉</h3><p>¿En qué se transforma?</p>'+
+    '<h3>¡Tu peón llegó al final, '+esc(playerName())+'! 🎉</h3><p>¿En qué pieza se corona?</p>'+
     '<div class="promo-choices">'+choices.map(c=>'<button class="promo-choice" title="'+c.name+'" onclick="choosePromotion(\''+c.t+'\')">'+c.label+'</button>').join('')+'</div>'+
   '</div></div>';
 }
