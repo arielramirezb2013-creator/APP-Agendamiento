@@ -1,0 +1,1992 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ajedrez Mágico · Aprende a jugar con Capi, Miau y Luna</title>
+<style>
+/* ============================================================
+   AJEDREZ MÁGICO — Tema "cuaderno mágico" (capibaras, gatos y unicornios)
+   Basado en el esquema visual de Ludatos: papel de cuaderno, letra
+   manuscrita, tarjetas con sombra, chips redondeados, botones 3D.
+   100% autocontenido, sin dependencias externas.
+   ============================================================ */
+:root{
+  --paper:#fbf9f1;
+  --paper2:#fffdf6;
+  --ink:#1f2a3a;
+  --navy:#5a3a7a;
+  --navy2:#7a4fae;
+  --rule:#ecdcf5;
+  --margin:#f3b6d6;
+  --blue:#8a5cd6;
+  --sky:#c9a3ec;
+  --skyd:#7a4fae;
+  --deep:#5a3a9a;
+  --pink:#ec6a9c;
+  --pink2:#f6b6cd;
+  --yellow:#f3c53f;
+  --yellow2:#fbe6a0;
+  --green:#77b06a;
+  --green2:#bfe0ac;
+  --purple:#a487d6;
+  --purple2:#d8c8f0;
+  --red:#e0587a;
+  --ok:#2f9e63;
+  --okbg:#e5f6ec;
+  --bad:#d6455f;
+  --badbg:#fdeaee;
+  --capy:#a9764f;
+  --capy2:#e8d3ba;
+  --cat:#e0813f;
+  --cat2:#ffe1b3;
+  --uni:#a487d6;
+  --uni2:#e8d7fb;
+  --gold:#f3c53f;
+  --shadow:0 10px 30px rgba(90,58,122,.16);
+  --shadow-s:0 4px 14px rgba(90,58,122,.14);
+  --radius:20px;
+  --font:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --hand:"Comic Sans MS","Trebuchet MS","Segoe Print",var(--font);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font);
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 600px at 50% -200px, #f3e8fb 0%, rgba(243,232,251,0) 60%),
+    var(--paper);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:9999}
+.wrap{max-width:980px;margin:0 auto;padding:18px 16px 60px}
+.hidden{display:none!important}
+button{font-family:inherit}
+
+/* Paper card look */
+.paper{
+  position:relative;
+  background:
+    repeating-linear-gradient(180deg,transparent 0 31px,var(--rule) 31px 32px),
+    var(--paper2);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  border:1px solid #ecdff5;
+  overflow:hidden;
+}
+.paper::before{content:"";position:absolute;top:0;bottom:0;left:34px;width:2px;background:var(--margin);opacity:.55}
+.paper .pad{padding:26px 26px 26px 52px}
+@media(max-width:560px){.paper .pad{padding:20px 16px 20px 42px}.paper::before{left:26px}}
+
+.card{background:var(--paper2);border:1px solid #ecdff5;border-radius:var(--radius);box-shadow:var(--shadow-s)}
+
+h1,h2,h3{font-family:var(--hand);color:var(--navy);margin:0}
+.title{font-family:var(--hand);color:var(--navy);font-weight:800;line-height:1.05;letter-spacing:.3px;text-shadow:1px 1px 0 #eaddf6}
+.badge{display:inline-block;padding:3px 12px;border-radius:999px;font-weight:700;font-size:13px}
+
+/* Buttons */
+.btn{
+  font-family:var(--font);font-weight:700;font-size:16px;
+  border:none;border-radius:14px;cursor:pointer;
+  padding:14px 22px;color:#fff;background:linear-gradient(180deg,var(--blue),var(--deep));
+  box-shadow:0 6px 0 #3f2570, var(--shadow-s);
+  transition:transform .08s ease, box-shadow .08s ease, filter .15s;
+  user-select:none;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 #3f2570}
+.btn:disabled{filter:grayscale(.6) brightness(.95);cursor:not-allowed;opacity:.65}
+.btn.secondary{background:linear-gradient(180deg,#b8a0d8,#8a6fb8);box-shadow:0 6px 0 #5f4a86,var(--shadow-s)}
+.btn.green{background:linear-gradient(180deg,#7fc06e,#4f9a48);box-shadow:0 6px 0 #3c7a38,var(--shadow-s)}
+.btn.pink{background:linear-gradient(180deg,#f37fab,#d64d84);box-shadow:0 6px 0 #ad3c6a,var(--shadow-s)}
+.btn.yellow{background:linear-gradient(180deg,#f6cf55,#e0a91f);color:#5a4400;box-shadow:0 6px 0 #b98a12,var(--shadow-s)}
+.btn.ghost{background:#fff;color:var(--navy);border:2px solid #e3d2f2;box-shadow:0 4px 0 #e3d2f2}
+.btn.sm{padding:9px 15px;font-size:14px;border-radius:11px;box-shadow:0 4px 0 #3f2570,var(--shadow-s)}
+.btn.sm:active{box-shadow:0 1px 0 #3f2570}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* Chips / labels */
+.chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #e3d2f2;border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;color:var(--navy)}
+.pill-yellow{background:var(--yellow2);border-color:var(--yellow)}
+.pill-pink{background:var(--pink2);border-color:var(--pink)}
+.pill-green{background:var(--green2);border-color:var(--green)}
+.pill-purple{background:var(--purple2);border-color:var(--purple)}
+.pill-capy{background:var(--capy2);border-color:var(--capy)}
+.pill-cat{background:var(--cat2);border-color:var(--cat)}
+.switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-weight:700;color:var(--navy2);font-size:13.5px;user-select:none}
+.switch input{display:none}
+.switch .track{width:44px;height:24px;border-radius:999px;background:#e3d2f2;position:relative;transition:background .2s;flex:0 0 44px}
+.switch .track::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}
+.switch input:checked + .track{background:var(--green)}
+.switch input:checked + .track::after{left:22px}
+
+/* Mascota */
+.mascot-row{display:flex;align-items:flex-start;gap:14px;margin:6px 0 18px}
+.mascot-face{
+  width:64px;height:64px;border-radius:50%;flex:0 0 64px;display:grid;place-items:center;
+  font-size:34px;background:radial-gradient(circle at 30% 25%,#fff, var(--uni2));
+  box-shadow:inset 0 0 0 3px #fff,0 0 0 3px var(--uni),var(--shadow-s);
+  animation:bob 3s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+.bubble{
+  position:relative;background:#fff;border:2px solid var(--uni2);border-radius:18px;padding:12px 16px;
+  font-family:var(--hand);font-size:16.5px;color:var(--navy);box-shadow:var(--shadow-s);flex:1;line-height:1.4;
+}
+.bubble::before{content:"";position:absolute;left:-9px;top:18px;border:9px solid transparent;border-right-color:#fff}
+
+/* Top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer}
+.brand .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--sky),var(--deep));display:grid;place-items:center;box-shadow:var(--shadow-s);font-size:24px}
+.brand b{font-family:var(--hand);color:var(--navy);font-size:23px}
+.stats-mini{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* Avatar / rango */
+.avatar{display:flex;align-items:center;gap:14px;background:var(--paper2);border:1px solid #ecdff5;border-radius:16px;padding:12px 16px;box-shadow:var(--shadow-s);margin:14px 0}
+.avatar .face{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:30px;flex:0 0 56px;box-shadow:inset 0 0 0 3px #fff,0 0 0 3px var(--gold);background:#fff}
+.avatar .rt{font-family:var(--hand);font-size:19px;color:var(--navy)}
+.avatar .rankbar{height:9px;background:#eee0f7;border-radius:999px;overflow:hidden;margin-top:5px;width:220px;max-width:60vw}
+.avatar .rankbar > i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--sky),var(--deep));transition:width .5s}
+.nameinput{border:2px solid #e3d2f2;border-radius:12px;padding:9px 12px;font-size:15px;font-weight:700;color:var(--navy2);width:160px}
+.nameinput:focus{outline:none;border-color:var(--blue)}
+
+/* Level map */
+.levels{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:18px}
+@media(max-width:640px){.levels{grid-template-columns:1fr}}
+.level-card{position:relative;padding:20px;border-radius:22px;color:#fff;cursor:pointer;overflow:hidden;box-shadow:var(--shadow);transition:transform .12s}
+.level-card:hover{transform:translateY(-4px)}
+.level-card.locked{cursor:not-allowed;filter:grayscale(.45) brightness(.92)}
+.level-card .n{font-size:52px;position:absolute;right:10px;top:-6px;opacity:.5}
+.level-card h3{color:#fff;font-size:21px;font-family:var(--hand)}
+.level-card p{margin:6px 0 12px;font-size:14px;opacity:.96;line-height:1.35}
+.lc1{background:linear-gradient(140deg,#e0b382,#a9764f)}
+.lc2{background:linear-gradient(140deg,#ffb677,#e0763f)}
+.lc3{background:linear-gradient(140deg,#cda2f0,#8a5cd6)}
+.lc4{background:linear-gradient(140deg,#ff9ecb,#d6458c)}
+.stars{font-size:20px;letter-spacing:2px}
+.lockicon{position:absolute;right:16px;bottom:14px;opacity:.9;font-size:22px}
+
+/* Opponents */
+.opponents{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:14px}
+.opp-card{border-radius:20px;padding:16px;color:#fff;text-align:center;cursor:pointer;box-shadow:var(--shadow-s);transition:transform .12s}
+.opp-card:hover{transform:translateY(-3px)}
+.opp-card.locked{filter:grayscale(.5) brightness(.9);cursor:not-allowed}
+.opp-card .em{font-size:44px}
+.opp-card .nm{font-family:var(--hand);font-size:19px;margin-top:4px}
+.opp-card .lv{font-size:12.5px;opacity:.9;margin-top:2px}
+
+/* Learning deck */
+.deckwrap{margin-top:14px}
+.progress-dots{display:flex;gap:8px;justify-content:center;margin:14px 0}
+.dot{width:10px;height:10px;border-radius:50%;background:#eee0f7;transition:all .2s}
+.dot.on{background:var(--blue);transform:scale(1.3)}
+.dot.done{background:var(--green)}
+.learn h2{font-size:24px;margin-bottom:8px}
+.learn p{line-height:1.65;font-size:16px;margin:8px 0}
+.learn ul{margin:8px 0 8px 4px;padding-left:20px;line-height:1.65}
+.learn li{margin:4px 0}
+.tip{margin-top:14px;background:var(--yellow2);border:1.5px dashed var(--yellow);border-radius:14px;padding:12px 14px;font-size:14.5px}
+.tip b{color:#8a6d00}
+
+/* Quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.qbar{height:12px;background:#eee0f7;border-radius:999px;overflow:hidden;margin:10px 0 4px}
+.qbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--sky),var(--deep));border-radius:999px;transition:width .4s}
+.qprompt{font-size:19px;font-weight:700;color:var(--ink);line-height:1.45;margin:10px 0}
+.opts{display:grid;gap:10px;margin-top:8px}
+.opt{
+  text-align:left;background:#fff;border:2px solid #e3d2f2;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:600;color:var(--ink);
+  cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:12px;width:100%
+}
+.opt:hover{border-color:var(--blue);background:#f6f0fd;transform:translateX(2px)}
+.opt .key{width:28px;height:28px;flex:0 0 28px;border-radius:8px;background:#f2e9fa;display:grid;place-items:center;font-weight:800;color:var(--navy2)}
+.opt.correct{border-color:var(--ok);background:var(--okbg)}
+.opt.correct .key{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.opt.wrong .key{background:var(--bad);color:#fff}
+.opt.dim{opacity:.5}
+.opt:disabled{cursor:default}
+.num-input{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.num-input input{font-size:20px;font-weight:700;padding:12px 14px;border:2px solid #e3d2f2;border-radius:12px;width:180px;text-align:center;color:var(--navy2)}
+.num-input input:focus{outline:none;border-color:var(--blue)}
+
+/* Feedback */
+.feedback{margin-top:16px;border-radius:16px;padding:16px 18px;animation:pop .3s ease}
+.feedback.ok{background:var(--okbg);border:2px solid var(--green)}
+.feedback.bad{background:var(--badbg);border:2px solid var(--red)}
+.feedback h4{margin:0 0 6px;font-family:var(--hand);font-size:20px}
+.feedback.ok h4{color:var(--ok)}
+.feedback.bad h4{color:var(--bad)}
+.feedback .corr{margin-top:8px;background:#fff;border-radius:12px;padding:10px 12px;font-size:15px;line-height:1.55}
+.feedback .corr b{color:var(--navy2)}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+
+.floatpts{position:fixed;font-family:var(--hand);font-weight:800;font-size:34px;color:var(--ok);pointer-events:none;z-index:9998;animation:floatup 1s ease forwards;text-shadow:0 2px 0 #fff}
+@keyframes floatup{from{transform:translateY(0);opacity:1}to{transform:translateY(-90px);opacity:0}}
+
+/* Results */
+.result-hero{text-align:center;padding:10px}
+.big-score{font-family:var(--hand);font-size:60px;color:var(--navy);line-height:1}
+.stars-big{font-size:44px;letter-spacing:6px;margin:6px 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:16px 0}
+.kpi{background:#fff;border:1px solid #ecdff5;border-radius:14px;padding:12px;text-align:center}
+.kpi .v{font-size:26px;font-weight:800;color:var(--navy2);font-family:var(--hand)}
+.kpi .l{font-size:12.5px;color:#7a6a8f;font-weight:600;margin-top:2px}
+
+.foot{margin-top:34px;text-align:center;color:#9a86ac;font-size:13px}
+.foot b{color:var(--navy2)}
+
+.iconbtn{width:40px;height:40px;border-radius:12px;border:1.5px solid #e3d2f2;background:#fff;cursor:pointer;display:grid;place-items:center;color:var(--navy2);font-size:18px}
+.iconbtn:hover{background:#f6f0fd}
+
+/* ============================================================
+   TABLERO DE AJEDREZ
+   ============================================================ */
+.board-outer{display:flex;justify-content:center;margin:14px 0}
+.board-frame{
+  display:inline-grid;grid-template-columns:22px 1fr;grid-template-rows:1fr 22px;
+  background:var(--paper2);padding:8px;border-radius:16px;box-shadow:var(--shadow);border:1px solid #ecdff5;
+}
+.board{
+  --sq:min(58px,10.2vw);
+  grid-column:2;grid-row:1;
+  display:grid;grid-template-columns:repeat(8,var(--sq));grid-template-rows:repeat(8,var(--sq));
+  border-radius:8px;overflow:hidden;box-shadow:0 0 0 3px #d8c2ec;
+}
+.board.mini{--sq:min(46px,9vw)}
+.sq{position:relative;display:flex;align-items:center;justify-content:center;user-select:none}
+.sq.light{background:#fdf6ff}
+.sq.dark{background:#cbb3e6}
+.sq.selectable{cursor:pointer}
+.sq.selected{box-shadow:inset 0 0 0 4px #f3c53f}
+.sq.lastfrom{background:#fbe6a0}
+.sq.lastto{background:#f6d97e}
+.sq.checked{animation:checkpulse .8s infinite}
+@keyframes checkpulse{0%,100%{box-shadow:inset 0 0 0 4px #e0587a}50%{box-shadow:inset 0 0 0 4px #ff90a8}}
+.sq.marked{box-shadow:inset 0 0 0 4px #2f9e63}
+.sq .pc{font-size:calc(var(--sq)*.72);line-height:1;filter:drop-shadow(0 2px 1px rgba(0,0,0,.18));transition:transform .1s}
+.sq.selectable:hover .pc{transform:scale(1.12)}
+.sq .crown{position:absolute;top:1px;right:2px;font-size:calc(var(--sq)*.32)}
+.sq .dot-target{width:28%;height:28%;border-radius:50%;background:rgba(90,58,154,.45)}
+.sq .ring-target{position:absolute;inset:6%;border-radius:50%;border:4px solid rgba(224,88,122,.75);box-sizing:border-box}
+.sq .pieceteam-w{filter:drop-shadow(0 0 0 #fff) drop-shadow(0 2px 1px rgba(0,0,0,.18))}
+.pc-bg-w{background:radial-gradient(circle at 35% 30%,#fff,#f3e8fb 70%);border-radius:50%;box-shadow:0 0 0 2px #fff}
+.pc-bg-b{background:radial-gradient(circle at 35% 30%,#8a6fb8,#4a3068 70%);border-radius:50%;box-shadow:0 0 0 2px #4a3068}
+.sq .pcwrap{width:88%;height:88%;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.filelabels,.ranklabels{display:flex;color:#8a6fb8;font-weight:800;font-size:12px}
+.filelabels{grid-column:2;grid-row:2;justify-content:space-around;align-items:center}
+.ranklabels{grid-column:1;grid-row:1;flex-direction:column-reverse;justify-content:space-around;align-items:center}
+
+.captured-row{display:flex;gap:4px;flex-wrap:wrap;min-height:30px;align-items:center}
+.captured-row .cp{font-size:20px}
+.movelist{max-height:160px;overflow:auto;font-size:14px;line-height:1.7;background:#fff;border:1px solid #ecdff5;border-radius:12px;padding:8px 12px}
+.movelist .mv-white{font-weight:700;color:var(--navy2)}
+.gamehud{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:560px){.gamehud{grid-template-columns:1fr}}
+.turnbanner{text-align:center;font-family:var(--hand);font-size:19px;color:var(--navy);margin:6px 0}
+.turnbanner.thinking{color:var(--pink)}
+.statusbanner{text-align:center;border-radius:16px;padding:14px;margin:12px 0;font-family:var(--hand);font-size:20px}
+.statusbanner.win{background:var(--okbg);border:2px solid var(--green);color:var(--ok)}
+.statusbanner.lose{background:var(--badbg);border:2px solid var(--red);color:var(--bad)}
+.statusbanner.draw{background:var(--yellow2);border:2px solid var(--yellow);color:#8a6d00}
+
+.promo-overlay{position:fixed;inset:0;background:rgba(90,58,122,.45);display:flex;align-items:center;justify-content:center;z-index:9000}
+.promo-box{background:#fff;border-radius:20px;padding:22px;box-shadow:var(--shadow);text-align:center;max-width:340px}
+.promo-choices{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.promo-choice{width:64px;height:64px;border-radius:16px;border:2px solid #e3d2f2;background:#fdf6ff;font-size:32px;cursor:pointer;display:grid;place-items:center}
+.promo-choice:hover{border-color:var(--blue);background:#f6f0fd}
+
+.skin-toggle-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+.hintbox{background:#fff;border:1.5px dashed var(--purple);border-radius:14px;padding:10px 14px;font-size:14px;margin-top:10px;color:var(--navy2)}
+
+.diary-list{display:grid;gap:10px;margin-top:12px}
+.diary-item{background:#fff;border:1px solid #ecdff5;border-radius:12px;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+
+/* Chart de valores de piezas */
+.chartbox{background:#fff;border:1px solid #ecdff5;border-radius:16px;padding:14px;margin:14px 0}
+.chart-cap{text-align:center;font-size:13px;color:#7a6a8f;margin-top:6px;font-weight:600}
+@keyframes growx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.svg-barx{transform-box:fill-box;transform-origin:left;animation:growx .7s cubic-bezier(.2,.8,.2,1) both}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ============================================================
+   MOTOR DE AJEDREZ — vanilla JS, sin dependencias externas.
+   Coordenadas internas: col 0-7 = archivo a-h, row 0-7 = fila 1-8 (row0=fila1, lado blancas).
+   Pieza: {t:'P'|'N'|'B'|'R'|'Q'|'K', c:'w'|'b'}
+   Estado: {board, turn:'w'|'b', castling:{wK,wQ,bK,bQ}, ep:{col,row}|null, halfmove, fullmove}
+   ============================================================ */
+(function(root){
+"use strict";
+const Chess = {};
+
+const FILES = 'abcdefgh';
+
+Chess.sq = (col,row)=> FILES[col] + (row+1);
+Chess.parseSq = (s)=> ({col: FILES.indexOf(s[0]), row: parseInt(s[1],10)-1});
+Chess.onBoard = (col,row)=> col>=0 && col<8 && row>=0 && row<8;
+Chess.opp = (c)=> c==='w' ? 'b' : 'w';
+
+Chess.initialBoard = function(){
+  const b = Array.from({length:8},()=>Array(8).fill(null));
+  const back = ['R','N','B','Q','K','B','N','R'];
+  for(let col=0; col<8; col++){
+    b[0][col] = {t:back[col], c:'w'};
+    b[1][col] = {t:'P', c:'w'};
+    b[6][col] = {t:'P', c:'b'};
+    b[7][col] = {t:back[col], c:'b'};
+  }
+  return b;
+};
+
+Chess.initialState = function(){
+  return {
+    board: Chess.initialBoard(),
+    turn: 'w',
+    castling: {wK:true,wQ:true,bK:true,bQ:true},
+    ep: null,
+    halfmove: 0,
+    fullmove: 1,
+    history: [] // { move, san, boardBefore snapshot not stored (memory), capturedPiece }
+  };
+};
+
+Chess.cloneState = function(s){
+  return {
+    board: s.board.map(row=>row.map(p=> p? {t:p.t,c:p.c}: null)),
+    turn: s.turn,
+    castling: Object.assign({}, s.castling),
+    ep: s.ep ? {col:s.ep.col,row:s.ep.row} : null,
+    halfmove: s.halfmove,
+    fullmove: s.fullmove,
+    history: s.history.slice()
+  };
+};
+
+const KNIGHT_D = [[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]];
+const KING_D = [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
+const BISHOP_D = [[1,1],[1,-1],[-1,1],[-1,-1]];
+const ROOK_D = [[1,0],[-1,0],[0,1],[0,-1]];
+
+/* Genera pseudo-movimientos de una pieza en (col,row). No filtra jaques propios. */
+function genPseudoForSquare(state, col, row){
+  const b = state.board;
+  const p = b[row][col];
+  if(!p) return [];
+  const moves = [];
+  const dir = p.c==='w' ? 1 : -1;
+  const startRow = p.c==='w' ? 1 : 6;
+  const promoRow = p.c==='w' ? 7 : 0;
+
+  function pushMove(tc,tr,extra){
+    moves.push(Object.assign({from:{col,row},to:{col:tc,row:tr}}, extra||{}));
+  }
+
+  if(p.t==='P'){
+    const r1 = row+dir;
+    if(Chess.onBoard(col,r1) && !b[r1][col]){
+      if(r1===promoRow){ ['Q','R','B','N'].forEach(pr=>pushMove(col,r1,{promotion:pr})); }
+      else pushMove(col,r1,{});
+      const r2 = row+2*dir;
+      if(row===startRow && Chess.onBoard(col,r2) && !b[r2][col]) pushMove(col,r2,{double:true});
+    }
+    [-1,1].forEach(dc=>{
+      const tc=col+dc, tr=row+dir;
+      if(!Chess.onBoard(tc,tr)) return;
+      const target = b[tr][tc];
+      if(target && target.c!==p.c){
+        if(tr===promoRow){ ['Q','R','B','N'].forEach(pr=>pushMove(tc,tr,{capture:true,promotion:pr})); }
+        else pushMove(tc,tr,{capture:true});
+      } else if(!target && state.ep && state.ep.col===tc && state.ep.row===tr){
+        pushMove(tc,tr,{capture:true,enPassant:true});
+      }
+    });
+  } else if(p.t==='N'){
+    KNIGHT_D.forEach(([dc,dr])=>{
+      const tc=col+dc, tr=row+dr;
+      if(!Chess.onBoard(tc,tr)) return;
+      const target=b[tr][tc];
+      if(!target) pushMove(tc,tr,{});
+      else if(target.c!==p.c) pushMove(tc,tr,{capture:true});
+    });
+  } else if(p.t==='K'){
+    KING_D.forEach(([dc,dr])=>{
+      const tc=col+dc, tr=row+dr;
+      if(!Chess.onBoard(tc,tr)) return;
+      const target=b[tr][tc];
+      if(!target) pushMove(tc,tr,{});
+      else if(target.c!==p.c) pushMove(tc,tr,{capture:true});
+    });
+    // enroque
+    const cr = p.c==='w' ? 0 : 7;
+    if(row===cr && col===4){
+      const rights = state.castling;
+      const kSide = p.c==='w' ? rights.wK : rights.bK;
+      const qSide = p.c==='w' ? rights.wQ : rights.bQ;
+      if(kSide && !b[cr][5] && !b[cr][6] && b[cr][7] && b[cr][7].t==='R' && b[cr][7].c===p.c){
+        if(!Chess.attacksSquare(state.board, Chess.opp(p.c), 4, cr) &&
+           !Chess.attacksSquare(state.board, Chess.opp(p.c), 5, cr) &&
+           !Chess.attacksSquare(state.board, Chess.opp(p.c), 6, cr)){
+          pushMove(6,cr,{castle:'K'});
+        }
+      }
+      if(qSide && !b[cr][1] && !b[cr][2] && !b[cr][3] && b[cr][0] && b[cr][0].t==='R' && b[cr][0].c===p.c){
+        if(!Chess.attacksSquare(state.board, Chess.opp(p.c), 4, cr) &&
+           !Chess.attacksSquare(state.board, Chess.opp(p.c), 3, cr) &&
+           !Chess.attacksSquare(state.board, Chess.opp(p.c), 2, cr)){
+          pushMove(2,cr,{castle:'Q'});
+        }
+      }
+    }
+  } else {
+    const dirs = p.t==='B' ? BISHOP_D : p.t==='R' ? ROOK_D : BISHOP_D.concat(ROOK_D);
+    dirs.forEach(([dc,dr])=>{
+      let tc=col+dc, tr=row+dr;
+      while(Chess.onBoard(tc,tr)){
+        const target=b[tr][tc];
+        if(!target){ pushMove(tc,tr,{}); }
+        else { if(target.c!==p.c) pushMove(tc,tr,{capture:true}); break; }
+        tc+=dc; tr+=dr;
+      }
+    });
+  }
+  return moves;
+}
+
+/* Movimientos "de patrón" sin filtrar jaques propios (para demos educativas). */
+Chess.pseudoMovesFrom = function(state, col, row){
+  return genPseudoForSquare(state, col, row);
+};
+
+/* ¿La casilla (col,row) está atacada por el color byColor en este tablero? */
+Chess.attacksSquare = function(board, byColor, col, row){
+  // Peones
+  const dir = byColor==='w' ? -1 : 1; // si soy blanca atacante, ataco desde una fila más abajo del target
+  [-1,1].forEach(()=>{});
+  for(const dc of [-1,1]){
+    const sc=col+dc, sr=row+dir;
+    if(Chess.onBoard(sc,sr)){
+      const p = board[sr][sc];
+      if(p && p.t==='P' && p.c===byColor) return true;
+    }
+  }
+  // Caballos
+  for(const [dc,dr] of KNIGHT_D){
+    const sc=col+dc, sr=row+dr;
+    if(Chess.onBoard(sc,sr)){
+      const p = board[sr][sc];
+      if(p && p.t==='N' && p.c===byColor) return true;
+    }
+  }
+  // Rey
+  for(const [dc,dr] of KING_D){
+    const sc=col+dc, sr=row+dr;
+    if(Chess.onBoard(sc,sr)){
+      const p = board[sr][sc];
+      if(p && p.t==='K' && p.c===byColor) return true;
+    }
+  }
+  // Deslizantes: alfil/dama en diagonales
+  for(const [dc,dr] of BISHOP_D){
+    let sc=col+dc, sr=row+dr;
+    while(Chess.onBoard(sc,sr)){
+      const p = board[sr][sc];
+      if(p){ if(p.c===byColor && (p.t==='B'||p.t==='Q')) return true; break; }
+      sc+=dc; sr+=dr;
+    }
+  }
+  // Deslizantes: torre/dama en líneas
+  for(const [dc,dr] of ROOK_D){
+    let sc=col+dc, sr=row+dr;
+    while(Chess.onBoard(sc,sr)){
+      const p = board[sr][sc];
+      if(p){ if(p.c===byColor && (p.t==='R'||p.t==='Q')) return true; break; }
+      sc+=dc; sr+=dr;
+    }
+  }
+  return false;
+};
+
+Chess.findKing = function(board, color){
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++){
+    const p = board[r][c];
+    if(p && p.t==='K' && p.c===color) return {col:c,row:r};
+  }
+  return null;
+};
+
+Chess.isInCheck = function(state, color){
+  const k = Chess.findKing(state.board, color);
+  if(!k) return false;
+  return Chess.attacksSquare(state.board, Chess.opp(color), k.col, k.row);
+};
+
+/* Aplica un movimiento (ya validado) sobre un ESTADO, devuelve nuevo estado. */
+Chess.applyMove = function(state, move){
+  const s = Chess.cloneState(state);
+  const b = s.board;
+  const p = b[move.from.row][move.from.col];
+  const capturedPiece = b[move.to.row][move.to.col];
+  let epCapture = null;
+
+  // en passant: retira el peón capturado (que no está en la casilla destino)
+  if(move.enPassant){
+    const capRow = move.from.row; // misma fila que el peón que se mueve
+    epCapture = b[capRow][move.to.col];
+    b[capRow][move.to.col] = null;
+  }
+
+  b[move.to.row][move.to.col] = move.promotion ? {t:move.promotion, c:p.c} : p;
+  b[move.from.row][move.from.col] = null;
+
+  // enroque: mueve la torre también
+  if(move.castle){
+    const cr = move.from.row;
+    if(move.castle==='K'){ b[cr][5] = b[cr][7]; b[cr][7] = null; }
+    else { b[cr][3] = b[cr][0]; b[cr][0] = null; }
+  }
+
+  // derechos de enroque
+  if(p.t==='K'){
+    if(p.c==='w'){ s.castling.wK=false; s.castling.wQ=false; }
+    else { s.castling.bK=false; s.castling.bQ=false; }
+  }
+  if(p.t==='R'){
+    if(p.c==='w' && move.from.row===0 && move.from.col===0) s.castling.wQ=false;
+    if(p.c==='w' && move.from.row===0 && move.from.col===7) s.castling.wK=false;
+    if(p.c==='b' && move.from.row===7 && move.from.col===0) s.castling.bQ=false;
+    if(p.c==='b' && move.from.row===7 && move.from.col===7) s.castling.bK=false;
+  }
+  // si capturan una torre en su casilla original, pierde el enroque de ese lado
+  if(capturedPiece && capturedPiece.t==='R'){
+    if(move.to.row===0 && move.to.col===0) s.castling.wQ=false;
+    if(move.to.row===0 && move.to.col===7) s.castling.wK=false;
+    if(move.to.row===7 && move.to.col===0) s.castling.bQ=false;
+    if(move.to.row===7 && move.to.col===7) s.castling.bK=false;
+  }
+
+  // en passant target
+  s.ep = null;
+  if(p.t==='P' && move.double){
+    s.ep = {col: move.from.col, row: (move.from.row+move.to.row)/2};
+  }
+
+  s.halfmove = (p.t==='P' || capturedPiece || epCapture) ? 0 : s.halfmove+1;
+  if(s.turn==='b') s.fullmove++;
+  s.turn = Chess.opp(s.turn);
+
+  s.history = state.history.concat([{
+    move, piece:{t:p.t,c:p.c}, captured: capturedPiece || epCapture || null
+  }]);
+
+  return s;
+};
+
+/* Movimientos legales (filtra los que dejan al propio rey en jaque) de una casilla. */
+Chess.legalMovesFrom = function(state, col, row){
+  const p = state.board[row][col];
+  if(!p || p.c !== state.turn) return [];
+  const pseudo = genPseudoForSquare(state, col, row);
+  return pseudo.filter(m=>{
+    const next = Chess.applyMove(state, m);
+    return !Chess.isInCheck(next, p.c);
+  });
+};
+
+Chess.allLegalMoves = function(state, color){
+  const c = color || state.turn;
+  const out = [];
+  for(let r=0;r<8;r++) for(let col=0;col<8;col++){
+    const p = state.board[r][col];
+    if(p && p.c===c){
+      const pseudo = genPseudoForSquare(state, col, r);
+      pseudo.forEach(m=>{
+        const next = Chess.applyMove(state, m);
+        if(!Chess.isInCheck(next, c)) out.push(m);
+      });
+    }
+  }
+  return out;
+};
+
+Chess.isCheckmate = function(state){
+  return Chess.isInCheck(state, state.turn) && Chess.allLegalMoves(state, state.turn).length===0;
+};
+Chess.isStalemate = function(state){
+  return !Chess.isInCheck(state, state.turn) && Chess.allLegalMoves(state, state.turn).length===0;
+};
+
+Chess.gameStatus = function(state){
+  if(Chess.isCheckmate(state)) return {over:true, result: Chess.opp(state.turn), reason:'checkmate'};
+  if(Chess.isStalemate(state)) return {over:true, result:'draw', reason:'stalemate'};
+  if(state.halfmove>=100) return {over:true, result:'draw', reason:'50moves'};
+  return {over:false};
+};
+
+/* Notación algebraica simplificada (suficiente, no maneja desambiguación exhaustiva) */
+Chess.san = function(stateBefore, move, stateAfter){
+  if(move.castle==='K') var base='O-O';
+  else if(move.castle==='Q') var base='O-O-O';
+  else {
+    const p = stateBefore.board[move.from.row][move.from.col];
+    const letter = p.t==='P' ? '' : p.t;
+    const fromFile = p.t==='P' && move.capture ? FILES[move.from.col] : '';
+    const cap = move.capture ? 'x' : '';
+    const dest = Chess.sq(move.to.col, move.to.row);
+    const promo = move.promotion ? '='+move.promotion : '';
+    base = letter+fromFile+cap+dest+promo;
+  }
+  if(Chess.isCheckmate(stateAfter)) base+='#';
+  else if(Chess.isInCheck(stateAfter, stateAfter.turn)) base+='+';
+  return base;
+};
+
+/* ============================================================
+   IA sencilla: minimax con poda alfa-beta, evaluación material + posicional ligera.
+   ============================================================ */
+const VALUES = {P:100,N:320,B:330,R:500,Q:900,K:0};
+const PAWN_TABLE = [
+  0,0,0,0,0,0,0,0,
+  5,10,10,-10,-10,10,10,5,
+  5,-5,-10,0,0,-10,-5,5,
+  0,0,0,20,20,0,0,0,
+  5,5,10,25,25,10,5,5,
+  10,10,20,30,30,20,10,10,
+  50,50,50,50,50,50,50,50,
+  0,0,0,0,0,0,0,0
+];
+const CENTER_BONUS = [
+  0,0,0,0,0,0,0,0,
+  0,5,5,5,5,5,5,0,
+  0,5,10,10,10,10,5,0,
+  0,5,10,20,20,10,5,0,
+  0,5,10,20,20,10,5,0,
+  0,5,10,10,10,10,5,0,
+  0,5,5,5,5,5,5,0,
+  0,0,0,0,0,0,0,0
+];
+
+function evaluate(state){
+  let score = 0;
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++){
+    const p = state.board[r][c];
+    if(!p) continue;
+    let v = VALUES[p.t];
+    const idx = p.c==='w' ? (r*8+c) : ((7-r)*8+c);
+    if(p.t==='P') v += PAWN_TABLE[idx]*0.4;
+    else v += CENTER_BONUS[idx]*0.6;
+    score += (p.c==='w' ? v : -v);
+  }
+  return score; // positivo favorece a blancas
+}
+
+function orderMoves(state, moves){
+  return moves.slice().sort((a,b)=>{
+    const av = a.capture ? (VALUES[(state.board[a.to.row][a.to.col]||{t:'P'}).t]||0) : 0;
+    const bv = b.capture ? (VALUES[(state.board[b.to.row][b.to.col]||{t:'P'}).t]||0) : 0;
+    return bv-av;
+  });
+}
+
+function minimax(state, depth, alpha, beta, maximizing){
+  const status = Chess.gameStatus(state);
+  if(depth===0 || status.over){
+    if(status.over && status.reason==='checkmate') return maximizing ? -100000-depth : 100000+depth;
+    if(status.over) return 0;
+    return evaluate(state);
+  }
+  const moves = orderMoves(state, Chess.allLegalMoves(state, state.turn));
+  if(maximizing){
+    let best = -Infinity;
+    for(const m of moves){
+      const next = Chess.applyMove(state, m);
+      best = Math.max(best, minimax(next, depth-1, alpha, beta, false));
+      alpha = Math.max(alpha, best);
+      if(beta<=alpha) break;
+    }
+    return best;
+  } else {
+    let best = Infinity;
+    for(const m of moves){
+      const next = Chess.applyMove(state, m);
+      best = Math.min(best, minimax(next, depth-1, alpha, beta, true));
+      beta = Math.min(beta, best);
+      if(beta<=alpha) break;
+    }
+    return best;
+  }
+}
+
+/* Elige un movimiento para 'color' con profundidad 'depth'.
+   nivel 0 = casi aleatorio con preferencia a capturar gratis; niveles mayores = minimax más profundo. */
+Chess.chooseMove = function(state, depth){
+  const moves = Chess.allLegalMoves(state, state.turn);
+  if(moves.length===0) return null;
+  if(depth<=0){
+    // fácil: prioriza capturas, si no aleatorio
+    const captures = moves.filter(m=>m.capture);
+    const pool = captures.length ? captures : moves;
+    return pool[Math.floor(Math.random()*pool.length)];
+  }
+  const maximizing = state.turn==='w';
+  let best = null, bestScore = maximizing ? -Infinity : Infinity;
+  const ordered = orderMoves(state, moves);
+  const candidates = [];
+  for(const m of ordered){
+    const next = Chess.applyMove(state, m);
+    const score = minimax(next, depth-1, -Infinity, Infinity, !maximizing);
+    if(maximizing ? score>bestScore : score<bestScore){
+      bestScore = score; best = m; candidates.length=0; candidates.push(m);
+    } else if(score===bestScore){
+      candidates.push(m);
+    }
+  }
+  // un poco de variedad entre los mejores empatados
+  return candidates[Math.floor(Math.random()*candidates.length)] || best;
+};
+
+root.Chess = Chess;
+})(typeof module!=='undefined' ? module.exports : (typeof window!=='undefined'? window : this));
+</script>
+
+<script>
+/* ============================================================
+   DATOS DEL JUEGO — Ajedrez Mágico
+   Piezas, rangos, niveles (lecciones + quiz), oponentes y puzzles.
+   ============================================================ */
+
+const RANKS = [
+  {min:0,   name:'Capibara Curiosa',            emoji:'🦫'},
+  {min:120, name:'Amiga de los Gatos',           emoji:'🐱'},
+  {min:300, name:'Aprendiz de Unicornio',        emoji:'🦄'},
+  {min:550, name:'Hechicera del Tablero',        emoji:'✨'},
+  {min:850, name:'Maestra Mágica del Ajedrez',   emoji:'👑'}
+];
+
+/* t = tipo real de ajedrez (P,N,B,R,Q,K). emoji = skin mágico. classic = símbolos reales. */
+const PIECES = {
+  P:{ name:'Peón',   plural:'Peones', magic:'Capibara',          emoji:'🦫', classic:{w:'♙',b:'♟'}, value:1,
+      desc:'El Peón es como un capibara soldado: camina muy tranquilo, siempre hacia adelante, nunca hacia atrás.' },
+  N:{ name:'Caballo', plural:'Caballos', magic:'Caballito saltarín', emoji:'🐴', classic:{w:'♘',b:'♞'}, value:3,
+      desc:'El Caballo salta como un potrillo juguetón, ¡en forma de L! Es la única ficha que puede saltar sobre otras.' },
+  B:{ name:'Alfil',  plural:'Alfiles', magic:'Gatito mago',       emoji:'🐱', classic:{w:'♗',b:'♝'}, value:3,
+      desc:'El Alfil es un gatito mágico que solo camina en diagonal, sigiloso, hasta chocar con algo.' },
+  R:{ name:'Torre',  plural:'Torres', magic:'Castillo',           emoji:'🏰', classic:{w:'♖',b:'♜'}, value:5,
+      desc:'La Torre es un castillo fuerte: se mueve en línea recta, adelante, atrás o a los lados.' },
+  Q:{ name:'Dama',   plural:'Damas', magic:'Unicornio real',      emoji:'🦄', classic:{w:'♕',b:'♛'}, value:9,
+      desc:'¡La Dama es un unicornio mágico, la pieza MÁS poderosa! Se mueve como la Torre Y como el Alfil.' },
+  K:{ name:'Rey',    plural:'Reyes', magic:'Gato Rey',            emoji:'🐱', crown:true, classic:{w:'♔',b:'♚'}, value:0,
+      desc:'El Rey Gato es el más importante: si lo atrapan, ¡pierdes la partida! Se mueve poquito, casillita por casillita.' }
+};
+
+const OPPONENTS = [
+  {id:'capi', name:'Capi la Capibara', emoji:'🦫', depth:0, unlockLevel:2,
+   color:'lc1', intro:'¡Hola! Soy Capi 🦫. Apenas estoy aprendiendo, ¡vamos con calma!',
+   winMsg:'¡Guau, ganaste! Capi está feliz por ti 🦫💕', loseMsg:'¡Casi casi! Capi tuvo suerte esta vez. ¿Otra partidita?'},
+  {id:'miau', name:'Miau la Gata', emoji:'🐱', depth:2, unlockLevel:3,
+   color:'lc2', intro:'Miaaau~ Soy Miau 🐱, ¡me gusta pensar bien mis jugadas!',
+   winMsg:'¡Le ganaste a Miau! Eres una gran jugadora 🐱✨', loseMsg:'Miau ronroneó de gusto con esa partida. ¿Revancha?'},
+  {id:'luna', name:'Luna la Unicornio', emoji:'🦄', depth:3, unlockLevel:4,
+   color:'lc3', intro:'✨ Soy Luna 🦄, la más mágica de todas. ¡Demuéstrame tu magia!',
+   winMsg:'¡INCREÍBLE! Venciste a Luna, la maestra unicornio 🦄👑', loseMsg:'Luna brilló un poquito más esta vez. ¡Tú también brillas, sigue así!'}
+];
+
+/* ---------- Utilidades de posiciones para demos y puzzles ---------- */
+function pos(list){ // [{sq,t,c}]
+  return list;
+}
+
+/* ============================================================
+   NIVEL 1 — El Tablero Mágico
+   ============================================================ */
+const LEVEL1 = {
+  id:1, title:'El Tablero Mágico', subtitle:'Descubre las 64 casillas, sus nombres y cómo empieza la partida.',
+  emoji:'🦫', colorClass:'lc1',
+  lessons:[
+    { title:'El tablero de 8×8', mascotSay:'¡Hola! Este es nuestro tablero mágico, tiene 64 casillitas.',
+      body:"El ajedrez se juega en un tablero cuadrado de **8 columnas** y **8 filas**: en total, **64 casillas**. Las casillas se pintan de dos colores que se van alternando, como un jardín a cuadros.\n\nRegla de oro: el tablero siempre se coloca con una casilla **clara** en la esquina que queda a tu mano derecha.",
+      tip:'8 × 8 = 64. ¡Cuéntalas si quieres, casillita por casillita!',
+      demo:{type:'board'} },
+    { title:'Columnas y filas (las direcciones)', mascotSay:'Cada casillita tiene su propio nombre, como tu dirección de casa.',
+      body:"Cada casilla tiene un nombre único:\n- Las **columnas** (de izquierda a derecha) se llaman con letras: **a, b, c, d, e, f, g, h**.\n- Las **filas** (de abajo hacia arriba, mirando desde blancas) se llaman con números: **1, 2, 3... 8**.\n\nPara nombrar una casilla, primero dices la letra y luego el número. Por ejemplo: **e4** es la columna e, fila 4.",
+      tip:'Letra primero, número después: ¡como "e" de elefante y "4" de cuatro patitas!',
+      demo:{type:'findsquare', target:'e4'} },
+    { title:'El ejército se prepara', mascotSay:'¡Mira cuántos amigos tienes en tu ejército! 16 en total.',
+      body:"Cada jugador empieza con **16 fichas**: 8 Peones (capibaras 🦫) en la segunda fila, y detrás de ellos, de las esquinas hacia el centro: **Torre, Caballo, Alfil, Dama, Rey, Alfil, Caballo, Torre**.\n\nTruco para no equivocarte: **la Dama siempre empieza en una casilla de su propio color** (dama blanca en casilla clara, dama negra en casilla oscura).",
+      tip:'"La Dama ama su color": blanca en clara, negra en oscura.',
+      demo:{type:'initial'} },
+    { title:'Turnos: blancas y negras', mascotSay:'Nos turnamos, ¡como cuando juegas con tu mejor amiga!',
+      body:"En ajedrez juegan dos equipos: **Blancas** y **Negras**. Las **Blancas siempre mueven primero**. Después le toca a las Negras, y así se van turnando: una jugadita cada quien, ¡nunca dos seguidas!",
+      tip:'Blancas siempre empiezan. ¡Es la única regla que nunca cambia!',
+      demo:{type:'initial'} }
+  ],
+  quiz:[
+    {id:'l1q1', type:'mc', topic:'El tablero', points:10,
+     prompt:'¿Cuántas casillas tiene un tablero de ajedrez en total?',
+     options:['32','64','16','100'], correctIndex:1,
+     correction:'El tablero tiene 8 columnas × 8 filas = 64 casillas en total.'},
+    {id:'l1q2', type:'mc', topic:'Coordenadas', points:12,
+     prompt:'¿Cómo se llaman las "direcciones" que van de izquierda a derecha en el tablero?',
+     options:['Filas (números)','Columnas (letras)','Diagonales','Casillas mágicas'], correctIndex:1,
+     correction:'Las columnas van de izquierda a derecha y se nombran con letras: a, b, c... h.'},
+    {id:'l1q3', type:'mc', topic:'Coordenadas', points:15,
+     prompt:'Observa el tablero. ¿Cómo se llama la casilla marcada?',
+     chart:{type:'board', highlight:['e4']},
+     options:['d4','e4','e5','f4'], correctIndex:1,
+     correction:'Es la columna e y la fila 4, así que se llama e4.'},
+    {id:'l1q4', type:'truefalse', topic:'Turnos', points:12,
+     prompt:'Las piezas Negras siempre mueven primero.',
+     options:['Verdadero','Falso'], correctIndex:1,
+     correction:'Falso: las Blancas siempre mueven primero, en cada partida de ajedrez.'},
+    {id:'l1q5', type:'mc', topic:'Posición inicial', points:15,
+     prompt:'¿En qué casilla empieza la Dama blanca?',
+     chart:{type:'board', highlight:['d1']},
+     options:['e1','d1','d8','a1'], correctIndex:1,
+     correction:'La Dama blanca empieza en d1 (una casilla clara, ¡de su propio color!).'},
+    {id:'l1q6', type:'mc', topic:'Posición inicial', points:15,
+     prompt:'¿Cuántos Peones tiene cada jugador al empezar la partida?',
+     options:['6','8','10','16'], correctIndex:1,
+     correction:'Cada jugador tiene 8 Peones, uno en cada columna de la segunda fila.'},
+    {id:'l1q7', type:'mc', topic:'El tablero', points:15,
+     prompt:'¿Cómo se colocan los colores de las casillas en el tablero?',
+     options:['Todas del mismo color','Alternadas, como un patrón a cuadros','En rayas horizontales','Al azar, sin orden'], correctIndex:1,
+     correction:'Las casillas claras y oscuras se van alternando en todo el tablero, como un patrón a cuadros.'}
+  ]
+};
+
+/* ============================================================
+   NIVEL 2 — Las Fichas Cobran Vida (una lección por pieza)
+   ============================================================ */
+const LEVEL2 = {
+  id:2, title:'Las Fichas Cobran Vida', subtitle:'Conoce a cada ficha y aprende exactamente cómo se mueve.',
+  emoji:'🐱', colorClass:'lc2',
+  lessons:[
+    { title:'Peón — el Capibara 🦫', mascotSay:'El capibara camina despacito pero es muy valiente.',
+      body:"El Peón (nuestro **Capibara**) camina siempre **hacia adelante**, nunca hacia atrás.\n- La **primera vez** que se mueve, puede avanzar 1 o 2 casillas.\n- Después, solo **1 casilla** a la vez.\n- Para **capturar** a otra ficha, ¡no avanza de frente! Ataca en **diagonal**, una casilla al costado.",
+      tip:'El peón camina recto pero come en diagonal. ¡Nunca retrocede!',
+      demo:{type:'piece', piece:'P', color:'w', from:'e2'},
+      demo2:{type:'piece', piece:'P', color:'w', from:'e4', obstacles:[{sq:'d5',c:'b'},{sq:'f5',c:'b'}], label:'Así captura: en diagonal'},
+      practice:{type:'movesquares', piece:'P', color:'w', from:'e2', instruction:'Toca todas las casillas donde puede moverse este Capibara 🦫'} },
+    { title:'Caballo — el Caballito 🐴', mascotSay:'¡El caballito salta y hasta puede pasar por encima de sus amigos!',
+      body:"El Caballo (nuestro **Caballito**) se mueve en forma de **L**: 2 casillas en una dirección y 1 en la otra (o al revés).\n\n¡Es la única ficha que puede **saltar por encima** de otras fichas, como si volara!",
+      tip:'Dibuja una L grande: 2 + 1. ¡Y puede saltar sobre cualquier ficha!',
+      demo:{type:'piece', piece:'N', color:'w', from:'d4'},
+      demo2:{type:'piece', piece:'N', color:'w', from:'d4', obstacles:[{sq:'d5',c:'w'},{sq:'d6',c:'w'},{sq:'e5',c:'w'},{sq:'c5',c:'w'}], label:'¡Salta sobre sus amigos sin problema!'},
+      practice:{type:'movesquares', piece:'N', color:'w', from:'d4', instruction:'Toca las 8 casillas en forma de L donde puede saltar este Caballito 🐴'} },
+    { title:'Alfil — el Gatito mago 🐱', mascotSay:'Miau~ me deslizo en diagonal, sigiloso como un gatito.',
+      body:"El Alfil (nuestro **Gatito mago**) solo camina en **diagonal**, todo lo lejos que quiera, hasta chocar con algo.\n\nCada alfil se queda **siempre** en casillas del mismo color: uno vive en las claras y el otro en las oscuras, ¡toda la partida!",
+      tip:'El alfil nunca cambia de color de casilla.',
+      demo:{type:'piece', piece:'B', color:'w', from:'c1'},
+      practice:{type:'movesquares', piece:'B', color:'w', from:'d4', instruction:'Toca todas las casillas diagonales donde puede llegar este Gatito 🐱'} },
+    { title:'Torre — el Castillo 🏰', mascotSay:'Soy fuerte y voy directo, sin vueltas.',
+      body:"La Torre (nuestro **Castillo**) se mueve en **línea recta**: hacia adelante, atrás o a los lados, tan lejos como quiera. ¡Es una de las piezas más poderosas!",
+      tip:'Torre = líneas rectas, como una cruz +. Nunca en diagonal.',
+      demo:{type:'piece', piece:'R', color:'w', from:'a1'},
+      practice:{type:'movesquares', piece:'R', color:'w', from:'d4', instruction:'Toca todas las casillas rectas donde puede llegar este Castillo 🏰'} },
+    { title:'Dama — el Unicornio real 🦄', mascotSay:'¡Soy la más mágica y la más poderosa de todas!',
+      body:"¡La Dama (nuestro **Unicornio real**) es la pieza **más poderosa** del tablero! Puede moverse como la Torre (recto) **y** como el Alfil (diagonal), todo lo lejos que quiera.",
+      tip:'La Dama junta los poderes de la Torre y el Alfil. ¡Cuídala mucho!',
+      demo:{type:'piece', piece:'Q', color:'w', from:'d1'},
+      practice:{type:'movesquares', piece:'Q', color:'w', from:'d4', instruction:'Toca todas las casillas donde puede llegar este Unicornio 🦄 (recto Y diagonal)'} },
+    { title:'Rey — el Gato Rey 🐱👑', mascotSay:'Soy el más importante... ¡cuídame mucho, por favor!',
+      body:"El Rey (nuestro **Gato Rey**) es el más importante de todos: **si lo atrapan, pierdes la partida**. Por eso se mueve muy despacito: solo **una casillita** para cualquier lado.",
+      tip:'El Rey se mueve poquito pero es el más importante: ¡protégelo siempre!',
+      demo:{type:'piece', piece:'K', color:'w', from:'e1'},
+      practice:{type:'movesquares', piece:'K', color:'w', from:'e4', instruction:'Toca las casillas donde puede moverse este Gato Rey 🐱👑'} }
+  ],
+  quiz:[
+    {id:'l2q1', type:'mc', topic:'Peón', points:10, prompt:'¿Cómo captura el Peón (Capibara) a otra ficha?',
+     options:['Hacia adelante, de frente','En diagonal, una casilla al costado','Saltando como el caballo','No puede capturar'], correctIndex:1,
+     correction:'El peón avanza recto pero captura en diagonal, una casilla hacia adelante-izquierda o adelante-derecha.'},
+    {id:'l2q2', type:'mc', topic:'Caballo', points:12, prompt:'¿Qué forma dibuja el movimiento del Caballo?',
+     options:['Una línea recta','Una diagonal','Una L (2+1)','Un círculo'], correctIndex:2,
+     correction:'El Caballo se mueve en forma de L: 2 casillas en una dirección y 1 en la perpendicular.'},
+    {id:'l2q3', type:'truefalse', topic:'Caballo', points:15, prompt:'El Caballo es la única ficha que puede saltar por encima de otras.',
+     options:['Verdadero','Falso'], correctIndex:0,
+     correction:'Verdadero: todas las demás piezas necesitan el camino libre, pero el caballo puede saltar sobre cualquier ficha.'},
+    {id:'l2q4', type:'mc', topic:'Alfil', points:12, prompt:'¿En qué dirección se mueve el Alfil (Gatito mago)?',
+     options:['Solo en línea recta','Solo en diagonal','Recto y diagonal','Solo en forma de L'], correctIndex:1,
+     correction:'El Alfil solo se mueve en diagonal, y siempre se queda en casillas del mismo color.'},
+    {id:'l2q5', type:'mc', topic:'Torre', points:12, prompt:'¿Cómo se mueve la Torre (Castillo)?',
+     options:['En diagonal','En forma de L','En línea recta (adelante, atrás o lados)','Solo una casilla a la vez'], correctIndex:2,
+     correction:'La Torre se mueve en línea recta, tan lejos como quiera, sin diagonales.'},
+    {id:'l2q6', type:'mc', topic:'Dama', points:18, prompt:'¿Por qué la Dama (Unicornio) es la pieza más poderosa?',
+     options:['Porque se mueve como la Torre Y el Alfil','Porque solo se mueve en diagonal','Porque puede saltar sobre otras piezas','Porque se mueve una casilla a la vez'], correctIndex:0,
+     correction:'La Dama combina los movimientos de la Torre (recto) y el Alfil (diagonal): puede ir casi a cualquier parte.'},
+    {id:'l2q7', type:'mc', topic:'Rey', points:15, prompt:'¿Cómo se mueve el Rey (Gato Rey)?',
+     options:['Todo lo lejos que quiera en línea recta','En forma de L','Una sola casilla, en cualquier dirección','Solo en diagonal, lejos'], correctIndex:2,
+     correction:'El Rey se mueve solo una casilla a la vez, en cualquier dirección (recto o diagonal).'},
+    {id:'l2q8', type:'mc', topic:'Repaso de piezas', points:20, prompt:'¿Qué ficha NO puede moverse en diagonal jamás?',
+     options:['La Dama','El Alfil','La Torre','El Rey'], correctIndex:2,
+     correction:'La Torre solo se mueve en línea recta (columnas y filas); nunca en diagonal.'}
+  ]
+};
+
+/* ============================================================
+   NIVEL 3 — Capturas, Jaque y Protección
+   ============================================================ */
+const LEVEL3 = {
+  id:3, title:'Capturas, Jaque y Protección', subtitle:'Aprende a capturar fichas, a reconocer el jaque y a proteger a tu Rey.',
+  emoji:'🦄', colorClass:'lc3',
+  lessons:[
+    { title:'Capturar fichas', mascotSay:'¡Cuando llegas a la casilla del rival, esa ficha desaparece del tablero!',
+      body:"Cuando una ficha tuya llega a una casilla ocupada por el **rival**, ¡la **captura**! La ficha rival sale del tablero y la tuya se queda ahí, en su lugar.\n\nTodas las piezas capturan **de la misma forma en que se mueven**... excepto el Peón, que captura en diagonal aunque camine recto.",
+      tip:'Capturar = llegar a la casilla del rival y quitarlo del tablero.',
+      demo:{type:'piece', piece:'Q', color:'w', from:'d4', obstacles:[{sq:'d7',c:'b'},{sq:'a4',c:'b'},{sq:'g7',c:'b'}], label:'El Unicornio puede capturar cualquiera de estas fichas'} },
+    { title:'El Jaque', mascotSay:'¡Alerta roja! Cuando amenazan a tu Rey, es un Jaque.',
+      body:"Cuando una ficha rival amenaza directamente al Rey (podría capturarlo en la próxima jugada), decimos que el Rey está en **JAQUE**. ¡Es una alerta roja!\n\nSi tu Rey está en jaque, **debes resolverlo** en tu siguiente jugada: no puedes ignorarlo ni mover otra ficha cualquiera.",
+      tip:'Jaque = alerta roja. Siempre hay que resolverlo antes de hacer cualquier otra cosa.',
+      demo:{type:'checkdemo'} },
+    { title:'Cómo salir del jaque', mascotSay:'Hay 3 maneras de salvar a tu Rey: ¡elige la mejor!',
+      body:"Hay **3 formas** de escapar de un jaque:\n1. **Mover al Rey** a una casilla segura.\n2. **Capturar** a la ficha que da el jaque.\n3. **Bloquear** el camino poniendo otra ficha en medio (¡solo funciona si el jaque viene de una Torre, Alfil o Dama, que se mueven en línea recta!).",
+      tip:'Rey, captura o bloqueo: son las 3 únicas formas de resolver un jaque.',
+      demo:{type:'checkdemo'} },
+    { title:'El valor de las piezas', mascotSay:'No todas las fichas valen lo mismo, ¡como las monedas!',
+      body:"No todas las piezas valen lo mismo. Un valor aproximado:\n- Peón (Capibara) = **1**\n- Caballo (Caballito) = **3**\n- Alfil (Gatito) = **3**\n- Torre (Castillo) = **5**\n- Dama (Unicornio) = **9**\n\nEl Rey no tiene valor en puntos... ¡porque si lo pierdes, pierdes toda la partida! Estos valores te ayudan a decidir si conviene cambiar una ficha por otra.",
+      tip:'Antes de cambiar fichas, compara sus valores: ¡no cambies tu Dama (9) por un Peón (1)!',
+      demo:{type:'values'} }
+  ],
+  practicePuzzles:[
+    { id:'p3_check1', type:'mc', topic:'Salir del jaque', points:20,
+      board: pos([{sq:'e1',t:'K',c:'w'},{sq:'d2',t:'B',c:'w'},{sq:'e5',t:'R',c:'b'},{sq:'e8',t:'K',c:'b'}]),
+      prompt:'El Rey blanco (e1) está en jaque por la Torre negra en e5 (columna e). Tienes un Alfil en d2. ¿Cuál jugada SÍ resuelve el jaque?',
+      options:['Mover el Alfil de d2 a e3, bloqueando el camino','Mover el Rey de e1 a e2','Mover el Rey de e1 a d2 (donde está tu alfil)','No hacer nada, el jaque puede esperar'],
+      correctIndex:0,
+      correction:'Bd2-e3 pone al Alfil justo en medio del camino de la Torre, bloqueando el jaque. Mover el Rey a e2 no sirve (sigue en la misma columna), y nunca puedes ignorar un jaque.'},
+    { id:'p3_capture1', type:'mc', topic:'Capturar piezas indefensas', points:18,
+      board: pos([{sq:'e1',t:'K',c:'w'},{sq:'e8',t:'K',c:'b'},{sq:'d4',t:'R',c:'w'},{sq:'g4',t:'Q',c:'b'}]),
+      prompt:'Juegan Negras. La Torre blanca en d4 no tiene ninguna pieza que la proteja. ¿Cuál es la mejor jugada para las Negras?',
+      options:['Qg4xd4, capturar la torre gratis','Mover el Rey un paso','Dejar la torre ahí, no importa','Mover la Dama lejos del tablero'],
+      correctIndex:0,
+      correction:'La Torre blanca en d4 está "colgada" (sin protección). La Dama negra puede capturarla gratis: ¡siempre busca piezas indefensas!'},
+    { id:'p3_capture2', type:'mc', topic:'Capturar piezas indefensas', points:20,
+      board: pos([{sq:'e1',t:'K',c:'w'},{sq:'e8',t:'K',c:'b'},{sq:'c5',t:'B',c:'w'},{sq:'a7',t:'N',c:'b'}]),
+      prompt:'Juegan Blancas. El Caballo negro en a7 está solo, sin protección. ¿Qué jugada conviene?',
+      options:['Bc5xa7, capturar el caballo gratis','Mover el Rey hacia el centro','Retroceder el Alfil','Esperar sin mover nada'],
+      correctIndex:0,
+      correction:'El Alfil en c5 puede llegar en diagonal hasta a7 (c5-b6-a7) y capturar el caballo indefenso. ¡Una ficha gratis!'},
+    { id:'p3_tf1', type:'truefalse', topic:'El jaque', points:12,
+      prompt:'Puedes ignorar un jaque si prefieres hacer otra jugada más interesante.',
+      options:['Verdadero','Falso'], correctIndex:1,
+      correction:'Falso. Un jaque SIEMPRE debe resolverse de inmediato: mover el rey, capturar o bloquear.'},
+    { id:'p3_val1', type:'numeric', topic:'Valor de las piezas', points:15, unit:'',
+      prompt:'Si cambias tu Alfil (valor 3) por la Torre del rival (valor 5), ¿ganas o pierdes puntos de material? Responde cuántos puntos ganas (puede ser negativo).',
+      answer:2, tolerance:0.1,
+      correction:'Entregas 3 puntos (tu alfil) y recibes 5 (su torre): 5 − 3 = 2 puntos a tu favor. ¡Buen cambio!'}
+  ],
+  quiz:[
+    {id:'l3q1', type:'mc', topic:'Capturas', points:12, prompt:'¿Cómo captura una ficha a otra (en general)?',
+     options:['Saltando por encima sin tocarla','Llegando a la casilla donde está el rival','Diciendo "captura" en voz alta','Solo el peón puede capturar'], correctIndex:1,
+     correction:'Capturar es mover tu ficha hasta la casilla donde está la ficha rival, y esta sale del tablero.'},
+    {id:'l3q2', type:'mc', topic:'Jaque', points:12, prompt:'¿Qué significa que tu Rey está en "Jaque"?',
+     options:['Que ganaste la partida','Que una ficha rival puede capturarlo en la próxima jugada','Que perdiste una ficha','Que es tu turno de jugar'], correctIndex:1,
+     correction:'Jaque significa que el Rey está amenazado: si no haces nada, el rival podría capturarlo en su próxima jugada.'},
+    {id:'l3q3', type:'mc', topic:'Salir del jaque', points:18, prompt:'¿Cuáles son las 3 formas de salir de un jaque?',
+     options:['Mover el rey, capturar la amenaza o bloquear el camino','Rendirse, esperar o pedir ayuda','Mover cualquier ficha del tablero','Solo mover el rey, no hay otra forma'], correctIndex:0,
+     correction:'Las 3 formas son: mover el Rey a una casilla segura, capturar a la ficha que da jaque, o bloquear el camino con otra pieza.'},
+    {id:'l3q4', type:'truefalse', topic:'Jaque', points:15, prompt:'Puedes bloquear un jaque que viene de un Caballo poniendo una ficha en el medio.',
+     options:['Verdadero','Falso'], correctIndex:1,
+     correction:'Falso: el Caballo salta, así que no hay "camino" que bloquear. Solo se puede mover el rey o capturar al caballo.'},
+    {id:'l3q5', type:'numeric', topic:'Valor de las piezas', points:15, prompt:'¿Cuánto vale aproximadamente la Torre (Castillo)?',
+     answer:5, tolerance:0.1, correction:'La Torre vale aproximadamente 5 puntos, más que un Caballo o un Alfil (3), pero menos que la Dama (9).'},
+    {id:'l3q6', type:'mc', topic:'Valor de las piezas', points:20, prompt:'Tienes que elegir: ¿cambiar tu Dama (9) por un Peón (1) del rival es un buen cambio?',
+     options:['Sí, siempre es bueno cambiar fichas','No, perderías muchísimo valor','Sí, porque el peón es más rápido','Da igual, todas las fichas valen lo mismo'], correctIndex:1,
+     correction:'No: perderías 9 puntos de valor a cambio de solo 1. Es un cambio muy malo para ti.'}
+  ]
+};
+
+/* ============================================================
+   NIVEL 4 — Jaque Mate y a Jugar
+   ============================================================ */
+const LEVEL4 = {
+  id:4, title:'Jaque Mate y a Jugar', subtitle:'Descubre el jaque mate, primeras estrategias, y desbloquea partidas completas.',
+  emoji:'👑', colorClass:'lc4',
+  lessons:[
+    { title:'Jaque Mate: ¡se acabó la partida!', mascotSay:'Cuando el Rey no tiene escapatoria, ¡es Jaque Mate y termina el juego!',
+      body:"El **Jaque Mate** ocurre cuando el Rey está en jaque y **no hay ninguna manera de escapar**:\n- No puede moverse a una casilla segura.\n- No se puede capturar a quien da el jaque.\n- No se puede bloquear el camino.\n\nCuando pasa esto, ¡la partida se termina! Gana quien dio el jaque mate.",
+      tip:'Jaque + sin escape = Jaque Mate. ¡Es la meta final del ajedrez!',
+      demo:{type:'mateDemo'} },
+    { title:'Cómo empezar bien (apertura)', mascotSay:'3 secretos de las grandes jugadoras de ajedrez.',
+      body:"3 consejos de oro para empezar una partida:\n1. **Controla el centro**: mueve peones y piezas hacia las casillas del medio (d4, d5, e4, e5).\n2. **Saca tus piezas pronto**: mueve tus Caballos y Alfiles al principio, no muevas la misma pieza dos veces.\n3. **Protege a tu Rey**: ponlo a salvo pronto, ¡no lo dejes en el centro mucho tiempo!",
+      tip:'Centro, piezas afuera, Rey a salvo: ¡las 3 reglas de oro!' },
+    { title:'Tácticas simples', mascotSay:'¡Aprende a ver piezas gratis y trampas dobles!',
+      body:"Una ficha **\"colgada\"** es una ficha sin protección que el rival puede capturar gratis: ¡siempre revisa antes de mover!\n\nUn **ataque doble** (muy típico del Caballo) amenaza a dos fichas rivales a la vez: el rival solo puede salvar una de las dos.",
+      tip:'Antes de mover, pregúntate: ¿dejo alguna ficha colgada? ¿puedo amenazar dos cosas a la vez?' }
+  ],
+  puzzles:[
+    { id:'mate1', name:'El pasillo real', points:30,
+      board: pos([{sq:'a1',t:'R',c:'w'},{sq:'g2',t:'K',c:'w'},{sq:'g8',t:'K',c:'b'},{sq:'f7',t:'P',c:'b'},{sq:'g7',t:'P',c:'b'},{sq:'h7',t:'P',c:'b'}]),
+      turn:'w', from:'a1', to:'a8',
+      hint:'El Rey negro está atrapado por sus propios peones. ¡Mueve tu Torre hasta el fondo del tablero!',
+      story:'Los peones negros protegen a su Rey de todo... ¡menos de una Torre que llega hasta el final del pasillo!'},
+    { id:'mate2', name:'La esquina mágica', points:35,
+      board: pos([{sq:'h1',t:'Q',c:'w'},{sq:'b6',t:'K',c:'w'},{sq:'a8',t:'K',c:'b'}]),
+      turn:'w', from:'h1', to:'h8',
+      hint:'Tu Rey ya vigila las casillas a7 y b7. ¡Lleva a tu Dama hasta el fondo!',
+      story:'El Rey negro está acorralado en la esquina, ¡y tu Rey le tapa la única salida!'},
+    { id:'mate3', name:'La escalera doble', points:35,
+      board: pos([{sq:'a7',t:'R',c:'w'},{sq:'b1',t:'R',c:'w'},{sq:'e1',t:'K',c:'w'},{sq:'h8',t:'K',c:'b'}]),
+      turn:'w', from:'b1', to:'b8',
+      hint:'Una Torre ya corta toda la fila 7. ¡Lleva la otra hasta la fila 8!',
+      story:'Tus dos Torres trabajan en equipo: una corta el paso, la otra da el mate final.'},
+    { id:'mate4', name:'El pasillo del Unicornio', points:40,
+      board: pos([{sq:'a1',t:'Q',c:'w'},{sq:'g2',t:'K',c:'w'},{sq:'g8',t:'K',c:'b'},{sq:'f7',t:'P',c:'b'},{sq:'g7',t:'P',c:'b'},{sq:'h7',t:'P',c:'b'}]),
+      turn:'w', from:'a1', to:'a8',
+      hint:'Igual que con la Torre... ¡pero ahora tu Unicornio mágico hace el trabajo!',
+      story:'La Dama también puede recorrer todo el pasillo real, como una torre con superpoderes.'}
+  ],
+  quiz:[
+    {id:'l4q1', type:'mc', topic:'Jaque mate', points:15, prompt:'¿Cuándo termina la partida por Jaque Mate?',
+     options:['Cuando capturas la primera ficha','Cuando el rey está en jaque y no tiene ninguna forma de escapar','Cuando se acaban los peones','Cuando pasan 10 jugadas'], correctIndex:1,
+     correction:'El jaque mate ocurre cuando el rey está en jaque y no puede moverse, capturar ni bloquear de ninguna manera.'},
+    {id:'l4q2', type:'truefalse', topic:'Jaque mate', points:15, prompt:'Un Jaque Mate y un Jaque son exactamente lo mismo.',
+     options:['Verdadero','Falso'], correctIndex:1,
+     correction:'Falso: en el Jaque hay forma de escapar; en el Jaque Mate no hay ninguna salida y la partida termina.'},
+    {id:'l4q3', type:'mc', topic:'Apertura', points:18, prompt:'¿Cuál de estos es un buen consejo para empezar una partida?',
+     options:['Mover solo peones de los costados','Controlar el centro y sacar tus piezas pronto','Mover la Dama a la esquina enseguida','Dejar al Rey en el centro todo el juego'], correctIndex:1,
+     correction:'Controlar el centro y desarrollar tus piezas (Caballos y Alfiles) pronto son ideas clave para empezar bien.'},
+    {id:'l4q4', type:'mc', topic:'Táctica', points:20, prompt:'¿Qué es una ficha "colgada"?',
+     options:['Una ficha que se mueve muy rápido','Una ficha sin protección que el rival puede capturar gratis','Una ficha que ya fue capturada','Una ficha que no puede moverse'], correctIndex:1,
+     correction:'Una ficha colgada es una ficha sin ninguna protección: si el rival la ataca, la pierdes gratis.'},
+    {id:'l4q5', type:'mc', topic:'Repaso general', points:20, prompt:'¿Qué ficha vale más: la Dama o la Torre?',
+     options:['La Torre (5)','La Dama (9)','Valen lo mismo','El Rey vale más que ambas'], correctIndex:1,
+     correction:'La Dama vale aproximadamente 9 puntos, más que la Torre (5). Es la pieza más valiosa después del Rey (que no tiene precio).'},
+    {id:'l4q6', type:'mc', topic:'Repaso general', points:22, prompt:'Después de este nivel, ¿qué puedes hacer en Ajedrez Mágico?',
+     options:['Solo ver el tablero, sin jugar','Jugar partidas completas contra Capi, Miau y Luna, y resolver más puzzles','Nada nuevo','Solo mirar videos'], correctIndex:1,
+     correction:'¡Desbloqueas partidas completas contra nuestras tres amigas mágicas, y más puzzles de jaque mate!'}
+  ]
+};
+
+const LEVELS = [LEVEL1, LEVEL2, LEVEL3, LEVEL4];
+
+/* Frases de saludo/aliento de la mascota */
+const GREETINGS = [
+  '¡Hola, campeona! ¿Lista para aprender ajedrez mágico hoy?',
+  '¡Qué alegría verte! Capi, Miau y Luna te están esperando.',
+  '¡Hola de nuevo! Cada día aprendes un poquito más. ¡Sigamos!',
+  '¡Bienvenida al tablero mágico! Hoy será un gran día para jugar.'
+];
+const ENCOURAGE_OK = [
+  '¡Muy bien hecho!', '¡Exacto, lo lograste!', '¡Genial! Eres una gran jugadora.',
+  '¡Perfecto! Tu magia de ajedrez está creciendo.', '¡Correcto! Sigues avanzando muy bien.'
+];
+const ENCOURAGE_BAD = [
+  'Casi, casi... ¡inténtalo de nuevo!', 'No pasa nada, vamos a intentarlo otra vez.',
+  'Un pequeño tropiezo, ¡tú puedes lograrlo!', 'Vamos con calma, revisemos juntas.'
+];
+</script>
+
+<script>
+/* ============================================================
+   AJEDREZ MÁGICO — motor de la aplicación (vistas, estado, tablero,
+   voz y efectos). Usa Chess (motor de reglas) y los datos globales
+   RANKS, PIECES, OPPONENTS, LEVELS, GREETINGS, ENCOURAGE_OK/BAD.
+   ============================================================ */
+"use strict";
+
+/* ---------------- Progreso persistente ---------------- */
+const SAVE_KEY = 'ajedrezMagico_v1';
+function load(){ try{ const raw=localStorage.getItem(SAVE_KEY); return raw?JSON.parse(raw):null; }catch(e){ return null; } }
+function save(d){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(d)); }catch(e){} }
+function defaultProgress(){
+  return {
+    player:'',
+    unlocked:[true,false,false,false],
+    stars:[0,0,0,0],
+    playUnlocked:[false,false,false],
+    puzzlesSolved:[],
+    points:0,
+    gamesPlayed:0, gamesWon:0, gamesLost:0, gamesDrawn:0,
+    sound:true, voice:true, skin:'magic',
+    history:[]
+  };
+}
+let progress = Object.assign(defaultProgress(), load()||{});
+
+function defaultState(){ return {view:'home', li:null, lessonIdx:0, greeted:false, showSettings:false}; }
+let state = defaultState();
+
+/* ---------------- Utilidades ---------------- */
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function starString(n){ return '⭐'.repeat(n) + '☆'.repeat(3-n); }
+function scrollTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+function shakeEl(id){
+  const el = document.getElementById(id); if(!el) return;
+  el.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:300});
+}
+function nowLabel(){
+  const d = new Date();
+  return d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
+}
+function listToBoardArray(list){
+  const b = Array.from({length:8},()=>Array(8).fill(null));
+  list.forEach(p=>{ const s=Chess.parseSq(p.sq); b[s.row][s.col]={t:p.t,c:p.c}; });
+  return b;
+}
+function buildDemoState(piece,color,fromSq,obstacles){
+  const b = Array.from({length:8},()=>Array(8).fill(null));
+  const f = Chess.parseSq(fromSq);
+  b[f.row][f.col] = {t:piece,c:color};
+  (obstacles||[]).forEach(o=>{ const s=Chess.parseSq(o.sq); b[s.row][s.col]={t:o.t||'P', c:o.c}; });
+  return {board:b, turn:color, ep:null, castling:{wK:false,wQ:false,bK:false,bQ:false}, halfmove:0, fullmove:1, history:[]};
+}
+function mdToHtml(text){
+  if(!text) return '';
+  const lines = String(text).split('\n');
+  let out=''; let listType=null;
+  function closeList(){ if(listType){ out += listType==='ul' ? '</ul>' : '</ol>'; listType=null; } }
+  lines.forEach(raw=>{
+    const line = esc(raw);
+    const um = line.match(/^-\s+(.*)/);
+    const om = line.match(/^\d+\.\s+(.*)/);
+    if(um){
+      if(listType!=='ul'){ closeList(); out+='<ul>'; listType='ul'; }
+      out += '<li>'+um[1]+'</li>';
+    } else if(om){
+      if(listType!=='ol'){ closeList(); out+='<ol>'; listType='ol'; }
+      out += '<li>'+om[1]+'</li>';
+    } else {
+      closeList();
+      if(line.trim()!=='') out += '<p>'+line+'</p>';
+    }
+  });
+  closeList();
+  out = out.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+  return out;
+}
+function levelColorFor(lvId){ const lv = LEVELS[lvId-1]; return lv ? lv.colorClass : 'lc1'; }
+function rankFor(points){
+  let r = RANKS[0];
+  RANKS.forEach(x=>{ if(points>=x.min) r=x; });
+  return r;
+}
+function nextRankProgress(points){
+  const idx = RANKS.findIndex(r=>r===rankFor(points));
+  if(idx===RANKS.length-1) return 100;
+  const cur=RANKS[idx], nxt=RANKS[idx+1];
+  return Math.max(4, Math.min(100, Math.round(((points-cur.min)/(nxt.min-cur.min))*100)));
+}
+
+/* ---------------- Voz (Web Speech API) ---------------- */
+function getSpanishVoice(){
+  if(!('speechSynthesis' in window)) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if(!voices || !voices.length) return null;
+  return voices.find(v=>/^es/i.test(v.lang) && /female|mujer|fem|paulina|monica|elena|helena/i.test(v.name||'')) ||
+         voices.find(v=>/^es/i.test(v.lang)) || null;
+}
+if(typeof window!=='undefined' && 'speechSynthesis' in window){
+  try{ window.speechSynthesis.onvoiceschanged = function(){}; window.speechSynthesis.getVoices(); }catch(e){}
+}
+function speak(text){
+  if(!progress.voice || !text) return;
+  if(!('speechSynthesis' in window)) return;
+  try{
+    window.speechSynthesis.cancel();
+    const clean = String(text).replace(/\*\*/g,'').replace(/[#*_`]/g,'').replace(/\n+/g,' ');
+    const u = new SpeechSynthesisUtterance(clean);
+    const v = getSpanishVoice();
+    if(v) u.voice = v;
+    u.lang = v ? v.lang : 'es-ES';
+    u.pitch = 1.15; u.rate = 0.96; u.volume = 1;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ---------------- Efectos: beep, confeti, puntos flotantes ---------------- */
+let audioCtx;
+function beep(kind){
+  if(!progress.sound) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const freqs = {ok:660, bad:220, win:880, select:520, move:440, capture:360};
+    const mk = (freq, type, t0, dur)=>{
+      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.value=freq; o.type=type;
+      g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.2,t0+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+      o.start(t0); o.stop(t0+dur+0.02);
+    };
+    const t0 = audioCtx.currentTime;
+    mk(freqs[kind]||440, kind==='bad'?'sawtooth':'sine', t0, 0.28);
+    if(kind==='win') setTimeout(()=>{ try{ mk(1180,'sine',audioCtx.currentTime,0.28); }catch(e){} }, 150);
+  }catch(e){}
+}
+function floatPoints(txt){
+  const el = document.createElement('div');
+  el.className='floatpts'; el.textContent=txt;
+  el.style.left=(window.innerWidth/2-20)+'px'; el.style.top=(window.innerHeight/2)+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1000);
+}
+function confetti(){
+  const cv = document.getElementById('confetti'); if(!cv) return;
+  const ctx = cv.getContext('2d');
+  cv.width=innerWidth; cv.height=innerHeight;
+  const cols=['#8a5cd6','#77b06a','#ec6a9c','#f3c53f','#a487d6','#e0813f'];
+  const P=[]; for(let i=0;i<140;i++) P.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.4,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,s:5+Math.random()*7,c:cols[i%cols.length],r:Math.random()*6,vr:(Math.random()-.5)*.3});
+  let t=0;
+  (function anim(){
+    t++; ctx.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.05; p.r+=p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6); ctx.restore(); });
+    if(t<160) requestAnimationFrame(anim); else ctx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+
+/* ============================================================
+   TABLERO — componente reutilizable
+   ============================================================ */
+function boardHTML(opts){
+  opts = opts || {};
+  const skin = progress.skin;
+  const markers = opts.markers || new Set();
+  const stickers = opts.stickers || [];
+  let cells = '';
+  for(let row=7; row>=0; row--){
+    for(let col=0; col<8; col++){
+      const dark = (row+col)%2===0;
+      const sqName = Chess.sq(col,row);
+      const piece = opts.board[row][col];
+      let cls = 'sq '+(dark?'dark':'light');
+      if(opts.selected && opts.selected.col===col && opts.selected.row===row) cls+=' selected';
+      if(opts.lastMove){
+        if(opts.lastMove.from.col===col && opts.lastMove.from.row===row) cls+=' lastfrom';
+        if(opts.lastMove.to.col===col && opts.lastMove.to.row===row) cls+=' lastto';
+      }
+      if(opts.checkSquare && opts.checkSquare.col===col && opts.checkSquare.row===row) cls+=' checked';
+      if(markers.has(sqName)) cls+=' marked';
+      let clickable=false;
+      if(opts.onClick){
+        if(opts.selectable==='all') clickable=true;
+        else if(opts.selectable instanceof Set && opts.selectable.has(sqName)) clickable=true;
+      }
+      if(clickable) cls+=' selectable';
+      const clickAttr = clickable ? ' onclick="'+opts.onClick+'(\''+sqName+'\')"' : '';
+      let inner='';
+      if(piece){
+        const glyph = skin==='classic' ? PIECES[piece.t].classic[piece.c] : PIECES[piece.t].emoji;
+        const bgClass = skin==='classic' ? '' : (piece.c==='w'?'pc-bg-w':'pc-bg-b');
+        const crown = (skin!=='classic' && PIECES[piece.t].crown) ? '<span class="crown">👑</span>' : '';
+        inner = '<span class="pcwrap '+bgClass+'">'+crown+'<span class="pc">'+glyph+'</span></span>';
+      } else {
+        const sticker = stickers.find(s=>s.sq===sqName);
+        if(sticker) inner = '<span class="pc">'+sticker.glyph+'</span>';
+      }
+      const target = (opts.targets||[]).find(t=>t.col===col&&t.row===row);
+      let overlay='';
+      if(target) overlay = (target.capture || piece) ? '<span class="ring-target"></span>' : '<div class="dot-target"></div>';
+      cells += '<div class="'+cls+'"'+clickAttr+'>'+inner+overlay+'</div>';
+    }
+  }
+  const files = 'abcdefgh'.split('').map(f=>'<span>'+f+'</span>').join('');
+  const ranks = [1,2,3,4,5,6,7,8].map(r=>'<span>'+r+'</span>').join('');
+  return '<div class="board-frame"><div class="board'+(opts.mini?' mini':'')+'">'+cells+'</div>'+
+    '<div class="filelabels">'+files+'</div><div class="ranklabels">'+ranks+'</div></div>';
+}
+
+/* ---------------- Demos educativas dentro de las lecciones ---------------- */
+function buildCheckDemoState(){
+  const b = Array.from({length:8},()=>Array(8).fill(null));
+  b[0][4] = {t:'K',c:'w'}; // e1
+  b[4][4] = {t:'R',c:'b'}; // e5
+  b[7][4] = {t:'K',c:'b'}; // e8
+  return {board:b};
+}
+function renderValuesChart(){
+  const order = ['P','N','B','R','Q'];
+  const max = 9;
+  const rows = order.map(k=>{
+    const p = PIECES[k];
+    const pct = Math.round((p.value/max)*100);
+    return '<div style="display:flex;align-items:center;gap:10px;margin:8px 0">'+
+      '<div style="width:34px;font-size:26px">'+p.emoji+'</div>'+
+      '<div style="flex:1;background:#f2e9fa;border-radius:8px;overflow:hidden;height:22px">'+
+        '<div class="svg-barx" style="width:'+pct+'%;height:100%;background:linear-gradient(90deg,var(--sky),var(--deep));border-radius:8px"></div>'+
+      '</div>'+
+      '<div style="width:36px;text-align:right;font-weight:800;color:var(--navy2)">'+p.value+'</div>'+
+    '</div>';
+  }).join('');
+  return '<div class="chartbox">'+rows+'</div><div class="chart-cap">Valor aproximado de cada ficha (el Rey no tiene precio: ¡es el más importante!)</div>';
+}
+function renderDemo(demo){
+  if(!demo) return '';
+  if(demo.type==='board'){
+    const b = Array.from({length:8},()=>Array(8).fill(null));
+    return '<div class="board-outer">'+boardHTML({board:b, mini:true})+'</div><div class="chart-cap">¡Cuenta las casillas! 8 × 8 = 64</div>';
+  }
+  if(demo.type==='initial'){
+    return '<div class="board-outer">'+boardHTML({board:Chess.initialBoard(), mini:true})+'</div><div class="chart-cap">Así se coloca el ejército al empezar la partida</div>';
+  }
+  if(demo.type==='findsquare'){
+    const found = !!state.findSquareDone;
+    const stickers = found ? [{sq:demo.target, glyph:'⭐'}] : [];
+    return '<div id="findsquare-board" class="board-outer">'+boardHTML({board:Array.from({length:8},()=>Array(8).fill(null)),
+        onClick:'findSquareClick', selectable:'all', stickers, mini:true})+'</div>'+
+      '<div class="chart-cap">'+(found? '¡Encontraste '+demo.target.toUpperCase()+'! 🎉' : 'Toca la casilla '+demo.target.toUpperCase())+'</div>';
+  }
+  if(demo.type==='piece'){
+    const st = buildDemoState(demo.piece, demo.color, demo.from, demo.obstacles);
+    const f = Chess.parseSq(demo.from);
+    const moves = Chess.pseudoMovesFrom(st, f.col, f.row);
+    const targets = moves.map(m=>({col:m.to.col,row:m.to.row,capture:m.capture}));
+    return '<div class="board-outer">'+boardHTML({board:st.board, targets, selected:f, mini:true})+'</div>'+
+      (demo.label? '<div class="chart-cap">'+esc(demo.label)+'</div>' : '<div class="chart-cap">Casillas resaltadas: a dónde puede moverse</div>');
+  }
+  if(demo.type==='checkdemo'){
+    const st = buildCheckDemoState();
+    const k = Chess.findKing(st.board,'w');
+    return '<div class="board-outer">'+boardHTML({board:st.board, checkSquare:k, mini:true})+'</div>'+
+      '<div class="chart-cap">¡El Rey blanco está en JAQUE! La Torre negra lo amenaza por la columna e.</div>';
+  }
+  if(demo.type==='values') return renderValuesChart();
+  if(demo.type==='mateDemo'){
+    const pz = LEVEL4.puzzles[0];
+    const b = listToBoardArray(pz.board);
+    const k = Chess.findKing(b,'b');
+    return '<div class="board-outer">'+boardHTML({board:b, checkSquare:k, mini:true})+'</div>'+
+      '<div class="chart-cap">Este Rey negro está acorralado por sus propios peones: ¡un movimiento más y será Jaque Mate!</div>';
+  }
+  return '';
+}
+
+/* ---------------- Mini-juego "toca las casillas" (Nivel 2) ---------------- */
+function practiceKey(p){ return p.piece+p.color+p.from; }
+function renderPractice(practice){
+  if(!state.practice || state.practice.key !== practiceKey(practice)){
+    const st = buildDemoState(practice.piece, practice.color, practice.from);
+    const f = Chess.parseSq(practice.from);
+    const moves = Chess.pseudoMovesFrom(st, f.col, f.row);
+    const correct = new Set(moves.map(m=>Chess.sq(m.to.col,m.to.row)));
+    state.practice = {key:practiceKey(practice), piece:practice.piece, color:practice.color, from:practice.from, correct, found:new Set()};
+  }
+  const p = state.practice;
+  const st = buildDemoState(p.piece, p.color, p.from);
+  const f = Chess.parseSq(p.from);
+  const stickers = Array.from(p.found).map(sq=>({sq, glyph:'✅'}));
+  const done = p.found.size >= p.correct.size;
+  return '<div class="play" id="practice-board">'+
+    '<h4>🎯 '+esc(practice.instruction)+'</h4>'+
+    '<div class="board-outer">'+boardHTML({board:st.board, selected:f, onClick: done?null:'practiceSquareClick', selectable: done?null:'all', stickers, mini:true})+'</div>'+
+    '<div class="chart-cap">Encontradas: '+p.found.size+' / '+p.correct.size+'</div>'+
+    (done? '<div class="feedback ok"><h4>🎉 ¡Las encontraste todas!</h4></div>' : '')+
+  '</div>';
+}
+function practiceSquareClick(sqName){
+  const p = state.practice; if(!p) return;
+  if(p.correct.has(sqName) && !p.found.has(sqName)){
+    p.found.add(sqName); beep('ok'); floatPoints('+5');
+    if(p.found.size >= p.correct.size){
+      beep('win'); confetti(); progress.points += 15; save(progress);
+      speak(pick(ENCOURAGE_OK)+' ¡Encontraste todos los movimientos!');
+    }
+  } else if(!p.correct.has(sqName)){
+    beep('bad'); shakeEl('practice-board');
+  }
+  render();
+}
+function findSquareClick(sqName){
+  const lesson = currentLesson();
+  if(!lesson || !lesson.demo || lesson.demo.type!=='findsquare' || state.findSquareDone) return;
+  if(sqName === lesson.demo.target){
+    state.findSquareDone = true;
+    beep('win'); floatPoints('¡Sí!'); confetti();
+    speak('¡Exacto! Esa es la casilla '+sqName.toUpperCase()+'.');
+  } else {
+    beep('bad'); shakeEl('findsquare-board');
+    speak(pick(ENCOURAGE_BAD));
+  }
+  render();
+}
+
+/* ============================================================
+   NAVEGACIÓN Y VISTAS
+   ============================================================ */
+function go(v){ state.view=v; if(v==='home') state.showSettings=false; render(); scrollTop(); }
+function topbarBrand(){ return '<div class="brand" onclick="go(\'home\')"><div class="logo">♟️</div><b>Ajedrez Mágico</b></div>'; }
+function backHomeBtn(){ return '<button class="iconbtn" onclick="go(\'home\')" title="Inicio">🏠</button>'; }
+
+function viewHome(){
+  if(!state.greeted){
+    state.greeted = true;
+    setTimeout(()=>speak((progress.player?'¡Hola '+progress.player+'! ':'')+pick(GREETINGS)), 500);
+  }
+  const rank = rankFor(progress.points);
+  const levelCards = LEVELS.map((lv,i)=>{
+    const locked = !progress.unlocked[i];
+    const stars = progress.stars[i]||0;
+    return '<div class="level-card '+lv.colorClass+(locked?' locked':'')+'" onclick="'+(locked?'':'openLevel('+i+')')+'">'+
+      '<div class="n">'+lv.emoji+'</div>'+
+      '<h3>Nivel '+lv.id+': '+esc(lv.title)+'</h3>'+
+      '<p>'+esc(lv.subtitle)+'</p>'+
+      '<div class="stars">'+starString(stars)+'</div>'+
+      (locked? '<div class="lockicon">🔒</div>' : '')+
+    '</div>';
+  }).join('');
+  const opponentCards = OPPONENTS.map((o,i)=>{
+    const locked = !progress.playUnlocked[i];
+    return '<div class="opp-card '+levelColorFor(o.unlockLevel)+(locked?' locked':'')+'" onclick="'+(locked?'':'openPlay(\''+o.id+'\')')+'">'+
+      '<div class="em">'+o.emoji+'</div><div class="nm">'+esc(o.name)+'</div>'+
+      '<div class="lv">'+(locked? 'Desbloquea en Nivel '+o.unlockLevel : '¡Lista para jugar!')+'</div>'+
+    '</div>';
+  }).join('');
+  const puzzlesLocked = !progress.unlocked[3];
+  return ''+
+  '<div class="topbar">'+topbarBrand()+
+    '<div class="stats-mini">'+
+      '<span class="chip pill-purple">⭐ '+progress.points+' puntos</span>'+
+      '<button class="iconbtn" onclick="toggleSettings()" title="Ajustes">⚙️</button>'+
+    '</div>'+
+  '</div>'+
+  '<div class="mascot-row"><div class="mascot-face">🦫</div><div class="bubble">'+esc((progress.player?'¡Hola '+progress.player+'! ':'')+'Soy Capi, tu guía mágica. Aprendamos ajedrez juntas, ¡por niveles!')+'</div></div>'+
+  '<div class="avatar">'+
+    '<div class="face">'+rank.emoji+'</div>'+
+    '<div style="flex:1"><div class="rt">'+rank.name+'</div><div class="rankbar"><i style="width:'+nextRankProgress(progress.points)+'%"></i></div></div>'+
+  '</div>'+
+  (state.showSettings ? renderSettingsPanel() : '')+
+  '<h2 style="margin-top:22px">🗺️ Mapa de niveles</h2>'+
+  '<div class="levels">'+levelCards+'</div>'+
+  '<h2 style="margin-top:26px">♟️ ¡A Jugar de verdad!</h2>'+
+  '<div class="opponents">'+opponentCards+'</div>'+
+  '<div class="btnrow" style="justify-content:center;margin-top:14px">'+
+    '<button class="btn ghost" onclick="go(\'puzzles\')" '+(puzzlesLocked?'disabled':'')+'>🧩 Puzzles de Jaque Mate'+(puzzlesLocked?' (Nivel 4)':'')+'</button>'+
+    '<button class="btn ghost" onclick="go(\'diary\')">📔 Mi Diario Mágico</button>'+
+  '</div>'+
+  '<div class="foot">Hecho con 💜 para una futura gran maestra de ajedrez. <b>Ajedrez Mágico</b></div>';
+}
+function renderSettingsPanel(){
+  return '<div class="card" style="padding:16px;margin:14px 0">'+
+    '<h3>⚙️ Ajustes</h3>'+
+    '<div class="btnrow" style="margin-top:10px">'+
+      '<input class="nameinput" id="playerName" placeholder="Tu nombre" value="'+esc(progress.player||'')+'">'+
+      '<button class="btn sm" onclick="savePlayerName()">Guardar</button>'+
+    '</div>'+
+    '<div class="btnrow" style="margin-top:14px">'+
+      '<label class="switch"><input type="checkbox" '+(progress.sound?'checked':'')+' onchange="toggleSound()"><span class="track"></span>🔊 Sonidos</label>'+
+      '<label class="switch"><input type="checkbox" '+(progress.voice?'checked':'')+' onchange="toggleVoice()"><span class="track"></span>🗣️ Capi habla</label>'+
+    '</div>'+
+    '<div class="skin-toggle-row" style="margin-top:14px">'+
+      '<span class="chip">Fichas:</span>'+
+      '<button class="btn sm '+(progress.skin==='magic'?'':'ghost')+'" onclick="setSkin(\'magic\')">Mágicas 🦄</button>'+
+      '<button class="btn sm '+(progress.skin==='classic'?'':'ghost')+'" onclick="setSkin(\'classic\')">Clásicas ♟️</button>'+
+    '</div>'+
+    '<div class="btnrow" style="margin-top:16px">'+
+      '<button class="btn secondary sm" onclick="resetProgress()">🔄 Reiniciar progreso</button>'+
+    '</div>'+
+  '</div>';
+}
+function toggleSettings(){ state.showSettings=!state.showSettings; render(); }
+function toggleSound(){ progress.sound=!progress.sound; save(progress); beep('ok'); }
+function toggleVoice(){ progress.voice=!progress.voice; save(progress); if(progress.voice) speak('¡Ahora puedo hablar contigo!'); }
+function setSkin(s){ progress.skin=s; save(progress); render(); }
+function savePlayerName(){ const el=document.getElementById('playerName'); if(el){ progress.player=el.value.trim().slice(0,24); save(progress);} render(); }
+function resetProgress(){
+  if(confirm('¿Reiniciar todo tu progreso, estrellas y puntos?')){
+    progress = defaultProgress(); save(progress); state = defaultState(); render();
+  }
+}
+
+/* ---------------- Lecciones ---------------- */
+function currentLevel(){ return state.li!=null ? LEVELS[state.li] : null; }
+function currentLesson(){ const lv=currentLevel(); return lv ? lv.lessons[state.lessonIdx] : null; }
+function openLevel(i){
+  state.li=i; state.lessonIdx=0; state.lastSpokenLessonKey=null; state.findSquareDone=false; state.practice=null;
+  state.view='level'; render(); scrollTop();
+}
+function lessonNext(){ state.lessonIdx++; render(); scrollTop(); }
+function lessonPrev(){ state.lessonIdx--; render(); scrollTop(); }
+
+function viewLevel(){
+  const lv = currentLevel(); const lesson = currentLesson();
+  if(!lv || !lesson){ go('home'); return ''; }
+  const total = lv.lessons.length;
+  const key = lv.id+'-'+state.lessonIdx;
+  if(state.lastSpokenLessonKey !== key){
+    state.lastSpokenLessonKey = key; state.findSquareDone=false; state.practice=null;
+    setTimeout(()=>speak(lesson.mascotSay||lesson.title), 300);
+  }
+  const dots = lv.lessons.map((_,i)=>'<span class="dot '+(i===state.lessonIdx?'on':(i<state.lessonIdx?'done':''))+'"></span>').join('');
+  let demoHTML = renderDemo(lesson.demo);
+  if(lesson.demo2) demoHTML += renderDemo(lesson.demo2);
+  const practiceHTML = lesson.practice ? renderPractice(lesson.practice) : '';
+  const isLast = state.lessonIdx === total-1;
+  return ''+
+  '<div class="topbar">'+topbarBrand()+backHomeBtn()+'</div>'+
+  '<div class="mascot-row"><div class="mascot-face">🦫</div><div class="bubble">'+esc(lesson.mascotSay||'')+'</div></div>'+
+  '<div class="paper"><div class="pad learn">'+
+    '<div class="chip pill-purple">Nivel '+lv.id+' · '+esc(lv.title)+'</div>'+
+    '<h2 style="margin-top:10px">'+esc(lesson.title)+'</h2>'+
+    mdToHtml(lesson.body)+
+    demoHTML+
+    (lesson.tip? '<div class="tip"><b>💡 Truco:</b> '+esc(lesson.tip)+'</div>' : '')+
+    practiceHTML+
+  '</div></div>'+
+  '<div class="progress-dots">'+dots+'</div>'+
+  '<div class="btnrow" style="justify-content:center">'+
+    (state.lessonIdx>0 ? '<button class="btn ghost sm" onclick="lessonPrev()">← Anterior</button>' : '')+
+    (isLast ? '<button class="btn green" onclick="startQuiz()">Ir al Quiz 📝</button>'
+            : '<button class="btn sm" onclick="lessonNext()">Siguiente →</button>')+
+  '</div>';
+}
+
+/* ---------------- Quiz (incluye puzzles de práctica del Nivel 3 como preguntas) ---------------- */
+function currentQuiz(){ const lv=currentLevel(); return lv ? (lv.practicePuzzles||[]).concat(lv.quiz) : []; }
+function questionDiagram(q){
+  if(q.board) return '<div class="board-outer">'+boardHTML({board:listToBoardArray(q.board), mini:true})+'</div>';
+  if(q.chart && q.chart.type==='board'){
+    const board = q.chart.mode==='initial' ? Chess.initialBoard() : Array.from({length:8},()=>Array(8).fill(null));
+    const markers = new Set(q.chart.highlight||[]);
+    return '<div class="board-outer">'+boardHTML({board, markers, mini:true})+'</div>';
+  }
+  return '';
+}
+function startQuiz(){
+  state.view='quiz'; state.quizIdx=0; state.quizScore=0; state.quizAnswers=[];
+  state.quizAttempt=0; state.answered=false; state.selectedOpt=null; state.wrongOpts=null; state.lastPhrase='';
+  render(); scrollTop();
+}
+function viewQuiz(){
+  const quiz = currentQuiz(); const q = quiz[state.quizIdx];
+  if(!q){ finishQuiz(); return ''; }
+  const total = quiz.length;
+  const pct = Math.round((state.quizIdx/total)*100);
+  const diagram = questionDiagram(q);
+  let optsHTML = '';
+  if(q.type==='mc' || q.type==='truefalse'){
+    optsHTML = '<div class="opts">'+q.options.map((opt,i)=>{
+      let cls='opt'; let disabled=false;
+      if(state.answered){
+        if(i===q.correctIndex) cls+=' correct';
+        else if(i===state.selectedOpt) cls+=' wrong';
+        else cls+=' dim';
+        disabled=true;
+      } else if(state.wrongOpts && state.wrongOpts.has(i)){
+        cls+=' wrong dim'; disabled=true;
+      }
+      return '<button class="'+cls+'" '+(disabled?'disabled':'')+' onclick="answerOpt('+i+')"><span class="key">'+String.fromCharCode(65+i)+'</span>'+esc(opt)+'</button>';
+    }).join('')+'</div>';
+  } else if(q.type==='numeric'){
+    optsHTML = '<div class="num-input">'+
+      '<input type="number" step="any" id="numAnswer" '+(state.answered?'disabled':'')+' placeholder="Tu respuesta">'+
+      (q.unit? '<span class="chip">'+esc(q.unit)+'</span>' : '')+
+      (state.answered? '' : '<button class="btn sm" onclick="answerNumeric()">Comprobar</button>')+
+    '</div>';
+  }
+  const feedback = state.answered ? renderFeedback(q) : '';
+  return ''+
+  '<div class="topbar">'+topbarBrand()+backHomeBtn()+'</div>'+
+  '<div class="paper" id="quizcard"><div class="pad">'+
+    '<div class="qhead"><span class="chip pill-purple">Pregunta '+(state.quizIdx+1)+' / '+total+'</span>'+
+      '<span class="chip pill-yellow">🏆 '+state.quizScore+' pts</span></div>'+
+    '<div class="qbar"><i style="width:'+pct+'%"></i></div>'+
+    diagram+
+    '<div class="qprompt">'+esc(q.prompt)+'</div>'+
+    optsHTML+
+    feedback+
+  '</div></div>'+
+  (state.answered? '<div class="btnrow" style="justify-content:center;margin-top:14px"><button class="btn green" onclick="nextQuestion()">'+(state.quizIdx<total-1?'Siguiente →':'Ver resultados 🎉')+'</button></div>' : '');
+}
+function answerOpt(i){
+  const q = currentQuiz()[state.quizIdx];
+  state.quizAttempt = (state.quizAttempt||0)+1;
+  if(i===q.correctIndex){
+    state.answered=true; state.selectedOpt=i;
+    const earned = state.quizAttempt<=1 ? q.points : Math.round(q.points*0.5);
+    state.quizScore += earned;
+    state.quizAnswers.push({q, correct:true, chosen:i, earned});
+    state.lastPhrase = pick(ENCOURAGE_OK);
+    beep('ok'); floatPoints('+'+earned); speak(state.lastPhrase);
+  } else {
+    state.wrongOpts = state.wrongOpts || new Set();
+    state.wrongOpts.add(i);
+    beep('bad'); shakeEl('quizcard');
+    state.lastPhrase = pick(ENCOURAGE_BAD);
+    speak(state.lastPhrase);
+    if(state.wrongOpts.size >= q.options.length-1){
+      state.answered=true; state.selectedOpt=i;
+      state.quizAnswers.push({q, correct:false, chosen:i, earned:0});
+    }
+  }
+  render();
+}
+function answerNumeric(){
+  const q = currentQuiz()[state.quizIdx];
+  const el = document.getElementById('numAnswer');
+  const val = el ? parseFloat(el.value) : NaN;
+  const ok = !isNaN(val) && Math.abs(val-q.answer) <= (q.tolerance||0.01);
+  state.answered=true; state.userNumeric=val;
+  const earned = ok ? q.points : 0;
+  state.quizScore += earned;
+  state.quizAnswers.push({q, correct:ok, chosen:val, earned});
+  state.lastPhrase = ok ? pick(ENCOURAGE_OK) : pick(ENCOURAGE_BAD);
+  if(ok){ beep('ok'); floatPoints('+'+earned); } else { beep('bad'); shakeEl('quizcard'); }
+  speak(state.lastPhrase);
+  render();
+}
+function renderFeedback(q){
+  const last = state.quizAnswers[state.quizAnswers.length-1];
+  const ok = last.correct;
+  let extra = '';
+  if(q.type==='numeric' && !ok && !isNaN(last.chosen)){
+    extra = '<div style="margin-top:6px">Tu respuesta: <b>'+last.chosen+'</b> — Respuesta correcta: <b>'+q.answer+(q.unit||'')+'</b></div>';
+  }
+  return '<div class="feedback '+(ok?'ok':'bad')+'">'+
+    '<h4>'+esc(state.lastPhrase||(ok?'¡Muy bien!':'Casi...'))+'</h4>'+
+    extra+
+    '<div class="corr"><b>💡 Explicación:</b> '+esc(q.correction)+'</div>'+
+  '</div>';
+}
+function nextQuestion(){
+  const quiz = currentQuiz();
+  if(state.quizIdx < quiz.length-1){
+    state.quizIdx++; state.answered=false; state.selectedOpt=null; state.wrongOpts=null; state.quizAttempt=0;
+    render(); scrollTop();
+  } else finishQuiz();
+}
+function finishQuiz(){
+  const lv = currentLevel(); const quiz = currentQuiz();
+  const maxPts = quiz.reduce((a,q)=>a+q.points,0);
+  const pctScore = maxPts>0 ? state.quizScore/maxPts : 0;
+  let stars = 0;
+  if(pctScore>=0.9) stars=3; else if(pctScore>=0.7) stars=2; else if(pctScore>=0.45) stars=1;
+  const li = state.li;
+  progress.stars[li] = Math.max(progress.stars[li]||0, stars);
+  progress.points += state.quizScore;
+  const passed = pctScore >= 0.45;
+  let leveledUp=false, unlockedOpponent=null;
+  if(passed){
+    if(li+1 < LEVELS.length && !progress.unlocked[li+1]){ progress.unlocked[li+1]=true; leveledUp=true; }
+    const oi = OPPONENTS.findIndex(o=>o.unlockLevel===lv.id);
+    if(oi>=0 && !progress.playUnlocked[oi]){ progress.playUnlocked[oi]=true; unlockedOpponent=OPPONENTS[oi]; }
+  }
+  progress.history.unshift({type:'quiz', level:lv.id, stars, points:state.quizScore, date:nowLabel()});
+  progress.history = progress.history.slice(0,25);
+  save(progress);
+  state.view='results';
+  state.resultData = {stars, earned:state.quizScore, maxPts, passed, leveledUp, unlockedOpponent, level:lv};
+  render(); scrollTop();
+  if(passed){ confetti(); setTimeout(()=>speak('¡Nivel '+lv.id+' completado! Ganaste '+stars+' estrellas. '+(unlockedOpponent?'¡Desbloqueaste a '+unlockedOpponent.name+'!':'')),400); }
+  else setTimeout(()=>speak('Casi lo logras. ¡Puedes repetir el quiz cuando quieras para mejorar!'),400);
+}
+function viewResults(){
+  const r = state.resultData; if(!r){ go('home'); return ''; }
+  return ''+
+  '<div class="topbar">'+topbarBrand()+backHomeBtn()+'</div>'+
+  '<div class="paper"><div class="pad result-hero">'+
+    '<div style="font-size:52px">'+(r.passed?'🎉':'💪')+'</div>'+
+    '<div class="big-score">'+r.earned+' pts</div>'+
+    '<div class="stars-big">'+starString(r.stars)+'</div>'+
+    '<p style="font-size:17px">'+(r.passed? '¡Completaste el Nivel '+r.level.id+': '+esc(r.level.title)+'!' : 'Casi completas el Nivel '+r.level.id+'. ¡Puedes intentarlo de nuevo!')+'</p>'+
+    (r.leveledUp? '<div class="chip pill-green" style="font-size:15px;padding:10px 16px">🔓 ¡Nuevo nivel desbloqueado!</div>' : '')+
+    (r.unlockedOpponent? '<div class="chip pill-pink" style="font-size:15px;padding:10px 16px;margin-top:8px">✨ ¡Desbloqueaste a '+esc(r.unlockedOpponent.name)+' '+r.unlockedOpponent.emoji+' para jugar!</div>' : '')+
+    '<div class="grid2" style="margin-top:20px">'+
+      '<div class="kpi"><div class="v">'+r.earned+'/'+r.maxPts+'</div><div class="l">Puntos del quiz</div></div>'+
+      '<div class="kpi"><div class="v">'+Math.round((r.earned/Math.max(1,r.maxPts))*100)+'%</div><div class="l">Aciertos</div></div>'+
+      '<div class="kpi"><div class="v">'+progress.points+'</div><div class="l">Puntos totales</div></div>'+
+    '</div>'+
+    '<div class="btnrow" style="justify-content:center;margin-top:20px">'+
+      (!r.passed? '<button class="btn" onclick="startQuiz()">🔁 Reintentar Quiz</button>' : '')+
+      '<button class="btn ghost" onclick="go(\'home\')">🗺️ Volver al mapa</button>'+
+      (r.unlockedOpponent? '<button class="btn pink" onclick="openPlay(\''+r.unlockedOpponent.id+'\')">♟️ ¡Jugar ahora!</button>' : '')+
+    '</div>'+
+  '</div></div>';
+}
+
+/* ============================================================
+   ¡A JUGAR! — partida completa contra la IA
+   ============================================================ */
+function openPlay(oppId){
+  const idx = OPPONENTS.findIndex(o=>o.id===oppId); if(idx<0) return;
+  const opp = OPPONENTS[idx];
+  if(!progress.playUnlocked[idx]) return;
+  state.view='play';
+  const initSt = Chess.initialState();
+  state.game = {
+    opp, chessState: initSt, stateHistory:[initSt], sanHistory:[],
+    selected:null, targets:[], lastMove:null, pendingPromotion:null, thinking:false, result:null
+  };
+  state.hintText=null;
+  render(); scrollTop();
+  setTimeout(()=>speak(opp.intro), 400);
+}
+function renderOpponentPicker(){
+  const cards = OPPONENTS.map((o,i)=>{
+    const locked = !progress.playUnlocked[i];
+    return '<div class="opp-card '+levelColorFor(o.unlockLevel)+(locked?' locked':'')+'" onclick="'+(locked?'':'openPlay(\''+o.id+'\')')+'">'+
+      '<div class="em">'+o.emoji+'</div><div class="nm">'+esc(o.name)+'</div>'+
+      '<div class="lv">'+(locked?'Desbloquea en Nivel '+o.unlockLevel:'¡Toca para jugar!')+'</div>'+
+    '</div>';
+  }).join('');
+  return '<div class="topbar">'+topbarBrand()+backHomeBtn()+'</div>'+
+    '<h2>♟️ Elige a tu rival</h2><p>Cada amiga mágica juega con un poquito más de magia que la anterior.</p>'+
+    '<div class="opponents">'+cards+'</div>';
+}
+function capturedList(cs, color){
+  const initialCounts = {P:8,N:2,B:2,R:2,Q:1,K:1};
+  const counts = {P:0,N:0,B:0,R:0,Q:0,K:0};
+  cs.board.forEach(row=>row.forEach(p=>{ if(p&&p.c===color) counts[p.t]++; }));
+  let out='';
+  Object.keys(initialCounts).forEach(t=>{
+    const missing = Math.max(0, initialCounts[t]-counts[t]);
+    for(let i=0;i<missing;i++) out += '<span class="cp">'+(progress.skin==='classic'?PIECES[t].classic[color]:PIECES[t].emoji)+'</span>';
+  });
+  return out || '<span style="opacity:.5;font-size:13px">— ninguna —</span>';
+}
+function viewPlay(){
+  if(!state.game) return renderOpponentPicker();
+  const g = state.game; const cs = g.chessState;
+  const inCheck = Chess.isInCheck(cs, cs.turn);
+  const checkSq = inCheck ? Chess.findKing(cs.board, cs.turn) : null;
+  const selectable = new Set();
+  if(!g.result && cs.turn==='w' && !g.thinking && !g.pendingPromotion){
+    for(let r=0;r<8;r++) for(let c=0;c<8;c++){ const p=cs.board[r][c]; if(p && p.c==='w') selectable.add(Chess.sq(c,r)); }
+    g.targets.forEach(m=>selectable.add(Chess.sq(m.to.col, m.to.row))); // casillas destino, aunque estén vacías
+  }
+  const targets = g.targets.map(m=>({col:m.to.col,row:m.to.row,capture:m.capture}));
+  let statusHTML = '';
+  if(g.result){
+    const cls = g.result.winner==='w' ? 'win' : g.result.winner==='b' ? 'lose' : 'draw';
+    statusHTML = '<div class="statusbanner '+cls+'">'+esc(g.result.message)+'</div>';
+  }
+  const moveListHTML = g.sanHistory.length ? pairMoves(g.sanHistory) : 'Aún no hay movimientos';
+  return ''+
+  '<div class="topbar">'+topbarBrand()+backHomeBtn()+'</div>'+
+  '<div class="mascot-row"><div class="mascot-face">'+g.opp.emoji+'</div><div class="bubble">'+esc(g.opp.name)+' te está retando. ¡Tú juegas con las piezas claras!</div></div>'+
+  statusHTML+
+  '<div class="turnbanner'+(g.thinking?' thinking':'')+'">'+(g.thinking? g.opp.name+' está pensando... 🤔' : (g.result? '' : (cs.turn==='w'? 'Tu turno ✨'+(inCheck?' — ¡estás en JAQUE!':'') : g.opp.name+' está jugando')))+'</div>'+
+  '<div class="board-outer">'+boardHTML({board:cs.board, selected:g.selected, targets, lastMove:g.lastMove,
+      checkSquare: inCheck?checkSq:null, onClick:(g.result||g.thinking||g.pendingPromotion)?null:'gameSquareClick', selectable})+'</div>'+
+  '<div class="gamehud">'+
+    '<div class="card" style="padding:12px"><b>Capturaste:</b><div class="captured-row">'+capturedList(cs,'b')+'</div>'+
+      '<b>Te capturaron:</b><div class="captured-row">'+capturedList(cs,'w')+'</div></div>'+
+    '<div class="card" style="padding:12px"><b>Movimientos:</b><div class="movelist">'+moveListHTML+'</div></div>'+
+  '</div>'+
+  '<div class="btnrow" style="justify-content:center;margin-top:14px">'+
+    '<button class="btn ghost sm" onclick="undoMove()" '+(g.sanHistory.length<1||g.thinking?'disabled':'')+'>↩️ Deshacer</button>'+
+    '<button class="btn yellow sm" onclick="hintMove()" '+(g.result||g.thinking?'disabled':'')+'>💡 Pista</button>'+
+    '<button class="btn secondary sm" onclick="openPlay(\''+g.opp.id+'\')">🔄 Nueva partida</button>'+
+  '</div>'+
+  (state.hintText? '<div class="hintbox">💡 '+esc(state.hintText)+'</div>' : '')+
+  (g.pendingPromotion? renderPromotionModal() : '');
+}
+function pairMoves(sanList){
+  let out=''; for(let i=0;i<sanList.length;i+=2){ out+='<span class="mv-white">'+(i/2+1)+'. '+esc(sanList[i])+'</span> '+(sanList[i+1]?esc(sanList[i+1]):'')+'<br>'; } return out;
+}
+function gameSquareClick(sqName){
+  const g = state.game; if(!g || g.result || g.thinking || g.pendingPromotion) return;
+  const cs = g.chessState; const sq = Chess.parseSq(sqName); const piece = cs.board[sq.row][sq.col];
+  if(g.selected){
+    const mv = g.targets.find(m=>m.to.col===sq.col && m.to.row===sq.row);
+    if(mv){
+      if(mv.promotion){ g.pendingPromotion = {from:g.selected, to:sq}; render(); return; }
+      playPlayerMove(mv); return;
+    }
+    if(piece && piece.c==='w') selectSquareForGame(sq);
+    else { g.selected=null; g.targets=[]; render(); }
+  } else if(piece && piece.c==='w') selectSquareForGame(sq);
+}
+function selectSquareForGame(sq){
+  const g = state.game;
+  g.selected = sq; g.targets = Chess.legalMovesFrom(g.chessState, sq.col, sq.row);
+  beep('select'); render();
+}
+function playPlayerMove(mv){
+  const g = state.game; const before = g.chessState;
+  const captured = before.board[mv.to.row][mv.to.col];
+  const next = Chess.applyMove(before, mv);
+  g.sanHistory.push(Chess.san(before, mv, next));
+  g.chessState = next; g.stateHistory.push(next);
+  g.selected=null; g.targets=[]; g.lastMove=mv; g.pendingPromotion=null;
+  state.hintText=null;
+  beep(captured||mv.enPassant?'capture':'move');
+  render();
+  checkGameEnd();
+  if(!g.result){ g.thinking=true; render(); setTimeout(()=>aiMove(), 650+Math.random()*500); }
+}
+function checkGameEnd(){
+  const g = state.game; const status = Chess.gameStatus(g.chessState);
+  if(!status.over) return;
+  if(status.reason==='checkmate'){
+    const win = status.result==='w';
+    g.result = {winner:status.result, message: win? '¡Jaque Mate! Ganaste 🎉' : 'Jaque Mate. '+g.opp.name+' ganó esta vez'};
+    progress.gamesPlayed++; if(win) progress.gamesWon++; else progress.gamesLost++;
+    progress.points += win?40:10; save(progress);
+    if(win){ confetti(); speak(g.opp.winMsg); } else speak(g.opp.loseMsg);
+  } else {
+    g.result = {winner:'draw', message:'¡Tablas! Tú y '+g.opp.name+' empataron.'};
+    progress.gamesPlayed++; progress.gamesDrawn++; progress.points+=15; save(progress);
+    speak('¡Qué partida tan pareja! Terminó en tablas.');
+  }
+  render();
+}
+function aiMove(){
+  const g = state.game; if(!g || g.result) return;
+  const before = g.chessState;
+  const mv = Chess.chooseMove(before, g.opp.depth);
+  g.thinking=false;
+  if(!mv){ checkGameEnd(); render(); return; }
+  const next = Chess.applyMove(before, mv);
+  g.sanHistory.push(Chess.san(before, mv, next));
+  g.chessState = next; g.stateHistory.push(next); g.lastMove = mv;
+  beep('capture');
+  render();
+  checkGameEnd();
+}
+function renderPromotionModal(){
+  const choices = [{t:'Q',label:PIECES.Q.emoji,name:'Unicornio'},{t:'R',label:PIECES.R.emoji,name:'Castillo'},{t:'B',label:PIECES.B.emoji,name:'Gatito'},{t:'N',label:PIECES.N.emoji,name:'Caballito'}];
+  return '<div class="promo-overlay"><div class="promo-box">'+
+    '<h3>¡Tu Capibara llegó al final! 🎉</h3><p>¿En qué se transforma?</p>'+
+    '<div class="promo-choices">'+choices.map(c=>'<button class="promo-choice" title="'+c.name+'" onclick="choosePromotion(\''+c.t+'\')">'+c.label+'</button>').join('')+'</div>'+
+  '</div></div>';
+}
+function choosePromotion(t){
+  const g = state.game; const pp = g.pendingPromotion; if(!pp) return;
+  const legal = Chess.legalMovesFrom(g.chessState, pp.from.col, pp.from.row);
+  const mv = legal.find(m=>m.to.col===pp.to.col && m.to.row===pp.to.row && m.promotion===t);
+  g.pendingPromotion=null;
+  if(mv) playPlayerMove(mv); else render();
+}
+function undoMove(){
+  const g = state.game; if(!g || g.thinking) return;
+  if(g.stateHistory.length<=1) return;
+  let popCount = (g.chessState.turn==='w' && g.stateHistory.length>=3) ? 2 : 1;
+  for(let i=0;i<popCount && g.stateHistory.length>1;i++){ g.stateHistory.pop(); g.sanHistory.pop(); }
+  g.chessState = g.stateHistory[g.stateHistory.length-1];
+  g.selected=null; g.targets=[]; g.lastMove=null; g.result=null; g.thinking=false; g.pendingPromotion=null;
+  render();
+}
+function hintMove(){
+  const g = state.game; if(!g || g.result) return;
+  const mv = Chess.chooseMove(g.chessState, 2);
+  if(!mv){ state.hintText='No encuentro una jugada clara, ¡pero confío en ti!'; render(); return; }
+  const pieceName = PIECES[g.chessState.board[mv.from.row][mv.from.col].t].name;
+  const txt = 'Podrías mover tu '+pieceName+' de '+Chess.sq(mv.from.col,mv.from.row).toUpperCase()+' a '+Chess.sq(mv.to.col,mv.to.row).toUpperCase()+(mv.capture?', ¡y capturar algo!':'.');
+  state.hintText = txt;
+  beep('select'); speak(txt); render();
+}
+
+/* ============================================================
+   PUZZLES DE JAQUE MATE (Nivel 4)
+   ============================================================ */
+function openPuzzle(i){
+  const pz = LEVEL4.puzzles[i];
+  const cs = { board:listToBoardArray(pz.board), turn:pz.turn, castling:{wK:false,wQ:false,bK:false,bQ:false}, ep:null, halfmove:0, fullmove:1, history:[] };
+  state.puzzleGame = {puzzle:pz, chessState:cs, selected:null, targets:[], solved:false, wrongTry:false};
+  state.hintText=null;
+  render(); scrollTop();
+  setTimeout(()=>speak(pz.story), 400);
+}
+function viewPuzzles(){
+  if(!state.puzzleGame){
+    const cards = LEVEL4.puzzles.map((pz,i)=>{
+      const solved = progress.puzzlesSolved.includes(pz.id);
+      return '<div class="opp-card lc4" onclick="openPuzzle('+i+')">'+
+        '<div class="em">'+(solved?'✅':'🧩')+'</div><div class="nm">'+esc(pz.name)+'</div>'+
+        '<div class="lv">'+(solved?'¡Resuelto!':'Encuentra el Jaque Mate')+'</div>'+
+      '</div>';
+    }).join('');
+    return '<div class="topbar">'+topbarBrand()+backHomeBtn()+'</div>'+
+      '<h2>🧩 Puzzles de Jaque Mate</h2><p>Encuentra el jaque mate en solo 1 movimiento. ¡Toca una pieza y luego la casilla destino!</p>'+
+      '<div class="opponents">'+cards+'</div>';
+  }
+  const pg = state.puzzleGame; const pz = pg.puzzle; const cs = pg.chessState;
+  const selectable = new Set();
+  if(!pg.solved){
+    for(let r=0;r<8;r++) for(let c=0;c<8;c++){ const p=cs.board[r][c]; if(p && p.c===pz.turn) selectable.add(Chess.sq(c,r)); }
+    pg.targets.forEach(m=>selectable.add(Chess.sq(m.to.col, m.to.row))); // casillas destino, aunque estén vacías
+  }
+  const targets = pg.targets.map(m=>({col:m.to.col,row:m.to.row,capture:m.capture}));
+  return '<div class="topbar">'+topbarBrand()+backHomeBtn()+'</div>'+
+    '<h2>🧩 '+esc(pz.name)+'</h2><p>'+esc(pz.story)+'</p>'+
+    '<div class="chip pill-purple">Juegan: '+(pz.turn==='w'?'Blancas':'Negras')+' — ¡Encuentra el Jaque Mate en 1!</div>'+
+    '<div id="app-puzzle" class="board-outer">'+boardHTML({board:cs.board, selected:pg.selected, targets, onClick:pg.solved?null:'puzzleSquareClick', selectable})+'</div>'+
+    (pg.solved? '<div class="feedback ok"><h4>🎉 ¡Jaque Mate! Lo resolviste.</h4></div>' : '')+
+    (pg.wrongTry? '<div class="feedback bad"><h4>Casi... ¡ese no fue el mate!</h4></div>' : '')+
+    '<div class="btnrow" style="justify-content:center;margin-top:10px">'+
+      '<button class="btn yellow sm" onclick="puzzleHint()">💡 Pista</button>'+
+      '<button class="btn ghost sm" onclick="closePuzzle()">← Volver a puzzles</button>'+
+    '</div>'+
+    (state.hintText? '<div class="hintbox">💡 '+esc(state.hintText)+'</div>' : '');
+}
+function closePuzzle(){ state.puzzleGame=null; render(); scrollTop(); }
+function puzzleSquareClick(sqName){
+  const pg = state.puzzleGame; if(!pg || pg.solved) return;
+  const cs = pg.chessState; const sq = Chess.parseSq(sqName); const piece = cs.board[sq.row][sq.col];
+  if(pg.selected){
+    const mv = pg.targets.find(m=>m.to.col===sq.col && m.to.row===sq.row);
+    if(mv){
+      const next = Chess.applyMove(cs, mv);
+      if(Chess.isCheckmate(next)){
+        pg.chessState=next; pg.solved=true; pg.wrongTry=false; pg.selected=null; pg.targets=[];
+        if(!progress.puzzlesSolved.includes(pg.puzzle.id)){ progress.puzzlesSolved.push(pg.puzzle.id); progress.points+=pg.puzzle.points; save(progress); }
+        beep('win'); confetti(); speak('¡JAQUE MATE! Lo lograste, eres una gran maestra mágica.');
+      } else {
+        pg.wrongTry=true; pg.selected=null; pg.targets=[];
+        beep('bad'); shakeEl('app-puzzle');
+        speak('Casi, pero ese movimiento no da jaque mate todavía. ¡Inténtalo otra vez!');
+      }
+      render(); return;
+    }
+    if(piece && piece.c===pg.puzzle.turn){ pg.selected=sq; pg.targets=Chess.legalMovesFrom(cs,sq.col,sq.row); pg.wrongTry=false; render(); }
+    else { pg.selected=null; pg.targets=[]; render(); }
+  } else if(piece && piece.c===pg.puzzle.turn){
+    pg.selected=sq; pg.targets=Chess.legalMovesFrom(cs,sq.col,sq.row); render();
+  }
+}
+function puzzleHint(){
+  const pg = state.puzzleGame; if(!pg) return;
+  state.hintText = pg.puzzle.hint; speak(pg.puzzle.hint); render();
+}
+
+/* ---------------- Diario Mágico ---------------- */
+function viewDiary(){
+  const rank = rankFor(progress.points);
+  const totalStars = progress.stars.reduce((a,b)=>a+b,0);
+  const items = progress.history.length ? progress.history.map(h=>
+    '<div class="diary-item"><span>📝 Quiz Nivel '+h.level+' · '+esc(h.date||'')+'</span><span>'+starString(h.stars)+' · +'+h.points+' pts</span></div>'
+  ).join('') : '<p>Aún no hay aventuras registradas. ¡Empieza a aprender y jugar!</p>';
+  return '<div class="topbar">'+topbarBrand()+backHomeBtn()+'</div>'+
+    '<h2>📔 Mi Diario Mágico</h2>'+
+    '<div class="grid2">'+
+      '<div class="kpi"><div class="v">'+progress.points+'</div><div class="l">Puntos totales</div></div>'+
+      '<div class="kpi"><div class="v">'+rank.emoji+'</div><div class="l">'+esc(rank.name)+'</div></div>'+
+      '<div class="kpi"><div class="v">'+progress.gamesPlayed+'</div><div class="l">Partidas jugadas</div></div>'+
+      '<div class="kpi"><div class="v">'+progress.gamesWon+'</div><div class="l">Partidas ganadas</div></div>'+
+      '<div class="kpi"><div class="v">'+progress.puzzlesSolved.length+'/'+LEVEL4.puzzles.length+'</div><div class="l">Puzzles resueltos</div></div>'+
+      '<div class="kpi"><div class="v">'+totalStars+'/'+(LEVELS.length*3)+'</div><div class="l">Estrellas totales</div></div>'+
+    '</div>'+
+    '<h3 style="margin-top:20px">Aventuras recientes</h3>'+
+    '<div class="diary-list">'+items+'</div>';
+}
+
+/* ============================================================
+   RENDER PRINCIPAL
+   ============================================================ */
+function render(){
+  const app = document.getElementById('app'); if(!app) return;
+  let html;
+  switch(state.view){
+    case 'home': html=viewHome(); break;
+    case 'level': html=viewLevel(); break;
+    case 'quiz': html=viewQuiz(); break;
+    case 'results': html=viewResults(); break;
+    case 'play': html=viewPlay(); break;
+    case 'puzzles': html=viewPuzzles(); break;
+    case 'diary': html=viewDiary(); break;
+    default: html=viewHome();
+  }
+  app.innerHTML = html;
+}
+render();
+</script>
+</body>
+</html>
