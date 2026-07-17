@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ajedrez Mágico · Aprende a jugar con Capi, Miau y Luna</title>
+<title>Ajedrez Mágico · El tablero mágico de Ana Lu</title>
 <style>
 /* ============================================================
    AJEDREZ MÁGICO — Tema "cuaderno mágico" (capibaras, gatos y unicornios)
@@ -790,14 +790,14 @@ const PIECES = {
 
 const OPPONENTS = [
   {id:'capi', name:'Capi la Capibara', emoji:'🦫', depth:0, unlockLevel:2,
-   color:'lc1', intro:'¡Hola! Soy Capi 🦫. Apenas estoy aprendiendo, ¡vamos con calma!',
-   winMsg:'¡Guau, ganaste! Capi está feliz por ti 🦫💕', loseMsg:'¡Casi casi! Capi tuvo suerte esta vez. ¿Otra partidita?'},
+   color:'lc1', intro:'¡Hola, {name}! Soy Capi 🦫. Apenas estoy aprendiendo, ¡vamos con calma!',
+   winMsg:'¡Guau, {name} ganó! Capi está feliz por ti 🦫💕', loseMsg:'¡Casi casi, {name}! Capi tuvo suerte esta vez. ¿Otra partidita?'},
   {id:'miau', name:'Miau la Gata', emoji:'🐱', depth:2, unlockLevel:3,
-   color:'lc2', intro:'Miaaau~ Soy Miau 🐱, ¡me gusta pensar bien mis jugadas!',
-   winMsg:'¡Le ganaste a Miau! Eres una gran jugadora 🐱✨', loseMsg:'Miau ronroneó de gusto con esa partida. ¿Revancha?'},
+   color:'lc2', intro:'Miaaau~ Soy Miau 🐱, {name}. ¡Me gusta pensar bien mis jugadas!',
+   winMsg:'¡{name} le ganó a Miau! Eres una gran jugadora 🐱✨', loseMsg:'Miau ronroneó de gusto con esa partida, {name}. ¿Revancha?'},
   {id:'luna', name:'Luna la Unicornio', emoji:'🦄', depth:3, unlockLevel:4,
-   color:'lc3', intro:'✨ Soy Luna 🦄, la más mágica de todas. ¡Demuéstrame tu magia!',
-   winMsg:'¡INCREÍBLE! Venciste a Luna, la maestra unicornio 🦄👑', loseMsg:'Luna brilló un poquito más esta vez. ¡Tú también brillas, sigue así!'}
+   color:'lc3', intro:'✨ Soy Luna 🦄, la más mágica de todas. ¡Demuéstrame tu magia, {name}!',
+   winMsg:'¡INCREÍBLE, {name}! Venciste a Luna, la maestra unicornio 🦄👑', loseMsg:'Luna brilló un poquito más esta vez. ¡Tú también brillas, {name}, sigue así!'}
 ];
 
 /* ---------- Utilidades de posiciones para demos y puzzles ---------- */
@@ -1099,7 +1099,8 @@ function load(){ try{ const raw=localStorage.getItem(SAVE_KEY); return raw?JSON.
 function save(d){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(d)); }catch(e){} }
 function defaultProgress(){
   return {
-    player:'',
+    player:'Ana Lu',
+    avatarPhoto:null,
     unlocked:[true,false,false,false],
     stars:[0,0,0,0],
     playUnlocked:[false,false,false],
@@ -1175,6 +1176,105 @@ function nextRankProgress(points){
   if(idx===RANKS.length-1) return 100;
   const cur=RANKS[idx], nxt=RANKS[idx+1];
   return Math.max(4, Math.min(100, Math.round(((points-cur.min)/(nxt.min-cur.min))*100)));
+}
+
+/* ---------------- Personalización con su nombre ---------------- */
+function playerName(){ return (progress.player||'').trim() || 'campeona'; }
+function withName(s){ return String(s||'').replace(/\{name\}/g, playerName()); }
+function pickGreeting(){
+  const name = playerName();
+  const named = [
+    '¡Hola, '+name+'! ¿Lista para aprender ajedrez mágico hoy?',
+    name+', Capi, Miau y Luna te están esperando. ¡Bienvenida!',
+    '¡Qué alegría verte de nuevo, '+name+'! Cada día aprendes un poquito más.',
+    '¡'+name+'! Este tablero mágico fue hecho especialmente para ti.',
+    '¡'+name+', hoy será un gran día para aprender y jugar juntas!'
+  ];
+  return pick(named.concat(GREETINGS));
+}
+function encourageOk(){
+  const name = playerName();
+  const named = [
+    '¡Muy bien, '+name+'!', '¡Exacto, '+name+'! Lo lograste.', '¡Genial, '+name+'! Eres una gran jugadora.',
+    '¡Así se hace, '+name+'!', '¡Eso es, '+name+'! Estoy muy orgullosa de ti.'
+  ];
+  return pick(named.concat(ENCOURAGE_OK));
+}
+function encourageBad(){
+  const name = playerName();
+  const named = [
+    'Casi, casi, '+name+'... ¡inténtalo de nuevo!', 'No pasa nada, '+name+', vamos a intentarlo otra vez.',
+    'Un pequeño tropiezo, '+name+', ¡tú puedes lograrlo!', 'Casi lo tienes, '+name+'. ¡Una vez más!'
+  ];
+  return pick(named.concat(ENCOURAGE_BAD));
+}
+function diaryMoodMessage(){
+  const name = playerName();
+  const totalStars = progress.stars.reduce((a,b)=>a+b,0);
+  const maxStars = LEVELS.length*3;
+  const allDone = totalStars>=maxStars && progress.puzzlesSolved.length>=LEVEL4.puzzles.length;
+  if(allDone){
+    return {emoji:'👑', title:'¡'+name+', eres una Maestra Mágica del Ajedrez!', text:'Completaste todos los niveles, todas las estrellas y todos los puzzles. Estoy tan orgullosa de ti. ¡Sigamos jugando partidas para practicar, campeona!'};
+  }
+  if(progress.gamesPlayed===0 && totalStars===0){
+    return {emoji:'🦫', title:'¡Bienvenida a tu aventura, '+name+'!', text:'Este juego lo hicimos pensando en ti, con capibaras, gatitos y unicornios. Toca el Nivel 1 y empecemos juntas a descubrir el tablero mágico.'};
+  }
+  if(totalStars >= maxStars*0.5){
+    return {emoji:'🦄', title:'¡Vas increíble, '+name+'!', text:'Ya aprendiste muchísimo sobre ajedrez. Un empujoncito más y te conviertes en toda una maestra.'};
+  }
+  if(progress.gamesPlayed>0 && progress.gamesWon===0){
+    return {emoji:'🐱', title:'¡No te rindas, '+name+'!', text:'Cada partida te hace más fuerte, ganes o pierdas. ¡Sigue practicando, pronto le ganarás a Capi!'};
+  }
+  return {emoji:'✨', title:'¡Sigue así, '+name+'!', text:'Cada día aprendes un poquito más sobre ajedrez. Estoy muy orgullosa de tu progreso.'};
+}
+
+/* ---------------- Foto real de perfil (elegida por ella, guardada solo en su navegador) ---------------- */
+function renderAvatarFace(){
+  if(progress.avatarPhoto) return '<img src="'+progress.avatarPhoto+'" alt="'+esc(playerName())+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  return rankFor(progress.points).emoji;
+}
+function renderPhotoPicker(big){
+  const size = big ? 116 : 56;
+  const fsz = big ? 50 : 28;
+  const inner = progress.avatarPhoto
+    ? '<img src="'+progress.avatarPhoto+'" alt="'+esc(playerName())+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
+    : '<span style="font-size:'+fsz+'px">🦫</span>';
+  return '<div style="text-align:center">'+
+    '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;margin:0 auto;overflow:hidden;display:grid;place-items:center;background:#fff;box-shadow:inset 0 0 0 3px #fff,0 0 0 4px var(--gold)">'+inner+'</div>'+
+    '<div class="btnrow" style="justify-content:center;margin-top:8px">'+
+      '<button class="btn sm ghost" onclick="document.getElementById(\'avatarFileInput\').click()">📸 '+(progress.avatarPhoto?'Cambiar mi foto':'Elegir mi foto')+'</button>'+
+      (progress.avatarPhoto? '<button class="btn sm secondary" onclick="removeAvatarPhoto()">🗑️ Quitar</button>' : '')+
+    '</div>'+
+    '<input type="file" accept="image/*" id="avatarFileInput" style="display:none" onchange="handleAvatarFile(event)">'+
+  '</div>';
+}
+function handleAvatarFile(evt){
+  const file = evt.target.files && evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const size = 260;
+      const canvas = document.createElement('canvas');
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const s = Math.min(img.width, img.height);
+      const sx = (img.width-s)/2, sy = (img.height-s)/2;
+      ctx.drawImage(img, sx, sy, s, s, 0, 0, size, size);
+      progress.avatarPhoto = canvas.toDataURL('image/jpeg', 0.86);
+      save(progress);
+      beep('win'); confetti();
+      speak('¡Qué linda foto, '+playerName()+'! Ya te ves en tu app.');
+      render();
+    };
+    img.onerror = function(){ alert('No pude abrir esa imagen. ¿Puedes intentar con otra foto?'); };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function removeAvatarPhoto(){
+  progress.avatarPhoto = null; save(progress); render();
 }
 
 /* ---------------- Voz (Web Speech API) ---------------- */
@@ -1387,7 +1487,7 @@ function practiceSquareClick(sqName){
     p.found.add(sqName); beep('ok'); floatPoints('+5');
     if(p.found.size >= p.correct.size){
       beep('win'); confetti(); progress.points += 15; save(progress);
-      speak(pick(ENCOURAGE_OK)+' ¡Encontraste todos los movimientos!');
+      speak(encourageOk()+' ¡Encontraste todos los movimientos!');
     }
   } else if(!p.correct.has(sqName)){
     beep('bad'); shakeEl('practice-board');
@@ -1403,7 +1503,7 @@ function findSquareClick(sqName){
     speak('¡Exacto! Esa es la casilla '+sqName.toUpperCase()+'.');
   } else {
     beep('bad'); shakeEl('findsquare-board');
-    speak(pick(ENCOURAGE_BAD));
+    speak(encourageBad());
   }
   render();
 }
@@ -1418,7 +1518,7 @@ function backHomeBtn(){ return '<button class="iconbtn" onclick="go(\'home\')" t
 function viewHome(){
   if(!state.greeted){
     state.greeted = true;
-    setTimeout(()=>speak((progress.player?'¡Hola '+progress.player+'! ':'')+pick(GREETINGS)), 500);
+    setTimeout(()=>speak(pickGreeting()), 500);
   }
   const rank = rankFor(progress.points);
   const levelCards = LEVELS.map((lv,i)=>{
@@ -1447,10 +1547,11 @@ function viewHome(){
       '<button class="iconbtn" onclick="toggleSettings()" title="Ajustes">⚙️</button>'+
     '</div>'+
   '</div>'+
-  '<div class="mascot-row"><div class="mascot-face">🦫</div><div class="bubble">'+esc((progress.player?'¡Hola '+progress.player+'! ':'')+'Soy Capi, tu guía mágica. Aprendamos ajedrez juntas, ¡por niveles!')+'</div></div>'+
+  '<div class="chip pill-pink" style="margin:2px 0 14px;font-size:14px">✨ Hecho especialmente para '+esc(playerName())+' ✨</div>'+
+  '<div class="mascot-row"><div class="mascot-face">🦫</div><div class="bubble">¡Hola, '+esc(playerName())+'! Soy Capi, tu guía mágica. Este juego lo hicimos especialmente para ti. ¡Aprendamos ajedrez juntas, por niveles!</div></div>'+
   '<div class="avatar">'+
-    '<div class="face">'+rank.emoji+'</div>'+
-    '<div style="flex:1"><div class="rt">'+rank.name+'</div><div class="rankbar"><i style="width:'+nextRankProgress(progress.points)+'%"></i></div></div>'+
+    '<div class="face">'+renderAvatarFace()+'</div>'+
+    '<div style="flex:1"><div class="rt">'+esc(playerName())+' · '+rank.name+'</div><div class="rankbar"><i style="width:'+nextRankProgress(progress.points)+'%"></i></div></div>'+
   '</div>'+
   (state.showSettings ? renderSettingsPanel() : '')+
   '<h2 style="margin-top:22px">🗺️ Mapa de niveles</h2>'+
@@ -1461,11 +1562,12 @@ function viewHome(){
     '<button class="btn ghost" onclick="go(\'puzzles\')" '+(puzzlesLocked?'disabled':'')+'>🧩 Puzzles de Jaque Mate'+(puzzlesLocked?' (Nivel 4)':'')+'</button>'+
     '<button class="btn ghost" onclick="go(\'diary\')">📔 Mi Diario Mágico</button>'+
   '</div>'+
-  '<div class="foot">Hecho con 💜 para una futura gran maestra de ajedrez. <b>Ajedrez Mágico</b></div>';
+  '<div class="foot">Hecho con 💜 especialmente para <b>'+esc(playerName())+'</b>, futura gran maestra de ajedrez. <b>Ajedrez Mágico</b></div>';
 }
 function renderSettingsPanel(){
   return '<div class="card" style="padding:16px;margin:14px 0">'+
     '<h3>⚙️ Ajustes</h3>'+
+    '<div style="margin:12px 0">'+renderPhotoPicker(true)+'</div>'+
     '<div class="btnrow" style="margin-top:10px">'+
       '<input class="nameinput" id="playerName" placeholder="Tu nombre" value="'+esc(progress.player||'')+'">'+
       '<button class="btn sm" onclick="savePlayerName()">Guardar</button>'+
@@ -1603,13 +1705,13 @@ function answerOpt(i){
     const earned = state.quizAttempt<=1 ? q.points : Math.round(q.points*0.5);
     state.quizScore += earned;
     state.quizAnswers.push({q, correct:true, chosen:i, earned});
-    state.lastPhrase = pick(ENCOURAGE_OK);
+    state.lastPhrase = encourageOk();
     beep('ok'); floatPoints('+'+earned); speak(state.lastPhrase);
   } else {
     state.wrongOpts = state.wrongOpts || new Set();
     state.wrongOpts.add(i);
     beep('bad'); shakeEl('quizcard');
-    state.lastPhrase = pick(ENCOURAGE_BAD);
+    state.lastPhrase = encourageBad();
     speak(state.lastPhrase);
     if(state.wrongOpts.size >= q.options.length-1){
       state.answered=true; state.selectedOpt=i;
@@ -1627,7 +1729,7 @@ function answerNumeric(){
   const earned = ok ? q.points : 0;
   state.quizScore += earned;
   state.quizAnswers.push({q, correct:ok, chosen:val, earned});
-  state.lastPhrase = ok ? pick(ENCOURAGE_OK) : pick(ENCOURAGE_BAD);
+  state.lastPhrase = ok ? encourageOk() : encourageBad();
   if(ok){ beep('ok'); floatPoints('+'+earned); } else { beep('bad'); shakeEl('quizcard'); }
   speak(state.lastPhrase);
   render();
@@ -1674,8 +1776,8 @@ function finishQuiz(){
   state.view='results';
   state.resultData = {stars, earned:state.quizScore, maxPts, passed, leveledUp, unlockedOpponent, level:lv};
   render(); scrollTop();
-  if(passed){ confetti(); setTimeout(()=>speak('¡Nivel '+lv.id+' completado! Ganaste '+stars+' estrellas. '+(unlockedOpponent?'¡Desbloqueaste a '+unlockedOpponent.name+'!':'')),400); }
-  else setTimeout(()=>speak('Casi lo logras. ¡Puedes repetir el quiz cuando quieras para mejorar!'),400);
+  if(passed){ confetti(); setTimeout(()=>speak('¡'+playerName()+', Nivel '+lv.id+' completado! Ganaste '+stars+' estrellas. '+(unlockedOpponent?'¡Desbloqueaste a '+unlockedOpponent.name+'!':'')),400); }
+  else setTimeout(()=>speak('Casi lo logras, '+playerName()+'. ¡Puedes repetir el quiz cuando quieras para mejorar!'),400);
 }
 function viewResults(){
   const r = state.resultData; if(!r){ go('home'); return ''; }
@@ -1685,7 +1787,7 @@ function viewResults(){
     '<div style="font-size:52px">'+(r.passed?'🎉':'💪')+'</div>'+
     '<div class="big-score">'+r.earned+' pts</div>'+
     '<div class="stars-big">'+starString(r.stars)+'</div>'+
-    '<p style="font-size:17px">'+(r.passed? '¡Completaste el Nivel '+r.level.id+': '+esc(r.level.title)+'!' : 'Casi completas el Nivel '+r.level.id+'. ¡Puedes intentarlo de nuevo!')+'</p>'+
+    '<p style="font-size:17px">'+(r.passed? '¡'+esc(playerName())+', completaste el Nivel '+r.level.id+': '+esc(r.level.title)+'!' : 'Casi completas el Nivel '+r.level.id+', '+esc(playerName())+'. ¡Puedes intentarlo de nuevo!')+'</p>'+
     (r.leveledUp? '<div class="chip pill-green" style="font-size:15px;padding:10px 16px">🔓 ¡Nuevo nivel desbloqueado!</div>' : '')+
     (r.unlockedOpponent? '<div class="chip pill-pink" style="font-size:15px;padding:10px 16px;margin-top:8px">✨ ¡Desbloqueaste a '+esc(r.unlockedOpponent.name)+' '+r.unlockedOpponent.emoji+' para jugar!</div>' : '')+
     '<div class="grid2" style="margin-top:20px">'+
@@ -1716,7 +1818,7 @@ function openPlay(oppId){
   };
   state.hintText=null;
   render(); scrollTop();
-  setTimeout(()=>speak(opp.intro), 400);
+  setTimeout(()=>speak(withName(opp.intro)), 400);
 }
 function renderOpponentPicker(){
   const cards = OPPONENTS.map((o,i)=>{
@@ -1760,7 +1862,7 @@ function viewPlay(){
   const moveListHTML = g.sanHistory.length ? pairMoves(g.sanHistory) : 'Aún no hay movimientos';
   return ''+
   '<div class="topbar">'+topbarBrand()+backHomeBtn()+'</div>'+
-  '<div class="mascot-row"><div class="mascot-face">'+g.opp.emoji+'</div><div class="bubble">'+esc(g.opp.name)+' te está retando. ¡Tú juegas con las piezas claras!</div></div>'+
+  '<div class="mascot-row"><div class="mascot-face">'+g.opp.emoji+'</div><div class="bubble">'+esc(g.opp.name)+' está retando a '+esc(playerName())+'. ¡Tú juegas con las piezas claras!</div></div>'+
   statusHTML+
   '<div class="turnbanner'+(g.thinking?' thinking':'')+'">'+(g.thinking? g.opp.name+' está pensando... 🤔' : (g.result? '' : (cs.turn==='w'? 'Tu turno ✨'+(inCheck?' — ¡estás en JAQUE!':'') : g.opp.name+' está jugando')))+'</div>'+
   '<div class="board-outer">'+boardHTML({board:cs.board, selected:g.selected, targets, lastMove:g.lastMove,
@@ -1817,14 +1919,14 @@ function checkGameEnd(){
   if(!status.over) return;
   if(status.reason==='checkmate'){
     const win = status.result==='w';
-    g.result = {winner:status.result, message: win? '¡Jaque Mate! Ganaste 🎉' : 'Jaque Mate. '+g.opp.name+' ganó esta vez'};
+    g.result = {winner:status.result, message: win? '¡Jaque Mate, '+playerName()+'! Ganaste 🎉' : 'Jaque Mate. '+g.opp.name+' ganó esta vez, '+playerName()+'. ¡A por la revancha!'};
     progress.gamesPlayed++; if(win) progress.gamesWon++; else progress.gamesLost++;
     progress.points += win?40:10; save(progress);
-    if(win){ confetti(); speak(g.opp.winMsg); } else speak(g.opp.loseMsg);
+    if(win){ confetti(); speak(withName(g.opp.winMsg)); } else speak(withName(g.opp.loseMsg));
   } else {
-    g.result = {winner:'draw', message:'¡Tablas! Tú y '+g.opp.name+' empataron.'};
+    g.result = {winner:'draw', message:'¡Tablas, '+playerName()+'! Tú y '+g.opp.name+' empataron.'};
     progress.gamesPlayed++; progress.gamesDrawn++; progress.points+=15; save(progress);
-    speak('¡Qué partida tan pareja! Terminó en tablas.');
+    speak('¡Qué partida tan pareja, '+playerName()+'! Terminó en tablas.');
   }
   render();
 }
@@ -1844,7 +1946,7 @@ function aiMove(){
 function renderPromotionModal(){
   const choices = [{t:'Q',label:PIECES.Q.emoji,name:'Unicornio'},{t:'R',label:PIECES.R.emoji,name:'Castillo'},{t:'B',label:PIECES.B.emoji,name:'Gatito'},{t:'N',label:PIECES.N.emoji,name:'Caballito'}];
   return '<div class="promo-overlay"><div class="promo-box">'+
-    '<h3>¡Tu Capibara llegó al final! 🎉</h3><p>¿En qué se transforma?</p>'+
+    '<h3>¡Tu Capibara llegó al final, '+esc(playerName())+'! 🎉</h3><p>¿En qué se transforma?</p>'+
     '<div class="promo-choices">'+choices.map(c=>'<button class="promo-choice" title="'+c.name+'" onclick="choosePromotion(\''+c.t+'\')">'+c.label+'</button>').join('')+'</div>'+
   '</div></div>';
 }
@@ -1928,7 +2030,7 @@ function puzzleSquareClick(sqName){
       if(Chess.isCheckmate(next)){
         pg.chessState=next; pg.solved=true; pg.wrongTry=false; pg.selected=null; pg.targets=[];
         if(!progress.puzzlesSolved.includes(pg.puzzle.id)){ progress.puzzlesSolved.push(pg.puzzle.id); progress.points+=pg.puzzle.points; save(progress); }
-        beep('win'); confetti(); speak('¡JAQUE MATE! Lo lograste, eres una gran maestra mágica.');
+        beep('win'); confetti(); speak('¡JAQUE MATE, '+playerName()+'! Lo lograste, eres una gran maestra mágica.');
       } else {
         pg.wrongTry=true; pg.selected=null; pg.targets=[];
         beep('bad'); shakeEl('app-puzzle');
@@ -1951,11 +2053,19 @@ function puzzleHint(){
 function viewDiary(){
   const rank = rankFor(progress.points);
   const totalStars = progress.stars.reduce((a,b)=>a+b,0);
+  const mood = diaryMoodMessage();
   const items = progress.history.length ? progress.history.map(h=>
     '<div class="diary-item"><span>📝 Quiz Nivel '+h.level+' · '+esc(h.date||'')+'</span><span>'+starString(h.stars)+' · +'+h.points+' pts</span></div>'
   ).join('') : '<p>Aún no hay aventuras registradas. ¡Empieza a aprender y jugar!</p>';
   return '<div class="topbar">'+topbarBrand()+backHomeBtn()+'</div>'+
-    '<h2>📔 Mi Diario Mágico</h2>'+
+    '<h2>📔 El Diario Mágico de '+esc(playerName())+'</h2>'+
+    '<div class="card" style="padding:16px;margin:14px 0;text-align:center">'+
+      renderPhotoPicker(true)+
+    '</div>'+
+    '<div class="mascot-row">'+
+      '<div class="mascot-face">'+mood.emoji+'</div>'+
+      '<div class="bubble"><b style="font-family:var(--hand);color:var(--navy);font-size:17px">'+esc(mood.title)+'</b><br>'+esc(mood.text)+'</div>'+
+    '</div>'+
     '<div class="grid2">'+
       '<div class="kpi"><div class="v">'+progress.points+'</div><div class="l">Puntos totales</div></div>'+
       '<div class="kpi"><div class="v">'+rank.emoji+'</div><div class="l">'+esc(rank.name)+'</div></div>'+
