@@ -1,7 +1,9 @@
 # REHAVID · Lean Six Sigma DMAIC
 
 Aplicación **autónoma en un solo archivo HTML** que replica íntegramente la
-herramienta DMAIC en Excel (5 libros · 53 formatos) y le agrega tablero de
+herramienta DMAIC en Excel (5 libros · 53 formatos), incorpora el **manual
+Lean Six Sigma recreado como módulo de consulta**, añade las **herramientas
+estadísticas del manual que no existían en los Excel**, y suma tablero de
 inteligencia de negocio, motor de interpretación y exportación avanzada.
 
 > **Sin servidor. Sin internet. Sin instalación. Sin repositorios.**
@@ -28,6 +30,40 @@ inteligencia de negocio, motor de interpretación y exportación avanzada.
 | 3 | **ANALIZAR** | 7 | Brainstorming/afinidad, Ishikawa (6M y 4P), 5 Por qué, árbol de causas, validación de causas, descripción de causa raíz, A3 Analizar |
 | 4 | **MEJORAR** | 6 | Brainstorming de soluciones, selección de soluciones, plan de acción, Quick Improvement, descripción de la solución, A3 Mejorar |
 | 5 | **CONTROLAR** | 8 | Estándares de trabajo (3 formatos), plan de control, gráfico antes/después, A3 Controlar, Project Charter de cierre, A3 final |
+
+## 2 bis. Módulo GUÍA y herramientas del manual
+
+Además de los 53 formatos del Excel, la app incluye:
+
+### Módulo «Cómo se usa» (GUÍA DE APLICACIÓN)
+El manual Lean Six Sigma **recreado**, no copiado: 12 capítulos redactados de
+nuevo y conectados con las herramientas reales de la app (cada explicación
+lleva un botón que abre el formato correspondiente).
+
+1. Cómo usar esta aplicación · 2. Qué es Lean (7 desperdicios, valor agregado)
+· 3. Qué es Six Sigma (nivel sigma, ejemplo de las donas) · 4. Qué es Lean Six
+Sigma (niveles y estructura de roles) · 5. Qué es DMAIC · 6. Selección de
+proyectos · 7-11. Una guía por fase (orden de llenado, encadenamiento entre
+herramientas, errores típicos y criterio de salida) · 12. Cierre y presentación
+final.
+
+### Herramientas del manual ausentes en los Excel
+Estaban explicadas en el manual pero no tenían formato en los libros; ahora
+existen dentro de su fase, con cálculo estadístico real:
+
+| Fase | Herramienta |
+|---|---|
+| MEDIR | MSA · GR&R por variables (ANOVA, %Contribución, %Estudio, ndc) y por atributos (kappa) |
+| MEDIR | Capacidad del proceso: Cp, Cpk, Pp, Ppk, Cpm, Z corto/largo, PPM, prueba de normalidad |
+| MEDIR | Histograma y gráfica de caja · Diagrama de dispersión · Resumen gráfico · Plan MSA |
+| ANALIZAR | Pruebas de hipótesis: t (1, 2, pareada), ANOVA, Kruskal-Wallis, Mood, F, Levene, proporciones, Chi² |
+| ANALIZAR | Correlación (Pearson) y regresión con predicción · Niveles de causa |
+| MEJORAR | Poka Yoke (niveles I, II y III) · Catálogo de modelos de mejora |
+| CONTROLAR | Gráficos de control I-MR, X̄-R, X̄-S, P, NP, C, U con las 8 reglas de Nelson · Plan de reacción |
+
+Estas herramientas se marcan como `extra`: alimentan la app, el tablero BI y el
+libro consolidado, pero no se escriben en las plantillas Excel originales
+(porque allí no existe la hoja correspondiente).
 
 ## 3. Funcionamiento por módulos o completo
 

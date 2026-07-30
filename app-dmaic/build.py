@@ -19,6 +19,7 @@ ORDER = [
     '05_data.js',          # generado aquí
     '20_core.js',
     '40_charts.js',
+    '45_stats.js',
     '50_diagrams.js',
     '30_render.js',
     '60_specs_definir.js',
@@ -26,6 +27,10 @@ ORDER = [
     '62_specs_analizar.js',
     '63_specs_mejorar.js',
     '64_specs_controlar.js',
+    '65_specs_guia.js',
+    '66_specs_extra_medir.js',
+    '67_specs_extra_analizar.js',
+    '68_specs_extra_mc.js',
     '75_engine.js',
     '70_bi.js',
     '80_zip.js',
@@ -83,9 +88,15 @@ def main():
 
     css = open(os.path.join(SRC, '10_style.css'), encoding='utf-8').read()
 
+    stubs = os.path.join(HERE, 'src_stubs')
+    usar_stubs = '--stubs' in sys.argv
+
     parts, faltan = [], []
     for f in ORDER:
         p = os.path.join(SRC, f)
+        if not os.path.exists(p) and usar_stubs and os.path.exists(os.path.join(stubs, f)):
+            p = os.path.join(stubs, f)
+            print('  (stub) %s' % f)
         if not os.path.exists(p):
             faltan.append(f)
             parts.append('/* ===== %s : NO ENCONTRADO ===== */' % f)

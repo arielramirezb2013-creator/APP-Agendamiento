@@ -365,7 +365,7 @@ const XL = (function(){
     if (man.logo) await swapLogo(files, man.logo, logo);
 
     let escritas = 0;
-    for (const t of toolsOf(modId)){
+    for (const t of toolsOf(modId).filter(enPlantilla)){
       const path = man.sheets[t.sheet];
       if (!path || !files[path]) { console.warn('hoja no encontrada:', t.sheet); continue; }
       const d = ST.d(t.id);

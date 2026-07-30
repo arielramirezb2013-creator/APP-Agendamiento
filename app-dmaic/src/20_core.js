@@ -120,6 +120,9 @@ function registerTools(list){
   });
 }
 const MODULES = [
+  { id:'GUIA',      n:0, letter:'?', name:'GUÍA DE APLICACIÓN', en:'Manual', color:'#4A666E',
+    guia:true, desc:'Manual Lean Six Sigma: qué es cada herramienta, cómo se usa y cómo se encadenan las fases.',
+    file:null },
   { id:'DEFINIR',   n:1, letter:'D', name:'DEFINIR',   en:'Define',  color:'#0B5D6B',
     desc:'Delimitar el problema, el alcance, el equipo y la línea base.', file:'01DEFINIR' },
   { id:'MEDIR',     n:2, letter:'M', name:'MEDIR',     en:'Measure', color:'#12B3A6',
@@ -133,6 +136,12 @@ const MODULES = [
 ];
 const MOD_BY_ID = {}; MODULES.forEach(m => MOD_BY_ID[m.id] = m);
 const toolsOf = mod => TOOLS.filter(t => t.mod === mod);
+/** Las 5 fases DMAIC (excluye la GUÍA, que es documentación, no un entregable) */
+const FASES = MODULES.filter(m => !m.guia);
+/** Herramientas que SÍ existen como hoja en los Excel originales.
+ *  Las marcadas `extra:true` provienen del manual y sólo viven en la app
+ *  y en el libro consolidado. */
+const enPlantilla = t => !t.extra && t.xl && !MOD_BY_ID[t.mod].guia;
 
 /* ------------------------------------------------------------ ESTADO/DB */
 const DB_KEY  = 'rehavid_lss_dmaic_v1';
@@ -203,8 +212,11 @@ const ST = {
   all(){ const p = ST.proj(); return p ? p.data : {}; },
   ctx(){ return { proj: ST.proj(), all: ST.all(), cfg: ST.cfg }; },
   touch(){ const p = ST.proj(); if (p) p.actualizado = hoy(); ST.save(); },
-  modOn(m){ const p = ST.proj(); return !p || !p.mods ? true : p.mods[m] !== false; },
-  activeMods(){ return MODULES.filter(m => ST.modOn(m.id)); }
+  modOn(m){
+    if (MOD_BY_ID[m] && MOD_BY_ID[m].guia) return true;   // la guía nunca se apaga
+    const p = ST.proj(); return !p || !p.mods ? true : p.mods[m] !== false;
+  },
+  activeMods(){ return FASES.filter(m => ST.modOn(m.id)); }
 };
 
 /* --------------------------------------------------------- completitud */
@@ -222,6 +234,7 @@ function hasContent(d){
   return false;
 }
 function modProgress(mod){
+  if (MOD_BY_ID[mod] && MOD_BY_ID[mod].guia) return 1;
   const ts = toolsOf(mod); if (!ts.length) return 0;
   return ts.filter(t => toolFilled(t)).length / ts.length;
 }

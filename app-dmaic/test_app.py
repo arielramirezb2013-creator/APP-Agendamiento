@@ -36,14 +36,19 @@ def run():
         n = pg.evaluate('typeof TOOLS !== "undefined" ? TOOLS.length : -1')
         print('Herramientas registradas: %s' % n)
         if n < 53:
-            errores.append('Se esperaban 53 herramientas, hay %s' % n)
+            errores.append('Se esperaban al menos 53 herramientas, hay %s' % n)
 
         mods = pg.evaluate('MODULES.map(m=>[m.id, TOOLS.filter(t=>t.mod===m.id).length])')
+        extras = pg.evaluate('TOOLS.filter(t=>t.extra).length')
+        enxl = pg.evaluate('TOOLS.filter(t=>typeof enPlantilla===\'function\' && enPlantilla(t)).length')
         for mid, c in mods:
             print('   %-10s %2d formatos' % (mid, c))
+        print('   (%d del manual/extra · %d mapeados a hoja de Excel)' % (extras, enxl))
+        if enxl != 53:
+            errores.append('Se esperaban 53 herramientas mapeadas a hoja de Excel, hay %s' % enxl)
 
         # subsistemas presentes
-        for g in ['CHART', 'DIAG', 'ENGINE', 'BI', 'ZIP', 'XL', 'GEN', 'R', 'UI', 'ST']:
+        for g in ['CHART', 'DIAG', 'ENGINE', 'BI', 'ZIP', 'XL', 'GEN', 'R', 'UI', 'ST', 'STATS']:
             if not pg.evaluate('typeof %s !== "undefined"' % g):
                 errores.append('Falta el objeto global %s' % g)
 
@@ -105,7 +110,7 @@ def run():
                   cols.forEach(c=>{
                     if(c.calc||c.ro) return;
                     if(c.input==='number') r[c.k]= Math.round(Math.random()*40)+5;
-                    else if(c.input==='date') r[c.k]= i%2? '2026-04-0'+(i+1) : '2026-05-1'+i;
+                    else if(c.input==='date') r[c.k]= (i%2?'2026-04-':'2026-05-')+String((i%27)+1).padStart(2,'0');
                     else if(c.input==='select'){ const o=(typeof c.opts==='function'?c.opts():c.opts)||[];
                       if(o.length) r[c.k]= (o[0]&&o[0].v!==undefined)?o[0].v:o[0]; }
                     else r[c.k]= c.label.slice(0,14)+' '+(i+1);

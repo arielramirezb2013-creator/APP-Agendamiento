@@ -14,7 +14,13 @@ function rowsOf(d, key, min){
   d[key].forEach(r => { if (!r._id) r._id = uid(); });
   return d[key];
 }
-function inputTag(cls, spec, val, attrs){
+/** Construye el control de entrada.
+ *  `ro` = la celda es calculada/solo lectura: se dibuja SIEMPRE como texto,
+ *  porque el valor ya viene formateado en español ("1.234,5", "87,4%") y un
+ *  <input type=number> rechazaría esa cadena y quedaría en blanco. */
+function inputTag(cls, spec, val, attrs, ro){
+  if (ro && spec.input !== 'textarea' && spec.input !== 'check')
+    spec = Object.assign({}, spec, { input:'text' });
   const t = spec.input || 'text';
   const a = (attrs || '') + (spec.ph ? ' placeholder="' + esc(spec.ph) + '"' : '');
   if (t === 'textarea')
@@ -70,7 +76,7 @@ R.b_fields = function(b, t, d, ctx){
       const body = f.input === 'check'
         ? '<div class="chkw">' + inputTag('', f, d[f.k], attrs) + '<span>' + esc(f.label) + '</span></div>'
         : '<label>' + esc(f.label) + (f.req ? ' <span class="req">*</span>' : '') + '</label>' +
-          inputTag('inp', f, val == null ? '' : val, attrs) +
+          inputTag('inp', f, val == null ? '' : val, attrs, ro) +
           (f.unit ? '<span class="unit">' + esc(f.unit) + '</span>' : '') +
           (f.hint ? '<div class="hint">' + esc(f.hint) + '</div>' : '');
       return '<div class="fld" style="grid-column:span ' + w + '">' + body + '</div>';
@@ -114,7 +120,7 @@ R.b_grid = function(b, t, d, ctx){
       const tone = c.tone ? (c.tone(cv[c.k], r, i, rows, d, ctx) || '') : '';
       const attrs = ' data-t="' + t.id + '" data-g="' + b.key + '" data-r="' + i + '" data-c="' + c.k + '"' +
         (ro ? ' readonly data-calc="1"' : '');
-      let inner = inputTag('ci', c, v == null ? '' : v, attrs);
+      let inner = inputTag('ci', c, v == null ? '' : v, attrs, ro);
       if (c.databar){
         const w = clamp(Math.abs(num(cv[c.k])) / maxes[c.k] * 100, 0, 100);
         inner = '<div class="databar"><i class="dbf" style="width:' + w.toFixed(1) + '%"></i>' + inner + '</div>';
@@ -168,7 +174,8 @@ R.b_matrix = function(b, t, d, ctx){
       const ro = !!cf || c.ro;
       if (ro) v = (typeof v === 'number' && !isFinite(v)) ? '' : (c.fmt ? fmt(v, c.fmt) : v);
       h += '<td>' + inputTag('ci', c, v == null ? '' : v,
-        ' data-t="' + t.id + '" data-m="' + b.key + '" data-mk="' + key + '"' + (ro ? ' readonly data-calc="1"' : '')) + '</td>';
+        ' data-t="' + t.id + '" data-m="' + b.key + '" data-mk="' + key + '"' +
+        (ro ? ' readonly data-calc="1"' : ''), ro) + '</td>';
     });
     h += '</tr>';
   });

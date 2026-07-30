@@ -54,7 +54,23 @@ renderNav(){
       fmt(projProgress(), 'p0') + '</div></div>';
 
   MODULES.forEach(m => {
-    const on = ST.modOn(m.id), ts = toolsOf(m.id);
+    const ts = toolsOf(m.id);
+    if (m.guia){
+      if (!ts.length) return;
+      const open = ROUTE.mod === m.id;
+      h += '<div class="nv-ph' + (open ? ' open' : '') + '" data-ph="' + m.id + '" style="border-color:rgba(18,179,166,.3)">' +
+        '<div class="nv-ph-h" data-phtoggle="' + m.id + '">' +
+          '<div class="nv-dot" style="background:' + m.color + '">📖</div>' +
+          '<div style="min-width:0"><div class="nv-ph-t">Cómo se usa</div>' +
+            '<div class="nv-ph-sub">Manual · ' + ts.length + ' capítulos</div></div>' +
+          '<span class="nv-chev">▸</span></div><div class="nv-sub">' +
+        ts.map((t, i) => '<div class="nv-i' + (ROUTE.tool === t.id ? ' on' : '') + '" data-goto="' + t.id + '">' +
+          '<span class="nv-n">' + (i + 1) + '</span><span class="nv-t" style="flex:1;min-width:0;overflow:hidden;' +
+          'text-overflow:ellipsis;white-space:nowrap">' + esc(t.title) + '</span></div>').join('') +
+        '</div></div>';
+      return;
+    }
+    const on = ST.modOn(m.id);
     const open = ROUTE.mod === m.id;
     const pr = modProgress(m.id);
     h += '<div class="nv-ph' + (open ? ' open' : '') + (on ? '' : ' off') + '" data-ph="' + m.id + '">' +
@@ -134,7 +150,7 @@ viewInicio(){
   }
 
   h += '<div class="sect-t">Fases de la metodología</div><div class="grid3">';
-  MODULES.forEach(m => {
+  FASES.forEach(m => {
     const ts = toolsOf(m.id), pr = modProgress(m.id), on = ST.modOn(m.id);
     h += '<div class="card" style="margin:0;' + (on ? '' : 'opacity:.5') + '"><div class="card-b">' +
       '<div style="display:flex;align-items:center;gap:11px;margin-bottom:10px">' +
@@ -192,8 +208,8 @@ viewExportar(){
     '<div class="card"><div class="card-h"><h3>📗 Libros originales</h3></div><div class="card-b">' +
     '<div class="note">Se rellenan las <b>plantillas originales</b> de la metodología conservando ' +
     'formato, celdas combinadas, gráficos y fórmulas. Se abren en Excel y recalculan solas.</div>' +
-    MODULES.map(m => {
-      const on = ST.modOn(m.id), ts = toolsOf(m.id);
+    FASES.map(m => {
+      const on = ST.modOn(m.id), ts = toolsOf(m.id).filter(enPlantilla);
       return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd2)' + (on ? '' : ';opacity:.45') + '">' +
         '<div class="nv-dot" style="background:' + m.color + ';width:26px;height:26px;flex:0 0 26px;font-size:11px">' + m.letter + '</div>' +
         '<div style="flex:1"><div style="font-weight:700;font-size:13px">' + m.n + '. ' + esc(m.name) + '.xlsx</div>' +
@@ -286,7 +302,7 @@ viewAjustes(){
   h += '<div class="card"><div class="card-h"><h3>Módulos del proyecto activo</h3></div><div class="card-b">' +
     '<div class="note">Desactiva las fases que la empresa no requiera. La app funciona <b>por módulos ' +
     'o completa</b>: los módulos apagados desaparecen del menú, del tablero y de la exportación.</div>' +
-    MODULES.map(m => '<div style="display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid var(--bd2)">' +
+    FASES.map(m => '<div style="display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid var(--bd2)">' +
       '<div class="nv-dot" style="background:' + m.color + ';width:28px;height:28px;flex:0 0 28px;font-size:12px">' + m.letter + '</div>' +
       '<div style="flex:1"><div style="font-weight:700;font-size:13px">' + m.n + '. ' + esc(m.name) + '</div>' +
       '<div style="font-size:11px;color:var(--tx3)">' + toolsOf(m.id).length + ' formatos</div></div>' +
