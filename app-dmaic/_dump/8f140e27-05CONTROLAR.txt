@@ -1,0 +1,267 @@
+FILE: 8f140e27-05CONTROLAR.xlsx
+SHEETS: ['Estandar 1', 'Estandar 2', 'Estandar 3', 'Plan de control', 'Grafico Antes-Despues', 'A3 Controlar', 'Project Charter', 'A3 final']
+DEFINED_NAMES: {"_RR1": "[1]Summary!$C$21:$C$40", "_RR2": "[1]Summary!$K$21:$K$40", "A": "#REF!", "Access_Button": "\"WPOAUDIT_Sheet1_List\"", "AccessDatabase": "\"G:\\FIN&PROD\\REPORTS\\WPOAUDIT.mdb\"", "App1T1Kend": "[2]KendallBTS!$C$106:$G$110", "App1T2Kend": "[2]KendallBTS!$C$121:$G$125", "App1T3Kend": "[2]KendallBTS!$C$136:$G$140", "App1T4Kend": "[2]KendallBTS!$C$151:$G$155", "App1T5Kend": "[2]KendallBTS!$C$166:$G$170", "App2T1Kend": "[2]KendallBTS!$H$106:$L$110", "App2T2Kend": "[2]KendallBTS!$H$121:$L$125", "App2T3Kend": "[2]KendallBTS!$H$136:$L$140", "App2T4Kend": "[2]KendallBTS!$H$151:$L$155", "App2T5Kend": "[2]KendallBTS!$H$166:$L$170", "App3T1Kend": "[2]KendallBTS!$M$106:$Q$110", "App3T2Kend": "[2]KendallBTS!$M$121:$Q$125", "App3T3Kend": "[2]KendallBTS!$M$136:$Q$140", "App3T4Kend": "[2]KendallBTS!$M$151:$Q$155", "App3T5Kend": "[2]KendallBTS!$M$166:$Q$170", "App4T1Kend": "[2]KendallBTS!$R$106:$V$110", "App4T2Kend": "[2]KendallBTS!$R$121:$V$125", "App4T3Kend": "[2]KendallBTS!$R$136:$V$140", "App4T4Kend": "[2]KendallBTS!$R$151:$V$155", "App4T5Kend": "[2]KendallBTS!$R$166:$V$170", "App5T1Kend": "[2]KendallBTS!$W$106:$AA$110", "App5T2Kend": "[2]KendallBTS!$W$121:$AA$125", "App5T3Kend": "[2]KendallBTS!$W$136:$AA$140", "App5T4Kend": "[2]KendallBTS!$W$151:$AA$155", "App5T5Kend": "[2]KendallBTS!$W$166:$AA$170", "BASEAPPS": "'[3] APPLICATIONS'!$A$2:$A$15", "cdfButton_Click": "#N/A", "CENTER": "#REF!", "Clf": "#REF!", "Clr": "#REF!", "ColAnchor": "#REF!", "Constant": "#REF!", "cpk_Area_Style_Click": "#N/A", "cpk_Change_LSL_Click": "#N/A", "cpk_Change_USL_Click": "#N/A", "cpk_Line_Style_Click": "#N/A", "cpk_No_LSL_Click": "#N/A", "cpk_No_USL_Click": "#N/A", "cpk_Res_Spinner_Click": "#N/A", "cpkButton_Click": "#N/A", "Customer": "#REF!", "Cwf": "#REF!", "Cwr": "#REF!", "daily_acct_summary": "'[4]bench comparo'!#REF!", "Diagram_Back_Click": "#N/A", "Diagram_Finish_Click": "#N/A", "Diagrams_Dialog_Constructor": "#N/A", "DPMO": "[5]PPM!$B$16", "DT_Hrs": "#REF!", "DT_Rate": "#REF!", "FSR": "#REF!", "g_Cancel_Chart": "#N/A", "GB": "#REF!", "gDataRange": "#REF!", "HB": "#REF!", "Height": "5", "hist_Back_Click": "#N/A", "hist_Save_Defaults": "#N/A", "histButton_Click": "#N/A", "InicioDelProyecto": "[6]Gantt!$E$4", "Intercept": "[7]wksScatterPlot!$AE$2", "k_3": "#REF!", "LCL": "#REF!", "LF": "#REF!", "LR": "#REF!", "LSL": "#REF!", "LSL_cell": "[7]wksHistogram!$AF$1", "Max_45Line": "[7]wksScatterPlot!$AH$5", "Min_45Line": "[7]wksScatterPlot!$AH$4", "myCats": "OFFSET(#REF!,0,0,COUNTA(#REF!),2)", "N": "#REF!", "num": "#REF!", "Num_Bins": "[7]wksCapAnalysis!$AF$12", "NumApps": "#REF!", "Number_of_Operators": "#REF!", "Number_of_Parts": "#REF!", "Number_of_Trials": "#REF!", "NumCats": "[2]KappaBTS!$B$4", "numdevs": "#REF!", "NumSamps": "#REF!", "NumTrials": "[2]KappaBTS!$B$5", "Occurrence": "'[8]Project Plan'!$N$5:$O$9", "OT_Hrs": "#REF!", "OT_Rate": "#REF!", "par_2DwCum_Click": "#N/A", "par_2DwoCum_Click": "#N/A", "par_3DwoCum_Click": "#N/A", "par_Ascend_Click": "#N/A", "par_Back_Click": "#N/A", "par_Descend_Click": "#N/A", "par_First_Row_Click": "#N/A", "par_Save_Defaults": "#N/A", "parButton_Click": "#N/A", "parFirst": "[9]Defaults!#REF!", "parLegend": "[9]Defaults!#REF!", "parRows": "[9]Defaults!#REF!", "parSort": "[9]Defaults!#REF!", "Percent_R___R_1": "[1]Summary!$C$21:$C$40", "Percent_R___R_2": "[1]Summary!#REF!", "PLAN": "#REF!", "PlotRange": "#REF!", "PM": "#REF!", "qet_Bottom": "#REF!", "qet_capNonNorm_bins": "OFFSET([7]wksCapAnalysisNonNormal!$AB$2,0,0,[7]wksCapAnalysisNonNormal!$AF$12)", "qet_capNonNorm_freq": "OFFSET([7]wksCapAnalysisNonNormal!$AC$2,0,0,[7]wksCapAnalysisNonNormal!$AF$12)", "qet_capNorm_bins": "OFFSET([7]wksCapAnalysis!$AB$2,0,0,[7]wksCapAnalysis!$AF$12)", "qet_capNorm_freq": "OFFSET([7]wksCapAnalysis!$AC$2,0,0,[7]wksCapAnalysis!$AF$12)", "QET_FirstRow": "#REF!", "qet_histo_bins": "OFFSET([7]wksHistogram!$AB$2,0,0,[7]wksHistogram!$AF$12,1)", "qet_histo_freq": "OFFSET([7]wksHistogram!$AC$2,0,0,[7]wksHistogram!$AF$12,1)", "qet_histo_freq_rel": "OFFSET([7]wksHistogram!$C$10,0,0,[7]wksHistogram!$AF$12,1)", "QET_HOQ_FirstCol": "#REF!", "QET_HOQ_FirstRow": "#REF!", "QET_HOQ_LastCol": "#REF!", "QET_HOQ_LastRow": "#REF!", "QET_HOQ_RoofRow": "#REF!", "QET_Pugh_FirstCol": "#REF!", "QET_Pugh_FirstRow": "#REF!", "QET_Pugh_LastCol": "#REF!", "QET_Pugh_LastRow": "#REF!", "qet_Response": "#REF!", "qet_Sample": "#REF!", "QET_SC_Box1_FirstRow": "[10]tmlWks_Scorecard!$37:$37", "QET_SC_Box1_LastRow": "[10]tmlWks_Scorecard!$38:$38", "QET_SC_Box2_FirstRow": "[10]tmlWks_Scorecard!$44:$44", "QET_SC_Box2_LastRow": "[10]tmlWks_Scorecard!$45:$45", "QET_SC_Box3_FirstRow": "[10]tmlWks_Scorecard!$51:$51", "QET_SC_Box3_LastRow": "[10]tmlWks_Scorecard!$52:$52", "QET_SC_Box4_FirstRow": "[10]tmlWks_Scorecard!$58:$58", "QET_SC_Box4_LastRow": "[10]tmlWks_Scorecard!$59:$59", "QET_SC_Box5_FirstRow": "[10]tmlWks_Scorecard!$65:$65", "QET_SC_Box5_LastRow": "[10]tmlWks_Scorecard!$66:$66", "QET_SC_Box6_FirstRow": "[10]tmlWks_Scorecard!$72:$72", "QET_SC_Box6_LastRow": "[10]tmlWks_Scorecard!$73:$73", "QET_SC_Box7_FirstRow": "[10]tmlWks_Scorecard!$79:$79", "QET_SC_Box7_LastRow": "[10]tmlWks_Scorecard!$80:$80", "QET_SC_Box8_FirstRow": "[10]tmlWks_Scorecard!$86:$86", "QET_SC_Box8_LastRow": "[10]tmlWks_Scorecard!$87:$87", "QET_SC_DCol": "[10]tmlWks_Scorecard!$F:$F", "QET_SC_FirstCol": "[10]tmlWks_Scorecard!$C:$C", "QET_SC_LastCol": "[10]tmlWks_Scorecard!$L:$L", "QET_SCSimp_Box1_LastRow": "#REF!", "QET_SCSimp_Box2_FirstRow": "#REF!", "QET_SCSimp_Box2_LastRow": "#REF!", "QET_SCSimp_Box3_FirstRow": "#REF!", "QET_SCSimp_Box3_LastRow": "#REF!", "QET_SCSimp_Box4_FirstRow": "#REF!", "QET_SCSimp_Box4_LastRow": "#REF!", "QET_SCSimp_Box5_FirstRow": "#REF!", "QET_SCSimp_Box5_LastRow": "#REF!", "QET_SCSimp_Box6_FirstRow": "#REF!", "QET_SCSimp_Box6_LastRow": "#REF!", "QET_SCSimp_Box7_FirstRow": "#REF!", "QET_SCSimp_Box7_LastRow": "#REF!", "QET_SCSimp_Box8_FirstRow": "#REF!", "QET_SCSimp_Box8_LastRow": "#REF!", "QET_SCSimp_FirstCol": "#REF!", "QET_SCSimp_LastCol": "#REF!", "QET_TolWks_FirstRow": "#REF!", "QET_TolWks_LastRow": "#REF!", "QET_TolWks_T": "'[10]tmlWks_Tolerance Analysis'!$G:$G", "QET_TolWks_Tlower": "'[10]tmlWks_Tolerance Analysis'!$I:$I", "QET_TolWks_Tupper": "'[10]tmlWks_Tolerance Analysis'!$J:$J", "qet_Top": "#REF!", "qet_yield_LastCol": "#REF!", "QPT_No": "#REF!", "R_1": "[7]wksScatterPlot!$A$3", "R_2": "[7]wksScatterPlot!$B$3", "RANGE": "#REF!", "RegressionAnal": "#REF!", "RegStats": "#REF!", "RiskMatrix": "'[8]Project Plan'!$B$4:$K$13", "RowAnchor": "#REF!", "RSTDDEV": "#REF!", "scat_Back_Click": "#N/A", "scat_Backward_Spinner_Click": "#N/A", "scat_Cubic_Click": "#N/A", "scat_Display_Stats_Click": "#N/A", "scat_Forward_Spinner_Click": "#N/A", "scat_Linear_Click": "#N/A", "scat_No_Line_Click": "#N/A", "scat_Quadratic_Click": "#N/A", "scat_Save_Defaults": "#N/A", "scatButton_Click": "#N/A", "scores": "'[11]DOE 2^2 template'!$B$11:$D$11", "scores3": "#REF!", "scores4": "#REF!", "Scroll_Width": "[7]wksHistogram!$AF$16", "SemanaParaMostrar": "[6]Gantt!$E$6", "Severity": "'[8]Project Plan'!$T$5:$U$9", "Slope": "[7]wksScatterPlot!$AF$2", "Small_Back_Click": "#N/A", "SSE": "#REF!", "SSR": "#REF!", "SST": "#REF!", "ST_Hrs": "#REF!", "ST_Rate": "#REF!", "StartValue": "0.475", "statButton_Click": "#N/A", "Status": "'[12]Drop-Down'!$A$2:$A$5", "StepValue": "0.001", "SumBaseCell": "#REF!", "T": "#REF!", "TARGET_Cell": "[7]wksHistogram!$AF$2", "Tolerance_Range": "#REF!", "Topic": "'[8]Project Contract'!$B$65:$B$66", "Topic1": "#REF!", "Topic3": "#REF!", "Topic4": "#REF!", "Topic5": "#REF!", "Total_Wkly_Hrs": "#REF!", "Trend_Equation": "[13]wksScatterPlot!#REF!", "Trend_X0": "[7]wksScatterPlot!$AE$4", "Trend_X1": "[7]wksScatterPlot!$AE$5", "Trend_Y0": "[7]wksScatterPlot!$AF$4", "Trend_Y1": "[7]wksScatterPlot!$AF$5", "TYPE": "[7]wksHistogram!$AF$1", "UCL": "#REF!", "Unit_Range": "'[7]wksP-Chart'!$AQ$2", "UserXRange": "#REF!", "UserYRange": "#REF!", "USL": "#REF!", "USL_cell": "[7]wksHistogram!$AF$3", "Variable_Name": "[7]wksCapAnalysis!$AF$3", "WF": "#REF!", "Width": "2", "Wkly_Hrs": "#REF!", "WPOAUDIT_Sheet1_List": "[14]Form!$A$37:$A$38", "WR": "#REF!", "X0": "[7]wksScatterPlot!$AE$4", "Y0": "[7]wksScatterPlot!$AF$4"}
+
+====================================================================================================
+SHEET: 'Estandar 1'  state=visible dims=B2:L62 max_row=62 max_col=12
+  merged: ['F4:G4', 'D21:F25', 'G47:H51', 'K34:L34', 'D11:F15', 'D41:F41', 'B62:L62', 'G37:L39', 'I52:L56', 'I21:L25', 'B16:C20', 'F34:G34', 'B26:C30', 'D52:F56', 'I10:L10', 'K4:L4', 'D57:F61', 'I42:L46', 'B31:L31', 'G21:H25', 'C35:D35', 'C4:D4', 'F3:G3', 'B47:C51', 'K35:L35', 'G6:L8', 'G52:H56', 'G5:L5', 'G11:H15', 'G10:H10', 'B2:L2', 'G42:H46', 'D47:F51', 'D16:F20', 'G57:H61', 'F35:G35', 'B52:C56', 'B21:C25', 'B11:C15', 'B57:C61', 'I11:L15', 'B42:C46', 'B10:C10', 'C3:E3', 'B37:F39', 'I41:L41', 'B6:F8', 'C34:E34', 'B40:L40', 'B9:L9', 'D42:F46', 'D10:F10', 'I26:L30', 'G36:L36', 'I57:L61', 'G26:H30', 'B33:L33', 'I47:L51', 'B5:F5', 'I16:L20', 'D26:F30', 'G41:H41', 'G16:H20', 'B36:F36', 'B41:C41', 'K3:L3']
+----------------------------------------------------------------------------------------------------
+B2	ESTANDAR DE TRABAJO
+B3	Proceso:
+H3	Liberada:
+K3	Pág
+B4	# Documento:
+E4	Realizó:
+H4	Revisada:
+B5	Requerimientos de seguridad:
+G5	Otros requerimientos
+B10	Pasos del proceso
+D10	Instrucciones
+G10	Pasos del proceso
+I10	Instrucciones
+B33	ESTANDAR DE TRABAJO
+B34	Proceso:
+H34	Liberada:
+K34	Pág
+B35	# Documento:
+E35	Realizó:
+H35	Revisada:
+B36	Requerimientos de seguridad:
+G36	Otros requerimientos
+B41	Pasos del proceso
+D41	Instrucciones
+G41	Pasos del proceso
+I41	Instrucciones
+
+====================================================================================================
+SHEET: 'Estandar 2'  state=visible dims=B2:K26 max_row=26 max_col=11
+  merged: ['D20:E20', 'H20:I20', 'D10:E10', 'B25:C25', 'B7:C7', 'H10:I10', 'B22:C22', 'B2:B3', 'D22:E22', 'F5:F6', 'D18:E19', 'D16:F16', 'H9:I9', 'D21:E21', 'F18:F19', 'B12:C12', 'H25:I25', 'B21:C21', 'H21:I21', 'B4:K4', 'B11:C11', 'B26:K26', 'D11:E11', 'B5:C6', 'H18:I19', 'D5:E6', 'B23:C23', 'D3:F3', 'H5:I6', 'C15:I15', 'B8:C8', 'G18:G19', 'B15:B16', 'G5:G6', 'H11:I11', 'D7:E7', 'H16:I16', 'J18:J19', 'H7:I7', 'B10:C10', 'H22:I22', 'B9:C9', 'D9:E9', 'B18:C19', 'D12:E12', 'H3:I3', 'D8:E8', 'D25:E25', 'H12:I12', 'B24:C24', 'D24:E24', 'J5:J6', 'B17:K17', 'H24:I24', 'B13:K13', 'B20:C20', 'D23:E23', 'H23:I23', 'C2:I2', 'H8:I8', 'K5:K6', 'K18:K19']
+----------------------------------------------------------------------------------------------------
+C2	ESTANDAR DE TRABAJO
+J2	Código:
+K2	Pag:
+C3	Proceso:
+G3	Realizó: 
+J3	Fecha:
+B5	Ayuda Visual
+D5	Actividad
+F5	Estandar
+G5	Herramientas
+H5	Responsable
+J5	Tiempo
+K5	Requerimientos de seguridad
+C15	ESTANDAR DE TRABAJO
+J15	Codigo:
+K15	Pag:
+C16	Proceso:
+G16	Realizo: 
+J16	Fecha:
+B18	Ayuda Visual
+D18	Actividad
+F18	Estandar
+G18	Herramientas
+H18	Responsable
+J18	Tiempo
+K18	Requerimientos de seguridad
+
+====================================================================================================
+SHEET: 'Estandar 3'  state=visible dims=B2:P62 max_row=62 max_col=16
+  merged: ['B26:O26', 'C62:D62', 'J10:K10', 'B34:D34', 'J9:K9', 'J54:O54', 'N3:O3', 'B2:O2', 'L5:M5', 'J45:K45', 'J56:O56', 'N5:O5', 'J3:L3', 'C27:D27', 'J17:O17', 'E27:O27', 'B37:O37', 'J38:L38', 'J19:O19', 'B6:O6', 'C28:D28', 'C36:F36', 'J53:O53', 'N35:O35', 'C30:D30', 'F34:G34', 'E62:O62', 'J55:O55', 'J7:L7', 'H34:I34', 'M8:O15', 'B7:H7', 'I7:I25', 'J47:O47', 'C5:F5', 'B57:O57', 'J11:K11', 'M38:O38', 'C60:D60', 'C4:F4', 'J18:O18', 'M39:O46', 'H3:I3', 'H36:K36', 'J12:K12', 'J46:K46', 'I38:I56', 'N4:O4', 'B8:H25', 'J49:O49', 'C58:D58', 'H4:L4', 'J20:O20', 'J40:K40', 'H5:K5', 'C29:D29', 'E29:O29', 'J22:O22', 'C31:D31', 'C59:D59', 'J21:O21', 'E31:O31', 'J51:O51', 'J48:O48', 'J23:O23', 'C61:D61', 'J42:K42', 'B39:H56', 'J34:L34', 'J24:O24', 'J39:K39', 'J44:K44', 'E58:O58', 'H35:L35', 'J14:K14', 'M7:O7', 'J13:K13', 'F3:G3', 'J16:O16', 'J25:O25', 'J15:K15', 'E28:O28', 'J50:O50', 'E60:O60', 'C35:F35', 'E30:O30', 'E59:O59', 'J52:O52', 'J41:K41', 'E61:O61', 'B3:D3', 'J43:K43', 'N34:O34', 'B33:O33', 'B38:H38', 'L36:M36', 'J8:K8', 'N36:O36']
+----------------------------------------------------------------------------------------------------
+B2	ESTANDAR DE TRABAJO
+E3	Proceso:
+H3	Máquina/equipo:
+M3	Realizadó por:
+B4	Area: 
+G4	Clase:
+M4	Aprobado por:
+B5	Frecuencia:
+G5	Responsable: 
+L5	#Documento:
+B7	AYUDA VISUAL
+J7	HERRAMIENTA
+M7	REQUERIMIENTOS SEGURIDAD
+J16	PROCEDIMIENTO
+B27	Revisión
+C27	Fecha
+E27	Control de Cambios
+B33	ESTANDAR DE TRABAJO
+E34	Proceso:
+H34	Máquina/equipo:
+M34	Realizadó por:
+B35	Area: 
+G35	Clase:
+M35	Aprobado por:
+B36	Frecuencia:
+G36	Responsable: 
+L36	#Documento:
+B38	AYUDA VISUAL
+J38	HERRAMIENTA
+M38	REQUERIMIENTOS SEGURIDAD
+J47	PROCEDIMIENTO
+B58	Revisión
+C58	Fecha
+E58	Control de Cambios
+
+====================================================================================================
+SHEET: 'Plan de control'  state=visible dims=B2:N21 max_row=21 max_col=14
+  merged: ['I6:J6', 'B3:C3', 'B6:E6', 'B17:D17', 'E17:F17', 'G17:H17', 'B19:D19', 'E20:F20', 'E19:F19', 'B2:L2', 'G19:H19', 'G18:H18', 'G3:H3', 'B20:D20', 'I18:M18', 'J4:K4', 'B5:M5', 'K6:M6', 'D4:E4', 'M2:M4', 'D3:E3', 'I17:M17', 'G4:H4', 'J3:K3', 'B16:M16', 'G20:H20', 'F6:H6', 'I20:M20', 'E18:F18', 'B18:D18', 'I19:M19', 'B21:M21', 'B4:C4']
+----------------------------------------------------------------------------------------------------
+B2	PLAN DE CONTROL
+B3	PROCESO: 
+F3	# DOCUMENTO
+I3	FECHA:
+L3	PAG:
+B4	PRODUCTO:
+F4	AUTORIZACION: 
+I4	ELABORO:
+B6	PROCESO
+F6	MEDICION
+I6	MUESTREO
+K6	TOMA DE DECISIONES
+B7	Nº
+C7	PASOS
+D7	CARACTERISTICA
+E7	VARIABLE
+F7	ESPECIFICACIONES
+G7	TECNICA DE MEDICION
+H7	METODO DE CONTROL
+I7	TAMAÑO
+J7	FRECUENCIA 
+K7	DOCUMENTO
+L7	ACCIONES CORRECTIVAS
+M7	RESPONASBLE
+B17	APROBADO:
+E17	REALIZADO:
+G17	ACTUALIZACION:
+I17	COMENTARIOS:
+
+====================================================================================================
+SHEET: 'Grafico Antes-Despues'  state=visible dims=B2:E18 max_row=18 max_col=5
+  merged: ['C3:D3', 'E3:E17', 'B2:E2']
+----------------------------------------------------------------------------------------------------
+B2	GRAFICO ANTES Y DESPUES DEL PROYECTO
+B3	Criterio:
+B4	Periodo
+C4	ANTES
+D4	DESPUES
+
+====================================================================================================
+SHEET: 'A3 Controlar'  state=visible dims=B2:H28 max_row=28 max_col=8
+  merged: ['E9:H9', 'B10:D19', 'B9:D9', 'B2:H2', 'E21:H28', 'B4:H8', 'E10:H19', 'B21:D28', 'B20:H20', 'B3:H3']
+----------------------------------------------------------------------------------------------------
+B2	CONTROLAR
+B3	CONTROL -PROCESO
+B9	ESTANDARIZACION NUEVO PROCESO
+E9	PLAN DE CONTROL
+B20	BENEFICIOS
+
+====================================================================================================
+SHEET: 'Project Charter'  state=visible dims=B2:T74 max_row=74 max_col=20
+  merged: ['P57:S57', 'D21:H26', 'D51:H53', 'B55:H55', 'R28:S28', 'R50:S51', 'N66:O66', 'K56:M56', 'N22:O22', 'J33:M33', 'P22:Q22', 'J46:O49', 'K71:M71', 'R30:S30', 'N68:O68', 'K73:M73', 'N61:O61', 'J28:M28', 'K57:M57', 'J13:S13', 'P69:S69', 'K66:M66', 'N29:O29', 'P32:Q32', 'R39:S40', 'J43:O45', 'P59:S59', 'R32:S32', 'J30:M30', 'D6:H7', 'P41:Q42', 'E10:H10', 'K68:M68', 'N31:O31', 'L21:M21', 'P61:S61', 'J65:S65', 'P70:S70', 'B44:H44', 'N24:O24', 'P24:Q24', 'P33:Q33', 'R33:S33', 'K60:M60', 'R43:S45', 'N26:O26', 'P26:Q26', 'N63:O63', 'N25:O25', 'P25:Q25', 'J23:M23', 'R25:S25', 'J39:O40', 'K70:M70', 'J5:S5', 'E14:H14', 'N67:O67', 'P60:S60', 'K62:M62', 'N28:O28', 'P28:Q28', 'N69:O69', 'J27:M27', 'N30:O30', 'P30:Q30', 'J55:S55', 'P46:Q49', 'R23:S23', 'J41:O42', 'B28:H28', 'J50:O51', 'N70:O70', 'J22:M22', 'B9:H9', 'J31:M31', 'B2:S2', 'N32:O32', 'K67:M67', 'J7:S11', 'P62:S62', 'B20:H20', 'K59:M59', 'B5:H5', 'P71:S71', 'N56:O56', 'P58:S58', 'E18:H18', 'R41:S42', 'D46:H48', 'K61:M61', 'P73:S73', 'N58:O58', 'D37:H42', 'N33:O33', 'P27:Q27', 'R27:S27', 'P63:S63', 'P56:S56', 'D29:H34', 'J24:M24', 'N59:O59', 'R22:S22', 'N60:O60', 'J38:O38', 'O53:Q53', 'P67:S67', 'J36:S36', 'J26:M26', 'J25:M25', 'P66:S66', 'K72:M72', 'K63:M63', 'P39:Q40', 'P29:Q29', 'R29:S29', 'B65:H65', 'P38:Q38', 'R38:S38', 'P68:S68', 'K58:M58', 'P31:Q31', 'R31:S31', 'B36:H36', 'N72:O72', 'N21:O21', 'P21:Q21', 'R24:S24', 'N62:O62', 'N71:O71', 'J29:M29', 'N23:O23', 'R21:S21', 'P23:Q23', 'R26:S26', 'E17:H17', 'B3:S4', 'R46:S49', 'N73:O73', 'J14:S20', 'P72:S72', 'K69:M69', 'N57:O57', 'P43:Q45', 'P50:Q51', 'N27:O27', 'J32:M32', 'E11:H11']
+  DV type=list formula1="Yes,No" sqref=E57:E63 E67:E73
+----------------------------------------------------------------------------------------------------
+B2	Project Charter
+B5	Nombre del Proyecto
+J5	Beneficios 
+B9	Equipo del proyecto
+D10	Champion / Sponsor
+D11	Dueño del Proceso
+D12	Finanzas
+D13	Mentor (MBB-BB)
+J13	Ahorros 
+D14	Facilitador (GB-BB)
+D15	Team member
+D16	Team member
+D17	Team member
+D18	Team member
+B20	Enunciado del Problema (Problem Statement)
+J22	Category
+N22	Hard Benefit
+P22	Soft Benefit
+R22	Total
+J23	Garantia
+J24	Scrap
+J25	Retrabajo
+J26	Suministros
+J27	Material
+B28	Business Case
+J28	Inventario
+J29	Inventory
+J30	Cycle time
+J31	Ingresos
+J32	Desperdicios
+J33	Total Benefit
+N33	=SUM(N23:O29,N31:O32)   ==> 0
+P33	=SUM(P23:Q29,P31:Q32)   ==> 0
+R33	=SUM(R23:S29,R31:S32)   ==> 0
+B36	Objetivo del Proyecto
+J36	Plan de seguimiento - Cronograma general
+J38	Fase
+P38	Fecha inicio
+R38	fecha final
+B44	Alcance del Proyecto (Scope)
+C45	Scope In
+C50	Scope Out
+O53	Duracion del proyecto
+R53	semanas
+B55	Metricos Clave - fase DEFINIR
+J55	Firma y Fecha - fase DEFINIR
+D56	Nombre
+E56	Existe
+F56	Baseline
+G56	Objetivo
+H56	Ideal
+K56	=D10   ==> Champion / Sponsor
+C57	1
+K57	=D11   ==> Dueño del Proceso
+C58	2
+K58	=D12   ==> Finanzas
+C59	3
+D59	 
+K59	=D13   ==> Mentor (MBB-BB)
+C60	4
+D60	 
+K60	=D14   ==> Facilitador (GB-BB)
+C61	5
+D61	 
+C62	6
+D62	 
+C63	7
+D63	 
+B65	Metricos Clave - Cierre del Proyecto
+J65	Firma y Fecha - Cierre del Proyecto
+D66	Nombre
+E66	Mejoró
+F66	Baseline
+G66	Logrado
+H66	Ideal
+K66	=D10   ==> Champion / Sponsor
+C67	1
+K67	=D11   ==> Dueño del Proceso
+C68	2
+K68	=D12   ==> Finanzas
+C69	3
+D69	=D59   ==>  
+K69	=D13   ==> Mentor (MBB-BB)
+C70	4
+D70	=D60   ==>  
+K70	=D14   ==> Facilitador (GB-BB)
+C71	5
+D71	=D61   ==>  
+C72	6
+D72	=D62   ==>  
+C73	7
+D73	=D63   ==>  
+
+====================================================================================================
+SHEET: 'A3 final'  state=visible dims=B2:K38 max_row=38 max_col=11
+  merged: ['I33:K38', 'B32:H32', 'B33:H38', 'J30:K30', 'C3:F3', 'I32:K32', 'B4:F15', 'H4:K11', 'H13:K19', 'B16:F16', 'H12:K12', 'H20:K20', 'B30:H30', 'G4:G29', 'H21:K29', 'B2:K2', 'G3:H3', 'B17:F29']
+----------------------------------------------------------------------------------------------------
+B2	A3 LEAN SIX SIGMA DMAIC
+B3	PROYECTO:
+G3	AREA: 
+J3	PERIODO:
+I30	Empresa:
+B32	LECCIONES APRENDIDAS
+I32	RECONOCIMIENTO EQUIPO

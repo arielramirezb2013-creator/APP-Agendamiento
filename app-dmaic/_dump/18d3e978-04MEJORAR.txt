@@ -1,0 +1,93 @@
+FILE: 18d3e978-04MEJORAR.xlsx
+SHEETS: ['Brainstorming', 'Seleccion de soluciones', 'Plan de accion', 'Quick Improvement', 'Descripcion de la solucion', 'A3 Mejorar']
+DEFINED_NAMES: {"_1999_ACT": "#REF!", "_2": "#REF!", "_RR1": "[1]Summary!$C$21:$C$40", "_RR2": "[1]Summary!$K$21:$K$40", "_sga": "#REF!", "Access_Button": "\"WPOAUDIT_Sheet1_List\"", "AccessDatabase": "\"G:\\FIN&PROD\\REPORTS\\WPOAUDIT.mdb\"", "Addional_days": "#REF!", "Annual_Volume": "#REF!", "BASEAPPS": "'[2] APPLICATIONS'!$A$2:$A$15", "BRAND": "#REF!", "cdfButton_Click": "#N/A", "CENTER": "#REF!", "CHECKLISTE": "#REF!", "Class": "#REF!", "Clf": "#REF!", "Clr": "#REF!", "Codigos_Marcas": "#REF!", "ColAnchor": "#REF!", "Communication_Plan": "#REF!", "Constant": "#REF!", "Containment_Action_Plan": "#REF!", "Containment_Agreement__Describe___Who__What__Where__When__Why__How": "#REF!", "Containment_Recommendation__Describe": "#REF!", "cpk_Area_Style_Click": "#N/A", "cpk_Change_LSL_Click": "#N/A", "cpk_Change_USL_Click": "#N/A", "cpk_Line_Style_Click": "#N/A", "cpk_No_LSL_Click": "#N/A", "cpk_No_USL_Click": "#N/A", "cpk_Res_Spinner_Click": "#N/A", "cpkButton_Click": "#N/A", "Customer": "#REF!", "Cwf": "#REF!", "Cwr": "#REF!", "d": "#REF!", "daily_acct_summary": "'[3]bench comparo'!#REF!", "Design_Speed": "#REF!", "DESVIACION": "#REF!", "Diagram_Back_Click": "#N/A", "Diagram_Finish_Click": "#N/A", "Diagrams_Dialog_Constructor": "#N/A", "DPMO": "[5]PPM!$B$16", "DPMO_20": "'[5]no shift'!$B$15", "DT_Brand_Change": "#REF!", "DT_BREAKDOWN": "#REF!", "DT_Change_Over": "#REF!", "DT_CLEANING": "#REF!", "DT_Hrs": "#REF!", "DT_No_Prodution": "#REF!", "DT_NOSUPPLY": "#REF!", "DT_NOTRAYS": "#REF!", "DT_Other": "#REF!", "DT_PREMAINT": "#REF!", "DT_Rate": "#REF!", "EFFICIENCY": "#REF!", "FSR": "#REF!", "g_Cancel_Chart": "#N/A", "GB": "#REF!", "gDataRange": "#REF!", "HB": "#REF!", "Height": "5", "hist_Back_Click": "#N/A", "hist_Save_Defaults": "#N/A", "histButton_Click": "#N/A", "Hour_days": "#REF!", "Intercept": "[7]wksScatterPlot!$AE$2", "k_3": "#REF!", "LCL": "#REF!", "LF": "#REF!", "LR": "#REF!", "LSL": "#REF!", "LSL_cell": "[7]wksHistogram!$AF$1", "MARCAS": "#REF!", "Max_45Line": "[7]wksScatterPlot!$AH$5", "Min_45Line": "[7]wksScatterPlot!$AH$4", "N": "#REF!", "num": "#REF!", "Num_Bins": "[7]wksCapAnalysis!$AF$12", "Number_of_Operators": "#REF!", "Number_of_Parts": "#REF!", "Number_of_Trials": "#REF!", "numdevs": "#REF!", "Occurrence": "#REF!", "OT_Hrs": "#REF!", "OT_Rate": "#REF!", "par_2DwCum_Click": "#N/A", "par_2DwoCum_Click": "#N/A", "par_3DwoCum_Click": "#N/A", "par_Ascend_Click": "#N/A", "par_Back_Click": "#N/A", "par_Descend_Click": "#N/A", "par_First_Row_Click": "#N/A", "par_Save_Defaults": "#N/A", "parButton_Click": "#N/A", "parFirst": "[10]Defaults!#REF!", "parLegend": "[10]Defaults!#REF!", "parRows": "[10]Defaults!#REF!", "parSort": "[10]Defaults!#REF!", "Percent_R___R_1": "[1]Summary!$C$21:$C$40", "Percent_R___R_2": "#REF!", "PLAN_DATE": "#REF!", "PlotRange": "#REF!", "PM": "#REF!", "Project": "#REF!", "PROMEDIO": "#REF!", "qet_Bottom": "#REF!", "qet_capNonNorm_bins": "OFFSET([7]wksCapAnalysisNonNormal!$AB$2,0,0,[7]wksCapAnalysisNonNormal!$AF$12)", "qet_capNonNorm_freq": "OFFSET([7]wksCapAnalysisNonNormal!$AC$2,0,0,[7]wksCapAnalysisNonNormal!$AF$12)", "qet_capNorm_bins": "OFFSET([7]wksCapAnalysis!$AB$2,0,0,[7]wksCapAnalysis!$AF$12)", "qet_capNorm_freq": "OFFSET([7]wksCapAnalysis!$AC$2,0,0,[7]wksCapAnalysis!$AF$12)", "QET_FirstRow": "#REF!", "qet_histo_bins": "OFFSET([7]wksHistogram!$AB$2,0,0,[7]wksHistogram!$AF$12,1)", "qet_histo_freq": "OFFSET([7]wksHistogram!$AC$2,0,0,[7]wksHistogram!$AF$12,1)", "qet_histo_freq_rel": "OFFSET([7]wksHistogram!$C$10,0,0,[7]wksHistogram!$AF$12,1)", "QET_HOQ_FirstCol": "#REF!", "QET_HOQ_FirstRow": "#REF!", "QET_HOQ_LastCol": "#REF!", "QET_HOQ_LastRow": "#REF!", "QET_HOQ_RoofRow": "#REF!", "QET_Pugh_FirstCol": "#REF!", "QET_Pugh_FirstRow": "#REF!", "QET_Pugh_LastCol": "#REF!", "QET_Pugh_LastRow": "#REF!", "qet_Response": "#REF!", "qet_Sample": "#REF!", "QET_SC_Box1_FirstRow": "[11]tmlWks_Scorecard!$37:$37", "QET_SC_Box1_LastRow": "[11]tmlWks_Scorecard!$38:$38", "QET_SC_Box2_FirstRow": "[11]tmlWks_Scorecard!$44:$44", "QET_SC_Box2_LastRow": "[11]tmlWks_Scorecard!$45:$45", "QET_SC_Box3_FirstRow": "[11]tmlWks_Scorecard!$51:$51", "QET_SC_Box3_LastRow": "[11]tmlWks_Scorecard!$52:$52", "QET_SC_Box4_FirstRow": "[11]tmlWks_Scorecard!$58:$58", "QET_SC_Box4_LastRow": "[11]tmlWks_Scorecard!$59:$59", "QET_SC_Box5_FirstRow": "[11]tmlWks_Scorecard!$65:$65", "QET_SC_Box5_LastRow": "[11]tmlWks_Scorecard!$66:$66", "QET_SC_Box6_FirstRow": "[11]tmlWks_Scorecard!$72:$72", "QET_SC_Box6_LastRow": "[11]tmlWks_Scorecard!$73:$73", "QET_SC_Box7_FirstRow": "[11]tmlWks_Scorecard!$79:$79", "QET_SC_Box7_LastRow": "[11]tmlWks_Scorecard!$80:$80", "QET_SC_Box8_FirstRow": "[11]tmlWks_Scorecard!$86:$86", "QET_SC_Box8_LastRow": "[11]tmlWks_Scorecard!$87:$87", "QET_SC_DCol": "[11]tmlWks_Scorecard!$F:$F", "QET_SC_FirstCol": "[11]tmlWks_Scorecard!$C:$C", "QET_SC_LastCol": "[11]tmlWks_Scorecard!$L:$L", "QET_SCSimp_Box1_LastRow": "#REF!", "QET_SCSimp_Box2_FirstRow": "#REF!", "QET_SCSimp_Box2_LastRow": "#REF!", "QET_SCSimp_Box3_FirstRow": "#REF!", "QET_SCSimp_Box3_LastRow": "#REF!", "QET_SCSimp_Box4_FirstRow": "#REF!", "QET_SCSimp_Box4_LastRow": "#REF!", "QET_SCSimp_Box5_FirstRow": "#REF!", "QET_SCSimp_Box5_LastRow": "#REF!", "QET_SCSimp_Box6_FirstRow": "#REF!", "QET_SCSimp_Box6_LastRow": "#REF!", "QET_SCSimp_Box7_FirstRow": "#REF!", "QET_SCSimp_Box7_LastRow": "#REF!", "QET_SCSimp_Box8_FirstRow": "#REF!", "QET_SCSimp_Box8_LastRow": "#REF!", "QET_SCSimp_FirstCol": "#REF!", "QET_SCSimp_LastCol": "#REF!", "QET_TolWks_FirstRow": "#REF!", "QET_TolWks_LastRow": "#REF!", "QET_TolWks_T": "'[11]tmlWks_Tolerance Analysis'!$G:$G", "QET_TolWks_Tlower": "'[11]tmlWks_Tolerance Analysis'!$I:$I", "QET_TolWks_Tupper": "'[11]tmlWks_Tolerance Analysis'!$J:$J", "qet_Top": "#REF!", "qet_yield_LastCol": "#REF!", "QPT_No": "#REF!", "R_1": "[7]wksScatterPlot!$A$3", "R_2": "[7]wksScatterPlot!$B$3", "RANGE": "#REF!", "RANGO": "#REF!", "Rated_Speed": "#REF!", "RegressionAnal": "#REF!", "RegStats": "#REF!", "REPORT_DATE": "#REF!", "Risk_Assessment": "#REF!", "RiskMatrix": "#REF!", "RowAnchor": "#REF!", "RSTDDEV": "#REF!", "scat_Back_Click": "#N/A", "scat_Backward_Spinner_Click": "#N/A", "scat_Cubic_Click": "#N/A", "scat_Display_Stats_Click": "#N/A", "scat_Forward_Spinner_Click": "#N/A", "scat_Linear_Click": "#N/A", "scat_No_Line_Click": "#N/A", "scat_Quadratic_Click": "#N/A", "scat_Save_Defaults": "#N/A", "scatButton_Click": "#N/A", "scores": "'[5]DOE 2^2 template'!$B$11:$D$11", "scores_18": "'[13]2^2 template'!$B$11:$D$11", "scores3": "#REF!", "scores3_18": "#REF!", "scores4": "#REF!", "scores4_18": "'[13]2^4 template '!$B$23:$P$23", "Scroll_Width": "[7]wksHistogram!$AF$16", "Severity": "#REF!", "Slope": "[7]wksScatterPlot!$AF$2", "Small_Back_Click": "#N/A", "SSE": "#REF!", "SSR": "#REF!", "SST": "#REF!", "ST_Hrs": "#REF!", "ST_Rate": "#REF!", "StartValue": "0.475", "statButton_Click": "#N/A", "Status": "'[14]Drop-Down'!$A$2:$A$5", "StepValue": "0.001", "SumBaseCell": "#REF!", "T": "#REF!", "Tabla_Tareas1": "#REF!", "TARGET_Cell": "[7]wksHistogram!$AF$2", "Tolerance_Range": "#REF!", "Topic": "#REF!", "Topic1": "#REF!", "Topic3": "#REF!", "Topic4": "#REF!", "Topic5": "#REF!", "Total_Wkly_Hrs": "#REF!", "Trend_Equation": "[15]wksScatterPlot!#REF!", "Trend_X0": "[7]wksScatterPlot!$AE$4", "Trend_X1": "[7]wksScatterPlot!$AE$5", "Trend_Y0": "[7]wksScatterPlot!$AF$4", "Trend_Y1": "[7]wksScatterPlot!$AF$5", "TYPE": "[7]wksHistogram!$AF$1", "UCL": "#REF!", "Unit_Range": "'[7]wksP-Chart'!$AQ$2", "UserXRange": "#REF!", "UserYRange": "#REF!", "USL": "#REF!", "USL_cell": "[7]wksHistogram!$AF$3", "VALIDATION_REPORT_DATE": "#REF!", "Variable_Name": "[7]wksCapAnalysis!$AF$3", "WF": "#REF!", "Width": "2", "Wkly_Hrs": "#REF!", "Work_days": "#REF!", "WPOAUDIT_Sheet1_List": "[16]Form!$A$37:$A$38", "WR": "#REF!", "X0": "[7]wksScatterPlot!$AE$4", "Y0": "[7]wksScatterPlot!$AF$4"}
+
+====================================================================================================
+SHEET: 'Brainstorming'  state=visible dims=B2:L20 max_row=20 max_col=12
+  merged: ['D5:D9', 'B10:D17', 'B18:B19', 'B3:C3', 'C18:D19', 'B2:L2', 'B20:L20', 'D3:L3', 'C6:C9']
+----------------------------------------------------------------------------------------------------
+B2	BRAINSTORMING
+D3	AFFINITY DIAGRAM
+B4	TEAM
+C4	DATE
+D4	CATEGORIES
+B18	PROJECT NAME
+
+====================================================================================================
+SHEET: 'Seleccion de soluciones'  state=visible dims=B2:L21 max_row=21 max_col=12
+  merged: ['I5:I7', 'H17:H19', 'I17:I19', 'D5:D7', 'K17:K19', 'L3:L4', 'B3:B4', 'E20:E21', 'G14:G16', 'E11:E13', 'D8:D10', 'G5:G7', 'I14:I16', 'K14:K16', 'C5:C21', 'D14:D16', 'G3:G4', 'J20:J21', 'B2:L2', 'I3:I4', 'D3:D4', 'F3:F21', 'L11:L13', 'L20:L21', 'H14:H16', 'H5:H7', 'J14:J16', 'G8:G10', 'J5:J7', 'H8:H10', 'G20:G21', 'J8:J10', 'J17:J19', 'E17:E19', 'L17:L19', 'E8:E10', 'G17:G19', 'G11:G13', 'I11:I13', 'H3:H4', 'K11:K13', 'I20:I21', 'J3:J4', 'E14:E16', 'D17:D19', 'E5:E7', 'K5:K7', 'D20:D21', 'K3:K4', 'C3:C4', 'L8:L10', 'E3:E4', 'H11:H13', 'D11:D13', 'J11:J13', 'I8:I10', 'H20:H21', 'K8:K10', 'L14:L16', 'B5:B21', 'L5:L7', 'K20:K21']
+----------------------------------------------------------------------------------------------------
+B2	SELECCIÓN DE SOLUCIONES
+B3	PROBLEM STATEMENT
+C3	VALIDATED ROOT CAUSE
+D3	POTENTIAL SOLUTIONS
+E3	PRACTICAL METHOD
+G3	EFFORT
+H3	BENEFIT
+I3	FEASIBILITY
+J3	COST-BENEFIT
+K3	OVERALL
+L3	SOLUTION
+K5	=PRODUCT(G5:J7)   ==> 0
+K8	=PRODUCT(G8:J10)   ==> 0
+K11	=PRODUCT(G11:J13)   ==> 0
+K14	=PRODUCT(G14:J16)   ==> 0
+K17	=PRODUCT(G17:J19)   ==> 0
+K20	=PRODUCT(G20:J21)   ==> 0
+
+====================================================================================================
+SHEET: 'Plan de accion'  state=visible dims=B2:K32 max_row=32 max_col=11
+  merged: ['E8:E9', 'K26:K27', 'G8:G9', 'I16:I17', 'C10:C11', 'C16:C17', 'E10:E11', 'I26:I27', 'G10:G11', 'F18:F19', 'I18:I19', 'B4:K4', 'F26:F27', 'D16:D17', 'G18:G19', 'D18:D19', 'F28:F29', 'I20:I21', 'D8:D9', 'G22:G23', 'D10:D11', 'E12:E13', 'G12:G13', 'I6:I7', 'K6:K7', 'C6:C7', 'C3:D3', 'F16:F17', 'C14:C15', 'E14:E15', 'F20:F21', 'B18:B23', 'F22:F23', 'D12:D13', 'C8:C9', 'E26:E27', 'G26:G27', 'K28:K29', 'D26:D27', 'B6:B11', 'C18:C19', 'F10:F11', 'F24:F25', 'K20:K21', 'J30:K31', 'C20:C21', 'E20:E21', 'C22:C23', 'F8:F9', 'C12:C13', 'E28:E29', 'G28:G29', 'G6:G7', 'G24:G25', 'D28:D29', 'I24:I25', 'I8:I9', 'K8:K9', 'E16:E17', 'D20:D21', 'G16:G17', 'D14:D15', 'I10:I11', 'K10:K11', 'F14:F15', 'E18:E19', 'G30:I31', 'K16:K17', 'D6:D7', 'F6:F7', 'K18:K19', 'F12:F13', 'C26:C27', 'I22:I23', 'I28:I29', 'K22:K23', 'B12:B17', 'B32:K32', 'I12:I13', 'K12:K13', 'E6:E7', 'G20:G21', 'G3:H3', 'B30:F31', 'G14:G15', 'D24:D25', 'I3:J3', 'I14:I15', 'K14:K15', 'B2:K2', 'B24:B29', 'C28:C29', 'E22:E23', 'K24:K25', 'C24:C25', 'E24:E25', 'D22:D23']
+----------------------------------------------------------------------------------------------------
+B2	PLAN DE ACCION - MEJORA
+B3	Proyecto:
+F3	NO REALIZADA
+G3	RETRASADA
+I3	EN CURSO
+K3	REALIZADA
+B5	PROBLEMA/CAUSA RAIZ
+C5	ACCION DE MEJORA
+D5	RESPONSABLE
+E5	FECHA DE INICIO
+F5	REUNION DE EQUIPO(AVANCES)
+G5	FECHA LIMITE
+H5	ESTATUS
+I5	DESCRIPCION
+J5	RESULTADOS
+K5	MEJORA A CONTROLAR
+G30	REUNION EQUIPO RESULTADOS
+
+====================================================================================================
+SHEET: 'Quick Improvement'  state=visible dims=B2:P41 max_row=41 max_col=16
+  merged: ['B8:F13', 'D5:F5', 'B2:M4', 'O5:P5', 'G8:K13', 'B5:C5', 'G6:K7', 'L6:P7', 'G5:H5', 'J15:P41', 'B15:I41', 'B14:I14', 'M5:N5', 'B6:F7', 'J14:P14', 'L8:P13', 'N2:P4', 'I5:L5']
+----------------------------------------------------------------------------------------------------
+B2	QUICK IMPROVEMENT
+B5	Departamento:
+G5	Proceso:
+M5	Fecha:
+B6	Antes
+G6	Accion
+L6	Despues
+B14	ANTES
+J14	DESPUES
+
+====================================================================================================
+SHEET: 'Descripcion de la solucion'  state=visible dims=B2:F15 max_row=15 max_col=6
+  merged: ['F10:F14', 'C4:C9', 'E8:E9', 'F4:F9', 'B2:F2', 'D4:D9', 'B15:F15', 'E13:E14', 'E4:E5', 'E10:E12', 'B4:B14', 'C10:C14', 'E6:E7', 'D10:D14']
+----------------------------------------------------------------------------------------------------
+B2	ESTABLECE LA MEJORA Y SOLUCION DEL PROBLEMA
+B3	PROBLEMA
+C3	CAUSA RAIZ
+D3	MEJORA IMPLEMENTADA
+E3	ACCIONES REALIZADAS
+F3	RESULTADOS
+
+====================================================================================================
+SHEET: 'A3 Mejorar'  state=visible dims=B2:J33 max_row=33 max_col=10
+  merged: ['B25:J25', 'F3:J3', 'F19:H24', 'B4:E12', 'F14:H18', 'B2:J2', 'B26:J33', 'B3:E3', 'I14:J24', 'B13:J13', 'B14:E24', 'F4:J12']
+----------------------------------------------------------------------------------------------------
+B2	MEJORAR
+B3	LISTA DE MEJORAS
+F3	PLAN DE ACCION PARA IMPLEMENTAR MEJORAS
+B13	TABLA ANTES Y DESPUES - RESULTADOS DE MEJORAS
+B25	MEJORA A CONTROLAR

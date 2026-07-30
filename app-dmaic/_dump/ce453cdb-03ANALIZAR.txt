@@ -1,0 +1,106 @@
+FILE: ce453cdb-03ANALIZAR.xlsx
+SHEETS: ['Brainstorming', 'Diagramas Ishikawa', '5 Why´s', 'Tree diagram', 'Validacion de causas', 'Descripcion causa raiz', 'A3 Analizar']
+DEFINED_NAMES: {"_1999_ACT": "#REF!", "_2": "#REF!", "_sga": "#REF!", "Access_Button": "\"WPOAUDIT_Sheet1_List\"", "AccessDatabase": "\"G:\\FIN&PROD\\REPORTS\\WPOAUDIT.mdb\"", "Addional_days": "#REF!", "Annual_Volume": "#REF!", "BASEAPPS": "'[1] APPLICATIONS'!$A$2:$A$15", "BRAND": "#REF!", "cdfButton_Click": "#N/A", "CENTER": "#REF!", "CHECKLISTE": "#REF!", "Class": "#REF!", "Clf": "#REF!", "Clr": "#REF!", "Codigos_Marcas": "#REF!", "ColAnchor": "#REF!", "Communication_Plan": "#REF!", "Constant": "#REF!", "Containment_Action_Plan": "#REF!", "Containment_Agreement__Describe___Who__What__Where__When__Why__How": "#REF!", "Containment_Recommendation__Describe": "#REF!", "cpk_Area_Style_Click": "#N/A", "cpk_Change_LSL_Click": "#N/A", "cpk_Change_USL_Click": "#N/A", "cpk_Line_Style_Click": "#N/A", "cpk_No_LSL_Click": "#N/A", "cpk_No_USL_Click": "#N/A", "cpk_Res_Spinner_Click": "#N/A", "cpkButton_Click": "#N/A", "Customer": "#REF!", "Cwf": "#REF!", "Cwr": "#REF!", "daily_acct_summary": "'[2]bench comparo'!#REF!", "Design_Speed": "#REF!", "DESVIACION": "#REF!", "Diagram_Back_Click": "#N/A", "Diagram_Finish_Click": "#N/A", "Diagrams_Dialog_Constructor": "#N/A", "DPMO": "[3]PPM!$B$16", "DPMO_20": "'[3]no shift'!$B$15", "DT_Brand_Change": "#REF!", "DT_BREAKDOWN": "#REF!", "DT_Change_Over": "#REF!", "DT_CLEANING": "#REF!", "DT_Hrs": "#REF!", "DT_No_Prodution": "#REF!", "DT_NOSUPPLY": "#REF!", "DT_NOTRAYS": "#REF!", "DT_Other": "#REF!", "DT_PREMAINT": "#REF!", "DT_Rate": "#REF!", "EFFICIENCY": "#REF!", "FSR": "#REF!", "g_Cancel_Chart": "#N/A", "GB": "#REF!", "gDataRange": "#REF!", "HB": "#REF!", "Height": "5", "hist_Back_Click": "#N/A", "hist_Save_Defaults": "#N/A", "histButton_Click": "#N/A", "Hour_days": "#REF!", "Intercept": "[4]wksScatterPlot!$AE$2", "k_3": "#REF!", "LCL": "#REF!", "LF": "#REF!", "LR": "#REF!", "LSL": "#REF!", "LSL_cell": "[4]wksHistogram!$AF$1", "MARCAS": "#REF!", "Max_45Line": "[4]wksScatterPlot!$AH$5", "Min_45Line": "[4]wksScatterPlot!$AH$4", "N": "#REF!", "num": "#REF!", "Num_Bins": "[4]wksCapAnalysis!$AF$12", "Number_of_Operators": "#REF!", "Number_of_Parts": "#REF!", "Number_of_Trials": "#REF!", "numdevs": "#REF!", "Occurrence": "#REF!", "OT_Hrs": "#REF!", "OT_Rate": "#REF!", "par_2DwCum_Click": "#N/A", "par_2DwoCum_Click": "#N/A", "par_3DwoCum_Click": "#N/A", "par_Ascend_Click": "#N/A", "par_Back_Click": "#N/A", "par_Descend_Click": "#N/A", "par_First_Row_Click": "#N/A", "par_Save_Defaults": "#N/A", "parButton_Click": "#N/A", "parFirst": "[6]Defaults!#REF!", "parLegend": "[6]Defaults!#REF!", "parRows": "[6]Defaults!#REF!", "parSort": "[6]Defaults!#REF!", "Percent_R___R_2": "#REF!", "PLAN_DATE": "#REF!", "PlotRange": "#REF!", "PM": "#REF!", "Project": "#REF!", "PROMEDIO": "#REF!", "qet_Bottom": "#REF!", "qet_capNonNorm_bins": "OFFSET([4]wksCapAnalysisNonNormal!$AB$2,0,0,[4]wksCapAnalysisNonNormal!$AF$12)", "qet_capNonNorm_freq": "OFFSET([4]wksCapAnalysisNonNormal!$AC$2,0,0,[4]wksCapAnalysisNonNormal!$AF$12)", "qet_capNorm_bins": "OFFSET([4]wksCapAnalysis!$AB$2,0,0,[4]wksCapAnalysis!$AF$12)", "qet_capNorm_freq": "OFFSET([4]wksCapAnalysis!$AC$2,0,0,[4]wksCapAnalysis!$AF$12)", "QET_FirstRow": "#REF!", "qet_histo_bins": "OFFSET([4]wksHistogram!$AB$2,0,0,[4]wksHistogram!$AF$12,1)", "qet_histo_freq": "OFFSET([4]wksHistogram!$AC$2,0,0,[4]wksHistogram!$AF$12,1)", "qet_histo_freq_rel": "OFFSET([4]wksHistogram!$C$10,0,0,[4]wksHistogram!$AF$12,1)", "QET_HOQ_FirstCol": "#REF!", "QET_HOQ_FirstRow": "#REF!", "QET_HOQ_LastCol": "#REF!", "QET_HOQ_LastRow": "#REF!", "QET_HOQ_RoofRow": "#REF!", "QET_Pugh_FirstCol": "#REF!", "QET_Pugh_FirstRow": "#REF!", "QET_Pugh_LastCol": "#REF!", "QET_Pugh_LastRow": "#REF!", "qet_Response": "#REF!", "qet_Sample": "#REF!", "QET_SC_Box1_FirstRow": "[7]tmlWks_Scorecard!$37:$37", "QET_SC_Box1_LastRow": "[7]tmlWks_Scorecard!$38:$38", "QET_SC_Box2_FirstRow": "[7]tmlWks_Scorecard!$44:$44", "QET_SC_Box2_LastRow": "[7]tmlWks_Scorecard!$45:$45", "QET_SC_Box3_FirstRow": "[7]tmlWks_Scorecard!$51:$51", "QET_SC_Box3_LastRow": "[7]tmlWks_Scorecard!$52:$52", "QET_SC_Box4_FirstRow": "[7]tmlWks_Scorecard!$58:$58", "QET_SC_Box4_LastRow": "[7]tmlWks_Scorecard!$59:$59", "QET_SC_Box5_FirstRow": "[7]tmlWks_Scorecard!$65:$65", "QET_SC_Box5_LastRow": "[7]tmlWks_Scorecard!$66:$66", "QET_SC_Box6_FirstRow": "[7]tmlWks_Scorecard!$72:$72", "QET_SC_Box6_LastRow": "[7]tmlWks_Scorecard!$73:$73", "QET_SC_Box7_FirstRow": "[7]tmlWks_Scorecard!$79:$79", "QET_SC_Box7_LastRow": "[7]tmlWks_Scorecard!$80:$80", "QET_SC_Box8_FirstRow": "[7]tmlWks_Scorecard!$86:$86", "QET_SC_Box8_LastRow": "[7]tmlWks_Scorecard!$87:$87", "QET_SC_DCol": "[7]tmlWks_Scorecard!$F:$F", "QET_SC_FirstCol": "[7]tmlWks_Scorecard!$C:$C", "QET_SC_LastCol": "[7]tmlWks_Scorecard!$L:$L", "QET_SCSimp_Box1_LastRow": "#REF!", "QET_SCSimp_Box2_FirstRow": "#REF!", "QET_SCSimp_Box2_LastRow": "#REF!", "QET_SCSimp_Box3_FirstRow": "#REF!", "QET_SCSimp_Box3_LastRow": "#REF!", "QET_SCSimp_Box4_FirstRow": "#REF!", "QET_SCSimp_Box4_LastRow": "#REF!", "QET_SCSimp_Box5_FirstRow": "#REF!", "QET_SCSimp_Box5_LastRow": "#REF!", "QET_SCSimp_Box6_FirstRow": "#REF!", "QET_SCSimp_Box6_LastRow": "#REF!", "QET_SCSimp_Box7_FirstRow": "#REF!", "QET_SCSimp_Box7_LastRow": "#REF!", "QET_SCSimp_Box8_FirstRow": "#REF!", "QET_SCSimp_Box8_LastRow": "#REF!", "QET_SCSimp_FirstCol": "#REF!", "QET_SCSimp_LastCol": "#REF!", "QET_TolWks_FirstRow": "#REF!", "QET_TolWks_LastRow": "#REF!", "QET_TolWks_T": "'[7]tmlWks_Tolerance Analysis'!$G:$G", "QET_TolWks_Tlower": "'[7]tmlWks_Tolerance Analysis'!$I:$I", "QET_TolWks_Tupper": "'[7]tmlWks_Tolerance Analysis'!$J:$J", "qet_Top": "#REF!", "qet_yield_LastCol": "#REF!", "QPT_No": "#REF!", "R_1": "[4]wksScatterPlot!$A$3", "R_2": "[4]wksScatterPlot!$B$3", "RANGE": "#REF!", "RANGO": "#REF!", "Rated_Speed": "#REF!", "RegressionAnal": "#REF!", "RegStats": "#REF!", "REPORT_DATE": "#REF!", "Risk_Assessment": "#REF!", "RiskMatrix": "#REF!", "RowAnchor": "#REF!", "RSTDDEV": "#REF!", "scat_Back_Click": "#N/A", "scat_Backward_Spinner_Click": "#N/A", "scat_Cubic_Click": "#N/A", "scat_Display_Stats_Click": "#N/A", "scat_Forward_Spinner_Click": "#N/A", "scat_Linear_Click": "#N/A", "scat_No_Line_Click": "#N/A", "scat_Quadratic_Click": "#N/A", "scat_Save_Defaults": "#N/A", "scatButton_Click": "#N/A", "scores": "'[3]DOE 2^2 template'!$B$11:$D$11", "scores_18": "'[8]2^2 template'!$B$11:$D$11", "scores3": "#REF!", "scores3_18": "#REF!", "scores4": "#REF!", "scores4_18": "'[8]2^4 template '!$B$23:$P$23", "Scroll_Width": "[4]wksHistogram!$AF$16", "Severity": "#REF!", "Slope": "[4]wksScatterPlot!$AF$2", "Small_Back_Click": "#N/A", "SSE": "#REF!", "SSR": "#REF!", "SST": "#REF!", "ST_Hrs": "#REF!", "ST_Rate": "#REF!", "StartValue": "0.475", "statButton_Click": "#N/A", "Status": "'[9]Drop-Down'!$A$2:$A$5", "StepValue": "0.001", "SumBaseCell": "#REF!", "T": "#REF!", "Tabla_Tareas1": "#REF!", "TARGET_Cell": "[4]wksHistogram!$AF$2", "Tolerance_Range": "#REF!", "Topic": "#REF!", "Topic1": "#REF!", "Topic3": "#REF!", "Topic4": "#REF!", "Topic5": "#REF!", "Total_Wkly_Hrs": "#REF!", "Trend_X0": "[4]wksScatterPlot!$AE$4", "Trend_X1": "[4]wksScatterPlot!$AE$5", "Trend_Y0": "[4]wksScatterPlot!$AF$4", "Trend_Y1": "[4]wksScatterPlot!$AF$5", "TYPE": "[4]wksHistogram!$AF$1", "UCL": "#REF!", "Unit_Range": "'[4]wksP-Chart'!$AQ$2", "UserXRange": "#REF!", "UserYRange": "#REF!", "USL": "#REF!", "USL_cell": "[4]wksHistogram!$AF$3", "VALIDATION_REPORT_DATE": "#REF!", "Variable_Name": "[4]wksCapAnalysis!$AF$3", "WF": "#REF!", "Width": "2", "Wkly_Hrs": "#REF!", "Work_days": "#REF!", "WPOAUDIT_Sheet1_List": "[10]Form!$A$37:$A$38", "WR": "#REF!", "X0": "[4]wksScatterPlot!$AE$4", "Y0": "[4]wksScatterPlot!$AF$4"}
+
+====================================================================================================
+SHEET: 'Brainstorming'  state=visible dims=B2:L20 max_row=20 max_col=12
+  merged: ['D5:D9', 'B10:D17', 'B18:B19', 'B3:C3', 'C18:D19', 'B2:L2', 'B20:L20', 'D3:L3', 'C6:C9']
+----------------------------------------------------------------------------------------------------
+B2	BRAINSTORMING
+D3	AFFINITY DIAGRAM
+B4	TEAM
+C4	DATE
+D4	CATEGORIES
+B18	PROJECT NAME
+
+====================================================================================================
+SHEET: 'Diagramas Ishikawa'  state=visible dims=B2:AC106 max_row=106 max_col=29
+  merged: ['C49:F51', 'B2:W2', 'B57:U57', 'I5:L7', 'C103:H105', 'B3:W3', 'O49:R51', 'B56:U56', 'C59:H61', 'K59:P61', 'I49:L51', 'C5:F7', 'Q77:T88', 'O5:R7', 'S23:V34', 'K103:P105']
+----------------------------------------------------------------------------------------------------
+B2	ISHIKAWA DIAGRAM - CAUSE AND EFFECT
+C5	Mediciones
+I5	Materiales
+O5	Mano de Obra
+S23	Problema
+C49	Medio Ambiente
+I49	Métodos
+O49	Maquinaria
+B56	ISHIKAWA DIAGRAM - CAUSE AND EFFECT
+C59	Politicas
+K59	Personal
+Q77	Problema
+C103	Procedimientos
+K103	Instalaciones
+
+====================================================================================================
+SHEET: '5 Why´s'  state=visible dims=B2:AG72 max_row=72 max_col=33
+  merged: ['K48:P53', 'U12:Z17', 'B40:D41', 'N18:R23', 'B25:G33', 'S6:X11', 'K67:P72', 'AC30:AG35', 'N29:O30', 'S36:V36', 'AA24:AE29', 'K40:L41', 'B4:D5', 'Y54:AC59', 'N10:O11', 'S66:W71', 'K23:L24', 'S58:S59', 'Q24:T29', 'AA60:AE65', 'B59:D60', 'N65:O66', 'K4:L5', 'U64:V65', 'S30:W35', 'Q16:R17', 'S72:V72', 'B61:G69', 'H42:M47', 'B39:AG39', 'B42:G50', 'B2:AG2', 'Y18:AC23', 'H25:M30', 'Q60:T65', 'S42:X47', 'B23:D24', 'Q71:R72', 'Q52:R53', 'H6:M11', 'U48:Z53', 'B6:G14', 'AC66:AG71', 'S22:S23', 'N46:O47', 'N54:R59', 'K31:P36', 'K59:L60', 'H61:M66', 'K12:P17', 'U28:V29', 'Q35:R36']
+----------------------------------------------------------------------------------------------------
+B2	5 Whys - 5 Por que
+B4	PROBLEM
+K4	Why
+U5	How is this confirmed
+O6	Is confirmation necessary?
+N10	Why
+Q16	Why
+U28	Why
+S36	Root Cause
+B39	5 Whys - 5 Por que
+B40	PROBLEM
+K40	Why
+U41	How is this confirmed
+O42	Is confirmation necessary?
+N46	Why
+Q52	Why
+U64	Why
+S72	Root Cause
+
+====================================================================================================
+SHEET: 'Tree diagram'  state=visible dims=B2:O39 max_row=39 max_col=15
+  merged: ['F25:H28', 'D19:F21', 'K19:M21', 'B25:D28', 'B2:D5', 'H8:J10', 'H3:J5', 'B31:D34', 'F31:H34', 'D13:F15', 'K25:M28', 'K13:M15']
+----------------------------------------------------------------------------------------------------
+B2	TREE DIAGRAM/ WHY
+G4	Problem
+I7	WHY
+E12	WHY
+L12	WHY
+E18	WHY
+L18	WHY
+C24	WHY
+G24	WHY
+L24	ROOT CAUSE
+C30	ROOT CAUSE
+G30	ROOT CAUSE
+
+====================================================================================================
+SHEET: 'Validacion de causas'  state=visible dims=B2:H16 max_row=16 max_col=8
+  merged: ['C12:D12', 'C6:D6', 'C7:D7', 'C10:D10', 'C16:D16', 'C15:D15', 'C11:D11', 'C5:D5', 'C14:D14', 'B2:H2', 'C13:D13', 'C9:D9', 'B3:H3', 'C8:D8', 'C4:D4']
+  CF G5:G16 type=cellIs op=equal formula=['1']
+----------------------------------------------------------------------------------------------------
+B2	PLAN DE VERIFICACION DE CAUSAS
+B4	POSSIBLE CAUSE
+C4	VERIFICATION ACTION
+E4	RESPONSIBLE
+F4	DATE OF VALIDATION
+G4	CHECK (1=SI)
+H4	COMMENTS
+G5	1
+
+====================================================================================================
+SHEET: 'Descripcion causa raiz'  state=visible dims=B2:D16 max_row=16 max_col=4
+  merged: ['C4:C9', 'D4:D9', 'B2:D2', 'B4:B15', 'D10:D15', 'C10:C15', 'B16:D16']
+----------------------------------------------------------------------------------------------------
+B2	ESTABLECE LA CAUSA RAIZ DEL PROBLEMA
+B3	PROBLEMA
+C3	CAUSA RAIZ 
+D3	DESCRIPCION 
+
+====================================================================================================
+SHEET: 'A3 Analizar'  state=visible dims=B2:J32 max_row=32 max_col=10
+  merged: ['B24:J32', 'B3:J3', 'E13:J13', 'B14:D22', 'B23:J23', 'B13:D13', 'E14:J22', 'F5:J12', 'B4:J4', 'B5:E12', 'B2:J2']
+----------------------------------------------------------------------------------------------------
+B2	ANALIZAR
+B4	ANALISIS DE LA CAUSA RAIZ
+B13	CAUSAS POTENCIALES
+E13	VALIDACION DE CAUSAS POTENCIALES
+B23	IDENTIFICACION DE LA CAUSA RAIZ DEL PROBLEMA

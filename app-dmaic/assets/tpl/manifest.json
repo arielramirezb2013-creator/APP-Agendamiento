@@ -1,0 +1,109 @@
+{
+ "01DEFINIR": {
+  "file": "01DEFINIR.xlsx",
+  "bytes": 251668,
+  "sheets": {
+   "Matriz Priorizacion Proyectos": "xl/worksheets/sheet1.xml",
+   "Clarificacion Problema": "xl/worksheets/sheet2.xml",
+   "Árbol CTQ (Critico Para Calida": "xl/worksheets/sheet3.xml",
+   "Series de tiempo": "xl/worksheets/sheet4.xml",
+   "Pareto": "xl/worksheets/sheet5.xml",
+   "Objetivo SMART": "xl/worksheets/sheet6.xml",
+   "SIPOC": "xl/worksheets/sheet7.xml",
+   "Beneficios": "xl/worksheets/sheet8.xml",
+   "Tabla identificacion proyect": "xl/worksheets/sheet9.xml",
+   "Project Members": "xl/worksheets/sheet10.xml",
+   "Gantt": "xl/worksheets/sheet11.xml",
+   "Plan de comunicacion": "xl/worksheets/sheet12.xml",
+   "Recursos": "xl/worksheets/sheet13.xml",
+   "Project Charter": "xl/worksheets/sheet14.xml",
+   "A3 Definir": "xl/worksheets/sheet15.xml"
+  },
+  "logo": "xl/media/image2.png",
+  "logoHash": "43290bacc4df",
+  "orphansRemoved": [
+   "image8.jpeg"
+  ],
+  "savedKB": 2062
+ },
+ "02MEDIR": {
+  "file": "02MEDIR.xlsx",
+  "bytes": 254605,
+  "sheets": {
+   "Swin Line": "xl/worksheets/sheet1.xml",
+   "Process Mapping Detailed": "xl/worksheets/sheet2.xml",
+   "Metricos de desempeño": "xl/worksheets/sheet3.xml",
+   "Plan de muestreo cualitativo": "xl/worksheets/sheet4.xml",
+   "Tamaño de muestra cualitativos": "xl/worksheets/sheet5.xml",
+   "Plan de muestreo cuantitativo": "xl/worksheets/sheet6.xml",
+   "Tamaño de muestra cuantitativo": "xl/worksheets/sheet7.xml",
+   "Hojas de verificacion": "xl/worksheets/sheet8.xml",
+   "Plan de recoleccion": "xl/worksheets/sheet9.xml",
+   "YIELD": "xl/worksheets/sheet10.xml",
+   "RTY-FPY": "xl/worksheets/sheet11.xml",
+   "Grafico Serie de tiempo": "xl/worksheets/sheet12.xml",
+   "%VALOR ADD": "xl/worksheets/sheet13.xml",
+   "PPM": "xl/worksheets/sheet14.xml",
+   "DPMO": "xl/worksheets/sheet15.xml",
+   "DPU": "xl/worksheets/sheet16.xml",
+   "A3 Medir": "xl/worksheets/sheet17.xml"
+  },
+  "logo": "xl/media/image1.png",
+  "logoHash": "43290bacc4df",
+  "orphansRemoved": [],
+  "savedKB": 35
+ },
+ "03ANALIZAR": {
+  "file": "03ANALIZAR.xlsx",
+  "bytes": 107882,
+  "sheets": {
+   "Brainstorming": "xl/worksheets/sheet1.xml",
+   "Diagramas Ishikawa": "xl/worksheets/sheet2.xml",
+   "5 Why´s": "xl/worksheets/sheet3.xml",
+   "Tree diagram": "xl/worksheets/sheet4.xml",
+   "Validacion de causas": "xl/worksheets/sheet5.xml",
+   "Descripcion causa raiz": "xl/worksheets/sheet6.xml",
+   "A3 Analizar": "xl/worksheets/sheet7.xml"
+  },
+  "logo": "xl/media/image2.png",
+  "logoHash": "43290bacc4df",
+  "orphansRemoved": [],
+  "savedKB": 8
+ },
+ "04MEJORAR": {
+  "file": "04MEJORAR.xlsx",
+  "bytes": 114009,
+  "sheets": {
+   "Brainstorming": "xl/worksheets/sheet1.xml",
+   "Seleccion de soluciones": "xl/worksheets/sheet2.xml",
+   "Plan de accion": "xl/worksheets/sheet3.xml",
+   "Quick Improvement": "xl/worksheets/sheet4.xml",
+   "Descripcion de la solucion": "xl/worksheets/sheet5.xml",
+   "A3 Mejorar": "xl/worksheets/sheet6.xml"
+  },
+  "logo": null,
+  "logoHash": null,
+  "orphansRemoved": [],
+  "savedKB": 14
+ },
+ "05CONTROLAR": {
+  "file": "05CONTROLAR.xlsx",
+  "bytes": 139169,
+  "sheets": {
+   "Estandar 1": "xl/worksheets/sheet1.xml",
+   "Estandar 2": "xl/worksheets/sheet2.xml",
+   "Estandar 3": "xl/worksheets/sheet3.xml",
+   "Plan de control": "xl/worksheets/sheet4.xml",
+   "Grafico Antes-Despues": "xl/worksheets/sheet5.xml",
+   "A3 Controlar": "xl/worksheets/sheet6.xml",
+   "Project Charter": "xl/worksheets/sheet7.xml",
+   "A3 final": "xl/worksheets/sheet8.xml"
+  },
+  "logo": "xl/media/image2.png",
+  "logoHash": "5d0eaf33eb2c",
+  "orphansRemoved": [
+   "image6.jpeg"
+  ],
+  "savedKB": 2042
+ }
+}
