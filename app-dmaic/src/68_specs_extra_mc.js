@@ -827,17 +827,20 @@ const SPECS_EXTRA_MC = (function(){
         if (c.error) return [{ label:'CARTA DE CONTROL', value:'—', hint:c.error }];
         const r = c.res, u = txt(d.unidad);
         const est = r.estable;
+        const esProp = (c.code === 'P');   // la carta P grafica proporciones, no magnitudes
         return [
           { label:'CARTA', value: c.code, hint: c.nombre },
           { label:'PUNTOS ANALIZADOS', value: fmt(r.n, 'n0'),
             hint: r.subgrupo ? 'Subgrupos de n = ' + fmt(r.subgrupo, 'n0') : 'Puntos de la serie' },
-          { label:'LC (línea central)', value: nf(r.cl, 'n3') + (u ? ' ' + u : ''),
+          /* en la carta P la línea central es una proporción: se muestra en % como
+             las filas, y no se le pega la unidad escrita por el usuario */
+          { label:'LC (línea central)', value: esProp ? nf(r.cl, 'p2') : nf(r.cl, 'n3') + (u ? ' ' + u : ''),
             hint:'Promedio del proceso' },
-          { label:'LSC (límite superior)', value: nf(r.ucl, 'n3'),
+          { label:'LSC (límite superior)', value: esProp ? nf(r.ucl, 'p2') : nf(r.ucl, 'n3'),
             hint: r.limitesVariables ? 'Promedio: los límites se escalonan porque n cambia' : 'LC + 3σ' },
-          { label:'LIC (límite inferior)', value: nf(r.lcl, 'n3'),
+          { label:'LIC (límite inferior)', value: esProp ? nf(r.lcl, 'p2') : nf(r.lcl, 'n3'),
             hint: r.limitesVariables ? 'Promedio: los límites se escalonan porque n cambia' : 'LC − 3σ' },
-          { label:'σ DEL PROCESO (estimada)', value: nf(r.sigma, 'n4'),
+          { label:'σ DEL PROCESO (estimada)', value: esProp ? nf(r.sigma, 'p2') : nf(r.sigma, 'n4'),
             hint:'Calculada con las constantes AIAG (d₂, c₄, A₂, A₃)' },
           { label:'PUNTOS FUERA DE CONTROL', value: fmt(arr(r.fueraDeControl).length, 'n0'),
             tone: arr(r.fueraDeControl).length ? 'bad' : 'ok',
@@ -854,13 +857,19 @@ const SPECS_EXTRA_MC = (function(){
           const c = cartaDe(d);
           if (c.error) return {};
           const r = c.res;
+          // la carta P grafica proporciones: el eje va en % de verdad, no con el
+          // sufijo escrito por el usuario pegado a un 0,074
+          const esP = (c.code === 'P');
           return { labels: c.labels, values: r.puntos, cl: r.cl, ucl: r.ucl, lcl: r.lcl,
                    kind: c.code.indexOf('X̄') === 0 ? 'X' : c.code,
-                   yLabel: txt(d.caracteristica) || 'Valor', unit: txt(d.unidad),
+                   yLabel: txt(d.caracteristica) || 'Valor',
+                   unit: esP ? '' : txt(d.unidad), fmt: esP ? 'p2' : '',
                    title: c.nombre };
         } },
 
       { type:'chart', kind:'control', key:'carta2', title:'CARTA DE VARIACIÓN (MR, R o S)', h:300,
+        // las cartas por atributos (P, NP, C, U) no llevan carta de variación
+        when:(d) => { try { return !!cartaSec(cartaDe(d)); } catch(e){ return false; } },
         data:(d) => {
           const c = cartaDe(d), s = cartaSec(c);
           if (!s) return {};

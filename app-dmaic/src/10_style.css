@@ -220,7 +220,9 @@ tr:hover .rowdel{opacity:1}
 .upz{border:2px dashed var(--bd);border-radius:var(--r2);display:grid;place-items:center;cursor:pointer;
   background:var(--d);color:var(--tx3);font-size:12px;transition:.15s;position:relative;overflow:hidden;text-align:center;padding:12px}
 .upz:hover{border-color:var(--br-1);color:var(--br-1);background:var(--d3)}
-.upz img{max-width:100%;max-height:100%;object-fit:contain}
+/* min-*:0 es indispensable: dentro de un grid el mínimo automático impide que
+   max-height reduzca la imagen y el pie de la figura queda cortado */
+.upz img{max-width:100%;max-height:100%;min-width:0;min-height:0;object-fit:contain}
 .upz .rm{position:absolute;top:5px;right:5px;background:rgba(0,0,0,.6);color:#fff;border-radius:5px;padding:1px 6px;font-size:11px;opacity:0}
 .upz:hover .rm{opacity:1}
 
@@ -377,6 +379,9 @@ table.gt.vr .vr-l{color:var(--tx2)}
   /* una herramienta empieza en página nueva y no se parte por dentro */
   .p-tool{break-before:page;break-inside:auto}
   .p-tool:first-of-type{break-before:avoid}
+  /* la primera herramienta arranca en la misma hoja del separador de fase:
+     si no, cada fase gastaba una página con sólo el título */
+  .p-tool.p-tool-1{break-before:auto}
   /* cabecera en una rejilla: la etiqueta de hoja ya no flota sobre el título */
   .p-th{border-bottom:1.5pt solid #3B26D3;padding-bottom:2mm;margin-bottom:4mm;break-after:avoid;
     display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:4mm}
@@ -399,7 +404,30 @@ table.gt.vr .vr-l{color:var(--tx2)}
   table.p-tab tfoot{display:table-footer-group}
   table.p-tab tr,table.p-kv tr{break-inside:avoid;break-after:auto}
   table.p-tab th,table.p-tab td{border:.4pt solid #C9C4E8;padding:1.4mm 2mm;
-    font-size:9pt;vertical-align:top;text-align:left}
+    font-size:9pt;vertical-align:top;text-align:left;
+    /* parte sólo la palabra que no cabe; «anywhere» llegaba a partir un «10» */
+    overflow-wrap:break-word}
+  table.p-tab td.n,table.p-tab td.num,table.p-tab th.n{overflow-wrap:normal;word-break:keep-all}
+  /* tablas de muchas columnas: reparto fijo del ancho útil, así entran completas */
+  table.p-tab.p-media th,table.p-tab.p-media td{font-size:8pt;padding:1.2mm 1.5mm}
+  /* las tablas de 9 columnas o más van en hoja horizontal: hay 297 mm en vez de
+     210, y las columnas dejan de quedar como tiras. Si el navegador no soporta
+     páginas con nombre, la tabla igual entra completa gracias al ajuste de palabra */
+  @page apaisada{ size:A4 landscape; margin:12mm 10mm 14mm }
+  /* el cambio de página con nombre ya fuerza el salto: añadir break-after
+     partía la tabla y dejaba la fila de totales sola en la hoja siguiente */
+  .p-land{page:apaisada;break-inside:avoid}
+  /* aquí la tabla cabe entera, así que el pie no necesita repetirse: como grupo
+     de pie el navegador lo empuja a una hoja suelta, como fila normal se queda
+     pegado a la última línea de datos */
+  .p-land table.p-tab tfoot{display:table-row-group}
+  table.p-tab.p-wide{table-layout:auto}
+  /* aquí sí hace falta el corte agresivo: reduce el ancho mínimo de cada columna
+     y es lo que permite que las 15 columnas entren en la hoja */
+  table.p-tab.p-wide th,table.p-tab.p-wide td{font-size:7pt;padding:1mm 1.2mm;letter-spacing:0;
+    overflow-wrap:anywhere}
+  table.p-tab.p-wide thead th{font-size:6.5pt;letter-spacing:0}
+  table.p-tab.p-wide td.n,table.p-tab.p-wide th.n{width:6mm}
   table.p-tab thead th{background:#EBE9FB;color:#2A1AA6;font-size:8pt;text-transform:uppercase;
     letter-spacing:.04em}
   table.p-tab tfoot td{background:#F6F5FE;font-weight:700;border-top:1pt solid #3B26D3}

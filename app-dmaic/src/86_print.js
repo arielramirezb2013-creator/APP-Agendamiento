@@ -13,6 +13,7 @@ const PRINT = (function(){
 
   /* ---------------------------------------------------- bloques a texto */
   function bloque(b, t, d, ctx){
+    if (b.when && !b.when(d, ctx)) return '';
     switch (b.type){
 
       case 'fields': {
@@ -37,7 +38,10 @@ const PRINT = (function(){
         const comp = rows.map((r, i) => {
           const o = {}; cols.forEach(c => { o[c.k] = c.calc ? c.calc(r, i, rows, d, ctx) : r[c.k]; }); return o;
         });
-        let h = '<table class="p-tab"><thead><tr><th class="n">#</th>' +
+        // con muchas columnas el ancho mínimo del contenido desborda el papel y
+        // las últimas columnas se pierden: se marca la tabla para que ajuste
+        const anchas = cols.length >= 12 ? ' p-wide' : (cols.length >= 7 ? ' p-media' : '');
+        let h = '<table class="p-tab' + anchas + '"><thead><tr><th class="n">#</th>' +
           cols.map(c => '<th>' + esc(String(c.label).replace(/\n/g, ' ')) + '</th>').join('') +
           '</tr></thead><tbody>';
         rows.forEach((r, i) => {
@@ -61,14 +65,16 @@ const PRINT = (function(){
           }).join('') + '</tr></tfoot>';
         }
         h += '</table>';
-        return caja(b.title, h);
+        // una tabla de 12 columnas o más se lee mucho mejor en una hoja horizontal
+        return caja(b.title, anchas === ' p-wide' ? '<div class="p-land">' + h + '</div>' : h);
       }
 
       case 'matrix': {
         const M = d[b.key] || {};
         const rws = callv(b.rows, d, ctx) || [], cls = callv(b.cols, d, ctx) || [];
         let algo = false;
-        let h = '<table class="p-tab"><thead><tr><th></th>' +
+        let h = '<table class="p-tab' + (cls.length >= 12 ? ' p-wide' : (cls.length >= 7 ? ' p-media' : '')) +
+          '"><thead><tr><th></th>' +
           cls.map(c => '<th>' + esc(c.label) + '</th>').join('') + '</tr></thead><tbody>';
         rws.forEach(rw => {
           const rk = rw.k !== undefined ? rw.k : rw, rl = rw.l !== undefined ? rw.l : rw;
@@ -229,6 +235,9 @@ const PRINT = (function(){
       ST.activeMods().forEach(m => {
         const partes = toolsOf(m.id).map((t, i) => herramienta(t, ctx, i + 1)).filter(Boolean);
         if (!partes.length) return;
+        // la primera herramienta de la fase continúa en la hoja del separador:
+        // Chrome no respeta «break-before:avoid», así que se le quita el salto
+        partes[0] = partes[0].replace('class="p-tool"', 'class="p-tool p-tool-1"');
         cuerpo += '<div class="p-sep"><span style="background:' + m.color + '"></span>' +
           '<h2>Fase ' + m.n + ' · ' + esc(m.name) + '</h2><p>' + esc(m.desc) + '</p></div>' + partes.join('');
       });

@@ -230,7 +230,9 @@ tr:hover .rowdel{opacity:1}
 .upz{border:2px dashed var(--bd);border-radius:var(--r2);display:grid;place-items:center;cursor:pointer;
   background:var(--d);color:var(--tx3);font-size:12px;transition:.15s;position:relative;overflow:hidden;text-align:center;padding:12px}
 .upz:hover{border-color:var(--br-1);color:var(--br-1);background:var(--d3)}
-.upz img{max-width:100%;max-height:100%;object-fit:contain}
+/* min-*:0 es indispensable: dentro de un grid el mínimo automático impide que
+   max-height reduzca la imagen y el pie de la figura queda cortado */
+.upz img{max-width:100%;max-height:100%;min-width:0;min-height:0;object-fit:contain}
 .upz .rm{position:absolute;top:5px;right:5px;background:rgba(0,0,0,.6);color:#fff;border-radius:5px;padding:1px 6px;font-size:11px;opacity:0}
 .upz:hover .rm{opacity:1}
 
@@ -387,6 +389,9 @@ table.gt.vr .vr-l{color:var(--tx2)}
   /* una herramienta empieza en página nueva y no se parte por dentro */
   .p-tool{break-before:page;break-inside:auto}
   .p-tool:first-of-type{break-before:avoid}
+  /* la primera herramienta arranca en la misma hoja del separador de fase:
+     si no, cada fase gastaba una página con sólo el título */
+  .p-tool.p-tool-1{break-before:auto}
   /* cabecera en una rejilla: la etiqueta de hoja ya no flota sobre el título */
   .p-th{border-bottom:1.5pt solid #3B26D3;padding-bottom:2mm;margin-bottom:4mm;break-after:avoid;
     display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:4mm}
@@ -409,7 +414,30 @@ table.gt.vr .vr-l{color:var(--tx2)}
   table.p-tab tfoot{display:table-footer-group}
   table.p-tab tr,table.p-kv tr{break-inside:avoid;break-after:auto}
   table.p-tab th,table.p-tab td{border:.4pt solid #C9C4E8;padding:1.4mm 2mm;
-    font-size:9pt;vertical-align:top;text-align:left}
+    font-size:9pt;vertical-align:top;text-align:left;
+    /* parte sólo la palabra que no cabe; «anywhere» llegaba a partir un «10» */
+    overflow-wrap:break-word}
+  table.p-tab td.n,table.p-tab td.num,table.p-tab th.n{overflow-wrap:normal;word-break:keep-all}
+  /* tablas de muchas columnas: reparto fijo del ancho útil, así entran completas */
+  table.p-tab.p-media th,table.p-tab.p-media td{font-size:8pt;padding:1.2mm 1.5mm}
+  /* las tablas de 9 columnas o más van en hoja horizontal: hay 297 mm en vez de
+     210, y las columnas dejan de quedar como tiras. Si el navegador no soporta
+     páginas con nombre, la tabla igual entra completa gracias al ajuste de palabra */
+  @page apaisada{ size:A4 landscape; margin:12mm 10mm 14mm }
+  /* el cambio de página con nombre ya fuerza el salto: añadir break-after
+     partía la tabla y dejaba la fila de totales sola en la hoja siguiente */
+  .p-land{page:apaisada;break-inside:avoid}
+  /* aquí la tabla cabe entera, así que el pie no necesita repetirse: como grupo
+     de pie el navegador lo empuja a una hoja suelta, como fila normal se queda
+     pegado a la última línea de datos */
+  .p-land table.p-tab tfoot{display:table-row-group}
+  table.p-tab.p-wide{table-layout:auto}
+  /* aquí sí hace falta el corte agresivo: reduce el ancho mínimo de cada columna
+     y es lo que permite que las 15 columnas entren en la hoja */
+  table.p-tab.p-wide th,table.p-tab.p-wide td{font-size:7pt;padding:1mm 1.2mm;letter-spacing:0;
+    overflow-wrap:anywhere}
+  table.p-tab.p-wide thead th{font-size:6.5pt;letter-spacing:0}
+  table.p-tab.p-wide td.n,table.p-tab.p-wide th.n{width:6mm}
   table.p-tab thead th{background:#EBE9FB;color:#2A1AA6;font-size:8pt;text-transform:uppercase;
     letter-spacing:.04em}
   table.p-tab tfoot td{background:#F6F5FE;font-weight:700;border-top:1pt solid #3B26D3}
@@ -6034,6 +6062,8 @@ R.card = (title, body, extra) =>
 
 /* -------------------------------------------------------------- BLOQUES */
 R.block = function(b, t, d, ctx, idx){
+  // un bloque que no aplica al caso no se dibuja: mejor ausente que con un aviso
+  if (b.when && !b.when(d, ctx)) return '';
   const fn = R['b_' + b.type];
   if (!fn){ return '<div class="note bad">Bloque desconocido: ' + esc(b.type) + '</div>'; }
   try { return fn(b, t, d, ctx, idx); }
@@ -17450,17 +17480,20 @@ const SPECS_EXTRA_MC = (function(){
         if (c.error) return [{ label:'CARTA DE CONTROL', value:'—', hint:c.error }];
         const r = c.res, u = txt(d.unidad);
         const est = r.estable;
+        const esProp = (c.code === 'P');   // la carta P grafica proporciones, no magnitudes
         return [
           { label:'CARTA', value: c.code, hint: c.nombre },
           { label:'PUNTOS ANALIZADOS', value: fmt(r.n, 'n0'),
             hint: r.subgrupo ? 'Subgrupos de n = ' + fmt(r.subgrupo, 'n0') : 'Puntos de la serie' },
-          { label:'LC (línea central)', value: nf(r.cl, 'n3') + (u ? ' ' + u : ''),
+          /* en la carta P la línea central es una proporción: se muestra en % como
+             las filas, y no se le pega la unidad escrita por el usuario */
+          { label:'LC (línea central)', value: esProp ? nf(r.cl, 'p2') : nf(r.cl, 'n3') + (u ? ' ' + u : ''),
             hint:'Promedio del proceso' },
-          { label:'LSC (límite superior)', value: nf(r.ucl, 'n3'),
+          { label:'LSC (límite superior)', value: esProp ? nf(r.ucl, 'p2') : nf(r.ucl, 'n3'),
             hint: r.limitesVariables ? 'Promedio: los límites se escalonan porque n cambia' : 'LC + 3σ' },
-          { label:'LIC (límite inferior)', value: nf(r.lcl, 'n3'),
+          { label:'LIC (límite inferior)', value: esProp ? nf(r.lcl, 'p2') : nf(r.lcl, 'n3'),
             hint: r.limitesVariables ? 'Promedio: los límites se escalonan porque n cambia' : 'LC − 3σ' },
-          { label:'σ DEL PROCESO (estimada)', value: nf(r.sigma, 'n4'),
+          { label:'σ DEL PROCESO (estimada)', value: esProp ? nf(r.sigma, 'p2') : nf(r.sigma, 'n4'),
             hint:'Calculada con las constantes AIAG (d₂, c₄, A₂, A₃)' },
           { label:'PUNTOS FUERA DE CONTROL', value: fmt(arr(r.fueraDeControl).length, 'n0'),
             tone: arr(r.fueraDeControl).length ? 'bad' : 'ok',
@@ -17477,13 +17510,19 @@ const SPECS_EXTRA_MC = (function(){
           const c = cartaDe(d);
           if (c.error) return {};
           const r = c.res;
+          // la carta P grafica proporciones: el eje va en % de verdad, no con el
+          // sufijo escrito por el usuario pegado a un 0,074
+          const esP = (c.code === 'P');
           return { labels: c.labels, values: r.puntos, cl: r.cl, ucl: r.ucl, lcl: r.lcl,
                    kind: c.code.indexOf('X̄') === 0 ? 'X' : c.code,
-                   yLabel: txt(d.caracteristica) || 'Valor', unit: txt(d.unidad),
+                   yLabel: txt(d.caracteristica) || 'Valor',
+                   unit: esP ? '' : txt(d.unidad), fmt: esP ? 'p2' : '',
                    title: c.nombre };
         } },
 
       { type:'chart', kind:'control', key:'carta2', title:'CARTA DE VARIACIÓN (MR, R o S)', h:300,
+        // las cartas por atributos (P, NP, C, U) no llevan carta de variación
+        when:(d) => { try { return !!cartaSec(cartaDe(d)); } catch(e){ return false; } },
         data:(d) => {
           const c = cartaDe(d), s = cartaSec(c);
           if (!s) return {};
@@ -22903,6 +22942,7 @@ const PRINT = (function(){
 
   /* ---------------------------------------------------- bloques a texto */
   function bloque(b, t, d, ctx){
+    if (b.when && !b.when(d, ctx)) return '';
     switch (b.type){
 
       case 'fields': {
@@ -22927,7 +22967,10 @@ const PRINT = (function(){
         const comp = rows.map((r, i) => {
           const o = {}; cols.forEach(c => { o[c.k] = c.calc ? c.calc(r, i, rows, d, ctx) : r[c.k]; }); return o;
         });
-        let h = '<table class="p-tab"><thead><tr><th class="n">#</th>' +
+        // con muchas columnas el ancho mínimo del contenido desborda el papel y
+        // las últimas columnas se pierden: se marca la tabla para que ajuste
+        const anchas = cols.length >= 12 ? ' p-wide' : (cols.length >= 7 ? ' p-media' : '');
+        let h = '<table class="p-tab' + anchas + '"><thead><tr><th class="n">#</th>' +
           cols.map(c => '<th>' + esc(String(c.label).replace(/\n/g, ' ')) + '</th>').join('') +
           '</tr></thead><tbody>';
         rows.forEach((r, i) => {
@@ -22951,14 +22994,16 @@ const PRINT = (function(){
           }).join('') + '</tr></tfoot>';
         }
         h += '</table>';
-        return caja(b.title, h);
+        // una tabla de 12 columnas o más se lee mucho mejor en una hoja horizontal
+        return caja(b.title, anchas === ' p-wide' ? '<div class="p-land">' + h + '</div>' : h);
       }
 
       case 'matrix': {
         const M = d[b.key] || {};
         const rws = callv(b.rows, d, ctx) || [], cls = callv(b.cols, d, ctx) || [];
         let algo = false;
-        let h = '<table class="p-tab"><thead><tr><th></th>' +
+        let h = '<table class="p-tab' + (cls.length >= 12 ? ' p-wide' : (cls.length >= 7 ? ' p-media' : '')) +
+          '"><thead><tr><th></th>' +
           cls.map(c => '<th>' + esc(c.label) + '</th>').join('') + '</tr></thead><tbody>';
         rws.forEach(rw => {
           const rk = rw.k !== undefined ? rw.k : rw, rl = rw.l !== undefined ? rw.l : rw;
@@ -23119,6 +23164,9 @@ const PRINT = (function(){
       ST.activeMods().forEach(m => {
         const partes = toolsOf(m.id).map((t, i) => herramienta(t, ctx, i + 1)).filter(Boolean);
         if (!partes.length) return;
+        // la primera herramienta de la fase continúa en la hoja del separador:
+        // Chrome no respeta «break-before:avoid», así que se le quita el salto
+        partes[0] = partes[0].replace('class="p-tool"', 'class="p-tool p-tool-1"');
         cuerpo += '<div class="p-sep"><span style="background:' + m.color + '"></span>' +
           '<h2>Fase ' + m.n + ' · ' + esc(m.name) + '</h2><p>' + esc(m.desc) + '</p></div>' + partes.join('');
       });
@@ -23508,7 +23556,7 @@ const DEMO = (function(){
       doc:'Mapa detallado del agendamiento (14 pasos, 5 sin valor agregado) y diagrama de carriles ' +
           'entre ARL, sede y trabajador.',
       grr:'GR&R por variables sobre «días entre sesiones»: %Estudio 18,6 % y ndc = 7. Aceptable.',
-      baseline:'32,4 % de citas reprogramadas · nivel sigma 2,0 σ · RTY 61,2 % · valor agregado 50,9 %.'
+      baseline:'32,4 % de citas reprogramadas · nivel sigma 1,96 σ · RTY 67,6 % · valor agregado 50,4 %.'
     });
 
     /* --------------------------------------------------- ANALIZAR ---- */
@@ -23758,9 +23806,12 @@ const DEMO = (function(){
       conclusion:'El proceso quedó estable alrededor del 7,4 %, por debajo de la meta del 8 %.',
       acciones:'Revisar semanalmente y activar el plan de reacción ante cualquier regla de Nelson.',
       frecuenciaRev:'Semanal', recalculo:'Recalcular los límites a los 3 meses o tras un cambio del proceso.',
-      // carta p: por semana se registran las citas programadas y cuántas se reprogramaron
-      rows: [[72,6],[68,5],[74,6],[70,5],[76,5],[71,5],[69,5],[73,6],[75,6],[70,5],
-             [72,5],[74,6],[68,5],[71,5],[73,5],[69,5],[72,5],[70,5],[74,6],[71,5]]
+      // carta p: por semana se registran las citas programadas y cuántas se reprogramaron.
+      // La dispersión es la que corresponde a un proceso binomial con p ≈ 7,4 % y n ≈ 72
+      // (σ ≈ 2,2 citas): una serie más plana que ésta dispararía la regla 7 de Nelson
+      // —variabilidad sospechosamente baja— y el proceso saldría marcado como inestable.
+      rows: [[72,8],[68,4],[74,7],[70,3],[76,6],[71,9],[69,5],[73,4],[75,7],[70,2],
+             [72,6],[74,5],[68,8],[71,4],[73,3],[69,7],[72,5],[70,6],[74,4],[71,3]]
         .map((x, i) => R({ muestra:'Sem ' + (i + 1), tamano:x[0], defectuosos:x[1] }))
     });
 
@@ -23792,7 +23843,7 @@ const DEMO = (function(){
       periodo:'Marzo a junio de 2026', empresa:'Alimentos del Norte S.A.S. · ARL Positiva',
       fecha:'2026-06-30',
       definir:'32,4 % de citas reprogramadas contra una meta del 8 %. Costo anual $ 62.400.000.',
-      medirAnalizar:'Nivel sigma 2,0 σ · RTY 61,2 %. Causa raíz: agendamiento sin sobrecupo, lista de ' +
+      medirAnalizar:'Nivel sigma 1,96 σ · RTY 67,6 %. Causa raíz: agendamiento sin sobrecupo, lista de ' +
                     'espera ni confirmación anticipada. 3 de 6 causas confirmadas con datos.',
       mejorar:'Sobrecupo del 15 %, lista de espera activa, recordatorio de 48 h y motivo obligatorio ' +
               'al cancelar. Piloto validado y desplegado.',
@@ -23804,8 +23855,927 @@ const DEMO = (function(){
                      'Andrés Correa aportó la idea de la franja abierta de la tarde.'
     });
 
+    completar();
     ST.save(true);
     return contarLlenas();
+  }
+
+  /* ====================================================================
+     ILUSTRACIONES DE LA SIMULACIÓN
+     Las casillas de imagen también son parte de la herramienta, así que la
+     simulación las llena con figuras dibujadas aquí mismo en SVG: nada se
+     descarga de fuera y se ve de inmediato qué va en cada recuadro.
+     ================================================================== */
+  const _e = (s) => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  const svgURI = (w, h, cuerpo) => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' +
+    w + ' ' + h + '" font-family="Segoe UI,Roboto,Helvetica,Arial,sans-serif">' + cuerpo + '</svg>');
+
+  /** marco común: barra de título, cuerpo y pie. 380 × 250, cuerpo de 184 px */
+  function marco(titulo, pie, cuerpo, tono){
+    const c = tono === 'bad' ? '#C63A31' : tono === 'ok' ? '#0A9E5C' : '#2A1AA6';
+    const W = 380, H = 250;
+    return svgURI(W, H,
+      '<rect width="' + W + '" height="' + H + '" rx="10" fill="#FFFFFF" stroke="#DDD9F5"/>' +
+      '<path d="M1 11a10 10 0 0 1 10-10h358a10 10 0 0 1 10 10v21H1z" fill="' + c + '"/>' +
+      '<text x="14" y="21" fill="#FFFFFF" font-size="12.5" font-weight="700">' + _e(titulo) + '</text>' +
+      '<g transform="translate(0,38)">' + cuerpo + '</g>' +
+      '<text x="14" y="' + (H - 10) + '" fill="#544D80" font-size="10.5">' + _e(pie) + '</text>');
+  }
+
+  /** rejilla de agenda semanal: cupos ocupados (verde) frente a cupos perdidos (rojo) */
+  function escAgenda(conHuecos){
+    const x0 = 16, y0 = 12, w = 66, h = 30, gx = 4, gy = 6;
+    let g = '';
+    ['Lun', 'Mar', 'Mié', 'Jue', 'Vie'].forEach((d, i) =>
+      g += '<text x="' + (x0 + i * (w + gx) + w / 2) + '" y="' + y0 + '" text-anchor="middle" ' +
+           'font-size="10.5" font-weight="700" fill="#544D80">' + d + '</text>');
+    const huecos = conHuecos ? [1, 3, 6, 7, 9, 12, 13, 16, 18] : [14];
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++){
+      const i = r * 5 + c, libre = huecos.indexOf(i) >= 0;
+      const x = x0 + c * (w + gx), y = y0 + 8 + r * (h + gy);
+      g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="5" fill="' +
+           (libre ? '#FDECEA' : '#E8F7EF') + '" stroke="' + (libre ? '#C63A31' : '#0A9E5C') + '" stroke-width="1.2"/>' +
+           '<text x="' + (x + w / 2) + '" y="' + (y + 19) + '" text-anchor="middle" font-size="9.5" ' +
+           'font-weight="700" fill="' + (libre ? '#C63A31' : '#0A9E5C') + '">' +
+           (libre ? 'cupo perdido' : 'atendida') + '</text>';
+    }
+    return g;
+  }
+
+  /** pantalla de software con una lista de renglones [texto, color] */
+  function escPantalla(marca, lineas){
+    let g = '<rect x="16" y="4" width="348" height="152" rx="8" fill="#F6F5FE" stroke="#DDD9F5"/>' +
+            '<path d="M16 12a8 8 0 0 1 8-8h332a8 8 0 0 1 8 8v16H16z" fill="#2A1AA6"/>' +
+            '<text x="28" y="21" fill="#FFFFFF" font-size="10.5" font-weight="700">' + _e(marca) + '</text>';
+    lineas.slice(0, 5).forEach((l, i) => {
+      const y = 46 + i * 22;
+      g += '<rect x="26" y="' + (y - 13) + '" width="328" height="19" rx="4" fill="#FFFFFF" stroke="#E6E3F8"/>' +
+           '<circle cx="39" cy="' + (y - 3) + '" r="4" fill="' + (l[1] || '#0A9E5C') + '"/>' +
+           '<text x="52" y="' + (y + 1) + '" font-size="10" fill="#171043">' + _e(l[0]) + '</text>';
+    });
+    return g;
+  }
+
+  /** cartel o instructivo pegado en el puesto de trabajo */
+  function escCartel(titulo, lineas, tono){
+    const c = tono === 'ok' ? '#0A9E5C' : '#2A1AA6';
+    let g = '<rect x="52" y="4" width="276" height="154" rx="6" fill="#FFFFFF" stroke="#C9C3EE" stroke-width="1.5"/>' +
+            '<rect x="52" y="4" width="276" height="26" rx="6" fill="' + c + '"/>' +
+            '<rect x="52" y="20" width="276" height="10" fill="' + c + '"/>' +
+            '<text x="190" y="22" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="700">' +
+            _e(titulo) + '</text>';
+    lineas.slice(0, 5).forEach((l, i) => {
+      const y = 50 + i * 21;
+      g += '<circle cx="70" cy="' + (y - 4) + '" r="7.5" fill="' + c + '" opacity=".12"/>' +
+           '<text x="70" y="' + (y - 1) + '" text-anchor="middle" font-size="9" font-weight="700" fill="' + c + '">' +
+           (i + 1) + '</text>' +
+           '<text x="86" y="' + y + '" font-size="10" fill="#171043">' + _e(l) + '</text>';
+    });
+    return g;
+  }
+
+  /** barras verticales con etiqueta y valor */
+  function escBarras(datos, tono){
+    const c = tono === 'ok' ? '#0A9E5C' : tono === 'bad' ? '#C63A31' : '#3B26D3';
+    const x0 = 30, base = 132, maxH = 104;
+    const mx = Math.max.apply(null, datos.map(d => d[1])) || 1;
+    const w = Math.min(46, (330 - x0) / datos.length - 8);
+    let g = '<line x1="' + (x0 - 8) + '" y1="' + base + '" x2="352" y2="' + base + '" stroke="#DDD9F5" stroke-width="1.5"/>';
+    datos.forEach((d, i) => {
+      const h = Math.max(4, d[1] / mx * maxH), x = x0 + i * (w + 12), y = base - h;
+      g += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="3" fill="' + c + '" opacity="' +
+           (0.45 + 0.55 * (d[1] / mx)) + '"/>' +
+           '<text x="' + (x + w / 2) + '" y="' + (y - 5) + '" text-anchor="middle" font-size="9.5" ' +
+           'font-weight="700" fill="' + c + '">' + _e(d[2] !== undefined ? d[2] : d[1]) + '</text>' +
+           '<text x="' + (x + w / 2) + '" y="' + (base + 13) + '" text-anchor="middle" font-size="9" ' +
+           'fill="#544D80">' + _e(d[0]) + '</text>';
+    });
+    return g;
+  }
+
+  /** esquema de causa-efecto para el recuadro del A3 */
+  function escIshikawa(){
+    const yc = 78;
+    let g = '<line x1="24" y1="' + yc + '" x2="286" y2="' + yc + '" stroke="#2A1AA6" stroke-width="2.5"/>' +
+            '<path d="M286 ' + (yc - 7) + ' L302 ' + yc + ' L286 ' + (yc + 7) + ' Z" fill="#2A1AA6"/>' +
+            '<rect x="304" y="' + (yc - 26) + '" width="66" height="52" rx="6" fill="#FDECEA" stroke="#C63A31"/>' +
+            '<text x="337" y="' + (yc - 8) + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="#C63A31">32,4 %</text>' +
+            '<text x="337" y="' + (yc + 5) + '" text-anchor="middle" font-size="8.5" fill="#C63A31">de citas</text>' +
+            '<text x="337" y="' + (yc + 16) + '" text-anchor="middle" font-size="8.5" fill="#C63A31">reprogramadas</text>';
+    const arriba = ['Método', 'Máquina', 'Medición'], abajo = ['Mano de obra', 'Material', 'Medio'];
+    arriba.forEach((m, i) => {
+      const xb = 70 + i * 74;
+      g += '<line x1="' + xb + '" y1="' + yc + '" x2="' + (xb - 26) + '" y2="' + (yc - 46) + '" stroke="#5B49E8" stroke-width="1.8"/>' +
+           '<text x="' + (xb - 26) + '" y="' + (yc - 52) + '" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3B26D3">' + m + '</text>';
+    });
+    abajo.forEach((m, i) => {
+      const xb = 70 + i * 74;
+      g += '<line x1="' + xb + '" y1="' + yc + '" x2="' + (xb - 26) + '" y2="' + (yc + 46) + '" stroke="#5B49E8" stroke-width="1.8"/>' +
+           '<text x="' + (xb - 26) + '" y="' + (yc + 58) + '" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3B26D3">' + m + '</text>';
+    });
+    return g;
+  }
+
+  /** sala de espera: sillas ocupadas / vacías */
+  function escSala(llena){
+    let g = '<rect x="16" y="6" width="348" height="150" rx="8" fill="#F6F5FE" stroke="#DDD9F5"/>';
+    for (let r = 0; r < 2; r++) for (let c = 0; c < 6; c++){
+      const x = 40 + c * 52, y = 40 + r * 62;
+      const ocupada = llena ? (r * 6 + c) !== 9 : (r * 6 + c) % 3 === 0;
+      g += '<rect x="' + (x - 15) + '" y="' + (y + 8) + '" width="30" height="20" rx="4" fill="#C9C3EE"/>';
+      if (ocupada)
+        g += '<circle cx="' + x + '" cy="' + (y - 6) + '" r="9" fill="#3B26D3"/>' +
+             '<path d="M' + (x - 13) + ' ' + (y + 10) + 'q13 -16 26 0z" fill="#3B26D3"/>';
+    }
+    g += '<text x="190" y="' + 146 + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="' +
+         (llena ? '#0A9E5C' : '#C63A31') + '">' +
+         (llena ? '11 de 12 sillas ocupadas · sala al 92 %' : '4 de 12 sillas ocupadas · sala al 33 %') + '</text>';
+    return g;
+  }
+
+  /* ====================================================================
+     COMPLEMENTO DE LA SIMULACIÓN
+     Cierra los formatos que el primer bloque dejaba en blanco, para que la
+     herramienta se pueda recorrer completa sin encontrar una hoja vacía.
+     Usa su propia semilla, así los datos ya generados no se mueven.
+     ================================================================== */
+  function completar(){
+    let _t = 761203;
+    const rr  = () => { _t = (_t * 1103515245 + 12345) % 2147483648; return _t / 2147483648; };
+    const rint = (a, b) => a + Math.floor(rr() * (b - a + 1));
+
+    /* ------------------------------------------------------ DEFINIR -- */
+    set('definir.clarificacion_problema', {
+      foto: marco('Agenda de terapia · sede norte',
+                  'Franja de la tarde: 9 de 20 cupos se perdieron por cancelación', escAgenda(true), 'bad')
+    });
+
+    set('definir.project_charter', {
+      firmasCie: [ R({ firma:'Aceptado — Champion',        fecha:'2026-06-30' }),
+                   R({ firma:'Aceptado — Dueña del proceso', fecha:'2026-06-30' }),
+                   R({ firma:'Aceptado — Finanzas',        fecha:'2026-06-30' }),
+                   R({ firma:'Aceptado — Mentor',          fecha:'2026-06-30' }),
+                   R({ firma:'Aceptado — Facilitador',     fecha:'2026-06-30' }) ]
+    });
+
+    set('definir.a3_definir', {
+      grafSec2: marco('Motivo de la cita reprogramada',
+                      'Los dos primeros motivos explican el 65 % de los 598 casos',
+                      escBarras([['Sin aviso', 214], ['Choque\nhorario', 176], ['Transporte', 92],
+                                 ['Clínico', 71], ['Otro', 45]]), 'bad')
+    });
+
+    /* -------------------------------------------------------- MEDIR -- */
+    set('medir.swin_line', {
+      proceso:'Programación y ejecución de una sesión de terapia física',
+      customer:'Trabajador en rehabilitación',
+      dep1:'Call center de agendamiento',
+      dep2:'Autorizaciones ARL',
+      dep3:'Recepción de la sede',
+      dep4:'Terapia física',
+      dep5:'Coordinación del servicio',
+      dep6:'Facturación',
+      dep7:'Sistemas / software de agenda',
+      dep8:'Salud ocupacional de la empresa',
+      timeline:'11,4 días desde la solicitud hasta la sesión ejecutada',
+      distance:'Sin desplazamiento interno relevante: el flujo es de información, no de material',
+      metrics:'% de citas reprogramadas · días entre sesiones · % de ocupación de salas',
+      coments:'El flujo cruza siete áreas y ninguna es dueña del cupo liberado. Cuando el paciente ' +
+              'cancela, el aviso llega a recepción pero no vuelve al call center, de modo que nadie ' +
+              'reasigna el espacio. Los dos puntos de espera más largos están entre Autorizaciones ' +
+              'y Call center (4,2 días) y entre la cancelación y la nueva cita (6,8 días).'
+    });
+
+    set('medir.process_mapping_detailed', {
+      proceso:'Programación y ejecución de una sesión de terapia física',
+      indicador:'% de citas reprogramadas · días entre sesiones',
+      rows:[
+        R({ steps:'Recibir la orden médica', kpiv:'Legibilidad y datos de contacto', specsIn:'100 % con teléfono verificado',
+            gagesIn:'Lista de verificación de admisión', tipo:'Controlable', procesoTxt:'Radicación',
+            kpov:'Orden radicada sin devolución', specsOut:'≤ 1 día hábil', gagesOut:'Reporte del sistema',
+            calidad:'DPU 0,08', ciclo:420, distancia:0, costo:3200, obs:'8 % vuelve por teléfono errado' }),
+        R({ steps:'Solicitar autorización a la ARL', kpiv:'Completitud del soporte clínico', specsIn:'Soporte completo',
+            gagesIn:'Checklist de autorización', tipo:'Ruido', procesoTxt:'Autorización',
+            kpov:'Autorización emitida', specsOut:'≤ 3 días hábiles', gagesOut:'Fecha de respuesta ARL',
+            calidad:'RTY 88 %', ciclo:3600, distancia:0, costo:0, obs:'Fuera del control de la sede' }),
+        R({ steps:'Asignar cupo en la agenda', kpiv:'Disponibilidad y franja ofrecida', specsIn:'Cupo dentro de 48 h',
+            gagesIn:'Software de agenda', tipo:'Crítico', procesoTxt:'Agendamiento',
+            kpov:'Cita programada', specsOut:'≤ 2 días desde la autorización', gagesOut:'Registro de agenda',
+            calidad:'DPU 0,32', ciclo:300, distancia:0, costo:8900, obs:'Sin sobrecupo ni lista de espera' }),
+        R({ steps:'Confirmar la cita con el paciente', kpiv:'Anticipación del contacto', specsIn:'48 h antes',
+            gagesIn:'Bitácora de llamadas', tipo:'Crítico', procesoTxt:'Confirmación',
+            kpov:'Cita confirmada', specsOut:'≥ 90 % confirmadas', gagesOut:'Reporte de confirmación',
+            calidad:'FTY 54 %', ciclo:180, distancia:0, costo:12400, obs:'Paso ausente antes de la mejora' }),
+        R({ steps:'Recibir al paciente en recepción', kpiv:'Puntualidad y documentos', specsIn:'Llegada 10 min antes',
+            gagesIn:'Registro de ingreso', tipo:'Estándar (SOP)', procesoTxt:'Admisión',
+            kpov:'Paciente admitido', specsOut:'≤ 5 min', gagesOut:'Marca de hora del sistema',
+            calidad:'DPU 0,04', ciclo:300, distancia:12, costo:1800, obs:'' }),
+        R({ steps:'Ejecutar la sesión de terapia', kpiv:'Disponibilidad del terapeuta y de la sala', specsIn:'Sala y terapeuta asignados',
+            gagesIn:'Programación de recursos', tipo:'Controlable', procesoTxt:'Terapia',
+            kpov:'Sesión ejecutada', specsOut:'45 min', gagesOut:'Historia clínica',
+            calidad:'RTY 96 %', ciclo:2700, distancia:25, costo:0, obs:'' }),
+        R({ steps:'Registrar la evolución', kpiv:'Oportunidad del registro', specsIn:'Mismo día',
+            gagesIn:'Historia clínica electrónica', tipo:'Estándar (SOP)', procesoTxt:'Registro',
+            kpov:'Evolución registrada', specsOut:'100 % el mismo día', gagesOut:'Auditoría de historias',
+            calidad:'DPU 0,06', ciclo:420, distancia:0, costo:2100, obs:'' }),
+        R({ steps:'Programar la sesión siguiente', kpiv:'Cupo disponible en la semana', specsIn:'≤ 3 días',
+            gagesIn:'Software de agenda', tipo:'Crítico', procesoTxt:'Agendamiento',
+            kpov:'Siguiente cita en firme', specsOut:'≤ 3 días', gagesOut:'Registro de agenda',
+            calidad:'DPU 0,29', ciclo:240, distancia:0, costo:7600, obs:'Aquí nace el intervalo de 6,8 días' }),
+        R({ steps:'Gestionar la cancelación', kpiv:'Aviso oportuno y motivo registrado', specsIn:'Aviso ≥ 24 h',
+            gagesIn:'Bitácora de cancelaciones', tipo:'Ruido', procesoTxt:'Reprogramación',
+            kpov:'Cupo reasignado', specsOut:'≥ 70 % reasignados', gagesOut:'Reporte de ocupación',
+            calidad:'FTY 12 %', ciclo:600, distancia:0, costo:18700, obs:'El cupo se pierde: nadie lo reasigna' }),
+        R({ steps:'Facturar el servicio a la ARL', kpiv:'Soporte completo de la sesión', specsIn:'Historia y firma',
+            gagesIn:'Revisión de facturación', tipo:'Estándar (SOP)', procesoTxt:'Facturación',
+            kpov:'Factura radicada', specsOut:'≤ 5 días', gagesOut:'Radicado ARL',
+            calidad:'DPU 0,11', ciclo:900, distancia:0, costo:4300, obs:'' })
+      ],
+      flujo: marco('Flujo real observado en la sede',
+                   'La cancelación no regresa al agendamiento: ahí se pierde el cupo',
+                   escPantalla('Ruta de una sesión de terapia', [
+                     ['1 · Orden médica radicada', '#0A9E5C'],
+                     ['2 · Autorización ARL — 4,2 días de espera', '#E8A020'],
+                     ['3 · Cupo asignado sin confirmar', '#E8A020'],
+                     ['4 · Cancelación registrada en recepción', '#C63A31'],
+                     ['5 · Cupo liberado — nadie lo reasigna', '#C63A31']]), 'bad')
+    });
+
+    set('medir.hojas_verificacion', {
+      proceso:'Terapia física · sede norte', fecha:'2026-03-24', turno:'TARDE',
+      responsable:'Diana Rojas — auxiliar de recepción',
+      metrico:'Citas reprogramadas por motivo',
+      equipo:'Bitácora de recepción y reporte del software de agenda',
+      instrucciones:'Marque una cuenta por cada cita que no se ejecutó en la fecha pactada. ' +
+        'Registre el motivo tal como lo declaró quien canceló, sin interpretarlo. Si no hubo motivo ' +
+        'declarado, use «Sin aviso». Cierre la hoja al final de cada jornada y entréguela a coordinación.',
+      rows:[
+        R({ criterio:'No asistió y no avisó',                 conteo:214, obs:'Se detecta al pasar lista' }),
+        R({ criterio:'Choque con el horario laboral',          conteo:176, obs:'Concentrado en la franja de la tarde' }),
+        R({ criterio:'Problema de transporte',                 conteo:92,  obs:'Días de lluvia y paro de transporte' }),
+        R({ criterio:'Motivo clínico del paciente',            conteo:71,  obs:'Justificado con soporte médico' }),
+        R({ criterio:'Terapeuta no disponible',                conteo:18,  obs:'Incapacidad y vacaciones' }),
+        R({ criterio:'Sala ocupada por otro servicio',         conteo:11,  obs:'Cruce con valoración ocupacional' }),
+        R({ criterio:'Autorización de la ARL vencida',         conteo:9,   obs:'Vence a los 30 días' }),
+        R({ criterio:'Error de agenda (doble cita)',           conteo:5,   obs:'Fallo de digitación' }),
+        R({ criterio:'Paciente ya de alta',                    conteo:2,   obs:'No se depuró la agenda' }),
+        R({ criterio:'Otro',                                   conteo:0,   obs:'' })
+      ],
+      proceso2:'Terapia física · sede norte', fecha2:'2026-03-25', turno2:'TARDE',
+      responsable2:'Marcela Ospina — coordinadora',
+      metrico2:'Cupos de la tarde por estado',
+      equipo2:'Tablero de sala y planilla de ocupación',
+      producto2:'Sesión de terapia física ocupacional',
+      instrucciones2:'Al cierre de la jornada dibuje una marca por cada cupo según su estado. ' +
+        'Un cupo perdido es el que quedó sin paciente y sin reasignar.',
+      registro2:'Tarde del 25/03 · 20 cupos programados\n' +
+                'Atendidos      ▌▌▌▌▌ ▌▌▌▌▌ ▌\n' +
+                'Reasignados    ▌▌\n' +
+                'Perdidos       ▌▌▌▌▌ ▌▌\n' +
+                'Los 7 cupos perdidos son 3,5 horas de sala ociosa en una sola jornada.',
+      simbolos:[ R({ simbolo:'▌ Cupo atendido',              total:11 }),
+                 R({ simbolo:'▌ Cupo reasignado a otro',     total:2  }),
+                 R({ simbolo:'▌ Cupo perdido',               total:7  }),
+                 R({ simbolo:'▌ Cupo bloqueado por la sede', total:0  }) ]
+    });
+
+    set('medir.msa_plan', {
+      proceso:'Medición del cumplimiento de la agenda de terapia',
+      area:'Sede norte · terapia física', fecha:'2026-03-23',
+      lider:'Ing. Ariel Ramírez — Rehavid', analista:'Andrés Correa',
+      periodicidad:'Al inicio del proyecto',
+      caracteristica:'Días transcurridos entre dos sesiones consecutivas',
+      lsl:0, usl:3, resGage:0.5,
+      rows:[
+        R({ variable:'Días entre sesiones (Y)', gage:'Reporte de fechas del software de agenda', resolucion:'0,5 día',
+            tolerancia:3, tipo:'GR&R por variables', quien:'Andrés Correa', cuando:'2026-03-25',
+            criterio:'%GRR ≤ 30 % y ndc ≥ 5', estado:'Aceptado' }),
+        R({ variable:'Clasificación del motivo de cancelación (X)', gage:'Criterio del auxiliar sobre la bitácora',
+            resolucion:'Categoría', tolerancia:0, tipo:'GR&R por atributos', quien:'Marcela Ospina', cuando:'2026-03-26',
+            criterio:'Concordancia ≥ 90 % con el experto', estado:'Marginal' }),
+        R({ variable:'¿La cita se ejecutó? (Y binaria)', gage:'Marca de asistencia del sistema', resolucion:'Sí / No',
+            tolerancia:0, tipo:'GR&R por atributos', quien:'Diana Rojas', cuando:'2026-03-26',
+            criterio:'Concordancia 100 %', estado:'Aceptado' }),
+        R({ variable:'Duración real de la sesión (X)', gage:'Marca de hora de inicio y cierre', resolucion:'1 min',
+            tolerancia:10, tipo:'Linealidad y sesgo', quien:'Andrés Correa', cuando:'2026-03-27',
+            criterio:'Sesgo ≤ 2 min en todo el rango', estado:'Aceptado' }),
+        R({ variable:'% de ocupación de salas (Y)', gage:'Planilla de ocupación', resolucion:'1 cupo',
+            tolerancia:20, tipo:'Estabilidad', quien:'Marcela Ospina', cuando:'2026-04-02',
+            criterio:'Sin corrimiento entre semanas', estado:'En ejecución' }),
+        R({ variable:'Anticipación del aviso de cancelación (X)', gage:'Hora registrada en la bitácora',
+            resolucion:'1 hora', tolerancia:24, tipo:'GR&R por variables', quien:'Diana Rojas', cuando:'2026-03-30',
+            criterio:'%GRR ≤ 30 %', estado:'Programado' }),
+        R({ variable:'Franja horaria de la cita (X)', gage:'Campo del software', resolucion:'Franja',
+            tolerancia:0, tipo:'GR&R por atributos', quien:'Andrés Correa', cuando:'2026-03-30',
+            criterio:'Concordancia 100 %', estado:'Aceptado' }),
+        R({ variable:'Costo de la sesión perdida', gage:'Tarifa contractual con la ARL', resolucion:'$ 1',
+            tolerancia:0, tipo:'Estabilidad', quien:'Jorge Delgado', cuando:'2026-04-06',
+            criterio:'Tarifa vigente confirmada', estado:'Aceptado' })
+      ],
+      acciones:[
+        R({ hallazgo:'Dos auxiliares clasifican distinto el mismo motivo de cancelación',
+            causa:'Método / criterio', accion:'Definir por escrito los 10 motivos con un ejemplo cada uno',
+            responsable:'Marcela Ospina', fecha:'2026-03-27',
+            verificacion:'Repetir el GR&R por atributos y superar 90 % de concordancia', estado:'Cerrada' }),
+        R({ hallazgo:'«Sin aviso» y «no asistió» se usaban como sinónimos',
+            causa:'Método / criterio', accion:'Fundir ambas en una sola categoría en el instructivo',
+            responsable:'Diana Rojas', fecha:'2026-03-27',
+            verificacion:'Revisión de 30 registros posteriores', estado:'Cerrada' }),
+        R({ hallazgo:'La hora de cancelación se digitaba a mano y quedaba en blanco',
+            causa:'Repetibilidad (equipo)', accion:'Volver obligatorio el campo en el formulario del sistema',
+            responsable:'Sistemas', fecha:'2026-04-01',
+            verificacion:'0 registros en blanco durante una semana', estado:'Cerrada' }),
+        R({ hallazgo:'El reporte de días entre sesiones redondeaba a días completos',
+            causa:'Resolución', accion:'Exportar la fecha con hora para conservar el medio día',
+            responsable:'Sistemas', fecha:'2026-04-01',
+            verificacion:'Resolución de 0,5 día en el archivo exportado', estado:'Cerrada' }),
+        R({ hallazgo:'La planilla de ocupación se llenaba al final de la semana, de memoria',
+            causa:'Estabilidad', accion:'Registrar el cierre de cada jornada antes de salir',
+            responsable:'Marcela Ospina', fecha:'2026-04-03',
+            verificacion:'Auditoría sorpresa de dos jornadas', estado:'En curso' }),
+        R({ hallazgo:'No hay patrón de referencia para el juicio del motivo',
+            causa:'Exactitud (sesgo)', accion:'La coordinadora fija el estándar sobre 30 casos históricos',
+            responsable:'Marcela Ospina', fecha:'2026-03-26',
+            verificacion:'Panel de 30 casos firmado', estado:'Cerrada' })
+      ],
+      decision:'SÍ, el sistema de medición es válido',
+      observaciones:'La medición de la Y principal (días entre sesiones) quedó válida: %GR&R del ' +
+        '17,06 % sobre la variación del estudio, 97,09 % de contribución parte a parte y 8 categorías ' +
+        'distinguibles, muy por encima del mínimo de 5. Ojo con el %Tolerancia: 62,62 % frente a una ' +
+        'ventana de apenas 3 días, lo que significa que el instrumento sirve para comparar pacientes ' +
+        'pero no para decidir sobre un caso individual al filo de la especificación; se acepta porque ' +
+        'el proyecto trabaja sobre el promedio del proceso, no sobre la sesión suelta. La clasificación ' +
+        'del motivo sigue MARGINAL: 80 % de concordancia por caso (8 de 10 casos con acuerdo total) y ' +
+        'kappa de Fleiss de 0,722; las dos discrepancias son del mismo evaluador y ya tiene ' +
+        'reentrenamiento asignado. No bloquea la línea base, porque la Y se toma de las fechas del ' +
+        'sistema y no del juicio del auxiliar. Se autoriza recolectar a partir del 30 de marzo.'
+    });
+
+    set('medir.resumen_grafico', {
+      variable:'Días entre dos sesiones consecutivas de terapia', unidad:'días',
+      conf:'95 %', periodo:'Línea base · agosto 2025 a enero 2026 (180 citas)',
+      responsable:'Andrés Correa', fecha:'2026-03-30',
+      rows:(function(){
+        const o = [];
+        for (let i = 0; i < 40; i++){
+          const u1 = Math.max(1e-9, rr()), u2 = rr();
+          const v = 6.8 + 2.1 * Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+          o.push(R({ valor: round(Math.max(1, v), 1),
+                     nota: v > 11 ? 'Cita reprogramada dos veces' : '' }));
+        }
+        return o;
+      })(),
+      lectura:'La media es de 7,01 días contra una ventana clínica de 1 a 4. Los datos pasan la ' +
+        'prueba de normalidad (Anderson-Darling p = 0,8881) y la asimetría es de apenas 0,2, así que ' +
+        'no hay un grupo aparte de pacientes «difíciles»: todo el proceso está corrido, no unos pocos ' +
+        'casos extremos. El intervalo de confianza del 95 % para la media va de 6,28 a 7,74 días y no ' +
+        'toca el límite de 4, de modo que la brecha no es azar del muestreo. La dispersión también ' +
+        'estorba: con una desviación de 2,27 días los valores van de 2,2 a 13,4, y el caso de 13,4 ' +
+        'corresponde a un paciente reprogramado dos veces. Hay que mover la media y estrechar la ' +
+        'variación; con una sola de las dos no se alcanza la ventana.'
+    });
+
+    set('medir.capacidad_proceso', {
+      conclusion:'El proceso no es capaz y el problema no es la dispersión sino la ubicación: con ' +
+        'Cp 0,28 la variación ya es demasiado ancha para una ventana de 1 a 4 días, pero el Cpk de ' +
+        '−0,45 dice algo más grave: la media (6,8 días) está por encima del límite superior, así que ' +
+        'la mayoría de las sesiones se separa más de lo aceptable. Eso lo confirman las 875.000 PPM ' +
+        'observadas y el rendimiento esperado del 7,99 %: hoy menos de una de cada diez sesiones cae ' +
+        'dentro de la ventana clínica. Un nivel sigma de 0,09 σ deja claro que no hay nada que ajustar ' +
+        'con controles: centrar el proceso exige quitar la causa. El paso siguiente es ANALIZAR y ' +
+        'confirmar con datos por qué se pierde el cupo, no apretar la vigilancia sobre un proceso que ' +
+        'aún no sabe dar la fecha correcta.'
+    });
+
+    set('medir.msa_grr', {
+      atributo:'Clasificación del motivo por el cual la cita no se ejecutó',
+      experto:'Marcela Ospina — coordinadora del servicio', fechaAtr:'2026-03-26',
+      nMuestras:10, nEvaluadores:3, nEnsayos:1,
+      attr:(function(){
+        const est = ['Aceptar', 'Rechazar', 'Aceptar', 'Aceptar', 'Rechazar',
+                     'Aceptar', 'Rechazar', 'Aceptar', 'Aceptar', 'Rechazar'];
+        const ev = ['Diana Rojas', 'Andrés Correa', 'Luis Cardona'];
+        const o = [];
+        for (let p = 0; p < 10; p++) for (let e = 0; e < 3; e++){
+          // discrepancia deliberada en los casos 5 y 9 del tercer evaluador
+          const falla = (e === 2 && (p === 4 || p === 8));
+          o.push(R({ parte:'Caso ' + (p + 1), evaluador:ev[e], ensayo:1,
+                     resultado: falla ? (est[p] === 'Aceptar' ? 'Rechazar' : 'Aceptar') : est[p],
+                     estandar: est[p] }));
+        }
+        return o;
+      })()
+    });
+
+    set('medir.a3_medir', {
+      evidencia: marco('Motivos de reprogramación · semestre base',
+                       '598 citas reprogramadas de 1.847 programadas (32,4 %)',
+                       escBarras([['Sin aviso', 214], ['Horario', 176], ['Transporte', 92],
+                                  ['Clínico', 71], ['Otros', 45]]), 'bad')
+    });
+
+    /* ----------------------------------------------------- ANALIZAR -- */
+    set('analizar.prueba_hipotesis', {
+      causa:'La franja de la tarde concentra las citas que no se ejecutan',
+      fecha:'2026-04-24',
+      variable:'Citas reprogramadas sobre las programadas en la semana', unidad:'%',
+      factor:'Franja horaria de la cita (mañana / tarde)',
+      alfa:'0,05',
+      fuente:'Reporte semanal del software de agenda · ago-2025 a ene-2026 (24 semanas)',
+      objetivo:'MEDIAS', pruebaMedias:'T2', varIguales:'WELCH',
+      mu0:8, pruebaMedianas:'KW', pruebaVar:'LEVENE', pruebaProp:'P2', p0:8,
+      rows:(function(){
+        const o = [];
+        const gen = (mu, sd, n, g) => {
+          for (let i = 0; i < n; i++){
+            const u1 = Math.max(1e-9, rr()), u2 = rr();
+            o.push(R({ valor: round(Math.max(0, mu + sd * Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)), 1),
+                       grupo: g, obs:'' }));
+          }
+        };
+        gen(23.6, 4.2, 12, 'Mañana');
+        gen(41.2, 5.8, 12, 'Tarde');
+        return o;
+      })(),
+      props:[ R({ grupo:'Mañana', x:218, n:924 }),
+              R({ grupo:'Tarde',  x:380, n:923 }),
+              R({ grupo:'Meta institucional', x:148, n:1847 }) ],
+      veredicto:'SÍ — la causa afecta el resultado y pasa a MEJORAR',
+      accion:'Intervenir primero la franja de la tarde: sobrecupo, lista de espera y confirmación a 48 h',
+      conclusion:'La tarde reprograma casi el doble que la mañana (42,0 % frente a 23,8 % en las 24 ' +
+        'semanas medidas). La diferencia es de 18,2 puntos y la prueba la respalda: la probabilidad de ' +
+        'que una brecha así sea casualidad del muestreo es menor a 1 en 10.000. En lenguaje llano: ' +
+        'el horario de la tarde no es ' +
+        'una coincidencia, es parte del problema, porque choca con la jornada laboral del trabajador. ' +
+        'Cualquier solución que no toque la tarde deja fuera dos tercios del defecto.'
+    });
+
+    set('analizar.niveles_causa', {
+      problema:'El 32,4 % de las citas de terapia programadas entre agosto de 2025 y enero de 2026 ' +
+        'no se ejecutaron en la fecha pactada, frente a una meta del 8 %.',
+      fecha:'2026-04-28', equipo:'Marcela Ospina, Diana Rojas, Andrés Correa e Ing. Ariel Ramírez',
+      metodo:'Ishikawa + 5 Why´s',
+      rows:[
+        R({ causa:'32,4 % de citas reprogramadas', origen:'Indicador del proyecto', nivel:'SÍNTOMA',
+            porque:'Porque los cupos se liberan y no se vuelven a usar', evidencia:'1.847 programadas / 598 reprogramadas',
+            accionable:'NO', raiz:'NO' }),
+        R({ causa:'Salas a media ocupación con la agenda llena', origen:'Observación en sede', nivel:'SÍNTOMA',
+            porque:'Porque el cupo sigue reservado a un paciente que ya canceló', evidencia:'Ocupación 58 % con agenda al 100 %',
+            accionable:'NO', raiz:'NO' }),
+        R({ causa:'El paciente no avisa que no viene', origen:'Hoja de verificación', nivel:'CAUSA APARENTE',
+            porque:'Porque nadie lo contacta antes de la cita', evidencia:'214 de 598 casos (35,8 %)',
+            accionable:'SI', raiz:'NO' }),
+        R({ causa:'La cita choca con la jornada laboral', origen:'Prueba de hipótesis', nivel:'CAUSA APARENTE',
+            porque:'Porque se asigna la franja disponible, no la que le sirve al trabajador', evidencia:'Tarde 41,2 % vs mañana 23,6 %',
+            accionable:'SI', raiz:'NO' }),
+        R({ causa:'El cupo liberado no se reasigna', origen:'Mapa detallado del proceso', nivel:'CAUSA RAÍZ',
+            porque:'Porque el software no admite sobrecupo ni lista de espera', evidencia:'12 % de reasignación efectiva',
+            accionable:'SI', raiz:'SI' }),
+        R({ causa:'No existe lista de espera', origen:'5 Why´s', nivel:'CAUSA RAÍZ',
+            porque:'Porque nunca se configuró el módulo y nadie es dueño del cupo liberado', evidencia:'Parametrización del software',
+            accionable:'SI', raiz:'SI' }),
+        R({ causa:'No hay confirmación previa a la cita', origen:'5 Why´s', nivel:'CAUSA RAÍZ',
+            porque:'Porque el proceso no tiene ese paso definido', evidencia:'Paso ausente en el mapa del proceso',
+            accionable:'SI', raiz:'SI' }),
+        R({ causa:'La cancelación no regresa al agendamiento', origen:'SWIM LINE', nivel:'CAUSA APARENTE',
+            porque:'Porque recepción y call center no comparten el aviso', evidencia:'Corte de información entre dos carriles',
+            accionable:'SI', raiz:'NO' }),
+        R({ causa:'Transporte del paciente', origen:'Hoja de verificación', nivel:'CAUSA APARENTE',
+            porque:'Porque depende de terceros y del clima', evidencia:'92 de 598 casos (15,4 %)',
+            accionable:'NO', raiz:'NO' }),
+        R({ causa:'Motivo clínico del paciente', origen:'Hoja de verificación', nivel:'CAUSA APARENTE',
+            porque:'Porque es propio de la rehabilitación', evidencia:'71 de 598 casos (11,9 %)',
+            accionable:'NO', raiz:'NO' }),
+        R({ causa:'Autorización de la ARL vencida', origen:'Mapa detallado del proceso', nivel:'CAUSA APARENTE',
+            porque:'Porque vence a los 30 días y nadie la vigila', evidencia:'9 casos',
+            accionable:'SI', raiz:'NO' }),
+        R({ causa:'Terapeuta o sala no disponibles', origen:'Hoja de verificación', nivel:'CAUSA APARENTE',
+            porque:'Porque la programación de recursos se hace semanal', evidencia:'29 casos entre ambos',
+            accionable:'SI', raiz:'NO' })
+      ],
+      causaRaiz:'El cupo que se libera no se reasigna, porque el agendamiento no tiene sobrecupo, ' +
+        'ni lista de espera, ni confirmación anticipada: la ausencia de un paciente se convierte ' +
+        'automáticamente en una hora de sala perdida.',
+      descripcion:'Es la causa raíz porque explica los tres síntomas a la vez: la agenda llena con ' +
+        'salas vacías, el intervalo de 7,0 días entre sesiones y la concentración en la tarde. Las dos ' +
+        'primeras categorías de la hoja de verificación —no asistió y no avisó (214) y choque con el ' +
+        'horario laboral (176)— suman 390 de los 598 casos, el 65,2 %, y ambas desembocan aquí: si el ' +
+        'cupo liberado se reasignara, ninguna de las dos terminaría en una hora de sala perdida. Es ' +
+        'además accionable, porque depende de la parametrización del software y del proceso, no de ' +
+        'terceros. Transporte (92) y motivo clínico (71) suman el 27,3 % restante, dependen de ' +
+        'terceros y no se intervienen en este proyecto.',
+      siguiente:'En MEJORAR se diseñan tres soluciones ligadas a esta raíz: sobrecupo del 15 % en la ' +
+        'franja de la tarde, lista de espera activa que reasigne el cupo liberado el mismo día, y ' +
+        'recordatorio con confirmación a 48 horas con motivo obligatorio al cancelar. Se prueban en ' +
+        'piloto de cuatro semanas antes de desplegarlas.'
+    });
+
+    set('analizar.5_whys', {
+      w1_how4:'Revisión de la parametrización del software con el proveedor: el módulo existe pero nunca se activó',
+      w2_how3:'Comparación de las 24 semanas por franja: la tarde reprograma 17,6 puntos más que la mañana',
+      w2_why4:'Porque la franja se asigna según el cupo libre, no según la jornada del trabajador',
+      w2_nec4:'SI',
+      w2_how4:'Auditoría de 60 asignaciones: en 52 no se preguntó la disponibilidad del paciente',
+      w2_why5:'Porque el guion de agendamiento no incluye esa pregunta',
+      w2_nec5:'SI',
+      w2_how5:'Lectura del guion vigente del call center: no aparece la pregunta por la jornada'
+    });
+
+    set('analizar.tree_diagram', {
+      nodos:[
+        R({ nivel:'1', tipo:'WHY', texto:'¿Por qué se reprograma el 32,4 % de las citas?',
+            evid:'598 de 1.847 citas del semestre base' }),
+        R({ nivel:'2', tipo:'WHY', texto:'Porque el paciente no llega y el cupo queda vacío',
+            evid:'214 casos sin aviso · 176 por choque de horario' }),
+        R({ nivel:'2', tipo:'WHY', texto:'Porque la cita choca con la jornada laboral',
+            evid:'Tarde 41,2 % frente a mañana 23,6 %' }),
+        R({ nivel:'3', tipo:'WHY', texto:'Porque nadie confirma la cita con anticipación',
+            evid:'El paso no existe en el mapa del proceso' }),
+        R({ nivel:'3', tipo:'WHY', texto:'Porque el cupo liberado no se ofrece a otro paciente',
+            evid:'Sólo el 12 % de los cupos se reasigna' }),
+        R({ nivel:'3', tipo:'WHY', texto:'Porque la franja se asigna por disponibilidad de la sede',
+            evid:'52 de 60 asignaciones sin preguntar al paciente' }),
+        R({ nivel:'4', tipo:'ROOT CAUSE', texto:'El software de agenda no admite sobrecupo ni lista de espera',
+            evid:'Módulo nunca parametrizado · confirmado con el proveedor' }),
+        R({ nivel:'4', tipo:'ROOT CAUSE', texto:'No hay un responsable del cupo que se libera',
+            evid:'La cancelación queda en recepción y no vuelve al call center' }),
+        R({ nivel:'4', tipo:'ROOT CAUSE', texto:'El guion de agendamiento no pregunta por la jornada del trabajador',
+            evid:'Guion vigente del call center' })
+      ]
+    });
+
+    set('analizar.a3_analizar', {
+      ishikawa_img: marco('Causa y efecto · 6M',
+                          'Método, medición y mano de obra concentran las causas confirmadas',
+                          escIshikawa())
+    });
+
+    /* ------------------------------------------------------ MEJORAR -- */
+    set('mejorar.modelos_mejora', {
+      proceso:'Programación y ejecución de una sesión de terapia física',
+      causaRaiz:'El cupo liberado no se reasigna: no hay sobrecupo, lista de espera ni confirmación previa',
+      lider:'Ing. Ariel Ramírez — Rehavid', fecha:'2026-05-14',
+      aprobacion:'SÍ', presupuesto:9800000,
+      rows:[
+        R({ modelo:'Trabajo estandarizado', problema:'Cada auxiliar agenda con un criterio distinto',
+            aplica:'SÍ, se aplicará', alcance:'Call center y recepción de la sede norte',
+            responsable:'Marcela Ospina', fechaObj:'2026-05-22', estado:'Implementado',
+            resultado:'Guion único de agendamiento y confirmación', validacion:'Auditoría de 30 llamadas' }),
+        R({ modelo:'Gestión visual', problema:'Nadie ve el cupo que se acaba de liberar',
+            aplica:'SÍ, se aplicará', alcance:'Tablero de la sala de terapia',
+            responsable:'Diana Rojas', fechaObj:'2026-05-25', estado:'Implementado',
+            resultado:'Cupo libre visible en menos de 10 minutos', validacion:'Observación en dos jornadas' }),
+        R({ modelo:'Kanban', problema:'La lista de espera no existía',
+            aplica:'SÍ, se aplicará', alcance:'Pacientes con autorización vigente',
+            responsable:'Andrés Correa', fechaObj:'2026-05-29', estado:'Validado',
+            resultado:'Reasignación del cupo el mismo día', validacion:'% de cupos reasignados ≥ 70 %' }),
+        R({ modelo:'Flujo continuo', problema:'6,8 días entre una sesión y la siguiente',
+            aplica:'SÍ, se aplicará', alcance:'Programación de la serie completa de terapia',
+            responsable:'Marcela Ospina', fechaObj:'2026-06-05', estado:'En curso',
+            resultado:'Serie agendada de una vez al iniciar el tratamiento', validacion:'Días entre sesiones ≤ 3' }),
+        R({ modelo:'5S', problema:'La bitácora de cancelaciones se llevaba en hojas sueltas',
+            aplica:'POR EVALUAR', alcance:'Puesto de recepción',
+            responsable:'Diana Rojas', fechaObj:'2026-06-12', estado:'No iniciado',
+            resultado:'Registro único en el sistema', validacion:'0 registros en papel' }),
+        R({ modelo:'SMED', problema:'Tiempo de alistamiento entre pacientes',
+            aplica:'NO aplica', alcance:'—', responsable:'—', fechaObj:'',
+            estado:'Descartado', resultado:'El alistamiento no es la restricción', validacion:'—' })
+      ],
+      // el «antes» es el Ppk que calcula MEDIR › Capacidad del proceso con la línea base
+      ppkAntes:-0.47, ppkDespues:1.11,
+      mejoraSignificativa:'La combinación de lista de espera activa (Kanban) con el recordatorio de ' +
+        '48 horas y el sobrecupo del 15 % en la tarde. Por separado ninguna alcanzó la meta en el ' +
+        'piloto: el sobrecupo sin lista de espera sólo movió el indicador del 32,4 % al 26 %. Juntas ' +
+        'lo llevaron al 7,4 %. Esas tres son las que pasan a CONTROLAR.',
+      evidencia:'Piloto de cuatro semanas (4 al 29 de mayo) sobre la franja de la tarde: 312 citas ' +
+        'programadas, 23 reprogramadas (7,4 %). El Ppk del intervalo entre sesiones pasó de −0,47 ' +
+        '—la media estaba por fuera del límite superior— a 1,11, es decir de un proceso que no daba ' +
+        'la fecha correcta a uno que la cumple con margen. La prueba de dos proporciones confirma que ' +
+        'la diferencia no es del azar. La ocupación de salas subió del 58 % al 81 % sin contratar ' +
+        'personal ni habilitar una sala nueva.'
+    });
+
+    set('mejorar.quick_improvement', {
+      imgAntes:   marco('Antes · agenda de la tarde', 'Nueve cupos perdidos en una semana', escAgenda(true), 'bad'),
+      imgAccion:  marco('Acción · lista de espera', 'El cupo liberado se ofrece el mismo día',
+                        escPantalla('Agenda — cupo liberado', [
+                          ['Cupo libre: martes 3:00 p. m.', '#E8A020'],
+                          ['Siguiente en lista: J. Herrera', '#0A9E5C'],
+                          ['Aviso enviado — 2 min', '#0A9E5C'],
+                          ['Confirmado por el paciente', '#0A9E5C'],
+                          ['Cupo reasignado el mismo día', '#0A9E5C']]), 'ok'),
+      imgDespues: marco('Después · agenda de la tarde', 'Un solo cupo perdido en la misma semana', escAgenda(false), 'ok'),
+      bigAntes:   marco('Sala de terapia · antes', 'Agenda llena en el sistema, sala a un tercio', escSala(false), 'bad'),
+      bigDespues: marco('Sala de terapia · después', 'Misma capacidad instalada, 92 % de uso', escSala(true), 'ok'),
+
+      f2_antes:'El paciente se enteraba de su cita sólo cuando se la asignaban, semanas antes, ' +
+               'y nadie volvía a contactarlo. Si algo cambiaba en su jornada, simplemente no llegaba.',
+      f2_accion:'Recordatorio automático 48 horas antes por mensaje de texto, con dos opciones: ' +
+                'confirmar o reprogramar en el momento. Si reprograma, debe elegir el motivo de una lista.',
+      f2_despues:'El 91 % de las citas se confirma antes de la jornada y la reprogramación ocurre ' +
+                 'con 48 horas de anticipación, a tiempo para ofrecerle el cupo a otro paciente.',
+      f2_imgAntes:   marco('Antes · sin confirmación', 'El paciente no recibía ningún contacto previo',
+                           escPantalla('Agenda — cita asignada', [
+                             ['Cita asignada el 12/03', '#544D80'],
+                             ['Sin recordatorio programado', '#C63A31'],
+                             ['Sin confirmación del paciente', '#C63A31'],
+                             ['Estado: pendiente', '#E8A020'],
+                             ['Resultado: no asistió', '#C63A31']]), 'bad'),
+      f2_imgAccion:  marco('Acción · recordatorio a 48 h', 'Confirmar o reprogramar desde el mensaje',
+                           escCartel('MENSAJE A 48 HORAS', [
+                             'Su terapia es el jueves 3:00 p. m.',
+                             'Responda 1 para confirmar',
+                             'Responda 2 para reprogramar',
+                             'Si reprograma, indique el motivo',
+                             'El cupo se ofrece a otro paciente'], 'ok'), 'ok'),
+      f2_imgDespues: marco('Después · con confirmación', '91 % confirma antes de la jornada',
+                           escBarras([['Confirma', 91, '91 %'], ['Reprograma\ncon aviso', 6, '6 %'],
+                                      ['No\nresponde', 3, '3 %']], 'ok'), 'ok'),
+      f2_bigAntes:   marco('Tablero de recepción · antes', 'La cancelación quedaba en una hoja suelta',
+                           escCartel('BITÁCORA EN PAPEL', [
+                             'Anotaciones sueltas por jornada',
+                             'Sin hora de la cancelación',
+                             'Motivo escrito con palabras libres',
+                             'No llega al call center',
+                             'El cupo se pierde'], 'bad'), 'bad'),
+      f2_bigDespues: marco('Tablero de recepción · después', 'Motivo obligatorio y aviso automático',
+                           escPantalla('Cancelación registrada', [
+                             ['Hora de la cancelación: 10:42', '#0A9E5C'],
+                             ['Motivo: choque de horario', '#0A9E5C'],
+                             ['Aviso al call center: enviado', '#0A9E5C'],
+                             ['Lista de espera: 4 candidatos', '#0A9E5C'],
+                             ['Cupo reasignado a las 11:05', '#0A9E5C']]), 'ok'),
+
+      f3_antes:'La franja de la tarde tenía la misma cantidad de cupos que la mañana, aunque ' +
+               'reprogramaba casi el doble. Cada ausencia dejaba la hora entera vacía.',
+      f3_accion:'Sobrecupo del 15 % sólo en la franja de la tarde, sostenido por la lista de espera ' +
+                'y limitado por una regla: si la ocupación real supera el 95 %, el sobrecupo se suspende.',
+      f3_despues:'La ocupación de la tarde pasó del 52 % al 84 % sin tiempos de espera adicionales ' +
+                 'para el paciente y sin habilitar una sala nueva.',
+      f3_imgAntes:   marco('Antes · ocupación por franja', 'La tarde desperdiciaba la mitad de su capacidad',
+                           escBarras([['Mañana', 64, '64 %'], ['Tarde', 52, '52 %'], ['Meta', 85, '85 %']], 'bad'), 'bad'),
+      f3_imgAccion:  marco('Acción · regla de sobrecupo', 'Regla escrita y visible en el puesto',
+                           escCartel('SOBRECUPO DE LA TARDE', [
+                             'Programar 15 % por encima del cupo',
+                             'Sólo en la franja de 2 a 6 p. m.',
+                             'Siempre con lista de espera activa',
+                             'Si la ocupación real supera 95 %: suspender',
+                             'Revisar la regla cada lunes'], 'ok'), 'ok'),
+      f3_imgDespues: marco('Después · ocupación por franja', 'La tarde alcanza la meta institucional',
+                           escBarras([['Mañana', 79, '79 %'], ['Tarde', 84, '84 %'], ['Meta', 85, '85 %']], 'ok'), 'ok'),
+      f3_bigAntes:   marco('Franja de la tarde · antes', '52 % de uso con la agenda cerrada', escAgenda(true), 'bad'),
+      f3_bigDespues: marco('Franja de la tarde · después', '84 % de uso con el mismo personal', escAgenda(false), 'ok')
+    });
+
+    set('mejorar.poka_yoke', {
+      fotoAntes:  marco('Antes · cancelar sin motivo', 'El sistema permitía cerrar la cita en blanco',
+                        escPantalla('Cancelar cita', [
+                          ['Paciente: J. Herrera', '#544D80'],
+                          ['Motivo: (vacío — opcional)', '#C63A31'],
+                          ['Hora del aviso: (sin registrar)', '#C63A31'],
+                          ['Botón GUARDAR habilitado', '#C63A31'],
+                          ['Cupo liberado sin trazabilidad', '#C63A31']]), 'bad'),
+      fotoDespues: marco('Después · el error ya no cabe', 'Sin motivo el sistema no deja guardar',
+                        escPantalla('Cancelar cita', [
+                          ['Paciente: J. Herrera', '#0A9E5C'],
+                          ['Motivo: obligatorio — lista de 10', '#0A9E5C'],
+                          ['Hora del aviso: automática', '#0A9E5C'],
+                          ['GUARDAR bloqueado sin motivo', '#0A9E5C'],
+                          ['Cupo pasa a lista de espera', '#0A9E5C']]), 'ok')
+    });
+
+    set('mejorar.a3_mejorar', {
+      imgAntes: marco('Antes · agenda de la tarde',
+                      '32,4 % de citas reprogramadas · salas al 58 %', escAgenda(true), 'bad'),
+      imgDespues: marco('Después · agenda de la tarde',
+                        '7,4 % de citas reprogramadas · salas al 81 %', escAgenda(false), 'ok'),
+      imgResultados: marco('Resultado del piloto · cuatro semanas',
+                           'La meta del 8 % se alcanza desde la tercera semana',
+                           escBarras([['Base', 32.4, '32,4 %'], ['Sem 1', 21.8, '21,8 %'],
+                                      ['Sem 2', 13.5, '13,5 %'], ['Sem 3', 8.7, '8,7 %'],
+                                      ['Sem 4', 7.4, '7,4 %']], 'ok'), 'ok')
+    });
+
+    /* ---------------------------------------------------- CONTROLAR -- */
+    const ENC_1 = { proceso:'Agendamiento y confirmación de terapia física',
+                    documento:'ET-TER-001', realizo:'Marcela Ospina',
+                    revisada:'Ing. Ariel Ramírez', liberada:'Dra. Claudia Restrepo' };
+
+    set('controlar.estandar_1', {
+      imgIzq1: marco('Paso 3 · confirmar a 48 horas', 'Pantalla de confirmación del call center',
+                     escPantalla('Confirmación de cita', [
+                       ['Citas de pasado mañana: 24', '#2A1AA6'],
+                       ['Confirmadas: 21', '#0A9E5C'],
+                       ['Reprogramadas con aviso: 2', '#E8A020'],
+                       ['Sin respuesta: 1 — reintentar', '#C63A31'],
+                       ['Cerrar la jornada antes de las 5 p. m.', '#2A1AA6']]), 'ok'),
+      imgDer1: marco('Paso 6 · reasignar el cupo', 'Lista de espera ordenada por antigüedad',
+                     escCartel('CUPO LIBERADO', [
+                       'Verificar autorización vigente',
+                       'Llamar al primero de la lista',
+                       'Esperar respuesta máximo 30 minutos',
+                       'Si no contesta, pasar al siguiente',
+                       'Registrar quién tomó el cupo'], 'ok'), 'ok'),
+      proceso2:ENC_1.proceso + ' — página 2', liberada2:ENC_1.liberada,
+      documento2:'ET-TER-001', realizo2:ENC_1.realizo, revisada2:ENC_1.revisada, pag2:'2 de 2',
+      seguridad2:'Tratar los datos del trabajador conforme a la Ley 1581 de 2012: no divulgar el ' +
+        'diagnóstico al ofrecer el cupo, sólo la hora disponible. La llamada se hace desde la línea ' +
+        'institucional, nunca desde el celular personal del auxiliar.',
+      otros2:'El sobrecupo del 15 % aplica únicamente a la franja de 2 a 6 p. m. y siempre con lista ' +
+        'de espera activa. Si la ocupación real de la sala supera el 95 % dos días seguidos, se ' +
+        'suspende el sobrecupo y se informa a coordinación el mismo día.',
+      imgIzq2: marco('Paso 9 · registrar el motivo', 'El motivo es obligatorio para poder guardar',
+                     escPantalla('Cancelar cita', [
+                       ['Motivo: obligatorio', '#0A9E5C'],
+                       ['Hora del aviso: automática', '#0A9E5C'],
+                       ['Aviso al call center: automático', '#0A9E5C'],
+                       ['Cupo a lista de espera', '#0A9E5C'],
+                       ['GUARDAR bloqueado sin motivo', '#2A1AA6']]), 'ok'),
+      imgDer2: marco('Paso 12 · cierre de la jornada', 'Tablero visible en la sala de terapia',
+                     escBarras([['Atendidas', 18, '18'], ['Reasignadas', 3, '3'], ['Perdidas', 1, '1']], 'ok'), 'ok'),
+      nota2:'Este estándar reemplaza cualquier instrucción verbal previa sobre el manejo de la agenda ' +
+        'de terapia. Toda modificación se tramita ante coordinación del servicio y queda registrada en ' +
+        'el control de cambios del formato 3. Vigente desde el 15 de junio de 2026.'
+    });
+
+    set('controlar.estandar_2', {
+      proceso:'Agendamiento y confirmación de terapia física', realizo:'Marcela Ospina',
+      fecha:'2026-06-15', codigo:'ET-TER-002', pag:'1 de 2',
+      rows:[
+        R({ ayuda:'Fig. 1', actividad:'Recibir la orden médica y verificar el teléfono del trabajador',
+            estandar:'El teléfono se lee en voz alta al paciente y se confirma antes de cerrar el registro',
+            herramientas:'Software de agenda', responsable:'Auxiliar de admisión', tiempo:'3 min',
+            seguridad:'No divulgar el diagnóstico en voz alta en la sala de espera' }),
+        R({ ayuda:'Fig. 2', actividad:'Preguntar la jornada laboral del trabajador antes de ofrecer la franja',
+            estandar:'La pregunta es obligatoria y está en el guion: nunca se asigna franja sin preguntarla',
+            herramientas:'Guion de agendamiento', responsable:'Auxiliar de call center', tiempo:'1 min',
+            seguridad:'—' }),
+        R({ ayuda:'Fig. 3', actividad:'Asignar el cupo dentro de las 48 horas siguientes a la autorización',
+            estandar:'Si no hay cupo en 48 h, se registra en lista de espera; no se asigna una fecha lejana',
+            herramientas:'Software de agenda', responsable:'Auxiliar de call center', tiempo:'4 min',
+            seguridad:'—' }),
+        R({ ayuda:'Fig. 4', actividad:'Programar la serie completa de sesiones en un solo acto',
+            estandar:'Las sesiones quedan separadas por 3 días o menos, según la prescripción',
+            herramientas:'Software de agenda', responsable:'Auxiliar de call center', tiempo:'5 min',
+            seguridad:'—' }),
+        R({ ayuda:'Fig. 5', actividad:'Enviar el recordatorio automático 48 horas antes',
+            estandar:'Sale automático a las 8:00 a. m.; si falla el envío, se llama antes de las 10:00 a. m.',
+            herramientas:'Módulo de mensajería', responsable:'Sistemas', tiempo:'Automático',
+            seguridad:'El mensaje no incluye diagnóstico ni datos clínicos' }),
+        R({ ayuda:'Fig. 6', actividad:'Registrar la confirmación o la reprogramación del paciente',
+            estandar:'Toda respuesta se registra el mismo día; sin respuesta se reintenta una vez',
+            herramientas:'Software de agenda', responsable:'Auxiliar de call center', tiempo:'2 min',
+            seguridad:'—' }),
+        R({ ayuda:'Fig. 7', actividad:'Registrar la cancelación con motivo obligatorio',
+            estandar:'El motivo se elige de la lista de 10; el sistema no permite guardar sin él',
+            herramientas:'Software de agenda', responsable:'Recepción', tiempo:'2 min',
+            seguridad:'—' }),
+        R({ ayuda:'Fig. 8', actividad:'Publicar el cupo liberado en la lista de espera',
+            estandar:'El cupo se publica dentro de los 10 minutos siguientes a la cancelación',
+            herramientas:'Módulo de lista de espera', responsable:'Recepción', tiempo:'1 min',
+            seguridad:'—' }),
+        R({ ayuda:'Fig. 9', actividad:'Ofrecer el cupo al primero de la lista con autorización vigente',
+            estandar:'Se espera respuesta máximo 30 minutos y luego se pasa al siguiente',
+            herramientas:'Línea institucional', responsable:'Auxiliar de call center', tiempo:'5 min',
+            seguridad:'La llamada se hace desde la línea institucional, no desde el celular personal' }),
+        R({ ayuda:'Fig. 10', actividad:'Aplicar el sobrecupo del 15 % en la franja de la tarde',
+            estandar:'Sólo de 2 a 6 p. m. y sólo con lista de espera activa',
+            herramientas:'Parametrización de la agenda', responsable:'Coordinación', tiempo:'Semanal',
+            seguridad:'Suspender si la ocupación real supera el 95 % dos días seguidos' }),
+        R({ ayuda:'Fig. 11', actividad:'Cerrar la jornada con el conteo de cupos por estado',
+            estandar:'Atendidos, reasignados y perdidos se registran antes de salir; nunca de memoria',
+            herramientas:'Planilla de ocupación', responsable:'Recepción', tiempo:'5 min',
+            seguridad:'—' }),
+        R({ ayuda:'Fig. 12', actividad:'Revisar la carta de control p cada lunes',
+            estandar:'Si hay señal fuera de control, se aplica el plan de reacción el mismo día',
+            herramientas:'Carta p semanal', responsable:'Coordinación', tiempo:'20 min',
+            seguridad:'—' })
+      ],
+      img1: marco('Fig. 1 · verificar el teléfono', 'Se lee en voz alta y se confirma con el paciente',
+                  escPantalla('Admisión', [['Nombre: J. Herrera', '#0A9E5C'],
+                    ['Teléfono: 300 000 0000', '#0A9E5C'], ['Confirmado en voz alta', '#0A9E5C'],
+                    ['Autorización: vigente', '#0A9E5C'], ['Guardar', '#2A1AA6']])),
+      img2: marco('Fig. 2 · preguntar la jornada', 'La pregunta está en el guion y es obligatoria',
+                  escCartel('GUION DE AGENDAMIENTO', ['¿En qué jornada trabaja usted?',
+                    '¿Qué franja le sirve mejor?', 'Ofrecer primero esa franja',
+                    'Si no hay cupo, lista de espera', 'Nunca asignar sin preguntar'], 'ok'), 'ok'),
+      img3: marco('Fig. 3 · cupo dentro de 48 h', 'Sin cupo cercano, va a lista de espera', escAgenda(false), 'ok'),
+      img4: marco('Fig. 4 · serie completa', 'Sesiones separadas por 3 días o menos',
+                  escBarras([['Ses. 1', 0, 'día 0'], ['Ses. 2', 3, 'día 3'], ['Ses. 3', 6, 'día 6'],
+                             ['Ses. 4', 9, 'día 9']], 'ok'), 'ok'),
+      img5: marco('Fig. 5 · recordatorio a 48 h', 'Envío automático a las 8:00 a. m.',
+                  escCartel('MENSAJE AUTOMÁTICO', ['Su terapia es el jueves 3:00 p. m.',
+                    'Responda 1 para confirmar', 'Responda 2 para reprogramar',
+                    'Sin datos clínicos en el mensaje', 'Si falla el envío: llamar antes de 10 a. m.'], 'ok'), 'ok'),
+      img6: marco('Fig. 6 · registrar la respuesta', 'Toda respuesta queda el mismo día',
+                  escPantalla('Confirmación', [['Confirmadas: 21', '#0A9E5C'],
+                    ['Reprogramadas con aviso: 2', '#E8A020'], ['Sin respuesta: 1', '#C63A31'],
+                    ['Reintento pendiente', '#E8A020'], ['Cierre a las 5:00 p. m.', '#2A1AA6']])),
+      proceso2:'Agendamiento y confirmación de terapia física', realizo2:'Marcela Ospina',
+      fecha2:'2026-06-15', codigo2:'ET-TER-002', pag2:'2 de 2',
+      img7: marco('Fig. 7 · motivo obligatorio', 'El sistema no guarda sin motivo',
+                  escPantalla('Cancelar cita', [['Motivo: obligatorio', '#0A9E5C'],
+                    ['Lista de 10 motivos', '#0A9E5C'], ['Hora automática', '#0A9E5C'],
+                    ['GUARDAR bloqueado sin motivo', '#2A1AA6'], ['Cupo a lista de espera', '#0A9E5C']]), 'ok'),
+      img8: marco('Fig. 8 · publicar el cupo', 'Dentro de los 10 minutos siguientes',
+                  escBarras([['0-10 min', 82, '82 %'], ['10-30 min', 14, '14 %'], ['> 30 min', 4, '4 %']], 'ok'), 'ok'),
+      img9: marco('Fig. 9 · ofrecer el cupo', 'Orden por antigüedad en la lista',
+                  escCartel('LISTA DE ESPERA', ['1. Verificar autorización vigente',
+                    '2. Llamar al primero de la lista', '3. Esperar máximo 30 minutos',
+                    '4. Si no contesta, pasar al siguiente', '5. Registrar quién tomó el cupo'], 'ok'), 'ok'),
+      img10: marco('Fig. 10 · sobrecupo de la tarde', 'Sólo de 2 a 6 p. m. y con lista activa',
+                   escCartel('REGLA DE SOBRECUPO', ['15 % por encima del cupo',
+                     'Sólo franja de 2 a 6 p. m.', 'Siempre con lista de espera',
+                     'Suspender si la ocupación supera 95 %', 'Revisar cada lunes'], 'ok'), 'ok'),
+      img11: marco('Fig. 11 · cierre de jornada', 'Conteo por estado antes de salir',
+                   escBarras([['Atendidas', 18, '18'], ['Reasignadas', 3, '3'], ['Perdidas', 1, '1']], 'ok'), 'ok'),
+      img12: marco('Fig. 12 · revisión del lunes', 'Carta p semanal y plan de reacción',
+                   escPantalla('Carta p — semana 12', [['p = 6,8 %', '#0A9E5C'],
+                     ['LCS = 12,4 %', '#544D80'], ['Sin puntos fuera de control', '#0A9E5C'],
+                     ['Sin rachas de 7 puntos', '#0A9E5C'], ['Acción: ninguna', '#0A9E5C']]), 'ok')
+    });
+
+    set('controlar.estandar_3', {
+      proceso:'Reasignación del cupo liberado', maquina:'Software de agenda · módulo lista de espera',
+      realizo:'Marcela Ospina', area:'Terapia física · sede norte', clase:'Estándar de operación',
+      aprobado:'Dra. Claudia Restrepo', frecuencia:'Cada vez que se registra una cancelación',
+      responsable:'Auxiliar de recepción', documento:'ET-TER-003',
+      imagen: marco('Ayuda visual · lista de espera', 'Pantalla que ve el auxiliar al liberarse un cupo',
+                    escPantalla('Cupo liberado — 3:00 p. m.', [
+                      ['1. J. Herrera — autorización vigente', '#0A9E5C'],
+                      ['2. M. Salazar — autorización vigente', '#0A9E5C'],
+                      ['3. R. Peña — autorización vencida', '#C63A31'],
+                      ['4. C. Duarte — autorización vigente', '#0A9E5C'],
+                      ['Ofrecer al primero con autorización', '#2A1AA6']]), 'ok'),
+      herramientas:[ R({ herramienta:'Software de agenda' }), R({ herramienta:'Módulo de lista de espera' }),
+                     R({ herramienta:'Línea telefónica institucional' }), R({ herramienta:'Guion de reasignación' }),
+                     R({ herramienta:'Planilla de ocupación de salas' }), R({ herramienta:'Tablero visual de la sala' }),
+                     R({ herramienta:'Reporte de autorizaciones vigentes' }), R({ herramienta:'Carta de control p semanal' }) ],
+      seguridad:'Al ofrecer el cupo no se menciona el diagnóstico ni el motivo de la terapia: sólo la ' +
+        'fecha y la hora disponibles. La llamada se hace desde la línea institucional. Los datos del ' +
+        'trabajador se tratan conforme a la Ley 1581 de 2012 y no se comparten con la empresa afiliada.',
+      procedimiento:[
+        R({ paso:'1. Registrar la cancelación con el motivo obligatorio de la lista de 10.' }),
+        R({ paso:'2. Verificar que el cupo quede marcado como LIBERADO en la agenda.' }),
+        R({ paso:'3. Publicar el cupo en la lista de espera dentro de los 10 minutos siguientes.' }),
+        R({ paso:'4. Filtrar la lista por autorización vigente: sin autorización no se ofrece.' }),
+        R({ paso:'5. Llamar al primero de la lista desde la línea institucional.' }),
+        R({ paso:'6. Esperar respuesta un máximo de 30 minutos; luego pasar al siguiente.' }),
+        R({ paso:'7. Confirmar con el paciente la hora y dejar registro de quién tomó el cupo.' }),
+        R({ paso:'8. Actualizar el tablero visual de la sala con el nuevo estado del cupo.' }),
+        R({ paso:'9. Si nadie toma el cupo, registrarlo como PERDIDO con la causa, para la carta p.' })
+      ],
+      cambios:[
+        R({ revision:'00', fecha:'2026-06-15', cambio:'Emisión inicial del estándar tras el cierre del piloto.' }),
+        R({ revision:'01', fecha:'2026-06-22', cambio:'Se fija en 30 minutos el tiempo de espera de respuesta; antes quedaba a criterio del auxiliar.' }),
+        R({ revision:'02', fecha:'2026-06-29', cambio:'Se agrega el filtro por autorización vigente antes de ofrecer el cupo.' }),
+        R({ revision:'03', fecha:'2026-07-13', cambio:'Se incorpora el registro del cupo perdido con causa, para alimentar la carta p.' })
+      ],
+      proceso2:'Aplicación del sobrecupo en la franja de la tarde',
+      maquina2:'Software de agenda · parametrización de cupos',
+      realizo2:'Marcela Ospina', area2:'Terapia física · sede norte', clase2:'Estándar de operación',
+      aprobado2:'Dra. Claudia Restrepo', frecuencia2:'Revisión semanal, cada lunes',
+      responsable2:'Coordinación del servicio', documento2:'ET-TER-003',
+      imagen2: marco('Ayuda visual · regla de sobrecupo', 'Cartel visible en el puesto de coordinación',
+                     escCartel('SOBRECUPO DE LA TARDE', [
+                       'Programar 15 % por encima del cupo',
+                       'Sólo en la franja de 2 a 6 p. m.',
+                       'Siempre con lista de espera activa',
+                       'Suspender si la ocupación supera 95 %',
+                       'Revisar la regla cada lunes'], 'ok'), 'ok'),
+      seguridad2:'El sobrecupo no puede generar esperas mayores a 15 minutos para el paciente ya citado. ' +
+        'Si dos lunes seguidos la espera promedio supera ese límite, se suspende el sobrecupo y se ' +
+        'escala a la dirección del servicio antes de reactivarlo.'
+    });
+
+    // n es el tamaño típico del subgrupo semanal; los límites reales se escalonan
+    // con el «tamaño de muestra» de cada fila, porque la muestra es variable
+    set('controlar.graficos_control', { n: 72, lsl: 0 });
+
+    set('controlar.charter_cierre', {
+      metCie:[ R({ mejoro:'Yes', logrado:7.4 }),
+               R({ mejoro:'Yes', logrado:3.1 }),
+               R({ mejoro:'Yes', logrado:81  }) ],
+      firmasCie:[ R({ firma:'Aceptado — Dra. Claudia Restrepo (Champion)',   fecha:'2026-06-30' }),
+                  R({ firma:'Aceptado — Marcela Ospina (Dueña del proceso)', fecha:'2026-06-30' }),
+                  R({ firma:'Aceptado — Jorge Delgado (Finanzas)',           fecha:'2026-06-30' }),
+                  R({ firma:'Aceptado — Ing. Laura Peña (Mentor)',           fecha:'2026-06-30' }),
+                  R({ firma:'Aceptado — Ing. Ariel Ramírez (Facilitador)',   fecha:'2026-06-30' }) ]
+    });
+
+    set('controlar.a3_final', {
+      t1:'DEFINIR — el problema y su costo',
+      t2:'MEDIR y ANALIZAR — línea base y causa raíz',
+      t3:'MEJORAR — soluciones implantadas',
+      t4:'CONTROLAR — cómo se sostiene',
+      t5:'LECCIONES APRENDIDAS Y RECONOCIMIENTO'
+    });
+
+    /* deja el rastro de aleatoriedad usada, para que el conteo sea estable */
+    return rint(1, 1);
   }
 
   /* ------------------------------------------------------- auxiliares */

@@ -51,6 +51,8 @@ R.card = (title, body, extra) =>
 
 /* -------------------------------------------------------------- BLOQUES */
 R.block = function(b, t, d, ctx, idx){
+  // un bloque que no aplica al caso no se dibuja: mejor ausente que con un aviso
+  if (b.when && !b.when(d, ctx)) return '';
   const fn = R['b_' + b.type];
   if (!fn){ return '<div class="note bad">Bloque desconocido: ' + esc(b.type) + '</div>'; }
   try { return fn(b, t, d, ctx, idx); }
