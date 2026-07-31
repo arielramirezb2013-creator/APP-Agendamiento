@@ -304,20 +304,26 @@ R.b_diagram = function(b, t, d, ctx){
 /* =========================================================== TOOL PAGE */
 R.tool = function(t){
   const d = ST.d(t.id), ctx = ST.ctx(), m = MOD_BY_ID[t.mod];
+  const soloLectura = !!m.guia;                       // los capítulos del manual no se editan
+  const list0 = TOOLS.filter(x => x.mod === t.mod);
   let h = '<div class="page-h"><div style="flex:1">' +
-    '<div class="crumb">' + esc(m.name) + ' · ' + m.n + '/5</div>' +
+    '<div class="crumb">' + esc(m.name) +
+      (soloLectura ? ' · capítulo ' + (list0.findIndex(x => x.id === t.id) + 1) + ' de ' + list0.length
+                   : ' · ' + m.n + '/5') + '</div>' +
     '<h1>' + esc(t.title) + '</h1>' +
     (t.desc ? '<div class="sub">' + esc(t.desc) + '</div>' : '') + '</div>' +
     '<div style="display:flex;gap:8px;align-items:center">' +
-    '<span class="xlref" title="Hoja del Excel original">' + esc(t.sheet) + '</span>' +
-    (t.guide ? '<button class="btn sm g" data-guide="' + t.id + '">? Ayuda</button>' : '') +
-    '<button class="btn sm g" data-cleartool="' + t.id + '">Limpiar</button>' +
+    (enPlantilla(t) ? '<span class="xlref" title="Hoja del Excel original">' + esc(t.sheet) + '</span>'
+      : t.extra && !soloLectura ? '<span class="pill" title="Herramienta del manual, no existe como hoja del Excel">del manual</span>' : '') +
+    (t.guide && t.guide.length ? '<button class="btn sm g" data-guide="' + t.id + '">? Ayuda</button>' : '') +
+    (soloLectura ? '' : '<button class="btn sm g" data-cleartool="' + t.id + '">Limpiar</button>') +
     '</div></div>';
   h += '<div id="toolbody">';
   (t.blocks || []).forEach((b, i) => { h += R.block(b, t, d, ctx, i); });
   h += '</div>';
-  // navegación anterior/siguiente
-  const list = TOOLS.filter(x => ST.modOn(x.mod));
+  // navegación anterior/siguiente (los capítulos del manual circulan entre ellos)
+  const list = soloLectura ? list0
+    : TOOLS.filter(x => ST.modOn(x.mod) && !MOD_BY_ID[x.mod].guia);
   const i = list.findIndex(x => x.id === t.id);
   h += '<div style="display:flex;gap:10px;margin-top:22px">' +
     (i > 0 ? '<button class="btn g" data-goto="' + list[i-1].id + '">← ' + esc(list[i-1].title) + '</button>' : '') +

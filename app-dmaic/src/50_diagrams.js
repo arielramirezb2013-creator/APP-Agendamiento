@@ -329,7 +329,10 @@ const DIAG = (function(){
   /* ---- texto plano con ajuste de línea (modo print y textos fijos) ----- */
   function wrapLines(s, w, fs, maxLines){
     const words = T2(s).split(/\s+/).filter(Boolean);
-    const cpl = Math.max(6, Math.floor(w / (fs * 0.545)));
+    // 0,60 em (no 0,545): con Segoe UI en seminegrita el ancho real por carácter es
+    // mayor que la estimación optimista y el texto se recortaba dentro de las cajas.
+    // Sobrestimar sólo deja algo de aire; subestimar corta el texto.
+    const cpl = Math.max(6, Math.floor(w / (fs * 0.60)));
     const out = [];
     let cur = '';
     words.forEach(wd => {
@@ -1021,8 +1024,9 @@ const DIAG = (function(){
     const tops = [], bots = [];
     M.branches.forEach(br => { (br.pos === 'bottom' ? bots : tops).push(br); });
     /* cada caja crece con su texto: nada queda cortado ni en pantalla ni en el PNG */
-    const causeH = c => boxH(c.v, CW - 30, 11.5, 30, 3);
-    const subH   = s => boxH(s.v, CW - 52, 10.5, 22, 2, 8);
+    // 4 y 3 líneas: con 3 y 2 el texto de causas largas se recortaba dentro de la caja
+    const causeH = c => boxH(c.v, CW - 30, 11.5, 30, 4);
+    const subH   = s => boxH(s.v, CW - 52, 10.5, 22, 3, 8);
     const subsH  = c => A(c.subs).reduce((a, s) => a + subH(s) + SGAP, 0);
     const blockH = c => causeH(c) + (A(c.subs).length ? subsH(c) + 4 : 0) + 14;
     const sideLen = list => {

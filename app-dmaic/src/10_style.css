@@ -45,7 +45,7 @@ body.navmin .nv-t,body.navmin .nv-sub,body.navmin .nv-badge,body.navmin .nv-ph-s
   border-radius:8px;background:rgba(255,255,255,.05);border:1px dashed var(--bd);cursor:pointer;
   position:relative;overflow:hidden;padding:0 8px;transition:.15s}
 .logo-slot:hover{border-color:var(--br-2);background:rgba(18,179,166,.10)}
-.logo-slot img{max-height:36px;max-width:150px;object-fit:contain;display:block}
+.logo-slot img{max-height:40px;max-width:170px;object-fit:contain;display:block}
 .logo-slot.fixed{cursor:default;border-style:solid;border-color:transparent;background:transparent}
 .logo-slot .lbl{font-size:9px;letter-spacing:.08em;color:var(--tx3);text-transform:uppercase;white-space:nowrap}
 .logo-x{position:absolute;top:1px;right:2px;font-size:10px;color:var(--bad);opacity:0;cursor:pointer;line-height:1}
