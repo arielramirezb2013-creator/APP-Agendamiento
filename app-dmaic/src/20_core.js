@@ -120,18 +120,18 @@ function registerTools(list){
   });
 }
 const MODULES = [
-  { id:'GUIA',      n:0, letter:'?', name:'GUÍA DE APLICACIÓN', en:'Manual', color:'#4A666E',
+  { id:'GUIA',      n:0, letter:'?', name:'GUÍA DE APLICACIÓN', en:'Manual', color:'#6D6796',
     guia:true, desc:'Manual Lean Six Sigma: qué es cada herramienta, cómo se usa y cómo se encadenan las fases.',
     file:null },
-  { id:'DEFINIR',   n:1, letter:'D', name:'DEFINIR',   en:'Define',  color:'#0B5D6B',
+  { id:'DEFINIR',   n:1, letter:'D', name:'DEFINIR',   en:'Define',  color:'#2A1AA6',
     desc:'Delimitar el problema, el alcance, el equipo y la línea base.', file:'01DEFINIR' },
-  { id:'MEDIR',     n:2, letter:'M', name:'MEDIR',     en:'Measure', color:'#12B3A6',
+  { id:'MEDIR',     n:2, letter:'M', name:'MEDIR',     en:'Measure', color:'#3B26D3',
     desc:'Mapear el proceso y cuantificar el desempeño actual con datos.', file:'02MEDIR' },
-  { id:'ANALIZAR',  n:3, letter:'A', name:'ANALIZAR',  en:'Analyze', color:'#F5A623',
+  { id:'ANALIZAR',  n:3, letter:'A', name:'ANALIZAR',  en:'Analyze', color:'#6B4DE8',
     desc:'Encontrar y validar la causa raíz del problema.', file:'03ANALIZAR' },
-  { id:'MEJORAR',   n:4, letter:'I', name:'MEJORAR',   en:'Improve', color:'#E5854D',
+  { id:'MEJORAR',   n:4, letter:'I', name:'MEJORAR',   en:'Improve', color:'#0E9E8F',
     desc:'Generar, priorizar e implementar las soluciones.', file:'04MEJORAR' },
-  { id:'CONTROLAR', n:5, letter:'C', name:'CONTROLAR', en:'Control', color:'#7C5CBF',
+  { id:'CONTROLAR', n:5, letter:'C', name:'CONTROLAR', en:'Control', color:'#0A9E5C',
     desc:'Estandarizar, controlar y sostener la mejora en el tiempo.', file:'05CONTROLAR' }
 ];
 const MOD_BY_ID = {}; MODULES.forEach(m => MOD_BY_ID[m.id] = m);
@@ -149,7 +149,7 @@ const CFG_KEY = 'rehavid_lss_cfg_v1';
 
 const ST = {
   db:  { projects: [], activeId: null },
-  cfg: { theme:'dark', navmin:false, logos:{ arl:null, empresa:null, rehavid:null },
+  cfg: { theme:'light', navmin:false, logos:{ arl:null, empresa:null, rehavid:null },
          brand:{ p1:'#0B5D6B', p2:'#12B3A6', p3:'#F5A623' },
          arlNombre:'', empresaNombre:'', autosave:true, lastRoute:'' },
   dirty:false, _t:null,

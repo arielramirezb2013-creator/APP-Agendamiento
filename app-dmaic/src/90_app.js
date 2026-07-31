@@ -8,20 +8,21 @@ const UI = {
 /* ------------------------------------------------------------- TOP BAR */
 renderTop(){
   const p = ST.proj();
-  const slot = (id, label, src, fixed) =>
+  // Sólo se muestran los logos que existen: nada de recuadros vacíos.
+  // Los de la ARL y la empresa se cargan desde Ajustes y aparecen aquí al hacerlo.
+  const slot = (id, label, src, fixed) => !src ? '' :
     '<div class="logo-slot' + (fixed ? ' fixed' : '') + '"' + (fixed ? '' : ' data-logo="' + id + '"') +
-    ' title="' + esc(fixed ? 'Rehavid' : 'Clic para subir el logo de ' + label) + '">' +
-    (src ? '<img src="' + src + '" alt="' + esc(label) + '">' +
-           (fixed ? '' : '<span class="logo-x" data-logorm="' + id + '">✕</span>')
-         : '<span class="lbl">' + esc(label) + '</span>') + '</div>';
+    ' title="' + esc(fixed ? 'Rehavid' : label) + '">' +
+    '<img src="' + src + '" alt="' + esc(label) + '">' +
+    (fixed ? '' : '<span class="logo-x" data-logorm="' + id + '">✕</span>') + '</div>';
 
   $('#topbar').innerHTML =
     '<button class="btn xs g" id="btnNav" title="Menú">☰</button>' +
     '<div class="logos">' +
-      slot('rehavid', 'Rehavid', ST.cfg.logos.rehavid || REHAVID_LOGO_PNG, false) +
-      '<div class="topsep"></div>' +
-      slot('arl', 'Logo ARL', ST.cfg.logos.arl) +
-      slot('empresa', 'Logo empresa', ST.cfg.logos.empresa) +
+      slot('rehavid', 'Rehavid', ST.cfg.logos.rehavid || REHAVID_LOGO_PNG, true) +
+      (ST.cfg.logos.arl || ST.cfg.logos.empresa ? '<div class="topsep"></div>' : '') +
+      slot('arl', 'ARL contratante', ST.cfg.logos.arl) +
+      slot('empresa', 'Empresa atendida', ST.cfg.logos.empresa) +
     '</div>' +
     '<div class="topsep"></div>' +
     '<div style="min-width:0;flex:1">' +
