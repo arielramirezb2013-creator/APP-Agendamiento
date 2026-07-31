@@ -255,6 +255,51 @@ tr:hover .rowdel{opacity:1}
 .empty .ic{font-size:38px;opacity:.35;margin-bottom:10px}
 .sect-t{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);margin:18px 0 9px;display:flex;align-items:center;gap:9px}
 .sect-t:after{content:'';flex:1;height:1px;background:var(--bd)}
+/* ---------- Infografías recreadas ---------- */
+.ig{margin:0 0 4px;background:var(--d2);border:1px solid var(--bd);border-radius:var(--r);
+  padding:14px 16px 10px;overflow-x:auto}
+.ig svg{display:block;min-width:640px}
+.ig figcaption{margin-top:9px;font-size:11.5px;color:var(--tx3);text-align:center;font-style:italic}
+.ig-fase,.ig-rol,.ig-esc,.ig-paso{transition:opacity .15s}
+.ig:hover .ig-fase,.ig:hover .ig-esc,.ig:hover .ig-paso{opacity:.55}
+.ig .ig-fase:hover,.ig .ig-esc:hover,.ig .ig-paso:hover{opacity:1}
+
+.ig-grid7{display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:12px}
+.ig-desp{background:var(--d2);border:1px solid var(--bd);border-left:4px solid var(--br-1);
+  border-radius:var(--r2);padding:12px 13px;transition:transform .16s,box-shadow .16s}
+.ig-desp:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(59,38,211,.12)}
+.ig-desp8{border-left-color:var(--br-3)}
+.ig-desp header{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.ig-desp .n{width:24px;height:24px;flex:0 0 24px;border-radius:7px;background:var(--br-1);color:#fff;
+  display:grid;place-items:center;font-weight:800;font-size:12px}
+.ig-desp8 .n{background:var(--br-3);color:#05341C}
+.ig-desp h4{font-size:13px;line-height:1.25}
+.ig-desp p{margin:0 0 6px;font-size:12px;line-height:1.5;color:var(--tx2)}
+.ig-desp p:last-child{margin-bottom:0}
+.ig-desp .q{color:var(--tx)}
+.ig-desp b{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--tx3);margin-bottom:1px}
+.ig-desp .f b{color:var(--ok)}
+
+.ig-mapa{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.ig-col{background:var(--d2);border:1px solid var(--bd);border-top:4px solid var(--fc);
+  border-radius:var(--r2);overflow:hidden;display:flex;flex-direction:column}
+.ig-col header{padding:11px 12px 9px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.ig-col .d{width:28px;height:28px;flex:0 0 28px;border-radius:8px;background:var(--fc);color:#fff;
+  display:grid;place-items:center;font-size:15px}
+.ig-col h4{font-size:12px;letter-spacing:.05em;text-transform:uppercase;flex:1;min-width:0}
+.ig-col small{width:100%;font-size:10.5px;color:var(--tx3)}
+.ig-col ol{margin:0;padding:0 8px 10px 8px;list-style:none;counter-reset:ig}
+.ig-col li{counter-increment:ig}
+.ig-li{width:100%;text-align:left;background:transparent;border:none;border-radius:6px;
+  padding:5px 7px 5px 24px;font-size:11.8px;color:var(--tx2);cursor:pointer;position:relative;
+  line-height:1.35;transition:.12s}
+.ig-li:before{content:counter(ig);position:absolute;left:6px;top:5px;font-size:9.5px;
+  font-family:var(--fm);color:var(--tx3)}
+.ig-li:hover{background:var(--d3);color:var(--br-1)}
+.ig-li i{display:block;font-size:9.5px;font-style:normal;color:var(--br-3);font-weight:700}
+@media print{ .ig{break-inside:avoid;border:none;padding:0} .ig svg{min-width:0} .ig-li{color:#000} }
+
 /* ================================ IMPRESIÓN ================================
    Documento paginado: la app se oculta y se imprime #printarea, que sólo tiene
    contenido estático. Las reglas de corte evitan que una tabla, un gráfico o

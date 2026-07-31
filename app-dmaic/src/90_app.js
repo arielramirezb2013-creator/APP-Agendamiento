@@ -730,6 +730,7 @@ function boot(){
   ST.load();
   document.documentElement.setAttribute('data-theme', ST.cfg.theme || 'dark');
   if (ST.cfg.navmin) document.body.classList.add('navmin');
+  if (typeof INFO !== 'undefined') { try { INFO.montar(); } catch(e){ console.warn('infografías', e); } }
   UI.renderTop();
   bindGlobal();
   try { const r = JSON.parse(ST.cfg.lastRoute || '{}'); if (r.view) Object.assign(ROUTE, r); } catch(e){}

@@ -39,6 +39,7 @@ ORDER = [
     '83_xlsxgen.js',
     '86_print.js',
     '87_demo.js',
+    '88_infografias.js',
     '90_app.js',
 ]
 
