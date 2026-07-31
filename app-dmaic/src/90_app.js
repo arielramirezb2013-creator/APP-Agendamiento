@@ -312,8 +312,8 @@ viewAjustes(){
 
   h += '<div class="grid2"><div class="card"><div class="card-h"><h3>Apariencia</h3></div><div class="card-b">' +
     '<div style="display:flex;gap:9px;flex-wrap:wrap">' +
-    '<button class="btn ' + (c.theme === 'dark' ? 'p' : 'g') + '" data-theme="dark">🌙 Oscuro</button>' +
-    '<button class="btn ' + (c.theme === 'light' ? 'p' : 'g') + '" data-theme="light">☀️ Claro</button>' +
+    '<button class="btn ' + (c.theme === 'dark' ? 'p' : 'g') + '" data-settheme="dark">🌙 Oscuro</button>' +
+    '<button class="btn ' + (c.theme === 'light' ? 'p' : 'g') + '" data-settheme="light">☀️ Claro</button>' +
     '</div></div></div>' +
     '<div class="card"><div class="card-h"><h3>Almacenamiento</h3></div><div class="card-b">' +
     '<div style="font-size:13px">Espacio usado: <b class="mono">' + fmt(used / 1024, 'n0') + ' KB</b> de ~5.000 KB<br>' +
@@ -337,24 +337,112 @@ viewAjustes(){
   return h;
 },
 
-/* ------------------------------------------------ REFRESCO PARCIAL */
+/* ------------------------------------------------- REFRESCO QUIRÚRGICO
+   Nunca se vuelve a dibujar un campo editable: eso destruía el elemento que el
+   usuario tenía enfocado y se perdían las pulsaciones. Sólo se actualiza lo
+   que se deriva de los datos. */
 softRefresh(){
   clearTimeout(UI._sr);
-  UI._sr = setTimeout(() => {
-    const act = document.activeElement;
-    const keep = act && act.dataset ? { t:act.dataset.t, f:act.dataset.f, g:act.dataset.g, r:act.dataset.r,
-      c:act.dataset.c, mk:act.dataset.mk, s:act.selectionStart, e:act.selectionEnd } : null;
-    UI.renderView();
-    if (keep){
-      let sel = '[data-t="' + keep.t + '"]';
-      if (keep.f) sel += '[data-f="' + keep.f + '"]';
-      else if (keep.g) sel += '[data-g="' + keep.g + '"][data-r="' + keep.r + '"][data-c="' + keep.c + '"]';
-      else if (keep.mk) sel += '[data-mk="' + keep.mk + '"]';
-      const el = $(sel);
-      if (el){ el.focus(); try { el.setSelectionRange(keep.s, keep.e); } catch(e){} }
+  UI._sr = setTimeout(() => { UI.recompute(); UI.renderNav(); }, 180);
+},
+
+/** Recalcula celdas derivadas y vuelve a dibujar los bloques volátiles. */
+recompute(){
+  if (ROUTE.view !== 'tool') { UI.renderView(); return; }
+  const t = TOOL_BY_ID[ROUTE.tool]; if (!t) return;
+  const d = ST.d(t.id), ctx = ST.ctx();
+  const body = $('#toolbody'); if (!body) return;
+  const foco = document.activeElement;
+
+  (t.blocks || []).forEach((b, i) => {
+    const cont = body.querySelector('[data-blk="' + i + '"]'); if (!cont) return;
+
+    // bloques que sólo muestran resultados: se redibujan enteros
+    if (b.type === 'chart' || b.type === 'cards' || b.type === 'insight' ||
+        b.type === 'note'  || b.type === 'html'  || b.type === 'diagram'){
+      if (b.type === 'diagram' && cont.contains(foco)) return;   // se está editando el lienzo
+      try {
+        const nuevo = R.block(b, t, d, ctx, i);
+        if (cont.innerHTML !== nuevo) cont.innerHTML = nuevo;
+      } catch(e){ console.warn('recompute', b.type, e); }
+      return;
     }
-    UI.renderNav();
-  }, 260);
+
+    // formularios y tablas: sólo se tocan las celdas calculadas y los totales
+    try { UI.recalcCeldas(cont, b, t, d, ctx); }
+    catch(e){ console.warn('recalcCeldas', b.type, e); }
+  });
+},
+
+/** Actualiza in situ los valores de solo-lectura, totales, barras y semáforos. */
+recalcCeldas(cont, b, t, d, ctx){
+  if (b.type === 'fields'){
+    (callv(b.items, d, ctx) || []).forEach(f => {
+      if (!f.calc) return;
+      const el = cont.querySelector('[data-f="' + f.k + '"][data-calc]'); if (!el) return;
+      const r = f.calc(d, ctx);
+      const v = (typeof r === 'number' && !isFinite(r)) ? '' : (f.fmt ? fmt(r, f.fmt) : (r == null ? '' : r));
+      if (el.value !== String(v)) el.value = v;
+    });
+    return;
+  }
+
+  if (b.type === 'matrix'){
+    const M = d[b.key] || {};
+    Object.keys(b.calc || {}).forEach(key => {
+      const el = cont.querySelector('[data-mk="' + key + '"][data-calc]'); if (!el) return;
+      const cols = callv(b.cols, d, ctx) || [];
+      const ck = key.split('.').pop(), cs = cols.find(c => c.k === ck) || {};
+      const r = b.calc[key](M, d, ctx);
+      const v = (typeof r === 'number' && !isFinite(r)) ? '' : (cs.fmt ? fmt(r, cs.fmt) : (r == null ? '' : r));
+      if (el.value !== String(v)) el.value = v;
+    });
+    return;
+  }
+
+  if (b.type !== 'grid') return;
+
+  const rows = arr(d[b.key]);
+  const cols = callv(b.cols, d, ctx) || [];
+  const computed = rows.map((r, i) => {
+    const o = {}; cols.forEach(c => { o[c.k] = c.calc ? c.calc(r, i, rows, d, ctx) : r[c.k]; }); return o;
+  });
+  const maxes = {};
+  cols.forEach(c => { if (c.databar)
+    maxes[c.k] = Math.max.apply(null, [1e-9].concat(computed.map(v => Math.abs(num(v[c.k]))))); });
+
+  rows.forEach((r, i) => {
+    cols.forEach(c => {
+      const el = cont.querySelector('[data-g="' + b.key + '"][data-r="' + i + '"][data-c="' + c.k + '"]');
+      if (!el) return;
+      const raw = computed[i][c.k];
+      if (c.calc){
+        const v = (typeof raw === 'number' && !isFinite(raw)) ? '' : (c.fmt ? fmt(raw, c.fmt) : (raw == null ? '' : raw));
+        if (el.value !== String(v)) el.value = v;
+      }
+      const td = el.closest('td');
+      if (td && c.tone){
+        const tone = c.tone(raw, r, i, rows, d, ctx) || '';
+        td.className = tone ? 'cell-' + tone : '';
+      }
+      if (c.databar){
+        const barra = el.parentNode && el.parentNode.querySelector('.dbf');
+        if (barra) barra.style.width = clamp(Math.abs(num(raw)) / maxes[c.k] * 100, 0, 100).toFixed(1) + '%';
+      }
+    });
+  });
+
+  // fila de totales
+  if (b.foot){
+    const tf = cont.querySelector('tfoot tr'); if (!tf) return;
+    const fs = callv(b.foot, rows, d, ctx) || [];
+    cols.forEach((c, ci) => {
+      const f = fs.find(x => x.k === c.k); if (!f) return;
+      const celda = tf.children[ci + 1]; if (!celda) return;
+      const v = (f.label !== undefined && ci === 0) ? f.label : fmt(f.calc(rows, d, ctx, computed), f.fmt);
+      if (celda.textContent !== String(v)) celda.textContent = v;
+    });
+  }
 },
 _sr:null, _sb:null
 };
@@ -491,7 +579,7 @@ function bindGlobal(){
     }
 
     /* tema */
-    if ((el = T('data-theme'))){ setTheme(el.dataset.theme); UI.renderView(); return; }
+    if ((el = T('data-settheme'))){ setTheme(el.dataset.settheme); UI.renderView(); return; }
     if (e.target.closest('#btnTheme')){ setTheme(ST.cfg.theme === 'dark' ? 'light' : 'dark'); return; }
     if (e.target.closest('#btnNav')){
       if (window.innerWidth <= 900) document.body.classList.toggle('navopen');

@@ -318,8 +318,14 @@ R.tool = function(t){
     (t.guide && t.guide.length ? '<button class="btn sm g" data-guide="' + t.id + '">? Ayuda</button>' : '') +
     (soloLectura ? '' : '<button class="btn sm g" data-cleartool="' + t.id + '">Limpiar</button>') +
     '</div></div>';
+  // Cada bloque va en su propio contenedor para poder refrescar SÓLO los
+  // derivados (gráficos, KPIs, interpretación) sin tocar los campos que el
+  // usuario está escribiendo. Redibujar el formulario entero le robaba el foco
+  // y se perdían las pulsaciones.
   h += '<div id="toolbody">';
-  (t.blocks || []).forEach((b, i) => { h += R.block(b, t, d, ctx, i); });
+  (t.blocks || []).forEach((b, i) => {
+    h += '<div data-blk="' + i + '">' + R.block(b, t, d, ctx, i) + '</div>';
+  });
   h += '</div>';
   // navegación anterior/siguiente (los capítulos del manual circulan entre ellos)
   const list = soloLectura ? list0
