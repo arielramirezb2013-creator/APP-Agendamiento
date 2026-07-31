@@ -296,10 +296,73 @@ function prompt2(title, label, val, cb){
 }
 
 /* ------------------------------------------------------------ descargas */
-function download(blob, filename){
+/* Dentro de un marco (la app publicada como página web) el navegador no deja
+   entregar archivos: el <a download> no hace absolutamente nada y tampoco
+   lanza error, así que el botón parecía roto. Cuando el marco ofrece su propia
+   vía (window.claude.downloads) se usa esa; y cuando el formato no está entre
+   los que admite —los .xlsx, .xlsm y .zip no lo están— se dice con todas las
+   letras en vez de dejar al usuario esperando un archivo que no va a llegar. */
+function enMarco(){
+  try { return window.top !== window.self; } catch(e){ return true; }
+}
+/** Formatos que el marco de la web acepta entregar. */
+const EXT_MARCO = /\.(png|jpe?g|gif|webp|mp4|webm|txt|json|md|csv|html|svg)$/i;
+
+function anclaDescarga(blob, filename){
   const u = URL.createObjectURL(blob), a = document.createElement('a');
   a.href = u; a.download = filename; document.body.appendChild(a); a.click();
   setTimeout(() => { a.remove(); URL.revokeObjectURL(u); }, 600);
+}
+
+function download(blob, filename){
+  if (!enMarco()){ anclaDescarga(blob, filename); return; }
+
+  const via = (typeof window.claude === 'object' && window.claude) ? window.claude.downloads : null;
+  if (via && via.save && EXT_MARCO.test(filename)){
+    via.save({ filename: filename, data: blob })
+      .then(() => toast('Archivo guardado: ' + filename, 'ok', 5000))
+      .catch(err => {
+        const c = err && err.code;
+        if (c === 'declined'){ toast('Descarga cancelada', 'warn'); return; }
+        if (c === 'too_large'){ toast('El archivo pasa del límite de la vista web (16 MB)', 'bad', 8000); return; }
+        anclaDescarga(blob, filename);
+        avisoDescargaMarco(filename);
+      });
+    return;
+  }
+  // se intenta igual, por si este marco sí lo permite, y se avisa del bloqueo
+  anclaDescarga(blob, filename);
+  avisoDescargaMarco(filename);
+}
+
+/** Explica por qué no llegó el archivo y cómo obtenerlo de verdad. */
+let _avisoDesc = 0;
+function avisoDescargaMarco(filename){
+  const ahora = Date.now();
+  if (ahora - _avisoDesc < 1200) return;      // un solo aviso por descarga
+  _avisoDesc = ahora;
+
+  const ovl = document.createElement('div');
+  ovl.className = 'ovl';
+  ovl.innerHTML =
+    '<div class="mdl" style="max-width:560px">' +
+      '<div class="mdl-h"><h3 style="flex:1">No se pudo entregar el archivo</h3></div>' +
+      '<div class="mdl-b">' +
+        '<p style="margin:0 0 10px">La versión de la app que se ve <b>incrustada en la página web</b> ' +
+        'corre dentro de un marco del navegador, y ese marco no permite entregar archivos ' +
+        '<b>.xlsx</b>, <b>.xlsm</b> ni <b>.zip</b>. El libro se generó bien: lo que está bloqueado es la entrega.</p>' +
+        '<p style="margin:0 0 10px"><b>' + esc(filename) + '</b></p>' +
+        '<div class="note ok" style="margin:0">Para bajar los libros de Excel, abre la app desde el ' +
+        'archivo <b>REHAVID_LSS_DMAIC.html</b> guardado en tu equipo (doble clic). Ahí las descargas ' +
+        'funcionan sin restricciones, con macros incluidas.</div>' +
+      '</div>' +
+      '<div class="mdl-f"><button class="btn p" data-cerraviso="1">Entendido</button></div>' +
+    '</div>';
+  document.body.appendChild(ovl);
+  const cerrar = () => { if (ovl.parentNode) ovl.parentNode.removeChild(ovl); };
+  ovl.addEventListener('click', e => {
+    if (e.target === ovl || (e.target.closest && e.target.closest('[data-cerraviso]'))) cerrar();
+  });
 }
 const b64ToBytes = b64 => { const s = atob(b64), n = s.length, a = new Uint8Array(n);
   for (let i = 0; i < n; i++) a[i] = s.charCodeAt(i); return a; };

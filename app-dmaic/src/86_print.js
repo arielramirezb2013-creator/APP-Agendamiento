@@ -39,8 +39,10 @@ const PRINT = (function(){
           const o = {}; cols.forEach(c => { o[c.k] = c.calc ? c.calc(r, i, rows, d, ctx) : r[c.k]; }); return o;
         });
         // con muchas columnas el ancho mínimo del contenido desborda el papel y
-        // las últimas columnas se pierden: se marca la tabla para que ajuste
-        const anchas = cols.length >= 12 ? ' p-wide' : (cols.length >= 7 ? ' p-media' : '');
+        // las últimas columnas se pierden: se marca la tabla para que ajuste.
+        // A partir de 9 columnas ni reduciendo el cuerpo cabe en vertical, así
+        // que la tabla se lleva a una hoja horizontal.
+        const anchas = cols.length >= 9 ? ' p-wide' : (cols.length >= 7 ? ' p-media' : '');
         let h = '<table class="p-tab' + anchas + '"><thead><tr><th class="n">#</th>' +
           cols.map(c => '<th' + (colNum(c) ? ' class="num"' : '') + '>' +
             esc(String(c.label).replace(/\n/g, ' ')) + '</th>').join('') +
@@ -75,7 +77,7 @@ const PRINT = (function(){
           }).join('') + '</tr></tfoot>';
         }
         h += '</table>';
-        // una tabla de 12 columnas o más se lee mucho mejor en una hoja horizontal
+        // una tabla ancha se lee mucho mejor en una hoja horizontal
         return caja(b.title, anchas === ' p-wide' ? '<div class="p-land">' + h + '</div>' : h);
       }
 
@@ -83,8 +85,9 @@ const PRINT = (function(){
         const M = d[b.key] || {};
         const rws = callv(b.rows, d, ctx) || [], cls = callv(b.cols, d, ctx) || [];
         let algo = false;
-        let h = '<table class="p-tab' + (cls.length >= 12 ? ' p-wide' : (cls.length >= 7 ? ' p-media' : '')) +
-          '"><thead><tr><th></th>' +
+        // la primera columna es el rótulo de fila, así que cuenta para el ancho
+        const anch = (cls.length + 1) >= 9 ? ' p-wide' : ((cls.length + 1) >= 7 ? ' p-media' : '');
+        let h = '<table class="p-tab' + anch + '"><thead><tr><th></th>' +
           cls.map(c => '<th>' + esc(c.label) + '</th>').join('') + '</tr></thead><tbody>';
         rws.forEach(rw => {
           const rk = rw.k !== undefined ? rw.k : rw, rl = rw.l !== undefined ? rw.l : rw;
@@ -98,7 +101,8 @@ const PRINT = (function(){
           }).join('') + '</tr>';
         });
         h += '</tbody></table>';
-        return algo ? caja(b.title, h) : '';
+        if (!algo) return '';
+        return caja(b.title, anch === ' p-wide' ? '<div class="p-land">' + h + '</div>' : h);
       }
 
       case 'chart': {

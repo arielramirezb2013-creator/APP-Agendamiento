@@ -421,8 +421,12 @@ table.gt.vr .vr-l{color:var(--tx2)}
     /* parte sólo la palabra que no cabe; «anywhere» llegaba a partir un «10» */
     overflow-wrap:break-word}
   table.p-tab td.n,table.p-tab td.num,table.p-tab th.n{overflow-wrap:normal;word-break:keep-all}
-  /* tablas de muchas columnas: reparto fijo del ancho útil, así entran completas */
-  table.p-tab.p-media th,table.p-tab.p-media td{font-size:8pt;padding:1.2mm 1.5mm}
+  /* tablas de muchas columnas: reparto fijo del ancho útil, así entran completas.
+     «fixed» es lo que garantiza el margen: sin él la tabla crece hasta el ancho
+     mínimo de su contenido y se sale de la hoja por la derecha. */
+  table.p-tab.p-media,table.p-tab.p-wide{table-layout:fixed;width:100%;max-width:100%}
+  table.p-tab.p-media th,table.p-tab.p-media td{font-size:8pt;padding:1.2mm 1.5mm;
+    overflow-wrap:anywhere}
   /* las tablas de 9 columnas o más van en hoja horizontal: hay 297 mm en vez de
      210, y las columnas dejan de quedar como tiras. Si el navegador no soporta
      páginas con nombre, la tabla igual entra completa gracias al ajuste de palabra */
@@ -434,7 +438,6 @@ table.gt.vr .vr-l{color:var(--tx2)}
      de pie el navegador lo empuja a una hoja suelta, como fila normal se queda
      pegado a la última línea de datos */
   .p-land table.p-tab tfoot{display:table-row-group}
-  table.p-tab.p-wide{table-layout:auto}
   /* aquí sí hace falta el corte agresivo: reduce el ancho mínimo de cada columna
      y es lo que permite que las 15 columnas entren en la hoja */
   table.p-tab.p-wide th,table.p-tab.p-wide td{font-size:7pt;padding:1mm 1.2mm;letter-spacing:0;
@@ -456,7 +459,12 @@ table.gt.vr .vr-l{color:var(--tx2)}
   .p-img{max-width:100%;max-height:120mm;object-fit:contain;break-inside:avoid;display:block;margin:0 auto}
 
   /* KPIs y A3 */
-  .p-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;break-inside:avoid}
+  /* «minmax(0,1fr)» y no «1fr»: una columna 1fr nunca baja del ancho mínimo de
+     su contenido, y una cifra larga empujaba la rejilla fuera del margen */
+  .p-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3mm;break-inside:avoid}
+  .p-kpi .v,.p-kpi .l,.p-kpi .h{overflow-wrap:anywhere}
+  /* red de seguridad: ningún bloque del informe puede ser más ancho que la hoja */
+  .p-blk,.p-tool,.p-a3g,.p-kpis{max-width:100%}
   .p-blk>h3+table{break-before:avoid}
   .p-kpi{border:.4pt solid #C9C4E8;border-left:1.5pt solid #3B26D3;border-radius:1.5mm;padding:2mm 2.5mm}
   .p-kpi .l{display:block;font-size:7.5pt;text-transform:uppercase;letter-spacing:.06em;color:#544D80}

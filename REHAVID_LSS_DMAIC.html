@@ -431,8 +431,12 @@ table.gt.vr .vr-l{color:var(--tx2)}
     /* parte sólo la palabra que no cabe; «anywhere» llegaba a partir un «10» */
     overflow-wrap:break-word}
   table.p-tab td.n,table.p-tab td.num,table.p-tab th.n{overflow-wrap:normal;word-break:keep-all}
-  /* tablas de muchas columnas: reparto fijo del ancho útil, así entran completas */
-  table.p-tab.p-media th,table.p-tab.p-media td{font-size:8pt;padding:1.2mm 1.5mm}
+  /* tablas de muchas columnas: reparto fijo del ancho útil, así entran completas.
+     «fixed» es lo que garantiza el margen: sin él la tabla crece hasta el ancho
+     mínimo de su contenido y se sale de la hoja por la derecha. */
+  table.p-tab.p-media,table.p-tab.p-wide{table-layout:fixed;width:100%;max-width:100%}
+  table.p-tab.p-media th,table.p-tab.p-media td{font-size:8pt;padding:1.2mm 1.5mm;
+    overflow-wrap:anywhere}
   /* las tablas de 9 columnas o más van en hoja horizontal: hay 297 mm en vez de
      210, y las columnas dejan de quedar como tiras. Si el navegador no soporta
      páginas con nombre, la tabla igual entra completa gracias al ajuste de palabra */
@@ -444,7 +448,6 @@ table.gt.vr .vr-l{color:var(--tx2)}
      de pie el navegador lo empuja a una hoja suelta, como fila normal se queda
      pegado a la última línea de datos */
   .p-land table.p-tab tfoot{display:table-row-group}
-  table.p-tab.p-wide{table-layout:auto}
   /* aquí sí hace falta el corte agresivo: reduce el ancho mínimo de cada columna
      y es lo que permite que las 15 columnas entren en la hoja */
   table.p-tab.p-wide th,table.p-tab.p-wide td{font-size:7pt;padding:1mm 1.2mm;letter-spacing:0;
@@ -466,7 +469,12 @@ table.gt.vr .vr-l{color:var(--tx2)}
   .p-img{max-width:100%;max-height:120mm;object-fit:contain;break-inside:avoid;display:block;margin:0 auto}
 
   /* KPIs y A3 */
-  .p-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;break-inside:avoid}
+  /* «minmax(0,1fr)» y no «1fr»: una columna 1fr nunca baja del ancho mínimo de
+     su contenido, y una cifra larga empujaba la rejilla fuera del margen */
+  .p-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3mm;break-inside:avoid}
+  .p-kpi .v,.p-kpi .l,.p-kpi .h{overflow-wrap:anywhere}
+  /* red de seguridad: ningún bloque del informe puede ser más ancho que la hoja */
+  .p-blk,.p-tool,.p-a3g,.p-kpis{max-width:100%}
   .p-blk>h3+table{break-before:avoid}
   .p-kpi{border:.4pt solid #C9C4E8;border-left:1.5pt solid #3B26D3;border-radius:1.5mm;padding:2mm 2.5mm}
   .p-kpi .l{display:block;font-size:7.5pt;text-transform:uppercase;letter-spacing:.06em;color:#544D80}
@@ -893,10 +901,73 @@ function prompt2(title, label, val, cb){
 }
 
 /* ------------------------------------------------------------ descargas */
-function download(blob, filename){
+/* Dentro de un marco (la app publicada como página web) el navegador no deja
+   entregar archivos: el <a download> no hace absolutamente nada y tampoco
+   lanza error, así que el botón parecía roto. Cuando el marco ofrece su propia
+   vía (window.claude.downloads) se usa esa; y cuando el formato no está entre
+   los que admite —los .xlsx, .xlsm y .zip no lo están— se dice con todas las
+   letras en vez de dejar al usuario esperando un archivo que no va a llegar. */
+function enMarco(){
+  try { return window.top !== window.self; } catch(e){ return true; }
+}
+/** Formatos que el marco de la web acepta entregar. */
+const EXT_MARCO = /\.(png|jpe?g|gif|webp|mp4|webm|txt|json|md|csv|html|svg)$/i;
+
+function anclaDescarga(blob, filename){
   const u = URL.createObjectURL(blob), a = document.createElement('a');
   a.href = u; a.download = filename; document.body.appendChild(a); a.click();
   setTimeout(() => { a.remove(); URL.revokeObjectURL(u); }, 600);
+}
+
+function download(blob, filename){
+  if (!enMarco()){ anclaDescarga(blob, filename); return; }
+
+  const via = (typeof window.claude === 'object' && window.claude) ? window.claude.downloads : null;
+  if (via && via.save && EXT_MARCO.test(filename)){
+    via.save({ filename: filename, data: blob })
+      .then(() => toast('Archivo guardado: ' + filename, 'ok', 5000))
+      .catch(err => {
+        const c = err && err.code;
+        if (c === 'declined'){ toast('Descarga cancelada', 'warn'); return; }
+        if (c === 'too_large'){ toast('El archivo pasa del límite de la vista web (16 MB)', 'bad', 8000); return; }
+        anclaDescarga(blob, filename);
+        avisoDescargaMarco(filename);
+      });
+    return;
+  }
+  // se intenta igual, por si este marco sí lo permite, y se avisa del bloqueo
+  anclaDescarga(blob, filename);
+  avisoDescargaMarco(filename);
+}
+
+/** Explica por qué no llegó el archivo y cómo obtenerlo de verdad. */
+let _avisoDesc = 0;
+function avisoDescargaMarco(filename){
+  const ahora = Date.now();
+  if (ahora - _avisoDesc < 1200) return;      // un solo aviso por descarga
+  _avisoDesc = ahora;
+
+  const ovl = document.createElement('div');
+  ovl.className = 'ovl';
+  ovl.innerHTML =
+    '<div class="mdl" style="max-width:560px">' +
+      '<div class="mdl-h"><h3 style="flex:1">No se pudo entregar el archivo</h3></div>' +
+      '<div class="mdl-b">' +
+        '<p style="margin:0 0 10px">La versión de la app que se ve <b>incrustada en la página web</b> ' +
+        'corre dentro de un marco del navegador, y ese marco no permite entregar archivos ' +
+        '<b>.xlsx</b>, <b>.xlsm</b> ni <b>.zip</b>. El libro se generó bien: lo que está bloqueado es la entrega.</p>' +
+        '<p style="margin:0 0 10px"><b>' + esc(filename) + '</b></p>' +
+        '<div class="note ok" style="margin:0">Para bajar los libros de Excel, abre la app desde el ' +
+        'archivo <b>REHAVID_LSS_DMAIC.html</b> guardado en tu equipo (doble clic). Ahí las descargas ' +
+        'funcionan sin restricciones, con macros incluidas.</div>' +
+      '</div>' +
+      '<div class="mdl-f"><button class="btn p" data-cerraviso="1">Entendido</button></div>' +
+    '</div>';
+  document.body.appendChild(ovl);
+  const cerrar = () => { if (ovl.parentNode) ovl.parentNode.removeChild(ovl); };
+  ovl.addEventListener('click', e => {
+    if (e.target === ovl || (e.target.closest && e.target.closest('[data-cerraviso]'))) cerrar();
+  });
 }
 const b64ToBytes = b64 => { const s = atob(b64), n = s.length, a = new Uint8Array(n);
   for (let i = 0; i < n; i++) a[i] = s.charCodeAt(i); return a; };
@@ -23073,8 +23144,10 @@ const PRINT = (function(){
           const o = {}; cols.forEach(c => { o[c.k] = c.calc ? c.calc(r, i, rows, d, ctx) : r[c.k]; }); return o;
         });
         // con muchas columnas el ancho mínimo del contenido desborda el papel y
-        // las últimas columnas se pierden: se marca la tabla para que ajuste
-        const anchas = cols.length >= 12 ? ' p-wide' : (cols.length >= 7 ? ' p-media' : '');
+        // las últimas columnas se pierden: se marca la tabla para que ajuste.
+        // A partir de 9 columnas ni reduciendo el cuerpo cabe en vertical, así
+        // que la tabla se lleva a una hoja horizontal.
+        const anchas = cols.length >= 9 ? ' p-wide' : (cols.length >= 7 ? ' p-media' : '');
         let h = '<table class="p-tab' + anchas + '"><thead><tr><th class="n">#</th>' +
           cols.map(c => '<th' + (colNum(c) ? ' class="num"' : '') + '>' +
             esc(String(c.label).replace(/\n/g, ' ')) + '</th>').join('') +
@@ -23109,7 +23182,7 @@ const PRINT = (function(){
           }).join('') + '</tr></tfoot>';
         }
         h += '</table>';
-        // una tabla de 12 columnas o más se lee mucho mejor en una hoja horizontal
+        // una tabla ancha se lee mucho mejor en una hoja horizontal
         return caja(b.title, anchas === ' p-wide' ? '<div class="p-land">' + h + '</div>' : h);
       }
 
@@ -23117,8 +23190,9 @@ const PRINT = (function(){
         const M = d[b.key] || {};
         const rws = callv(b.rows, d, ctx) || [], cls = callv(b.cols, d, ctx) || [];
         let algo = false;
-        let h = '<table class="p-tab' + (cls.length >= 12 ? ' p-wide' : (cls.length >= 7 ? ' p-media' : '')) +
-          '"><thead><tr><th></th>' +
+        // la primera columna es el rótulo de fila, así que cuenta para el ancho
+        const anch = (cls.length + 1) >= 9 ? ' p-wide' : ((cls.length + 1) >= 7 ? ' p-media' : '');
+        let h = '<table class="p-tab' + anch + '"><thead><tr><th></th>' +
           cls.map(c => '<th>' + esc(c.label) + '</th>').join('') + '</tr></thead><tbody>';
         rws.forEach(rw => {
           const rk = rw.k !== undefined ? rw.k : rw, rl = rw.l !== undefined ? rw.l : rw;
@@ -23132,7 +23206,8 @@ const PRINT = (function(){
           }).join('') + '</tr>';
         });
         h += '</tbody></table>';
-        return algo ? caja(b.title, h) : '';
+        if (!algo) return '';
+        return caja(b.title, anch === ' p-wide' ? '<div class="p-land">' + h + '</div>' : h);
       }
 
       case 'chart': {
