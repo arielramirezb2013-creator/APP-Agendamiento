@@ -65,6 +65,38 @@ Estas herramientas se marcan como `extra`: alimentan la app, el tablero BI y el
 libro consolidado, pero no se escriben en las plantillas Excel originales
 (porque allí no existe la hoja correspondiente).
 
+## 2 ter. Lo que la app hace y el Excel no podía
+
+### El dato se escribe una sola vez
+Los formatos comparten información. La app resuelve cada **hecho** del proyecto
+desde su fuente y lo propaga al resto: escribir el problema una vez llena
+**17 campos** en las cinco fases. Sólo rellena huecos — nunca sobrescribe lo
+que usted redactó.
+
+### Trazabilidad con eslabón roto visible
+Una cadena de diez eslabones —problema · métrico · línea base · desempeño ·
+causa raíz · causa validada · solución · acción · resultado · control— señala
+**dónde se rompe**, que es el punto exacto donde el proyecto pasa de apoyarse
+en datos a apoyarse en supuestos.
+
+### Puerta de decisión al cerrar cada fase
+Cada fase termina con 4 a 6 criterios contrastados contra los datos reales, un
+semáforo y una recomendación: **avanzar**, **avanzar con riesgo documentado** o
+**no avanzar**, con enlace a lo que falta. Ejemplo real: *«Al menos una causa
+está validada con datos, no con opinión»* — si falla, la puerta a MEJORAR no
+se abre.
+
+### Impresión paginada
+Informe con portada y logos en tres alcances: **un formato**, **una fase** o el
+**proyecto completo**. Ninguna tabla, gráfico o ficha queda partida entre
+hojas, y el encabezado de tabla se repite al cambiar de página.
+
+### Simulación de un caso real
+Un botón carga un proyecto completo del negocio de Rehavid (una ARL contrata
+intervenir el servicio de terapia de una empresa afiliada): 55 formatos, 83 %
+de avance, para recorrer la herramienta funcionando. Otro botón la deja en
+blanco para empezar el proyecto real.
+
 ## 3. Funcionamiento por módulos o completo
 
 Cada proyecto activa o desactiva las fases que la empresa requiera
@@ -128,7 +160,7 @@ Y **funciones de hoja de cálculo** utilizables como cualquier fórmula:
 ### 4.3 Otros formatos
 - `.json` — copia de seguridad completa (respaldar / restaurar / mover de equipo).
 - `.csv` — todas las tablas del proyecto, para análisis externo.
-- Impresión / PDF desde el navegador.
+- **PDF** — informe paginado por formato, por fase o completo.
 
 ## 5. Logotipos
 
@@ -140,6 +172,18 @@ Y **funciones de hoja de cálculo** utilizables como cualquier fórmula:
 
 Aparecen en la barra superior, en la portada del libro consolidado y estampados
 en los Excel exportados.
+
+## 5 bis. Identidad visual
+
+Paleta de marca Rehavid: índigo `#3B26D3` y verde `#0FE17B` sobre fondo blanco,
+con neutros sesgados al índigo. Las cinco fases progresan de índigo a verde,
+narrando visualmente el recorrido DMAIC. Iconografía SVG propia con símbolos
+del método (espina de pescado, Pareto, carta de control) en lugar de emojis.
+El tema oscuro sigue disponible con el conmutador.
+
+> El logotipo incluido es una **reconstrucción vectorial** de la marca. Si
+> tiene el archivo oficial, cárguelo en *Ajustes → Logotipos* y reemplazará al
+> incluido en toda la app y en los Excel exportados.
 
 ## 6. Motor de análisis, interpretación y decisión
 
