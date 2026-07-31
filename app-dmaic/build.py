@@ -144,6 +144,26 @@ __JS__
     open(OUT, 'w', encoding='utf-8').write(html)
     kb = os.path.getsize(OUT) / 1024
     print('\n✓ %s  (%.0f KB)' % (OUT, kb))
+
+    # Variante para publicar como página web: el servicio aporta el envoltorio
+    # <!doctype html><head></head><body>, así que aquí va sólo el contenido.
+    art = os.path.join(HERE, 'REHAVID_LSS_DMAIC.artifact.html')
+    open(art, 'w', encoding='utf-8').write(
+        '<title>Rehavid · Lean Six Sigma DMAIC</title>\n'
+        '<style>\n' + css + '\n'
+        # el envoltorio externo no trae nuestro reset de altura completa
+        'html,body{height:100%;margin:0;overflow:hidden}\n'
+        '</style>\n'
+        '<div id="app">\n'
+        '  <header id="topbar"></header>\n'
+        '  <div id="main">\n'
+        '    <nav id="nav"></nav>\n'
+        '    <main id="view"></main>\n'
+        '  </div>\n'
+        '</div>\n'
+        '<div id="toasts"></div>\n'
+        '<script>\n' + js + '\n</script>\n')
+    print('✓ %s  (%.0f KB)  · versión publicable' % (art, os.path.getsize(art) / 1024))
     if faltan:
         print('  (build parcial: %d archivo(s) pendiente(s))' % len(faltan))
     return 0 if not faltan else 1

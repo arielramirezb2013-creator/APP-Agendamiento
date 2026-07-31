@@ -25,3 +25,6 @@ app-dmaic/assets/ce453cdb-*.xlsx
 app-dmaic/assets/18d3e978-*.xlsx
 app-dmaic/assets/8f140e27-*.xlsx
 app-dmaic/assets/f5a3eee0-*.xlsx
+
+# Variante publicable (derivada de build.py, no versionar el duplicado)
+app-dmaic/REHAVID_LSS_DMAIC.artifact.html
