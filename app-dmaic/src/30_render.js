@@ -206,13 +206,10 @@ R.b_matrix = function(b, t, d, ctx){
 R.b_cards = function(b, t, d, ctx){
   const items = callv(b.items, d, ctx) || [];
   if (!items.length) return '';
-  // el valor nunca se parte: se le baja el cuerpo según su largo para que
-  // quepa en una sola línea (antes «$ 46.800.000» dejaba el $ arriba solo)
   const inner = '<div class="kpis">' + items.map(k => {
     const v = String(k.value == null ? '' : k.value);
-    const cls = v.length >= 18 ? ' vxs' : v.length >= 14 ? ' vsm' : v.length >= 11 ? ' vmd' : '';
     return '<div class="kpi ' + (k.tone || '') + '"><div class="k-l">' + esc(k.label) + '</div>' +
-      '<div class="k-v' + cls + '">' + esc(v) + '</div>' +
+      '<div class="k-v' + kvCls(v) + '">' + esc(v) + '</div>' +
       (k.hint ? '<div class="k-h">' + esc(k.hint) + '</div>' : '') + '</div>';
   }).join('') + '</div>';
   return b.bare ? inner : R.card(b.title, inner);

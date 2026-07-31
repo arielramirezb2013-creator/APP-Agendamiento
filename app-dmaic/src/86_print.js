@@ -253,13 +253,15 @@ const PRINT = (function(){
       });
     }
 
-    const informe = portada(titulo, sub) + cuerpo;
+    lanzar(titulo, portada(titulo, sub) + cuerpo);
+  }
 
-    // Dentro de un iframe (la versión publicada como página web) el navegador
-    // bloquea el diálogo de impresión sin avisar: el botón parecía no hacer
-    // nada. Ahí el informe se abre en una pestaña propia, que sí puede imprimir.
-    if (enMarco()){ aparte(titulo, informe); return; }
-
+  /** Manda el informe a la impresora. En la app suelta el diálogo se abre sin
+   *  más; dentro de un marco (la versión publicada en la web) el navegador
+   *  puede bloquearlo SIN AVISAR, y el botón parecía no hacer nada. Por eso se
+   *  comprueba si el diálogo llegó a abrirse y, si no, se abre la vista previa
+   *  propia, que no depende de ningún permiso del marco. */
+  function lanzar(titulo, informe){
     let host = $('#printarea');
     if (!host){ host = document.createElement('div'); host.id = 'printarea'; document.body.appendChild(host); }
     host.innerHTML = informe;
@@ -275,12 +277,85 @@ const PRINT = (function(){
       setTimeout(() => { if (testigo === _seq && host) host.innerHTML = ''; }, 500);
     };
     window.addEventListener('afterprint', limpiar);
-    setTimeout(() => { window.print(); setTimeout(limpiar, 2000); }, 150);
+
+    // El navegador avisa con «beforeprint» cuando el diálogo se abre de verdad.
+    let abrio = false;
+    const testigoDialogo = () => { abrio = true; };
+    window.addEventListener('beforeprint', testigoDialogo);
+
+    setTimeout(() => {
+      try { window.print(); } catch(e){}
+      setTimeout(() => {
+        window.removeEventListener('beforeprint', testigoDialogo);
+        if (abrio){ setTimeout(limpiar, 2000); return; }
+        // Bloqueado: el informe se queda montado en #printarea (así Ctrl+P
+        // sigue funcionando) y se muestra la vista previa con sus botones.
+        previa(titulo, informe, limpiar);
+      }, 900);
+    }, 150);
   }
 
-  /* ------------------------------------------------- impresión en marco */
-  function enMarco(){
-    try { return window.top !== window.self; } catch(e){ return true; }
+  /** Vista previa dentro de la propia página. El informe se pinta en un marco
+   *  con su propia hoja de estilos, así que se ve tal cual saldrá en el papel
+   *  sin que las reglas de la app se mezclen con las del documento. */
+  function previa(titulo, informe, alCerrar){
+    const doc = docInforme(titulo, informe, false);
+    const ovl = document.createElement('div');
+    ovl.className = 'ovl pv-ovl';
+    ovl.innerHTML =
+      '<div class="mdl pv-mdl">' +
+        '<div class="mdl-h">' + (typeof ICO !== 'undefined' ? ICO.imprimir : '') +
+          '<h3 style="flex:1">Vista de impresión · ' + esc(titulo) + '</h3>' +
+          '<button class="btn sm g" data-pv="x">Cerrar</button></div>' +
+        '<div class="mdl-b pv-b"><iframe class="pv-fr" title="Informe"></iframe></div>' +
+        '<div class="mdl-f">' +
+          '<span class="pv-tip">El marco de la web bloqueó el diálogo del navegador. ' +
+          'Pulsa Imprimir aquí abajo, o Ctrl+P con la vista abierta.</span>' +
+          '<button class="btn g" data-pv="desc">Descargar HTML</button>' +
+          '<button class="btn p" data-pv="imp">Imprimir</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(ovl);
+
+    const fr = ovl.querySelector('.pv-fr');
+    // Se escribe el documento en el marco: no depende de permisos de descarga
+    // ni de ventanas emergentes, que son justo lo que el marco recorta.
+    let pintado = false;
+    try {
+      const d = fr.contentDocument || (fr.contentWindow && fr.contentWindow.document);
+      if (d){ d.open(); d.write(doc); d.close(); pintado = true; }
+    } catch(e){}
+    if (!pintado){ try { fr.setAttribute('srcdoc', doc); pintado = true; } catch(e){} }
+
+    const cerrar = () => {
+      window.removeEventListener('keydown', tecla);
+      if (ovl.parentNode) ovl.parentNode.removeChild(ovl);
+      if (alCerrar) alCerrar();
+    };
+    const tecla = e => { if (e.key === 'Escape') cerrar(); };
+    window.addEventListener('keydown', tecla);
+
+    ovl.addEventListener('click', e => {
+      const b = e.target.closest ? e.target.closest('[data-pv]') : null;
+      if (!b){ if (e.target === ovl) cerrar(); return; }
+      const acc = b.dataset.pv;
+      if (acc === 'x'){ cerrar(); return; }
+      if (acc === 'desc'){
+        try {
+          download(new Blob([docInforme(titulo, informe, true)], { type:'text/html;charset=utf-8' }),
+                   titulo.replace(/[\\/:*?"<>|]/g, '-') + ' - informe.html');
+          toast('Informe descargado: ábrelo y pulsa Ctrl+P', 'ok', 6000);
+        } catch(err){ toast('El marco bloqueó la descarga: usa Ctrl+P sobre la vista', 'warn', 7000); }
+        return;
+      }
+      if (acc === 'imp'){
+        let ok = false;
+        try { if (fr.contentWindow){ fr.contentWindow.focus(); fr.contentWindow.print(); ok = true; } } catch(err){}
+        if (!ok) toast('Usa Ctrl+P para imprimir la vista', 'warn', 6000);
+      }
+    });
+
+    toast('Vista de impresión abierta', 'ok', 4000);
   }
 
   /** Hoja de estilos del informe, lista para una ventana aparte: se reutilizan
@@ -327,36 +402,19 @@ const PRINT = (function(){
       '@media print{ #barra{display:none} }\n';
   }
 
-  function docInforme(titulo, informe){
+  /** `autonomo` = el archivo se abrirá solo (descarga): lleva barra propia y
+   *  llama al diálogo al cargar. Dentro de la vista previa no hace falta:
+   *  los botones ya están en el pie de la ventana. */
+  function docInforme(titulo, informe, autonomo){
     return '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">' +
       '<title>' + esc(titulo) + ' · Rehavid</title><style>' + hojaEstilos() + '</style></head><body>' +
-      '<div id="barra"><button onclick="window.print()">Imprimir</button>' +
-      '<span>' + esc(titulo) + ' — si el diálogo no aparece, usa Ctrl+P</span></div>' +
+      (autonomo
+        ? '<div id="barra"><button onclick="window.print()">Imprimir</button>' +
+          '<span>' + esc(titulo) + ' — si el diálogo no aparece, usa Ctrl+P</span></div>'
+        : '') +
       '<div id="printarea">' + informe + '</div>' +
-      '<script>setTimeout(function(){try{window.print();}catch(e){}},400);<\/script>' +
+      (autonomo ? '<script>setTimeout(function(){try{window.print();}catch(e){}},400);<\/script>' : '') +
       '</body></html>';
-  }
-
-  /** Abre el informe en una pestaña propia; si el navegador bloquea la ventana,
-   *  lo entrega como archivo para abrirlo e imprimirlo a mano. */
-  function aparte(titulo, informe){
-    const doc = docInforme(titulo, informe);
-    let w = null;
-    try { w = window.open('', '_blank'); } catch(e){ w = null; }
-    if (w && w.document){
-      try {
-        w.document.open(); w.document.write(doc); w.document.close();
-        toast('Informe abierto en una pestaña nueva: pulsa Imprimir allí', 'ok', 6000);
-        return;
-      } catch(e){}
-    }
-    try {
-      download(new Blob([doc], { type:'text/html;charset=utf-8' }),
-               titulo.replace(/[\\/:*?"<>|]/g, '-') + ' - informe.html');
-      toast('El navegador bloqueó la ventana: se descargó el informe, ábrelo y pulsa Ctrl+P', 'warn', 9000);
-    } catch(e){
-      toast('No se pudo abrir el informe para imprimir', 'bad', 6000);
-    }
   }
 
   return { imprimir, herramienta, portada };

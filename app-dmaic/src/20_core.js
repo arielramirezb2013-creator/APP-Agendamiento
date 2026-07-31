@@ -11,6 +11,14 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const uid = () => 'x' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
 
+/** Cuerpo de letra de una cifra KPI según su largo. La tarjeta no parte el
+ *  valor («$ 46.800.000» dejaba el $ solo en el renglón de arriba), así que
+ *  es el tamaño el que cede para que quepa entero en una sola línea. */
+const kvCls = v => {
+  const n = String(v == null ? '' : v).length;
+  return n >= 18 ? ' vxs' : n >= 14 ? ' vsm' : n >= 11 ? ' vmd' : '';
+};
+
 function num(v){
   if (v === null || v === undefined || v === '') return 0;
   if (typeof v === 'number') return isFinite(v) ? v : 0;

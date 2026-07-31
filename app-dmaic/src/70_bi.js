@@ -198,7 +198,7 @@ const BI = (function(){
     return '<div class="kpis">' + L.map(k =>
       '<div class="kpi ' + esc(k.tone || '') + '">' +
       '<div class="k-l">' + esc(k.label) + '</div>' +
-      '<div class="k-v">' + esc(k.value) + '</div>' +
+      '<div class="k-v' + kvCls(k.value) + '">' + esc(k.value) + '</div>' +
       (k.hint ? '<div class="k-h">' + esc(k.hint) + '</div>' : '') + '</div>').join('') + '</div>';
   }
   function dato(l, v){
