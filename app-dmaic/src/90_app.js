@@ -17,7 +17,7 @@ renderTop(){
     (fixed ? '' : '<span class="logo-x" data-logorm="' + id + '">✕</span>') + '</div>';
 
   $('#topbar').innerHTML =
-    '<button class="btn xs g" id="btnNav" title="Menú">☰</button>' +
+    '<button class="btn xs g" id="btnNav" title="Menú">' + ICO.menu + '</button>' +
     '<div class="logos">' +
       slot('rehavid', 'Rehavid', ST.cfg.logos.rehavid || REHAVID_LOGO_PNG, true) +
       (ST.cfg.logos.arl || ST.cfg.logos.empresa ? '<div class="topsep"></div>' : '') +
@@ -32,10 +32,11 @@ renderTop(){
         esc([p && p.empresa, p && p.arl].filter(Boolean).join(' · ') || 'Lean Six Sigma DMAIC') + '</div>' +
     '</div>' +
     '<span id="savebadge" class="pill">guardado</span>' +
-    '<button class="btn sm g" data-view="bi" title="Tablero de inteligencia de negocio">📊 BI</button>' +
-    '<button class="btn sm p" data-view="exportar">⤓ Exportar</button>' +
-    '<button class="btn sm g" data-view="proyectos" title="Proyectos">🗂️</button>' +
-    '<button class="btn xs g" id="btnTheme" title="Tema claro/oscuro">◐</button>';
+    '<button class="btn sm g" data-view="bi" title="Tablero de inteligencia de negocio">' + ICO.bi + ' BI</button>' +
+    '<button class="btn sm g" data-print="todo" title="Imprimir el informe completo">' + ICO.imprimir + '</button>' +
+    '<button class="btn sm p" data-view="exportar">' + ICO.descargar + ' Exportar</button>' +
+    '<button class="btn sm g" data-view="proyectos" title="Proyectos">' + ICO.proyectos + '</button>' +
+    '<button class="btn xs g" id="btnTheme" title="Tema claro/oscuro">' + ICO.tema + '</button>';
 },
 saveBadge(state){
   const b = $('#savebadge'); if (!b) return;
@@ -49,7 +50,7 @@ saveBadge(state){
 renderNav(){
   const p = ST.proj();
   let h = '<div class="nv-top">' +
-    '<button class="btn sm ' + (ROUTE.view === 'inicio' ? 'p' : 'g') + '" data-view="inicio" style="width:100%;justify-content:center">🏠 Inicio</button>' +
+    '<button class="btn sm ' + (ROUTE.view === 'inicio' ? 'p' : 'g') + '" data-view="inicio" style="width:100%;justify-content:center">' + ICO.inicio + ' Inicio</button>' +
     '<div class="progress" style="margin-top:10px"><i style="width:' + (projProgress() * 100).toFixed(1) + '%"></i></div>' +
     '<div style="font-size:10.5px;color:var(--tx3);margin-top:5px;text-align:center">Avance DMAIC ' +
       fmt(projProgress(), 'p0') + '</div></div>';
@@ -61,7 +62,7 @@ renderNav(){
       const open = ROUTE.mod === m.id;
       h += '<div class="nv-ph' + (open ? ' open' : '') + '" data-ph="' + m.id + '" style="border-color:rgba(18,179,166,.3)">' +
         '<div class="nv-ph-h" data-phtoggle="' + m.id + '">' +
-          '<div class="nv-dot" style="background:' + m.color + '">📖</div>' +
+          '<div class="nv-dot" style="background:' + m.color + '">' + ICO.manual + '</div>' +
           '<div style="min-width:0"><div class="nv-ph-t">Cómo se usa</div>' +
             '<div class="nv-ph-sub">Manual · ' + ts.length + ' capítulos</div></div>' +
           '<span class="nv-chev">▸</span></div><div class="nv-sub">' +
@@ -76,7 +77,7 @@ renderNav(){
     const pr = modProgress(m.id);
     h += '<div class="nv-ph' + (open ? ' open' : '') + (on ? '' : ' off') + '" data-ph="' + m.id + '">' +
       '<div class="nv-ph-h" data-phtoggle="' + m.id + '">' +
-        '<div class="nv-dot" style="background:' + m.color + '">' + m.letter + '</div>' +
+        '<div class="nv-dot" style="background:' + m.color + '">' + (ICO.fase[m.id] || m.letter) + '</div>' +
         '<div style="min-width:0"><div class="nv-ph-t">' + esc(m.name) + '</div>' +
           '<div class="nv-ph-sub">' + ts.filter(t => toolFilled(t)).length + '/' + ts.length + ' · ' + fmt(pr, 'p0') + '</div></div>' +
         '<label class="nv-sw nv-badge" title="Activar/desactivar este módulo" onclick="event.stopPropagation()">' +
@@ -90,9 +91,9 @@ renderNav(){
   });
 
   h += '<div class="nv-top" style="margin-top:14px">' +
-    '<button class="btn sm g" data-view="bi" style="width:100%;justify-content:center">📊 Tablero BI</button>' +
-    '<button class="btn sm g" data-view="exportar" style="width:100%;justify-content:center;margin-top:7px">⤓ Exportar</button>' +
-    '<button class="btn sm g" data-view="ajustes" style="width:100%;justify-content:center;margin-top:7px">⚙ Ajustes</button>' +
+    '<button class="btn sm g" data-view="bi" style="width:100%;justify-content:center">' + ICO.bi + ' Tablero BI</button>' +
+    '<button class="btn sm g" data-view="exportar" style="width:100%;justify-content:center;margin-top:7px">' + ICO.descargar + ' Exportar</button>' +
+    '<button class="btn sm g" data-view="ajustes" style="width:100%;justify-content:center;margin-top:7px">' + ICO.ajustes + ' Ajustes</button>' +
     '</div>';
   $('#nav').innerHTML = h;
 },
@@ -125,6 +126,14 @@ viewInicio(){
     '<div class="sub">Herramienta completa de mejora continua: 53 formatos en 5 fases, ' +
     'tablero de inteligencia de negocio, motor de interpretación y exportación a Excel.</div></div></div>';
 
+  if (DEMO.esDemo())
+    h += '<div class="note warn" style="display:flex;align-items:center;gap:12px">' + ICO.simular +
+      '<div style="flex:1"><b>Estás viendo la simulación.</b> Es un caso completo de ejemplo ' +
+      '(Rehavid contratada por una ARL para intervenir el servicio de terapia de una empresa afiliada) ' +
+      'que sirve para recorrer toda la herramienta funcionando. Cuando quieras empezar tu proyecto real, ' +
+      'límpiala.</div>' +
+      '<button class="btn sm dg" data-democlear="1">' + ICO.limpiar + ' Limpiar simulación</button></div>';
+
   h += '<div class="card"><div class="card-b"><div class="fgrid" style="grid-template-columns:repeat(4,minmax(0,1fr))">' +
     [['nombre','Nombre del proyecto','text',2],['empresa','Empresa atendida','text',1],['arl','ARL contratante','text',1],
      ['area','Área o proceso','text',1],['lider','Líder del proyecto (Rehavid)','text',1],
@@ -155,7 +164,7 @@ viewInicio(){
     const ts = toolsOf(m.id), pr = modProgress(m.id), on = ST.modOn(m.id);
     h += '<div class="card" style="margin:0;' + (on ? '' : 'opacity:.5') + '"><div class="card-b">' +
       '<div style="display:flex;align-items:center;gap:11px;margin-bottom:10px">' +
-      '<div class="nv-dot" style="background:' + m.color + ';width:36px;height:36px;flex:0 0 36px;font-size:15px">' + m.letter + '</div>' +
+      '<div class="nv-dot" style="background:' + m.color + ';width:38px;height:38px;flex:0 0 38px;font-size:17px">' + (ICO.fase[m.id] || m.letter) + '</div>' +
       '<div><div style="font-weight:800;font-size:14px">' + m.n + '. ' + esc(m.name) + '</div>' +
       '<div style="font-size:11px;color:var(--tx3)">' + esc(m.en) + ' · ' + ts.length + ' formatos</div></div></div>' +
       '<div style="font-size:12.5px;color:var(--tx2);min-height:36px">' + esc(m.desc) + '</div>' +
@@ -169,11 +178,15 @@ viewInicio(){
   h += '</div>';
 
   h += '<div class="sect-t">Accesos rápidos</div><div style="display:flex;gap:9px;flex-wrap:wrap">' +
-    '<button class="btn" data-view="bi">📊 Tablero BI</button>' +
-    '<button class="btn" data-view="exportar">⤓ Exportar a Excel</button>' +
-    '<button class="btn" data-view="proyectos">🗂️ Proyectos</button>' +
-    '<button class="btn" data-print="1">🖨️ Imprimir / PDF</button>' +
-    '<button class="btn" data-view="ajustes">⚙ Ajustes y logos</button></div>';
+    '<button class="btn" data-view="bi">' + ICO.bi + ' Tablero BI</button>' +
+    '<button class="btn" data-view="exportar">' + ICO.excel + ' Exportar a Excel</button>' +
+    '<button class="btn" data-view="proyectos">' + ICO.proyectos + ' Proyectos</button>' +
+    '<button class="btn" data-print="todo">' + ICO.imprimir + ' Imprimir informe completo</button>' +
+    '<button class="btn" data-view="ajustes">' + ICO.ajustes + ' Ajustes y logos</button>' +
+    (DEMO.esDemo()
+      ? '<button class="btn dg" data-democlear="1">' + ICO.limpiar + ' Limpiar simulación</button>'
+      : '<button class="btn a" data-demoload="1">' + ICO.simular + ' Cargar datos de simulación</button>') +
+    '</div>';
   return h;
 },
 
@@ -183,7 +196,8 @@ viewModulo(modId){
   let h = '<div class="page-h"><div class="nv-dot" style="background:' + m.color + ';width:46px;height:46px;flex:0 0 46px;font-size:20px">' + m.letter + '</div>' +
     '<div style="flex:1"><div class="crumb">Fase ' + m.n + ' de 5</div><h1>' + esc(m.name) + ' · ' + esc(m.en) + '</h1>' +
     '<div class="sub">' + esc(m.desc) + '</div></div>' +
-    '<button class="btn p" data-xlmod="' + m.id + '">⤓ Excel de esta fase</button></div>';
+    '<button class="btn g" data-print="modulo|' + m.id + '">' + ICO.imprimir + ' Imprimir fase</button>' +
+    '<button class="btn p" data-xlmod="' + m.id + '">' + ICO.excel + ' Excel de esta fase</button></div>';
   h += '<div class="grid3">' + ts.map((t, i) => {
     const full = toolFilled(t);
     return '<div class="card" style="margin:0;cursor:pointer" data-goto="' + t.id + '"><div class="card-b">' +
@@ -206,48 +220,49 @@ viewExportar(){
     'o en un único libro consolidado con macros y tablero.</div></div></div>';
 
   h += '<div class="grid2">' +
-    '<div class="card"><div class="card-h"><h3>📗 Libros originales</h3></div><div class="card-b">' +
+    '<div class="card"><div class="card-h">' + ICO.excel + '<h3>Libros originales</h3></div><div class="card-b">' +
     '<div class="note">Se rellenan las <b>plantillas originales</b> de la metodología conservando ' +
     'formato, celdas combinadas, gráficos y fórmulas. Se abren en Excel y recalculan solas.</div>' +
     FASES.map(m => {
       const on = ST.modOn(m.id), ts = toolsOf(m.id).filter(enPlantilla);
       return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd2)' + (on ? '' : ';opacity:.45') + '">' +
-        '<div class="nv-dot" style="background:' + m.color + ';width:26px;height:26px;flex:0 0 26px;font-size:11px">' + m.letter + '</div>' +
+        '<div class="nv-dot" style="background:' + m.color + ';width:28px;height:28px;flex:0 0 28px;font-size:13px">' + (ICO.fase[m.id] || m.letter) + '</div>' +
         '<div style="flex:1"><div style="font-weight:700;font-size:13px">' + m.n + '. ' + esc(m.name) + '.xlsx</div>' +
         '<div style="font-size:11px;color:var(--tx3)">' + ts.length + ' hojas · ' +
         ts.filter(t => toolFilled(t)).length + ' con datos</div></div>' +
-        '<button class="btn sm g" data-xlmod="' + m.id + '"' + (on ? '' : ' disabled') + '>⤓</button></div>';
+        '<button class="btn sm g" data-xlmod="' + m.id + '"' + (on ? '' : ' disabled') + '>' + ICO.descargar + '</button></div>';
     }).join('') +
-    '<button class="btn p" data-xlall="1" style="width:100%;justify-content:center;margin-top:13px">⤓ Descargar los 5 libros (.zip)</button>' +
+    '<button class="btn p" data-xlall="1" style="width:100%;justify-content:center;margin-top:13px">' + ICO.descargar + ' Descargar los 5 libros (.zip)</button>' +
     '</div></div>' +
 
-    '<div class="card"><div class="card-h"><h3>📕 Libro consolidado con macros</h3></div><div class="card-b">' +
+    '<div class="card"><div class="card-h">' + ICO.excel + '<h3>Libro consolidado con macros</h3></div><div class="card-b">' +
     '<div class="note warn">Un solo archivo <b>.xlsm</b> con las 53 hojas, tablero BI, fórmulas vivas, ' +
     'tablas, validaciones, formato condicional y un <b>módulo de macros VBA</b> ' +
     '(panel de control, informe ejecutivo, exportar a PDF, validación DMAIC y funciones ' +
     '<span class="mono">REHAVID_SIGMA</span>, <span class="mono">REHAVID_DPMO</span>, ' +
     '<span class="mono">REHAVID_CPK</span>, <span class="mono">REHAVID_MUESTRA_*</span>).</div>' +
-    '<button class="btn a" data-xlsm="1" style="width:100%;justify-content:center">⤓ Descargar TODO EN UNO (.xlsm)</button>' +
-    '<button class="btn g" data-xlsxall="1" style="width:100%;justify-content:center;margin-top:8px">⤓ Igual pero sin macros (.xlsx)</button>' +
+    '<button class="btn a" data-xlsm="1" style="width:100%;justify-content:center">' + ICO.descargar + ' Descargar TODO EN UNO (.xlsm)</button>' +
+    '<button class="btn g" data-xlsxall="1" style="width:100%;justify-content:center;margin-top:8px">' + ICO.descargar + ' Igual pero sin macros (.xlsx)</button>' +
     '<div class="hint" style="margin-top:9px">Al abrirlo Excel pedirá <b>Habilitar contenido</b> para activar las macros.</div>' +
     '</div></div></div>';
 
   h += '<div class="sect-t">Otros formatos</div><div class="grid3">' +
-    '<div class="card" style="margin:0"><div class="card-b"><b>💾 Copia de seguridad</b>' +
+    '<div class="card" style="margin:0"><div class="card-b"><b>' + ICO.guardar + ' Copia de seguridad</b>' +
     '<div style="font-size:12px;color:var(--tx2);margin:7px 0 11px">Archivo <span class="mono">.json</span> con todo el ' +
     'proyecto. Sirve para respaldar o pasarlo a otro computador.</div>' +
-    '<button class="btn sm p" data-expjson="1">⤓ Exportar .json</button> ' +
-    '<button class="btn sm g" data-impjson="1">⤒ Importar</button></div></div>' +
+    '<button class="btn sm p" data-expjson="1">' + ICO.descargar + ' Exportar .json</button> ' +
+    '<button class="btn sm g" data-impjson="1">' + ICO.subir + ' Importar</button></div></div>' +
 
-    '<div class="card" style="margin:0"><div class="card-b"><b>🖨️ Informe PDF</b>' +
-    '<div style="font-size:12px;color:var(--tx2);margin:7px 0 11px">Imprime el proyecto completo. En el diálogo ' +
-    'elige «Guardar como PDF».</div>' +
-    '<button class="btn sm p" data-print="1">Imprimir</button></div></div>' +
+    '<div class="card" style="margin:0"><div class="card-b"><b>' + ICO.imprimir + ' Informe PDF</b>' +
+    '<div style="font-size:12px;color:var(--tx2);margin:7px 0 11px">Documento paginado con portada y logos. ' +
+    'Ninguna tabla ni gráfico queda partido entre hojas. En el diálogo elige «Guardar como PDF».</div>' +
+    '<button class="btn sm p" data-print="todo">Informe completo</button> ' +
+    '<button class="btn sm g" data-print="modulo|' + (ROUTE.mod || 'DEFINIR') + '">Sólo una fase</button></div></div>' +
 
-    '<div class="card" style="margin:0"><div class="card-b"><b>📄 Datos en CSV</b>' +
+    '<div class="card" style="margin:0"><div class="card-b"><b>' + ICO.tabla + ' Datos en CSV</b>' +
     '<div style="font-size:12px;color:var(--tx2);margin:7px 0 11px">Todas las tablas del proyecto en archivos ' +
     '<span class="mono">.csv</span> para análisis externo.</div>' +
-    '<button class="btn sm p" data-expcsv="1">⤓ Exportar .csv</button></div></div>' +
+    '<button class="btn sm p" data-expcsv="1">' + ICO.descargar + ' Exportar .csv</button></div></div>' +
     '</div>';
   return h;
 },
@@ -256,7 +271,7 @@ viewExportar(){
 viewProyectos(){
   let h = '<div class="page-h"><div style="flex:1"><div class="crumb">Gestión</div><h1>Proyectos</h1>' +
     '<div class="sub">Cada empresa atendida puede tener su propio proyecto DMAIC. Todo se guarda en este equipo.</div></div>' +
-    '<button class="btn p" data-newproj="1">＋ Nuevo proyecto</button></div>';
+    '<button class="btn p" data-newproj="1">' + ICO.mas + ' Nuevo proyecto</button></div>';
   h += '<div class="grid3">' + ST.db.projects.map(p => {
     const act = p.id === ST.db.activeId;
     const prev = ST.db.activeId; ST.db.activeId = p.id;
@@ -304,7 +319,7 @@ viewAjustes(){
     '<div class="note">Desactiva las fases que la empresa no requiera. La app funciona <b>por módulos ' +
     'o completa</b>: los módulos apagados desaparecen del menú, del tablero y de la exportación.</div>' +
     FASES.map(m => '<div style="display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid var(--bd2)">' +
-      '<div class="nv-dot" style="background:' + m.color + ';width:28px;height:28px;flex:0 0 28px;font-size:12px">' + m.letter + '</div>' +
+      '<div class="nv-dot" style="background:' + m.color + ';width:30px;height:30px;flex:0 0 30px;font-size:14px">' + (ICO.fase[m.id] || m.letter) + '</div>' +
       '<div style="flex:1"><div style="font-weight:700;font-size:13px">' + m.n + '. ' + esc(m.name) + '</div>' +
       '<div style="font-size:11px;color:var(--tx3)">' + toolsOf(m.id).length + ' formatos</div></div>' +
       '<label class="nv-sw"><input type="checkbox" data-modtog="' + m.id + '"' + (ST.modOn(m.id) ? ' checked' : '') +
@@ -313,8 +328,8 @@ viewAjustes(){
 
   h += '<div class="grid2"><div class="card"><div class="card-h"><h3>Apariencia</h3></div><div class="card-b">' +
     '<div style="display:flex;gap:9px;flex-wrap:wrap">' +
-    '<button class="btn ' + (c.theme === 'dark' ? 'p' : 'g') + '" data-settheme="dark">🌙 Oscuro</button>' +
-    '<button class="btn ' + (c.theme === 'light' ? 'p' : 'g') + '" data-settheme="light">☀️ Claro</button>' +
+    '<button class="btn ' + (c.theme === 'dark' ? 'p' : 'g') + '" data-settheme="dark">Oscuro</button>' +
+    '<button class="btn ' + (c.theme === 'light' ? 'p' : 'g') + '" data-settheme="light">Claro</button>' +
     '</div></div></div>' +
     '<div class="card"><div class="card-h"><h3>Almacenamiento</h3></div><div class="card-b">' +
     '<div style="font-size:13px">Espacio usado: <b class="mono">' + fmt(used / 1024, 'n0') + ' KB</b> de ~5.000 KB<br>' +
@@ -326,6 +341,12 @@ viewAjustes(){
     '<button class="btn sm p" data-expjson="1">⤓ Respaldar</button>' +
     '<button class="btn sm g" data-impjson="1">⤒ Restaurar</button>' +
     '<button class="btn sm dg" data-wipe="1">Borrar todo</button></div>' +
+    '<div class="sect-t" style="margin-top:16px">Simulación</div>' +
+    '<div class="hint">Carga un proyecto de ejemplo completo para recorrer la herramienta funcionando, ' +
+    'y bórralo cuando vayas a empezar el proyecto real.</div>' +
+    '<div style="margin-top:9px;display:flex;gap:8px;flex-wrap:wrap">' +
+    '<button class="btn sm a" data-demoload="1">' + ICO.simular + ' Cargar simulación</button>' +
+    '<button class="btn sm dg" data-democlear="1">' + ICO.limpiar + ' Limpiar simulación</button></div>' +
     '</div></div></div>';
 
   h += '<div class="card"><div class="card-h"><h3>Acerca de</h3></div><div class="card-b" style="font-size:12.5px;line-height:1.7">' +
@@ -596,7 +617,26 @@ function bindGlobal(){
     if ((el = T('data-expjson'))){ exportJSON(); return; }
     if ((el = T('data-impjson'))){ importJSON(); return; }
     if ((el = T('data-expcsv'))){ await withBusy('Generando CSV…', () => GEN.exportCSV()); return; }
-    if ((el = T('data-print'))){ window.print(); return; }
+    if ((el = T('data-print'))){
+      const [alcance, ref] = String(el.dataset.print).split('|');
+      PRINT.imprimir(alcance || 'todo', ref); return;
+    }
+    if ((el = T('data-demoload'))){
+      confirmar('Se cargará un proyecto de ejemplo completo sobre el proyecto activo, ' +
+                'reemplazando lo que tenga escrito. ¿Continuar?', () => {
+        const n = DEMO.cargar(); UI.renderTop(); go('inicio');
+        toast('Simulación cargada: ' + n + ' formatos diligenciados', 'ok', 5000);
+      });
+      return;
+    }
+    if ((el = T('data-democlear'))){
+      confirmar('Se borrarán TODOS los datos de la simulación y el proyecto quedará en blanco ' +
+                'para empezar a usarlo. ¿Continuar?', () => {
+        DEMO.limpiar(); UI.renderTop(); go('inicio');
+        toast('Listo, el proyecto quedó en blanco', 'ok');
+      }, true);
+      return;
+    }
     if ((el = T('data-wipe'))){
       confirmar('Se borrarán TODOS los proyectos de este navegador. ¿Continuar?', () => {
         localStorage.removeItem(DB_KEY); location.reload();

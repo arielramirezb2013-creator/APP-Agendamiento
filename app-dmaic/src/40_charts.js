@@ -21,23 +21,26 @@ const CHART = (function(){
 
   /* ----------------------------------------------------------- paleta */
   /* paleta CATEGÓRICA: tonos consecutivos bien separados (series múltiples) */
-  const PAL = ['#12B3A6', '#F5A623', '#7C5CBF', '#3B9EFF', '#E5854D', '#2FBF71',
-               '#E5484D', '#0B5D6B', '#B07CC6', '#5AC8D8', '#C9A227', '#D4718A'];
+  /* Paleta categórica de marca: arranca en el índigo Rehavid y se separa en
+     tono, no sólo en claridad, para que las series sigan distinguiéndose
+     impresas en escala de grises. */
+  const PAL = ['#3B26D3', '#0FA968', '#E8890C', '#6B4DE8', '#0E9E8F', '#C2318F',
+               '#8577F5', '#5C7CE0', '#B06A00', '#0A7BA8', '#7A3FD1', '#2A1AA6'];
   /* colores de MARCA con rol fijo (no dependen del orden de la paleta) */
-  const BR = { p1:'#0B5D6B', p2:'#12B3A6', p3:'#F5A623' };
-  const TONES = { ok:'#2FBF71', warn:'#F5A623', bad:'#E5484D', info:'#3B9EFF',
-                  p1:'#0B5D6B', p2:'#12B3A6', p3:'#F5A623', '':null };
+  const BR = { p1:'#3B26D3', p2:'#6B4DE8', p3:'#0FE17B' };
+  const TONES = { ok:'#0A9E5C', warn:'#C97A06', bad:'#D92D46', info:'#3B26D3',
+                  p1:'#3B26D3', p2:'#6B4DE8', p3:'#0FE17B', '':null };
   /* variables del tema que se resuelven al exportar a PNG */
   const VARS = ['--tx', '--tx2', '--tx3', '--bd', '--bd2', '--d', '--d2', '--d3', '--d4',
                 '--ok', '--warn', '--bad', '--info', '--br-1', '--br-2', '--br-3'];
 
   /* estilos (en atributo style: las variables CSS NO se sustituyen en los
      atributos de presentación de SVG, sólo en declaraciones CSS reales) */
-  const S_TX   = 'fill:var(--tx,#E9F2F3)';
-  const S_AX   = 'fill:var(--tx2,#9FB6BB)';
-  const S_AX3  = 'fill:var(--tx3,#6B858C)';
-  const S_GRID = 'stroke:var(--bd,rgba(255,255,255,.10))';
-  const S_LINE = 'stroke:var(--tx3,#6B858C)';
+  const S_TX   = 'fill:var(--tx,#171043)';
+  const S_AX   = 'fill:var(--tx2,#544D80)';
+  const S_AX3  = 'fill:var(--tx3,#8B85AE)';
+  const S_GRID = 'stroke:var(--bd,rgba(59,38,211,.16))';
+  const S_LINE = 'stroke:var(--tx3,#8B85AE)';
   const S_BG2  = 'fill:var(--d3,#182A31)';
   const S_BG   = 'fill:var(--d2,#132025)';
 
@@ -767,7 +770,7 @@ const CHART = (function(){
       if (a !== null && b !== null && a !== 0 && !D.compact){
         const dl = (b - a) / Math.abs(a);
         const mejora = (menorMejor === undefined || menorMejor === null) ? null : (menorMejor ? dl < 0 : dl > 0);
-        const col = mejora === null ? 'var(--tx2,#9FB6BB)' : (mejora ? TONES.ok : TONES.bad);
+        const col = mejora === null ? 'var(--tx2,#544D80)' : (mejora ? TONES.ok : TONES.bad);
         const yy = vyUp(g, Math.min(Y(a), Y(b)), size, 7);
         const et = (dl > 0 ? '▲ +' : (dl < 0 ? '▼ ' : '')) +
                    (Math.abs(dl) > 10 ? '>1.000%' : fmt(dl, 'p1'));

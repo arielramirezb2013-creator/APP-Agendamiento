@@ -24,6 +24,9 @@ html[data-theme=dark]{
   --sh:0 8px 28px rgba(0,0,0,.45);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+.ico{flex:0 0 auto;vertical-align:-.14em;overflow:visible}
+.btn .ico{font-size:15px}
+.btn.sm .ico,.btn.xs .ico{font-size:14px}
 html,body{margin:0;padding:0;height:100%}
 body{background:var(--d);color:var(--tx);font-family:var(--ff);font-size:14px;line-height:1.45;overflow:hidden}
 ::-webkit-scrollbar{width:10px;height:10px}
@@ -252,11 +255,93 @@ tr:hover .rowdel{opacity:1}
 .empty .ic{font-size:38px;opacity:.35;margin-bottom:10px}
 .sect-t{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);margin:18px 0 9px;display:flex;align-items:center;gap:9px}
 .sect-t:after{content:'';flex:1;height:1px;background:var(--bd)}
+/* ================================ IMPRESIÓN ================================
+   Documento paginado: la app se oculta y se imprime #printarea, que sólo tiene
+   contenido estático. Las reglas de corte evitan que una tabla, un gráfico o
+   una ficha queden partidos entre dos hojas. */
+#printarea{display:none}
+@page{size:A4 portrait;margin:14mm 12mm 16mm}
 @media print{
-  #nav,#topbar,.gt-bar,.btn,.dg-tb{display:none!important}
-  #view{overflow:visible;padding:0}
-  body{overflow:visible;background:#fff;color:#000}
-  .card{break-inside:avoid;box-shadow:none;border-color:#ccc}
+  html,body{height:auto;overflow:visible;background:#fff;color:#111}
+  #app,#toasts,.ovl{display:none!important}
+  #printarea{display:block;font-size:10.5pt;line-height:1.45;color:#16123A}
+
+  /* portada */
+  .p-cover{break-after:page;padding-top:26mm;text-align:center}
+  .p-logos{display:flex;gap:16mm;justify-content:center;align-items:center;margin-bottom:18mm}
+  .p-logos img{max-height:22mm;max-width:60mm;object-fit:contain}
+  .p-cover h1{font-size:26pt;letter-spacing:-.02em;margin-bottom:3mm;color:#3B26D3}
+  .p-cover .p-sub{font-size:12pt;color:#544D80;margin:0 0 14mm}
+  .p-cov{margin:0 auto;max-width:130mm;text-align:left}
+  /* El pie va sólo en la portada. Fijarlo a la página lo hacía flotar DENTRO
+     del área de contenido y se montaba sobre el texto de cada hoja. */
+  .p-pie{margin-top:24mm;text-align:center;font-size:8pt;color:#8B85AE}
+
+  /* separador de fase */
+  .p-sep{break-before:page;border-top:3pt solid #3B26D3;padding-top:5mm;margin-bottom:6mm}
+  .p-sep span{display:block;width:16mm;height:3mm;border-radius:2mm;margin-bottom:3mm}
+  .p-sep h2{font-size:19pt;color:#3B26D3}
+  .p-sep p{color:#544D80;font-size:10pt;margin:1mm 0 0}
+
+  /* una herramienta empieza en página nueva y no se parte por dentro */
+  .p-tool{break-before:page;break-inside:auto}
+  .p-tool:first-of-type{break-before:avoid}
+  /* cabecera en una rejilla: la etiqueta de hoja ya no flota sobre el título */
+  .p-th{border-bottom:1.5pt solid #3B26D3;padding-bottom:2mm;margin-bottom:4mm;break-after:avoid;
+    display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:4mm}
+  .p-th h2{font-size:15pt;margin:1.5mm 0 0;color:#171043;grid-column:1;grid-row:2}
+  .p-tag{grid-column:1;grid-row:1;justify-self:start;color:#fff;font-size:7.5pt;font-weight:800;
+    letter-spacing:.08em;text-transform:uppercase;padding:1mm 2.5mm;border-radius:2mm}
+  .p-hoja{grid-column:2;grid-row:2;font-size:8pt;color:#8B85AE;white-space:nowrap}
+
+  /* Los bloques pueden repartirse entre hojas: lo que NUNCA se parte es la
+     unidad atómica (una fila, un gráfico, una ficha). Así las páginas quedan
+     llenas y aun así nada aparece cortado. */
+  .p-blk{break-inside:auto;margin-bottom:5mm}
+  .p-blk h3{font-size:10pt;text-transform:uppercase;letter-spacing:.06em;color:#544D80;
+    margin-bottom:2mm;break-after:avoid}
+
+  /* tablas: si no caben se parten por FILAS y el encabezado se repite */
+  table.p-tab,table.p-kv{width:100%;border-collapse:collapse;break-inside:auto}
+  table.p-kv tr{break-inside:avoid}
+  table.p-tab thead{display:table-header-group}
+  table.p-tab tfoot{display:table-footer-group}
+  table.p-tab tr,table.p-kv tr{break-inside:avoid;break-after:auto}
+  table.p-tab th,table.p-tab td{border:.4pt solid #C9C4E8;padding:1.4mm 2mm;
+    font-size:9pt;vertical-align:top;text-align:left}
+  table.p-tab thead th{background:#EBE9FB;color:#2A1AA6;font-size:8pt;text-transform:uppercase;
+    letter-spacing:.04em}
+  table.p-tab tfoot td{background:#F6F5FE;font-weight:700;border-top:1pt solid #3B26D3}
+  table.p-tab td.num,table.p-tab th.n{text-align:right;font-variant-numeric:tabular-nums}
+  table.p-tab td.n{text-align:center;color:#8B85AE;width:8mm}
+  table.p-kv th{width:52mm;text-align:left;font-size:8.5pt;text-transform:uppercase;
+    letter-spacing:.04em;color:#544D80;padding:1.4mm 3mm 1.4mm 0;vertical-align:top;font-weight:700}
+  table.p-kv td{padding:1.4mm 0;border-bottom:.3pt solid #E4E0F7}
+
+  /* gráficos y diagramas: enteros, escalados al ancho útil */
+  .p-graf{break-inside:avoid;page-break-inside:avoid;max-width:100%;margin:2mm 0}
+  .p-graf svg{width:100%!important;height:auto!important;max-height:150mm;display:block}
+  .p-img{max-width:100%;max-height:120mm;object-fit:contain;break-inside:avoid;display:block;margin:0 auto}
+
+  /* KPIs y A3 */
+  .p-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;break-inside:avoid}
+  .p-blk>h3+table{break-before:avoid}
+  .p-kpi{border:.4pt solid #C9C4E8;border-left:1.5pt solid #3B26D3;border-radius:1.5mm;padding:2mm 2.5mm}
+  .p-kpi .l{display:block;font-size:7.5pt;text-transform:uppercase;letter-spacing:.06em;color:#544D80}
+  .p-kpi .v{display:block;font-size:14pt;font-weight:800;color:#2A1AA6;line-height:1.1;margin:.6mm 0}
+  .p-kpi .h{display:block;font-size:7.5pt;color:#8B85AE}
+  .p-a3g{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
+  .p-a3{border:.4pt solid #C9C4E8;border-radius:1.5mm;padding:2mm 2.5mm;break-inside:avoid}
+  .p-a3 h4{font-size:8pt;text-transform:uppercase;letter-spacing:.05em;color:#2A1AA6;margin-bottom:1mm}
+  .p-a3 p{margin:0;font-size:9pt;white-space:pre-wrap}
+  .p-a3 img{max-width:100%;max-height:60mm;object-fit:contain}
+  .p-ins{margin:0;padding-left:5mm;break-inside:avoid}
+  .p-ins li{font-size:9pt;margin-bottom:1.2mm}
+  .p-ins b{color:#2A1AA6;text-transform:uppercase;font-size:7.5pt}
+  .p-nota{font-size:9pt;color:#544D80;border-left:1.5pt solid #C9C4E8;padding-left:3mm;
+    margin:2mm 0;break-inside:avoid}
+  .p-pre{font-size:8.5pt;white-space:pre-wrap;break-inside:avoid}
+  h1,h2,h3,h4{break-after:avoid}
 }
 @media(max-width:900px){
   #nav{position:fixed;left:0;top:60px;bottom:0;z-index:60;transform:translateX(-100%);transition:transform .2s}

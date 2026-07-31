@@ -214,7 +214,7 @@ R.b_chart = function(b, t, d, ctx){
   catch(e){ return R.card(b.title, '<div class="empty">Sin datos suficientes</div>'); }
   const svg = CHART.draw(b.kind, data, { h: b.h || 320, title: b.chartTitle });
   return R.card(b.title, '<div class="dg-wrap" data-chart="' + t.id + '|' + (b.key || b.kind) + '">' + svg + '</div>',
-    { tools:'<button class="btn xs g" data-pngchart="' + t.id + '|' + (b.key || b.kind) + '">⤓ PNG</button>' });
+    { tools:'<button class="btn xs g" data-pngchart="' + t.id + '|' + (b.key || b.kind) + '">' + ICO.imagen + ' PNG</button>' });
 };
 
 /* ----- upload ----- */
@@ -222,7 +222,7 @@ R.b_upload = function(b, t, d, ctx){
   const v = d[b.k];
   const inner = '<div class="upz" style="height:' + (b.h || 220) + 'px" data-up="' + t.id + '|' + b.k + '">' +
     (v ? '<img src="' + v + '"><span class="rm" data-uprm="' + t.id + '|' + b.k + '">✕ quitar</span>'
-       : '<div><div style="font-size:26px;opacity:.5">🖼️</div>' + esc(b.ph || 'Clic para subir imagen · o arrastra el archivo') + '</div>') +
+       : '<div><div style="font-size:26px;opacity:.45">' + ICO.imagen + '</div>' + esc(b.ph || 'Clic para subir imagen · o arrastra el archivo') + '</div>') +
     '</div>';
   return b.bare ? inner : R.card(b.label || b.title, inner);
 };
@@ -231,7 +231,8 @@ R.b_upload = function(b, t, d, ctx){
 R.b_insight = function(b, t, d, ctx){
   const list = (typeof ENGINE !== 'undefined') ? ENGINE.forTool(t, d, ctx) : [];
   if (!list || !list.length) return '';
-  return '<div class="ins" style="margin-bottom:16px"><div class="ins-h">🧠 Interpretación y sugerencia de decisión</div>' +
+  return '<div class="ins" style="margin-bottom:16px"><div class="ins-h">' + ICO.idea +
+    ' Interpretación y sugerencia de decisión</div>' +
     '<div class="ins-b">' + list.map(i =>
       '<div class="ins-item"><span class="ins-ic">' + (i.icon || '•') + '</span>' +
       '<span style="flex:1">' + (i.raw ? i.text : esc(i.text)) + '</span>' +
@@ -315,8 +316,9 @@ R.tool = function(t){
     '<div style="display:flex;gap:8px;align-items:center">' +
     (enPlantilla(t) ? '<span class="xlref" title="Hoja del Excel original">' + esc(t.sheet) + '</span>'
       : t.extra && !soloLectura ? '<span class="pill" title="Herramienta del manual, no existe como hoja del Excel">del manual</span>' : '') +
-    (t.guide && t.guide.length ? '<button class="btn sm g" data-guide="' + t.id + '">? Ayuda</button>' : '') +
-    (soloLectura ? '' : '<button class="btn sm g" data-cleartool="' + t.id + '">Limpiar</button>') +
+    (t.guide && t.guide.length ? '<button class="btn sm g" data-guide="' + t.id + '">' + ICO.ayuda + ' Ayuda</button>' : '') +
+    '<button class="btn sm g" data-print="tool|' + t.id + '" title="Imprimir este formato">' + ICO.imprimir + '</button>' +
+    (soloLectura ? '' : '<button class="btn sm g" data-cleartool="' + t.id + '">' + ICO.limpiar + ' Limpiar</button>') +
     '</div></div>';
   // Cada bloque va en su propio contenedor para poder refrescar SÓLO los
   // derivados (gráficos, KPIs, interpretación) sin tocar los campos que el

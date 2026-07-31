@@ -16,7 +16,8 @@ VERSION = '1.0.0'
 
 # Orden de concatenación (los datos van primero: son constantes sin dependencias)
 ORDER = [
-    '05_data.js',          # generado aquí
+    '05_data.js',
+    '15_icons.js',          # generado aquí
     '20_core.js',
     '40_charts.js',
     '45_stats.js',
@@ -36,6 +37,8 @@ ORDER = [
     '80_zip.js',
     '82_xlsx.js',
     '83_xlsxgen.js',
+    '86_print.js',
+    '87_demo.js',
     '90_app.js',
 ]
 
@@ -112,14 +115,14 @@ def main():
     js = '\n\n'.join(parts) + '\n\n/* ── arranque ── */\ndocument.addEventListener("DOMContentLoaded", boot);\n'
 
     html = """<!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <meta name="description" content="Rehavid · Herramienta Lean Six Sigma DMAIC. Aplicación autónoma, sin servidor ni internet.">
 <meta name="color-scheme" content="dark light">
 <title>Rehavid · Lean Six Sigma DMAIC</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230B5D6B'/%3E%3Ctext x='50' y='68' font-size='54' font-family='Segoe UI,Arial' font-weight='700' fill='%2312B3A6' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%233B26D3'/%3E%3Cpath d='M18 78 L46 22 L46 50 L32 78 Z' fill='%230FE17B'/%3E%3Cpath d='M52 78 L74 40 L74 78 Z' fill='%230FE17B'/%3E%3C/svg%3E">
 <style>
 __CSS__
 </style>

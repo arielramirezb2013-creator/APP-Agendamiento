@@ -259,18 +259,18 @@ const DIAG = (function(){
   const PAL_UI = {
     mode:'ui',  paper:'transparent', box:'var(--d2)', box2:'var(--d3)', bd:'var(--bd)',
     line:'var(--tx3)', tx:'var(--tx)', tx2:'var(--tx2)', tx3:'var(--tx3)',
-    p1:'#0B5D6B', p2:'#12B3A6', p3:'#F5A623', p4:'#0A3F49',
-    ok:'#2FBF71', warn:'#F5A623', bad:'#E5484D', inv:'#FFFFFF', band:'rgba(18,179,166,.07)'
+    p1:'#3B26D3', p2:'#6B4DE8', p3:'#0FE17B', p4:'#2A1AA6',
+    ok:'#0A9E5C', warn:'#0FE17B', bad:'#D92D46', inv:'#FFFFFF', band:'rgba(18,179,166,.07)'
   };
   const PAL_PR = {
     mode:'print', paper:'#FFFFFF', box:'#F7FAFB', box2:'#EDF4F6', bd:'#A9C3C9',
-    line:'#7C949B', tx:'#0E2229', tx2:'#41616A', tx3:'#7C949B',
-    p1:'#0B5D6B', p2:'#12B3A6', p3:'#F5A623', p4:'#0A3F49',
-    ok:'#2FBF71', warn:'#F5A623', bad:'#E5484D', inv:'#FFFFFF', band:'#F2F8F9'
+    line:'#7C949B', tx:'#0E2229', tx2:'#544D80', tx3:'#7C949B',
+    p1:'#3B26D3', p2:'#6B4DE8', p3:'#0FE17B', p4:'#2A1AA6',
+    ok:'#0A9E5C', warn:'#0FE17B', bad:'#D92D46', inv:'#FFFFFF', band:'#F2F8F9'
   };
-  const SIPOC_COL = ['#0A3F49', '#0B5D6B', '#12B3A6', '#0E8E86', '#F5A623'];
-  const CAT_COL   = ['#0B5D6B', '#12B3A6', '#F5A623', '#7C5CBF', '#E5854D', '#2FBF71',
-                     '#3B9EFF', '#0A3F49', '#C77B12', '#12897F'];
+  const SIPOC_COL = ['#2A1AA6', '#3B26D3', '#6B4DE8', '#0E8E86', '#0FE17B'];
+  const CAT_COL   = ['#3B26D3', '#6B4DE8', '#0FE17B', '#7C5CBF', '#E5854D', '#0A9E5C',
+                     '#3B26D3', '#2A1AA6', '#C77B12', '#12897F'];
 
   function theme(mode){
     const T = Object.create(mode === 'print' ? PAL_PR : PAL_UI);
@@ -382,7 +382,7 @@ const DIAG = (function(){
     const al = o.align || 'left';
     return '<text x="' + n1(x) + '" y="' + n1(y) + '" text-anchor="' +
       (al === 'center' ? 'middle' : al === 'right' ? 'end' : 'start') + '"' +
-      sty({ fill:o.color || '#41616A', fs:o.fs || 10, fw:o.fw || 800, ls:o.ls }) + '>' + esc(s) + '</text>';
+      sty({ fill:o.color || '#544D80', fs:o.fs || 10, fw:o.fw || 800, ls:o.ls }) + '>' + esc(s) + '</text>';
   }
 
   /* ---- campo editable (foreignObject) o texto plano ------------------- */
