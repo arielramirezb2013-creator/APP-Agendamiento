@@ -225,6 +225,28 @@ const CHART = (function(){
     return Math.min(w, 96);
   }
   /** decide rotación / salto / recorte de las etiquetas del eje X */
+  /** Parte una etiqueta en renglones que quepan en `w` px, hasta `max` líneas.
+   *  Devuelve null si ni partiéndola cabe (entonces habrá que rotarla). */
+  function wrapLbl(s, w, size, max){
+    const t = str(s).trim();
+    if (!t) return [''];
+    if (tw(t, size) <= w) return [t];
+    const pal = t.split(/\s+/), out = [];
+    let cur = '';
+    for (let i = 0; i < pal.length; i++){
+      const p = pal[i];
+      const trial = cur ? cur + ' ' + p : p;
+      if (tw(trial, size) <= w){ cur = trial; continue; }
+      if (cur) out.push(cur);
+      // una palabra suelta más ancha que el hueco: no hay reparto posible
+      if (tw(p, size) > w) return null;
+      cur = p;
+      if (out.length >= max) return null;
+    }
+    if (cur) out.push(cur);
+    return out.length <= max ? out : null;
+  }
+
   function planX(labels, w, size, compact){
     const n = Math.max(1, labels.length);
     const slot = w / n;
@@ -233,6 +255,24 @@ const CHART = (function(){
     labels.forEach(l => { maxw = Math.max(maxw, tw(ell(l, cap), size)); });
     if (maxw <= slot - 5)
       return { rot:0, every: Math.max(1, Math.ceil((maxw + 6) / Math.max(1, slot))), cap:cap, h: size + 13 };
+
+    /* Antes de rotar y recortar: intentar repartir la etiqueta en renglones.
+       Se lee mucho mejor horizontal y completa que en diagonal y cortada. */
+    const maxLin = compact ? 2 : 3;
+    const anchoTxt = Math.max(28, slot - 8);
+    if (anchoTxt >= 34){
+      const lineas = [];
+      let ok = true, alto = 1;
+      for (let i = 0; i < labels.length; i++){
+        if (!str(labels[i])){ lineas.push(['']); continue; }
+        const L = wrapLbl(labels[i], anchoTxt, size, maxLin);
+        if (!L){ ok = false; break; }
+        lineas.push(L); alto = Math.max(alto, L.length);
+      }
+      if (ok) return { rot:0, every:1, cap:200, wrap:lineas, ancho:anchoTxt,
+                       h: alto * (size + 3) + 12 };
+    }
+
     cap = capRot; maxw = 0;
     labels.forEach(l => { maxw = Math.max(maxw, tw(ell(l, cap), size)); });
     const every = slot >= 12 ? 1 : Math.ceil(12 / Math.max(1, slot));
@@ -288,6 +328,12 @@ const CHART = (function(){
       const x = xs[i];
       if (px.rot) s += T(x - 2, g.y + g.h + 10, ell(l, px.cap),
                          { anchor:'end', rot:px.rot, size:size, style:S_AX, dy:'middle', tip:l });
+      else if (px.wrap){
+        // etiqueta horizontal repartida en renglones centrados bajo su tick
+        (px.wrap[i] || ['']).forEach((ln, j) =>
+          s += T(x, g.y + g.h + size + 5 + j * (size + 3), ln,
+                 { anchor:'middle', size:size, style:S_AX, tip:l }));
+      }
       else        s += T(x, g.y + g.h + size + 5, ell(l, px.cap),
                          { anchor:'middle', size:size, style:S_AX, tip:l });
     });
@@ -324,12 +370,28 @@ const CHART = (function(){
   }
 
   /* ------------------------------------------------------------ leyenda */
+  /** Ancho de texto sensible a las mayúsculas: el factor 0,56 de tw() vale para
+   *  texto mixto, pero los rótulos de leyenda van en versales y se quedaban
+   *  cortos, de modo que una entrada se montaba sobre la siguiente. */
+  function twCaps(s, size){
+    const t = str(s);
+    let u = 0;
+    for (let i = 0; i < t.length; i++){
+      const c = t.charAt(i);
+      u += c === ' ' ? 0.30
+         : (c >= 'A' && c <= 'Z') || c === 'Ñ' || c === '%' || c === 'Á' || c === 'É' ||
+           c === 'Í' || c === 'Ó' || c === 'Ú' ? 0.68
+         : 0.55;
+    }
+    return u * (size || 11);
+  }
+
   function legendLay(items, w, size){
-    const box = 12, gap = 16;
+    const box = 12, gap = 20;
     const rows = [[]];
     let rw = 0;
     items.forEach(it => {
-      const iw = box + 5 + tw(it.name, size) + gap;
+      const iw = box + 6 + twCaps(it.name, size) + gap;
       if (rw + iw > w && rows[rows.length - 1].length){ rows.push([]); rw = 0; }
       rows[rows.length - 1].push({ it: it, w: iw }); rw += iw;
     });
@@ -349,7 +411,7 @@ const CHART = (function(){
           s += CI(xx + lay.box / 2, yy, 4.2, { fill: it.color });
         else
           s += RC(xx, yy - 5, lay.box, 10, { rx:2.5, fill: it.color, opacity: it.op || null });
-        s += T(xx + lay.box + 5, yy, it.name, { size: lay.size, dy:'middle', style:S_AX, tip: it.tip || it.name });
+        s += T(xx + lay.box + 6, yy, it.name, { size: lay.size, dy:'middle', style:S_AX, tip: it.tip || it.name });
         xx += e.w;
       });
       yy += lay.size + 7;

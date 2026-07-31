@@ -18,6 +18,18 @@ function rowsOf(d, key, min){
  *  `ro` = la celda es calculada/solo lectura: se dibuja SIEMPRE como texto,
  *  porque el valor ya viene formateado en español ("1.234,5", "87,4%") y un
  *  <input type=number> rechazaría esa cadena y quedaría en blanco. */
+/** ¿La columna contiene números? Manda el CONTENIDO, no el hecho de ser
+ *  calculada: una columna calculada que devuelve texto (un nombre, una fase)
+ *  llevaba la cabecera a la derecha y el dato a la izquierda. Cabecera y dato
+ *  se alinean siempre igual. */
+function colNum(c){
+  if (!c) return false;
+  if (c.align === 'right' || c.databar) return true;
+  if (c.align === 'left' || c.align === 'center') return false;
+  if (c.input === 'number' || c.input === 'money' || c.input === 'percent') return true;
+  return !!c.calc && !!c.fmt && c.fmt !== 'date';
+}
+
 function inputTag(cls, spec, val, attrs, ro){
   if (ro && spec.input !== 'textarea' && spec.input !== 'check')
     spec = Object.assign({}, spec, { input:'text' });
@@ -106,7 +118,7 @@ R.b_grid = function(b, t, d, ctx){
   cols.forEach(c => { if (c.databar) maxes[c.k] = Math.max.apply(null, [1e-9].concat(computed.map(v => Math.abs(num(v[c.k]))))); });
 
   let h = '<div class="twrap"><table class="gt"><thead><tr><th class="rn"></th>' +
-    cols.map(c => '<th' + (c.align === 'right' || c.input === 'number' || c.calc ? ' class="n"' : '') +
+    cols.map(c => '<th' + (colNum(c) ? ' class="n"' : '') +
       (c.w ? ' style="min-width:' + (typeof c.w === 'number' ? c.w + 'px' : c.w) + '"' : '') +
       (c.help ? ' title="' + esc(c.help) + '"' : '') + '>' + esc(c.label) + '</th>').join('') +
     (b.fixed ? '' : '<th style="width:28px"></th>') + '</tr></thead><tbody>';
@@ -122,7 +134,10 @@ R.b_grid = function(b, t, d, ctx){
       const tone = c.tone ? (c.tone(cv[c.k], r, i, rows, d, ctx) || '') : '';
       const attrs = ' data-t="' + t.id + '" data-g="' + b.key + '" data-r="' + i + '" data-c="' + c.k + '"' +
         (ro ? ' readonly data-calc="1"' : '');
-      let inner = inputTag('ci', c, v == null ? '' : v, attrs, ro);
+      // el dato hereda la alineación de su cabecera aunque sea de sólo lectura
+      const clsCel = 'ci' + (colNum(c) && c.input !== 'select' && c.input !== 'textarea' &&
+                             c.input !== 'check' ? ' num' : '');
+      let inner = inputTag(clsCel, c, v == null ? '' : v, attrs, ro);
       if (c.databar){
         const w = clamp(Math.abs(num(cv[c.k])) / maxes[c.k] * 100, 0, 100);
         inner = '<div class="databar"><i class="dbf" style="width:' + w.toFixed(1) + '%"></i>' + inner + '</div>';
@@ -139,7 +154,9 @@ R.b_grid = function(b, t, d, ctx){
     h += '<tfoot><tr><td class="rn"></td>';
     cols.forEach((c, ci) => {
       const f = fs.find(x => x.k === c.k);
-      if (f) h += '<td>' + esc(f.label !== undefined && ci === 0 ? f.label : fmt(f.calc(rows, d, ctx, computed), f.fmt)) + '</td>';
+      if (f) h += '<td>' + esc(typeof f.calc === 'function' && !(f.label !== undefined && ci === 0)
+                                ? fmt(f.calc(rows, d, ctx, computed), f.fmt)
+                                : (f.label !== undefined ? f.label : (f.value !== undefined ? f.value : ''))) + '</td>';
       else if (ci === 0) { const lb = fs.find(x => x.k === '__label'); h += '<td class="lbl">' + esc(lb ? lb.label : 'TOTAL') + '</td>'; }
       else h += '<td></td>';
     });
@@ -189,10 +206,15 @@ R.b_matrix = function(b, t, d, ctx){
 R.b_cards = function(b, t, d, ctx){
   const items = callv(b.items, d, ctx) || [];
   if (!items.length) return '';
-  const inner = '<div class="kpis">' + items.map(k =>
-    '<div class="kpi ' + (k.tone || '') + '"><div class="k-l">' + esc(k.label) + '</div>' +
-    '<div class="k-v">' + esc(k.value) + '</div>' +
-    (k.hint ? '<div class="k-h">' + esc(k.hint) + '</div>' : '') + '</div>').join('') + '</div>';
+  // el valor nunca se parte: se le baja el cuerpo según su largo para que
+  // quepa en una sola línea (antes «$ 46.800.000» dejaba el $ arriba solo)
+  const inner = '<div class="kpis">' + items.map(k => {
+    const v = String(k.value == null ? '' : k.value);
+    const cls = v.length >= 18 ? ' vxs' : v.length >= 14 ? ' vsm' : v.length >= 11 ? ' vmd' : '';
+    return '<div class="kpi ' + (k.tone || '') + '"><div class="k-l">' + esc(k.label) + '</div>' +
+      '<div class="k-v' + cls + '">' + esc(v) + '</div>' +
+      (k.hint ? '<div class="k-h">' + esc(k.hint) + '</div>' : '') + '</div>';
+  }).join('') + '</div>';
   return b.bare ? inner : R.card(b.title, inner);
 };
 

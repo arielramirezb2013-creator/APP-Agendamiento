@@ -98,8 +98,9 @@ function fmt(v, f){
     case 'p1': return F.n1.format(n * 100) + '%';
     case 'p2': return F.n2.format(n * 100) + '%';
     case 'pp1': return F.n1.format(n) + '%';           // ya viene en 0-100
-    case 'money': return '$ ' + F.n0.format(n);
-    case 'money2': return '$ ' + F.n2.format(n);
+    // espacio duro: si no, el $ se queda solo en una línea cuando el valor es largo
+    case 'money': return '$\u00A0' + F.n0.format(n);
+    case 'money2': return '$\u00A0' + F.n2.format(n);
     case 'date': return v ? new Date(v + 'T00:00:00').toLocaleDateString('es-CO') : '';
     default: return isNum(v) ? F.auto.format(n) : String(v);
   }

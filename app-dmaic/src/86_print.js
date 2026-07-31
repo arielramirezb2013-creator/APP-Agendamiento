@@ -42,7 +42,8 @@ const PRINT = (function(){
         // las últimas columnas se pierden: se marca la tabla para que ajuste
         const anchas = cols.length >= 12 ? ' p-wide' : (cols.length >= 7 ? ' p-media' : '');
         let h = '<table class="p-tab' + anchas + '"><thead><tr><th class="n">#</th>' +
-          cols.map(c => '<th>' + esc(String(c.label).replace(/\n/g, ' ')) + '</th>').join('') +
+          cols.map(c => '<th' + (colNum(c) ? ' class="num"' : '') + '>' +
+            esc(String(c.label).replace(/\n/g, ' ')) + '</th>').join('') +
           '</tr></thead><tbody>';
         rows.forEach((r, i) => {
           if (!hasContent(r)) return;
@@ -51,7 +52,7 @@ const PRINT = (function(){
             if (typeof v === 'number' && !isFinite(v)) v = '';
             else if (c.fmt) v = fmt(v, c.fmt);
             else if (c.input === 'date' && v) v = fmt(v, 'date');
-            const al = (c.calc || c.input === 'number') ? ' class="num"' : '';
+            const al = colNum(c) ? ' class="num"' : '';
             return '<td' + al + '>' + esc(V(v)) + '</td>';
           }).join('') + '</tr>';
         });
@@ -60,8 +61,17 @@ const PRINT = (function(){
           const fs = callv(b.foot, rows, d, ctx) || [];
           h += '<tfoot><tr><td class="n"></td>' + cols.map((c, ci) => {
             const f = fs.find(x => x.k === c.k);
-            if (f) return '<td class="num">' + esc(V(fmt(f.calc(rows, d, ctx, comp), f.fmt))) + '</td>';
-            return '<td>' + (ci === 0 ? 'TOTAL' : '') + '</td>';
+            // un pie puede traer un rótulo fijo en vez de un cálculo: si se
+            // llamaba f.calc a ciegas, la tabla entera se caía del informe
+            if (f && typeof f.calc === 'function')
+              return '<td class="num">' + esc(V(fmt(f.calc(rows, d, ctx, comp), f.fmt))) + '</td>';
+            if (f && (f.label !== undefined || f.value !== undefined))
+              return '<td>' + esc(V(f.label !== undefined ? f.label : f.value)) + '</td>';
+            if (ci === 0){
+              const lb = fs.find(x => x.k === '__label');
+              return '<td>' + esc(lb && lb.label !== undefined ? lb.label : 'TOTAL') + '</td>';
+            }
+            return '<td></td>';
           }).join('') + '</tr></tfoot>';
         }
         h += '</table>';
@@ -243,9 +253,16 @@ const PRINT = (function(){
       });
     }
 
+    const informe = portada(titulo, sub) + cuerpo;
+
+    // Dentro de un iframe (la versión publicada como página web) el navegador
+    // bloquea el diálogo de impresión sin avisar: el botón parecía no hacer
+    // nada. Ahí el informe se abre en una pestaña propia, que sí puede imprimir.
+    if (enMarco()){ aparte(titulo, informe); return; }
+
     let host = $('#printarea');
     if (!host){ host = document.createElement('div'); host.id = 'printarea'; document.body.appendChild(host); }
-    host.innerHTML = portada(titulo, sub) + cuerpo;
+    host.innerHTML = informe;
     document.body.classList.add('printing');
 
     // Cada impresión lleva su propio testigo: así el temporizador de una
@@ -259,6 +276,87 @@ const PRINT = (function(){
     };
     window.addEventListener('afterprint', limpiar);
     setTimeout(() => { window.print(); setTimeout(limpiar, 2000); }, 150);
+  }
+
+  /* ------------------------------------------------- impresión en marco */
+  function enMarco(){
+    try { return window.top !== window.self; } catch(e){ return true; }
+  }
+
+  /** Hoja de estilos del informe, lista para una ventana aparte: se reutilizan
+   *  tal cual las reglas de @media print y se añade lo justo para que además
+   *  se vea en pantalla mientras el usuario decide. */
+  /** Repite fuera de @media print las reglas que hay dentro, para que la
+   *  ventana aparte se vea en pantalla igual que saldrá en el papel. */
+  function sinMediaPrint(css){
+    const MARCA = '@media print{';
+    let extra = '', desde = 0;
+    for (;;){
+      const i = css.indexOf(MARCA, desde);
+      if (i < 0) break;
+      let j = i + MARCA.length, prof = 1;
+      while (j < css.length && prof > 0){
+        const c = css.charAt(j);
+        if (c === '{') prof++; else if (c === '}') prof--;
+        j++;
+      }
+      extra += css.slice(i + MARCA.length, j - 1) + '\n';
+      desde = j;
+    }
+    return extra;
+  }
+
+  function hojaEstilos(){
+    let css = '';
+    try {
+      const ss = document.querySelectorAll('style');
+      for (let i = 0; i < ss.length; i++) css += ss[i].textContent + '\n';
+    } catch(e){}
+    css += '\n' + sinMediaPrint(css) + '\n';
+    return css + '\n' +
+      'html,body{height:auto;overflow:visible;margin:0;background:#EEEDF7}\n' +
+      '#app,#toasts{display:none!important}\n' +
+      '#printarea{display:block;background:#fff;max-width:210mm;margin:0 auto;\n' +
+      '  padding:14mm 12mm;box-shadow:0 2px 18px rgba(0,0,0,.18);font-size:10.5pt;\n' +
+      '  line-height:1.45;color:#16123A;font-family:\'Segoe UI\',system-ui,sans-serif}\n' +
+      '@media print{ #printarea{max-width:none;margin:0;padding:0;box-shadow:none} }\n' +
+      '#barra{position:sticky;top:0;z-index:9;display:flex;gap:10px;align-items:center;\n' +
+      '  background:#3B26D3;color:#fff;padding:9px 14px;font:600 13px/1.3 \'Segoe UI\',sans-serif}\n' +
+      '#barra button{font:700 13px \'Segoe UI\',sans-serif;padding:6px 14px;border:none;\n' +
+      '  border-radius:7px;background:#0FE17B;color:#05341C;cursor:pointer}\n' +
+      '@media print{ #barra{display:none} }\n';
+  }
+
+  function docInforme(titulo, informe){
+    return '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">' +
+      '<title>' + esc(titulo) + ' · Rehavid</title><style>' + hojaEstilos() + '</style></head><body>' +
+      '<div id="barra"><button onclick="window.print()">Imprimir</button>' +
+      '<span>' + esc(titulo) + ' — si el diálogo no aparece, usa Ctrl+P</span></div>' +
+      '<div id="printarea">' + informe + '</div>' +
+      '<script>setTimeout(function(){try{window.print();}catch(e){}},400);<\/script>' +
+      '</body></html>';
+  }
+
+  /** Abre el informe en una pestaña propia; si el navegador bloquea la ventana,
+   *  lo entrega como archivo para abrirlo e imprimirlo a mano. */
+  function aparte(titulo, informe){
+    const doc = docInforme(titulo, informe);
+    let w = null;
+    try { w = window.open('', '_blank'); } catch(e){ w = null; }
+    if (w && w.document){
+      try {
+        w.document.open(); w.document.write(doc); w.document.close();
+        toast('Informe abierto en una pestaña nueva: pulsa Imprimir allí', 'ok', 6000);
+        return;
+      } catch(e){}
+    }
+    try {
+      download(new Blob([doc], { type:'text/html;charset=utf-8' }),
+               titulo.replace(/[\\/:*?"<>|]/g, '-') + ' - informe.html');
+      toast('El navegador bloqueó la ventana: se descargó el informe, ábrelo y pulsa Ctrl+P', 'warn', 9000);
+    } catch(e){
+      toast('No se pudo abrir el informe para imprimir', 'bad', 6000);
+    }
   }
 
   return { imprimir, herramienta, portada };

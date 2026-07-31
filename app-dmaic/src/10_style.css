@@ -164,16 +164,23 @@ tr:hover .rowdel{opacity:1}
 .databar>*{position:relative;z-index:1}
 
 /* ---------- KPI cards ---------- */
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px}
-.kpi{background:var(--d2);border:1px solid var(--bd);border-radius:var(--r);padding:13px 15px;position:relative;overflow:hidden}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.kpi{background:var(--d2);border:1px solid var(--bd);border-radius:var(--r);padding:13px 15px;position:relative;
+  overflow:hidden;display:flex;flex-direction:column}
 .kpi:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--br-1)}
 .kpi.ok:before{background:var(--ok)} .kpi.warn:before{background:var(--warn)} .kpi.bad:before{background:var(--bad)}
 .kpi .k-l{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);font-weight:800}
-.kpi .k-v{font-size:26px;font-weight:800;font-family:var(--fm);letter-spacing:-.02em;margin:3px 0;line-height:1.05}
+.kpi .k-v{font-size:26px;font-weight:800;font-family:var(--fm);letter-spacing:-.02em;margin:3px 0;line-height:1.15;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* el cuerpo baja con el largo del valor: todo queda en un solo renglón */
+.kpi .k-v.vmd{font-size:20px} .kpi .k-v.vsm{font-size:17px} .kpi .k-v.vxs{font-size:14.5px;letter-spacing:-.03em}
 .kpi.ok .k-v{color:var(--ok)} .kpi.warn .k-v{color:var(--warn)} .kpi.bad .k-v{color:var(--bad)}
 .kpi{transition:transform .18s,box-shadow .18s}
 .kpi:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(59,38,211,.12)}
-.kpi .k-h{font-size:11px;color:var(--tx2)}
+.kpi .k-h{font-size:11px;color:var(--tx2);margin-top:auto;padding-top:2px}
+/* banda de altura fija para el valor: aunque el cuerpo cambie con el largo,
+   todas las tarjetas de una fila muestran su cifra al mismo nivel */
+.kpi .k-v{min-height:32px;display:flex;align-items:center}
 .kpi .k-spark{position:absolute;right:8px;bottom:6px;opacity:.5}
 
 /* ---------- Notes / insights ---------- */
@@ -431,7 +438,7 @@ table.gt.vr .vr-l{color:var(--tx2)}
   table.p-tab thead th{background:#EBE9FB;color:#2A1AA6;font-size:8pt;text-transform:uppercase;
     letter-spacing:.04em}
   table.p-tab tfoot td{background:#F6F5FE;font-weight:700;border-top:1pt solid #3B26D3}
-  table.p-tab td.num,table.p-tab th.n{text-align:right;font-variant-numeric:tabular-nums}
+  table.p-tab td.num,table.p-tab th.num,table.p-tab th.n{text-align:right;font-variant-numeric:tabular-nums}
   table.p-tab td.n{text-align:center;color:#8B85AE;width:8mm}
   table.p-kv th{width:52mm;text-align:left;font-size:8.5pt;text-transform:uppercase;
     letter-spacing:.04em;color:#544D80;padding:1.4mm 3mm 1.4mm 0;vertical-align:top;font-weight:700}
@@ -447,7 +454,9 @@ table.gt.vr .vr-l{color:var(--tx2)}
   .p-blk>h3+table{break-before:avoid}
   .p-kpi{border:.4pt solid #C9C4E8;border-left:1.5pt solid #3B26D3;border-radius:1.5mm;padding:2mm 2.5mm}
   .p-kpi .l{display:block;font-size:7.5pt;text-transform:uppercase;letter-spacing:.06em;color:#544D80}
-  .p-kpi .v{display:block;font-size:14pt;font-weight:800;color:#2A1AA6;line-height:1.1;margin:.6mm 0}
+  .p-kpi .v{display:block;font-size:14pt;font-weight:800;color:#2A1AA6;line-height:1.15;margin:.6mm 0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .p-kpi .v.vmd{font-size:11.5pt} .p-kpi .v.vsm{font-size:9.5pt} .p-kpi .v.vxs{font-size:8pt}
   .p-kpi .h{display:block;font-size:7.5pt;color:#8B85AE}
   .p-a3g{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
   .p-a3{border:.4pt solid #C9C4E8;border-radius:1.5mm;padding:2mm 2.5mm;break-inside:avoid}

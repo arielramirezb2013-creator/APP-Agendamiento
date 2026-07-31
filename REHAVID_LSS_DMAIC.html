@@ -174,16 +174,23 @@ tr:hover .rowdel{opacity:1}
 .databar>*{position:relative;z-index:1}
 
 /* ---------- KPI cards ---------- */
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px}
-.kpi{background:var(--d2);border:1px solid var(--bd);border-radius:var(--r);padding:13px 15px;position:relative;overflow:hidden}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.kpi{background:var(--d2);border:1px solid var(--bd);border-radius:var(--r);padding:13px 15px;position:relative;
+  overflow:hidden;display:flex;flex-direction:column}
 .kpi:before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--br-1)}
 .kpi.ok:before{background:var(--ok)} .kpi.warn:before{background:var(--warn)} .kpi.bad:before{background:var(--bad)}
 .kpi .k-l{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--tx3);font-weight:800}
-.kpi .k-v{font-size:26px;font-weight:800;font-family:var(--fm);letter-spacing:-.02em;margin:3px 0;line-height:1.05}
+.kpi .k-v{font-size:26px;font-weight:800;font-family:var(--fm);letter-spacing:-.02em;margin:3px 0;line-height:1.15;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* el cuerpo baja con el largo del valor: todo queda en un solo renglón */
+.kpi .k-v.vmd{font-size:20px} .kpi .k-v.vsm{font-size:17px} .kpi .k-v.vxs{font-size:14.5px;letter-spacing:-.03em}
 .kpi.ok .k-v{color:var(--ok)} .kpi.warn .k-v{color:var(--warn)} .kpi.bad .k-v{color:var(--bad)}
 .kpi{transition:transform .18s,box-shadow .18s}
 .kpi:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(59,38,211,.12)}
-.kpi .k-h{font-size:11px;color:var(--tx2)}
+.kpi .k-h{font-size:11px;color:var(--tx2);margin-top:auto;padding-top:2px}
+/* banda de altura fija para el valor: aunque el cuerpo cambie con el largo,
+   todas las tarjetas de una fila muestran su cifra al mismo nivel */
+.kpi .k-v{min-height:32px;display:flex;align-items:center}
 .kpi .k-spark{position:absolute;right:8px;bottom:6px;opacity:.5}
 
 /* ---------- Notes / insights ---------- */
@@ -441,7 +448,7 @@ table.gt.vr .vr-l{color:var(--tx2)}
   table.p-tab thead th{background:#EBE9FB;color:#2A1AA6;font-size:8pt;text-transform:uppercase;
     letter-spacing:.04em}
   table.p-tab tfoot td{background:#F6F5FE;font-weight:700;border-top:1pt solid #3B26D3}
-  table.p-tab td.num,table.p-tab th.n{text-align:right;font-variant-numeric:tabular-nums}
+  table.p-tab td.num,table.p-tab th.num,table.p-tab th.n{text-align:right;font-variant-numeric:tabular-nums}
   table.p-tab td.n{text-align:center;color:#8B85AE;width:8mm}
   table.p-kv th{width:52mm;text-align:left;font-size:8.5pt;text-transform:uppercase;
     letter-spacing:.04em;color:#544D80;padding:1.4mm 3mm 1.4mm 0;vertical-align:top;font-weight:700}
@@ -457,7 +464,9 @@ table.gt.vr .vr-l{color:var(--tx2)}
   .p-blk>h3+table{break-before:avoid}
   .p-kpi{border:.4pt solid #C9C4E8;border-left:1.5pt solid #3B26D3;border-radius:1.5mm;padding:2mm 2.5mm}
   .p-kpi .l{display:block;font-size:7.5pt;text-transform:uppercase;letter-spacing:.06em;color:#544D80}
-  .p-kpi .v{display:block;font-size:14pt;font-weight:800;color:#2A1AA6;line-height:1.1;margin:.6mm 0}
+  .p-kpi .v{display:block;font-size:14pt;font-weight:800;color:#2A1AA6;line-height:1.15;margin:.6mm 0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .p-kpi .v.vmd{font-size:11.5pt} .p-kpi .v.vsm{font-size:9.5pt} .p-kpi .v.vxs{font-size:8pt}
   .p-kpi .h{display:block;font-size:7.5pt;color:#8B85AE}
   .p-a3g{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
   .p-a3{border:.4pt solid #C9C4E8;border-radius:1.5mm;padding:2mm 2.5mm;break-inside:avoid}
@@ -680,8 +689,9 @@ function fmt(v, f){
     case 'p1': return F.n1.format(n * 100) + '%';
     case 'p2': return F.n2.format(n * 100) + '%';
     case 'pp1': return F.n1.format(n) + '%';           // ya viene en 0-100
-    case 'money': return '$ ' + F.n0.format(n);
-    case 'money2': return '$ ' + F.n2.format(n);
+    // espacio duro: si no, el $ se queda solo en una línea cuando el valor es largo
+    case 'money': return '$\u00A0' + F.n0.format(n);
+    case 'money2': return '$\u00A0' + F.n2.format(n);
     case 'date': return v ? new Date(v + 'T00:00:00').toLocaleDateString('es-CO') : '';
     default: return isNum(v) ? F.auto.format(n) : String(v);
   }
@@ -1146,6 +1156,28 @@ const CHART = (function(){
     return Math.min(w, 96);
   }
   /** decide rotación / salto / recorte de las etiquetas del eje X */
+  /** Parte una etiqueta en renglones que quepan en `w` px, hasta `max` líneas.
+   *  Devuelve null si ni partiéndola cabe (entonces habrá que rotarla). */
+  function wrapLbl(s, w, size, max){
+    const t = str(s).trim();
+    if (!t) return [''];
+    if (tw(t, size) <= w) return [t];
+    const pal = t.split(/\s+/), out = [];
+    let cur = '';
+    for (let i = 0; i < pal.length; i++){
+      const p = pal[i];
+      const trial = cur ? cur + ' ' + p : p;
+      if (tw(trial, size) <= w){ cur = trial; continue; }
+      if (cur) out.push(cur);
+      // una palabra suelta más ancha que el hueco: no hay reparto posible
+      if (tw(p, size) > w) return null;
+      cur = p;
+      if (out.length >= max) return null;
+    }
+    if (cur) out.push(cur);
+    return out.length <= max ? out : null;
+  }
+
   function planX(labels, w, size, compact){
     const n = Math.max(1, labels.length);
     const slot = w / n;
@@ -1154,6 +1186,24 @@ const CHART = (function(){
     labels.forEach(l => { maxw = Math.max(maxw, tw(ell(l, cap), size)); });
     if (maxw <= slot - 5)
       return { rot:0, every: Math.max(1, Math.ceil((maxw + 6) / Math.max(1, slot))), cap:cap, h: size + 13 };
+
+    /* Antes de rotar y recortar: intentar repartir la etiqueta en renglones.
+       Se lee mucho mejor horizontal y completa que en diagonal y cortada. */
+    const maxLin = compact ? 2 : 3;
+    const anchoTxt = Math.max(28, slot - 8);
+    if (anchoTxt >= 34){
+      const lineas = [];
+      let ok = true, alto = 1;
+      for (let i = 0; i < labels.length; i++){
+        if (!str(labels[i])){ lineas.push(['']); continue; }
+        const L = wrapLbl(labels[i], anchoTxt, size, maxLin);
+        if (!L){ ok = false; break; }
+        lineas.push(L); alto = Math.max(alto, L.length);
+      }
+      if (ok) return { rot:0, every:1, cap:200, wrap:lineas, ancho:anchoTxt,
+                       h: alto * (size + 3) + 12 };
+    }
+
     cap = capRot; maxw = 0;
     labels.forEach(l => { maxw = Math.max(maxw, tw(ell(l, cap), size)); });
     const every = slot >= 12 ? 1 : Math.ceil(12 / Math.max(1, slot));
@@ -1209,6 +1259,12 @@ const CHART = (function(){
       const x = xs[i];
       if (px.rot) s += T(x - 2, g.y + g.h + 10, ell(l, px.cap),
                          { anchor:'end', rot:px.rot, size:size, style:S_AX, dy:'middle', tip:l });
+      else if (px.wrap){
+        // etiqueta horizontal repartida en renglones centrados bajo su tick
+        (px.wrap[i] || ['']).forEach((ln, j) =>
+          s += T(x, g.y + g.h + size + 5 + j * (size + 3), ln,
+                 { anchor:'middle', size:size, style:S_AX, tip:l }));
+      }
       else        s += T(x, g.y + g.h + size + 5, ell(l, px.cap),
                          { anchor:'middle', size:size, style:S_AX, tip:l });
     });
@@ -1245,12 +1301,28 @@ const CHART = (function(){
   }
 
   /* ------------------------------------------------------------ leyenda */
+  /** Ancho de texto sensible a las mayúsculas: el factor 0,56 de tw() vale para
+   *  texto mixto, pero los rótulos de leyenda van en versales y se quedaban
+   *  cortos, de modo que una entrada se montaba sobre la siguiente. */
+  function twCaps(s, size){
+    const t = str(s);
+    let u = 0;
+    for (let i = 0; i < t.length; i++){
+      const c = t.charAt(i);
+      u += c === ' ' ? 0.30
+         : (c >= 'A' && c <= 'Z') || c === 'Ñ' || c === '%' || c === 'Á' || c === 'É' ||
+           c === 'Í' || c === 'Ó' || c === 'Ú' ? 0.68
+         : 0.55;
+    }
+    return u * (size || 11);
+  }
+
   function legendLay(items, w, size){
-    const box = 12, gap = 16;
+    const box = 12, gap = 20;
     const rows = [[]];
     let rw = 0;
     items.forEach(it => {
-      const iw = box + 5 + tw(it.name, size) + gap;
+      const iw = box + 6 + twCaps(it.name, size) + gap;
       if (rw + iw > w && rows[rows.length - 1].length){ rows.push([]); rw = 0; }
       rows[rows.length - 1].push({ it: it, w: iw }); rw += iw;
     });
@@ -1270,7 +1342,7 @@ const CHART = (function(){
           s += CI(xx + lay.box / 2, yy, 4.2, { fill: it.color });
         else
           s += RC(xx, yy - 5, lay.box, 10, { rx:2.5, fill: it.color, opacity: it.op || null });
-        s += T(xx + lay.box + 5, yy, it.name, { size: lay.size, dy:'middle', style:S_AX, tip: it.tip || it.name });
+        s += T(xx + lay.box + 6, yy, it.name, { size: lay.size, dy:'middle', style:S_AX, tip: it.tip || it.name });
         xx += e.w;
       });
       yy += lay.size + 7;
@@ -6029,6 +6101,18 @@ function rowsOf(d, key, min){
  *  `ro` = la celda es calculada/solo lectura: se dibuja SIEMPRE como texto,
  *  porque el valor ya viene formateado en español ("1.234,5", "87,4%") y un
  *  <input type=number> rechazaría esa cadena y quedaría en blanco. */
+/** ¿La columna contiene números? Manda el CONTENIDO, no el hecho de ser
+ *  calculada: una columna calculada que devuelve texto (un nombre, una fase)
+ *  llevaba la cabecera a la derecha y el dato a la izquierda. Cabecera y dato
+ *  se alinean siempre igual. */
+function colNum(c){
+  if (!c) return false;
+  if (c.align === 'right' || c.databar) return true;
+  if (c.align === 'left' || c.align === 'center') return false;
+  if (c.input === 'number' || c.input === 'money' || c.input === 'percent') return true;
+  return !!c.calc && !!c.fmt && c.fmt !== 'date';
+}
+
 function inputTag(cls, spec, val, attrs, ro){
   if (ro && spec.input !== 'textarea' && spec.input !== 'check')
     spec = Object.assign({}, spec, { input:'text' });
@@ -6117,7 +6201,7 @@ R.b_grid = function(b, t, d, ctx){
   cols.forEach(c => { if (c.databar) maxes[c.k] = Math.max.apply(null, [1e-9].concat(computed.map(v => Math.abs(num(v[c.k]))))); });
 
   let h = '<div class="twrap"><table class="gt"><thead><tr><th class="rn"></th>' +
-    cols.map(c => '<th' + (c.align === 'right' || c.input === 'number' || c.calc ? ' class="n"' : '') +
+    cols.map(c => '<th' + (colNum(c) ? ' class="n"' : '') +
       (c.w ? ' style="min-width:' + (typeof c.w === 'number' ? c.w + 'px' : c.w) + '"' : '') +
       (c.help ? ' title="' + esc(c.help) + '"' : '') + '>' + esc(c.label) + '</th>').join('') +
     (b.fixed ? '' : '<th style="width:28px"></th>') + '</tr></thead><tbody>';
@@ -6133,7 +6217,10 @@ R.b_grid = function(b, t, d, ctx){
       const tone = c.tone ? (c.tone(cv[c.k], r, i, rows, d, ctx) || '') : '';
       const attrs = ' data-t="' + t.id + '" data-g="' + b.key + '" data-r="' + i + '" data-c="' + c.k + '"' +
         (ro ? ' readonly data-calc="1"' : '');
-      let inner = inputTag('ci', c, v == null ? '' : v, attrs, ro);
+      // el dato hereda la alineación de su cabecera aunque sea de sólo lectura
+      const clsCel = 'ci' + (colNum(c) && c.input !== 'select' && c.input !== 'textarea' &&
+                             c.input !== 'check' ? ' num' : '');
+      let inner = inputTag(clsCel, c, v == null ? '' : v, attrs, ro);
       if (c.databar){
         const w = clamp(Math.abs(num(cv[c.k])) / maxes[c.k] * 100, 0, 100);
         inner = '<div class="databar"><i class="dbf" style="width:' + w.toFixed(1) + '%"></i>' + inner + '</div>';
@@ -6150,7 +6237,9 @@ R.b_grid = function(b, t, d, ctx){
     h += '<tfoot><tr><td class="rn"></td>';
     cols.forEach((c, ci) => {
       const f = fs.find(x => x.k === c.k);
-      if (f) h += '<td>' + esc(f.label !== undefined && ci === 0 ? f.label : fmt(f.calc(rows, d, ctx, computed), f.fmt)) + '</td>';
+      if (f) h += '<td>' + esc(typeof f.calc === 'function' && !(f.label !== undefined && ci === 0)
+                                ? fmt(f.calc(rows, d, ctx, computed), f.fmt)
+                                : (f.label !== undefined ? f.label : (f.value !== undefined ? f.value : ''))) + '</td>';
       else if (ci === 0) { const lb = fs.find(x => x.k === '__label'); h += '<td class="lbl">' + esc(lb ? lb.label : 'TOTAL') + '</td>'; }
       else h += '<td></td>';
     });
@@ -6200,10 +6289,15 @@ R.b_matrix = function(b, t, d, ctx){
 R.b_cards = function(b, t, d, ctx){
   const items = callv(b.items, d, ctx) || [];
   if (!items.length) return '';
-  const inner = '<div class="kpis">' + items.map(k =>
-    '<div class="kpi ' + (k.tone || '') + '"><div class="k-l">' + esc(k.label) + '</div>' +
-    '<div class="k-v">' + esc(k.value) + '</div>' +
-    (k.hint ? '<div class="k-h">' + esc(k.hint) + '</div>' : '') + '</div>').join('') + '</div>';
+  // el valor nunca se parte: se le baja el cuerpo según su largo para que
+  // quepa en una sola línea (antes «$ 46.800.000» dejaba el $ arriba solo)
+  const inner = '<div class="kpis">' + items.map(k => {
+    const v = String(k.value == null ? '' : k.value);
+    const cls = v.length >= 18 ? ' vxs' : v.length >= 14 ? ' vsm' : v.length >= 11 ? ' vmd' : '';
+    return '<div class="kpi ' + (k.tone || '') + '"><div class="k-l">' + esc(k.label) + '</div>' +
+      '<div class="k-v' + cls + '">' + esc(v) + '</div>' +
+      (k.hint ? '<div class="k-h">' + esc(k.hint) + '</div>' : '') + '</div>';
+  }).join('') + '</div>';
   return b.bare ? inner : R.card(b.title, inner);
 };
 
@@ -22971,7 +23065,8 @@ const PRINT = (function(){
         // las últimas columnas se pierden: se marca la tabla para que ajuste
         const anchas = cols.length >= 12 ? ' p-wide' : (cols.length >= 7 ? ' p-media' : '');
         let h = '<table class="p-tab' + anchas + '"><thead><tr><th class="n">#</th>' +
-          cols.map(c => '<th>' + esc(String(c.label).replace(/\n/g, ' ')) + '</th>').join('') +
+          cols.map(c => '<th' + (colNum(c) ? ' class="num"' : '') + '>' +
+            esc(String(c.label).replace(/\n/g, ' ')) + '</th>').join('') +
           '</tr></thead><tbody>';
         rows.forEach((r, i) => {
           if (!hasContent(r)) return;
@@ -22980,7 +23075,7 @@ const PRINT = (function(){
             if (typeof v === 'number' && !isFinite(v)) v = '';
             else if (c.fmt) v = fmt(v, c.fmt);
             else if (c.input === 'date' && v) v = fmt(v, 'date');
-            const al = (c.calc || c.input === 'number') ? ' class="num"' : '';
+            const al = colNum(c) ? ' class="num"' : '';
             return '<td' + al + '>' + esc(V(v)) + '</td>';
           }).join('') + '</tr>';
         });
@@ -22989,8 +23084,17 @@ const PRINT = (function(){
           const fs = callv(b.foot, rows, d, ctx) || [];
           h += '<tfoot><tr><td class="n"></td>' + cols.map((c, ci) => {
             const f = fs.find(x => x.k === c.k);
-            if (f) return '<td class="num">' + esc(V(fmt(f.calc(rows, d, ctx, comp), f.fmt))) + '</td>';
-            return '<td>' + (ci === 0 ? 'TOTAL' : '') + '</td>';
+            // un pie puede traer un rótulo fijo en vez de un cálculo: si se
+            // llamaba f.calc a ciegas, la tabla entera se caía del informe
+            if (f && typeof f.calc === 'function')
+              return '<td class="num">' + esc(V(fmt(f.calc(rows, d, ctx, comp), f.fmt))) + '</td>';
+            if (f && (f.label !== undefined || f.value !== undefined))
+              return '<td>' + esc(V(f.label !== undefined ? f.label : f.value)) + '</td>';
+            if (ci === 0){
+              const lb = fs.find(x => x.k === '__label');
+              return '<td>' + esc(lb && lb.label !== undefined ? lb.label : 'TOTAL') + '</td>';
+            }
+            return '<td></td>';
           }).join('') + '</tr></tfoot>';
         }
         h += '</table>';
@@ -23172,9 +23276,16 @@ const PRINT = (function(){
       });
     }
 
+    const informe = portada(titulo, sub) + cuerpo;
+
+    // Dentro de un iframe (la versión publicada como página web) el navegador
+    // bloquea el diálogo de impresión sin avisar: el botón parecía no hacer
+    // nada. Ahí el informe se abre en una pestaña propia, que sí puede imprimir.
+    if (enMarco()){ aparte(titulo, informe); return; }
+
     let host = $('#printarea');
     if (!host){ host = document.createElement('div'); host.id = 'printarea'; document.body.appendChild(host); }
-    host.innerHTML = portada(titulo, sub) + cuerpo;
+    host.innerHTML = informe;
     document.body.classList.add('printing');
 
     // Cada impresión lleva su propio testigo: así el temporizador de una
@@ -23188,6 +23299,87 @@ const PRINT = (function(){
     };
     window.addEventListener('afterprint', limpiar);
     setTimeout(() => { window.print(); setTimeout(limpiar, 2000); }, 150);
+  }
+
+  /* ------------------------------------------------- impresión en marco */
+  function enMarco(){
+    try { return window.top !== window.self; } catch(e){ return true; }
+  }
+
+  /** Hoja de estilos del informe, lista para una ventana aparte: se reutilizan
+   *  tal cual las reglas de @media print y se añade lo justo para que además
+   *  se vea en pantalla mientras el usuario decide. */
+  /** Repite fuera de @media print las reglas que hay dentro, para que la
+   *  ventana aparte se vea en pantalla igual que saldrá en el papel. */
+  function sinMediaPrint(css){
+    const MARCA = '@media print{';
+    let extra = '', desde = 0;
+    for (;;){
+      const i = css.indexOf(MARCA, desde);
+      if (i < 0) break;
+      let j = i + MARCA.length, prof = 1;
+      while (j < css.length && prof > 0){
+        const c = css.charAt(j);
+        if (c === '{') prof++; else if (c === '}') prof--;
+        j++;
+      }
+      extra += css.slice(i + MARCA.length, j - 1) + '\n';
+      desde = j;
+    }
+    return extra;
+  }
+
+  function hojaEstilos(){
+    let css = '';
+    try {
+      const ss = document.querySelectorAll('style');
+      for (let i = 0; i < ss.length; i++) css += ss[i].textContent + '\n';
+    } catch(e){}
+    css += '\n' + sinMediaPrint(css) + '\n';
+    return css + '\n' +
+      'html,body{height:auto;overflow:visible;margin:0;background:#EEEDF7}\n' +
+      '#app,#toasts{display:none!important}\n' +
+      '#printarea{display:block;background:#fff;max-width:210mm;margin:0 auto;\n' +
+      '  padding:14mm 12mm;box-shadow:0 2px 18px rgba(0,0,0,.18);font-size:10.5pt;\n' +
+      '  line-height:1.45;color:#16123A;font-family:\'Segoe UI\',system-ui,sans-serif}\n' +
+      '@media print{ #printarea{max-width:none;margin:0;padding:0;box-shadow:none} }\n' +
+      '#barra{position:sticky;top:0;z-index:9;display:flex;gap:10px;align-items:center;\n' +
+      '  background:#3B26D3;color:#fff;padding:9px 14px;font:600 13px/1.3 \'Segoe UI\',sans-serif}\n' +
+      '#barra button{font:700 13px \'Segoe UI\',sans-serif;padding:6px 14px;border:none;\n' +
+      '  border-radius:7px;background:#0FE17B;color:#05341C;cursor:pointer}\n' +
+      '@media print{ #barra{display:none} }\n';
+  }
+
+  function docInforme(titulo, informe){
+    return '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">' +
+      '<title>' + esc(titulo) + ' · Rehavid</title><style>' + hojaEstilos() + '</style></head><body>' +
+      '<div id="barra"><button onclick="window.print()">Imprimir</button>' +
+      '<span>' + esc(titulo) + ' — si el diálogo no aparece, usa Ctrl+P</span></div>' +
+      '<div id="printarea">' + informe + '</div>' +
+      '<script>setTimeout(function(){try{window.print();}catch(e){}},400);<\/script>' +
+      '</body></html>';
+  }
+
+  /** Abre el informe en una pestaña propia; si el navegador bloquea la ventana,
+   *  lo entrega como archivo para abrirlo e imprimirlo a mano. */
+  function aparte(titulo, informe){
+    const doc = docInforme(titulo, informe);
+    let w = null;
+    try { w = window.open('', '_blank'); } catch(e){ w = null; }
+    if (w && w.document){
+      try {
+        w.document.open(); w.document.write(doc); w.document.close();
+        toast('Informe abierto en una pestaña nueva: pulsa Imprimir allí', 'ok', 6000);
+        return;
+      } catch(e){}
+    }
+    try {
+      download(new Blob([doc], { type:'text/html;charset=utf-8' }),
+               titulo.replace(/[\\/:*?"<>|]/g, '-') + ' - informe.html');
+      toast('El navegador bloqueó la ventana: se descargó el informe, ábrelo y pulsa Ctrl+P', 'warn', 9000);
+    } catch(e){
+      toast('No se pudo abrir el informe para imprimir', 'bad', 6000);
+    }
   }
 
   return { imprimir, herramienta, portada };
