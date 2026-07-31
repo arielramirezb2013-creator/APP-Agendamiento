@@ -102,7 +102,11 @@ renderNav(){
 renderView(){
   const v = $('#view');
   try {
-    if (ROUTE.view === 'tool' && ROUTE.tool && TOOL_BY_ID[ROUTE.tool]) v.innerHTML = R.tool(TOOL_BY_ID[ROUTE.tool]);
+    // antes de dibujar, cada formato hereda lo que ya se sabe del proyecto
+  if (ROUTE.view === 'tool' && typeof FLUJO !== 'undefined'){
+    try { FLUJO.propagar(ROUTE.tool); } catch(e){ console.warn('propagación', e); }
+  }
+  if (ROUTE.view === 'tool' && ROUTE.tool && TOOL_BY_ID[ROUTE.tool]) v.innerHTML = R.tool(TOOL_BY_ID[ROUTE.tool]);
     else if (ROUTE.view === 'modulo' && ROUTE.mod) v.innerHTML = UI.viewModulo(ROUTE.mod);
     else if (ROUTE.view === 'bi')        v.innerHTML = BI.render(ST.ctx());
     else if (ROUTE.view === 'exportar')  v.innerHTML = UI.viewExportar();
@@ -159,6 +163,11 @@ viewInicio(){
       '</div></div></div>';
   }
 
+  if (typeof FLUJO !== 'undefined' && hasContent(ST.all())){
+    try { h += '<div class="sect-t">Trazabilidad</div>' + FLUJO.panelCadena(); }
+    catch(e){ console.warn('cadena', e); }
+  }
+
   h += '<div class="sect-t">Fases de la metodología</div><div class="grid3">';
   FASES.forEach(m => {
     const ts = toolsOf(m.id), pr = modProgress(m.id), on = ST.modOn(m.id);
@@ -209,6 +218,10 @@ viewModulo(modId){
       '<span class="xlref">' + esc(t.sheet) + '</span></div></div></div>' +
       '</div></div>';
   }).join('') + '</div>';
+  if (typeof FLUJO !== 'undefined'){
+    try { h += '<div class="sect-t">Cierre de la fase</div>' + FLUJO.panelPuerta(modId); }
+    catch(e){ console.warn('puerta', e); }
+  }
   return h;
 },
 

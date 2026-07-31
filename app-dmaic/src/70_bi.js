@@ -68,6 +68,7 @@ const BI = (function(){
     { k:'desempeno',  n:'DESEMPEÑO' },
     { k:'financiero', n:'FINANCIERO' },
     { k:'ejecucion',  n:'EJECUCIÓN' },
+    { k:'variables',  n:'VARIABLES POR FASE' },
     { k:'calidad',    n:'CALIDAD DEL ANÁLISIS' },
     { k:'riesgos',    n:'RIESGOS Y DECISIONES' }
   ];
@@ -947,6 +948,8 @@ const BI = (function(){
   }
 
   function secCalidad(S){
+    let _traza = '';
+    try { _traza = (typeof FLUJO !== 'undefined') ? FLUJO.panelCadena() : ''; } catch(e){ _traza=''; }
     const mods = completitud();
     const totalT = mods.reduce((a, m) => a + m.total, 0);
     const totalL = mods.reduce((a, m) => a + m.llenas, 0);
@@ -1002,7 +1005,7 @@ const BI = (function(){
     /* trazabilidad */
     h += '<div class="sect-t">Trazabilidad del proyecto</div>';
     h += trazabilidad(S);
-    return h;
+    return _traza + (h);
   }
 
   function eslabon(titulo, lista, roto, toolId, ayuda){
@@ -1143,6 +1146,7 @@ const BI = (function(){
       if (TAB === 'desempeno')  return secDesempeno(S);
       if (TAB === 'financiero') return secFinanciero(S);
       if (TAB === 'ejecucion')  return secEjecucion(S);
+      if (TAB === 'variables')  return secVariables(S);
       if (TAB === 'calidad')    return secCalidad(S);
       if (TAB === 'riesgos')    return secRiesgos(S);
       return secResumen(S);
@@ -1152,6 +1156,37 @@ const BI = (function(){
         esc(e && e.message ? e.message : String(e)) +
         '<br><br>Tus datos están a salvo: cambia de pestaña o revisa la herramienta que acabas de editar.</div>';
     }
+  }
+
+  /* ---------------------------------------- VARIABLES POR FASE ----- */
+  /* No mide cuántos formatos se llenaron sino las variables propias de cada
+     paso del método, con su referencia y su lectura. */
+  function secVariables(){
+    let h = '<div class="note">Cada fase del DMAIC tiene sus propias variables. Aquí no se mide ' +
+      'cuántos formatos se diligenciaron, sino <b>qué dicen los números de cada paso</b>: su valor de hoy, ' +
+      'contra qué se compara y qué decisión implica.</div>';
+    let ok = 0, tot = 0;
+    ST.activeMods().forEach(m => {
+      const vs = (typeof VARS !== 'undefined') ? VARS.deFase(m.id) : [];
+      tot += vs.length; ok += vs.filter(v => v.tono(v.v) === 'ok').length;
+    });
+    if (tot) h += '<div class="kpis" style="margin-bottom:16px"><div class="kpi ' +
+      (ok === tot ? 'ok' : ok >= tot * 0.6 ? 'warn' : 'bad') + '">' +
+      '<div class="k-l">Variables en verde</div><div class="k-v">' + ok + ' / ' + tot + '</div>' +
+      '<div class="k-h">de todas las fases activas</div></div>' +
+      '<div class="kpi"><div class="k-l">Fases evaluadas</div><div class="k-v">' +
+      ST.activeMods().length + '</div><div class="k-h">módulos activos del proyecto</div></div></div>';
+    ST.activeMods().forEach(m => {
+      try { h += (typeof VARS !== 'undefined') ? VARS.panel(m.id) : ''; }
+      catch(e){ console.warn('variables', m.id, e); }
+    });
+    // puerta de cada fase, una tras otra
+    h += '<div class="sect-t">Decisión de paso entre fases</div>';
+    ST.activeMods().forEach(m => {
+      try { h += (typeof FLUJO !== 'undefined') ? FLUJO.panelPuerta(m.id) : ''; }
+      catch(e){ console.warn('puerta', m.id, e); }
+    });
+    return h;
   }
 
   function tabsHTML(){
