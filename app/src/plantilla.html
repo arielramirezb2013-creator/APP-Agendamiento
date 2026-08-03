@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rehavid · App de modulación financiera</title>
+<meta name="description" content="Documento técnico maestro de Rehavid S.A.S. sobre modelación financiera de deuda, liquidez, incertidumbre y aprendizaje certificado. Formación, especificación, laboratorio y motor de análisis.">
+<meta name="author" content="Rehavid S.A.S.">
+<style>__ESTILOS__</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="nav" id="nav"></aside>
+  <main class="lienzo">
+    <div class="cabecera no-imprimir">
+      <div class="ruta" id="ruta">Inicio · <strong>Portada</strong></div>
+      <div class="acciones">
+        <span style="font-size:10.5px;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em;font-weight:600">Papel</span>
+        <div class="interruptor">
+          <button data-papel="Letter" onclick="fijarPapel('Letter')">Carta</button>
+          <button data-papel="A4" onclick="fijarPapel('A4')">A4</button>
+        </div>
+        <button class="secundario" onclick="imprimir(false)">Imprimir sección</button>
+        <button class="secundario" onclick="imprimir(true)">Imprimir todo</button>
+      </div>
+    </div>
+    <div class="contenido" id="contenido"></div>
+  </main>
+</div>
+
+<script>__DATOS_DOC__</script>
+<script>__DATOS_FORM__</script>
+<script>__DOC_TEXTO__</script>
+<script>__XLSM__</script>
+<script>__GRAFICOS__</script>
+<script>__NUCLEO__</script>
+<script>__MODULOS__</script>
+<script>__ARRANQUE__</script>
+</body>
+</html>

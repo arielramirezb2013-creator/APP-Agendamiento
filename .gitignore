@@ -17,3 +17,7 @@ entregables/ml/modelo/REPORTE_ENTRENAMIENTO.md
 
 # OS
 .DS_Store
+
+# Artefactos de prueba de la app (se regeneran con probar.py)
+app/dist/vista_impresion.pdf
+app/dist/capturas/
