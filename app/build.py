@@ -16,7 +16,7 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(AQUI, 'src')
 DIST = os.path.join(AQUI, 'dist')
 DOCX = os.path.join(AQUI, 'fuente', 'Documento_Tecnico_App_Modulacion_Financiera_Rehavid_V1.docx')
-XLSM = os.path.join(DIST, 'Rehavid_Modelacion_Financiera_v1.xlsm')
+XLSM = os.path.join(DIST, 'Rehavid_Herramienta_Financiera.xlsm')
 SALIDA = os.path.join(DIST, 'Rehavid_App_Modulacion_Financiera.html')
 
 
@@ -107,12 +107,16 @@ def construir():
         '__ESTILOS__': css,
         '__DATOS_DOC__': leer(SRC, 'datos_documento.js'),
         '__DATOS_FORM__': leer(SRC, 'datos_formacion.js'),
+        '__DATOS_FORM_EXTRA__': leer(SRC, 'datos_formacion_extra.js'),
         '__DOC_TEXTO__': js_cadena('DOC_HTML', doc_html) + '\n' + js_cadena('DOC_TEXTO_PLANO', doc_plano),
         '__XLSM__': f'const XLSM_B64 = "{xlsm_b64}";',
+        '__ICONOS__': leer(SRC, 'iconos.js'),
         '__GRAFICOS__': leer(SRC, 'graficos.js'),
         '__NUCLEO__': leer(SRC, 'app_nucleo.js'),
-        '__MODULOS__': leer(SRC, 'app_modulos.js'),
-        '__ARRANQUE__': leer(SRC, 'app_arranque.js'),
+        '__MOTOR__': leer(SRC, 'motor_financiero.js'),
+        '__MOD_FORMACION__': leer(SRC, 'mod_formacion.js'),
+        '__MOD_MANUAL__': leer(SRC, 'mod_manual.js'),
+        '__MOD_HERRAMIENTA__': leer(SRC, 'mod_herramienta.js'),
     }
     for marca, contenido in piezas.items():
         if marca not in plantilla:

@@ -30,13 +30,10 @@ ROJO = '#B23B5C'
 
 def leer_datos():
     """Ejecuta los archivos JS de datos en Node y devuelve su contenido como JSON."""
-    claves = ['META','RF','RNF','UNIDADES','PREGUNTAS','FUENTES','TRAZABILIDAD',
-              'FORMULAS','REGLAS_FIN','RIESGOS','COMPONENTES','ESTADOS','MVP',
-              'PENDIENTES','CASOS','PRINCIPIOS','ROLES','TABLEROS','RUTAS']
+    claves = ['FORMULAS', 'REGLAS_FIN', 'ESTADOS', 'RUTAS', 'MENSAJES']
     # Los archivos declaran con const, que no se expone al contexto de vm:
     # se concatenan en un solo script que termina evaluando el objeto.
-    fuente = '\n'.join(open(os.path.join(SRC, f), encoding='utf-8').read()
-                       for f in ('datos_documento.js', 'datos_formacion.js'))
+    fuente = open(os.path.join(SRC, 'datos_documento.js'), encoding='utf-8').read()
     guion = (fuente + '\nprocess.stdout.write(JSON.stringify({' +
              ','.join(claves) + '}));\n')
     p = os.path.join(AQUI, '_dump.js')
@@ -683,92 +680,55 @@ def construir(destino):
         FL.data_validation(r, 2, r, 2,
                            {'validate': 'list', 'source': ['inicio', 'proceso', 'decision', 'fin']})
 
-    # ================= REQUISITOS =================
-    R = wb.add_worksheet('Requisitos'); R.set_vba_name('Sheet5')
-    R.hide_gridlines(2)
-    R.write('A1', 'Requisitos del producto', f['titulo'])
-    R.write('A2', '§11.1 y §11.2 del documento técnico maestro.', f['sub'])
-    for c, t in enumerate(['ID', 'Prioridad', 'Módulo', 'Requisito', 'Origen', 'Criterio de aceptación']):
-        R.write(2, c, t, f['th'])
-    R.set_column('A:A', 9); R.set_column('B:B', 10); R.set_column('C:C', 15)
-    R.set_column('D:D', 52); R.set_column('E:E', 18); R.set_column('F:F', 34)
-    R.freeze_panes(3, 0)
-    for i, r_ in enumerate(D['RF']):
-        for c, v in enumerate(r_):
-            R.write(3 + i, c, v, f['txt'] if i % 2 else f['txtz'])
-    R.conditional_format(3, 1, 3 + len(D['RF']) - 1, 1,
-                         {'type': 'text', 'criteria': 'containing', 'value': 'Alta',
-                          'format': wb.add_format({'font_color': MORADO, 'bold': True, 'font_size': 9,
-                                                   'border': 1, 'border_color': LAVANDA})})
-    R.autofilter(2, 0, 2 + len(D['RF']), 5)
+    # ================= SUPUESTOS =================
+    D = wb.add_worksheet('Supuestos'); D.set_vba_name('Sheet5')
+    D.hide_gridlines(2)
+    D.write('A1', 'Supuestos y su fuente', f['titulo'])
+    D.write('A2', 'RN-FIN-05: toda variable de entrada debe identificar fuente, responsable, fecha y racional. '
+                  'RN-FIN-06: histórico, presupuesto y proyección no se mezclan sin etiqueta.', f['sub'])
+    for c, t in enumerate(['Variable', 'Valor', 'Unidad', 'Tipo', 'Periodo', 'Fuente', 'Racional', 'Responsable', 'Fecha']):
+        D.write(2, c, t, f['th'])
+    D.set_column('A:A', 30); D.set_column('B:B', 13); D.set_column('C:C', 14)
+    D.set_column('D:D', 14); D.set_column('E:E', 18); D.set_column('F:G', 38); D.set_column('H:I', 16)
+    for i in range(24):
+        for c in range(9):
+            D.write_blank(3 + i, c, f['txt'] if i % 2 else f['txtz'])
+        D.data_validation(3 + i, 3, 3 + i, 3,
+                          {'validate': 'list', 'source': ['Dato histórico', 'Presupuesto', 'Proyección']})
+    D.conditional_format(3, 5, 26, 5,
+                         {'type': 'blanks',
+                          'format': wb.add_format({'bg_color': '#FAE7EC', 'border': 1, 'border_color': LAVANDA})})
+    D.write(29, 0, 'Las celdas de Fuente vacías se resaltan: un supuesto sin fuente deja el modelo en borrador (RF-010).', f['nota'])
 
-    base = 3 + len(D['RF']) + 2
-    R.write(base - 1, 0, 'Requisitos no funcionales', f['h2'])
-    for c, t in enumerate(['ID', 'Categoría', 'Requisito']):
-        R.write(base, c, t, f['th'])
-    for i, r_ in enumerate(D['RNF']):
-        flojo = any(k in r_[2] for k in ('por definir', 'queda por validar')) or r_[2].startswith('Definir')
-        est = f['aviso'] if flojo else (f['txt'] if i % 2 else f['txtz'])
-        for c, v in enumerate(r_):
-            R.write(base + 1 + i, c, v, est)
-    R.write(base + 1 + len(D['RNF']) + 1, 0,
-            'Las filas en ámbar no tienen criterio verificable: su texto aplaza la definición. '
-            'Un requisito sin criterio de aceptación no es comprobable.', f['nota'])
-
-    # ================= FORMACIÓN =================
-    FO = wb.add_worksheet('Formación'); FO.set_vba_name('Sheet6')
-    FO.hide_gridlines(2)
-    FO.write('A1', 'Módulo 1 · Ruta de formación', f['titulo'])
-    FO.write('A2', 'Ocho unidades (§4.1) y banco de preguntas.', f['sub'])
-    for c, t in enumerate(['Unidad', 'Título', 'Competencia', 'Traducción a la app']):
-        FO.write(2, c, t, f['th'])
-    FO.set_column('A:A', 9); FO.set_column('B:B', 32); FO.set_column('C:C', 66); FO.set_column('D:D', 44)
-    for i, u in enumerate(D['UNIDADES']):
-        est = f['txt'] if i % 2 else f['txtz']
-        FO.write(3 + i, 0, u['codigo'], est); FO.write(3 + i, 1, u['titulo'], est)
-        FO.write(3 + i, 2, u['competencia'], est); FO.write(3 + i, 3, u['aplicacion'], est)
-
-    b = 3 + len(D['UNIDADES']) + 2
-    FO.write(b - 1, 0, 'Banco de preguntas', f['h2'])
-    for c, t in enumerate(['ID', 'Unidad', 'Origen', 'Objetivo', 'Enunciado', 'Respuesta correcta']):
-        FO.write(b, c, t, f['th'])
-    for i, q in enumerate(D['PREGUNTAS']):
-        est = f['txt'] if i % 2 else f['txtz']
-        FO.write(b + 1 + i, 0, q['id'], est); FO.write(b + 1 + i, 1, q['u'], est)
-        FO.write(b + 1 + i, 2, 'documento' if q['origen'] == 'doc' else 'añadido', est)
-        FO.write(b + 1 + i, 3, q['objetivo'], est); FO.write(b + 1 + i, 4, q['enunciado'], est)
-        FO.write(b + 1 + i, 5, q['opciones'][q['correcta']], est)
-    FO.write(b + 1 + len(D['PREGUNTAS']) + 1, 0,
-             'Los ítems marcados «añadido» no están en el documento. Se incorporaron porque la Tabla 16 aporta '
-             'una sola pregunta por unidad y §5.2 exige repreguntar con un ítem distinto del mismo objetivo.', f['nota'])
-
-    # ================= FUENTES =================
-    S = wb.add_worksheet('Fuentes'); S.set_vba_name('Sheet7')
-    S.hide_gridlines(2)
-    S.write('A1', 'Fuentes y trazabilidad', f['titulo'])
-    S.write('A2', '§13 del documento técnico maestro.', f['sub'])
-    for c, t in enumerate(['ID', 'Fuente', 'Uso', 'Tipo', 'Citas']):
-        S.write(2, c, t, f['th'])
-    S.set_column('A:A', 10); S.set_column('B:B', 62); S.set_column('C:C', 46)
-    S.set_column('D:D', 15); S.set_column('E:E', 8)
-    for i, fu in enumerate(D['FUENTES']):
-        est = f['txt'] if i % 2 else f['txtz']
-        for c in range(4):
-            S.write(3 + i, c, fu[c], est)
-        S.write_number(3 + i, 4, fu[4], f['num'])
-    S.conditional_format(3, 4, 3 + len(D['FUENTES']) - 1, 4, {'type': 'data_bar', 'bar_color': MORADO})
-
-    b2 = 3 + len(D['FUENTES']) + 2
-    S.write(b2 - 1, 0, 'Matriz de trazabilidad', f['h2'])
-    for c, t in enumerate(['Tema', 'Origen', 'Ubicación', 'Resultado']):
-        S.write(b2, c, t, f['th'])
-    for i, tr in enumerate(D['TRAZABILIDAD']):
-        est = f['txt'] if i % 2 else f['txtz']
-        for c, v in enumerate(tr):
-            S.write(b2 + 1 + i, c, v, est)
+    # ================= COVENANTS =================
+    C = wb.add_worksheet('Covenants'); C.set_vba_name('Sheet6')
+    C.hide_gridlines(2)
+    C.write('A1', 'Covenants y restricciones', f['titulo'])
+    C.write('A2', 'RN-FIN-03: tipo, umbral, periodo, fuente y vigencia. El umbral proviene del contrato: '
+                  'la app no debe inventarlo (§8.2).', f['sub'])
+    for c, t in enumerate(['Indicador', 'Umbral', 'Frecuencia', 'Periodo de cura', 'Consecuencia',
+                           'Fuente contractual', 'Vigente desde', 'Vigente hasta']):
+        C.write(2, c, t, f['th'])
+    C.set_column('A:A', 26); C.set_column('B:B', 11); C.set_column('C:C', 16)
+    C.set_column('D:D', 18); C.set_column('E:F', 34); C.set_column('G:H', 15)
+    C.write(3, 0, 'DSCR mínimo', f['txtz'])
+    C.write_formula(3, 1, '=covenant', f['num2'])
+    C.write(3, 2, 'Cada periodo', f['txtz'])
+    for c in range(3, 8):
+        C.write_blank(3, c, f['txtz'])
+    for i in range(1, 12):
+        for c in range(8):
+            C.write_blank(3 + i, c, f['txt'] if i % 2 else f['txtz'])
+    C.conditional_format(3, 5, 14, 5,
+                         {'type': 'blanks',
+                          'format': wb.add_format({'bg_color': '#FAE7EC', 'border': 1, 'border_color': LAVANDA})})
+    C.merge_range('A17:H18',
+                  'Un covenant sin fuente permite guardar borrador, pero impide aprobar el modelo y calcular la '
+                  'capacidad máxima definitiva (CP-008). El periodo de cura y la consecuencia determinan el efecto '
+                  'real del incumplimiento: no es lo mismo 90 días de cura que aceleración inmediata.', f['aviso'])
 
     # ---- ajustes de impresión en todas las hojas ----
-    for ws in (P, M, E, FL, R, FO, S):
+    for ws in (P, M, E, FL, D, C):
         ws.set_landscape()
         ws.set_paper(1)                 # Carta
         ws.fit_to_pages(1, 0)
