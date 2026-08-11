@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Gestión Lean de proyectos Rehavid: empresa, proyecto, producto, actividad, flujo, alertas y decisiones." />
+  <title>Rehavid | Gestión Lean de proyectos</title>
+  <style>
+    :root{
+      --bg:#f5f7fa;--surface:#fff;--surface-2:#f8fafc;--text:#172033;--muted:#64748b;--line:#dfe6ee;
+      --brand:#135fa7;--brand-2:#0d477f;--brand-soft:#eaf3fc;--green:#16845b;--green-soft:#e7f6ef;
+      --amber:#b97300;--amber-soft:#fff3d9;--red:#c83d4f;--red-soft:#fdecef;--slate:#475569;
+      --shadow:0 8px 24px rgba(18,45,77,.08);--radius:14px;--sidebar:210px;
+    }
+    *{box-sizing:border-box}html{font-size:15px}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit}.hidden{display:none!important}
+    .app{min-height:100vh;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;background:#0d2744;color:#fff;padding:20px 14px;display:flex;flex-direction:column;gap:20px;z-index:20}
+    .brand{display:flex;align-items:center;gap:10px;padding:0 8px}.brand-mark{width:38px;height:38px;border-radius:11px;background:#fff;color:#0d477f;display:grid;place-items:center;font-weight:900}.brand strong{display:block;font-size:14px;letter-spacing:.08em}.brand span{display:block;font-size:10px;color:#b9c9da;margin-top:2px}
+    .nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#cbd8e6;border-radius:10px;padding:11px 12px;text-align:left;font-weight:720;display:flex;align-items:center;gap:10px}.nav button:hover{background:rgba(255,255,255,.08);color:#fff}.nav button.active{background:#fff;color:#0d477f}.nav-icon{width:22px;height:22px;border-radius:7px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:10px}.nav button.active .nav-icon{background:var(--brand-soft)}
+    .sidebar-foot{margin-top:auto;border-top:1px solid rgba(255,255,255,.12);padding:14px 8px 0;color:#aebfd0;font-size:10px;line-height:1.5}.save-state{display:flex;align-items:center;gap:7px;margin-top:8px}.save-dot{width:7px;height:7px;border-radius:50%;background:#4ade80}
+    .workspace{min-width:0}.topbar{height:72px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 24px;position:sticky;top:0;z-index:15}.mobile-menu{display:none}.page-title{min-width:230px}.page-title h1{font-size:19px;margin:0;letter-spacing:-.025em}.page-title p{font-size:11px;color:var(--muted);margin:3px 0 0}.search{flex:1;max-width:620px;position:relative}.search input{width:100%;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 14px 0 38px;background:var(--surface-2);outline:none}.search input:focus{border-color:#8eb8df;background:#fff;box-shadow:0 0 0 3px rgba(19,95,167,.1)}.search span{position:absolute;left:14px;top:9px;color:var(--muted)}
+    .top-actions{margin-left:auto;display:flex;gap:8px}.btn{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:9px;padding:9px 12px;font-weight:760;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn:hover{border-color:#b5c5d5;background:#f8fafc}.btn-primary{background:var(--brand);border-color:var(--brand);color:#fff}.btn-primary:hover{background:var(--brand-2)}.btn-danger{color:var(--red);border-color:#efc4cb}.btn-ghost{border-color:transparent;background:transparent}.btn-sm{padding:7px 9px;font-size:11px}.btn-icon{width:38px;height:38px;padding:0}
+    .content{padding:22px 24px 40px;max-width:1680px;margin:auto}.demo-banner{display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid #f0d597;background:#fff8e8;color:#6f4e0a;border-radius:11px;padding:9px 12px;margin-bottom:14px;font-size:11px}.demo-banner strong{font-size:11px}
+    .filterbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}.filterbar select{height:36px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0 30px 0 10px;font-size:11px;min-width:130px;color:var(--text)}.filter-help{margin-left:auto;font-size:10px;color:var(--muted)}
+    .active-filters{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 14px}.filter-chip{border:1px solid #c7dcef;background:var(--brand-soft);color:var(--brand-2);border-radius:999px;padding:5px 9px;font-size:10px;font-weight:760}.filter-chip:hover{background:#dbeafa}
+    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:14px}.metric{border:0;border-right:1px solid var(--line);background:#fff;text-align:left;padding:17px 18px;min-height:86px}.metric:last-child{border-right:0}.metric:hover{background:#fafcff}.metric span{display:block;color:var(--muted);font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:.05em}.metric strong{display:block;font-size:25px;line-height:1;margin-top:8px;letter-spacing:-.04em}.metric small{display:block;color:var(--muted);font-size:9px;margin-top:5px}.metric.danger strong{color:var(--red)}.metric.warning strong{color:var(--amber)}
+    .flow{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;margin-bottom:14px}.flow-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.flow-head strong{font-size:12px}.flow-head span{font-size:9px;color:var(--muted)}.flow-row{display:grid;grid-template-columns:repeat(7,minmax(90px,1fr));gap:5px;overflow-x:auto}.flow-step{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px;text-align:left;min-width:90px}.flow-step:hover,.flow-step.selected{border-color:#86b5df;background:var(--brand-soft)}.flow-step b{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.flow-step span{display:block;font-size:16px;font-weight:900;color:var(--brand);margin-top:3px}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 1px 2px rgba(15,23,42,.02);overflow:hidden}.panel+.panel{margin-top:14px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;border-bottom:1px solid var(--line)}.panel-head h2{font-size:14px;margin:0}.panel-head p{font-size:10px;color:var(--muted);margin:3px 0 0}.panel-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+    .table-wrap{overflow:auto}.data-table{width:100%;border-collapse:collapse;min-width:1040px}.data-table th{position:sticky;top:0;background:#f8fafc;color:#536579;font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:10px 11px;border-bottom:1px solid var(--line);white-space:nowrap}.data-table td{padding:11px;border-bottom:1px solid #edf1f5;font-size:11px;vertical-align:middle}.data-table tbody tr:hover{background:#fbfdff}.project-link{border:0;background:transparent;padding:0;text-align:left;color:var(--text);font-weight:790}.project-link:hover{color:var(--brand)}.muted{color:var(--muted)}.tiny{font-size:9px}.filter-value{font-weight:720;border-bottom:1px dashed #aab8c5;cursor:zoom-in}.filter-value:hover{color:var(--brand)}
+    .pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:790;white-space:nowrap}.pill.blue{background:var(--brand-soft);color:var(--brand-2)}.pill.green{background:var(--green-soft);color:var(--green)}.pill.amber{background:var(--amber-soft);color:#7a4e00}.pill.red{background:var(--red-soft);color:#912838}.pill.gray{background:#eef2f6;color:#536273}.health-dot{width:7px;height:7px;border-radius:50%}.health-dot.green{background:var(--green)}.health-dot.amber{background:var(--amber)}.health-dot.red{background:var(--red)}
+    .progress{height:6px;background:#edf2f6;border-radius:99px;overflow:hidden;min-width:76px}.progress span{display:block;height:100%;background:var(--brand);border-radius:99px}.progress-line{display:flex;align-items:center;gap:7px}.progress-line b{font-size:10px;min-width:30px;text-align:right}
+    .exception{max-width:230px}.exception strong{display:block;font-size:10px}.exception span{display:block;font-size:9px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .empty{padding:50px 20px;text-align:center;color:var(--muted)}.empty strong{display:block;color:var(--text);font-size:15px;margin-bottom:6px}.empty p{font-size:11px;margin:0 auto 15px;max-width:520px}
+    .company-list{display:grid;gap:12px}.company-block{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}.company-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:#fbfdff;border-bottom:1px solid var(--line)}.company-name{display:flex;align-items:center;gap:10px}.company-avatar{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand-2);display:grid;place-items:center;font-weight:900;font-size:11px}.company-name h3{font-size:13px;margin:0}.company-name p{font-size:9px;color:var(--muted);margin:3px 0 0}.company-stats{display:flex;gap:14px}.company-stats span{font-size:9px;color:var(--muted);text-align:right}.company-stats b{display:block;color:var(--text);font-size:13px;margin-bottom:2px}
+    .company-project{border-bottom:1px solid #edf1f5}.company-project:last-child{border-bottom:0}.company-project-summary{display:grid;grid-template-columns:32px minmax(260px,1.7fr) 110px 140px 110px 160px 72px;gap:10px;align-items:center;padding:12px 14px}.expand-btn{width:28px;height:28px;border:1px solid var(--line);background:#fff;border-radius:8px}.company-project-summary:hover{background:#fbfdff}.project-products{background:#f8fafc;border-top:1px solid #e9eef4;padding:10px 14px 14px 55px}.product-row{border:1px solid var(--line);background:#fff;border-radius:10px;margin-top:7px;overflow:hidden}.product-summary{display:grid;grid-template-columns:minmax(180px,1fr) 140px 120px 150px 80px;gap:10px;align-items:center;padding:10px 12px}.product-summary strong{font-size:11px}.product-summary small{display:block;color:var(--muted);font-size:9px;margin-top:2px}.activity-table{width:100%;border-collapse:collapse;background:#fbfdff}.activity-table th,.activity-table td{font-size:9px;padding:8px 10px;border-top:1px solid #edf1f5;text-align:left}.activity-table th{color:var(--muted);font-weight:750}
+    .calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}.calendar-title{text-align:center}.calendar-title strong{display:block;font-size:17px;text-transform:capitalize}.calendar-title span{font-size:9px;color:var(--muted)}.calendar-controls{display:flex;gap:7px;align-items:center}.calendar-controls select{height:34px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:10px;padding:0 8px}.calendar-metrics{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}.calendar-metric{padding:12px 14px;border-right:1px solid var(--line)}.calendar-metric:last-child{border-right:0}.calendar-metric span{font-size:9px;color:var(--muted)}.calendar-metric b{display:block;font-size:18px;margin-top:4px}.holiday-strip{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:#fffaf0}.holiday-strip strong{font-size:9px;color:#7a4e00;margin-right:4px}.holiday-chip{font-size:9px;border:1px solid #efd79e;background:#fff5dd;color:#795000;border-radius:999px;padding:4px 7px}.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(115px,1fr));overflow:auto}.weekday{background:#f7f9fc;color:#66778a;font-size:9px;font-weight:850;text-transform:uppercase;padding:8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.day{min-height:124px;padding:7px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}.day.out{background:#fafbfc;color:#9aa6b2}.day.today{box-shadow:inset 0 0 0 2px rgba(19,95,167,.28)}.day.holiday{background:#fffdf7}.day-head{display:flex;justify-content:space-between;gap:5px;font-size:10px;font-weight:850;margin-bottom:6px}.holiday-name{font-size:7px;color:#986300;text-align:right;max-width:80px}.event{display:block;width:100%;border:0;border-left:3px solid var(--brand);background:var(--brand-soft);color:#0d477f;border-radius:6px;text-align:left;padding:5px 6px;margin-top:4px}.event.red{border-left-color:var(--red);background:var(--red-soft);color:#8d2636}.event.amber{border-left-color:var(--amber);background:var(--amber-soft);color:#704900}.event.green{border-left-color:var(--green);background:var(--green-soft);color:#126746}.event b{display:block;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.event span{display:block;font-size:7px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.more-events{border:0;background:transparent;color:var(--brand);font-size:8px;font-weight:800;padding:3px 0}
+    .agenda{margin-top:14px}.agenda details{border:1px solid var(--line);border-radius:10px;background:#fff;margin-top:8px}.agenda summary{padding:11px 12px;font-size:11px;font-weight:780;cursor:pointer}.agenda-list{border-top:1px solid var(--line)}.agenda-item{display:grid;grid-template-columns:95px minmax(220px,1fr) 160px 110px;gap:10px;padding:9px 12px;border-bottom:1px solid #edf1f5;font-size:10px}.agenda-item:last-child{border-bottom:0}
+    .admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.admin-section{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px}.admin-section h2{font-size:14px;margin:0 0 4px}.admin-section>p{font-size:10px;color:var(--muted);margin:0 0 14px}.form-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px}.field{grid-column:span 4}.span-2{grid-column:span 2}.span-3{grid-column:span 3}.span-4{grid-column:span 4}.span-6{grid-column:span 6}.span-8{grid-column:span 8}.span-12{grid-column:span 12}.field label{display:block;font-size:9px;font-weight:780;color:#526276;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;padding:8px 9px;font-size:11px;outline:none}.field input,.field select{height:36px}.field textarea{min-height:70px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:#8db8df;box-shadow:0 0 0 3px rgba(19,95,167,.08)}.button-row{display:flex;gap:8px;flex-wrap:wrap}.note{font-size:9px;color:var(--muted);line-height:1.5;margin-top:10px}.rule-list{display:grid;gap:7px}.rule{border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:10px}.rule strong{display:block;margin-bottom:3px}
+    .drawer-backdrop{position:fixed;inset:0;background:rgba(8,22,38,.38);z-index:50;opacity:0;pointer-events:none;transition:.18s}.drawer-backdrop.open{opacity:1;pointer-events:auto}.drawer{position:fixed;top:0;right:0;height:100vh;width:min(860px,94vw);background:#fff;z-index:55;transform:translateX(102%);transition:.2s;display:flex;flex-direction:column;box-shadow:-18px 0 48px rgba(8,22,38,.18)}.drawer.open{transform:translateX(0)}.drawer-head{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:12px}.drawer-title{flex:1;min-width:0}.drawer-title span{display:block;color:var(--brand);font-size:10px;font-weight:820}.drawer-title h2{font-size:18px;margin:3px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.drawer-title p{font-size:9px;color:var(--muted);margin:4px 0 0}.drawer-body{overflow:auto;flex:1;padding:14px 18px 25px;background:#f8fafc}.drawer-footer{padding:12px 18px;border-top:1px solid var(--line);display:flex;align-items:center;gap:8px;background:#fff}.drawer-footer .spacer{flex:1}.summary-strip{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-bottom:10px}.summary-item{padding:10px 11px;border-right:1px solid var(--line)}.summary-item:last-child{border-right:0}.summary-item span{display:block;font-size:8px;color:var(--muted);text-transform:uppercase;font-weight:800}.summary-item b{display:block;font-size:11px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .accordion{background:#fff;border:1px solid var(--line);border-radius:11px;margin-top:9px;overflow:hidden}.accordion>summary{list-style:none;cursor:pointer;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:820}.accordion>summary::-webkit-details-marker{display:none}.accordion>summary::after{content:"＋";color:var(--muted)}.accordion[open]>summary::after{content:"−"}.accordion-body{border-top:1px solid var(--line);padding:14px}.nested{border:1px solid var(--line);border-radius:9px;margin-top:12px}.nested>summary{padding:10px 11px;font-size:10px;font-weight:790;cursor:pointer}.nested-body{border-top:1px solid var(--line);padding:11px}
+    .check-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.check{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:9px}.check input{margin-top:2px}.check strong{display:block;font-size:9px}.check span{display:block;color:var(--muted);font-size:8px;margin-top:2px}
+    .editor-list{display:grid;gap:8px}.editor-card{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px}.editor-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.editor-card-head strong{font-size:10px}.editor-card-head span{font-size:8px;color:var(--muted)}.compact-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:8px}.compact-grid .field input,.compact-grid .field select{height:33px;font-size:10px}.compact-grid .field textarea{font-size:10px;min-height:56px}.row-delete{border:0;background:transparent;color:var(--red);font-weight:900;font-size:17px}.closure-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.closure{border:1px solid var(--line);border-radius:9px;padding:9px;display:flex;gap:8px;font-size:9px}.closure.done{background:var(--green-soft);border-color:#bfe5d4}.activity-log{display:grid;gap:8px}.log-item{display:grid;grid-template-columns:92px 1fr;gap:10px;font-size:9px}.log-item time{color:var(--muted)}.log-item strong{display:block;font-size:10px}.log-item span{display:block;color:var(--muted);margin-top:2px}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(8,22,38,.42);z-index:70;display:none;place-items:center;padding:18px}.modal-backdrop.open{display:grid}.modal{width:min(760px,96vw);max-height:88vh;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 24px 70px rgba(8,22,38,.22)}.modal-head{display:flex;align-items:center;justify-content:space-between;padding:15px 17px;border-bottom:1px solid var(--line)}.modal-head h2{font-size:15px;margin:0}.modal-body{padding:16px}.summary-bars{display:grid;grid-template-columns:1fr 1fr;gap:18px}.bar-list{display:grid;gap:8px}.bar-item{display:grid;grid-template-columns:120px 1fr 34px;gap:8px;align-items:center;font-size:9px}.bar{height:8px;background:#eef2f6;border-radius:99px;overflow:hidden}.bar span{display:block;height:100%;background:var(--brand);border-radius:99px}
+    .toast-zone{position:fixed;right:18px;bottom:18px;z-index:90;display:grid;gap:8px}.toast{background:#172033;color:#fff;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);font-size:10px;min-width:260px}.toast strong{display:block;font-size:11px;margin-bottom:2px}.toast.error{background:#8f2635}.toast.warning{background:#765000}
+    @media(max-width:1180px){.company-project-summary{grid-template-columns:32px minmax(240px,1fr) 100px 125px 100px 72px}.company-project-summary>div:nth-child(6){display:none}.product-summary{grid-template-columns:minmax(160px,1fr) 130px 110px 80px}.product-summary>div:nth-child(4){display:none}.admin-grid{grid-template-columns:1fr}.summary-bars{grid-template-columns:1fr}}
+    @media(max-width:850px){.app{grid-template-columns:1fr}.sidebar{position:fixed;left:0;transform:translateX(-105%);transition:.2s;width:230px}.sidebar.open{transform:translateX(0)}.mobile-menu{display:inline-flex}.topbar{padding:0 12px}.page-title{min-width:0}.page-title p{display:none}.search{display:none}.content{padding:14px 10px 30px}.metrics{grid-template-columns:1fr 1fr}.metric:nth-child(2){border-right:0}.metric:nth-child(-n+2){border-bottom:1px solid var(--line)}.calendar-metrics{grid-template-columns:1fr 1fr}.calendar-metric:nth-child(2){border-right:0}.calendar-metric:nth-child(-n+2){border-bottom:1px solid var(--line)}.company-stats{display:none}.company-project-summary{grid-template-columns:32px minmax(200px,1fr) 95px 72px}.company-project-summary>div:nth-child(4),.company-project-summary>div:nth-child(5),.company-project-summary>div:nth-child(6){display:none}.project-products{padding-left:12px}.product-summary{grid-template-columns:1fr 110px 75px}.product-summary>div:nth-child(3),.product-summary>div:nth-child(4){display:none}.summary-strip{grid-template-columns:1fr 1fr}.summary-item{border-bottom:1px solid var(--line)}.summary-item:nth-child(2n){border-right:0}.summary-item:last-child{grid-column:1/-1;border-bottom:0}.form-grid,.compact-grid{grid-template-columns:1fr 1fr}.field,.span-2,.span-3,.span-4,.span-6,.span-8,.span-12{grid-column:span 1}.field.span-12,.field.span-8,.field.span-6{grid-column:1/-1}.check-grid,.closure-grid{grid-template-columns:1fr}.drawer{width:100vw}.agenda-item{grid-template-columns:80px 1fr}.agenda-item>div:nth-child(3),.agenda-item>div:nth-child(4){display:none}}
+    @media(max-width:520px){.hide-mobile{display:none}.metrics{grid-template-columns:1fr}.metric{border-right:0!important;border-bottom:1px solid var(--line)}.metric:last-child{border-bottom:0}.calendar-metrics{grid-template-columns:1fr}.calendar-metric{border-right:0!important;border-bottom:1px solid var(--line)}.filterbar select{flex:1;min-width:45%}.filter-help{width:100%;margin:0}.summary-strip{grid-template-columns:1fr}.summary-item{border-right:0;border-bottom:1px solid var(--line)}.summary-item:last-child{grid-column:auto}.form-grid,.compact-grid{grid-template-columns:1fr}.field,.field.span-12,.field.span-8,.field.span-6{grid-column:1}.drawer-head{padding:13px}.drawer-body{padding:10px}.drawer-footer{padding:10px}.calendar-grid{grid-template-columns:repeat(7,105px)}}
+    @media print{.sidebar,.topbar,.filterbar,.active-filters,.demo-banner,.panel-actions,.drawer,.drawer-backdrop{display:none!important}.app{display:block}.content{padding:0}.panel,.metrics,.flow{box-shadow:none;break-inside:avoid}body{background:#fff}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-mark">RH</div><div><strong>REHAVID</strong><span>Gestión Lean de proyectos</span></div></div>
+    <nav class="nav">
+      <button class="active" data-view="portfolio"><span class="nav-icon">P</span>Portafolio</button>
+      <button data-view="companies"><span class="nav-icon">E</span>Empresas y proyectos</button>
+      <button data-view="calendar"><span class="nav-icon">C</span>Calendario</button>
+      <button data-view="admin"><span class="nav-icon">A</span>Administración</button>
+    </nav>
+    <div class="sidebar-foot">Una sola lectura operativa: empresa → proyecto → producto → actividad.<div class="save-state"><span class="save-dot"></span><span id="saveState">Datos guardados</span></div></div>
+  </aside>
+  <main class="workspace">
+    <header class="topbar">
+      <button class="btn btn-icon mobile-menu" id="mobileMenu">☰</button>
+      <div class="page-title"><h1 id="pageTitle">Portafolio</h1><p id="pageSubtitle">Flujo, compromisos, excepciones y decisiones</p></div>
+      <div class="search"><span>⌕</span><input id="globalSearch" type="search" placeholder="Buscar empresa, proyecto, producto, actividad o responsable…" /></div>
+      <div class="top-actions"><button class="btn hide-mobile" data-action="open-summary">Consolidación</button><button class="btn btn-primary" id="newProject">＋ Nuevo proyecto</button></div>
+    </header>
+    <div class="content">
+      <div id="demoBanner"></div>
+      <div class="filterbar" id="filterBar"></div>
+      <div class="active-filters" id="activeFilters"></div>
+      <div id="viewRoot"></div>
+    </div>
+  </main>
+</div>
+
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head" id="drawerHead"></div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-footer">
+    <button class="btn btn-danger" id="deleteProject">Eliminar</button><div class="spacer"></div>
+    <button class="btn" id="cancelProject">Cancelar</button><button class="btn btn-primary" id="saveProject">Guardar proyecto</button>
+  </div>
+</aside>
+
+<div class="modal-backdrop" id="modalBackdrop"><div class="modal" id="modal"></div></div>
+<input type="file" id="importFile" accept=".json,.csv,application/json,text/csv" hidden />
+<div class="toast-zone" id="toastZone"></div>
+
+<script>
+"use strict";
+const APP_VERSION="4.0.0";
+const STORAGE_KEY="rehavid_project_hub_v1";
+const STAGES=["Venta aprobada","Transferencia","Planeación","Ejecución","Validación técnica","Cierre integral","Cerrado"];
+const TYPES=["Tipo 1","Tipo 2"];
+const STATUSES=["Activo","Suspendido","Cerrado"];
+const PPR_FALLBACK=["PPR-ERG","PPR-DME","PPR-DIS","PPR-ANA","PPR-FOR","PPR-TEC"];
+const ACTIVITY_STATUSES=["No iniciado","En curso","En pausa","En revisión","Completado","Cancelado"];
+const CHANGE_STATUSES=["Propuesto","En evaluación","Aprobado","Rechazado","Implementado"];
+const SEVERITIES=["Baja","Media","Alta","Crítica"];
+const ESCALATIONS=["Sin escalamiento","Jefatura","Gerencia","CEO"];
+const MONTHS=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+const WEEKDAYS=["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+const MONEY=new Intl.NumberFormat("es-CO",{style:"currency",currency:"COP",maximumFractionDigits:0});
+const NUM=new Intl.NumberFormat("es-CO",{maximumFractionDigits:1});
+const DATE_LONG=new Intl.DateTimeFormat("es-CO",{day:"2-digit",month:"short",year:"numeric"});
+const DATE_SHORT=new Intl.DateTimeFormat("es-CO",{day:"2-digit",month:"short"});
+const CHECKLIST=[
+  ["serviceOrder","Orden o autorización","El proyecto cuenta con orden de servicio o autorización equivalente."],
+  ["scopeDefined","Alcance definido","El alcance, límites y exclusiones son claros."],
+  ["deliverablesDefined","Entregables definidos","Los productos esperados están especificados."],
+  ["datesDefined","Fechas comprometidas","Inicio, compromisos y cierre contractual están definidos."],
+  ["hoursDefined","Horas y recursos","Las horas vendidas y recursos previstos están definidos."],
+  ["billingDefined","Facturación","Condiciones, hitos y soportes de facturación están claros."],
+  ["clientContactDefined","Contacto del cliente","Existe una contraparte responsable y localizable."],
+  ["leaderAccepted","Recepción del líder","El responsable operativo confirmó la recepción del proyecto."]
+];
+const CLOSURES=[
+  ["technical","Cierre técnico","Entregables y alcance validados."],
+  ["documentary","Cierre documental","Evidencias y versiones finales organizadas."],
+  ["administrative","Cierre administrativo","Actas, aceptación y compromisos resueltos."],
+  ["financial","Cierre financiero","Facturación y conciliación completadas."]
+];
+const VIEW_META={
+  portfolio:["Portafolio","Flujo, compromisos, excepciones y decisiones"],
+  companies:["Empresas y proyectos","Lectura jerárquica por empresa, proyecto, producto y actividad"],
+  calendar:["Calendario","Agenda total o filtrada por empresa, proyecto y responsable"],
+  admin:["Administración","Catálogos, parámetros y gestión de datos"]
+};
+const DEFAULT_SETTINGS={alertDays:7,criticalOverdueDays:15,companyName:"Rehavid S.A.S.",demoMode:true,catalogs:{companies:[],pprs:PPR_FALLBACK,portfolioOwners:["Kelly Segura","Jhon Orrego"],projectLeads:[]}};
+const state={view:"portfolio",projects:[],settings:clone(DEFAULT_SETTINGS),process:{},filters:{company:[],ppr:[],portfolioOwner:[],projectLead:[],stage:[],health:[],type:[],special:[]},search:"",sort:"risk",calendar:{year:new Date().getFullYear(),month:new Date().getMonth()},expanded:new Set(),draft:null,selectedId:null};
+
+function clone(v){return JSON.parse(JSON.stringify(v))}
+function uid(prefix="id"){return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`}
+function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function attr(v){return esc(v)}
+function norm(v){return String(v??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim()}
+function clamp(v,min,max){return Math.max(min,Math.min(max,Number(v)||0))}
+function sum(list,getter=x=>x){return list.reduce((a,x)=>a+(Number(getter(x))||0),0)}
+function avg(list,getter=x=>x){return list.length?sum(list,getter)/list.length:0}
+function unique(list){return [...new Set(list.filter(x=>String(x??"").trim()))].sort((a,b)=>String(a).localeCompare(String(b),"es"))}
+function groupBy(list,getter){const m=new Map();list.forEach(x=>{const k=getter(x)||"Sin definir";if(!m.has(k))m.set(k,[]);m.get(k).push(x)});return m}
+function initials(v){return String(v||"NA").split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase()}
+function dateISO(d=new Date()){const x=new Date(d);if(Number.isNaN(x.getTime()))return"";const local=new Date(x.getTime()-x.getTimezoneOffset()*60000);return local.toISOString().slice(0,10)}
+function dateOffset(days){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+days);return dateISO(d)}
+function toDate(v){if(!v)return null;const d=new Date(`${v}T12:00:00`);return Number.isNaN(d.getTime())?null:d}
+function formatDate(v,short=false){const d=toDate(v);return d?(short?DATE_SHORT:DATE_LONG).format(d):"Sin fecha"}
+function daysUntil(v){const d=toDate(v),t=toDate(dateISO());return d&&t?Math.ceil((d-t)/86400000):null}
+function fmtMoney(v){return MONEY.format(Number(v)||0)}
+function fmtNum(v){return NUM.format(Number(v)||0)}
+function fmtPct(v){return `${Math.round(Number(v)||0)}%`}
+function isClosed(p){return p.stage==="Cerrado"||p.status==="Cerrado"}
+function activityClosed(a){return ["Completado","Cancelado"].includes(a.status)||Number(a.progress)>=100}
+function setPath(obj,path,value){const parts=path.split(".");let t=obj;parts.slice(0,-1).forEach(k=>{if(!t[k]||typeof t[k]!=="object")t[k]={};t=t[k]});t[parts.at(-1)]=value}
+function getPath(obj,path){return path.split(".").reduce((v,k)=>v?.[k],obj)}
+function mergeDeep(target,source){Object.entries(source||{}).forEach(([k,v])=>{if(v&&typeof v==="object"&&!Array.isArray(v)&&target[k]&&typeof target[k]==="object")mergeDeep(target[k],v);else target[k]=v});return target}
+
+function demoChecklist(count=CHECKLIST.length){const out={};CHECKLIST.forEach(([k],i)=>out[k]=i<count);return out}
+function demoProjects(){
+  const mk=(data)=>makeProject(data);
+  return [
+    mk({code:"DEM-001",company:"Empresa A · demostración",title:"Programa integral 2026",type:"Tipo 2",ppr:"PPR-DME",portfolioOwner:"Jhon Orrego",projectLead:"Líder demostrativo",currentOwner:"Profesional 1",stage:"Ejecución",dueDate:dateOffset(35),nextCommitment:"Validar entregable parcial",nextDueDate:dateOffset(5),hoursSold:220,hoursAssigned:200,hoursExecuted:96,value:20000000,checklist:demoChecklist(8),workItems:[
+      {product:"Diagnóstico",activity:"Consolidar información de entrada",owner:"Profesional 1",status:"Completado",startDate:dateOffset(-24),dueDate:dateOffset(-12),progress:100,hoursAssigned:35,hoursExecuted:34},
+      {product:"Diagnóstico",activity:"Presentar hallazgos iniciales",owner:"Líder demostrativo",status:"Completado",startDate:dateOffset(-11),dueDate:dateOffset(-5),progress:100,hoursAssigned:20,hoursExecuted:18},
+      {product:"Intervención",activity:"Ejecutar actividades de campo",owner:"Profesional 2",status:"En curso",startDate:dateOffset(-4),dueDate:dateOffset(12),progress:45,hoursAssigned:90,hoursExecuted:39},
+      {product:"Tablero",activity:"Construir visual de seguimiento",owner:"Profesional 3",status:"No iniciado",startDate:dateOffset(10),dueDate:dateOffset(28),progress:0,hoursAssigned:55,hoursExecuted:0}
+    ]}),
+    mk({code:"DEM-002",company:"Empresa A · demostración",title:"Formación de líderes",type:"Tipo 1",ppr:"PPR-FOR",portfolioOwner:"Kelly Segura",projectLead:"Líder demostrativo",stage:"Planeación",dueDate:dateOffset(48),nextCommitment:"Confirmar agenda y participantes",nextDueDate:dateOffset(3),hoursSold:80,hoursAssigned:72,hoursExecuted:10,value:7500000,checklist:demoChecklist(6)}),
+    mk({code:"DEM-003",company:"Empresa B · demostración",title:"Diseño ergonómico",type:"Tipo 2",ppr:"PPR-DIS",portfolioOwner:"Jhon Orrego",projectLead:"Líder demostrativo",stage:"Validación técnica",dueDate:dateOffset(-2),nextCommitment:"Recibir validación del cliente",nextDueDate:dateOffset(-1),hoursSold:150,hoursAssigned:140,hoursExecuted:138,value:14500000,checklist:demoChecklist(8),blockers:[{description:"Validación del cliente pendiente",severity:"Alta",owner:"Líder demostrativo",dueDate:dateOffset(-1),resolved:false}]}),
+    mk({code:"DEM-004",company:"Empresa C · demostración",title:"Analítica de riesgo",type:"Tipo 2",ppr:"PPR-ANA",portfolioOwner:"Jhon Orrego",projectLead:"Líder demostrativo",stage:"Transferencia",dueDate:dateOffset(70),nextCommitment:"Completar entrega de bases",nextDueDate:dateOffset(8),hoursSold:240,hoursAssigned:80,hoursExecuted:0,value:23000000,checklist:{serviceOrder:true,scopeDefined:true,deliverablesDefined:true,datesDefined:false,hoursDefined:true,billingDefined:false,clientContactDefined:true,leaderAccepted:false}})
+  ];
+}
+function normalizeActivity(a={},owner="",product="Producto principal"){
+  return {id:a.id||uid("actv"),product:String(a.product||a.service||product||"Producto principal").trim()||"Producto principal",activity:String(a.activity||a.name||a.title||"Actividad").trim()||"Actividad",owner:a.owner||a.responsible||owner||"",status:ACTIVITY_STATUSES.includes(a.status)?a.status:(a.done?"Completado":"En curso"),startDate:a.startDate||a.date||"",dueDate:a.dueDate||a.endDate||"",progress:clamp(a.progress??(a.done?100:0),0,100),hoursAssigned:Number(a.hoursAssigned??a.assignedHours??0)||0,hoursExecuted:Number(a.hoursExecuted??a.executedHours??0)||0,evidence:a.evidence||a.url||"",notes:a.notes||a.description||""};
+}
+function makeProject(raw={}){
+  const type=TYPES.includes(raw.type)?raw.type:"Tipo 1";
+  const stage=STAGES.includes(raw.stage)?raw.stage:"Venta aprobada";
+  let status=raw.status;
+  if(status==="No iniciado"||status==="En curso")status="Activo";
+  if(status==="En pausa")status="Suspendido";
+  if(!STATUSES.includes(status))status=stage==="Cerrado"?"Cerrado":"Activo";
+  const projectLead=raw.projectLead||raw.currentOwner||"";
+  const fallbackProduct=raw.service||raw.title||"Producto principal";
+  let workItems=Array.isArray(raw.workItems)?raw.workItems.map(x=>normalizeActivity(x,projectLead,fallbackProduct)):[];
+  const checklist={};CHECKLIST.forEach(([k])=>checklist[k]=Boolean(raw.checklist?.[k]));
+  const p={
+    ...raw,id:raw.id||uid("prj"),code:raw.code||`PRY-${new Date().getFullYear()}-${String(Math.floor(Math.random()*900)+100)}`,company:raw.company||"",title:raw.title||"Nuevo proyecto",type,ppr:raw.ppr||"",regional:raw.regional||"Nacional",service:raw.service||"",portfolioOwner:raw.portfolioOwner||(type==="Tipo 2"?"Jhon Orrego":"Kelly Segura"),projectLead,currentOwner:raw.currentOwner||projectLead,nextOwner:raw.nextOwner||raw.currentOwner||projectLead,stage,status,orderDate:raw.orderDate||dateISO(),startDate:raw.startDate||"",dueDate:raw.dueDate||"",actualCloseDate:raw.actualCloseDate||"",nextCommitment:raw.nextCommitment||"",nextDueDate:raw.nextDueDate||"",clientContact:raw.clientContact||"",clientEmail:raw.clientEmail||"",clientPhone:raw.clientPhone||"",scope:raw.scope||"",exclusions:raw.exclusions||"",deliverables:raw.deliverables||"",billingTerms:raw.billingTerms||"",hoursSold:Number(raw.hoursSold)||0,hoursAssigned:Number(raw.hoursAssigned)||0,hoursExecuted:Number(raw.hoursExecuted)||0,value:Number(raw.value)||0,invoicedValue:Number(raw.invoicedValue)||0,participants:Array.isArray(raw.participants)?raw.participants:[],tags:Array.isArray(raw.tags)?raw.tags:[],notes:raw.notes||"",checklist,workItems,blockers:Array.isArray(raw.blockers)?raw.blockers.map(b=>({id:b.id||uid("blk"),description:b.description||"",severity:SEVERITIES.includes(b.severity)?b.severity:"Media",owner:b.owner||"",dueDate:b.dueDate||"",resolved:Boolean(b.resolved)})):[],changes:Array.isArray(raw.changes)?raw.changes.map(c=>({id:c.id||uid("chg"),description:c.description||"",status:CHANGE_STATUSES.includes(c.status)?c.status:"Propuesto",impactHours:Number(c.impactHours)||0,impactValue:Number(c.impactValue)||0,date:c.date||dateISO()})):[],closures:{technical:Boolean(raw.closures?.technical),documentary:Boolean(raw.closures?.documentary),administrative:Boolean(raw.closures?.administrative),financial:Boolean(raw.closures?.financial)},escalation:{level:ESCALATIONS.includes(raw.escalation?.level)?raw.escalation.level:"Sin escalamiento",reason:raw.escalation?.reason||"",owner:raw.escalation?.owner||"",dueDate:raw.escalation?.dueDate||"",status:raw.escalation?.status||"Abierto"},activity:Array.isArray(raw.activity)?raw.activity:[],createdAt:raw.createdAt||new Date().toISOString(),updatedAt:raw.updatedAt||new Date().toISOString()
+  };
+  if(isClosed(p)){p.stage="Cerrado";p.status="Cerrado"}
+  return p;
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){const saved=JSON.parse(raw);state.projects=Array.isArray(saved.projects)?saved.projects.map(makeProject):demoProjects();state.settings=mergeDeep(clone(DEFAULT_SETTINGS),saved.settings||{});state.process=saved.process||{};}
+    else{state.projects=demoProjects();saveState(true)}
+  }catch(e){console.error(e);state.projects=demoProjects();toast("No se pudieron leer los datos guardados","Se cargó una base demostrativa.","warning")}
+  syncCatalogs();
+}
+function saveState(silent=false){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({version:APP_VERSION,projects:state.projects,settings:state.settings,process:state.process,lastSaved:new Date().toISOString()}));document.getElementById("saveState").textContent=`Guardado ${new Date().toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"})}`;if(!silent){} }
+  catch(e){console.error(e);toast("No fue posible guardar","Exporte un respaldo JSON antes de cerrar.","error")}
+}
+function syncCatalogs(){
+  const c=state.settings.catalogs||(state.settings.catalogs=clone(DEFAULT_SETTINGS.catalogs));
+  c.companies=unique([...(c.companies||[]),...state.projects.map(p=>p.company)]);
+  c.pprs=unique([...(c.pprs||[]),...PPR_FALLBACK,...state.projects.map(p=>p.ppr)]);
+  c.portfolioOwners=unique([...(c.portfolioOwners||[]),...state.projects.map(p=>p.portfolioOwner)]);
+  c.projectLeads=unique([...(c.projectLeads||[]),...state.projects.flatMap(p=>[p.projectLead,p.currentOwner,p.nextOwner,...(p.workItems||[]).map(a=>a.owner)])]);
+}
+
+function projectProgress(p){
+  const items=(p.workItems||[]).filter(a=>a.status!=="Cancelado");
+  if(!items.length)return isClosed(p)&&closureProgress(p)===100?100:0;
+  const weighted=sum(items,a=>Math.max(0,Number(a.hoursAssigned)));
+  return weighted?clamp(sum(items,a=>clamp(a.progress,0,100)*Math.max(0,Number(a.hoursAssigned)))/weighted,0,100):clamp(avg(items,a=>a.progress),0,100);
+}
+function checklistProgress(p){return CHECKLIST.length?CHECKLIST.filter(([k])=>p.checklist?.[k]).length/CHECKLIST.length*100:0}
+function closureProgress(p){return CLOSURES.filter(([k])=>p.closures?.[k]).length/CLOSURES.length*100}
+function productGroups(p){
+  return [...groupBy(p.workItems||[],a=>a.product||"Producto principal").entries()].map(([product,items])=>{
+    const active=items.filter(a=>!activityClosed(a));const weighted=sum(items,a=>Math.max(0,a.hoursAssigned));
+    const progress=weighted?sum(items,a=>a.progress*Math.max(0,a.hoursAssigned))/weighted:avg(items,a=>a.progress);
+    const next=active.filter(a=>a.dueDate).sort((a,b)=>a.dueDate.localeCompare(b.dueDate))[0]||active[0]||null;
+    return{product,items,progress:clamp(progress,0,100),next,overdue:active.filter(a=>a.dueDate&&(daysUntil(a.dueDate)??0)<0).length,owner:next?.owner||items[0]?.owner||"",hoursAssigned:sum(items,a=>a.hoursAssigned),hoursExecuted:sum(items,a=>a.hoursExecuted)};
+  }).sort((a,b)=>b.overdue-a.overdue||a.product.localeCompare(b.product,"es"));
+}
+function projectSignals(p){
+  const overdueActivities=(p.workItems||[]).filter(a=>!activityClosed(a)&&a.dueDate&&(daysUntil(a.dueDate)??0)<0);
+  const blockers=(p.blockers||[]).filter(b=>!b.resolved);
+  const pendingChanges=(p.changes||[]).filter(c=>["Propuesto","En evaluación"].includes(c.status));
+  const projectOverdue=!isClosed(p)&&p.dueDate&&(daysUntil(p.dueDate)??0)<0;
+  const commitmentOverdue=!isClosed(p)&&p.nextDueDate&&(daysUntil(p.nextDueDate)??0)<0;
+  const decision=p.escalation?.level!=="Sin escalamiento"&&p.escalation?.status!=="Cerrado";
+  const dueSoon=!isClosed(p)&&[p.dueDate,p.nextDueDate].some(d=>d&&(daysUntil(d)??999)>=0&&(daysUntil(d)??999)<=state.settings.alertDays);
+  const hoursOver=Number(p.hoursAssigned)>0&&Number(p.hoursExecuted)>Number(p.hoursAssigned);
+  const transferIssue=STAGES.indexOf(p.stage)>1&&checklistProgress(p)<100;
+  return{overdueActivities,blockers,pendingChanges,projectOverdue,commitmentOverdue,decision,dueSoon,hoursOver,transferIssue};
+}
+function projectHealth(p){
+  if(isClosed(p))return closureProgress(p)===100?"Verde":"Rojo";
+  const s=projectSignals(p);
+  if(s.projectOverdue||s.commitmentOverdue||s.overdueActivities.length||s.blockers.some(b=>["Alta","Crítica"].includes(b.severity))||s.hoursOver||(s.decision&&p.escalation.level==="CEO"))return"Rojo";
+  if(s.dueSoon||s.blockers.length||s.pendingChanges.length||s.transferIssue||(p.stage==="Cierre integral"&&closureProgress(p)<100)||s.decision)return"Ámbar";
+  return"Verde";
+}
+function exceptionSummary(p){
+  const s=projectSignals(p);
+  if(s.projectOverdue)return["Proyecto vencido",formatDate(p.dueDate,true),"red"];
+  if(s.commitmentOverdue)return["Compromiso vencido",p.nextCommitment||"Sin descripción","red"];
+  if(s.overdueActivities.length)return[`${s.overdueActivities.length} actividad${s.overdueActivities.length===1?"":"es"} vencida${s.overdueActivities.length===1?"":"s"}`,s.overdueActivities[0].activity,"red"];
+  if(s.blockers.length)return[`${s.blockers.length} bloqueo${s.blockers.length===1?"":"s"}`,s.blockers[0].description,s.blockers.some(b=>["Alta","Crítica"].includes(b.severity))?"red":"amber"];
+  if(s.decision)return[`Decisión: ${p.escalation.level}`,p.escalation.reason||"Sin detalle",p.escalation.level==="CEO"?"red":"amber"];
+  if(s.transferIssue)return["Transferencia incompleta",`${Math.round(checklistProgress(p))}% completado`,"amber"];
+  if(s.pendingChanges.length)return["Cambio pendiente",s.pendingChanges[0].description,"amber"];
+  if(s.dueSoon)return["Fecha próxima",formatDate(p.nextDueDate||p.dueDate,true),"amber"];
+  return["Sin excepción","Dentro de control","green"];
+}
+function isOverdue(p){const s=projectSignals(p);return s.projectOverdue||s.commitmentOverdue||s.overdueActivities.length>0}
+function hasBlocker(p){return (p.blockers||[]).some(b=>!b.resolved)}
+function needsDecision(p){return p.escalation?.level!=="Sin escalamiento"&&p.escalation?.status!=="Cerrado"}
+
+function filterOptions(key){const g={company:p=>p.company,ppr:p=>p.ppr,portfolioOwner:p=>p.portfolioOwner,projectLead:p=>p.projectLead,stage:p=>p.stage,health:p=>projectHealth(p),type:p=>p.type}[key];return g?unique(state.projects.map(g)):[]}
+function matches(p){
+  const values={company:p.company,ppr:p.ppr,portfolioOwner:p.portfolioOwner,projectLead:p.projectLead,stage:p.stage,health:projectHealth(p),type:p.type};
+  for(const [k,list] of Object.entries(state.filters)){if(k==="special"||!list.length)continue;if(!list.includes(values[k]))return false}
+  for(const special of state.filters.special){if(special==="active"&&isClosed(p))return false;if(special==="overdue"&&!isOverdue(p))return false;if(special==="blocked"&&!hasBlocker(p))return false;if(special==="decision"&&!needsDecision(p))return false}
+  if(state.search){const text=norm([p.code,p.company,p.title,p.ppr,p.type,p.portfolioOwner,p.projectLead,p.currentOwner,p.nextOwner,p.nextCommitment,p.scope,p.deliverables,...(p.tags||[]),...(p.workItems||[]).flatMap(a=>[a.product,a.activity,a.owner,a.notes])].join(" "));if(!text.includes(norm(state.search)))return false}
+  return true;
+}
+function visibleProjects(){
+  const list=state.projects.filter(matches);
+  const risk={Rojo:0,"Ámbar":1,Verde:2};
+  return [...list].sort((a,b)=>{
+    if(state.sort==="company")return a.company.localeCompare(b.company,"es")||a.title.localeCompare(b.title,"es");
+    if(state.sort==="due")return String(a.nextDueDate||a.dueDate||"9999").localeCompare(String(b.nextDueDate||b.dueDate||"9999"));
+    if(state.sort==="updated")return String(b.updatedAt).localeCompare(String(a.updatedAt));
+    return risk[projectHealth(a)]-risk[projectHealth(b)]||String(a.nextDueDate||a.dueDate||"9999").localeCompare(String(b.nextDueDate||b.dueDate||"9999"));
+  });
+}
+function toggleFilter(key,value){if(!value)return;const list=state.filters[key];const i=list.indexOf(value);if(i>=0)list.splice(i,1);else list.push(value);renderApp()}
+function setSingleFilter(key,value){state.filters[key]=value?[value]:[];renderApp()}
+function clearFilters(){Object.keys(state.filters).forEach(k=>state.filters[k]=[]);state.search="";document.getElementById("globalSearch").value="";renderApp()}
+function activeFilterCount(){return Object.values(state.filters).reduce((n,x)=>n+x.length,0)+(state.search?1:0)}
+
+function renderApp(){
+  const meta=VIEW_META[state.view];document.getElementById("pageTitle").textContent=meta[0];document.getElementById("pageSubtitle").textContent=meta[1];
+  document.querySelectorAll("[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===state.view));
+  renderDemoBanner();renderFilterBar();renderActiveFilters();renderView();
+}
+function renderDemoBanner(){document.getElementById("demoBanner").innerHTML=state.settings.demoMode?`<div class="demo-banner"><div><strong>Datos demostrativos</strong> · No representan la operación real. Importe su base o cree proyectos para iniciar.</div><button class="btn btn-sm" data-view-jump="admin">Gestionar datos</button></div>`:""}
+function renderFilterBar(){
+  if(state.view==="admin"){document.getElementById("filterBar").innerHTML="";return}
+  const defs=[["company","Empresa"],["ppr","PPR"],["portfolioOwner","Liderazgo"],["projectLead","Líder del proyecto"],["stage","Etapa"],["health","Semáforo"]];
+  document.getElementById("filterBar").innerHTML=defs.map(([k,l])=>`<select data-filter-select="${k}"><option value="">${l}: todos</option>${filterOptions(k).map(v=>`<option value="${attr(v)}" ${state.filters[k].length===1&&state.filters[k][0]===v?"selected":""}>${esc(v)}</option>`).join("")}</select>`).join("")+`<button class="btn btn-sm" data-action="clear-filters" ${activeFilterCount()?"":"disabled"}>Limpiar</button><span class="filter-help">Doble clic sobre empresa, PPR, líder, etapa o semáforo para filtrar/desfiltrar.</span>`;
+}
+function renderActiveFilters(){
+  if(state.view==="admin"){document.getElementById("activeFilters").innerHTML="";return}
+  const labels={company:"Empresa",ppr:"PPR",portfolioOwner:"Liderazgo",projectLead:"Líder",stage:"Etapa",health:"Semáforo",type:"Tipo",special:"Vista"};
+  const chips=[];Object.entries(state.filters).forEach(([k,list])=>list.forEach(v=>chips.push(`<button class="filter-chip" data-remove-filter="${k}" data-value="${attr(v)}" title="Clic o doble clic para retirar">${labels[k]}: ${esc(specialLabel(v))} ×</button>`)));
+  if(state.search)chips.push(`<button class="filter-chip" data-action="clear-search">Búsqueda: ${esc(state.search)} ×</button>`);
+  document.getElementById("activeFilters").innerHTML=chips.join("");
+}
+function specialLabel(v){return{active:"Activos",overdue:"Vencidos",blocked:"Bloqueados",decision:"Decisiones pendientes"}[v]||v}
+function renderView(){const root=document.getElementById("viewRoot"),projects=visibleProjects();if(state.view==="portfolio")root.innerHTML=renderPortfolio(projects);else if(state.view==="companies")root.innerHTML=renderCompanies(projects);else if(state.view==="calendar")root.innerHTML=renderCalendar(projects);else root.innerHTML=renderAdmin()}
+
+function renderPortfolio(projects){
+  const active=projects.filter(p=>!isClosed(p)).length,overdue=projects.filter(isOverdue).length,blocked=projects.filter(hasBlocker).length,decisions=projects.filter(needsDecision).length;
+  const stageCounts=STAGES.map(stage=>({stage,count:projects.filter(p=>p.stage===stage).length}));
+  return `<section class="metrics">
+    ${metric("Proyectos activos",active,"Responsabilidad vigente","active","")}
+    ${metric("Vencidos",overdue,"Proyecto, compromiso o actividad","overdue",overdue?"danger":"")}
+    ${metric("Bloqueados",blocked,"Impedimentos sin resolver","blocked",blocked?"warning":"")}
+    ${metric("Decisiones pendientes",decisions,"Jefatura, Gerencia o CEO","decision",decisions?"warning":"")}
+  </section>
+  <section class="flow"><div class="flow-head"><strong>Flujo del portafolio</strong><span>Seleccione una etapa; doble clic sobre cualquier etapa o dato para retirar/aplicar filtros.</span></div><div class="flow-row">${stageCounts.map(x=>`<button class="flow-step ${state.filters.stage.includes(x.stage)?"selected":""}" data-filter-key="stage" data-filter-value="${attr(x.stage)}"><b>${esc(x.stage)}</b><span>${x.count}</span></button>`).join("")}</div></section>
+  <section class="panel"><div class="panel-head"><div><h2>Control operativo</h2><p>${projects.length} proyecto${projects.length===1?"":"s"} visible${projects.length===1?"":"s"}. La prioridad es el siguiente compromiso y la excepción que requiere gestión.</p></div><div class="panel-actions"><select id="sortProjects" class="btn"><option value="risk" ${state.sort==="risk"?"selected":""}>Ordenar: riesgo</option><option value="due" ${state.sort==="due"?"selected":""}>Ordenar: fecha</option><option value="company" ${state.sort==="company"?"selected":""}>Ordenar: empresa</option><option value="updated" ${state.sort==="updated"?"selected":""}>Ordenar: actualización</option></select><button class="btn btn-sm" data-action="export-csv">Exportar</button></div></div>${renderPortfolioTable(projects)}</section>`;
+}
+function metric(label,value,desc,special,cls){return `<button class="metric ${cls}" data-special="${special}"><span>${label}</span><strong>${value}</strong><small>${desc}</small></button>`}
+function renderPortfolioTable(projects){
+  if(!projects.length)return empty("No hay proyectos en esta vista","Retire filtros o cree un proyecto.");
+  return `<div class="table-wrap"><table class="data-table"><thead><tr><th>Empresa</th><th>Proyecto</th><th>Tipo / PPR</th><th>Liderazgo</th><th>Flujo</th><th>Avance</th><th>Próximo compromiso</th><th>Fecha</th><th>Excepción</th></tr></thead><tbody>${projects.map(p=>{
+    const [exTitle,exDetail,exClass]=exceptionSummary(p),health=projectHealth(p),progress=projectProgress(p),owner=p.nextOwner||p.currentOwner||p.projectLead||"Sin responsable";
+    return `<tr><td><span class="filter-value" data-filter-key="company" data-filter-value="${attr(p.company)}">${esc(p.company||"Sin empresa")}</span></td><td><button class="project-link" data-open-project="${p.id}">${esc(p.code)} · ${esc(p.title)}</button><div class="tiny muted">Actualizado ${formatDate(String(p.updatedAt).slice(0,10),true)}</div></td><td><span class="pill blue filter-value" data-filter-key="type" data-filter-value="${attr(p.type)}">${esc(p.type)}</span> <span class="filter-value" data-filter-key="ppr" data-filter-value="${attr(p.ppr)}">${esc(p.ppr||"Sin PPR")}</span></td><td><span class="filter-value" data-filter-key="portfolioOwner" data-filter-value="${attr(p.portfolioOwner)}">${esc(p.portfolioOwner||"Sin definir")}</span><div class="tiny muted">${esc(p.projectLead||"Sin líder")}</div></td><td><span class="pill gray filter-value" data-filter-key="stage" data-filter-value="${attr(p.stage)}">${esc(p.stage)}</span>${checklistProgress(p)<100&&STAGES.indexOf(p.stage)>1?`<div class="tiny muted">Transferencia ${fmtPct(checklistProgress(p))}</div>`:""}</td><td><div class="progress-line"><div class="progress"><span style="width:${progress}%"></span></div><b>${fmtPct(progress)}</b></div></td><td><strong>${esc(p.nextCommitment||"Sin compromiso")}</strong><div class="tiny muted">${esc(owner)}</div></td><td>${formatDate(p.nextDueDate||p.dueDate,true)}</td><td><div class="exception"><span class="pill ${exClass} filter-value" data-filter-key="health" data-filter-value="${attr(health)}"><i class="health-dot ${exClass}"></i>${esc(health)}</span><strong>${esc(exTitle)}</strong><span title="${attr(exDetail)}">${esc(exDetail)}</span></div></td></tr>`;
+  }).join("")}</tbody></table></div>`;
+}
+
+function renderCompanies(projects){
+  if(!projects.length)return `<section class="panel">${empty("No hay empresas en esta vista","Retire filtros o cree un proyecto.")}</section>`;
+  const groups=[...groupBy(projects,p=>p.company||"Sin empresa").entries()].sort((a,b)=>a[0].localeCompare(b[0],"es"));
+  return `<div class="company-list">${groups.map(([company,list])=>renderCompanyBlock(company,list)).join("")}</div>`;
+}
+function renderCompanyBlock(company,projects){
+  const active=projects.filter(p=>!isClosed(p)).length,red=projects.filter(p=>projectHealth(p)==="Rojo").length,products=sum(projects,p=>productGroups(p).length),progress=avg(projects,projectProgress);
+  return `<section class="company-block"><div class="company-head"><div class="company-name"><div class="company-avatar">${initials(company)}</div><div><h3><span class="filter-value" data-filter-key="company" data-filter-value="${attr(company)}">${esc(company)}</span></h3><p>${projects.length} proyecto${projects.length===1?"":"s"} · ${products} producto${products===1?"":"s"}</p></div></div><div class="company-stats"><span><b>${active}</b>activos</span><span><b>${red}</b>críticos</span><span><b>${fmtPct(progress)}</b>avance</span></div></div><div>${projects.map(renderCompanyProject).join("")}</div></section>`;
+}
+function renderCompanyProject(p){
+  const expanded=state.expanded.has(p.id),groups=productGroups(p),health=projectHealth(p),progress=projectProgress(p),[exTitle,,exClass]=exceptionSummary(p);
+  return `<div class="company-project"><div class="company-project-summary"><button class="expand-btn" data-expand-project="${p.id}">${expanded?"−":"＋"}</button><div><button class="project-link" data-open-project="${p.id}">${esc(p.code)} · ${esc(p.title)}</button><div class="tiny muted">${groups.length} producto${groups.length===1?"":"s"} · ${esc(p.type)} · ${esc(p.ppr||"Sin PPR")}</div></div><div><span class="pill gray filter-value" data-filter-key="stage" data-filter-value="${attr(p.stage)}">${esc(p.stage)}</span></div><div><strong>${esc(p.nextCommitment||"Sin compromiso")}</strong><div class="tiny muted">${esc(p.nextOwner||p.currentOwner||p.projectLead||"Sin responsable")}</div></div><div class="progress-line"><div class="progress"><span style="width:${progress}%"></span></div><b>${fmtPct(progress)}</b></div><div class="tiny">${formatDate(p.nextDueDate||p.dueDate,true)}</div><div><span class="pill ${exClass} filter-value" data-filter-key="health" data-filter-value="${attr(health)}">${esc(health)}</span><div class="tiny muted">${esc(exTitle)}</div></div></div>${expanded?renderProducts(p,groups):""}</div>`;
+}
+function renderProducts(p,groups){
+  if(!groups.length)return `<div class="project-products"><div class="empty" style="padding:20px"><strong>Sin productos o actividades</strong><p>Abra la ficha del proyecto para crear el primer producto y sus actividades.</p></div></div>`;
+  return `<div class="project-products">${groups.map(g=>`<details class="product-row"><summary class="product-summary"><div><strong>${esc(g.product)}</strong><small>${g.items.length} actividad${g.items.length===1?"":"es"} · ${fmtNum(g.hoursExecuted)} / ${fmtNum(g.hoursAssigned)} h</small></div><div><div class="progress-line"><div class="progress"><span style="width:${g.progress}%"></span></div><b>${fmtPct(g.progress)}</b></div></div><div><strong>${esc(g.next?.owner||g.owner||"Sin responsable")}</strong></div><div><strong>${esc(g.next?.activity||"Producto completado")}</strong><small>${formatDate(g.next?.dueDate,true)}</small></div><div><span class="pill ${g.overdue?"red":"green"}">${g.overdue?`${g.overdue} vencida${g.overdue===1?"":"s"}`:"En control"}</span></div></summary><table class="activity-table"><thead><tr><th>Actividad</th><th>Responsable</th><th>Estado</th><th>Avance</th><th>Fecha</th></tr></thead><tbody>${g.items.map(a=>`<tr><td>${esc(a.activity)}</td><td>${esc(a.owner||"Sin responsable")}</td><td>${esc(a.status)}</td><td>${fmtPct(a.progress)}</td><td>${formatDate(a.dueDate,true)}</td></tr>`).join("")}</tbody></table></details>`).join("")}</div>`;
+}
+
+function addDays(base,days){const d=new Date(base);d.setDate(d.getDate()+days);return d}
+function easterDate(year){const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1;return new Date(year,month-1,day,12)}
+function observedMonday(year,month,day){const d=new Date(year,month-1,day,12);const offset=d.getDay()===1?0:(8-d.getDay())%7;return addDays(d,offset)}
+function colombiaHolidays(year){
+  const out=[],add=(d,name,source="Ley 51 de 1983")=>out.push({date:dateISO(d),name,source});
+  add(new Date(year,0,1,12),"Año Nuevo");add(observedMonday(year,1,6),"Día de los Reyes Magos");add(observedMonday(year,3,19),"Día de San José");add(new Date(year,4,1,12),"Día del Trabajo");
+  const easter=easterDate(year);add(addDays(easter,-3),"Jueves Santo");add(addDays(easter,-2),"Viernes Santo");add(addDays(easter,43),"Ascensión del Señor");add(addDays(easter,64),"Corpus Christi");add(addDays(easter,71),"Sagrado Corazón de Jesús");
+  add(observedMonday(year,6,29),"San Pedro y San Pablo");if(year>=2026)add(observedMonday(year,7,9),"Nuestra Señora del Rosario de Chiquinquirá","Ley 2578 de 2026");add(new Date(year,6,20,12),"Día de la Independencia");add(new Date(year,7,7,12),"Batalla de Boyacá");add(observedMonday(year,8,15),"Asunción de la Virgen");add(observedMonday(year,10,12),"Día de la Diversidad Étnica y Cultural");add(observedMonday(year,11,1),"Todos los Santos");add(observedMonday(year,11,11),"Independencia de Cartagena");add(new Date(year,11,8,12),"Inmaculada Concepción");add(new Date(year,11,25,12),"Navidad");return out.sort((a,b)=>a.date.localeCompare(b.date));
+}
+function calendarCells(year,month){const first=new Date(year,month,1,12),start=addDays(first,-((first.getDay()+6)%7));return Array.from({length:42},(_,i)=>{const d=addDays(start,i);return{date:dateISO(d),day:d.getDate(),inMonth:d.getMonth()===month,today:dateISO(d)===dateISO()}})}
+function eventColor(date,closed=false){if(closed)return"green";const n=daysUntil(date);return n!==null&&n<0?"red":n!==null&&n<=state.settings.alertDays?"amber":""}
+function calendarEvents(projects){
+  const map=new Map(),push=(date,e)=>{if(!date)return;if(!map.has(date))map.set(date,[]);map.get(date).push({...e,date})};
+  projects.forEach(p=>{
+    if(p.nextDueDate&&!isClosed(p))push(p.nextDueDate,{projectId:p.id,company:p.company,title:p.nextCommitment||p.title,subtitle:`Compromiso · ${p.nextOwner||p.currentOwner||p.projectLead||"Sin responsable"}`,color:eventColor(p.nextDueDate)});
+    if(p.dueDate)push(p.dueDate,{projectId:p.id,company:p.company,title:p.title,subtitle:`Cierre del proyecto · ${fmtPct(projectProgress(p))}`,color:eventColor(p.dueDate,isClosed(p))});
+    (p.workItems||[]).filter(a=>a.dueDate).forEach(a=>push(a.dueDate,{projectId:p.id,company:p.company,title:a.activity,subtitle:`${a.product} · ${a.owner||"Sin responsable"}`,color:eventColor(a.dueDate,activityClosed(a))}));
+  });
+  [...map.values()].forEach(list=>list.sort((a,b)=>a.company.localeCompare(b.company,"es")||a.title.localeCompare(b.title,"es")));return map;
+}
+function renderCalendar(projects){
+  const {year,month}=state.calendar,cells=calendarCells(year,month),holidays=colombiaHolidays(year),holidayMap=new Map(holidays.map(h=>[h.date,h])),events=calendarEvents(projects),monthDates=cells.filter(c=>c.inMonth).map(c=>c.date),monthEvents=monthDates.flatMap(d=>events.get(d)||[]),monthHolidays=holidays.filter(h=>toDate(h.date)?.getMonth()===month),companies=unique(projects.map(p=>p.company)),overdueActivities=projects.flatMap(p=>p.workItems||[]).filter(a=>!activityClosed(a)&&a.dueDate&&(daysUntil(a.dueDate)??0)<0).length;
+  const years=Array.from({length:9},(_,i)=>year-4+i);
+  return `<section class="panel"><div class="calendar-toolbar"><button class="btn btn-sm" data-calendar-shift="-1">← Mes anterior</button><div class="calendar-title"><strong>${MONTHS[month]} ${year}</strong><span>${projects.length} proyecto${projects.length===1?"":"s"} · ${companies.length} empresa${companies.length===1?"":"s"}</span></div><div class="calendar-controls"><button class="btn btn-sm" data-calendar-today>Hoy</button><select data-calendar-month>${MONTHS.map((m,i)=>`<option value="${i}" ${i===month?"selected":""}>${m}</option>`).join("")}</select><select data-calendar-year>${years.map(y=>`<option ${y===year?"selected":""}>${y}</option>`).join("")}</select><button class="btn btn-sm" data-calendar-shift="1">Mes siguiente →</button></div></div>
+  <div class="calendar-metrics"><div class="calendar-metric"><span>Eventos del mes</span><b>${monthEvents.length}</b></div><div class="calendar-metric"><span>Empresas activas</span><b>${companies.length}</b></div><div class="calendar-metric"><span>Actividades vencidas</span><b>${overdueActivities}</b></div><div class="calendar-metric"><span>Festivos del mes</span><b>${monthHolidays.length}</b></div></div>
+  <div class="holiday-strip"><strong>Festivos nacionales</strong>${monthHolidays.length?monthHolidays.map(h=>`<span class="holiday-chip">${formatDate(h.date,true)} · ${esc(h.name)}</span>`).join(""):`<span class="holiday-chip">Sin festivos nacionales este mes</span>`}</div>
+  <div class="calendar-grid">${WEEKDAYS.map(d=>`<div class="weekday">${d}</div>`).join("")}${cells.map(c=>renderDay(c,events.get(c.date)||[],holidayMap.get(c.date))).join("")}</div></section>
+  <section class="agenda"><details><summary>Ver agenda del mes agrupada por empresa</summary><div class="agenda-list">${renderAgenda(monthEvents)}</div></details></section>`;
+}
+function renderDay(c,events,holiday){return `<div class="day ${c.inMonth?"":"out"} ${c.today?"today":""} ${holiday?"holiday":""}"><div class="day-head"><span>${c.day}</span>${holiday?`<span class="holiday-name">${esc(holiday.name)}</span>`:""}</div>${events.slice(0,3).map(e=>`<button class="event ${e.color}" data-open-project="${e.projectId}"><b>${esc(e.title)}</b><span>${esc(e.company)} · ${esc(e.subtitle)}</span></button>`).join("")}${events.length>3?`<button class="more-events" data-day-events="${attr(c.date)}">＋ ${events.length-3} eventos</button>`:""}</div>`}
+function renderAgenda(events){
+  if(!events.length)return `<div class="empty" style="padding:25px"><strong>Sin eventos en el mes</strong></div>`;
+  const groups=[...groupBy(events,e=>e.company||"Sin empresa").entries()].sort((a,b)=>a[0].localeCompare(b[0],"es"));
+  return groups.map(([company,list])=>`<div style="border-bottom:1px solid var(--line)"><div style="padding:9px 12px;background:#f8fafc;font-size:10px;font-weight:820"><span class="filter-value" data-filter-key="company" data-filter-value="${attr(company)}">${esc(company)}</span> · ${list.length} evento${list.length===1?"":"s"}</div>${[...list].sort((a,b)=>a.date.localeCompare(b.date)).map(e=>`<div class="agenda-item"><div>${formatDate(e.date,true)}</div><div><button class="project-link" data-open-project="${e.projectId}">${esc(e.title)}</button><div class="tiny muted">${esc(e.subtitle)}</div></div><div><span class="pill ${e.color||"blue"}">${esc(e.color==="red"?"Vencido":e.color==="amber"?"Próximo":e.color==="green"?"Completado":"Programado")}</span></div><div>${esc(e.company)}</div></div>`).join("")}</div>`).join("");
+}
+
+function renderAdmin(){
+  const c=state.settings.catalogs;
+  return `<div class="admin-grid"><section class="admin-section"><h2>Datos y respaldos</h2><p>El HTML funciona sin servidor. Para uso multiusuario, la información debe migrarse a una base central.</p><div class="button-row"><button class="btn" data-action="backup-json">Descargar respaldo JSON</button><button class="btn" data-action="restore-json">Restaurar JSON</button><button class="btn" data-action="export-csv">Exportar CSV</button><button class="btn" data-action="import-csv">Importar CSV</button></div><div class="note">La restauración JSON reemplaza la base actual. La importación CSV crea o actualiza proyectos por código.</div><hr style="border:0;border-top:1px solid var(--line);margin:16px 0"><div class="button-row"><button class="btn" data-action="load-demo">Cargar base demostrativa</button><button class="btn btn-danger" data-action="clear-data">Vaciar proyectos</button></div></section>
+  <section class="admin-section"><h2>Parámetros de control</h2><p>Solo los parámetros que afectan alertas y lectura operativa.</p><div class="form-grid"><div class="field span-4"><label>Días de alerta preventiva</label><input type="number" min="1" max="60" value="${state.settings.alertDays}" data-setting="alertDays"></div><div class="field span-4"><label>Días para vencimiento crítico</label><input type="number" min="1" max="120" value="${state.settings.criticalOverdueDays}" data-setting="criticalOverdueDays"></div><div class="field span-4"><label>Organización</label><input value="${attr(state.settings.companyName)}" data-setting="companyName"></div></div><div class="note">El semáforo es automático. No se edita manualmente: depende de fechas, actividades vencidas, bloqueos, consumo de horas, transferencia y decisiones pendientes.</div></section>
+  <section class="admin-section"><h2>Catálogos</h2><p>Edite valores separados por coma. También se actualizan al guardar proyectos.</p><div class="form-grid"><div class="field span-12"><label>Empresas</label><textarea data-catalog="companies">${esc((c.companies||[]).join(", "))}</textarea></div><div class="field span-12"><label>PPR</label><textarea data-catalog="pprs">${esc((c.pprs||[]).join(", "))}</textarea></div><div class="field span-12"><label>Liderazgo del portafolio</label><textarea data-catalog="portfolioOwners">${esc((c.portfolioOwners||[]).join(", "))}</textarea></div><div class="field span-12"><label>Líderes y responsables</label><textarea data-catalog="projectLeads">${esc((c.projectLeads||[]).join(", "))}</textarea></div></div></section>
+  <section class="admin-section"><h2>Reglas operativas</h2><p>Las reglas mantienen el control sin aumentar formularios.</p><div class="rule-list"><div class="rule"><strong>Entrada</strong>Un proyecto avanza con orden, alcance, entregables, fechas, horas, facturación, contacto y recepción del líder.</div><div class="rule"><strong>Avance</strong>Se calcula únicamente desde productos y actividades; las horas asignadas actúan como ponderador cuando existen.</div><div class="rule"><strong>Excepción</strong>Gerencia y CEO reciben solo bloqueos, vencimientos y decisiones que exceden el control del líder.</div><div class="rule"><strong>Cierre</strong>El estado Cerrado exige cierre técnico, documental, administrativo y financiero.</div></div></section></div>${renderDataLists()}`;
+}
+function renderDataLists(){const c=state.settings.catalogs;return `<datalist id="dlCompanies">${(c.companies||[]).map(x=>`<option value="${attr(x)}">`).join("")}</datalist><datalist id="dlPprs">${(c.pprs||[]).map(x=>`<option value="${attr(x)}">`).join("")}</datalist><datalist id="dlOwners">${unique([...(c.portfolioOwners||[]),...(c.projectLeads||[])]).map(x=>`<option value="${attr(x)}">`).join("")}</datalist>`}
+function empty(title,text){return `<div class="empty"><strong>${esc(title)}</strong><p>${esc(text)}</p><button class="btn btn-primary" id="emptyNewProject">Crear proyecto</button></div>`}
+
+function openProject(id){const p=state.projects.find(x=>x.id===id);if(!p)return;state.selectedId=id;state.draft=clone(p);renderDrawer();document.getElementById("drawer").classList.add("open");document.getElementById("drawerBackdrop").classList.add("open");document.getElementById("drawer").setAttribute("aria-hidden","false")}
+function newProject(){state.selectedId=null;state.draft=makeProject({code:`PRY-${new Date().getFullYear()}-${String(state.projects.length+1).padStart(3,"0")}`,status:"Activo",stage:"Venta aprobada",portfolioOwner:"Kelly Segura",orderDate:dateISO()});renderDrawer();document.getElementById("drawer").classList.add("open");document.getElementById("drawerBackdrop").classList.add("open");document.getElementById("drawer").setAttribute("aria-hidden","false")}
+function closeDrawer(){document.getElementById("drawer").classList.remove("open");document.getElementById("drawerBackdrop").classList.remove("open");document.getElementById("drawer").setAttribute("aria-hidden","true");state.draft=null;state.selectedId=null}
+function renderDrawer(){
+  const p=state.draft;if(!p)return;const health=projectHealth(p),progress=projectProgress(p),[exTitle,,exClass]=exceptionSummary(p);
+  document.getElementById("drawerHead").innerHTML=`<div class="drawer-title"><span>${esc(p.company||"Empresa sin definir")}</span><h2>${esc(p.code)} · ${esc(p.title)}</h2><p>${esc(p.type)} · ${esc(p.ppr||"Sin PPR")} · actualizado ${formatDate(String(p.updatedAt).slice(0,10),true)}</p></div><span class="pill ${exClass}">${esc(health)}</span><button class="btn btn-icon btn-ghost" data-action="close-drawer">×</button>`;
+  document.getElementById("drawerBody").innerHTML=`${renderDataLists()}<div class="summary-strip"><div class="summary-item"><span>Etapa</span><b>${esc(p.stage)}</b></div><div class="summary-item"><span>Avance</span><b>${fmtPct(progress)}</b></div><div class="summary-item"><span>Responsable actual</span><b>${esc(p.currentOwner||p.projectLead||"Sin definir")}</b></div><div class="summary-item"><span>Próximo compromiso</span><b>${esc(p.nextCommitment||"Sin definir")}</b></div><div class="summary-item"><span>Excepción</span><b>${esc(exTitle)}</b></div></div>${renderProjectSection(p)}${renderWorkSection(p)}${renderExceptionSection(p)}${renderClosureSection(p)}`;
+  document.getElementById("deleteProject").style.visibility=state.selectedId?"visible":"hidden";
+}
+function inputField(label,path,value,type="text",span="span-4",opts={}){return `<div class="field ${span}"><label>${esc(label)}</label><input type="${type}" data-path="${attr(path)}" value="${attr(value)}" ${opts.list?`list="${opts.list}"`:""} ${opts.min!==undefined?`min="${opts.min}"`:""} ${opts.max!==undefined?`max="${opts.max}"`:""} ${opts.step!==undefined?`step="${opts.step}"`:""}></div>`}
+function selectField(label,path,value,options,span="span-4"){return `<div class="field ${span}"><label>${esc(label)}</label><select data-path="${attr(path)}">${options.map(x=>`<option value="${attr(x)}" ${x===value?"selected":""}>${esc(x)}</option>`).join("")}</select></div>`}
+function textField(label,path,value,span="span-12"){return `<div class="field ${span}"><label>${esc(label)}</label><textarea data-path="${attr(path)}">${esc(value)}</textarea></div>`}
+function renderProjectSection(p){
+  return `<details class="accordion" open><summary>1. Proyecto y transferencia</summary><div class="accordion-body"><div class="form-grid">${inputField("Código","code",p.code,"text","span-3")}${inputField("Empresa","company",p.company,"text","span-6",{list:"dlCompanies"})}${selectField("Tipo","type",p.type,TYPES,"span-3")}${inputField("Nombre del proyecto","title",p.title,"text","span-8")}${inputField("PPR","ppr",p.ppr,"text","span-4",{list:"dlPprs"})}${inputField("Línea de servicio","service",p.service,"text","span-6")}${inputField("Regional","regional",p.regional,"text","span-3")}${selectField("Etapa","stage",p.stage,STAGES,"span-3")}${selectField("Estado","status",p.status,STATUSES,"span-3")}${inputField("Liderazgo del portafolio","portfolioOwner",p.portfolioOwner,"text","span-3",{list:"dlOwners"})}${inputField("Líder del proyecto","projectLead",p.projectLead,"text","span-3",{list:"dlOwners"})}${inputField("Responsable actual","currentOwner",p.currentOwner,"text","span-3",{list:"dlOwners"})}${inputField("Responsable del próximo compromiso","nextOwner",p.nextOwner,"text","span-3",{list:"dlOwners"})}${inputField("Fecha de orden","orderDate",p.orderDate,"date","span-3")}${inputField("Inicio","startDate",p.startDate,"date","span-3")}${inputField("Cierre contractual","dueDate",p.dueDate,"date","span-3")}${inputField("Cierre real","actualCloseDate",p.actualCloseDate,"date","span-3")}${inputField("Próximo compromiso","nextCommitment",p.nextCommitment,"text","span-9")}${inputField("Fecha del compromiso","nextDueDate",p.nextDueDate,"date","span-3")}</div>
+  <details class="nested"><summary>Alcance, cliente, horas y valores</summary><div class="nested-body"><div class="form-grid">${textField("Alcance","scope",p.scope,"span-6")}${textField("Entregables","deliverables",p.deliverables,"span-6")}${textField("Exclusiones","exclusions",p.exclusions,"span-6")}${textField("Condiciones de facturación","billingTerms",p.billingTerms,"span-6")}${inputField("Contacto del cliente","clientContact",p.clientContact,"text","span-4")}${inputField("Correo","clientEmail",p.clientEmail,"email","span-4")}${inputField("Teléfono","clientPhone",p.clientPhone,"text","span-4")}${inputField("Horas vendidas","hoursSold",p.hoursSold,"number","span-2",{min:0,step:.1})}${inputField("Horas asignadas","hoursAssigned",p.hoursAssigned,"number","span-2",{min:0,step:.1})}${inputField("Horas ejecutadas","hoursExecuted",p.hoursExecuted,"number","span-2",{min:0,step:.1})}${inputField("Valor contratado","value",p.value,"number","span-3",{min:0,step:1})}${inputField("Valor facturado","invoicedValue",p.invoicedValue,"number","span-3",{min:0,step:1})}${inputField("Participantes (separados por coma)","participants",(p.participants||[]).join(", "),"text","span-6",{array:true})}${inputField("Etiquetas (separadas por coma)","tags",(p.tags||[]).join(", "),"text","span-6",{array:true})}${textField("Notas de gestión","notes",p.notes,"span-12")}</div></div></details>
+  <details class="nested"><summary>Checklist de transferencia · ${fmtPct(checklistProgress(p))}</summary><div class="nested-body"><div class="check-grid">${CHECKLIST.map(([k,t,d])=>`<label class="check"><input type="checkbox" data-path="checklist.${k}" ${p.checklist?.[k]?"checked":""}><span><strong>${esc(t)}</strong><span>${esc(d)}</span></span></label>`).join("")}</div></div></details></div></details>`;
+}
+function renderWorkSection(p){
+  return `<details class="accordion"><summary>2. Productos y actividades · ${productGroups(p).length} producto${productGroups(p).length===1?"":"s"}</summary><div class="accordion-body"><div class="panel-actions" style="justify-content:flex-end;margin-bottom:9px"><button class="btn btn-sm" data-add-row="workItems">＋ Agregar actividad</button></div><div class="editor-list">${(p.workItems||[]).length?p.workItems.map((a,i)=>renderActivityEditor(a,i)).join(""):`<div class="empty" style="padding:20px"><strong>Sin actividades</strong><p>Cree una actividad y escriba el nombre del producto al que pertenece.</p></div>`}</div><div class="note">El avance del proyecto se calcula desde estas actividades. Si existen horas asignadas, se usan como ponderador.</div></div></details>`;
+}
+function renderActivityEditor(a,i){return `<div class="editor-card"><div class="editor-card-head"><div><strong>${esc(a.product||"Producto sin definir")}</strong><span> · ${esc(a.activity||"Actividad")}</span></div><button class="row-delete" data-remove-row="workItems" data-index="${i}">×</button></div><div class="compact-grid">${arrayInput("Producto","workItems",i,"product",a.product,"span-4")}${arrayInput("Actividad","workItems",i,"activity",a.activity,"span-8")}${arrayInput("Responsable","workItems",i,"owner",a.owner,"span-4",{list:"dlOwners"})}${arraySelect("Estado","workItems",i,"status",a.status,ACTIVITY_STATUSES,"span-3")}${arrayInput("Inicio","workItems",i,"startDate",a.startDate,"span-2",{type:"date"})}${arrayInput("Fecha límite","workItems",i,"dueDate",a.dueDate,"span-3",{type:"date"})}${arrayInput("Avance %","workItems",i,"progress",a.progress,"span-2",{type:"number",min:0,max:100,step:1})}${arrayInput("Horas asignadas","workItems",i,"hoursAssigned",a.hoursAssigned,"span-2",{type:"number",min:0,step:.1})}${arrayInput("Horas ejecutadas","workItems",i,"hoursExecuted",a.hoursExecuted,"span-2",{type:"number",min:0,step:.1})}${arrayInput("Evidencia o enlace","workItems",i,"evidence",a.evidence,"span-6")}${arrayText("Notas","workItems",i,"notes",a.notes,"span-12")}</div></div>`}
+function arrayInput(label,array,index,field,value,span="span-4",opts={}){return `<div class="field ${span}"><label>${esc(label)}</label><input type="${opts.type||"text"}" data-array="${array}" data-index="${index}" data-field="${field}" value="${attr(value)}" ${opts.list?`list="${opts.list}"`:""} ${opts.min!==undefined?`min="${opts.min}"`:""} ${opts.max!==undefined?`max="${opts.max}"`:""} ${opts.step!==undefined?`step="${opts.step}"`:""}></div>`}
+function arraySelect(label,array,index,field,value,options,span="span-4"){return `<div class="field ${span}"><label>${esc(label)}</label><select data-array="${array}" data-index="${index}" data-field="${field}">${options.map(x=>`<option ${x===value?"selected":""}>${esc(x)}</option>`).join("")}</select></div>`}
+function arrayText(label,array,index,field,value,span="span-12"){return `<div class="field ${span}"><label>${esc(label)}</label><textarea data-array="${array}" data-index="${index}" data-field="${field}">${esc(value)}</textarea></div>`}
+function renderExceptionSection(p){
+  return `<details class="accordion"><summary>3. Excepciones y decisiones · ${(p.blockers||[]).filter(b=>!b.resolved).length} bloqueo${(p.blockers||[]).filter(b=>!b.resolved).length===1?"":"s"}</summary><div class="accordion-body"><div class="panel-actions" style="justify-content:flex-end;margin-bottom:9px"><button class="btn btn-sm" data-add-row="blockers">＋ Bloqueo</button><button class="btn btn-sm" data-add-row="changes">＋ Cambio de alcance</button></div><div class="editor-list">${(p.blockers||[]).map((b,i)=>`<div class="editor-card"><div class="editor-card-head"><strong>Bloqueo ${i+1}</strong><button class="row-delete" data-remove-row="blockers" data-index="${i}">×</button></div><div class="compact-grid">${arrayInput("Descripción","blockers",i,"description",b.description,"span-6")}${arraySelect("Severidad","blockers",i,"severity",b.severity,SEVERITIES,"span-2")}${arrayInput("Responsable","blockers",i,"owner",b.owner,"span-2",{list:"dlOwners"})}${arrayInput("Fecha solución","blockers",i,"dueDate",b.dueDate,"span-2",{type:"date"})}<div class="field span-2"><label>Estado</label><label class="check" style="height:33px;padding:7px"><input type="checkbox" data-array="blockers" data-index="${i}" data-field="resolved" ${b.resolved?"checked":""}><span><strong>Resuelto</strong></span></label></div></div></div>`).join("")}${(p.changes||[]).map((c,i)=>`<div class="editor-card"><div class="editor-card-head"><strong>Cambio de alcance ${i+1}</strong><button class="row-delete" data-remove-row="changes" data-index="${i}">×</button></div><div class="compact-grid">${arrayInput("Descripción","changes",i,"description",c.description,"span-6")}${arraySelect("Estado","changes",i,"status",c.status,CHANGE_STATUSES,"span-2")}${arrayInput("Fecha","changes",i,"date",c.date,"span-2",{type:"date"})}${arrayInput("Impacto horas","changes",i,"impactHours",c.impactHours,"span-2",{type:"number",step:.1})}${arrayInput("Impacto valor","changes",i,"impactValue",c.impactValue,"span-3",{type:"number",step:1})}</div></div>`).join("")}</div>
+  <details class="nested" open><summary>Escalamiento y decisión requerida</summary><div class="nested-body"><div class="form-grid">${selectField("Nivel","escalation.level",p.escalation.level,ESCALATIONS,"span-3")}${inputField("Responsable de decidir","escalation.owner",p.escalation.owner,"text","span-3",{list:"dlOwners"})}${inputField("Fecha requerida","escalation.dueDate",p.escalation.dueDate,"date","span-3")}${selectField("Estado","escalation.status",p.escalation.status,["Abierto","En gestión","Cerrado"],"span-3")}${textField("Situación y decisión requerida","escalation.reason",p.escalation.reason,"span-12")}</div></div></details></div></details>`;
+}
+function renderClosureSection(p){
+  const log=[...(p.activity||[])].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  return `<details class="accordion"><summary>4. Cierre y trazabilidad · ${fmtPct(closureProgress(p))}</summary><div class="accordion-body"><div class="closure-grid">${CLOSURES.map(([k,t,d])=>`<label class="closure ${p.closures?.[k]?"done":""}"><input type="checkbox" data-path="closures.${k}" ${p.closures?.[k]?"checked":""}><span><strong>${esc(t)}</strong><span>${esc(d)}</span></span></label>`).join("")}</div><details class="nested"><summary>Registrar novedad y consultar trazabilidad</summary><div class="nested-body"><div class="form-grid"><div class="field span-9"><label>Novedad, decisión o compromiso</label><textarea id="newLogText" placeholder="Escriba un registro concreto y verificable…"></textarea></div><div class="field span-3" style="display:flex;align-items:end"><button class="btn btn-primary" style="width:100%;height:70px" data-action="add-log">Registrar</button></div></div><div class="activity-log" style="margin-top:14px">${log.length?log.map(x=>`<div class="log-item"><time>${formatDate(String(x.date).slice(0,10),true)}</time><div><strong>${esc(x.text||"Actualización")}</strong><span>${esc(x.user||"Usuario")} · ${esc(x.type||"registro")}</span></div></div>`).join(""):`<div class="note">Sin registros de trazabilidad.</div>`}</div></div></details></div></details>`;
+}
+function addLog(p,text,type="update"){p.activity=p.activity||[];p.activity.unshift({id:uid("log"),date:new Date().toISOString(),user:"Usuario",type,text})}
+function saveProject(){
+  const p=state.draft;if(!p)return;
+  const missing=[];if(!String(p.code).trim())missing.push("código");if(!String(p.company).trim())missing.push("empresa");if(!String(p.title).trim())missing.push("nombre");if(!String(p.ppr).trim())missing.push("PPR");if(!String(p.portfolioOwner).trim())missing.push("liderazgo");if(!String(p.projectLead).trim())missing.push("líder del proyecto");
+  if(missing.length){toast("Ficha incompleta",`Complete: ${missing.join(", ")}.`,"error");return}
+  const duplicate=state.projects.find(x=>x.id!==state.selectedId&&norm(x.code)===norm(p.code));if(duplicate){toast("Código duplicado",`${p.code} ya está asignado a otro proyecto.`,"error");return}
+  if((p.stage==="Cerrado"||p.status==="Cerrado")&&closureProgress(p)<100){toast("Cierre bloqueado","Complete los cuatro cierres antes de cerrar el proyecto.","error");return}
+  if(p.type==="Tipo 1"&&!p.portfolioOwner)p.portfolioOwner="Kelly Segura";if(p.type==="Tipo 2"&&!p.portfolioOwner)p.portfolioOwner="Jhon Orrego";
+  ["hoursSold","hoursAssigned","hoursExecuted","value","invoicedValue"].forEach(k=>p[k]=Number(p[k])||0);p.workItems=(p.workItems||[]).map(a=>normalizeActivity(a,p.projectLead,p.service||p.title));p.updatedAt=new Date().toISOString();
+  if(p.stage==="Cerrado"||p.status==="Cerrado"){p.stage="Cerrado";p.status="Cerrado";p.actualCloseDate=p.actualCloseDate||dateISO()}
+  addLog(p,state.selectedId?"Ficha actualizada.":"Proyecto creado en el registro único.",state.selectedId?"update":"create");
+  const i=state.projects.findIndex(x=>x.id===state.selectedId);if(i>=0)state.projects[i]=clone(p);else state.projects.unshift(clone(p));state.settings.demoMode=false;syncCatalogs();saveState();closeDrawer();renderApp();toast("Proyecto guardado",`${p.code} quedó actualizado.`)
+}
+function deleteProject(){if(!state.selectedId||!state.draft)return;if(!confirm(`¿Eliminar ${state.draft.code} · ${state.draft.title}?`))return;state.projects=state.projects.filter(x=>x.id!==state.selectedId);saveState();closeDrawer();renderApp();toast("Proyecto eliminado")}
+
+function openSummary(){
+  const projects=visibleProjects(),byPpr=[...groupBy(projects,p=>p.ppr||"Sin PPR").entries()].map(([label,list])=>({label,count:list.length,progress:avg(list,projectProgress),red:list.filter(p=>projectHealth(p)==="Rojo").length})).sort((a,b)=>b.count-a.count),byLeader=[...groupBy(projects,p=>p.portfolioOwner||"Sin liderazgo").entries()].map(([label,list])=>({label,count:list.length,progress:avg(list,projectProgress),red:list.filter(p=>projectHealth(p)==="Rojo").length})).sort((a,b)=>b.count-a.count),max=Math.max(1,...byPpr.map(x=>x.count),...byLeader.map(x=>x.count));
+  openModal(`<div class="modal-head"><h2>Consolidación del portafolio visible</h2><button class="btn btn-icon btn-ghost" data-action="close-modal">×</button></div><div class="modal-body"><div class="summary-bars"><div><h3 style="font-size:12px">Por PPR</h3><div class="bar-list">${barItems(byPpr,max,"ppr")}</div></div><div><h3 style="font-size:12px">Por liderazgo</h3><div class="bar-list">${barItems(byLeader,max,"portfolioOwner")}</div></div></div><div class="note" style="margin-top:16px">Cada barra responde a los filtros activos. Doble clic sobre el nombre para filtrar o retirar el filtro.</div></div>`)
+}
+function barItems(rows,max,key){return rows.length?rows.map(r=>`<div class="bar-item"><span class="filter-value" data-filter-key="${key}" data-filter-value="${attr(r.label)}">${esc(r.label)}</span><div class="bar"><span style="width:${r.count/max*100}%"></span></div><b>${r.count}</b></div>`).join(""):`<div class="note">Sin datos.</div>`}
+function openModal(html){document.getElementById("modal").innerHTML=html;document.getElementById("modalBackdrop").classList.add("open")}
+function closeModal(){document.getElementById("modalBackdrop").classList.remove("open")}
+function showDayEvents(date){const list=calendarEvents(visibleProjects()).get(date)||[];openModal(`<div class="modal-head"><h2>Eventos del ${formatDate(date)}</h2><button class="btn btn-icon btn-ghost" data-action="close-modal">×</button></div><div class="modal-body">${list.map(e=>`<div class="rule"><button class="project-link" data-open-project="${e.projectId}" data-close-modal="true">${esc(e.title)}</button><div class="tiny muted">${esc(e.company)} · ${esc(e.subtitle)}</div></div>`).join("")}</div>`)}
+function toast(title,message="",type="success"){const zone=document.getElementById("toastZone"),el=document.createElement("div");el.className=`toast ${type}`;el.innerHTML=`<strong>${esc(title)}</strong>${message?esc(message):""}`;zone.appendChild(el);setTimeout(()=>el.remove(),3800)}
+
+function exportJSON(){download(`rehavid_proyectos_respaldo_${dateISO()}.json`,JSON.stringify({version:APP_VERSION,exportedAt:new Date().toISOString(),projects:state.projects,settings:state.settings,process:state.process},null,2),"application/json")}
+function exportCSV(){
+  const rows=visibleProjects().map(p=>({codigo:p.code,empresa:p.company,proyecto:p.title,tipo:p.type,ppr:p.ppr,liderazgo:p.portfolioOwner,lider_proyecto:p.projectLead,responsable_actual:p.currentOwner,etapa:p.stage,estado:p.status,avance:Math.round(projectProgress(p)),semaforo:projectHealth(p),proximo_compromiso:p.nextCommitment,responsable_compromiso:p.nextOwner,fecha_compromiso:p.nextDueDate,cierre_contractual:p.dueDate,horas_vendidas:p.hoursSold,horas_asignadas:p.hoursAssigned,horas_ejecutadas:p.hoursExecuted,valor_contratado:p.value,valor_facturado:p.invoicedValue,productos:productGroups(p).length,actividades:(p.workItems||[]).length}));
+  if(!rows.length){toast("Sin datos para exportar","Retire filtros o cree proyectos.","warning");return}
+  const headers=Object.keys(rows[0]),csv=[headers.join(","),...rows.map(r=>headers.map(h=>csvCell(r[h])).join(","))].join("\n");download(`rehavid_portafolio_${dateISO()}.csv`,"\uFEFF"+csv,"text/csv;charset=utf-8")
+}
+function csvCell(v){const s=String(v??"");return /[",\n]/.test(s)?`"${s.replaceAll('"','""')}"`:s}
+function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function parseCSV(text){const rows=[];let row=[],cell="",quote=false;for(let i=0;i<text.length;i++){const ch=text[i],next=text[i+1];if(ch==='"'&&quote&&next==='"'){cell+='"';i++}else if(ch==='"')quote=!quote;else if(ch===','&&!quote){row.push(cell);cell=""}else if((ch==='\n'||ch==='\r')&&!quote){if(ch==='\r'&&next==='\n')i++;row.push(cell);if(row.some(x=>x.trim()))rows.push(row);row=[];cell=""}else cell+=ch}row.push(cell);if(row.some(x=>x.trim()))rows.push(row);return rows}
+function importFile(file){
+  const reader=new FileReader();reader.onload=()=>{try{const text=String(reader.result||"");if(file.name.toLowerCase().endsWith(".json")){const data=JSON.parse(text);if(!Array.isArray(data.projects))throw new Error("El JSON no contiene proyectos");if(!confirm("La restauración JSON reemplazará la base actual. ¿Continuar?"))return;state.projects=data.projects.map(makeProject);state.settings=mergeDeep(clone(DEFAULT_SETTINGS),data.settings||{});state.process=data.process||{};state.settings.demoMode=false;syncCatalogs();saveState();renderApp();toast("Respaldo restaurado",`${state.projects.length} proyectos cargados.`);}
+  else{const rows=parseCSV(text);if(rows.length<2)throw new Error("CSV sin datos");const headers=rows[0].map(norm);let created=0,updated=0;rows.slice(1).forEach(r=>{const o={};headers.forEach((h,i)=>o[h]=r[i]??"");const code=o.codigo||o.code;if(!code)return;const existing=state.projects.find(p=>norm(p.code)===norm(code));const mapped={code,company:o.empresa||o.company,title:o.proyecto||o.title||"Proyecto importado",type:o.tipo||o.type||"Tipo 1",ppr:o.ppr||"",portfolioOwner:o.liderazgo||o.portfolioowner||"",projectLead:o.lider_proyecto||o.projectlead||"",currentOwner:o.responsable_actual||o.currentowner||"",stage:o.etapa||o.stage||"Venta aprobada",status:o.estado||o.status||"Activo",nextCommitment:o.proximo_compromiso||o.nextcommitment||"",nextOwner:o.responsable_compromiso||o.nextowner||"",nextDueDate:o.fecha_compromiso||o.nextduedate||"",dueDate:o.cierre_contractual||o.duedate||"",hoursSold:Number(o.horas_vendidas||o.hourssold)||0,hoursAssigned:Number(o.horas_asignadas||o.hoursassigned)||0,hoursExecuted:Number(o.horas_ejecutadas||o.hoursexecuted)||0,value:Number(o.valor_contratado||o.value)||0,invoicedValue:Number(o.valor_facturado||o.invoicedvalue)||0};if(existing){Object.assign(existing,makeProject({...existing,...mapped,id:existing.id}));updated++}else{state.projects.push(makeProject(mapped));created++}});state.settings.demoMode=false;syncCatalogs();saveState();renderApp();toast("CSV importado",`${created} creados · ${updated} actualizados.`)}}catch(e){console.error(e);toast("No fue posible importar",e.message,"error")}};reader.readAsText(file,"UTF-8")}
+
+function handleDraftInput(el){
+  if(!state.draft)return;
+  if(el.dataset.path){let value=el.type==="checkbox"?el.checked:el.value;if(el.type==="number")value=Number(value)||0;if(["participants","tags"].includes(el.dataset.path))value=String(value).split(",").map(x=>x.trim()).filter(Boolean);setPath(state.draft,el.dataset.path,value)}
+  if(el.dataset.array){const row=state.draft[el.dataset.array]?.[Number(el.dataset.index)];if(!row)return;let value=el.type==="checkbox"?el.checked:el.value;if(el.type==="number")value=Number(value)||0;row[el.dataset.field]=value;if(el.dataset.array==="workItems"&&el.dataset.field==="status"&&value==="Completado")row.progress=100}
+}
+
+let searchTimer;
+document.addEventListener("click",e=>{
+  const view=e.target.closest("[data-view]");if(view){state.view=view.dataset.view;document.getElementById("sidebar").classList.remove("open");renderApp();return}
+  const jump=e.target.closest("[data-view-jump]");if(jump){state.view=jump.dataset.viewJump;renderApp();return}
+  const open=e.target.closest("[data-open-project]");if(open){if(open.dataset.closeModal)closeModal();openProject(open.dataset.openProject);return}
+  const expand=e.target.closest("[data-expand-project]");if(expand){const id=expand.dataset.expandProject;state.expanded.has(id)?state.expanded.delete(id):state.expanded.add(id);renderView();return}
+  const special=e.target.closest("[data-special]");if(special){if(e.detail>1)return;toggleFilter("special",special.dataset.special);return}
+  const step=e.target.closest(".flow-step");if(step){if(e.detail>1)return;toggleFilter(step.dataset.filterKey,step.dataset.filterValue);return}
+  const remove=e.target.closest("[data-remove-filter]");if(remove){if(e.detail>1)return;toggleFilter(remove.dataset.removeFilter,remove.dataset.value);return}
+  const cal=e.target.closest("[data-calendar-shift]");if(cal){const d=new Date(state.calendar.year,state.calendar.month+Number(cal.dataset.calendarShift),1);state.calendar.year=d.getFullYear();state.calendar.month=d.getMonth();renderView();return}
+  if(e.target.closest("[data-calendar-today]")){const d=new Date();state.calendar.year=d.getFullYear();state.calendar.month=d.getMonth();renderView();return}
+  const day=e.target.closest("[data-day-events]");if(day){showDayEvents(day.dataset.dayEvents);return}
+  const add=e.target.closest("[data-add-row]");if(add&&state.draft){const name=add.dataset.addRow;if(name==="workItems")state.draft.workItems.push(normalizeActivity({product:"Nuevo producto",activity:"Nueva actividad",owner:state.draft.currentOwner||state.draft.projectLead,status:"No iniciado",startDate:dateISO(),dueDate:state.draft.nextDueDate||state.draft.dueDate},state.draft.projectLead,"Nuevo producto"));if(name==="blockers")state.draft.blockers.push({id:uid("blk"),description:"",severity:"Media",owner:state.draft.currentOwner||"",dueDate:"",resolved:false});if(name==="changes")state.draft.changes.push({id:uid("chg"),description:"",status:"Propuesto",impactHours:0,impactValue:0,date:dateISO()});renderDrawer();return}
+  const rem=e.target.closest("[data-remove-row]");if(rem&&state.draft){state.draft[rem.dataset.removeRow].splice(Number(rem.dataset.index),1);renderDrawer();return}
+  const action=e.target.closest("[data-action]")?.dataset.action;
+  if(action==="clear-filters"){clearFilters();return}if(action==="clear-search"){state.search="";document.getElementById("globalSearch").value="";renderApp();return}if(action==="open-summary"){openSummary();return}if(action==="close-modal"){closeModal();return}if(action==="close-drawer"){closeDrawer();return}if(action==="export-csv"){exportCSV();return}if(action==="backup-json"){exportJSON();return}if(action==="restore-json"||action==="import-csv"){document.getElementById("importFile").dataset.mode=action;document.getElementById("importFile").click();return}if(action==="load-demo"){if(confirm("¿Reemplazar la base actual por datos demostrativos?")){state.projects=demoProjects();state.settings.demoMode=true;syncCatalogs();saveState();renderApp()}return}if(action==="clear-data"){if(confirm("¿Vaciar todos los proyectos? Exporte un respaldo antes de continuar.")){state.projects=[];state.settings.demoMode=false;saveState();renderApp()}return}if(action==="add-log"&&state.draft){const t=document.getElementById("newLogText")?.value.trim();if(!t){toast("Registro vacío","Escriba una novedad antes de guardar.","warning");return}addLog(state.draft,t,"note");renderDrawer();return}
+  if(e.target.id==="emptyNewProject")newProject();
+});
+document.addEventListener("dblclick",e=>{const el=e.target.closest("[data-filter-key]");if(el&&!el.classList.contains("flow-step")){toggleFilter(el.dataset.filterKey,el.dataset.filterValue)}});
+document.addEventListener("change",e=>{
+  const el=e.target;if(el.matches("[data-filter-select]")){setSingleFilter(el.dataset.filterSelect,el.value);return}
+  if(el.id==="sortProjects"){state.sort=el.value;renderView();return}
+  if(el.matches("[data-calendar-month]")){state.calendar.month=Number(el.value);renderView();return}if(el.matches("[data-calendar-year]")){state.calendar.year=Number(el.value);renderView();return}
+  if(el.matches("[data-setting]")){const k=el.dataset.setting;state.settings[k]=el.type==="number"?Number(el.value)||0:el.value;saveState();renderApp();return}
+  if(el.matches("[data-catalog]")){state.settings.catalogs[el.dataset.catalog]=unique(el.value.split(",").map(x=>x.trim()));saveState();return}
+  if(el.matches("[data-path],[data-array]")){handleDraftInput(el);renderDrawer();return}
+});
+document.addEventListener("input",e=>{const el=e.target;if(el.matches("[data-path],[data-array]")){handleDraftInput(el);return}});
+document.getElementById("globalSearch").addEventListener("input",e=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{state.search=e.target.value.trim();renderApp()},180)});
+document.getElementById("newProject").addEventListener("click",newProject);document.getElementById("mobileMenu").addEventListener("click",()=>document.getElementById("sidebar").classList.toggle("open"));document.getElementById("drawerBackdrop").addEventListener("click",closeDrawer);document.getElementById("cancelProject").addEventListener("click",closeDrawer);document.getElementById("saveProject").addEventListener("click",saveProject);document.getElementById("deleteProject").addEventListener("click",deleteProject);document.getElementById("modalBackdrop").addEventListener("click",e=>{if(e.target===document.getElementById("modalBackdrop"))closeModal()});document.getElementById("importFile").addEventListener("change",e=>{const file=e.target.files?.[0];if(file)importFile(file);e.target.value=""});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(document.getElementById("drawer").classList.contains("open"))closeDrawer();else closeModal()}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();document.getElementById("globalSearch").focus()}});
+
+loadState();renderApp();
+</script>
+</body>
+</html>

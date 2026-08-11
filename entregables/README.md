@@ -49,10 +49,20 @@ entregables/
 ├── frontend/                       ← Entregable 3 · HTML productivo
 │   └── rehavid_v13_produccion.html
 │
-└── docs/                           ← Entregable 4 · Documentación de despliegue
-    ├── instrucciones_azure_ingeniero.md
-    └── CHECKLIST_DESPLIEGUE.md
+├── docs/                           ← Entregable 4 · Documentación de despliegue
+│   ├── instrucciones_azure_ingeniero.md
+│   └── CHECKLIST_DESPLIEGUE.md
+│
+└── gestion-proyectos/              ← App de gestión de proyectos (producto aparte)
+    ├── README.md                              ← trazabilidad contra la especificación
+    ├── Rehavid_Gestion_Proyectos_v5.html      ← la aplicación
+    ├── Rehavid_Gestion_Proyectos_v4_baseline.html
+    └── ESPECIFICACION_FUNCIONAL_v1.txt
 ```
+
+> **Nota:** `gestion-proyectos/` es un producto independiente del sistema de agendamiento.
+> Implementa la *Especificación funcional y flujograma del proceso de gestión de proyectos v1.0*
+> (venta → activación → asignación → programación → ejecución → cierre por producto).
 
 ---
 

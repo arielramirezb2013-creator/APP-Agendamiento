@@ -1,0 +1,307 @@
+REHAVID S.A.S.
+
+[TABLA]
+
+[/TABLA]
+
+
+## Especificación funcional y flujograma del proceso de gestión de proyectos
+Rediseño de la aplicación para controlar la venta, asignación, programación, ejecución y cierre
+
+[TABLA]
+Propósito del documento Transformar el proceso operativo suministrado por Rehavid en una estructura funcional clara, desarrollable y trazable. El documento incluye el flujograma, los datos mínimos, las reglas de asignación, los estados de seguimiento y los criterios para rediseñar el panel de control.
+[/TABLA]
+
+
+[TABLA]
+Versión | 1.0
+Fecha | 11 de agosto de 2026
+Tipo de documento | Especificación funcional · Documento de trabajo
+Fuente del proceso | Requerimiento suministrado por Rehavid S.A.S.
+[/TABLA]
+
+Documento orientado a desarrollo de aplicación web/HTML y gestión operativa interna.
+
+## 1. Objetivo, alcance y criterio de diseño
+Objetivo. Definir cómo debe operar la aplicación desde el momento en que se vende un proyecto hasta su cierre, garantizando que cada producto vendido tenga responsable, horas, programación, estado, alertas y evidencia de cumplimiento.
+Alcance. El proceso inicia con la venta formalizada y finaliza cuando todos los productos del proyecto cuentan con entregables validados y el proyecto maestro queda cerrado. No desarrolla la metodología técnica de ejecución de cada producto ni el proceso de cotización comercial.
+
+[TABLA]
+Decisión estructural principal Una venta debe crear un proyecto maestro. Cada producto vendido debe convertirse en un frente o subproceso independiente, con sus propias horas, responsable, fechas, estado y entregable. El estado global del proyecto se calcula a partir del avance de esos productos.
+[/TABLA]
+
+
+### Principios funcionales del rediseño
+  - Trazabilidad integral. Toda modificación debe registrar usuario, fecha, dato anterior, dato nuevo y motivo.
+  - Asignación automática. La aplicación debe identificar responsables por tipo de proyecto y por producto; una venta puede generar varias asignaciones simultáneas.
+  - Programación confirmada. El plan registrado por ventas es preliminar. La programación definitiva se construye cuando el responsable contacta al cliente.
+  - Gestión por excepción. El panel principal debe mostrar lo que requiere acción: actividades sin contacto, sin programación, retrasadas, suspendidas o próximas a vencer.
+  - Detalle progresivo. La vista ejecutiva debe ser sencilla; los contactos, productos, horas, historial y entregables se consultan al abrir el proyecto.
+
+### Normalización de términos utilizados
+
+[TABLA]
+Para esta versión se normalizan los nombres como Kelly Segura para proyectos tipo 1 y Jhon Orrego para proyectos tipo 2. Se conserva el término BVB tal como fue suministrado y debe validarse su denominación técnica antes de configurar el catálogo. PPR se mantiene como campo interno sin ampliar su significado.
+[/TABLA]
+
+
+## 2. Actores y responsabilidades
+
+[TABLA]
+Actor | Responsabilidad dentro del proceso | Resultado esperado
+Vendedor | Formaliza la venta, registra la información completa y corrige inconsistencias antes de activar el proyecto. | Venta registrada y datos confiables.
+Aplicación | Valida, crea el proyecto, guarda la información, actualiza el panel, asigna responsables y envía notificaciones. | Proyecto activado y tareas generadas.
+Kelly Segura | Recibe y gestiona la coordinación de los proyectos tipo 1. | Asignación aceptada, contacto y programación.
+Jhon Orrego | Recibe y gestiona la coordinación de los proyectos tipo 2 y la ruta de mediciones objetivas definida. | Asignación aceptada, contacto y programación.
+Gestor de datos | Gestiona los productos asociados a tableros BI. | Programación, avance y entregable del tablero.
+Diseñador | Gestiona los productos de diseño según complejidad baja, media o alta. | Programación, avance y entregable de diseño.
+Responsable técnico | Ejecuta o coordina el producto asignado, actualiza estados y registra novedades. | Ejecución trazable y cierre del producto.
+Cliente | Confirma contactos, disponibilidad, fechas, accesos y condiciones para ejecutar las actividades. | Programación validada y condiciones de ejecución.
+[/TABLA]
+
+
+## 3. Información que debe capturar y controlar la aplicación
+La captura debe organizarse en tres bloques: proyecto maestro, productos o frentes de trabajo y contactos del cliente. Esta separación evita duplicidades y permite controlar una venta con varios productos.
+
+### 3.1. Proyecto maestro
+
+[TABLA]
+Campo | Descripción funcional | Regla
+ID del proyecto | Generado automáticamente y único. | Obligatorio · automático
+Empresa | Razón social del cliente. | Obligatorio
+PPR | Valor interno asociado a la venta; preferiblemente seleccionado desde catálogo. | Obligatorio
+Tipo de proyecto | Tipo 1 o tipo 2. | Obligatorio
+Fecha y vendedor | Fecha de venta y usuario que registra. | Obligatorio · automático
+Plan de trabajo estimado | Estimación preliminar definida durante la venta. | Obligatorio
+Horas totales vendidas | Suma automática de las horas asignadas a los productos. | Automático
+Orden de servicio o código comercial | Referencia recomendada para unir la venta con la operación. | Recomendado
+Estado global y condición | Se calculan a partir del estado de los productos. | Automático
+[/TABLA]
+
+
+### 3.2. Productos o frentes de trabajo
+
+[TABLA]
+Campo | Descripción funcional | Regla
+Producto | Nombre del producto vendido. | Obligatorio
+Horas vendidas | Horas correspondientes al producto. | Obligatorio · mayor que cero
+Categoría de enrutamiento | Tipo 1, tipo 2, medición objetiva, BI, diseño u otra categoría parametrizada. | Automático/seleccionado
+Tecnología | Xsens, TuMeke, BVB, Tobii 3, electromiografía de superficie o biofeedback, cuando aplique. | Condicional
+Complejidad de diseño | Baja, media o alta, cuando el producto sea diseño. | Condicional
+Responsable principal | Persona que coordina y mantiene actualizado el producto. | Automático y ajustable
+Fechas programadas | Inicio, fin, hitos o sesiones confirmadas con el cliente. | Obligatorio antes de ejecutar
+Estado operativo | Pendiente de contacto, programado, en ejecución, suspendido, finalizado o cerrado. | Obligatorio
+Condición de gestión | En tiempo, en riesgo o retrasado. | Automático/manual con regla
+Avance y horas ejecutadas | Porcentaje, horas utilizadas y saldo. | Actualización continua
+Entregable | Archivo, enlace, registro o validación de cierre. | Obligatorio para finalizar
+Novedad o bloqueo | Causa, acción, responsable y nueva fecha cuando exista retraso o suspensión. | Condicional
+[/TABLA]
+
+
+### 3.3. Contactos del cliente
+
+[TABLA]
+Elemento | Definición
+Cantidad | Mínimo un contacto y máximo tres.
+Datos por contacto | Nombre, cargo, correo electrónico y número telefónico.
+Contacto principal | Uno de los contactos debe identificarse como principal.
+Uso | Programación, confirmaciones, alertas y comunicaciones del proyecto.
+[/TABLA]
+
+
+### 3.4. Validaciones antes de activar el proyecto
+
+[TABLA]
+Validación | Regla de control
+Empresa, PPR y tipo | Deben estar seleccionados; no se admiten campos vacíos.
+Productos | Debe existir al menos un producto vendido.
+Horas por producto | Deben ser numéricas y mayores que cero.
+Contactos | Debe existir entre uno y tres contactos, con uno identificado como principal.
+Datos de contacto | Correo y teléfono deben superar validaciones básicas de formato.
+Medición objetiva | La tecnología debe seleccionarse cuando el producto pertenezca a esta categoría.
+Diseño | La complejidad baja, media o alta debe ser obligatoria.
+Horas totales | La aplicación debe calcularlas como suma de las horas de los productos.
+Duplicidad | Debe advertir posibles registros repetidos por empresa y referencia comercial.
+Activación | Solo después de validar se generan ID, tareas, correos y publicación en el panel.
+[/TABLA]
+
+4. Flujograma funcional del proceso
+Figura 1. Flujo funcional propuesto para la aplicación.
+* BVB se mantiene según el término suministrado y requiere validación de nomenclatura antes de parametrizar el catálogo.
+
+## 5. Descripción detallada del proceso
+5.1. Venta del proyecto. La venta debe dejar definidos la empresa, los productos incluidos, las horas correspondientes a cada producto y un plan de trabajo estimado. En este punto la programación todavía es preliminar.
+5.2. Registro por el vendedor. El vendedor ingresa empresa, PPR, tipo de proyecto, productos, horas y hasta tres contactos del cliente. La información se guarda inicialmente como borrador hasta superar las validaciones.
+5.3. Validación previa a la activación. La aplicación verifica campos obligatorios, existencia de al menos un producto, horas mayores que cero, contactos completos y datos condicionales. Si falta información, devuelve el registro al vendedor y no genera asignaciones.
+5.4. Creación del proyecto maestro. Al aprobarse la validación, la aplicación genera un identificador único, crea el proyecto maestro, crea un registro independiente por cada producto, actualiza la base de datos y publica el proyecto en el panel.
+5.5. Asignación y notificación automática. El motor evalúa el tipo de proyecto y todos los productos vendidos. Las reglas no son excluyentes: un mismo proyecto puede notificar simultáneamente a la coordinación tipo 1 o tipo 2, al gestor de datos y al diseñador.
+5.6. Aceptación de la asignación. Cada responsable debe revisar la información y aceptar la tarea en la aplicación. La aceptación deja trazabilidad y activa el compromiso de contacto con el cliente.
+5.7. Contacto y programación. El responsable contacta al cliente, confirma alcance, disponibilidad, sedes, recursos y fechas. El plan preliminar se transforma en una programación confirmada, visible en el panel y en el calendario.
+5.8. Ejecución y actualización. Durante la ejecución, el responsable actualiza avance, horas utilizadas, hitos, próxima acción y evidencia. El panel debe identificar cuándo una actividad no tiene actualización o se desvía de su programación.
+5.9. Gestión de retrasos, suspensión y reanudación. Toda excepción debe incluir causa, acción correctiva, responsable y nueva fecha. La reanudación se registra como un evento que devuelve la actividad a “En ejecución”; no debe mantenerse como estado permanente.
+5.10. Cierre por producto. Un producto se finaliza cuando tiene entregable, horas ejecutadas, fecha real y validación del responsable. Después puede pasar a cerrado cuando se confirme aceptación o cumplimiento administrativo.
+5.11. Cierre del proyecto maestro. El proyecto se cierra únicamente cuando todos los productos están cerrados. La aplicación consolida cumplimiento, horas vendidas versus ejecutadas, entregables, novedades e historial de comunicaciones.
+
+## 6. Matriz de asignación y notificaciones automáticas
+Las reglas se ejecutan en paralelo. La aplicación debe generar una tarea dentro del sistema y un correo de notificación con la misma información esencial.
+
+[TABLA]
+Condición detectada | Destinatario | Acción esperada
+Tipo de proyecto = 1 | Kelly Segura | Coordinar el proyecto tipo 1, aceptar asignación, contactar y programar.
+Tipo de proyecto = 2 | Jhon Orrego | Coordinar el proyecto tipo 2, aceptar asignación, contactar y programar.
+Producto = medición objetiva | Jhon Orrego y responsable técnico asignado | Coordinar tecnología, recursos, agenda y condiciones técnicas.
+Producto = tablero BI | Gestor de datos | Revisar fuentes, contactos, alcance del tablero, programación y entregable.
+Producto = diseño | Diseñador | Recibir complejidad baja, media o alta; programar y actualizar avance.
+Más de una condición | Todos los destinatarios aplicables | Generar asignaciones independientes por producto sin duplicar el proyecto maestro.
+[/TABLA]
+
+
+### Contenido mínimo de la notificación
+  - ID y empresa del proyecto.
+  - PPR, tipo de proyecto y vendedor responsable del registro.
+  - Producto asignado, horas vendidas, tecnología o complejidad cuando aplique.
+  - Plan estimado y fecha objetivo inicial.
+  - Hasta tres contactos del cliente, identificando el contacto principal.
+  - Acción requerida: aceptar asignación, contactar, programar y actualizar el panel.
+  - Enlace directo al detalle del proyecto y al producto asignado.
+
+[TABLA]
+Control recomendado Los tiempos de aceptación, contacto y programación deben definirse como parámetros configurables. Así la organización puede cambiar sus acuerdos de servicio sin modificar el código de la aplicación.
+[/TABLA]
+
+
+## 7. Modelo de estados, alertas y panel de control
+
+### 7.1. Separar estado, condición y eventos
+Para evitar un panel cargado y estados ambiguos, la aplicación debe manejar tres capas distintas:
+
+[TABLA]
+Capa | Valores | Uso
+Estado operativo | Pendiente de contacto · Programado · En ejecución · Suspendido · Finalizado · Cerrado | Indica en qué momento se encuentra el producto.
+Condición de gestión | En tiempo · En riesgo · Retrasado | Indica si requiere atención, sin alterar el estado operativo.
+Eventos | Asignado · Contactado · Reprogramado · Reanudado · Entregable cargado | Construye la bitácora y conserva la historia.
+[/TABLA]
+
+
+### 7.2. Panel principal: información mínima
+
+[TABLA]
+Criterio visual La vista principal no debe intentar mostrar todos los datos. Debe responder tres preguntas: qué proyectos existen, cuáles requieren acción y cuál es el siguiente compromiso. El detalle completo se abre al seleccionar un proyecto.
+[/TABLA]
+
+Indicadores superiores recomendados:
+  - Proyectos activos.
+  - Productos pendientes de contacto o programación.
+  - Productos en ejecución.
+  - Productos en riesgo o retrasados.
+  - Productos suspendidos.
+  - Horas vendidas, ejecutadas y disponibles en el periodo seleccionado.
+Tabla principal por proyecto:
+  - Empresa, ID del proyecto, PPR y tipo.
+  - Cantidad de productos y horas totales.
+  - Responsable de coordinación.
+  - Estado global, condición y porcentaje de avance.
+  - Próximo compromiso o fecha crítica.
+  - Alerta principal y última actualización.
+Detalle al abrir el proyecto:
+  - Tarjetas o filas por producto con responsable, horas, fechas, estado y entregable.
+  - Contactos del cliente y registro de comunicaciones.
+  - Cronología de eventos y cambios.
+  - Calendario por empresa y calendario consolidado de todos los proyectos.
+  - Documentos, enlaces y evidencias asociados.
+
+### 7.3. Alertas de gestión
+
+[TABLA]
+Alerta | Condición que debe identificar la aplicación
+Asignación no aceptada | El responsable no ha confirmado la tarea dentro del acuerdo de servicio configurado.
+Cliente no contactado | Existe asignación, pero no hay registro de contacto.
+Sin programación | El producto fue vendido, pero no tiene fecha confirmada.
+Próximo a vencer | La fecha objetivo se aproxima y el avance no es suficiente.
+Retrasado | La fecha programada venció sin cierre.
+Suspendido | La actividad está detenida y debe existir causa, responsable y fecha de revisión.
+Sin actualización | No se han registrado novedades durante el periodo de control configurado.
+Desviación de horas | Las horas ejecutadas superan o se aproximan al límite vendido.
+[/TABLA]
+
+
+## 8. Reglas de negocio y control
+
+[TABLA]
+Código | Regla
+RN-01 | Una venta crea un único proyecto maestro.
+RN-02 | Un proyecto debe contener uno o más productos; cada producto conserva horas, responsable, fechas, estado y entregable propios.
+RN-03 | La suma de horas de los productos debe coincidir con las horas totales del proyecto.
+RN-04 | La aplicación no activa un proyecto con campos obligatorios incompletos.
+RN-05 | Las reglas de tipo de proyecto y producto se ejecutan en paralelo y pueden generar múltiples destinatarios.
+RN-06 | Toda asignación debe ser aceptada o reasignada; el correo por sí solo no constituye aceptación.
+RN-07 | El plan estimado de ventas no reemplaza la programación confirmada con el cliente.
+RN-08 | Un retraso o suspensión exige causa, acción, responsable y nueva fecha de revisión.
+RN-09 | La reanudación se registra como evento y devuelve el producto al estado “En ejecución”.
+RN-10 | El producto no puede finalizarse sin entregable o evidencia de cumplimiento.
+RN-11 | El proyecto maestro solo se cierra cuando todos sus productos están cerrados.
+RN-12 | Los cambios de producto, horas, responsables o fechas deben conservar historial de auditoría.
+RN-13 | El estado global y la condición del proyecto se calculan automáticamente a partir de los productos.
+RN-14 | Los catálogos de PPR, productos, tecnologías, complejidades y responsables deben ser administrables sin modificar el código.
+[/TABLA]
+
+
+## 9. Estructura funcional recomendada para la aplicación
+
+[TABLA]
+1. Registro de venta | Formulario guiado para proyecto maestro, productos, horas, PPR, tipo y contactos. Incluye validaciones antes de activar.
+2. Motor de asignación | Reglas configurables por tipo de proyecto, producto, tecnología y complejidad. Genera tareas y correos.
+3. Mis asignaciones | Vista por responsable para aceptar tareas, contactar al cliente, programar y registrar avances.
+4. Panel de portafolio | Vista consolidada por empresa y total de proyectos, con indicadores mínimos, alertas y filtros.
+5. Detalle del proyecto | Productos, responsables, horas, programación, contactos, bitácora, entregables y condición.
+6. Calendario | Programación por empresa y calendario consolidado del portafolio; los festivos de Colombia funcionan como referencia de planeación.
+7. Centro de alertas | Pendientes de aceptación, contacto, programación, retrasos, suspensión y desviación de horas.
+8. Administración y auditoría | Catálogos, responsables, acuerdos de servicio, permisos e historial de cambios.
+[/TABLA]
+
+
+## 10. Criterios mínimos de aceptación para el desarrollo
+01  El sistema permite registrar una venta con uno o varios productos y hasta tres contactos.
+02  No permite activar el proyecto si faltan datos obligatorios o si un producto no tiene horas.
+03  Genera un ID único y crea registros separados por producto.
+04  Calcula automáticamente horas totales y estado global.
+05  Envía notificaciones simultáneas según tipo de proyecto y productos vendidos.
+06  Crea una tarea visible para cada responsable y exige aceptar o reasignar.
+07  Permite registrar contacto con el cliente y programación confirmada.
+08  Muestra calendario por empresa y calendario consolidado.
+09  Permite actualizar avance, horas, novedades, retrasos, suspensión y reanudación.
+10  Exige causa y plan de acción cuando el producto está retrasado o suspendido.
+11  No permite finalizar un producto sin evidencia o entregable.
+12  No permite cerrar el proyecto maestro mientras existan productos abiertos.
+13  Conserva bitácora de cambios, notificaciones, responsables y fechas.
+14  Permite filtrar y exportar información por empresa, PPR, tipo, producto, responsable, estado y periodo.
+15  La vista principal prioriza alertas y próximos compromisos sin saturar la interfaz.
+
+## 11. Priorización para el desarrollo
+
+[TABLA]
+Prioridad | Alcance de construcción
+Fase 1 · Núcleo de trazabilidad | Registro de venta, proyecto maestro, productos, validaciones, ID único, responsables, tareas y notificaciones.
+Fase 2 · Gestión operativa | Aceptación, contacto, programación, calendario, actualización de estados, alertas y bitácora.
+Fase 3 · Control y optimización | Horas ejecutadas, capacidad, indicadores, exportaciones, integraciones y reglas de escalamiento.
+[/TABLA]
+
+
+### Aspectos que deben validarse antes de programar
+  - Denominación técnica definitiva de BVB.
+  - Catálogo y fuente oficial del campo PPR.
+  - Responsables titulares y suplentes para cada regla de asignación.
+  - Tiempos de servicio para aceptar, contactar, programar y actualizar.
+  - Catálogo final de productos, tecnologías, complejidades y entregables.
+  - Roles autorizados para editar horas, responsables, fechas y cierres.
+  - Canal de envío de correos y reglas de escalamiento.
+  - Responsable que aprueba el cierre administrativo del proyecto maestro.
+
+[TABLA]
+Resultado esperado del rediseño La aplicación deja de ser un registro pasivo y se convierte en un sistema de gestión: activa responsables, obliga a programar, detecta desviaciones, conserva evidencia y permite saber qué ocurre en cada empresa, proyecto y producto.
+[/TABLA]
+
+
+## 12. Conclusión
+El flujo propuesto resuelve el punto crítico de coordinación entre venta y operación al crear una única fuente de información y separar claramente el proyecto maestro de sus productos. La clave no es mostrar más información, sino convertir cada dato en una responsabilidad, una fecha, una alerta o una decisión. Con esta lógica, el panel permite control ejecutivo sin sobrecarga visual y seguimiento operativo con el nivel de detalle necesario.
+Fuente: requerimiento y descripción del proceso suministrados por Rehavid S.A.S. el 11 de agosto de 2026. Elaboración funcional propia a partir de dicho requerimiento.
