@@ -109,8 +109,8 @@ async def ficha_individual(equipo_id: str, user: UserOut = Depends(get_current_u
         [{"name": "@eid", "value": equipo_id}],
     )
 
-    from datetime import datetime
-    hoy_str = datetime.utcnow().date().isoformat()
+    from datetime import datetime, timezone
+    hoy_str = datetime.now(timezone.utc).date().isoformat()
 
     reservas_pasadas = [r for r in reservas_eq if r["fecha_retorno_esp"] < hoy_str]
     reservas_activas = [r for r in reservas_eq if r["fecha_salida"] <= hoy_str <= r["fecha_retorno_esp"] and not r.get("cancelada")]

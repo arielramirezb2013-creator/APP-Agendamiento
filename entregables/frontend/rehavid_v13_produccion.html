@@ -2363,10 +2363,10 @@ main {
 
       <div class="toolbar-row">
         <div class="left">
-          <button class="active" onclick="filterPlan('all')">Todos · 9</button>
-          <button onclick="filterPlan('open')">En curso · 5</button>
-          <button onclick="filterPlan('risk')">En riesgo · 2</button>
-          <button onclick="filterPlan('done')">Cerrados · 2</button>
+          <button class="active" onclick="filterPlan('all', this)">Todos · 9</button>
+          <button onclick="filterPlan('open', this)">En curso · 5</button>
+          <button onclick="filterPlan('risk', this)">En riesgo · 2</button>
+          <button onclick="filterPlan('done', this)">Cerrados · 2</button>
         </div>
         <button class="btn-primary-sm" onclick="newPlan()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -3256,11 +3256,13 @@ function escapeHtml(v) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
-// Saneo de celdas de Excel al importar: quita '<' y '>' (evita inyección de
-// etiquetas) y limita longitud. Los no-strings (números) pasan tal cual.
+// Saneo de celdas de Excel al importar: quita '<' y '>' (inyección de etiquetas)
+// y también comillas/backticks — los datos importados se interpolan en strings JS
+// dentro de atributos onclick, donde el navegador des-escapa las entidades HTML
+// antes de evaluar, así que escapeHtml no basta ahí. Limita longitud a 300.
 function sanitizarCeldaImport(v) {
   if (typeof v !== 'string') return v;
-  return v.replace(/[<>]/g, '').trim().slice(0, 300);
+  return v.replace(/[<>"'`]/g, '').trim().slice(0, 300);
 }
 
 const API = {
@@ -4287,7 +4289,7 @@ function marcarEquipoListo(equipoId, notas) {
   const eq = EQUIPOS.find(e => e.id === equipoId);
   if (!eq) return { ok: false, error: 'Equipo no encontrado' };
   if (eq.estado !== 'en_preparacion') {
-    return { ok: false, error: `Equipo no está en preparación (estado actual: ${EQUIPO_ESTADOS[eq.estado].label})` };
+    return { ok: false, error: `Equipo no está en preparación (estado actual: ${(EQUIPO_ESTADOS[eq.estado] || {label: eq.estado}).label})` };
   }
   eq.estado = 'disponible';
   eq.ultima_revision = new Date().toISOString().slice(0, 10);
@@ -4400,6 +4402,16 @@ if (typeof USE_BACKEND !== 'undefined' && USE_BACKEND) {
   };
 
   // Las funciones UI (`*UI`) ya manejan async correctamente.
+  // O18 · dar de baja también persiste en el backend
+  darDeBajaEquipo = async function(equipoId, motivo) {
+    try {
+      const r = await API.darDeBajaEquipo(equipoId, motivo);
+      const idx = EQUIPOS.findIndex(x => x.id === equipoId);
+      if (idx >= 0 && r.equipo) EQUIPOS[idx] = r.equipo;
+      return { ok: true, ...r };
+    } catch (e) { return { ok: false, error: e.message }; }
+  };
+
   console.log('[v12] Backend habilitado · interceptores instalados');
 }
 
@@ -4620,9 +4632,11 @@ function estadoSolicitudPill(e) {
     confirmada:  {t:'Confirmada',       c:'var(--brand)', bg:'var(--brand-soft)'},
     en_curso:    {t:'En curso',         c:'#008C50',      bg:'var(--accent-green-soft)'},
     finalizada:  {t:'Finalizada',       c:'var(--ink-3)', bg:'var(--paper-3)'},
+    cancelada:   {t:'Cancelada',        c:'var(--bad)',   bg:'var(--bad-bg)'},
     rechazada:   {t:'Rechazada',        c:'var(--bad)',   bg:'var(--bad-bg)'}
   };
-  const m = map[e] || map.pendiente;
+  // Fallback neutro: un estado desconocido se muestra tal cual, nunca como "Pendiente"
+  const m = map[e] || {t: escapeHtml(e || '—'), c:'var(--ink-3)', bg:'var(--paper-3)'};
   return `<span style="display:inline-block;font-size:10.5px;font-weight:600;padding:3px 9px;color:${m.c};background:${m.bg};letter-spacing:0.02em;">${m.t}</span>`;
 }
 
@@ -5178,8 +5192,10 @@ function renderBrief() {
   // GAUGE — salud del backlog
   const c2 = makeChart('chart-gauge');
   if (c2) {
-    const enRiesgo = RESERVAS.filter(r => r.riesgo >= 0.5).length;
-    const salud = Math.round((1 - enRiesgo / RESERVAS.length) * 100);
+    // Solo reservas activas: las canceladas no forman parte del backlog
+    const backlogActivo = RESERVAS.filter(r => !r.cancelada);
+    const enRiesgo = backlogActivo.filter(r => r.riesgo >= 0.5).length;
+    const salud = backlogActivo.length ? Math.round((1 - enRiesgo / backlogActivo.length) * 100) : 100;
     c2.setOption({
       ...ECHART_BASE,
       series: [{
@@ -5202,8 +5218,9 @@ function renderBrief() {
   const clientes = new Set(RESERVAS.filter(r => !r.cancelada).map(r => r.cliente)).size;
   const personas = RESERVAS.filter(r => !r.cancelada).reduce((s,r) => s + r.personas, 0);
   // O02 · mostrar DISPONIBLES / TOTAL en lugar de solo total
-  // Operativos = disponible o en_uso (cuentan, en_mantenimiento NO cuenta)
-  const totalEquipos = typeof EQUIPOS !== 'undefined' ? EQUIPOS.length : 0;
+  // El total excluye equipos dados de baja (O18): un equipo retirado no debe
+  // inflar el denominador de la flota operativa.
+  const totalEquipos = typeof EQUIPOS !== 'undefined' ? EQUIPOS.filter(e => e.estado !== 'de_baja').length : 0;
   const disponiblesHoy = typeof EQUIPOS !== 'undefined'
     ? EQUIPOS.filter(e => e.estado === 'disponible').length
     : 0;
@@ -5812,10 +5829,12 @@ function renderDiagramaCorporal() {
 // RENDER · PLANES DE ACCIÓN
 // =================================================================
 let planFilter = 'all';
-function filterPlan(state) {
+function filterPlan(state, btn) {
   planFilter = state;
   document.querySelectorAll('.toolbar-row .left button').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  // El botón llega por parámetro (this); window.event queda solo como respaldo
+  const target = btn || (window.event && window.event.target);
+  if (target) target.classList.add('active');
   renderPlanes();
 }
 function renderPlanes() {
@@ -5966,13 +5985,15 @@ function renderReservas() {
 }
 
 // Acciones de reserva · UI (envuelven la lógica de negocio v11)
-function cancelarReservaUI(id) {
+// async/await: con backend las funciones interceptadas devuelven Promise;
+// en demo devuelven objeto plano y await lo pasa tal cual.
+async function cancelarReservaUI(id) {
   const r = RESERVAS.find(x => x.id === id);
   if (!r) return;
   if (!confirm('¿Cancelar la reserva #' + id + ' (' + r.cliente + ')?')) return;
   const motivo = prompt('Motivo de cancelación (queda registrado en auditoría):', 'Cliente reprogramó');
   if (motivo === null) return;
-  const res = cancelarReserva(id, motivo);
+  const res = await cancelarReserva(id, motivo);
   if (res.ok) {
     toast('Reserva #' + id + ' cancelada · stock liberado', 'success');
     renderReservas();
@@ -5980,7 +6001,7 @@ function cancelarReservaUI(id) {
     toast('No se pudo cancelar: ' + res.error, 'error');
   }
 }
-function reprogramarReservaUI(id) {
+async function reprogramarReservaUI(id) {
   const r = RESERVAS.find(x => x.id === id);
   if (!r) return;
   if (r.cancelada) { toast('Reserva cancelada · use crear nueva', 'error'); return; }
@@ -5990,7 +6011,7 @@ function reprogramarReservaUI(id) {
   if (!nuevaRet) return;
   const motivo = prompt('Motivo de la reprogramación:', 'Solicitud del cliente');
   if (motivo === null) return;
-  const res = reprogramarReserva(id, nuevaSalida, nuevaRet, motivo);
+  const res = await reprogramarReserva(id, nuevaSalida, nuevaRet, motivo);
   if (res.ok) {
     toast('Reserva #' + id + ' reprogramada · ' + r.fecha_salida, 'success');
     renderReservas();
@@ -5998,7 +6019,7 @@ function reprogramarReservaUI(id) {
     toast('No se pudo reprogramar: ' + res.error, 'error');
   }
 }
-function confirmarRetornoUI(id) {
+async function confirmarRetornoUI(id) {
   const r = RESERVAS.find(x => x.id === id);
   if (!r) return;
   const estado = prompt('Estado del kit al retorno (OK / INCOMPLETO / DAÑADO):', 'OK');
@@ -6007,7 +6028,7 @@ function confirmarRetornoUI(id) {
   if (notas === null) return;
   // Xsens y GoPro requieren preparación (lavado/limpieza)
   const requierePrep = (r.servicio === 'Xsens') || confirm('¿Este equipo requiere preparación adicional antes de su próximo uso (lavado, limpieza, calibración)?');
-  const res = confirmarRetorno(id, { estado_kit: estado, notas: notas, requiere_preparacion: requierePrep });
+  const res = await confirmarRetorno(id, { estado_kit: estado, notas: notas, requiere_preparacion: requierePrep });
   if (res.ok) {
     toast('Retorno confirmado · #' + id + (requierePrep ? ' · equipo pasa a preparación' : ' · equipo disponible'), 'success');
     renderReservas();
@@ -6016,13 +6037,13 @@ function confirmarRetornoUI(id) {
     toast('No se pudo confirmar: ' + res.error, 'error');
   }
 }
-function marcarEquipoListoUI(equipoId) {
+async function marcarEquipoListoUI(equipoId) {
   const eq = EQUIPOS.find(e => e.id === equipoId);
   if (!eq) return;
   if (eq.estado !== 'en_preparacion') { toast('Equipo no está en preparación', 'error'); return; }
   const notas = prompt('Notas de preparación (qué se hizo):', 'Camisetas lavadas, kit revisado');
   if (notas === null) return;
-  const res = marcarEquipoListo(equipoId, notas);
+  const res = await marcarEquipoListo(equipoId, notas);
   if (res.ok) {
     toast('Equipo ' + equipoId + ' listo · disponible para próxima reserva', 'success');
     if (typeof renderEquipos === 'function') renderEquipos();
@@ -6031,13 +6052,13 @@ function marcarEquipoListoUI(equipoId) {
     toast(res.error, 'error');
   }
 }
-function enviarAMantenimientoUI(equipoId) {
+async function enviarAMantenimientoUI(equipoId) {
   const eq = EQUIPOS.find(e => e.id === equipoId);
   if (!eq) return;
   if (!confirm('¿Enviar ' + eq.modelo + ' (' + eq.serial + ') a mantenimiento?\nNo se podrá reservar hasta que vuelva a estar disponible.')) return;
   const motivo = prompt('Motivo del mantenimiento:', 'Mantenimiento preventivo programado');
   if (!motivo) return;
-  const res = enviarAMantenimiento(equipoId, motivo);
+  const res = await enviarAMantenimiento(equipoId, motivo);
   if (res.ok) {
     toast('Equipo ' + equipoId + ' en mantenimiento · bloqueado para reservas', 'success');
     if (typeof renderEquipos === 'function') renderEquipos();
@@ -6047,13 +6068,13 @@ function enviarAMantenimientoUI(equipoId) {
 }
 
 // O18 · UI · dar de baja un equipo (acción irreversible)
-function darDeBajaUI(equipoId) {
+async function darDeBajaUI(equipoId) {
   const eq = EQUIPOS.find(e => e.id === equipoId);
   if (!eq) return;
   if (!confirm(`⚠ ACCIÓN IRREVERSIBLE\n¿Dar de baja ${eq.modelo} (${eq.serial})?\nNo podrá usarse en futuras reservas. Esta acción queda registrada en auditoría.`)) return;
   const motivo = prompt('Motivo de la baja (queda en auditoría):', 'Equipo obsoleto · reemplazado');
   if (!motivo) return;
-  const res = darDeBajaEquipo(equipoId, motivo);
+  const res = await darDeBajaEquipo(equipoId, motivo);
   if (res.ok) {
     toast(`Equipo ${equipoId} dado de baja · ${motivo}`, 'success');
     if (typeof renderEquipos === 'function') renderEquipos();
@@ -7466,15 +7487,18 @@ const EXCEL_SCHEMAS = {
     ]
   },
   equipos: {
+    // Claves alineadas con la forma real de los objetos EQUIPOS
+    // (antes usaba nombre/servicio/ciudad/activo, que no existen → columnas vacías
+    //  al exportar y objetos rotos al importar).
     titulo: 'Inventario de equipos Rehavid',
     columnas: [
-      {key:'id',         campo:'ID',           ancho:8},
-      {key:'nombre',     campo:'Equipo',       ancho:30},
-      {key:'serial',     campo:'Serial',       ancho:24},
-      {key:'servicio',   campo:'Servicio',     ancho:14},
-      {key:'ciudad',     campo:'Ciudad base',  ancho:14},
-      {key:'estado',     campo:'Estado',       ancho:14},
-      {key:'activo',     campo:'Activo',       ancho:10}
+      {key:'id',          campo:'ID',           ancho:8},
+      {key:'modelo',      campo:'Equipo',       ancho:30},
+      {key:'serial',      campo:'Serial',       ancho:24},
+      {key:'categoria',   campo:'Categoría',    ancho:14},
+      {key:'ciudad_base', campo:'Ciudad base',  ancho:14},
+      {key:'estado',      campo:'Estado',       ancho:14},
+      {key:'responsable', campo:'Responsable',  ancho:24}
     ]
   },
   paquetes: {
@@ -7666,7 +7690,23 @@ function abrirImportador(tipo) {
     importarXLSX(tipo, file, (registros) => {
       // Aplicar al array correspondiente
       if (tipo === 'reservas')      { RESERVAS.push(...registros); renderReservas(); }
-      else if (tipo === 'equipos')  { registros.forEach(r => { if (!r.id) r.id = 'EQ-' + Date.now() + Math.floor(Math.random()*99); EQUIPOS.push(r); }); renderEquipos(); }
+      else if (tipo === 'equipos')  {
+        registros.forEach(r => {
+          if (!r.id) r.id = 'EQ-' + Date.now() + Math.floor(Math.random()*99);
+          // Normalizar al shape real de EQUIPOS: estado como clave interna
+          // ("Disponible"/"En uso" → disponible/en_uso) y campos con defaults.
+          const est = String(r.estado || '').toLowerCase().trim().replace(/\s+/g, '_')
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          r.estado = EQUIPO_ESTADOS[est] ? est : 'disponible';
+          r.accesorios = r.accesorios || [];
+          r.historial_uso = +r.historial_uso || 0;
+          r.categoria = r.categoria || '';
+          r.ciudad_base = r.ciudad_base || '';
+          r.responsable = r.responsable || '';
+          EQUIPOS.push(r);
+        });
+        renderEquipos();
+      }
       else if (tipo === 'paquetes') { PAQUETES.push(...registros); renderPaquetes(); }
       else if (tipo === 'planes')   { PLANES.push(...registros); renderPlanes(); }
       toast('Cargados ' + registros.length + ' registros desde Excel');

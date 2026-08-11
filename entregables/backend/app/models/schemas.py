@@ -191,7 +191,9 @@ class Solicitud(BaseModel):
     fecha_sugerida: str | None = None  # fecha de servicio deseada por el solicitante
     fecha_confirmada: str | None = None
     operador: str | None = None
-    estado: Literal["pendiente", "confirmada", "finalizada", "cancelada"] = "pendiente"
+    # en_curso y rechazada existen en la UI (pill de estados y filtros del portal);
+    # se aceptan aquí para que el contrato no rechace documentos con esos estados.
+    estado: Literal["pendiente", "confirmada", "en_curso", "finalizada", "cancelada", "rechazada"] = "pendiente"
     notas: str = ""
     dias_estimados: int = 1
     # O19

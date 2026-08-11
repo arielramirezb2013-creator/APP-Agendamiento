@@ -36,6 +36,11 @@ def _rate_limit_key(request: Request, email: str) -> str:
 
 def _chequear_rate_limit(key: str) -> None:
     ahora = time.time()
+    # Cota de memoria: si el mapa crece demasiado (muchas IP+correo distintos),
+    # purgar todas las entradas cuya ventana ya expiró.
+    if len(_login_fails) > 10_000:
+        for k in [k for k, ts in _login_fails.items() if not ts or ahora - ts[-1] >= _LOGIN_VENTANA_SEG]:
+            _login_fails.pop(k, None)
     intentos = [t for t in _login_fails[key] if ahora - t < _LOGIN_VENTANA_SEG]
     _login_fails[key] = intentos
     if len(intentos) >= _LOGIN_MAX_INTENTOS:

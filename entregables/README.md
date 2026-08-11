@@ -140,7 +140,7 @@ Modos:
 12. Static Web App (frontend)
 13. DNS personalizado
 14. CI/CD con GitHub Actions
-15. Estimación de costos ($71-$458/mes)
+15. Estimación de costos (USD 150–250/mes piloto · 400–700/mes a escala)
 16. Mantenimiento operacional
 17. Troubleshooting
 18. Checklist post-despliegue

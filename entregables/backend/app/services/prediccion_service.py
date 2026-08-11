@@ -84,6 +84,12 @@ async def _real_prediccion(req: PrediccionRequest) -> PrediccionResponse:
         resp.raise_for_status()
         data = resp.json()
 
+    # score.py captura sus excepciones y responde {'error': ...} con HTTP 200;
+    # se propaga aquí para que el fallback al mock loguee la causa real en vez
+    # de un KeyError('score') opaco.
+    if isinstance(data, dict) and "error" in data:
+        raise RuntimeError(f"Azure ML devolvió error: {data['error']}")
+
     return PrediccionResponse(
         es_simulacion=False,
         score=float(data["score"]),
