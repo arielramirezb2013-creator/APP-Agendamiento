@@ -1,15 +1,38 @@
-# Rehavid · Gestión de proyectos v7
+# Rehavid · Gestión de proyectos v8
 
 Aplicación web de un solo archivo que implementa la **Especificación funcional y flujograma
 del proceso de gestión de proyectos, versión 1.1** (Rehavid S.A.S.).
 
 | Archivo | Contenido |
 |---|---|
-| `Rehavid_Gestion_Proyectos_v7.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
+| `Rehavid_Gestion_Proyectos_v8.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
 | `Mapa_de_usuario_y_validacion_Rehavid.xlsx` | Mapa de usuario y hoja de observaciones, una pestaña por cargo. |
 | `ESPECIFICACION_FUNCIONAL_v1.1.txt` | Especificación vigente que se implementó. |
 | `ESPECIFICACION_FUNCIONAL_v1.txt` | Versión 1.0, conservada como referencia. |
 | `Rehavid_Gestion_Proyectos_v4_baseline.html` | Aplicación original, como línea base de comparación. |
+
+---
+
+## 0. La imagen de la aplicación
+
+La versión 8 adopta el lenguaje visual del **tablero Rehavid** que ya usa la operación, para que
+ambas aplicaciones se reconozcan como una sola familia. No se trasladó ningún contenido del
+tablero: solo su forma.
+
+| Elemento | Cómo se aplicó |
+|---|---|
+| **Hoja blanca centrada** | La aplicación vive en una hoja de esquinas redondeadas sobre fondo lila `#f0eefa`, no ocupando el borde de la pantalla. |
+| **Cabecera morada** | Franja `#4125CF` con la marca a la izquierda, el módulo en versalitas y la sesión a la derecha. |
+| **Franja degradada** | Cuatro píxeles de morado a verde `#00C878` separan la cabecera de la navegación. |
+| **Pestañas con icono** | Los nueve módulos son pestañas sobre `#1e0f8a`; la activa se vuelve blanca con subrayado verde. Reemplazan la barra lateral oscura de la versión anterior. |
+| **Iconos de línea** | 24 iconos SVG de trazo 2, dibujados en el archivo: sin fuentes ni librerías externas. |
+| **Títulos subrayados en verde** | Cada título de sección va en versalitas moradas de 10 px con una línea verde debajo. |
+| **Tipografía compacta** | Segoe UI de 10 a 12 px; los números en 17 a 24 px con cifras tabulares. |
+| **Tablas de encabezado morado** | Cabecera `#4125CF` en versalitas blancas, filas separadas por medio píxel lila y realce lila al pasar el cursor. |
+
+La paleta de los gráficos se reasignó a los colores de marca (morado, verde, índigo, ámbar,
+azul) y las tres condiciones de gestión conservan su semáforo: verde *en tiempo*, ámbar *en
+riesgo*, rojo *retrasado*.
 
 ---
 
