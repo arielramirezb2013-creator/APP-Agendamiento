@@ -1,11 +1,11 @@
-# Rehavid · Gestión de proyectos v8
+# Rehavid · Gestión de proyectos v9
 
 Aplicación web de un solo archivo que implementa la **Especificación funcional y flujograma
 del proceso de gestión de proyectos, versión 1.1** (Rehavid S.A.S.).
 
 | Archivo | Contenido |
 |---|---|
-| `Rehavid_Gestion_Proyectos_v8.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
+| `Rehavid_Gestion_Proyectos_v9.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
 | `Mapa_de_usuario_y_validacion_Rehavid.xlsx` | Mapa de usuario y hoja de observaciones, una pestaña por cargo. |
 | `ESPECIFICACION_FUNCIONAL_v1.1.txt` | Especificación vigente que se implementó. |
 | `ESPECIFICACION_FUNCIONAL_v1.txt` | Versión 1.0, conservada como referencia. |
@@ -13,9 +13,55 @@ del proceso de gestión de proyectos, versión 1.1** (Rehavid S.A.S.).
 
 ---
 
-## 0. La imagen de la aplicación
+## 0. Un tablero que responde al clic
 
-La versión 8 adopta el lenguaje visual del **tablero Rehavid** que ya usa la operación, para que
+Todo lo que se ve significa algo, y todo lo que significa algo se puede pulsar. El gesto
+central es el que pidió Rehavid: **hacer clic sobre una barra o sobre una parte de un
+gráfico acota el tablero entero**.
+
+| Se pulsa | Qué acota |
+|---|---|
+| **Una porción del anillo** de tipo de proyecto o de estado operativo | Ese tipo, o ese estado del producto |
+| **Un tramo de una barra apilada** (empresa o PPR) | Dos cosas a la vez: la empresa —o el PPR— **y** la condición del tramo |
+| **La pista o el valor de la barra** | Solo la empresa o el PPR de esa fila |
+| **Un renglón de la leyenda** o de la mini-leyenda de condiciones | Ese valor |
+| **Una pastilla** de estado, condición, asignación o alerta | Su dimensión, en cualquier módulo |
+| **Un indicador** del encabezado y su sublínea | El encuadre correspondiente: activos, borradores, sin resolver, en riesgo |
+| **El punto de condición o la barra del diagrama** de plan de trabajo | Acota por condición, o abre el producto |
+| **El encabezado de cualquier tabla** | Ordena esa columna, ascendente y descendente |
+
+Reglas de la interacción:
+
+- **Clic reemplaza, Ctrl+clic suma.** Un clic deja solo lo elegido; con Ctrl (o Cmd) se
+  comparan dos empresas o dos condiciones. Volver a pulsar lo mismo lo deshace.
+- **Ningún gráfico se borra a sí mismo.** Al acotar por *Tipo 1*, el anillo de tipos sigue
+  mostrando *Tipo 2* atenuado, para poder comparar y cambiar de selección sin limpiar antes.
+  Cada gráfico se calcula con todos los filtros menos el propio.
+- **Los productos que no cumplen se atenúan, no desaparecen.** Un filtro de condición o de
+  cargo deja las demás tarjetas del proyecto a la vista, apagadas: se ve el efecto sin perder
+  el contexto.
+- **Siempre se sabe dónde se está y cómo salir.** La fila de distintivos abre con «N de M
+  proyecto(s)» y cierra con «Limpiar todo»; el selector correspondiente se marca en morado y
+  dice «2 seleccionados» cuando hay varios; y todo estado vacío ofrece deshacer los filtros
+  que lo provocaron.
+- **También funciona con el teclado.** Las piezas de los gráficos son alcanzables con el
+  tabulador y se activan con Enter o barra espaciadora.
+- **Se anima al entrar** —los anillos aparecen, las barras se extienden, las cifras
+  cuentan— y no se anima nada si el sistema pide movimiento reducido.
+
+Dos correcciones de fondo que trajo este trabajo:
+
+1. El anillo de **estado operativo** cuenta productos, pero al pulsarlo filtraba por el
+   estado global del *proyecto*: los números no cuadraban. Ahora existe la dimensión
+   **estado del producto** y lo que se cuenta es lo que se filtra.
+2. La **categoría** del producto era texto muerto y no había forma de filtrar por ella;
+   ahora es pulsable y tiene su propio selector en la barra.
+
+---
+
+## 1. La imagen de la aplicación
+
+La versión 8 adoptó el lenguaje visual del **tablero Rehavid** que ya usa la operación, para que
 ambas aplicaciones se reconozcan como una sola familia. No se trasladó ningún contenido del
 tablero: solo su forma.
 
@@ -36,7 +82,7 @@ riesgo*, rojo *retrasado*.
 
 ---
 
-## 1. Lo que cambió con la versión 1.1 de la especificación
+## 2. Lo que cambió con la versión 1.1 de la especificación
 
 | Componente | Cómo quedó en la aplicación |
 |---|---|
@@ -53,7 +99,7 @@ riesgo*, rojo *retrasado*.
 
 ---
 
-## 2. Los nueve módulos
+## 3. Los nueve módulos
 
 | # | Módulo | Qué resuelve |
 |---|---|---|
@@ -90,7 +136,7 @@ retraso, la fecha objetivo y los hitos pendientes, dejando la línea base para m
 
 ---
 
-## 3. El flujo de once pasos
+## 4. El flujo de once pasos
 
 | Paso de la especificación | Dónde ocurre en la aplicación |
 |---|---|
@@ -113,7 +159,7 @@ horas y completado sin poder cerrar.
 
 ---
 
-## 4. El Excel de validación con usuarios
+## 5. El Excel de validación con usuarios
 
 `Mapa_de_usuario_y_validacion_Rehavid.xlsx` tiene nueve pestañas:
 
@@ -131,7 +177,7 @@ limita los nombres de hoja a 31 caracteres; el cargo completo aparece dentro de 
 
 ---
 
-## 5. Límites conocidos
+## 6. Límites conocidos
 
 La aplicación guarda en el almacenamiento local del navegador. Eso alcanza para operar y validar el
 proceso completo, pero no para el uso multiusuario que describe la especificación:
@@ -146,7 +192,7 @@ proceso completo, pero no para el uso multiusuario que describe la especificaci�
 El paso natural es mover la persistencia al backend que ya existe en `entregables/backend` (FastAPI +
 Cosmos) y añadir autenticación, envío de correo y permisos reales por cargo.
 
-## 6. Pendientes de definición
+## 7. Pendientes de definición
 
 - Denominación técnica definitiva de **BVB**.
 - Catálogo y fuente oficial del campo **PPR**.

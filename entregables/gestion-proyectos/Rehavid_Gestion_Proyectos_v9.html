@@ -155,15 +155,22 @@
     .filt label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
     .filt select{height:30px;border:1px solid var(--line-3);border-radius:6px;background:#fff;padding:0 8px;font-size:11px;color:var(--ink)}
     .filt select:focus{outline:none;border-color:var(--rv);box-shadow:0 0 0 3px var(--rvl)}
+    .filt select.set{border-color:var(--rv);background:var(--rvl2);font-weight:700;color:var(--rv2)}
+    .filt label .cnt{display:inline-block;background:var(--rv);color:#fff;border-radius:20px;padding:0 6px;font-size:9px;margin-left:3px}
     .filters>.btn{margin-left:auto}
     .chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
     .chips:empty{margin:0}
     .chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;border:1.5px solid var(--line);background:#fff;font-size:10px;font-weight:700;color:var(--muted)}
     .chip:hover{border-color:var(--rv);color:var(--rv)}
+    .chip.info{background:var(--rvl);border-color:var(--rvl);color:var(--rv2);cursor:default}
+    .chip.clear{border-color:var(--rv);color:var(--rv);background:#fff}
+    .chip.clear:hover{background:var(--rv);color:#fff}
+    .chip.clear svg{width:11px;height:11px}
 
     /* ---------------- Indicadores ---------------- */
     .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-bottom:14px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
-    .stat{background:#fff;border:0;border-right:1px solid var(--line);padding:0;text-align:center;display:block}
+    .stat{background:#fff;border:0;border-right:1px solid var(--line);padding:0;text-align:center;display:block;transition:background .15s}
+    .stat[role="button"]{cursor:pointer}
     .stat:last-child{border-right:0}
     .stat:hover{background:var(--rvl3)}
     .stat[aria-pressed="true"]{background:var(--rvl2);box-shadow:inset 0 -3px 0 var(--gr)}
@@ -173,10 +180,12 @@
     .stat .ico.w{background:#8a6000}
     .stat .ico.b{background:#8f1414}
     .stat .ico.o{background:var(--grd)}
-    .stat .tx{padding:9px 8px 11px}
+    .stat .tx{display:block;padding:9px 8px 11px}
     .stat .tx span{display:none}
     .stat .tx strong{display:block;font-size:24px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--rv)}
     .stat .tx small{display:block;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4}
+    .sublk{border:0;background:transparent;padding:0;font:inherit;color:var(--rv);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+    .sublk:hover{color:var(--rv2)}
     .stat .ico.i~.tx strong{color:var(--grd)}
     .stat .ico.w~.tx strong{color:#b84500}
     .stat .ico.b~.tx strong{color:var(--bad)}
@@ -187,8 +196,8 @@
     .chart-row-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
     .donut-wrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
     .donut{position:relative;width:124px;height:124px;flex:none}
-    .donut svg{transform:rotate(-90deg)}
-    .donut .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.15}
+    .donut svg{width:100%;height:100%;display:block;transform:rotate(-90deg)}
+    .donut .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.15;pointer-events:none}
     .donut .mid b{display:block;font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--rv)}
     .donut .mid span{display:block;font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-top:2px}
     .legend{display:grid;gap:6px;flex:1;min-width:170px;max-width:460px}
@@ -203,18 +212,47 @@
     .hbar{display:grid;grid-template-columns:minmax(92px,148px) minmax(0,1fr) auto;gap:11px;align-items:center;font-size:11px}
     .hbar .lb{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;border:0;background:transparent;padding:0;text-align:left;color:var(--rv)}
     .hbar .lb:hover{text-decoration:underline}
-    .hbar .tr{height:18px;background:var(--line-2);border-radius:4px;overflow:hidden;display:flex}
+    .hbar .tr{height:18px;background:var(--line-2);border-radius:4px;overflow:hidden;display:flex;cursor:pointer}
     .hbar .tr i{display:block;height:100%;font-style:normal}
-    .hbar .vv{font-variant-numeric:tabular-nums;font-weight:800;font-size:11px;min-width:60px;text-align:right}
-    .mini-legend{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:11px;padding-top:9px;border-top:1px solid var(--line-2)}
-    .mini-legend span{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-weight:600}
-    .mini-legend i{width:9px;height:9px;border-radius:2px;font-style:normal}
+    .hbar .vv{font-variant-numeric:tabular-nums;font-weight:800;font-size:11px;min-width:60px;text-align:right;border:0;background:transparent;padding:0;color:inherit;cursor:pointer}
+    .hbar .vv:hover{color:var(--rv);text-decoration:underline}
+    .mini-legend{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:11px;padding-top:9px;border-top:1px solid var(--line-2)}
+    .mini-legend span,.mleg,.mleg-off{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-weight:600}
+    .mini-legend i{width:9px;height:9px;border-radius:2px;font-style:normal;flex:none}
+    .mleg{border:0;background:transparent;padding:3px 9px;border-radius:20px;transition:background .15s,color .15s,opacity .15s}
+    .mleg:hover{background:var(--rvl);color:var(--rv)}
+    .mleg.on{background:var(--rv);color:#fff}
+    .mleg.dim{opacity:.45}
+    .mleg-off{padding:3px 9px}
+
+    /* --- piezas de gráfico accionables: clic para acotar, realce cruzado --- */
+    .donut svg{animation:aro-entra .45s cubic-bezier(.2,.8,.2,1) both}
+    @keyframes aro-entra{from{opacity:0;transform:rotate(-90deg) scale(.82)}to{opacity:1;transform:rotate(-90deg) scale(1)}}
+    circle.arc{cursor:pointer;transition:opacity .2s,stroke-width .2s}
+    circle.arc:hover,circle.arc:focus-visible{stroke-width:23;outline:none}
+    circle.arc.on{stroke-width:23}
+    circle.arc.dim{opacity:.25}
+    .hbar .tr i.seg{cursor:pointer;transition:width .5s cubic-bezier(.2,.8,.2,1),opacity .2s,filter .2s}
+    .hbar .tr i.seg:hover{filter:brightness(1.15) saturate(1.2)}
+    .hbar .tr i.seg:focus-visible{outline:2px solid #fff;outline-offset:-2px}
+    .hbar .tr i.seg.dim{opacity:.28}
+    .hbar{transition:opacity .2s}
+    .hbar.dim{opacity:.42}
+    .hbar.on .lb{text-decoration:underline;text-underline-offset:3px}
+    .leg{transition:background .15s,opacity .15s}
+    .leg.on{background:var(--rvl);box-shadow:inset 3px 0 0 var(--rv)}
+    .leg.dim{opacity:.42}
+    .prog i{transition:width .5s cubic-bezier(.2,.8,.2,1)}
 
     /* ---------------- Tablas ---------------- */
     .tw{overflow:auto;border:1px solid var(--line);border-radius:var(--r)}
     .card-b.tight .tw{border:0;border-radius:0}
     table.t{width:100%;border-collapse:collapse;font-size:11px}
-    table.t th{position:sticky;top:0;background:var(--rv);color:#fff;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:7px 10px;white-space:nowrap;z-index:1}
+    table.t th{position:sticky;top:0;background:var(--rv);color:#fff;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:7px 10px;white-space:nowrap;z-index:1;cursor:pointer;user-select:none}
+    table.t th:empty{cursor:default}
+    table.t th:hover:not(:empty){background:var(--rv2)}
+    table.t th.s-asc::after{content:" ▲";font-size:8px;opacity:.9}
+    table.t th.s-desc::after{content:" ▼";font-size:8px;opacity:.9}
     table.t td{padding:7px 10px;border-bottom:.5px solid var(--line-2);font-size:11px;vertical-align:middle;color:var(--ink)}
     table.t tbody tr:last-child td{border-bottom:0}
     table.t tbody tr:hover td{background:var(--rvl)}
@@ -234,6 +272,13 @@
     .pill.w{background:var(--warn-soft);color:var(--warn)}
     .pill.b{background:var(--bad-soft);color:var(--bad)}
     .pill.g{background:#f1f0f8;color:var(--muted)}
+    .pill.pf{border:1px solid transparent;cursor:pointer;transition:filter .15s,box-shadow .15s}
+    .pill.pf:hover{filter:brightness(.94);box-shadow:0 0 0 2px var(--rvl)}
+    .pill.pf.on{box-shadow:0 0 0 2px var(--rv);border-color:var(--rv)}
+    .pill.pf::after{content:"";width:0}
+    .tags{display:flex;flex-wrap:wrap;gap:6px}
+    .al-lk{border:0;background:transparent;padding:0;font:inherit;font-weight:800;color:inherit;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+    .al-lk:hover{opacity:.7}
     .dot{width:7px;height:7px;border-radius:50%;flex:none;display:inline-block}
     .dot.o{background:var(--gr)}.dot.w{background:#e0a800}.dot.b{background:#d63333}.dot.g{background:var(--faint)}.dot.a{background:var(--rv)}
 
@@ -263,6 +308,8 @@
     .ct{border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:11px;min-width:180px;background:#fff}
     .ct b{display:block;font-size:11px;color:var(--rv)}
     .ct span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+    .ct a{color:var(--rv);text-decoration:none}
+    .ct a:hover{text-decoration:underline}
 
     .prj{border-top:1px solid var(--line)}
     .prj-h{display:flex;gap:11px;align-items:center;padding:10px 16px;flex-wrap:wrap;background:var(--rvl2);border-bottom:1px solid var(--line-2)}
@@ -276,6 +323,10 @@
     .pd.w{border-left:4px solid #e0a800}
     .pd.o{border-left:4px solid var(--gr)}
     .pd.g{border-left:4px solid var(--faint)}
+    .pd.off{opacity:.4;filter:saturate(.45)}
+    .pd.off:hover{opacity:1;filter:none}
+    .pd.off .pd-acts,.pd.off .pd-alerts{display:none}
+    .pd-off-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--faint);align-self:center}
     .pd-h{display:flex;gap:12px;align-items:flex-start;padding:11px 13px 9px;flex-wrap:wrap;border-bottom:1px solid var(--line-2)}
     .pd-h .ti{flex:1;min-width:180px}
     .pd-h .ti h4{font-size:12px;color:var(--rv);display:flex;align-items:center;gap:6px}
@@ -310,10 +361,17 @@
     .g-r.hd .g-l{color:#fff;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-right-color:rgba(255,255,255,.2)}
     .g-l{padding:7px 11px;border-right:1px solid var(--line-2);font-size:10.5px;display:flex;align-items:center;gap:7px;min-width:0}
     .g-l span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .g-nm{border:0;background:transparent;padding:0;font:inherit;color:inherit;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;min-width:0}
+    .g-nm:hover{color:var(--rv);text-decoration:underline}
+    button.dot{border:0;padding:0;cursor:pointer;transition:transform .15s}
+    button.dot:hover{transform:scale(1.4)}
+    .g-r:hover{background:var(--rvl3)}
     .g-t{position:relative;min-height:30px;--c:6;background-image:repeating-linear-gradient(90deg,transparent,transparent calc(100%/var(--c) - 1px),var(--line-2) calc(100%/var(--c) - 1px),var(--line-2) calc(100%/var(--c)))}
     .g-s{display:flex;font-size:9.5px;color:rgba(255,255,255,.75);position:relative;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
     .g-s div{flex:1;padding:7px 4px;text-align:center;border-right:1px solid rgba(255,255,255,.15);white-space:nowrap;overflow:hidden}
     .g-b{position:absolute;top:8px;height:13px;border-radius:20px;background:var(--rvl);overflow:hidden}
+    .g-b{cursor:pointer;transition:filter .15s}
+    .g-b:hover{filter:brightness(1.1)}
     .g-b i{display:block;height:100%;background:var(--rv);font-style:normal}
     .g-b.b{background:var(--bad-soft)} .g-b.b i{background:#d63333}
     .g-b.w{background:var(--warn-soft)} .g-b.w i{background:#e0a800}
@@ -330,6 +388,7 @@
     .al-co{background:#fff;border:1px solid var(--line);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
     .al-h{display:flex;gap:11px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line-2);flex-wrap:wrap;background:var(--rvl3)}
     .al-h h3{font-size:11px;color:var(--rv);text-transform:uppercase;letter-spacing:.5px;display:inline-flex;align-items:center;gap:7px;padding-bottom:4px;border-bottom:2px solid var(--gr)}
+    .al-h .co-mark,.card-h .co-mark{background:var(--rvl);color:var(--rv)}
     .al-h h3 svg{width:15px;height:15px}
     .al-h .sp{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 
@@ -467,6 +526,7 @@
     .empty svg{width:42px;height:42px;opacity:.4;margin-bottom:10px;color:var(--rv)}
     .empty strong{display:block;color:var(--muted);font-size:13px;font-weight:700;margin-bottom:5px}
     .empty p{font-size:11px;margin:0 auto 14px;max-width:520px;line-height:1.65;color:var(--faint)}
+    .empty .row{gap:8px}
 
     /* ---------------- Adaptación ---------------- */
     @media(max-width:1280px){
@@ -519,7 +579,7 @@
       .page{padding:0}
       .card,.co-card,.al-co{break-inside:avoid}
     }
-    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
   </style>
 </head>
 <body>
@@ -903,7 +963,7 @@ const state = {
   outbox: [],
   settings: clone(DEFAULT_SETTINGS),
   session: { user: "Dirección de proyectos" },
-  filters: { company: [], ppr: [], type: [], projectState: [], globalState: [],
+  filters: { company: [], ppr: [], type: [], projectState: [], globalState: [], productStatus: [],
              coordinatorRole: [], role: [], routing: [], condition: [], alert: [], special: [] },
   search: "",
   sort: "risk",
@@ -1739,6 +1799,7 @@ const FILTER_DEFS = [
   { key: "ppr",          label: "PPR",               get: p => [p.ppr] },
   { key: "projectState", label: "Estado del proyecto", get: p => [p.state] },
   { key: "globalState",  label: "Estado operativo",  get: p => [projectGlobalState(p)] },
+  { key: "productStatus", label: "Estado del producto", get: p => (p.products || []).map(x => x.status) },
   { key: "coordinatorRole", label: "Coordinación",   get: p => [p.coordinatorRole] },
   { key: "role",         label: "Cargo responsable", get: p => (p.products || []).map(x => x.role) },
   { key: "routing",      label: "Categoría",         get: p => (p.products || []).map(x => x.routing) },
@@ -1747,9 +1808,9 @@ const FILTER_DEFS = [
     optionLabel: v => ALERT_BY_CODE[v]?.label || v }
 ];
 const VIEW_FILTERS = {
-  dashboard:   ["type", "company", "ppr", "projectState", "globalState"],
-  companies:   ["company", "type", "ppr", "role", "condition"],
-  alerts:      ["company", "type", "role", "alert"],
+  dashboard:   ["type", "company", "ppr", "projectState", "productStatus"],
+  companies:   ["company", "type", "ppr", "role", "condition", "routing"],
+  alerts:      ["company", "type", "role", "alert", "condition"],
   assignments: ["company", "type", "condition"],
   plans:       ["company", "type", "coordinatorRole"],
   calendar:    ["company", "type", "role"]
@@ -1772,8 +1833,9 @@ function filterOptions(key) {
   const def = FILTER_DEFS.find(d => d.key === key);
   return def ? unique(state.projects.flatMap(def.get)) : [];
 }
-function matchesFilters(p) {
+function matchesFilters(p, omitir) {
   for (const def of FILTER_DEFS) {
+    if (omitir && def.key === omitir) continue;
     const sel = state.filters[def.key];
     if (!sel || !sel.length) continue;
     const values = def.get(p).map(String);
@@ -1798,6 +1860,29 @@ function matchesFilters(p) {
   }
   return true;
 }
+/* Proyectos que pasan todos los filtros menos uno. Sirve para que un gráfico no se
+   borre a sí mismo: al acotar por "Tipo 1" el anillo de tipos sigue mostrando los
+   demás tipos atenuados, para poder comparar y cambiar de selección. */
+function projectsExcept(key) { return state.projects.filter(p => matchesFilters(p, key)); }
+/* Los filtros de nivel producto (condición, cargo, categoría, estado del producto y
+   alerta) dejan pasar el proyecto entero. Esto dice si un producto concreto los cumple,
+   para atenuar —no esconder— los que no, y que se vea el efecto del filtro. */
+const PRODUCT_FILTERS = {
+  condition:     (pr, p) => [productCondition(pr, p)],
+  role:          pr => [pr.role],
+  routing:       pr => [pr.routing],
+  productStatus: pr => [pr.status],
+  alert:         (pr, p) => productAlerts(pr, p).map(a => a.code)
+};
+function productMatchesFilters(pr, p) {
+  for (const [key, get] of Object.entries(PRODUCT_FILTERS)) {
+    const sel = state.filters[key];
+    if (!sel || !sel.length) continue;
+    const vals = get(pr, p).filter(Boolean).map(String);
+    if (!sel.some(v => vals.includes(String(v)))) return false;
+  }
+  return true;
+}
 function visibleProjects() {
   const list = state.projects.filter(matchesFilters);
   return list.slice().sort((a, b) => {
@@ -1819,6 +1904,28 @@ function toggleFilter(key, value) {
   renderApp();
 }
 function setSingleFilter(key, value) { state.filters[key] = value ? [value] : []; renderApp(); }
+/* Acota por varias claves a la vez —empresa y condición, por ejemplo— reemplazando
+   lo que hubiera. Si ya está puesto exactamente eso, el segundo clic lo deshace. */
+/* Ctrl+clic (o Cmd) suma valores en vez de reemplazar: así se comparan dos empresas
+   o dos condiciones a la vez. Un solo repintado al final. */
+function multiToggle(pairs) {
+  let cambio = false;
+  pairs.forEach(([k, v]) => {
+    const list = state.filters[k];
+    if (!list || !v) return;
+    const i = list.indexOf(String(v));
+    if (i >= 0) list.splice(i, 1); else list.push(String(v));
+    cambio = true;
+  });
+  if (cambio) renderApp();
+}
+function drillFilter(pairs) {
+  const valid = pairs.filter(([k, v]) => state.filters[k] && v);
+  if (!valid.length) return;
+  const same = valid.every(([k, v]) => (state.filters[k] || []).length === 1 && state.filters[k][0] === String(v));
+  valid.forEach(([k, v]) => { state.filters[k] = same ? [] : [String(v)]; });
+  renderApp();
+}
 function clearFilters() {
   Object.keys(state.filters).forEach(k => state.filters[k] = []);
   state.search = "";
@@ -1864,6 +1971,7 @@ const ICO = {
   trend:     '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
   info:      '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
   bell:      '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+  x:         '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
   building:  '<rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="7" x2="9" y2="7.01"/><line x1="15" y1="7" x2="15" y2="7.01"/><line x1="9" y1="12" x2="9" y2="12.01"/><line x1="15" y1="12" x2="15" y2="12.01"/><line x1="10" y1="22" x2="14" y2="22"/><line x1="10" y1="17" x2="14" y2="17"/>'
 };
 function ico(name, size = 16) {
@@ -1941,8 +2049,10 @@ function renderFilterBar() {
     ${keys.map(key => {
       const def = FILTER_DEFS.find(d => d.key === key);
       const opts = filterOptions(key), cur = state.filters[key] || [];
-      return `<div class="filt"><label for="flt_${esc(key)}">${esc(def.label)}</label>
-        <select id="flt_${esc(key)}" data-filter-select="${esc(key)}">
+      const varios = cur.length > 1;
+      return `<div class="filt"><label for="flt_${esc(key)}">${esc(def.label)}${varios ? ` <b class="cnt">${cur.length}</b>` : ""}</label>
+        <select id="flt_${esc(key)}" class="${cur.length ? "set" : ""}" data-filter-select="${esc(key)}">
+          ${varios ? `<option value="__varios" selected>${cur.length} seleccionados</option>` : ""}
           <option value="">Todos (${opts.length})</option>
           ${opts.map(v => `<option value="${esc(v)}" ${cur.length === 1 && cur[0] === v ? "selected" : ""}>${esc(filterLabel(key, v))}</option>`).join("")}
         </select></div>`;
@@ -1958,6 +2068,11 @@ function renderActiveFilters() {
   Object.entries(state.filters).forEach(([k, list]) => (list || []).forEach(v =>
     chips.push(`<button class="chip" data-remove-filter="${esc(k)}" data-value="${esc(v)}">${esc(labels[k] || k)}: ${esc(filterLabel(k, v))} ✕</button>`)));
   if (state.search) chips.push(`<button class="chip" data-action="clear-search">Búsqueda: ${esc(state.search)} ✕</button>`);
+  if (chips.length) {
+    const n = visibleProjects().length, tot = state.projects.length;
+    chips.unshift(`<span class="chip info">${n} de ${tot} proyecto(s)</span>`);
+    chips.push(`<button class="chip clear" data-action="clear-filters">${ico("x", 11)}Limpiar todo</button>`);
+  }
   host.innerHTML = chips.join("");
 }
 function renderView() {
@@ -1975,14 +2090,89 @@ function renderView() {
     data: () => renderDataModule(projects)
   };
   root.innerHTML = (map[state.view] || map.dashboard)();
+  animateCharts();
+}
+
+/* Ordena cualquier tabla por la columna del encabezado pulsado. Reordena las filas
+   en el sitio, sin volver a pintar la vista, para no perder el desplazamiento. */
+function sortTable(th) {
+  const tabla = th.closest("table"), cuerpo = tabla && tabla.tBodies[0];
+  if (!cuerpo || cuerpo.rows.length < 2) return;
+  const fila = th.parentNode, i = [...fila.children].indexOf(th);
+  const dir = th.dataset.dir === "asc" ? "desc" : "asc";
+  [...fila.children].forEach(x => { delete x.dataset.dir; x.classList.remove("s-asc", "s-desc"); });
+  th.dataset.dir = dir;
+  th.classList.add(dir === "asc" ? "s-asc" : "s-desc");
+  const valor = tr => {
+    const c = tr.children[i];
+    if (!c) return "";
+    const txt = c.textContent.trim();
+    const num = Number(txt.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."));
+    const esNum = /\d/.test(txt) && isFinite(num) && (c.classList.contains("nm") || c.classList.contains("rt") || /^[\s$+-]*[\d.,]+\s*\w{0,3}$/.test(txt));
+    return esNum ? num : norm(txt);
+  };
+  const filas = [...cuerpo.rows];
+  filas.sort((a, b) => {
+    const x = valor(a), y = valor(b);
+    const r = typeof x === "number" && typeof y === "number" ? x - y : String(x).localeCompare(String(y), "es");
+    return dir === "asc" ? r : -r;
+  });
+  filas.forEach(f => cuerpo.appendChild(f));
+}
+
+/* --------------------------- animación de entrada ---------------------------
+   Los anillos crecen, las barras se extienden y las cifras cuentan. Nada de esto
+   ocurre si el sistema pide movimiento reducido.                              */
+
+function prefersStill() {
+  return Boolean(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+}
+function animateCharts() {
+  const root = document.getElementById("viewRoot");
+  if (!root) return;
+  const bars = root.querySelectorAll("[data-w]");
+  const nums = root.querySelectorAll("[data-count]");
+  const pintar = () => { bars.forEach(b => { b.style.width = b.dataset.w; }); };
+  if (prefersStill()) { pintar(); nums.forEach(n => { n.textContent = n.dataset.count; }); return; }
+  requestAnimationFrame(() => requestAnimationFrame(pintar));
+  nums.forEach(countUp);
+}
+function countUp(el) {
+  const raw = String(el.dataset.count);
+  const target = Number(raw.replace(/[^\d.-]/g, ""));
+  if (!isFinite(target) || Math.abs(target) < 2) { el.textContent = raw; return; }
+  const sufijo = raw.replace(/^[\d.,\s-]+/, "");
+  const t0 = performance.now(), dur = 500;
+  const paso = ahora => {
+    const k = Math.min(1, (ahora - t0) / dur);
+    el.textContent = Math.round(target * (1 - Math.pow(1 - k, 3))) + sufijo;
+    if (k < 1) requestAnimationFrame(paso); else el.textContent = raw;
+  };
+  requestAnimationFrame(paso);
 }
 
 /* --------------------------- utilidades visuales --------------------------- */
 
 function empty(title, text, btn = "", icon = "inbox") {
-  return `<div class="empty">${ico(icon, 42)}<strong>${esc(title)}</strong><p>${esc(text)}</p>${btn}</div>`;
+  const limpiar = activeFilterCount()
+    ? `<button class="btn" data-action="clear-filters">${ico("x", 13)}Limpiar los ${activeFilterCount()} filtro(s)</button>` : "";
+  return `<div class="empty">${ico(icon, 42)}<strong>${esc(title)}</strong><p>${esc(text)}</p>
+    <div class="row" style="justify-content:center">${btn}${limpiar}</div></div>`;
 }
 function pill(text, k) { return `<span class="pill ${k}">${esc(text)}</span>`; }
+/* Pastilla accionable: además de informar, acota. Se marca cuando su valor está puesto. */
+function pillF(text, k, key, value, extra = "") {
+  if (!key || !value || !state.filters[key]) return pill(text, k);
+  const on = (state.filters[key] || []).map(String).includes(String(value));
+  return `<button class="pill ${k} pf${on ? " on" : ""}" ${filterAttrs(key, value)}
+    title="${esc(extra || `Clic para acotar por ${value}`)} · Ctrl+clic para sumar">${esc(text)}</button>`;
+}
+/* Pastilla que enciende un filtro especial (los de SPECIAL_FILTERS). */
+function pillS(text, k, special, extra = "") {
+  const on = state.filters.special.includes(special);
+  return `<button class="pill ${k} pf${on ? " on" : ""}" data-special="${esc(special)}"
+    title="${esc(extra || SPECIAL_FILTERS[special]?.label || "")}">${esc(text)}</button>`;
+}
 function condK(c) { return c === "Retrasado" ? "b" : c === "En riesgo" ? "w" : "o"; }
 function stateK(s) {
   if (s === "Cerrado") return "g";
@@ -1998,32 +2188,51 @@ function fv(key, value, text) {
   return `<button type="button" class="fv" data-filter-key="${esc(key)}" data-filter-value="${esc(value)}">${esc(text)}</button>`;
 }
 function progress(value, k = "", mark = null) {
-  return `<div class="progline"><div class="prog ${k}"><i style="width:${clamp(value, 0, 100)}%"></i>
+  return `<div class="progline"><div class="prog ${k}"><i style="width:0" data-w="${clamp(value, 0, 100)}%"></i>
     ${mark !== null ? `<span class="tick" style="left:${clamp(mark, 0, 100)}%" title="Esperado ${fmtPct(mark)}"></span>` : ""}</div>
     <b>${fmtPct(value)}</b></div>`;
 }
 const PALETTE = ["#4125CF", "#00C878", "#6350e0", "#e0a800", "#0c447c", "#9b1010", "#00a8a8", "#b84500", "#7c3aed", "#007a4a"];
 const COND_COLOR = { "En tiempo": "#00C878", "En riesgo": "#e0a800", "Retrasado": "#d63333" };
 
-function donut(slices, centerValue, centerLabel) {
+/* Todo elemento de un gráfico es accionable: `selOf` dice qué está filtrado hoy para
+   poder resaltar lo elegido y atenuar el resto (realce cruzado). */
+function selOf(key) { return key ? (state.filters[key] || []).map(String) : []; }
+function markOf(sel, value) { return !sel.length ? "" : sel.includes(String(value)) ? " on" : " dim"; }
+/* Atributos que hacen filtrar a un elemento. Con `pair` aplica dos claves a la vez
+   (por ejemplo empresa + condición) reemplazando en vez de alternar: es un drill. */
+function filterAttrs(key, value, pair) {
+  if (!key) return "";
+  let a = `data-filter-key="${esc(key)}" data-filter-value="${esc(value)}"`;
+  if (pair && pair[0]) a += ` data-filter-key2="${esc(pair[0])}" data-filter-value2="${esc(pair[1])}" data-drill="1"`;
+  return a;
+}
+
+function donut(slices, centerValue, centerLabel, filterKey) {
   const total = slices.reduce((n, s) => n + s.value, 0);
   const R = 52, C = 2 * Math.PI * R;
+  const sel = selOf(filterKey);
   let off = 0;
   const arcs = total ? slices.filter(s => s.value > 0).map(s => {
     const len = C * s.value / total;
-    const el = `<circle cx="66" cy="66" r="${R}" fill="none" stroke="${s.color}" stroke-width="20"
-      stroke-dasharray="${len.toFixed(2)} ${(C - len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}"></circle>`;
+    const pct = fmtPct(s.value / total * 100);
+    const el = `<circle class="arc${markOf(sel, s.label)}" cx="66" cy="66" r="${R}" fill="none" stroke="${s.color}" stroke-width="20"
+      stroke-dasharray="${len.toFixed(2)} ${(C - len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}"
+      ${filterKey ? `${filterAttrs(filterKey, s.label)} role="button" tabindex="0" aria-label="Filtrar por ${esc(s.label)}"` : ""}
+      ><title>${esc(s.label)}: ${esc(s.display ?? s.value)} · ${pct}${filterKey ? " · clic para acotar, Ctrl+clic para sumar" : ""}</title></circle>`;
     off += len;
     return el;
   }).join("") : `<circle cx="66" cy="66" r="${R}" fill="none" stroke="var(--line-2)" stroke-width="20"></circle>`;
-  return `<div class="donut"><svg width="132" height="132" viewBox="0 0 132 132" aria-hidden="true">
+  return `<div class="donut"><svg width="132" height="132" viewBox="0 0 132 132" ${filterKey ? `role="group" aria-label="${esc(centerLabel)}"` : 'aria-hidden="true"'}>
       <circle cx="66" cy="66" r="${R}" fill="none" stroke="var(--line-2)" stroke-width="20"></circle>${arcs}
-    </svg><div class="mid"><b>${esc(centerValue)}</b><span>${esc(centerLabel)}</span></div></div>`;
+    </svg><div class="mid"><b data-count="${esc(centerValue)}">${esc(centerValue)}</b><span>${esc(centerLabel)}</span></div></div>`;
 }
 function legend(items, filterKey) {
   const total = items.reduce((n, s) => n + s.value, 0) || 1;
+  const sel = selOf(filterKey);
   return `<div class="legend">${items.map(s => `
-    <button class="leg" ${filterKey ? `data-filter-key="${esc(filterKey)}" data-filter-value="${esc(s.label)}"` : ""}>
+    <button class="leg${markOf(sel, s.label)}" ${filterAttrs(filterKey, s.label)}
+      ${filterKey ? `title="Clic para acotar por ${esc(s.label)} · Ctrl+clic para sumar"` : ""}>
       <i style="background:${s.color}"></i>
       <span class="lgn">${esc(s.label)}</span>
       <span class="vl">${esc(s.display ?? s.value)}</span>
@@ -2032,16 +2241,28 @@ function legend(items, filterKey) {
 }
 function hbars(rows, filterKey) {
   const max = Math.max(1, ...rows.map(r => r.total));
-  return `<div class="hbars">${rows.map(r => `<div class="hbar">
-      <button class="lb" ${filterKey ? `data-filter-key="${esc(filterKey)}" data-filter-value="${esc(r.label)}"` : ""} title="${esc(r.label)}">${esc(r.label)}</button>
-      <div class="tr" style="width:${Math.max(6, r.total / max * 100)}%">
-        ${r.parts.filter(x => x.value > 0).map(x => `<i style="width:${x.value / (r.total || 1) * 100}%;background:${x.color}" title="${esc(x.label)}: ${x.value}"></i>`).join("")}
+  const sel = selOf(filterKey);
+  const condSel = selOf("condition");
+  return `<div class="hbars">${rows.map(r => `<div class="hbar${markOf(sel, r.label)}">
+      <button class="lb" ${filterAttrs(filterKey, r.label)} title="${esc(r.label)} · clic para acotar · Ctrl+clic para sumar">${esc(r.label)}</button>
+      <div class="tr" style="width:${Math.max(6, r.total / max * 100)}%" ${filterAttrs(filterKey, r.label)}
+        title="${esc(r.label)}: ${r.total} producto(s)">
+        ${r.parts.filter(x => x.value > 0).map(x => {
+          const w = x.value / (r.total || 1) * 100;
+          const drill = x.fk ? [x.fk, x.fv] : null;
+          const dim = condSel.length && x.fk && !condSel.includes(String(x.fv)) ? " dim" : "";
+          return `<i class="seg${dim}" style="width:0;background:${x.color}" data-w="${w.toFixed(2)}%"
+            ${filterAttrs(filterKey, r.label, drill)} role="button" tabindex="0"
+            aria-label="${esc(r.label)}, ${esc(x.label)}: ${x.value}"
+            title="${esc(r.label)} · ${esc(x.label)}: ${x.value} · clic para ver solo esto"></i>`;
+        }).join("")}
       </div>
-      <span class="vv">${esc(r.display)}</span>
+      <button class="vv" ${filterAttrs(filterKey, r.label)} title="${esc(r.label)} · clic para acotar">${esc(r.display)}</button>
     </div>`).join("")}
     <div class="mini-legend">
-      ${["En tiempo", "En riesgo", "Retrasado"].map(c => `<span><i style="background:${COND_COLOR[c]}"></i>${c}</span>`).join("")}
-      <span><i style="background:var(--faint)"></i>completado o cerrado</span>
+      ${["En tiempo", "En riesgo", "Retrasado"].map(c => `<button class="mleg${markOf(condSel, c)}" ${filterAttrs("condition", c)}
+        title="Clic para acotar por ${esc(c)} · Ctrl+clic para sumar"><i style="background:${COND_COLOR[c]}"></i>${c}</button>`).join("")}
+      <span class="mleg-off"><i style="background:var(--faint)"></i>completado o cerrado</span>
     </div>`;
 }
 
@@ -2061,59 +2282,74 @@ function renderDashboard(projects) {
     const w = list.filter(({ pr, p }) => isOpenProduct(pr) && productCondition(pr, p) === "En riesgo").length;
     const b = list.filter(({ pr, p }) => isOpenProduct(pr) && productCondition(pr, p) === "Retrasado").length;
     const g = list.filter(({ pr }) => !isOpenProduct(pr)).length;
-    return [{ label: "En tiempo", value: o, color: COND_COLOR["En tiempo"] },
-            { label: "En riesgo", value: w, color: COND_COLOR["En riesgo"] },
-            { label: "Retrasado", value: b, color: COND_COLOR["Retrasado"] },
+    return [{ label: "En tiempo", value: o, color: COND_COLOR["En tiempo"], fk: "condition", fv: "En tiempo" },
+            { label: "En riesgo", value: w, color: COND_COLOR["En riesgo"], fk: "condition", fv: "En riesgo" },
+            { label: "Retrasado", value: b, color: COND_COLOR["Retrasado"], fk: "condition", fv: "Retrasado" },
             { label: "Cerrado o completado", value: g, color: "var(--faint)" }];
   };
 
+  /* Cada gráfico se calcula con todos los filtros MENOS el suyo. Así, al acotar por
+     "Tipo 1", el anillo de tipos sigue mostrando los demás tipos —atenuados— y se
+     puede comparar o cambiar de selección sin tener que limpiar antes. */
+  const baseType    = projectsExcept("type");
+  const baseCompany = projectsExcept("company");
+  const basePpr     = projectsExcept("ppr");
+  const baseStatus  = projectsExcept("productStatus");
+  const centro = (key, propio, total) =>
+    (state.filters[key] || []).length ? { v: String(propio), l: `de ${total}` } : { v: String(total), l: "" };
+
   // Por tipo de proyecto (va primero, ajuste 2.1)
   const byType = PROJECT_TYPES.map((t, i) => {
-    const list = projects.filter(p => p.type === t);
+    const list = baseType.filter(p => p.type === t);
     return { label: t, value: list.length, color: PALETTE[i],
              display: `${list.length}`, hours: sum(list, projectHoursSold), value$: sum(list, projectValue),
              prods: list.flatMap(p => (p.products || []).length) .reduce((a, b) => a + b, 0) };
   }).filter(x => x.value > 0);
+  const cTipo = centro("type", projects.length, baseType.length);
 
   // Por empresa
-  const byCompany = [...groupBy(projects, p => p.company || "Sin empresa").entries()].map(([label, list]) => {
+  const byCompany = [...groupBy(baseCompany, p => p.company || "Sin empresa").entries()].map(([label, list]) => {
     const prods = list.flatMap(p => (p.products || []).map(pr => ({ pr, p })));
     return { label, total: prods.length, parts: condParts(prods),
              display: `${prods.length} prod · ${fmtMoneyShort(sum(list, projectValue))}` };
   }).sort((a, b) => b.total - a.total);
 
   // Por PPR
-  const byPpr = [...groupBy(projects, p => p.ppr || "Sin PPR").entries()].map(([label, list]) => {
+  const byPpr = [...groupBy(basePpr, p => p.ppr || "Sin PPR").entries()].map(([label, list]) => {
     const prods = list.flatMap(p => (p.products || []).map(pr => ({ pr, p })));
     return { label, total: prods.length, parts: condParts(prods),
              display: `${list.length} proy · ${fmtNum(sum(list, projectHoursSold))} h` };
   }).sort((a, b) => b.total - a.total);
 
-  // Por estado operativo
+  // Por estado operativo (cuenta productos, por eso filtra por estado del producto)
+  const rowsStatus = baseStatus.flatMap(p => (p.products || []).map(pr => ({ pr, p })));
   const byState = PRODUCT_STATES.map((s, i) => ({
-    label: s, value: rows.filter(({ pr }) => pr.status === s).length, color: PALETTE[i]
+    label: s, value: rowsStatus.filter(({ pr }) => pr.status === s).length, color: PALETTE[i]
   })).filter(x => x.value > 0);
+  const cEstado = centro("productStatus", rows.length, rowsStatus.length);
 
   return `
   <section class="stats">
     ${stat("a", "briefcase", "Proyectos activos", projects.filter(p => p.state === "Activo").length,
-           `${projects.filter(p => p.state === "Borrador").length} en borrador`, "active")}
-    ${stat("i", "package", "Productos vendidos", rows.length, `${open.length} abiertos`, "")}
+           `<button class="sublk" data-special="draft">${projects.filter(p => p.state === "Borrador").length} en borrador</button>`, "active")}
+    ${stat("i", "package", "Productos vendidos", rows.length,
+           `<button class="sublk" data-special="running">${open.length} abiertos</button>`, "")}
     ${stat("w", "clock", "Asignaciones sin resolver", pendAssign, "pendientes o en ajuste", "pending_assign")}
-    ${stat("b", "alert", "Productos retrasados", late, `${risk} en riesgo`, "at_risk")}
+    ${stat("b", "alert", "Productos retrasados", late,
+           `<button class="sublk" ${filterAttrs("condition", "En riesgo")}>${risk} en riesgo</button>`, "at_risk")}
   </section>
 
   <section class="card">
     <div class="card-h"><div><h2>${ico("layers", 14)}Por tipo de proyecto</h2><p>Clasificación que gobierna la coordinación asignada</p></div></div>
     <div class="card-b">
       <div class="donut-wrap">
-        ${donut(byType, String(projects.length), "proyectos")}
+        ${donut(byType, cTipo.v, cTipo.l || "proyectos", "type")}
         <div style="flex:1;min-width:260px">
           ${legend(byType.map(t => ({ ...t, display: `${t.value} proy.` })), "type")}
           <div class="tw" style="margin-top:14px"><table class="t">
             <thead><tr><th>Tipo</th><th>Coordinación</th><th class="rt">Proyectos</th><th class="rt">Productos</th><th class="rt">Horas</th><th class="rt">Valor</th></tr></thead>
             <tbody>${PROJECT_TYPES.map(t => {
-              const list = projects.filter(p => p.type === t);
+              const list = baseType.filter(p => p.type === t);
               const role = (state.settings.assignmentRules.find(r => r.scope === "project" && r.value === t) || {}).role || "—";
               return `<tr><td>${fv("type", t, t)}</td><td class="sm muted">${esc(role)}</td>
                 <td class="nm">${list.length}</td><td class="nm">${sum(list, p => (p.products || []).length)}</td>
@@ -2127,7 +2363,7 @@ function renderDashboard(projects) {
 
   <section class="card">
     <div class="card-h"><div><h2>${ico("building", 14)}Por empresa</h2><p>Productos de cada empresa y su condición de gestión</p></div>
-      <div class="sp"><span class="note">Clic en una empresa para abrir su ficha</span></div></div>
+      <div class="sp"><span class="note">Clic en el nombre para abrir su ficha · clic en un tramo de la barra para acotar por condición</span></div></div>
     <div class="card-b">${byCompany.length ? hbars(byCompany, "company") : `<p class="note">Sin datos.</p>`}</div>
   </section>
 
@@ -2139,8 +2375,8 @@ function renderDashboard(projects) {
     <section class="card">
       <div class="card-h"><div><h2>${ico("clock", 14)}Por estado operativo</h2><p>Momento del proceso en que está cada producto</p></div></div>
       <div class="card-b"><div class="donut-wrap">
-        ${donut(byState, String(rows.length), "productos")}
-        <div style="flex:1;min-width:190px">${legend(byState, "globalState")}
+        ${donut(byState, cEstado.v, cEstado.l || "productos", "productStatus")}
+        <div style="flex:1;min-width:190px">${legend(byState, "productStatus")}
           <div class="note" style="margin-top:12px">Horas vendidas <b>${fmtNum(sold)}</b> · ejecutadas <b>${fmtNum(used)}</b> · saldo <b>${fmtNum(sold - used)}</b></div>
         </div>
       </div></div>
@@ -2149,9 +2385,11 @@ function renderDashboard(projects) {
 }
 function stat(k, icon, label, value, sub, special) {
   const on = special && state.filters.special.includes(special);
-  return `<button class="stat" ${special ? `data-special="${esc(special)}"` : ""} aria-pressed="${Boolean(on)}">
+  const subHtml = String(sub).trimStart().startsWith("<") ? sub : esc(sub);
+  return `<div class="stat" ${special ? `data-special="${esc(special)}" role="button" tabindex="0"` : ""} aria-pressed="${Boolean(on)}"
+    ${special ? `title="Clic para ver solo: ${esc(SPECIAL_FILTERS[special]?.label || label)}"` : ""}>
     <span class="ico ${k}">${ico(icon, 13)}${esc(label)}</span>
-    <span class="tx"><span>${esc(label)}</span><strong>${value}</strong><small>${esc(sub)}</small></span></button>`;
+    <span class="tx"><span>${esc(label)}</span><strong data-count="${esc(value)}">${value}</strong><small>${subHtml}</small></span></div>`;
 }
 
 /* ================== 10.2 EMPRESAS · FICHA Y PRODUCTOS ================== */
@@ -2215,7 +2453,9 @@ function renderCompanyFile(company, list) {
     ${contacts.length ? `<div class="co-contacts">
       <span class="note" style="width:100%;margin-bottom:2px"><b>Contactos del cliente</b></span>
       ${contacts.map(c => `<div class="ct"><b>${esc(c.name)}${c.primary ? " · principal" : ""}</b>
-        <span>${esc(c.role || "sin cargo")}</span><span>${esc(c.email || "sin correo")} · ${esc(c.phone || "sin teléfono")}</span></div>`).join("")}
+        <span>${esc(c.role || "sin cargo")}</span>
+        <span>${c.email ? `<a href="mailto:${esc(c.email)}">${esc(c.email)}</a>` : "sin correo"} ·
+          ${c.phone ? `<a href="tel:${esc(String(c.phone).replace(/\s/g, ""))}">${esc(c.phone)}</a>` : "sin teléfono"}</span></div>`).join("")}
     </div>` : ""}
     ${list.map(p => renderCompanyProject(p)).join("")}
   </section>`;
@@ -2232,7 +2472,7 @@ function renderCompanyProject(p) {
         <p class="note">${(p.products || []).length} producto(s) · ${fmtNum(projectHoursSold(p))} h · ${fmtMoneyShort(projectValue(p))} ·
           coordina ${esc(p.coordinatorRole || "sin definir")} · plan final ${esc(plan)}</p></div>
       <div class="sp">
-        ${pill(gState, stateK(gState))}${pill(cond, condK(cond))}
+        ${pillF(gState, stateK(gState), "globalState", gState)}${pillF(cond, condK(cond), "condition", cond)}
         ${progress(projectProgress(p), condK(cond))}
         <button class="btn btn-s" data-open-project="${esc(p.id)}">Ficha del proyecto</button>
       </div>
@@ -2256,21 +2496,24 @@ function renderProductCard(p, pr) {
   const drift = planDrift(pr);
   const nov = (pr.novelties || []).slice().sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 4);
   const open = state.ui.openProducts.has(pr.id);
-  return `<article class="pd ${condK(cond)}" data-product-anchor="${esc(pr.id)}">
+  const fuera = !productMatchesFilters(pr, p);
+  return `<article class="pd ${condK(cond)}${fuera ? " off" : ""}" data-product-anchor="${esc(pr.id)}"
+    ${fuera ? 'title="No cumple los filtros activos"' : ""}>
     <div class="pd-h">
       <div class="ti">
         <h4>${ico("package", 14)}${esc(pr.name || "Producto sin nombre")}</h4>
-        <p>${esc(pr.routing)}${pr.technology ? ` · ${esc(pr.technology)}` : ""}${pr.complexity ? ` · complejidad ${esc(pr.complexity)}` : ""}
+        <p>${fv("routing", pr.routing, pr.routing)}${pr.technology ? ` · ${esc(pr.technology)}` : ""}${pr.complexity ? ` · complejidad ${esc(pr.complexity)}` : ""}
           · ${fmtNum(pr.hoursSold)} h × ${fmtMoney(pr.hourRate)} = ${fmtMoneyShort(productValue(pr))}</p>
       </div>
       <div class="st">
-        ${pill(pr.status, stateK(pr.status))}
-        ${pill(cond, condK(cond))}
-        ${pill(`Asignación: ${pr.assignment.status}`, assignK(pr.assignment.status))}
+        ${pillF(pr.status, stateK(pr.status), "productStatus", pr.status)}
+        ${pillF(cond, condK(cond), "condition", cond)}
+        ${pr.assignment.status === "Aceptada" ? pill(`Asignación: ${pr.assignment.status}`, assignK(pr.assignment.status))
+          : pillS(`Asignación: ${pr.assignment.status}`, assignK(pr.assignment.status), "pending_assign", "Ver todas las asignaciones sin resolver")}
       </div>
     </div>
     <div class="pd-grid">
-      <div><span>Cargo responsable</span><b>${esc(pr.role || "sin asignar")}</b><small>${esc(pr.owner || "sin persona")}</small></div>
+      <div><span>Cargo responsable</span><b>${pr.role ? fv("role", pr.role, pr.role) : "sin asignar"}</b><small>${esc(pr.owner || "sin persona")}</small></div>
       <div><span>Avance</span>${progress(productProgress(pr), condK(cond), exp)}
         <small>${exp !== null ? `esperado ${fmtPct(exp)}` : "sin programación"}</small></div>
       <div><span>Horas</span><b>${fmtNum(pr.hoursExecuted)} / ${fmtNum(pr.hoursSold)}</b><small>saldo ${fmtNum(productHoursBalance(pr))} h</small></div>
@@ -2285,7 +2528,8 @@ function renderProductCard(p, pr) {
       <div><span>Última actualización</span><b>${pr.lastUpdateAt ? formatStamp(pr.lastUpdateAt) : "sin registro"}</b></div>
     </div>
     ${alerts.length ? `<div class="pd-alerts">${alerts.map(a => `<div class="pd-alert ${a.sev === "Media" ? "w" : ""}">
-      ${ico("alert", 13)}<b>${esc(a.label)}</b><span>${esc(a.detail)}</span></div>`).join("")}</div>` : ""}
+      ${ico("alert", 13)}<button class="al-lk" ${filterAttrs("alert", a.code)}
+        title="Ver todos los productos con esta alerta">${esc(a.label)}</button><span>${esc(a.detail)}</span></div>`).join("")}</div>` : ""}
     ${pr.assignment.status === "En ajuste" ? `<div class="pd-alerts"><div class="pd-alert w">
       ${ico("clock", 13)}<b>Ajuste propuesto</b><span>Nueva fecha ${formatDate(pr.assignment.proposedDate, true)} ·
       ${esc(pr.assignment.justification || "sin justificación")} · tiempo requerido ${fmtNum(pr.assignment.requiredTime)} día(s) ·
@@ -2398,10 +2642,15 @@ function renderGantt(p, range) {
         title="${esc(m.name)} · ${formatDate(m.date, true)}${m.baselineDate && m.baselineDate !== m.date ? ` (venta: ${formatDate(m.baselineDate, true)})` : ""} · ${fmtPct(m.progress)}"></span>`;
     }).join("");
     return `<div class="g-r">
-      <div class="g-l"><span class="dot ${condK(cond)}"></span><span title="${esc(pr.name)}">${esc(pr.name)}</span></div>
+      <div class="g-l"><button class="dot ${condK(cond)}" ${filterAttrs("condition", cond)}
+          title="${esc(cond)} · clic para acotar"></button>
+        <button class="g-nm" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}"
+          title="${esc(pr.name)} · ${esc(pr.role || "sin cargo")} · ${esc(pr.status)} · clic para abrir">${esc(pr.name)}</button></div>
       <div class="g-t" style="--c:${months.length}">
         <div class="g-now" style="left:${now}%"></div>
-        ${s !== null && e !== null ? `<div class="g-b ${condK(cond)}" style="left:${Math.min(s, e)}%;width:${Math.max(1.5, Math.abs(e - s))}%"><i style="width:${productProgress(pr)}%"></i></div>` : ""}
+        ${s !== null && e !== null ? `<div class="g-b ${condK(cond)}" style="left:${Math.min(s, e)}%;width:${Math.max(1.5, Math.abs(e - s))}%"
+          role="button" tabindex="0" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}"
+          title="${esc(pr.name)} · ${formatDate(pr.startDate, true)} → ${formatDate(pr.endDate, true)} · avance ${fmtPct(productProgress(pr))}${planDrift(pr) ? ` · ${planDrift(pr) > 0 ? "+" : ""}${planDrift(pr)} d frente al plan de venta` : ""} · clic para abrir"><i style="width:${productProgress(pr)}%"></i></div>` : ""}
         ${bs !== null && be !== null && (bs !== s || be !== e) ? `<div class="g-base" style="left:${Math.min(bs, be)}%;width:${Math.max(1, Math.abs(be - bs))}%" title="Plan estimado de la venta"></div>` : ""}
         ${s === null || e === null ? `<span class="g-empty">sin fechas definitivas</span>` : ""}
         ${ms}
@@ -2442,10 +2691,25 @@ function renderAlerts(projects) {
     return { company, items, alerts, crit: alerts.filter(a => a.sev === "Crítica").length };
   }).sort((a, b) => b.crit - a.crit || b.alerts.length - a.alerts.length);
 
+  const porCodigo = [...groupBy(withA.flatMap(x => x.alerts), a => a.code).entries()]
+    .map(([code, list]) => ({ code, label: ALERT_BY_CODE[code]?.label || code, n: list.length,
+                              sev: list[0].sev }))
+    .sort((a, b) => b.n - a.n);
+  const encuadres = [["at_risk", "En riesgo o retrasados"], ["pending_assign", "Asignaciones sin resolver"],
+                     ["no_plan", "Sin plan final"], ["suspended", "Suspendidos"], ["mine", "A mi cargo"]];
+
   return `<section class="card" style="margin-bottom:16px"><div class="card-h">
-      <div><h2>${total} alerta(s) en ${byCompany.length} empresa(s)</h2>
+      <div><h2>${ico("bell", 14)}${total} alerta(s) en ${byCompany.length} empresa(s)</h2>
         <p>Primero la empresa, luego el producto. Abra la ficha para gestionar cada producto.</p></div>
-      <div class="sp"><button class="btn btn-s" data-action="export-alerts">Descargar alertas</button></div>
+      <div class="sp"><button class="btn btn-s" data-action="export-alerts">${ico("download", 12)}Descargar alertas</button></div>
+    </div>
+    <div class="card-b">
+      <div class="sec-title">Por tipo de alerta · clic para acotar</div>
+      <div class="tags">${porCodigo.length ? porCodigo.map(a =>
+        pillF(`${a.label} · ${a.n}`, a.sev === "Crítica" ? "b" : a.sev === "Alta" ? "w" : "g", "alert", a.code,
+              `Ver los productos con «${a.label}»`)).join("") : `<span class="note">Ninguna.</span>`}</div>
+      <div class="sec-title" style="margin-top:14px">Encuadres rápidos</div>
+      <div class="tags">${encuadres.map(([k, t]) => pillS(t, "a", k)).join("")}</div>
     </div></section>
     ${byCompany.map(({ company, items, alerts, crit }) => `
       <section class="al-co">
@@ -2454,7 +2718,7 @@ function renderAlerts(projects) {
           <div><h3>${ico("alert", 15)}${esc(company)}</h3>
             <p class="note">${items.length} proyecto(s) · ${alerts.length} alerta(s)${crit ? ` · ${crit} crítica(s)` : ""}</p></div>
           <div class="sp">
-            ${crit ? pill(`${crit} crítica(s)`, "b") : ""}${pill(`${alerts.length} total`, "g")}
+            ${crit ? pill(`${crit} crítica(s)`, "b") : ""}${pillF(`${alerts.length} total`, "g", "company", company, `Ver solo ${company}`)}
             <button class="btn btn-pri btn-s" data-filter-key="company" data-filter-value="${esc(company)}">Abrir y gestionar</button>
           </div>
         </div>
@@ -2466,11 +2730,13 @@ function renderAlerts(projects) {
               const pr = (p.products || []).find(x => x.id === pid) || {};
               const cond = productCondition(pr, p);
               return `<tr>
-                <td><b>${esc(pr.name || "—")}</b><div class="xs muted">${esc(pr.routing || "")}</div></td>
-                <td class="sm">${esc(p.code)}<div class="xs muted">${esc(p.type)} · ${esc(p.ppr)}</div></td>
+                <td><button class="lk" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}">${esc(pr.name || "—")}</button>
+                  <div class="xs muted">${pr.routing ? fv("routing", pr.routing, pr.routing) : ""}</div></td>
+                <td class="sm"><button class="lk" data-open-project="${esc(p.id)}">${esc(p.code)}</button>
+                  <div class="xs muted">${fv("type", p.type, p.type)} · ${fv("ppr", p.ppr, p.ppr)}</div></td>
                 <td class="sm">${fv("role", pr.role, pr.role || "sin asignar")}<div class="xs muted">${esc(pr.owner || "")}</div></td>
-                <td>${pill(pr.status || "—", stateK(pr.status))}<div style="margin-top:4px">${pill(cond, condK(cond))}</div></td>
-                <td>${items2.map(a => `<div class="xs" style="margin-bottom:3px">${pill(a.label, a.sev === "Crítica" ? "b" : a.sev === "Alta" ? "w" : "g")}
+                <td>${pillF(pr.status || "—", stateK(pr.status), "productStatus", pr.status)}<div style="margin-top:4px">${pillF(cond, condK(cond), "condition", cond)}</div></td>
+                <td>${items2.map(a => `<div class="xs" style="margin-bottom:3px">${pillF(a.label, a.sev === "Crítica" ? "b" : a.sev === "Alta" ? "w" : "g", "alert", a.code, `Ver todos los productos con «${a.label}»`)}
                   <span class="muted">${esc(a.detail)}</span></div>`).join("")}</td>
                 <td><button class="btn btn-s" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}">Abrir</button></td>
               </tr>`;
@@ -4216,11 +4482,28 @@ document.addEventListener("click", e => {
   if (delCat) { removeCatalogRow(delCat.dataset.removeCatalog, Number(delCat.dataset.index)); return; }
 
   const special = t.closest("[data-special]");
-  if (special) { if (e.detail > 1) return; toggleFilter("special", special.dataset.special); return; }
   const fvEl = t.closest("[data-filter-key]");
-  if (fvEl) { if (e.detail > 1) return; toggleFilter(fvEl.dataset.filterKey, fvEl.dataset.filterValue); return; }
+  if (special || fvEl) {
+    if (e.detail > 1) return;
+    // Cuando uno está dentro del otro —una sublínea dentro de su tarjeta— manda
+    // el más cercano al clic, no el ancestro.
+    const mandaFv = fvEl && (!special || special.contains(fvEl));
+    if (mandaFv) {
+      const d = fvEl.dataset;
+      const pares = d.filterKey2 ? [[d.filterKey, d.filterValue], [d.filterKey2, d.filterValue2]]
+                                 : [[d.filterKey, d.filterValue]];
+      // Clic simple reemplaza la selección; con Ctrl o Cmd se suma, como en cualquier tablero.
+      if (e.ctrlKey || e.metaKey) multiToggle(pares); else drillFilter(pares);
+    } else {
+      toggleFilter("special", special.dataset.special);
+    }
+    return;
+  }
   const rem = t.closest("[data-remove-filter]");
   if (rem) { if (e.detail > 1) return; toggleFilter(rem.dataset.removeFilter, rem.dataset.value); return; }
+
+  const th = t.closest("table.t thead th");
+  if (th && th.textContent.trim()) { sortTable(th); return; }
 
   const shift = t.closest("[data-cal-shift]");
   if (shift) { const d = new Date(state.calendar.year, state.calendar.month + Number(shift.dataset.calShift), 1);
@@ -4305,7 +4588,10 @@ document.addEventListener("click", e => {
 
 document.addEventListener("change", e => {
   const el = e.target;
-  if (el.matches("[data-filter-select]")) { setSingleFilter(el.dataset.filterSelect, el.value); return; }
+  if (el.matches("[data-filter-select]")) {
+    if (el.value === "__varios") { renderApp(); return; }   // opción informativa, no cambia nada
+    setSingleFilter(el.dataset.filterSelect, el.value); return;
+  }
   if (el.id === "assignCargo") { state.ui.assignmentOwner = el.value; renderApp(); return; }
   if (el.id === "sessionUser") { state.session.user = el.value; saveState(); renderApp(); return; }
   if (el.id === "calCompany") { state.ui.calendarCompany = el.value; renderView(); return; }
@@ -4383,6 +4669,10 @@ document.addEventListener("keydown", e => {
     return;
   }
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); document.getElementById("globalSearch").focus(); return; }
+  if (e.key === "Enter" || e.key === " ") {
+    const act = e.target.closest && e.target.closest('[role="button"][data-filter-key],[role="button"][data-special],[role="button"][data-open-project]');
+    if (act) { e.preventDefault(); act.dispatchEvent(new MouseEvent("click", { bubbles: true, detail: 1 })); return; }
+  }
   if (e.key === "Tab") trapFocus(e);
 });
 function trapFocus(e) {
