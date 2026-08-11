@@ -1,176 +1,174 @@
-# Rehavid · Gestión de proyectos v5
+# Rehavid · Gestión de proyectos v6
 
 Aplicación web de un solo archivo que implementa la **Especificación funcional y flujograma
 del proceso de gestión de proyectos v1.0** (Rehavid S.A.S., 11 de agosto de 2026).
 
 | Archivo | Contenido |
 |---|---|
-| `Rehavid_Gestion_Proyectos_v5.html` | La aplicación. Se abre con doble clic; no requiere servidor ni instalación. |
+| `Rehavid_Gestion_Proyectos_v6.html` | La aplicación. Se abre con doble clic; no requiere servidor ni instalación. |
 | `Rehavid_Gestion_Proyectos_v4_baseline.html` | Versión anterior, conservada como línea base de comparación. |
 | `ESPECIFICACION_FUNCIONAL_v1.txt` | Texto de la especificación que se implementó. |
 
 ---
 
-## 1. El cambio estructural
+## 1. Los siete módulos
 
-La decisión central de la especificación es que **una venta crea un proyecto maestro y cada
-producto vendido se convierte en un frente de trabajo independiente**. La versión 4 no tenía
-esa estructura: el "producto" era apenas un texto dentro de cada actividad, sin horas,
-responsable, estado ni entregable propios.
-
-| | v4 | v5 |
+| # | Módulo | Qué resuelve |
 |---|---|---|
-| Unidad de trabajo | Actividad con un campo de texto «producto» | **Producto** con horas, responsable, fechas, estado, condición, entregable y novedades |
-| Horas | Un número suelto en el proyecto | Suma automática de las horas de los productos (RN-03) |
-| Estados | Una sola escala de 7 etapas mezclada con el estado | Tres capas separadas: estado operativo (6), condición de gestión (3) y eventos |
-| Asignación | Manual | Motor de reglas configurable que corre en paralelo y genera notificaciones |
-| Contactos | Un nombre, un correo, un teléfono | Entre uno y tres contactos con cargo y principal identificado |
-| Alertas | Un semáforo derivado | Ocho alertas de gestión con acuerdos de servicio configurables |
-| Trazabilidad | Texto libre firmado como «Usuario» | Bitácora con usuario, fecha, dato anterior, dato nuevo y motivo |
+| 01 | **Dashboard** | Totales de todo el portafolio y agregados por empresa, tipo de proyecto, PPR y estado operativo, con filtros combinables. |
+| 02 | **Empresas y productos** | Cada empresa con sus proyectos, sus productos vendidos, el avance de cada uno, su gestión individual y el plan de trabajo del proyecto. |
+| 03 | **Alertas** | Primero la empresa, luego el producto que está atrasado o requiere acción. |
+| 04 | **Mis asignaciones** | Lo que está a cargo del usuario en sesión: aceptar, contactar, programar, actualizar. |
+| 05 | **Calendario** | Programación consolidada o por empresa, con festivos de Colombia. |
+| 06 | **Parametrización** | Productos con horas y valor hora, PPR, empresas, órdenes de servicio, responsables con rol, reglas de asignación y acuerdos de servicio. |
+| 07 | **Bases y auditoría** | Descargar y subir bases, bandeja de notificaciones e historial completo de cambios. |
 
-Los datos de la versión 4 se migran solos: al abrir la v5 en el mismo navegador se detecta la
-base anterior, cada grupo de actividades se convierte en un producto y las actividades pasan a
-ser hitos o sesiones de ese producto (`migrateLegacyProject`). La conversión queda registrada
-en la bitácora de cada proyecto.
+El registro de una venta se abre desde el botón **+ Venta realizada** de la barra superior,
+disponible en cualquier módulo.
 
 ---
 
-## 2. Módulos (§9 de la especificación)
+## 2. Dashboard general
 
-| Módulo pedido | Dónde está |
+Suma **todas las empresas y todos los tipos de proyecto**, y se filtra por PPR, empresa,
+tipo de proyecto, estado del proyecto y estado operativo. Contiene:
+
+- Seis indicadores: proyectos activos, productos vendidos, pendientes de programar,
+  retrasados, en riesgo y alertas abiertas. Cada uno es además un filtro rápido.
+- Instrumentos de consumo de horas, avance ponderado, facturación y distribución de la
+  condición de los productos abiertos.
+- Cuatro tablas de agregación —por empresa, por tipo, por PPR y por estado operativo— con
+  totales de proyectos, productos, horas vendidas y ejecutadas, valor, avance y alertas.
+  Un clic en cualquier fila filtra todo el tablero.
+- Detalle de proyectos ordenable por condición, compromiso, empresa, valor o actualización.
+
+## 3. Empresas, productos y plan de trabajo
+
+Jerarquía **empresa → proyecto → producto**. Cada producto muestra estado operativo,
+condición de gestión, responsable, avance real frente al esperado, horas, saldo, valor,
+programación vigente, desviación frente al plan original, entregable y alertas.
+
+**El plan de trabajo** vive dentro del proyecto, como diagrama de barras: cada producto es
+una barra con su avance, los hitos son rombos y el plan original queda dibujado como línea
+punteada debajo. Cuando se registra un retraso, la aplicación desplaza la fecha objetivo y,
+si se indica, también los hitos pendientes: el plan se modifica con los avances y los
+retrasos, y la desviación frente a la línea base queda visible y medida en días.
+
+### Permisos por responsable
+
+| Rol | Qué puede hacer |
 |---|---|
-| 1. Registro de venta | Botón **Registrar venta** → asistente de 4 pasos con validación previa |
-| 2. Motor de asignación | Administración → *Motor de asignación* (reglas editables) |
-| 3. Mis asignaciones | Vista lateral, con selector de responsable y acciones de gestión |
-| 4. Panel de portafolio | Vista inicial: indicadores, horas, estado operativo y tabla principal |
-| 5. Detalle del proyecto | Ficha lateral con proyecto maestro, productos, contactos, bitácora y cierre |
-| 6. Calendario | Consolidado o por empresa, con festivos de Colombia |
-| 7. Centro de alertas | Vista lateral, agrupada por tipo de alerta |
-| 8. Administración y auditoría | Catálogos, acuerdos de servicio, reglas, respaldos e historial |
+| **Responsable** | Aceptar sus asignaciones y registrar avances, retrasos, suspensiones, reanudaciones y finalización **de los productos que tiene a cargo**. |
+| **Coordinación** | Todo lo anterior en los proyectos que coordina, más reasignar, contactar, programar y cerrar productos. |
+| **Administrador** | Intervenir en cualquier proyecto y parametrizar la aplicación. |
+
+Los botones de una acción no permitida aparecen deshabilitados y explican por qué al pasar
+el cursor; además cada producto muestra el aviso de quién es el único que puede tocar sus
+avances. El usuario en sesión se elige en la barra superior y es el que queda firmando la
+bitácora.
+
+## 4. Parametrización
+
+- **Productos**: nombre, categoría de enrutamiento, **costo en horas** y **valor hora**. Al
+  registrar una venta, elegir un producto del catálogo carga horas y tarifa; el valor del
+  proyecto es la suma de horas × valor hora de sus productos.
+- **PPR**: alta y baja con descripción.
+- **Empresas**: alta y baja con NIT y notas.
+- **Órdenes de servicio**: alta y baja, asociadas a empresa y fecha.
+- **Responsables**: alta y baja con rol, que es lo que define los permisos.
+- **Reglas de asignación** y **acuerdos de servicio** (tiempos para aceptar, contactar,
+  programar y actualizar, tolerancia de avance y aviso de consumo de horas).
+
+Al quitar del catálogo un valor que aparece en proyectos, la aplicación avisa en cuáles y
+aclara que los proyectos conservan el dato.
+
+## 5. Bases de datos
+
+- **Descargar**: base completa en JSON (proyectos, productos, hitos, contactos, bitácora,
+  notificaciones y parametrización), y extractos CSV de productos, alertas y auditoría.
+- **Subir**: JSON reemplaza toda la base previa confirmación; CSV actualiza **solo las
+  columnas presentes en el archivo** y registra cada cambio en la bitácora.
 
 ---
 
-## 3. Reglas de negocio (§8)
+## 6. El flujo del documento, paso a paso
 
-| Regla | Cómo se hace cumplir |
+| Paso de la especificación | Dónde ocurre |
 |---|---|
-| RN-01 · una venta, un proyecto maestro | `nextProjectCode()` genera un ID único correlativo; el asistente crea un solo proyecto |
-| RN-02 · productos con vida propia | `makeProduct()` da a cada producto horas, responsable, fechas, estado, entregable y novedades |
-| RN-03 · suma de horas | `projectHoursSold()` calcula el total; el campo no es editable a mano |
-| RN-04 · activación validada | `ACTIVATION_CHECKS` (10 controles); el botón *Activar* está deshabilitado hasta superarlos |
-| RN-05 · reglas en paralelo | `planAssignments()` evalúa todas las reglas y genera una asignación por producto más la coordinación |
-| RN-06 · aceptación obligatoria | El producto queda «sin aceptar» hasta la acción *Aceptar asignación*; la alerta lo vigila; *Reasignar* exige motivo y reinicia la aceptación |
-| RN-07 · plan ≠ programación | El plan estimado es un campo de la venta; `scheduleConfirmed` solo se marca desde la acción *Programar*, que exige contacto previo |
-| RN-08 · excepciones completas | Los formularios de suspensión y de retraso exigen causa, acción, responsable y nueva fecha |
-| RN-09 · reanudación como evento | *Reanudar* crea una novedad de tipo «Reanudación» y devuelve el producto a «En ejecución» |
-| RN-10 · entregable para finalizar | `canCloseProduct()` y el formulario de finalización exigen entregable o evidencia |
-| RN-11 · cierre del maestro | `canCloseProject()` habilita el cierre solo con todos los productos cerrados |
-| RN-12 · auditoría | `collectDiffs()` compara la ficha antes y después; los cambios sensibles piden motivo (`askReason`) |
-| RN-13 · cálculo automático | `projectGlobalState()`, `projectCondition()` y `projectProgress()` derivan del estado de los productos |
-| RN-14 · catálogos administrables | Empresas, PPR, productos, tecnologías, responsables, vendedores, entregables y reglas se editan en Administración |
+| 5.1–5.2 Venta y registro | Botón **+ Venta realizada** → asistente de cuatro pasos |
+| 5.3 Validación previa | Paso 4: diez controles; sin superarlos el proyecto queda en borrador (RN-04) |
+| 5.4 Creación del proyecto maestro | ID único automático y un registro independiente por producto |
+| 5.5 Asignación y notificación | Motor de reglas en paralelo; notificaciones con el contenido mínimo de §6 |
+| 5.6 Aceptación | Acción *Aceptar asignación*, con trazabilidad (RN-06) |
+| 5.7 Contacto y programación | *Registrar contacto* habilita *Programar*; el plan preliminar pasa a programación confirmada (RN-07) |
+| 5.8 Ejecución | *Registrar avance*: avance, horas y próxima acción |
+| 5.9 Retraso, suspensión y reanudación | *Registrar retraso*, *Suspender* y *Reanudar*, siempre con causa, acción, responsable y nueva fecha (RN-08, RN-09) |
+| 5.10 Cierre por producto | *Finalizar* exige entregable (RN-10); luego *Cerrar producto* |
+| 5.11 Cierre del maestro | Solo con todos los productos cerrados; consolida horas, entregables e historial (RN-11) |
 
-### Cómo se calculan estado y condición
+### Reglas de negocio
 
-- **Estado global del proyecto**: el estado operativo *menos avanzado* de sus productos
-  (el eslabón débil). Si un producto sigue pendiente de contacto, el proyecto aparece
-  pendiente de contacto aunque otros ya estén en ejecución.
-- **Condición de gestión**: `Retrasado` si algún producto abierto venció o su suspensión pasó
-  la fecha de revisión; `En riesgo` si tiene alguna alerta abierta; `En tiempo` en el resto.
-- **Avance**: promedio de los productos ponderado por horas vendidas. Dentro de un producto,
-  si hay hitos el avance se calcula desde ellos ponderando por horas asignadas.
+RN-01 a RN-14 se hacen cumplir en el código, no solo en la interfaz: identificador único,
+productos con vida propia, horas totales como suma automática, activación validada, reglas
+en paralelo, aceptación obligatoria, plan estimado distinto de programación confirmada,
+excepciones con causa y plan de acción, entregable para finalizar, cierre en cascada,
+auditoría con motivo en los cambios sensibles, estado y condición calculados, y catálogos
+administrables sin tocar el código.
 
-### Las ocho alertas (§7.3)
+### Estado, condición y alertas
 
-| Alerta | Se dispara cuando |
-|---|---|
-| Asignación no aceptada | Pasaron más horas que el acuerdo sin aceptar la tarea |
-| Cliente no contactado | Hay asignación aceptada y no hay registro de contacto pasado el plazo |
-| Sin programación | El producto no tiene fechas confirmadas pasado el plazo desde la activación |
-| Próximo a vencer | Faltan pocos días y el avance real está por debajo del esperado, con tolerancia configurable |
-| Retrasado | La fecha objetivo venció sin finalizar |
-| Suspendido | El producto está detenido; si falta causa, responsable o fecha de revisión, se advierte |
-| Sin actualización | Pasó el periodo de control sin registrar novedades |
-| Desviación de horas | El consumo alcanzó el porcentaje de aviso o superó las horas vendidas |
-
-Todos los plazos son parámetros editables en **Administración → Acuerdos de servicio**, tal
-como recomienda §6: cambiar los acuerdos no exige tocar el código.
+- **Estado global del proyecto**: el estado operativo *menos avanzado* de sus productos.
+- **Condición**: `Retrasado` si algún producto abierto venció o su suspensión pasó la fecha
+  de revisión; `En riesgo` si tiene alguna alerta; `En tiempo` en el resto.
+- **Ocho alertas**: asignación no aceptada, cliente no contactado, sin programación, próximo
+  a vencer, retrasado, suspendido, sin actualización y desviación de horas. Todos los plazos
+  son parámetros editables.
 
 ---
 
-## 4. Criterios mínimos de aceptación (§10)
+## 7. Correcciones aplicadas sobre la versión 4
 
-| # | Criterio | Estado |
-|---|---|---|
-| 01 | Registrar una venta con varios productos y hasta tres contactos | Cumple |
-| 02 | No activar sin datos obligatorios ni con productos sin horas | Cumple |
-| 03 | ID único y registros separados por producto | Cumple |
-| 04 | Horas totales y estado global automáticos | Cumple |
-| 05 | Notificaciones simultáneas según tipo y productos | Cumple · se generan en la bandeja; el envío por correo necesita servidor |
-| 06 | Tarea visible por responsable con aceptar o reasignar | Cumple |
-| 07 | Registrar contacto y programación confirmada | Cumple |
-| 08 | Calendario por empresa y consolidado | Cumple |
-| 09 | Actualizar avance, horas, novedades, retraso, suspensión y reanudación | Cumple |
-| 10 | Exigir causa y plan de acción en retraso o suspensión | Cumple |
-| 11 | No finalizar un producto sin evidencia | Cumple |
-| 12 | No cerrar el maestro con productos abiertos | Cumple |
-| 13 | Bitácora de cambios, notificaciones, responsables y fechas | Cumple |
-| 14 | Filtrar y exportar por empresa, PPR, tipo, producto, responsable, estado y periodo | Cumple · el CSV sale con una fila por producto |
-| 15 | Vista principal centrada en alertas y compromisos | Cumple |
+1. Escribir en la ficha ya no redibuja el formulario: no se pierde el foco ni se cierran las
+   secciones abiertas.
+2. La importación CSV no borra los campos ausentes en el archivo.
+3. Avance consistente entre producto y proyecto, ponderado por horas.
+4. Un producto finalizado o cerrado cuenta 100 %.
+5. Cerrar la ficha con cambios sin guardar pide confirmación.
+6. Datos demostrativos marcados y eliminables por separado.
+7. Listas de autocompletado únicas en el documento.
+8. El estado abierto de secciones y planes se conserva entre redibujados.
+9. Códigos de proyecto sin colisión.
+10. Sin código muerto: todos los parámetros configurables afectan alguna regla y los valores
+    monetarios se muestran en el tablero.
+
+Además: buscador visible en móvil, diálogo con foco retenido, etiquetas en todos los campos,
+avisos con `aria-live` y ninguna vista con desbordamiento horizontal a 380 px.
 
 ---
 
-## 5. Correcciones aplicadas sobre la versión 4
+## 8. Límites conocidos
 
-1. **Edición sin saltos.** Escribir en la ficha ya no redibuja el formulario: no se pierde el
-   foco ni se cierran las secciones. Solo se redibuja cuando cambia la estructura (categoría de
-   enrutamiento, estado), conservando foco, cursor y posición de desplazamiento.
-2. **Importación CSV no destructiva.** Solo se actualizan las columnas presentes en el archivo;
-   las ausentes conservan su valor. Cada cambio queda en la bitácora.
-3. **Avance consistente.** Producto y proyecto usan la misma base de cálculo ponderada por horas.
-4. **Finalizado = 100 %.** Marcar un producto como finalizado o cerrado fija su avance en 100.
-5. **Cierre protegido.** Salir de la ficha con cambios sin guardar pide confirmación, y el
-   navegador avisa antes de cerrar la pestaña.
-6. **Datos demostrativos marcados.** Cada proyecto demo lleva su etiqueta y hay un botón para
-   eliminar solo esos registros sin tocar los reales.
-7. **Listas de autocompletado únicas.** Se generan una sola vez en el documento.
-8. **Secciones persistentes.** Lo que el usuario deja abierto sigue abierto tras cada redibujado.
-9. **Códigos sin colisión.** El correlativo se calcula sobre los códigos existentes y verifica
-   que el resultado no esté en uso.
-10. **Sin código muerto.** Todos los parámetros configurables afectan alguna regla; los valores
-    monetarios se muestran en el panel y en la consolidación.
-
-Además: buscador visible en móvil, ficha con `role="dialog"`, `aria-modal`, retención del foco
-dentro de la ficha y del cuadro de diálogo, etiquetas en todos los campos y avisos con `aria-live`.
-
----
-
-## 6. Límites conocidos
-
-La aplicación guarda en el almacenamiento local del navegador. Eso alcanza para operar y para
+La aplicación guarda en el almacenamiento local del navegador. Eso alcanza para operar y
 validar el proceso, pero no para el uso multiusuario que describe la especificación:
 
-- **El correo no se envía solo.** Cada asignación genera la notificación con el contenido mínimo
-  de §6 en una bandeja consultable, con opción de abrirla en el cliente de correo. El envío
-  automático exige un servidor.
-- **No hay usuarios reales ni permisos.** El selector de usuario de la barra superior define
-  quién queda firmando la bitácora; es una convención, no una autenticación.
-- **No hay concurrencia.** Dos personas en dos navegadores tienen dos bases distintas. El
-  intercambio se hace hoy con los respaldos JSON.
+- **El correo no se envía solo.** Cada asignación genera la notificación con el contenido
+  mínimo de §6 en una bandeja consultable, con opción de abrirla en el cliente de correo.
+- **Los roles no son autenticación.** El selector de usuario define permisos y firma la
+  bitácora, pero cualquiera puede cambiarlo: es una convención de trabajo, no seguridad.
+- **No hay concurrencia.** Dos personas en dos navegadores tienen dos bases distintas; el
+  intercambio se hace con los respaldos JSON.
 
 El paso natural es mover la persistencia al backend que ya existe en `entregables/backend`
-(FastAPI + Cosmos) y añadir autenticación, envío de correo y permisos por rol: exactamente la
-fase 3 que plantea §11 de la especificación.
+(FastAPI + Cosmos) y añadir autenticación, envío de correo y permisos por rol reales:
+la fase 3 que plantea §11 de la especificación.
 
-## 7. Pendientes de definición (§11)
+## 9. Pendientes de definición (§11)
 
-La especificación deja abiertos varios puntos que la aplicación deja parametrizados a propósito,
-para no fijar en el código decisiones que Rehavid todavía no ha tomado:
-
-- Denominación técnica definitiva de **BVB** (hoy está en el catálogo de tecnologías tal como se suministró).
+- Denominación técnica definitiva de **BVB**.
 - Catálogo y fuente oficial del campo **PPR**.
 - Responsables titulares y suplentes de cada regla de asignación.
 - Tiempos de servicio definitivos para aceptar, contactar, programar y actualizar.
-- Catálogo final de productos, tecnologías, complejidades y entregables.
+- Catálogo final de productos, tecnologías, complejidades y entregables, con sus tarifas.
 - Roles autorizados para editar horas, responsables, fechas y cierres.
 - Canal de envío de correos y reglas de escalamiento.
 - Responsable que aprueba el cierre administrativo del proyecto maestro.
