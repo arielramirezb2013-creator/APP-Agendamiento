@@ -1,0 +1,288 @@
+REHAVID S.A.S.
+
+## Especificación funcional y flujogramadel proceso de gestión de proyectos
+Ajuste del registro, asignación automática, planificación, ejecución y cierre
+
+[TABLA]
+Decisión funcional central.  La venta crea un proyecto maestro y uno o varios productos. La aplicación asigna por tipo de proyecto y por producto; después, los responsables negocian capacidad y el coordinador por tipo consolida un plan de trabajo final que gobierna la ejecución y el cierre.
+[/TABLA]
+
+
+[TABLA]
+Versión | 1.1
+Fecha | 11 de agosto de 2026
+Tipo de documento | Especificación funcional · Documento de trabajo
+Destino | Rediseño de aplicación web/HTML y panel de gestión
+Fuente del ajuste | Requerimientos suministrados por Rehavid S.A.S.
+[/TABLA]
+
+Documento orientado a desarrollo, validación funcional y gestión operativa interna.
+
+## 1. Objetivo, alcance y arquitectura del proceso
+Objetivo. Definir cómo debe operar la aplicación desde la venta del proyecto hasta el cierre automático del proyecto maestro, garantizando registro completo, asignación por roles, negociación de capacidad, planificación final, seguimiento y trazabilidad.
+Alcance. El proceso inicia cuando se formaliza la venta y finaliza cuando todos los productos han sido completados, validados y cerrados por la aplicación. La especificación no desarrolla la metodología técnica particular de cada producto.
+
+[TABLA]
+Arquitectura obligatoria.  Una venta crea un proyecto maestro. Cada producto vendido se administra como un frente independiente con horas, responsable, requisitos, programación, avance, entregable y estado propios. El proyecto maestro se cierra únicamente cuando todos sus productos están cerrados.
+[/TABLA]
+
+
+### 1.1. Principios funcionales
+Gestión por roles, no por nombres. Las asignaciones deben depender del cargo responsable para evitar que la lógica se rompa cuando cambie una persona.
+Registro completo. La aplicación no activa proyectos con campos obligatorios vacíos o inválidos.
+Asignaciones simultáneas. El motor genera una asignación por tipo de proyecto y otras por cada producto aplicable.
+Coordinación centralizada con el cliente. El coordinador del proyecto por tipo consolida las necesidades de los líderes de producto y actúa como punto de contacto.
+Plan de trabajo final. El plan estimado de la venta se contrasta con capacidad, requisitos y fechas; el resultado versionado se convierte en la referencia operativa obligatoria.
+Cierre automatizado. Los líderes marcan productos completados y cargan evidencia; la aplicación valida y ejecuta el cierre del producto y del proyecto maestro.
+Datos descargables. Todo conjunto de datos generado por la aplicación debe poder descargarse de forma completa o filtrada.
+
+## 2. Ajustes incorporados en la versión 1.1
+
+[TABLA]
+Componente | Ajuste funcional
+Registro de venta | Se incorpora el campo obligatorio “Observaciones de la reunión de venta”.
+Validación | Todos los campos aplicables del formulario son obligatorios antes de activar el proyecto.
+Datos | La base principal y todos los conjuntos de datos generados por la aplicación deben ser descargables.
+Motor de asignación | Primero clasifica el proyecto como tipo 1 o tipo 2 y, en paralelo, evalúa mediciones objetivas, tablero BI, diseño y cápsulas.
+Roles | Se eliminan nombres propios y se parametrizan cargos responsables.
+Capacidad | Cada responsable acepta la asignación o propone un ajuste entre la fecha solicitada, el tiempo requerido de producción y su capacidad disponible.
+Relación con el cliente | El coordinador por tipo centraliza la reunión, la solicitud de información y la programación.
+Planificación | Se genera un plan de trabajo final, comparado con el plan de venta y obligatorio para la ejecución y el cierre.
+Seguimiento | Cada líder de proceso o producto ejecuta y mantiene actualizado el panel.
+Cierre | El cierre de productos y del proyecto maestro se realiza automáticamente cuando la aplicación valida los criterios definidos.
+[/TABLA]
+
+
+## 3. Actores y responsabilidades
+
+[TABLA]
+Actor o rol | Ámbito | Responsabilidad principal
+Vendedor autorizado | CEO, Gerente o Director de Proyectos. | Formaliza la venta, registra todos los datos y corrige inconsistencias antes de la activación.
+Jefe de Operaciones | Coordinación de proyectos tipo 1. | Acepta o negocia capacidad, centraliza requisitos con el cliente, consolida el plan final y controla el proyecto tipo 1.
+Director de Proyectos | Coordinación de proyectos tipo 2 y liderazgo de mediciones objetivas. | Acepta o negocia capacidad, actúa como punto de contacto del tipo 2, consolida requisitos y dirige el producto de mediciones objetivas.
+Gestor de Datos | Liderazgo del producto tablero BI. | Define la información requerida, ejecuta el producto, actualiza el panel y carga el entregable.
+Diseñador Ergónomo | Liderazgo del producto diseño. | Ejecuta el diseño según complejidad baja, media o alta, actualiza el panel y carga el entregable.
+Supervisor de Proyectos Especiales | Liderazgo del producto cápsulas. | Define insumos, ejecuta las cápsulas, actualiza el panel y carga el entregable.
+Aplicación | Validación, asignación, almacenamiento, alertas y cierre. | Crea registros, publica el panel, genera tareas, conserva trazabilidad, habilita descargas y ejecuta cierres automáticos.
+Cliente | Fuente de información y validación de programación. | Suministra contactos, datos, accesos, disponibilidad y condiciones necesarias para ejecutar los productos.
+[/TABLA]
+
+
+[TABLA]
+Regla de coordinación.  Los líderes de mediciones, BI, diseño y cápsulas definen sus requisitos de información. El coordinador del proyecto por tipo consolida esos requisitos y los solicita al cliente, evitando contactos fragmentados y versiones contradictorias.
+[/TABLA]
+
+
+## 4. Registro obligatorio de la venta
+El módulo de registro debe operar como un formulario guiado. La activación se bloquea mientras exista un campo obligatorio vacío, una relación incompleta o un dato que no supere las validaciones configuradas.
+
+[TABLA]
+Bloque | Campo | Regla
+Proyecto maestro | Empresa | Obligatorio. Seleccionada o creada desde el catálogo de clientes.
+Proyecto maestro | PPR | Obligatorio. Seleccionado desde el catálogo parametrizado.
+Proyecto maestro | Tipo de proyecto | Obligatorio. Valor único: tipo 1 o tipo 2.
+Productos | Producto(s) vendido(s) | Obligatorio. Debe existir al menos un producto.
+Productos | Horas por producto | Obligatorio. Valor numérico mayor que cero para cada producto.
+Planificación | Plan de trabajo estimado de venta | Obligatorio. Corresponde a la expectativa preliminar acordada en la venta.
+Planificación | Observaciones de la reunión de venta | Obligatorio. Debe registrar acuerdos, restricciones, condiciones y compromisos relevantes.
+Contactos | Contacto principal | Obligatorio. Nombre, cargo, correo y número telefónico.
+Contactos | Contactos adicionales 2 y 3 | Opcionales como bloque; si se habilitan, todos sus datos son obligatorios.
+Trazabilidad | Vendedor y fecha de registro | Obligatorio y automático según usuario autenticado y fecha del sistema.
+[/TABLA]
+
+
+### 4.1. Validaciones previas a la activación
+  - Existe una empresa, un PPR y un tipo de proyecto válidos.
+  - Existe al menos un producto y cada producto tiene horas mayores que cero.
+  - El plan estimado y las observaciones de la venta no están vacíos.
+  - Existe entre uno y tres contactos; uno está identificado como principal.
+  - Cada contacto habilitado tiene nombre, cargo, correo y teléfono completos.
+  - Si el producto es medición objetiva, se selecciona la tecnología correspondiente.
+  - Si el producto es diseño, se registra complejidad baja, media o alta.
+  - Las horas totales del proyecto equivalen a la suma de las horas de los productos.
+
+## 5. Activación automática y disponibilidad de datos
+Cuando el registro supera las validaciones, la aplicación activa el proyecto sin intervención manual adicional. Debe crear un identificador único, el proyecto maestro, los registros de producto, los contactos, las asignaciones y la publicación en el panel.
+
+[TABLA]
+Criterio técnico de datos.  No es necesario crear múltiples bases físicas. La solución puede utilizar una base relacional única; sin embargo, todos los conjuntos lógicos de información deben poder descargarse por separado y también de forma consolidada.
+[/TABLA]
+
+
+[TABLA]
+Conjunto descargable | Contenido mínimo
+Proyectos | ID, empresa, PPR, tipo, vendedor, plan estimado, observaciones y estado global.
+Productos | Producto, horas vendidas, tecnología o complejidad, responsable, estado y condición.
+Contactos | Nombre, cargo, correo, teléfono, contacto principal y proyecto relacionado.
+Asignaciones | Rol, producto, fecha solicitada, aceptación, ajuste propuesto y trazabilidad.
+Planes de trabajo | Plan vendido, plan final, versiones, fechas, hitos, dependencias y compromisos.
+Seguimiento | Avance, horas ejecutadas, novedades, retrasos, suspensión, reanudación y alertas.
+Entregables y cierre | Evidencias, fecha real, validaciones, cierre de producto y cierre de proyecto.
+Auditoría | Usuario, fecha, dato anterior, dato nuevo y motivo de cada modificación.
+[/TABLA]
+
+
+## 6. Flujograma funcional ajustado
+Figura 1. Flujograma funcional ajustado para el rediseño de la aplicación.
+
+## 7. Descripción detallada del proceso
+1. Venta del proyecto. La CEO, el Gerente o el Director de Proyectos formaliza la venta e identifica empresa, productos, horas por producto y plan de trabajo estimado.
+2. Registro obligatorio. El vendedor autorizado ingresa empresa, PPR, tipo 1 o 2, productos, horas, plan estimado, observaciones de la reunión de venta y hasta tres contactos completos.
+3. Validación y activación. La aplicación bloquea registros incompletos. Cuando todos los datos son válidos, crea el proyecto maestro, los productos, las relaciones de contacto y la publicación en el panel.
+4. Motor de asignación. La aplicación identifica primero el tipo del proyecto y después evalúa todos los productos. Las reglas se ejecutan en paralelo y pueden generar varias tareas para un mismo proyecto.
+5. Asignaciones generadas. Cada tarea incluye rol, producto, horas vendidas, fecha solicitada, plan de venta, contactos, observaciones, enlace al proyecto y trazabilidad.
+6. Aceptación y negociación de capacidad. Cada responsable acepta la propuesta o plantea un ajuste sustentado en el tiempo requerido de producción, las horas vendidas y su capacidad disponible.
+7. Centralización de requisitos y contacto. El Jefe de Operaciones coordina los proyectos tipo 1 y el Director de Proyectos coordina los tipo 2. Cada coordinador consolida los requisitos definidos por los líderes de producto y los gestiona con el cliente.
+8. Plan de trabajo final. El coordinador contrasta el plan estimado de la venta con las capacidades aceptadas, los insumos requeridos y las fechas acordadas. El plan final se versiona y se convierte en la referencia obligatoria para todos los actores.
+9. Ejecución y actualización. Cada líder ejecuta su producto y actualiza avance, horas, hitos, bloqueos, retrasos, suspensión, reanudación, próxima acción y evidencia.
+10. Producto completado y cierre automático. El líder marca el producto como completado y carga el entregable. La aplicación valida los criterios y, si se cumplen, cambia el producto a cerrado sin exigir una acción manual de cierre al responsable.
+11. Cierre del proyecto maestro. Cuando todos los productos están cerrados, la aplicación consolida cumplimiento, horas, entregables, observaciones y trazabilidad, y cierra automáticamente el proyecto maestro.
+
+## 8. Matriz de asignación automática
+
+[TABLA]
+Condición | Asignación | Cargo responsable | Alcance
+Tipo de proyecto = 1 | Coordinación del proyecto | Jefe de Operaciones | Aceptar o ajustar capacidad, centralizar contacto, construir plan final y controlar el proyecto.
+Tipo de proyecto = 2 | Coordinación del proyecto | Director de Proyectos | Aceptar o ajustar capacidad, actuar como punto de contacto, construir plan final y controlar el proyecto.
+Producto = medición objetiva | Ejecución del producto | Director de Proyectos | Definir requisitos técnicos, capacidad, programación, ejecución y actualización del panel.
+Producto = tablero BI | Ejecución del producto | Gestor de Datos | Definir fuentes e información requerida, ejecutar el tablero, actualizar avance y cargar entregable.
+Producto = diseño | Ejecución del producto | Diseñador Ergónomo | Recibir complejidad, definir insumos, ejecutar el diseño, actualizar avance y cargar entregable.
+Producto = cápsulas | Ejecución del producto | Supervisor de Proyectos Especiales | Definir insumos, producir las cápsulas, actualizar avance y cargar entregable.
+[/TABLA]
+
+
+[TABLA]
+Ejemplo de funcionamiento del motor.  Un proyecto tipo 2 que incluya mediciones objetivas, tablero BI, diseño y cápsulas genera una asignación de coordinación para el Director de Proyectos y asignaciones de producto para el Director de Proyectos, el Gestor de Datos, el Diseñador Ergónomo y el Supervisor de Proyectos Especiales. Todas se relacionan con el mismo proyecto maestro.
+[/TABLA]
+
+
+## 9. Negociación de capacidad y plan de trabajo final
+La aplicación no debe asumir que la fecha solicitada en la venta es automáticamente ejecutable. La aceptación exige un contraste explícito entre demanda y capacidad.
+
+[TABLA]
+Elemento | Uso en la negociación
+Fecha solicitada | Compromiso preliminar registrado durante la venta.
+Horas vendidas | Esfuerzo comercial asignado al producto.
+Tiempo requerido de producción | Estimación operativa del líder para producir el entregable con el alcance vendido.
+Capacidad disponible | Disponibilidad del líder o subproceso frente a sus demás asignaciones.
+Decisión | Aceptar la fecha o proponer una fecha y secuencia ajustadas, dejando justificación.
+Acuerdo consolidado | Resultado aprobado por el coordinador del proyecto y registrado en el plan final.
+[/TABLA]
+
+
+### 9.1. Contenido mínimo del plan de trabajo final
+  - Versión, fecha de aprobación y coordinador responsable.
+  - Plan estimado de venta utilizado como línea base.
+  - Fechas definitivas de inicio, hitos, sesiones y cierre por producto.
+  - Horas vendidas y distribución acordada por producto.
+  - Responsable de coordinación y líderes de cada producto.
+  - Requisitos de información, dependencias, accesos y recursos solicitados al cliente.
+  - Compromisos del cliente y de Rehavid.
+  - Motivo y trazabilidad de cualquier diferencia frente al plan de venta.
+
+[TABLA]
+Regla de ejecución.  El plan de trabajo final reemplaza el plan estimado de la venta como referencia operativa. Ningún actor debe ejecutar con fechas, hitos o dependencias distintas sin registrar una nueva versión y su justificación.
+[/TABLA]
+
+
+## 10. Gestión del cliente y solicitud de información
+
+[TABLA]
+Participante | Responsabilidad en la interacción
+Líderes de producto | Definen qué datos, documentos, accesos, muestras, sedes, cargos, tecnologías o validaciones necesitan para ejecutar.
+Coordinador tipo 1 | Jefe de Operaciones: consolida y solicita al cliente los requisitos de los productos asociados al proyecto tipo 1.
+Coordinador tipo 2 | Director de Proyectos: se reúne con el cliente y solicita, en nombre de mediciones, BI, diseño y cápsulas, la información requerida.
+Aplicación | Registra fecha de solicitud, responsable, información solicitada, respuesta, pendientes y evidencia de contacto.
+[/TABLA]
+
+El contacto directo de un líder de producto con el cliente puede existir cuando el coordinador lo delegue, pero la solicitud y la respuesta deben quedar registradas en el proyecto para conservar una única versión operativa.
+
+## 11. Ejecución y actualización del panel
+Los líderes de cada proceso o producto son responsables de ejecutar y mantener actualizada la información operativa. La aplicación debe convertir la actualización en una actividad obligatoria, no en un reporte opcional.
+
+[TABLA]
+Dato de seguimiento | Contenido
+Avance | Porcentaje o hito alcanzado frente al plan final.
+Horas | Horas vendidas, ejecutadas y disponibles.
+Fechas | Programadas, reprogramadas y reales.
+Novedades | Bloqueos, retrasos, suspensión, reanudación y causa.
+Próxima acción | Actividad siguiente, responsable y fecha comprometida.
+Evidencia | Entregables, enlaces, documentos o soportes asociados.
+Última actualización | Usuario y fecha del último cambio.
+[/TABLA]
+
+
+### 11.1. Estados y condiciones
+
+[TABLA]
+Capa | Valores
+Asignación | Pendiente de aceptación · En ajuste · Aceptada
+Producto | Pendiente de información · Programado · En ejecución · Suspendido · Completado · Cerrado
+Condición | En tiempo · En riesgo · Retrasado
+Proyecto maestro | Activo · Cerrado
+[/TABLA]
+
+“Completado” es una declaración del líder con evidencia cargada. “Cerrado” es el resultado de la validación automática de la aplicación.
+
+## 12. Lógica de cierre
+
+[TABLA]
+Paso | Regla
+1. Declarar completado | El líder registra fecha real, horas ejecutadas y entregable o evidencia.
+2. Validar producto | La aplicación verifica que los campos de cierre y los requisitos definidos estén completos.
+3. Cerrar producto | Si la validación es satisfactoria, la aplicación cambia el estado a “Cerrado”. El líder no ejecuta una acción manual de cierre.
+4. Revisar proyecto | La aplicación consulta el estado de todos los productos relacionados con el proyecto maestro.
+5. Cerrar proyecto maestro | Cuando todos los productos están cerrados, la aplicación consolida los resultados y cierra el proyecto automáticamente.
+[/TABLA]
+
+
+## 13. Reglas de negocio
+
+[TABLA]
+Código | Regla
+RN-01 | Solo la CEO, el Gerente o el Director de Proyectos pueden registrar la venta como vendedores autorizados.
+RN-02 | Las asignaciones se parametrizan por cargos y no por nombres de personas.
+RN-03 | Una venta crea un único proyecto maestro y uno o más registros de producto.
+RN-04 | Todos los campos aplicables del registro son obligatorios antes de activar el proyecto.
+RN-05 | Debe existir entre uno y tres contactos; todos los datos de cada contacto habilitado son obligatorios.
+RN-06 | El sistema no activa proyectos con productos sin horas o con horas iguales o menores que cero.
+RN-07 | Todos los conjuntos de datos generados deben ser descargables de forma total o filtrada.
+RN-08 | El motor evalúa el tipo de proyecto y los productos en paralelo.
+RN-09 | Un proyecto puede generar varias asignaciones sin duplicar el proyecto maestro.
+RN-10 | Cada asignación debe aceptarse o ajustarse con justificación de capacidad y fecha.
+RN-11 | El coordinador por tipo centraliza los requisitos y la relación operativa con el cliente.
+RN-12 | Los líderes de producto definen requisitos, ejecutan y actualizan el panel.
+RN-13 | El plan de venta es preliminar; el plan de trabajo final es la referencia obligatoria.
+RN-14 | Toda modificación del plan final debe crear una nueva versión con usuario, fecha y motivo.
+RN-15 | Un retraso o suspensión exige causa, responsable, acción y nueva fecha.
+RN-16 | El líder declara el producto completado y carga evidencia; la aplicación realiza el cierre.
+RN-17 | El proyecto maestro se cierra únicamente cuando todos los productos están cerrados.
+RN-18 | Toda modificación debe conservar trazabilidad de usuario, fecha, valor anterior, valor nuevo y motivo.
+[/TABLA]
+
+
+## 14. Criterios mínimos de aceptación para el desarrollo
+01. Permite registrar la venta únicamente a los cargos autorizados.
+02. Incluye el campo obligatorio de observaciones de la reunión de venta.
+03. Impide activar el proyecto si falta cualquier dato aplicable.
+04. Crea un ID único, un proyecto maestro y un registro por cada producto.
+05. Permite descargar todos los conjuntos de datos de forma completa y filtrada.
+06. Clasifica el proyecto como tipo 1 o tipo 2.
+07. Evalúa en paralelo mediciones objetivas, tablero BI, diseño y cápsulas.
+08. Asigna automáticamente los cargos responsables definidos en esta especificación.
+09. Genera una tarea independiente por rol y producto, sin duplicar el proyecto maestro.
+10. Permite aceptar la tarea o proponer ajuste de fecha y capacidad con justificación.
+11. Permite al coordinador consolidar requisitos y registrar el contacto con el cliente.
+12. Construye y versiona un plan de trabajo final comparado con el plan de venta.
+13. Muestra el plan final a todos los responsables y lo utiliza como referencia de seguimiento.
+14. Permite a cada líder actualizar avance, horas, hitos, novedades y evidencia.
+15. Diferencia producto “Completado” de producto “Cerrado”.
+16. Cierra automáticamente el producto cuando supera la validación.
+17. Cierra automáticamente el proyecto maestro cuando todos los productos están cerrados.
+18. Conserva bitácora de cambios y permite su descarga.
+
+## 15. Resultado esperado del rediseño
+
+[TABLA]
+Resultado.  La aplicación deja de ser un repositorio pasivo y se convierte en un sistema de gestión: obliga a registrar correctamente, asigna por roles, contrasta demanda con capacidad, centraliza la relación con el cliente, construye un plan final común, exige actualización operativa y ejecuta cierres automáticos con datos descargables y trazabilidad completa.
+[/TABLA]

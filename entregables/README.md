@@ -54,14 +54,16 @@ entregables/
 │   └── CHECKLIST_DESPLIEGUE.md
 │
 └── gestion-proyectos/              ← App de gestión de proyectos (producto aparte)
-    ├── README.md                              ← trazabilidad contra la especificación
-    ├── Rehavid_Gestion_Proyectos_v5.html      ← la aplicación
-    ├── Rehavid_Gestion_Proyectos_v4_baseline.html
-    └── ESPECIFICACION_FUNCIONAL_v1.txt
+    ├── README.md                                    ← trazabilidad contra la especificación
+    ├── Rehavid_Gestion_Proyectos_v7.html            ← la aplicación
+    ├── Mapa_de_usuario_y_validacion_Rehavid.xlsx    ← mapa de usuario y hoja de observaciones
+    ├── ESPECIFICACION_FUNCIONAL_v1.1.txt            ← especificación vigente
+    ├── ESPECIFICACION_FUNCIONAL_v1.txt
+    └── Rehavid_Gestion_Proyectos_v4_baseline.html
 ```
 
 > **Nota:** `gestion-proyectos/` es un producto independiente del sistema de agendamiento.
-> Implementa la *Especificación funcional y flujograma del proceso de gestión de proyectos v1.0*
+> Implementa la *Especificación funcional y flujograma del proceso de gestión de proyectos v1.1*
 > (venta → activación → asignación → programación → ejecución → cierre por producto).
 
 ---
