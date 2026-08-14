@@ -661,9 +661,14 @@ const LEGACY_KEYS = ["rehavid_gestion_proyectos_v5", "rehavid_project_hub_v1"];
 
 // RN-02 · las asignaciones se parametrizan por cargo, nunca por nombre de persona.
 const CARGOS = ["CEO", "Gerente", "Director de Proyectos", "Jefe de Operaciones",
-                "Gestor de Datos", "Diseñador Ergónomo", "Supervisor de Proyectos Especiales",
-                "Analista de Datos", "Vendedor"];
-const CARGOS_VENTA = ["CEO", "Gerente", "Director de Proyectos"];          // RN-01
+                "Gestor de Datos", "Analista de Proyectos", "Diseñador",
+                "Supervisor de Proyectos Contactabilidad"];
+// Cargos que venían de versiones anteriores y su denominación vigente.
+const CARGO_RENAMES = { "Diseñador Ergónomo": "Diseñador",
+                        "Supervisor de Proyectos Especiales": "Supervisor de Proyectos Contactabilidad",
+                        "Analista de Datos": "Analista de Proyectos", "Vendedor": "Analista de Proyectos" };
+function renameCargo(c) { return CARGO_RENAMES[c] || c; }
+const CARGOS_VENTA = ["CEO", "Gerente", "Jefe de Operaciones", "Director de Proyectos"];   // RN-01
 const CARGOS_ADMIN = ["CEO", "Gerente"];
 
 const PROJECT_TYPES   = ["Tipo 1", "Tipo 2"];
@@ -675,9 +680,9 @@ const CONDITIONS      = ["En tiempo", "En riesgo", "Retrasado"];
 const ROUTINGS        = ["Medición objetiva", "Tablero BI", "Diseño", "Cápsulas", "Otro"];
 const TECHNOLOGIES    = ["Xsens", "TuMeke", "BVB", "Tobii 3", "EMG de superficie", "Biofeedback"];
 const COMPLEXITIES    = ["Baja", "Media", "Alta"];
-const NOVELTY_TYPES   = ["Avance", "Retraso", "Suspensión", "Reanudación", "Reprogramación",
+const NOVELTY_TYPES   = ["Avance", "Retraso", "Suspensión", "Bloqueo", "Reanudación", "Reprogramación",
                          "Solicitud de información", "Nota"];
-const REQ_STATES      = ["Definido", "Solicitado al cliente", "Recibido", "No recibido"];
+const REQ_STATES      = ["Definido", "Solicitado al cliente", "Recibido", "No recibido", "Exceptuado"];
 
 const STATE_RANK = { "Pendiente de información": 0, "Suspendido": 1, "Programado": 2,
                      "En ejecución": 3, "Completado": 4, "Cerrado": 5 };
@@ -748,10 +753,13 @@ const ALERT_DEFS = [
   { code: "req_missing", label: "Información pendiente del cliente", sev: "Media",
     desc: "La información fue solicitada al cliente y no ha sido recibida.",
     test: (pr, p, sla) => {
-      const pend = (pr.requirements || []).filter(r => r.status === "Solicitado al cliente");
+      const pend = (pr.requirements || []).filter(r => ["Solicitado al cliente", "No recibido"].includes(r.status));
       if (!pend.length || !isOpenProduct(pr)) return false;
-      const old = pend.filter(r => r.requestedAt && hoursSince(r.requestedAt) / 24 > sla.clientAnswerDays);
-      return old.length ? `${old.length} solicitud(es) sin respuesta hace más de ${sla.clientAnswerDays} día(s).` : false;
+      const vencidos = pend.filter(r => r.commitDate && (daysUntil(r.commitDate) ?? 0) < 0);
+      if (vencidos.length) return `${vencidos.length} compromiso(s) del cliente vencido(s): ${vencidos.map(r => `${r.description} (${formatDate(r.commitDate, true)})`).slice(0, 2).join("; ")}.`;
+      const old = pend.filter(r => !r.commitDate && r.requestedAt && hoursSince(r.requestedAt) / 24 > sla.clientAnswerDays);
+      if (old.length) return `${old.length} solicitud(es) sin respuesta hace más de ${sla.clientAnswerDays} día(s).`;
+      return false;
     } },
   { code: "no_plan", label: "Sin plan de trabajo final", sev: "Alta",
     desc: "El proyecto opera sin el plan final que exige la especificación (RN-13).",
@@ -814,13 +822,36 @@ const ALERT_DEFS = [
     } },
   { code: "completed_blocked", label: "Completado sin poder cerrar", sev: "Alta",
     desc: "El líder declaró el producto completado pero la validación automática no pasa.",
-    test: pr => {
+    test: (pr, p) => {
       if (pr.status !== "Completado") return false;
-      const v = validateClosure(pr);
+      const v = validateClosure(pr, p);
       return v.ok ? false : `Falta para el cierre automático: ${v.missing.join(", ")}.`;
     } }
 ];
 const ALERT_BY_CODE = Object.fromEntries(ALERT_DEFS.map(a => [a.code, a]));
+/* La gestión directa desde el módulo de alertas: cada código sabe qué acción lo resuelve. */
+const ALERT_ACTION = {
+  assign_pending: { kind: "accept", label: "Aceptar asignación" },
+  assign_adjust: { kind: "resolve", label: "Resolver ajuste" },
+  req_undefined: { kind: "requirements", label: "Definir requisitos" },
+  req_not_requested: { kind: "request", label: "Solicitar al cliente" },
+  req_missing: { kind: "response", label: "Registrar respuesta" },
+  no_plan: { plan: true, label: "Construir plan" },
+  not_scheduled: { plan: true, label: "Programar en el plan" },
+  due_soon: { kind: "novelty", label: "Registrar novedad" },
+  overdue: { kind: "novelty", label: "Registrar novedad", type: "Retraso" },
+  suspended: { kind: "novelty", label: "Reanudar", type: "Reanudación" },
+  stale: { kind: "novelty", label: "Registrar avance", type: "Avance" },
+  hours_dev: { kind: "novelty", label: "Registrar novedad" },
+  completed_blocked: { kind: "complete", label: "Completar el cierre" }
+};
+function alertActionBtn(p, pr, code) {
+  const a = ALERT_ACTION[code];
+  if (!a) return "";
+  if (a.plan) return `<button class="btn btn-s" data-plan-edit="${esc(p.id)}">${esc(a.label)}</button>`;
+  return `<button class="btn btn-s" data-product-action="${esc(a.kind)}" data-project="${esc(p.id)}"
+    data-product="${esc(pr.id)}" ${a.type ? `data-novelty-type="${esc(a.type)}"` : ""}>${esc(a.label)}</button>`;
+}
 const SEV_RANK = { "Crítica": 0, "Alta": 1, "Media": 2 };
 
 /* §4.1 · validaciones previas a la activación */
@@ -835,8 +866,26 @@ const ACTIVATION_CHECKS = [
       return miss.length ? { ok: false, detail: `Falta: ${miss.join(", ")}.` }
                          : { ok: true, detail: `${p.company} · ${p.ppr} · ${p.type}.` };
     } },
+  { id: "catalogs", label: "Empresa y PPR del catálogo parametrizado",
+    hint: "La activación exige valores parametrizados; las correcciones quedan en bitácora (RN-04).",
+    run: p => {
+      const miss = [];
+      if (String(p.company || "").trim() && !catalogFind("companies", p.company)) miss.push(`la empresa «${p.company}»`);
+      if (String(p.ppr || "").trim() && !catalogFind("pprs", p.ppr)) miss.push(`el PPR «${p.ppr}»`);
+      return miss.length
+        ? { ok: false, detail: `No está(n) en el catálogo: ${miss.join(" y ")}. Créelos en Parametrización o corrija el dato.` }
+        : { ok: true, detail: "Empresa y PPR verificados contra el catálogo." };
+    } },
+  { id: "requestedDates", label: "Fecha solicitada por producto",
+    hint: "Cada producto necesita una fecha o plazo preliminar antes de activar; es la base de la negociación de capacidad (RN-10).",
+    run: p => {
+      const bad = (p.products || []).filter(x => !x.assignment?.requestedDate);
+      return bad.length
+        ? { ok: false, detail: `Sin fecha solicitada: ${bad.map(x => x.name || "producto sin nombre").join(", ")}.` }
+        : { ok: true, detail: "Todos los productos tienen fecha solicitada." };
+    } },
   { id: "seller", label: "Vendedor autorizado",
-    hint: "Solo CEO, Gerente o Director de Proyectos pueden registrar la venta (RN-01).",
+    hint: "Solo CEO, Gerente, Jefe de Operaciones o Director de Proyectos pueden registrar la venta (RN-01).",
     run: p => CARGOS_VENTA.includes(p.sellerRole)
       ? { ok: true, detail: `${p.seller} · ${p.sellerRole}.` }
       : { ok: false, detail: `El cargo «${p.sellerRole || "sin definir"}» no está autorizado para registrar ventas.` } },
@@ -924,10 +973,10 @@ const DEFAULT_SETTINGS = {
   assignmentRules: [
     { id: "r_t1",  scope: "project", field: "type",    value: "Tipo 1",            role: "Jefe de Operaciones", active: true },
     { id: "r_t2",  scope: "project", field: "type",    value: "Tipo 2",            role: "Director de Proyectos", active: true },
-    { id: "r_mo",  scope: "product", field: "routing", value: "Medición objetiva", role: "Director de Proyectos", active: true },
+    { id: "r_mo",  scope: "product", field: "routing", value: "Medición objetiva", role: "Analista de Proyectos", active: true },
     { id: "r_bi",  scope: "product", field: "routing", value: "Tablero BI",        role: "Gestor de Datos", active: true },
-    { id: "r_di",  scope: "product", field: "routing", value: "Diseño",            role: "Diseñador Ergónomo", active: true },
-    { id: "r_ca",  scope: "product", field: "routing", value: "Cápsulas",          role: "Supervisor de Proyectos Especiales", active: true }
+    { id: "r_di",  scope: "product", field: "routing", value: "Diseño",            role: "Diseñador", active: true },
+    { id: "r_ca",  scope: "product", field: "routing", value: "Cápsulas",          role: "Supervisor de Proyectos Contactabilidad", active: true }
   ],
   catalogs: {
     companies: [],
@@ -944,13 +993,15 @@ const DEFAULT_SETTINGS = {
       { name: "Acompañamiento técnico", hours: 40, rate: 105000, routing: "Otro" }
     ],
     people: [
-      { name: "Dirección general", cargo: "CEO" },
-      { name: "Gerencia", cargo: "Gerente" },
-      { name: "Dirección de proyectos", cargo: "Director de Proyectos" },
-      { name: "Jefatura de operaciones", cargo: "Jefe de Operaciones" },
-      { name: "Gestión de datos", cargo: "Gestor de Datos" },
-      { name: "Diseño ergonómico", cargo: "Diseñador Ergónomo" },
-      { name: "Supervisión de proyectos especiales", cargo: "Supervisor de Proyectos Especiales" }
+      { name: "CEO", cargo: "CEO" },
+      { name: "Gerente", cargo: "Gerente" },
+      { name: "Jefe de Operaciones", cargo: "Jefe de Operaciones" },
+      { name: "Gestor de Datos 1", cargo: "Gestor de Datos" },
+      { name: "Gestor de Datos 2", cargo: "Gestor de Datos" },
+      { name: "Analista Proyectos 1", cargo: "Analista de Proyectos" },
+      { name: "Analista Proyectos 2", cargo: "Analista de Proyectos" },
+      { name: "Supervisor de Proyectos Contactabilidad", cargo: "Supervisor de Proyectos Contactabilidad" },
+      { name: "Diseñador", cargo: "Diseñador" }
     ],
     technologies: TECHNOLOGIES.slice(),
     deliverables: ["Informe", "Tablero", "Acta", "Registro fotográfico", "Archivo de diseño", "Video o cápsula"]
@@ -962,7 +1013,7 @@ const state = {
   projects: [],
   outbox: [],
   settings: clone(DEFAULT_SETTINGS),
-  session: { user: "Dirección de proyectos" },
+  session: { user: "Gerente" },
   filters: { company: [], ppr: [], type: [], projectState: [], globalState: [], productStatus: [],
              coordinatorRole: [], role: [], routing: [], condition: [], alert: [], special: [] },
   search: "",
@@ -1097,7 +1148,11 @@ function makeRequirement(raw = {}) {
     requestedAt: raw.requestedAt || "",
     response: String(raw.response || ""),
     responseAt: raw.responseAt || "",
-    evidence: String(raw.evidence || "")
+    evidence: String(raw.evidence || ""),
+    location: String(raw.location || ""),        // dónde queda alojada la información recibida
+    commitDate: raw.commitDate || "",            // nueva fecha comprometida por el cliente
+    followUp: String(raw.followUp || ""),        // responsable interno del seguimiento
+    nextStep: String(raw.nextStep || "")         // próxima gestión acordada
   };
 }
 function makeAssignment(raw = {}) {
@@ -1111,8 +1166,15 @@ function makeAssignment(raw = {}) {
     proposedAt: raw.proposedAt || "",
     justification: String(raw.justification || ""),
     acceptedAt: raw.acceptedAt || "",
-    acceptedBy: String(raw.acceptedBy || "")
+    acceptedBy: String(raw.acceptedBy || ""),
+    // Cada ronda de la negociación queda registrada: propuesta, contrapropuesta,
+    // devolución o aceptación, con fecha, usuario y detalle (RN-10).
+    history: Array.isArray(raw.history) ? raw.history : []
   };
+}
+function pushAssignHistory(a, action, detail) {
+  a.history.push({ date: new Date().toISOString(), by: currentUser(), role: myCargo(), action, detail: String(detail || "") });
+  if (a.history.length > 30) a.history.length = 30;
 }
 function makeProduct(raw = {}) {
   const routing = ROUTINGS.includes(raw.routing) ? raw.routing : "Otro";
@@ -1125,7 +1187,8 @@ function makeProduct(raw = {}) {
     routing,
     technology: routing === "Medición objetiva" ? String(raw.technology || "").trim() : "",
     complexity: routing === "Diseño" ? (COMPLEXITIES.includes(raw.complexity) ? raw.complexity : "") : "",
-    role: String(raw.role || "").trim(),             // cargo responsable (RN-02)
+    peopleImpact: routing === "Cápsulas" ? (Number(raw.peopleImpact) || 0) : 0,   // personas a impactar (obs. Supervisor)
+    role: renameCargo(String(raw.role || "").trim()),    // cargo responsable (RN-02)
     owner: String(raw.owner || "").trim(),           // persona que ocupa el cargo
     assignment: makeAssignment(raw.assignment),
     requirements: Array.isArray(raw.requirements) ? raw.requirements.map(makeRequirement) : [],
@@ -1183,8 +1246,16 @@ function makeProject(raw = {}) {
     commercialRef: String(raw.commercialRef || "").trim(),
     estimatedPlan: String(raw.estimatedPlan || ""),
     saleNotes: String(raw.saleNotes || ""),                    // observaciones de la reunión de venta
-    coordinatorRole: String(raw.coordinatorRole || ""),
+    coordinatorRole: renameCargo(String(raw.coordinatorRole || "")),
     coordinator: String(raw.coordinator || "").trim(),
+    // Asignación de coordinación independiente de las de producto, con su propio ciclo
+    // Pendiente de aceptación · En ajuste · Aceptada. Las bases anteriores que ya
+    // estaban activas se consideran aceptadas para no generar tareas retroactivas.
+    coordination: makeAssignment(raw.coordination ||
+      (["Activo", "Cerrado"].includes(raw.state)
+        ? { status: "Aceptada", assignedAt: raw.activatedAt || "", acceptedAt: raw.activatedAt || "",
+            acceptedBy: String(raw.coordinator || "") }
+        : {})),
     state: PROJECT_STATES.includes(raw.state) ? raw.state : "Borrador",
     activatedAt: raw.activatedAt || "",
     closedAt: raw.closedAt || "",
@@ -1325,14 +1396,18 @@ function lastProjectUpdate(p) {
 }
 
 /* §12 · lógica de cierre: el líder declara completado, la aplicación valida y cierra. */
-function validateClosure(pr) {
+function validateClosure(pr, p) {
   const missing = [];
   if (!pr.realEndDate) missing.push("fecha real de finalización");
   if (!(Number(pr.hoursExecuted) > 0)) missing.push("horas ejecutadas");
   if (!String(pr.deliverable?.description || "").trim() && !String(pr.deliverable?.url || "").trim())
     missing.push("entregable o evidencia");
-  const pend = (pr.requirements || []).filter(r => r.status === "Solicitado al cliente");
-  if (pend.length) missing.push(`${pend.length} requisito(s) de información sin resolver`);
+  // Ajuste de la validación de usuarios: TODO requisito debe quedar resuelto —recibido o
+  // exceptuado con justificación—; «Definido», «Solicitado» o «No recibido» bloquean el cierre.
+  const pend = (pr.requirements || []).filter(r => !["Recibido", "Exceptuado"].includes(r.status));
+  if (pend.length) missing.push(`${pend.length} requisito(s) sin resolver (${pend.map(r => `${r.description}: ${r.status}`).slice(0, 2).join("; ")})`);
+  // Y el cierre exige un plan de trabajo final aprobado (RN-13).
+  if (p && !p.finalPlan?.version) missing.push("plan de trabajo final aprobado");
   return { ok: missing.length === 0, missing };
 }
 /** Cierra automáticamente los productos completados que superan la validación y, si todos
@@ -1341,7 +1416,7 @@ function runAutoClosure(p) {
   const closed = [];
   (p.products || []).forEach(pr => {
     if (pr.status !== "Completado") return;
-    const v = validateClosure(pr);
+    const v = validateClosure(pr, p);
     if (!v.ok) return;
     pr.status = "Cerrado";
     pr.closedAt = new Date().toISOString();
@@ -1391,7 +1466,7 @@ function permissionFor(kind, p, pr) {
     update: () => [canUpdateProduct(p, pr), `Solo el cargo ${pr?.role || "responsable"} (${pr?.owner || "sin asignar"}) puede actualizar este producto.`],
     assign: () => [canAnswerAssignment(p, pr), `La asignación la responde el cargo ${pr?.role || "responsable"}.`],
     coordinate: () => [canCoordinate(p), `Esta acción corresponde a la coordinación del proyecto (${p?.coordinatorRole || "sin definir"}).`],
-    sell: () => [canSell(), "Solo CEO, Gerente o Director de Proyectos pueden registrar ventas (RN-01)."],
+    sell: () => [canSell(), `Solo ${CARGOS_VENTA.join(", ")} pueden registrar ventas (RN-01).`],
     configure: () => [canConfigure(), "La parametrización corresponde a dirección o coordinación."]
   };
   const [ok, reason] = (map[kind] || (() => [true, ""]))();
@@ -1400,7 +1475,11 @@ function permissionFor(kind, p, pr) {
 
 /* --------------- 6. MOTOR DE ASIGNACIÓN Y NOTIFICACIONES (§8) --------------- */
 
-function activeRules() { return (state.settings.assignmentRules || []).filter(r => r.active !== false); }
+function activeRules() {
+  return (state.settings.assignmentRules || [])
+    .map(r => ({ ...r, role: renameCargo(r.role) }))
+    .filter(r => r.active !== false);
+}
 function resolveCoordinatorRole(p) {
   const r = activeRules().find(x => x.scope === "project" && norm(p[x.field]) === norm(x.value));
   return r ? r.role : "";
@@ -1471,6 +1550,10 @@ function runAssignmentEngine(p) {
     p.coordinatorRole = coordRole;
     p.coordinator = personForCargo(coordRole);
   }
+  // Asignación de coordinación con ciclo propio (ajuste de la validación de usuarios).
+  const reqDates = (p.products || []).map(x => x.assignment.requestedDate).filter(Boolean).sort();
+  p.coordination = makeAssignment({ status: "Pendiente de aceptación", assignedAt: stamp,
+                                    requestedDate: reqDates.at(-1) || "" });
   const plan = planAssignments(p);
   plan.forEach(a => {
     if (a.scope === "product") {
@@ -1505,7 +1588,7 @@ function normalizeCatalogs(c) {
     .map(x => ({ ...x, hours: Number(x.hours) || 0, rate: Number(x.rate) || 0,
                  routing: ROUTINGS.includes(x.routing) ? x.routing : "Otro" }));
   c.people = objs(c.people, { cargo: "Analista de Datos" })
-    .map(x => ({ ...x, cargo: CARGOS.includes(x.cargo || x.role) ? (x.cargo || x.role) : "Analista de Datos" }));
+    .map(x => ({ ...x, cargo: (c => CARGOS.includes(c) ? c : "Analista de Proyectos")(renameCargo(x.cargo || x.role)) }));
   c.serviceOrders = objs(c.serviceOrders, { company: "", date: "", notes: "" });
   c.technologies = unique((c.technologies || []).map(x => (typeof x === "string" ? x : x.name)));
   c.deliverables = unique((c.deliverables || []).map(x => (typeof x === "string" ? x : x.name)));
@@ -1566,7 +1649,7 @@ function syncCatalogs() {
   add("pprs", state.projects.map(p => p.ppr), { notes: "" });
   add("products", state.projects.flatMap(p => (p.products || []).map(x => x.name)), { hours: 0, rate: 0, routing: "Otro" });
   add("people", state.projects.flatMap(p => [p.seller, p.coordinator, ...(p.products || []).map(x => x.owner)]),
-      { cargo: "Analista de Datos" });
+      { cargo: "Analista de Proyectos" });
   state.projects.filter(p => p.commercialRef).forEach(p => {
     if (!catalogFind("serviceOrders", p.commercialRef))
       c.serviceOrders.push({ name: p.commercialRef, company: p.company, date: p.saleDate, notes: "" });
@@ -1577,7 +1660,7 @@ function syncCatalogs() {
 /** Convierte bases anteriores (v5 con nombres propios, o v4 con actividades) al modelo 1.1. */
 function migrateLegacy(old = {}, key = "") {
   const cargoFromName = n => ({ "Kelly Segura": "Jefe de Operaciones", "Jhon Orrego": "Director de Proyectos",
-                                "Gestor de datos": "Gestor de Datos", "Diseñador": "Diseñador Ergónomo" })[n] || "";
+                                "Gestor de datos": "Gestor de Datos", "Diseñador": "Diseñador" })[n] || "";
   const stateMap = { "Pendiente de contacto": "Pendiente de información", "Programado": "Programado",
                      "En ejecución": "En ejecución", "Suspendido": "Suspendido",
                      "Finalizado": "Completado", "Cerrado": "Cerrado" };
@@ -1629,7 +1712,7 @@ function demoProjects() {
   return [
     mk({
       code: "DEM-001", company: "Alimentos del Norte S.A.", ppr: "PPR-DME", type: "Tipo 2",
-      seller: "Dirección de proyectos", sellerRole: "Director de Proyectos",
+      seller: "Gerente", sellerRole: "Gerente",
       saleDate: dateOffset(-42), commercialRef: "OS-2026-118", daysActive: 40, invoicedValue: 18000000,
       estimatedPlan: "Mediciones en dos sedes durante seis semanas, tablero de seguimiento y cápsulas para líderes.",
       saleNotes: "El cliente exige trabajar en turnos de noche en la sede sur. Se acordó entregar el tablero antes del cierre del trimestre. Pendiente confirmar acceso a la planta de empaque.",
@@ -1637,7 +1720,7 @@ function demoProjects() {
         { name: "Ana Restrepo", role: "Jefe de SST", email: "ana.restrepo@alimentosnorte.demo", phone: "3105558877", primary: true },
         { name: "Carlos Díaz", role: "Coordinador de planta", email: "carlos.diaz@alimentosnorte.demo", phone: "6014447788" }
       ],
-      finalPlan: { version: 2, approvedAt: ago(30), approvedBy: "Dirección de proyectos", coordinatorRole: "Director de Proyectos",
+      finalPlan: { version: 2, approvedAt: ago(30), approvedBy: "Gerente", coordinatorRole: "Director de Proyectos",
         clientCommitments: "Acceso a planta en turno nocturno y disponibilidad de doce operarios por sesión.",
         rehavidCommitments: "Informe preliminar a los quince días y tablero publicado antes del cierre del trimestre.",
         requirementsNote: "Se solicitó organigrama, matriz de cargos y accesos a la red de planta.",
@@ -1647,16 +1730,16 @@ function demoProjects() {
         { name: "Mediciones objetivas de carga física", hoursSold: 120, hourRate: 130000, routing: "Medición objetiva",
           technology: "Xsens", status: "En ejecución", progress: 70, hoursExecuted: 104,
           startDate: dateOffset(-30), endDate: dateOffset(-3), plannedStart: dateOffset(-30), plannedEnd: dateOffset(-12),
-          assignment: { status: "Aceptada", assignedAt: ago(40), acceptedAt: ago(38), acceptedBy: "Dirección de proyectos",
+          assignment: { status: "Aceptada", assignedAt: ago(40), acceptedAt: ago(38), acceptedBy: "Analista Proyectos 1",
                         requestedDate: dateOffset(-12), requiredTime: 22, capacity: "Dos sesiones por semana" },
           requirements: [
-            { description: "Organigrama y matriz de cargos por línea", status: "Recibido", definedBy: "Dirección de proyectos",
-              definedAt: ago(38), requestedAt: ago(37), requestedBy: "Dirección de proyectos", response: "Entregado en Excel", responseAt: ago(35) },
-            { description: "Autorización de ingreso en turno nocturno", status: "Recibido", definedBy: "Dirección de proyectos",
-              definedAt: ago(38), requestedAt: ago(37), requestedBy: "Dirección de proyectos", response: "Autorizado por SST", responseAt: ago(34) }
+            { description: "Organigrama y matriz de cargos por línea", status: "Recibido", definedBy: "Analista Proyectos 1",
+              definedAt: ago(38), requestedAt: ago(37), requestedBy: "Gerente", response: "Entregado en Excel", responseAt: ago(35) },
+            { description: "Autorización de ingreso en turno nocturno", status: "Recibido", definedBy: "Analista Proyectos 1",
+              definedAt: ago(38), requestedAt: ago(37), requestedBy: "Gerente", response: "Autorizado por SST", responseAt: ago(34) }
           ],
           lastUpdateAt: ago(9),
-          nextAction: { description: "Consolidar informe de resultados de la sede sur", owner: "Dirección de proyectos", date: dateOffset(2) },
+          nextAction: { description: "Consolidar informe de resultados de la sede sur", owner: "Analista Proyectos 1", date: dateOffset(2) },
           milestones: [
             { name: "Sesión de mediciones sede norte", date: dateOffset(-24), baselineDate: dateOffset(-24), confirmed: true, progress: 100, hoursAssigned: 50, hoursExecuted: 52 },
             { name: "Sesión de mediciones sede sur", date: dateOffset(-8), baselineDate: dateOffset(-18), confirmed: true, progress: 80, hoursAssigned: 40, hoursExecuted: 38 },
@@ -1664,7 +1747,7 @@ function demoProjects() {
           ],
           novelties: [
             { type: "Retraso", cause: "La sede sur aplazó la ventana de medición por paro de línea.",
-              action: "Reprogramar la sesión y recuperar en la semana siguiente.", owner: "Dirección de proyectos",
+              action: "Reprogramar la sesión y recuperar en la semana siguiente.", owner: "Analista Proyectos 1",
               newDate: dateOffset(-3), date: ago(12) },
             { type: "Avance", cause: "Sesión de la sede norte ejecutada al cien por ciento.", progress: 70, hoursExecuted: 104, date: ago(9) }
           ] },
@@ -1676,20 +1759,20 @@ function demoProjects() {
                         justification: "El tablero requiere los datos de las dos sedes; con la sede sur corrida, la fecha solicitada no es ejecutable." },
           requirements: [
             { description: "Acceso de solo lectura a la base de indicadores del cliente", status: "Solicitado al cliente",
-              definedBy: "Gestión de datos", definedAt: ago(30), requestedAt: ago(28), requestedBy: "Dirección de proyectos" },
-            { description: "Diccionario de variables de producción", status: "Definido", definedBy: "Gestión de datos", definedAt: ago(6) }
+              definedBy: "Gestor de Datos 1", definedAt: ago(30), requestedAt: ago(28), requestedBy: "Gerente" },
+            { description: "Diccionario de variables de producción", status: "Definido", definedBy: "Gestor de Datos 1", definedAt: ago(6) }
           ],
           lastUpdateAt: ago(6) },
         { name: "Cápsulas formativas", hoursSold: 40, hourRate: 95000, routing: "Cápsulas",
           status: "Programado", progress: 15, hoursExecuted: 6,
           startDate: dateOffset(-4), endDate: dateOffset(20), plannedStart: dateOffset(-4), plannedEnd: dateOffset(20),
-          assignment: { status: "Aceptada", assignedAt: ago(40), acceptedAt: ago(39), acceptedBy: "Supervisión de proyectos especiales",
+          assignment: { status: "Aceptada", assignedAt: ago(40), acceptedAt: ago(39), acceptedBy: "Supervisor de Proyectos Contactabilidad",
                         requestedDate: dateOffset(20), requiredTime: 20, capacity: "Una cápsula por semana" },
           requirements: [{ description: "Guion aprobado y autorización de imagen del personal", status: "Recibido",
-                           definedBy: "Supervisión de proyectos especiales", definedAt: ago(35), requestedAt: ago(34),
-                           requestedBy: "Dirección de proyectos", response: "Aprobado por comunicaciones", responseAt: ago(30) }],
+                           definedBy: "Supervisor de Proyectos Contactabilidad", definedAt: ago(35), requestedAt: ago(34),
+                           requestedBy: "Gerente", response: "Aprobado por comunicaciones", responseAt: ago(30) }],
           lastUpdateAt: ago(4),
-          nextAction: { description: "Grabar la cápsula 2 en la sede norte", owner: "Supervisión de proyectos especiales", date: dateOffset(6) },
+          nextAction: { description: "Grabar la cápsula 2 en la sede norte", owner: "Supervisor de Proyectos Contactabilidad", date: dateOffset(6) },
           milestones: [
             { name: "Cápsula 1 · manejo de cargas", date: dateOffset(2), baselineDate: dateOffset(2), confirmed: true, progress: 40, hoursAssigned: 14, hoursExecuted: 6 },
             { name: "Cápsula 2 · posturas", date: dateOffset(12), baselineDate: dateOffset(12), confirmed: false, progress: 0, hoursAssigned: 13, hoursExecuted: 0 },
@@ -1699,7 +1782,8 @@ function demoProjects() {
     }),
     mk({
       code: "DEM-002", company: "Alimentos del Norte S.A.", ppr: "PPR-FOR", type: "Tipo 1",
-      seller: "Gerencia", sellerRole: "Gerente", saleDate: dateOffset(-16), commercialRef: "OS-2026-124", daysActive: 14,
+      seller: "Gerente", sellerRole: "Gerente", saleDate: dateOffset(-16), commercialRef: "OS-2026-124", daysActive: 14,
+      coordination: { status: "Pendiente de aceptación", assignedAt: ago(14), requestedDate: dateOffset(18) },
       estimatedPlan: "Acompañamiento técnico en la implementación de las recomendaciones ergonómicas.",
       saleNotes: "Acordado con la gerencia de planta: cuatro visitas quincenales. El cliente pidió informe ejecutivo al final de cada visita.",
       contacts: [{ name: "Ana Restrepo", role: "Jefe de SST", email: "ana.restrepo@alimentosnorte.demo", phone: "3105558877", primary: true }],
@@ -1707,13 +1791,13 @@ function demoProjects() {
         { name: "Acompañamiento técnico", hoursSold: 40, hourRate: 105000, routing: "Otro",
           status: "En ejecución", progress: 40, hoursExecuted: 17,
           startDate: dateOffset(-10), endDate: dateOffset(18), plannedStart: dateOffset(-10), plannedEnd: dateOffset(18),
-          assignment: { status: "Aceptada", assignedAt: ago(14), acceptedAt: ago(13), acceptedBy: "Jefatura de operaciones",
+          assignment: { status: "Aceptada", assignedAt: ago(14), acceptedAt: ago(13), acceptedBy: "Jefe de Operaciones",
                         requestedDate: dateOffset(18), requiredTime: 26, capacity: "Una visita quincenal" },
           requirements: [{ description: "Cronograma de turnos de las cuatro líneas", status: "Recibido",
-                           definedBy: "Jefatura de operaciones", definedAt: ago(13), requestedAt: ago(12),
-                           requestedBy: "Jefatura de operaciones", response: "Recibido por correo", responseAt: ago(11) }],
+                           definedBy: "Jefe de Operaciones", definedAt: ago(13), requestedAt: ago(12),
+                           requestedBy: "Jefe de Operaciones", response: "Recibido por correo", responseAt: ago(11) }],
           lastUpdateAt: ago(2),
-          nextAction: { description: "Visita 3 · verificación de puestos intervenidos", owner: "Jefatura de operaciones", date: dateOffset(5) },
+          nextAction: { description: "Visita 3 · verificación de puestos intervenidos", owner: "Jefe de Operaciones", date: dateOffset(5) },
           milestones: [
             { name: "Visita 1", date: dateOffset(-8), baselineDate: dateOffset(-8), confirmed: true, progress: 100, hoursAssigned: 10, hoursExecuted: 10 },
             { name: "Visita 2", date: dateOffset(-1), baselineDate: dateOffset(-1), confirmed: true, progress: 60, hoursAssigned: 10, hoursExecuted: 7 },
@@ -1724,14 +1808,14 @@ function demoProjects() {
     }),
     mk({
       code: "DEM-003", company: "Metalúrgica Andina S.A.S.", ppr: "PPR-DIS", type: "Tipo 2",
-      seller: "Dirección general", sellerRole: "CEO", saleDate: dateOffset(-26), commercialRef: "OS-2026-131", daysActive: 24,
+      seller: "CEO", sellerRole: "CEO", saleDate: dateOffset(-26), commercialRef: "OS-2026-131", daysActive: 24,
       estimatedPlan: "Rediseño de dos puestos críticos con validación en sitio y tablero de control de avance.",
       saleNotes: "El cliente condicionó el inicio a la parada programada de mantenimiento. Se acordó que Rehavid entrega planos y ficha técnica de cada puesto.",
       contacts: [
         { name: "Marta Gil", role: "Gerente de operaciones", email: "marta.gil@metalandina.demo", phone: "3208889090", primary: true },
         { name: "Luis Pardo", role: "Jefe de mantenimiento", email: "luis.pardo@metalandina.demo", phone: "6027776655" }
       ],
-      finalPlan: { version: 1, approvedAt: ago(20), approvedBy: "Dirección de proyectos", coordinatorRole: "Director de Proyectos",
+      finalPlan: { version: 1, approvedAt: ago(20), approvedBy: "Gerente", coordinatorRole: "Director de Proyectos",
         clientCommitments: "Habilitar el área intervenida durante la parada de mantenimiento.",
         rehavidCommitments: "Entregar planos y ficha técnica de cada puesto rediseñado.",
         requirementsNote: "Planos del área y ficha de las máquinas solicitadas al cliente.",
@@ -1740,14 +1824,14 @@ function demoProjects() {
         { name: "Diseño de puesto de trabajo", hoursSold: 90, hourRate: 120000, routing: "Diseño", complexity: "Alta",
           status: "Suspendido", progress: 45, hoursExecuted: 40,
           startDate: dateOffset(-18), endDate: dateOffset(6), plannedStart: dateOffset(-18), plannedEnd: dateOffset(-2),
-          assignment: { status: "Aceptada", assignedAt: ago(24), acceptedAt: ago(23), acceptedBy: "Diseño ergonómico",
+          assignment: { status: "Aceptada", assignedAt: ago(24), acceptedAt: ago(23), acceptedBy: "Diseñador",
                         requestedDate: dateOffset(-2), requiredTime: 20, capacity: "Dedicación parcial" },
           requirements: [{ description: "Planos del área y ficha técnica de las máquinas", status: "Solicitado al cliente",
-                           definedBy: "Diseño ergonómico", definedAt: ago(22), requestedAt: ago(21), requestedBy: "Dirección de proyectos" }],
+                           definedBy: "Diseñador", definedAt: ago(22), requestedAt: ago(21), requestedBy: "Gerente" }],
           lastUpdateAt: ago(5),
           novelties: [{ type: "Suspensión", cause: "El cliente aplazó el acceso al área intervenida.",
                         action: "Reprogramar la visita técnica y confirmar disponibilidad de planta.",
-                        owner: "Diseño ergonómico", newDate: dateOffset(4), date: ago(5) }],
+                        owner: "Diseñador", newDate: dateOffset(4), date: ago(5) }],
           milestones: [
             { name: "Levantamiento en sitio", date: dateOffset(-14), baselineDate: dateOffset(-14), confirmed: true, progress: 100, hoursAssigned: 30, hoursExecuted: 32 },
             { name: "Propuesta de diseño", date: dateOffset(-2), baselineDate: dateOffset(-6), confirmed: true, progress: 40, hoursAssigned: 40, hoursExecuted: 8 },
@@ -1757,10 +1841,10 @@ function demoProjects() {
           status: "Completado", progress: 100, hoursExecuted: 48,
           startDate: dateOffset(-20), endDate: dateOffset(-4), plannedStart: dateOffset(-20), plannedEnd: dateOffset(-4),
           realEndDate: dateOffset(-4),
-          assignment: { status: "Aceptada", assignedAt: ago(24), acceptedAt: ago(24), acceptedBy: "Gestión de datos",
+          assignment: { status: "Aceptada", assignedAt: ago(24), acceptedAt: ago(24), acceptedBy: "Gestor de Datos 1",
                         requestedDate: dateOffset(-4), requiredTime: 15, capacity: "Completa" },
-          requirements: [{ description: "Acceso al histórico de producción", status: "Recibido", definedBy: "Gestión de datos",
-                           definedAt: ago(23), requestedAt: ago(22), requestedBy: "Dirección de proyectos",
+          requirements: [{ description: "Acceso al histórico de producción", status: "Recibido", definedBy: "Gestor de Datos 1",
+                           definedAt: ago(23), requestedAt: ago(22), requestedBy: "Gerente",
                            response: "Acceso concedido", responseAt: ago(20) }],
           deliverable: { description: "Tablero publicado con actualización semanal", url: "https://intranet.rehavid.demo/bi/dem-003" },
           completedAt: ago(4), lastUpdateAt: ago(4) }
@@ -1768,12 +1852,12 @@ function demoProjects() {
     }),
     mk({
       code: "DEM-004", company: "Textiles del Sur Ltda.", ppr: "PPR-ANA", type: "Tipo 1",
-      seller: "Gerencia", sellerRole: "Gerente", saleDate: dateOffset(-70), commercialRef: "OS-2026-090",
+      seller: "Gerente", sellerRole: "Gerente", saleDate: dateOffset(-70), commercialRef: "OS-2026-090",
       daysActive: 66, invoicedValue: 14250000,
       estimatedPlan: "Diagnóstico ergonómico de la planta de confección con informe de priorización.",
       saleNotes: "Cierre acordado antes del corte contable del semestre. El cliente entregó toda la información en la reunión de venta.",
       contacts: [{ name: "Pedro Nieto", role: "Director HSEQ", email: "pedro.nieto@textilessur.demo", phone: "3159994422", primary: true }],
-      finalPlan: { version: 1, approvedAt: ago(62), approvedBy: "Jefatura de operaciones", coordinatorRole: "Jefe de Operaciones",
+      finalPlan: { version: 1, approvedAt: ago(62), approvedBy: "Jefe de Operaciones", coordinatorRole: "Jefe de Operaciones",
         clientCommitments: "Disponibilidad de la planta en jornada diurna.", rehavidCommitments: "Informe de priorización a las seis semanas.",
         requirementsNote: "Información entregada en la reunión de venta.", deviationReason: "Sin diferencias.", items: [] },
       products: [
@@ -1781,7 +1865,7 @@ function demoProjects() {
           status: "Cerrado", progress: 100, hoursExecuted: 147,
           startDate: dateOffset(-60), endDate: dateOffset(-12), plannedStart: dateOffset(-60), plannedEnd: dateOffset(-12),
           realEndDate: dateOffset(-14), completedAt: ago(14), closedAt: ago(12),
-          assignment: { status: "Aceptada", assignedAt: ago(66), acceptedAt: ago(65), acceptedBy: "Jefatura de operaciones",
+          assignment: { status: "Aceptada", assignedAt: ago(66), acceptedAt: ago(65), acceptedBy: "Jefe de Operaciones",
                         requestedDate: dateOffset(-12), requiredTime: 45, capacity: "Completa" },
           deliverable: { description: "Informe de diagnóstico y matriz de priorización",
                          url: "https://intranet.rehavid.demo/entregables/dem-004", validatedBy: "Pedro Nieto", validatedAt: dateOffset(-13) },
@@ -2000,9 +2084,12 @@ function renderApp() {
 }
 function alertsCount() { return state.projects.reduce((n, p) => n + projectAlerts(p).length, 0); }
 function myAssignmentsCount() {
-  return state.projects.reduce((n, p) => n + (p.products || []).filter(pr =>
+  const productos = state.projects.reduce((n, p) => n + (p.products || []).filter(pr =>
     isOpenProduct(pr) && p.state === "Activo" && norm(pr.role) === norm(myCargo()) &&
     pr.assignment.status !== "Aceptada").length, 0);
+  const coordinaciones = state.projects.filter(p => p.state === "Activo" &&
+    norm(p.coordinatorRole) === norm(myCargo()) && p.coordination?.status !== "Aceptada").length;
+  return productos + coordinaciones;
 }
 function renderNav() {
   const counts = { alerts: alertsCount(), assignments: myAssignmentsCount() };
@@ -2474,6 +2561,8 @@ function renderCompanyProject(p) {
       <div class="sp">
         ${pillF(gState, stateK(gState), "globalState", gState)}${pillF(cond, condK(cond), "condition", cond)}
         ${progress(projectProgress(p), condK(cond))}
+        ${(p.products || []).some(pr => (pr.requirements || []).some(r => r.status === "Definido"))
+          ? `<button class="btn btn-s" data-project-request="${esc(p.id)}" title="Agrupa los requisitos de todos los productos en una sola solicitud">Solicitud consolidada</button>` : ""}
         <button class="btn btn-s" data-open-project="${esc(p.id)}">Ficha del proyecto</button>
       </div>
     </div>
@@ -2516,7 +2605,7 @@ function renderProductCard(p, pr) {
       <div><span>Cargo responsable</span><b>${pr.role ? fv("role", pr.role, pr.role) : "sin asignar"}</b><small>${esc(pr.owner || "sin persona")}</small></div>
       <div><span>Avance</span>${progress(productProgress(pr), condK(cond), exp)}
         <small>${exp !== null ? `esperado ${fmtPct(exp)}` : "sin programación"}</small></div>
-      <div><span>Horas</span><b>${fmtNum(pr.hoursExecuted)} / ${fmtNum(pr.hoursSold)}</b><small>saldo ${fmtNum(productHoursBalance(pr))} h</small></div>
+      <div><span>Horas</span><b>${fmtNum(pr.hoursExecuted)} / ${fmtNum(pr.hoursSold)}</b><small>saldo ${fmtNum(productHoursBalance(pr))} h${pr.routing === "Cápsulas" && pr.peopleImpact ? ` · ${fmtNum(pr.peopleImpact)} persona(s) a impactar` : ""}</small></div>
       <div><span>Programación</span><b>${pr.startDate && pr.endDate ? `${formatDate(pr.startDate, true)} → ${formatDate(pr.endDate, true)}` : "sin fechas"}</b>
         <small>${drift ? `${drift > 0 ? "+" : ""}${drift} d frente al plan de venta` : "sin desviación"}</small></div>
       <div><span>Requisitos de información</span><b>${reqs.length ? `${reqs.length - reqPend} de ${reqs.length} recibidos` : "sin definir"}</b>
@@ -2534,6 +2623,10 @@ function renderProductCard(p, pr) {
       ${ico("clock", 13)}<b>Ajuste propuesto</b><span>Nueva fecha ${formatDate(pr.assignment.proposedDate, true)} ·
       ${esc(pr.assignment.justification || "sin justificación")} · tiempo requerido ${fmtNum(pr.assignment.requiredTime)} día(s) ·
       capacidad: ${esc(pr.assignment.capacity || "sin declarar")}</span></div></div>` : ""}
+    ${!reqs.length && isOpenProduct(pr) && permissionFor("update", p, pr).ok ? `<div style="margin:0 16px 12px">
+      <button class="btn btn-s" data-product-action="requirements" data-project="${esc(p.id)}" data-product="${esc(pr.id)}">
+        ${ico("file", 13)}Definir requisitos de información</button>
+      <span class="lockmsg" style="display:inline-flex;margin-left:8px">El líder define qué necesita del cliente (RN-11).</span></div>` : ""}
     ${reqs.length ? `<details class="sub" style="margin:0 16px 12px" ${open ? "open" : ""} data-product-details="${esc(pr.id)}">
       <summary>Requisitos de información (${reqs.length})</summary>
       <div class="sub-b"><div class="tw"><table class="t">
@@ -2557,9 +2650,10 @@ function renderProductCard(p, pr) {
 }
 function productActions(p, pr) {
   const d = `data-project="${esc(p.id)}" data-product="${esc(pr.id)}"`;
-  const b = (kind, label, cls, permKind) => {
+  const b = (kind, label, cls, permKind, extraAttr = "") => {
     const perm = permissionFor(permKind, p, pr);
-    return `<button class="btn btn-s ${cls}" data-product-action="${kind}" ${d} ${perm.ok ? "" : `disabled title="${esc(perm.reason)}"`}>${label}</button>`;
+    return `<button class="btn btn-s ${cls}" data-product-action="${kind}" ${d} ${extraAttr}
+      ${perm.ok ? "" : `disabled title="${esc(perm.reason)}"`}>${label}</button>`;
   };
   const out = [];
   if (isOpenProduct(pr) && pr.assignment.status === "Pendiente de aceptación") {
@@ -2570,7 +2664,14 @@ function productActions(p, pr) {
     out.push(b("resolve", "Resolver ajuste", "btn-pri", "coordinate"));
   }
   if (isOpenProduct(pr) && pr.assignment.status === "Aceptada") {
-    out.push(b("novelty", "Registrar novedad", "btn-pri", "update"));
+    // Cada gesto tiene su botón, con el mismo formulario por debajo (obs. de los usuarios).
+    out.push(b("novelty", "Registrar avance", "btn-pri", "update", 'data-novelty-type="Avance"'));
+    out.push(b("novelty", "Registrar novedad", "", "update"));
+    out.push(pr.status === "Suspendido"
+      ? b("novelty", "Reanudar", "btn-ok", "update", 'data-novelty-type="Reanudación"')
+      : b("novelty", "Suspender", "", "update", 'data-novelty-type="Suspensión"'));
+    out.push(b("nextaction", "Próxima acción", "", "update"));
+    if ((pr.milestones || []).length) out.push(b("milestones", "Actualizar hitos", "", "update"));
     out.push(b("requirements", "Requisitos de información", "", "update"));
   }
   if (isOpenProduct(pr) && (pr.requirements || []).some(r => r.status === "Definido"))
@@ -2579,6 +2680,7 @@ function productActions(p, pr) {
     out.push(b("response", "Registrar respuesta", "", "coordinate"));
   if (["Programado", "En ejecución"].includes(pr.status)) out.push(b("complete", "Declarar completado", "btn-ok", "update"));
   if (pr.status === "Completado") out.push(b("complete", "Corregir datos de cierre", "btn-ok", "update"));
+  if (pr.status === "Cerrado") out.push(b("novelty", "Registrar observación", "", "update"));
   if (isOpenProduct(pr) && pr.assignment.status === "Aceptada") out.push(b("reassign", "Reasignar cargo", "", "coordinate"));
   out.push(`<button class="btn btn-s" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}">Abrir ficha</button>`);
   return out.join("");
@@ -2612,8 +2714,9 @@ function renderPlanCard(p) {
       <div><h2>Plan de trabajo ${fp.version ? `final · versión ${fp.version}` : "· sin versión final"}</h2>
         <p>${fp.version ? `Aprobado ${formatDate(fp.approvedAt, true)} por ${esc(fp.approvedBy || "—")}` : "El plan de la venta sigue siendo la única referencia (RN-13)"}
           ${drift ? ` · desviación acumulada ${drift} día(s)` : ""}</p></div>
-      <div class="sp">${fp.version ? pill(`v${fp.version}`, "a") : pill("pendiente", "w")}
-        <button class="btn btn-s" data-plan-edit="${esc(p.id)}">${fp.version ? "Nueva versión" : "Construir plan final"}</button></div>
+      <div class="sp">${fp.version ? pill(`v${fp.version}`, "a") : pillS("pendiente", "w", "no_plan", "Ver los proyectos sin plan final")}
+        ${(p.planHistory || []).length ? `<button class="btn btn-s" data-plan-history="${esc(p.id)}">Historial</button>` : ""}
+        <button class="btn btn-pri btn-s" data-plan-edit="${esc(p.id)}" style="font-weight:800">${fp.version ? "Plan de trabajo · nueva versión" : "Construir plan de trabajo"}</button></div>
     </summary>
     <div class="card-b">
       ${fp.version ? `<div class="grid" style="margin-bottom:14px">
@@ -2728,6 +2831,8 @@ function renderAlerts(projects) {
             const byProduct = groupBy(pa, a => a.productId);
             return [...byProduct.entries()].map(([pid, items2]) => {
               const pr = (p.products || []).find(x => x.id === pid) || {};
+              // Con filtros de nivel producto activos, solo las filas que los cumplen (obs. Gestor de Datos).
+              if (pr.id && !productMatchesFilters(pr, p)) return "";
               const cond = productCondition(pr, p);
               return `<tr>
                 <td><button class="lk" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}">${esc(pr.name || "—")}</button>
@@ -2736,8 +2841,8 @@ function renderAlerts(projects) {
                   <div class="xs muted">${fv("type", p.type, p.type)} · ${fv("ppr", p.ppr, p.ppr)}</div></td>
                 <td class="sm">${fv("role", pr.role, pr.role || "sin asignar")}<div class="xs muted">${esc(pr.owner || "")}</div></td>
                 <td>${pillF(pr.status || "—", stateK(pr.status), "productStatus", pr.status)}<div style="margin-top:4px">${pillF(cond, condK(cond), "condition", cond)}</div></td>
-                <td>${items2.map(a => `<div class="xs" style="margin-bottom:3px">${pillF(a.label, a.sev === "Crítica" ? "b" : a.sev === "Alta" ? "w" : "g", "alert", a.code, `Ver todos los productos con «${a.label}»`)}
-                  <span class="muted">${esc(a.detail)}</span></div>`).join("")}</td>
+                <td>${items2.map(a => `<div class="xs" style="margin-bottom:3px;display:flex;gap:7px;align-items:center;flex-wrap:wrap">${pillF(a.label, a.sev === "Crítica" ? "b" : a.sev === "Alta" ? "w" : "g", "alert", a.code, `Ver todos los productos con «${a.label}»`)}
+                  <span class="muted" style="flex:1;min-width:160px">${esc(a.detail)}</span>${alertActionBtn(p, pr, a.code)}</div>`).join("")}</td>
                 <td><button class="btn btn-s" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}">Abrir</button></td>
               </tr>`;
             });
@@ -2758,18 +2863,65 @@ function renderAssignments() {
       return rank(a.pr.assignment.status) - rank(b.pr.assignment.status) ||
              CONDITION_RANK[productCondition(a.pr, a.p)] - CONDITION_RANK[productCondition(b.pr, b.p)];
     });
-  const pend = rows.filter(({ pr }) => pr.assignment.status !== "Aceptada").length;
-  const coordinated = state.projects.filter(p => p.state === "Activo" && norm(p.coordinatorRole) === norm(cargo));
+  const coords = state.projects.filter(p => p.state === "Activo" && matchesFilters(p) &&
+                                            norm(p.coordinatorRole) === norm(cargo));
+  const nP = st => rows.filter(({ pr }) => pr.assignment.status === st).length +
+                   coords.filter(p => p.coordination?.status === st).length;
+  const strip = [["Pendientes de aceptación", nP("Pendiente de aceptación"), "b"],
+                 ["En ajuste", nP("En ajuste"), "w"],
+                 ["Aceptadas", nP("Aceptada"), "o"],
+                 ["Coordinación de proyectos", coords.length, "a"]];
+
+  const coordCard = p => {
+    const st = p.coordination?.status || "Aceptada";
+    const puedo = isAdmin() || norm(p.coordinatorRole) === norm(myCargo());
+    const d = `data-project="${esc(p.id)}"`;
+    const main = (p.contacts || []).find(c => c.primary && c.enabled !== false);
+    return `<article class="pd ${st === "Aceptada" ? "o" : st === "En ajuste" ? "w" : "b"}">
+      <div class="pd-h">
+        <div class="ti"><h4>${ico("check", 14)}Coordinación ${esc(p.type)} · ${esc(p.code)}</h4>
+          <p>${esc(p.company)} · ${(p.products || []).length} producto(s) · ${fmtNum(projectHoursSold(p))} h vendidas</p></div>
+        <div class="st">${pill(`Asignación: ${st}`, assignK(st))}</div>
+      </div>
+      <div class="pd-grid">
+        <div><span>Plan estimado de la venta</span><b style="font-weight:600">${esc(p.estimatedPlan || "sin registrar")}</b></div>
+        <div><span>Contacto principal</span><b>${esc(main?.name || "sin definir")}</b><small>${esc(main?.email || "")}</small></div>
+        <div><span>Fecha de referencia</span><b>${formatDate(p.coordination?.requestedDate, true) || "—"}</b></div>
+        ${st === "En ajuste" ? `<div><span>Propuesta</span><b>${formatDate(p.coordination.proposedDate, true)}</b>
+          <small>${esc(p.coordination.justification || "")}</small></div>` : ""}
+      </div>
+      ${(p.coordination?.history || []).length ? `<div class="tl">${p.coordination.history.slice(-3).reverse().map(h => `
+        <div class="tl-item"><time>${formatStamp(h.date)}</time>
+          <div><b>${esc(h.action)}</b><span>${esc(h.by)} (${esc(h.role)}) · ${esc(h.detail)}</span></div></div>`).join("")}</div>` : ""}
+      <div class="pd-acts">
+        ${st === "Pendiente de aceptación" ? `
+          <button class="btn btn-s btn-pri" data-coord-action="accept" ${d} ${puedo ? "" : "disabled"}>Aceptar coordinación</button>
+          <button class="btn btn-s" data-coord-action="adjust" ${d} ${puedo ? "" : "disabled"}>Proponer ajuste</button>` : ""}
+        ${st === "En ajuste" ? `<button class="btn btn-s btn-pri" data-coord-action="resolve" ${d} ${isAdmin() ? "" : `disabled title="Lo resuelve la dirección"`}>Resolver ajuste</button>` : ""}
+        <button class="btn btn-s" data-open-project="${esc(p.id)}">Abrir proyecto</button>
+      </div>
+    </article>`;
+  };
+
+  const prodCard = (p, pr) => `<div>
+    <p class="note" style="margin-bottom:6px">${esc(p.code)} · ${esc(p.type)} · plan estimado: ${esc(p.estimatedPlan || "sin registrar")}</p>
+    ${renderProductCard(p, pr)}</div>`;
 
   return `<section class="card" style="margin-bottom:16px"><div class="card-h">
-      <div><h2>Asignaciones del cargo ${esc(cargo)}</h2>
-        <p>${rows.length} producto(s)${pend ? ` · ${pend} sin resolver` : ""}${coordinated.length ? ` · coordina ${coordinated.length} proyecto(s)` : ""}.
-          Aceptar o proponer ajuste contrastando fecha solicitada, tiempo requerido de producción y capacidad disponible (RN-10).</p></div>
+      <div><h2>${ico("check", 14)}Asignaciones del rol ${esc(cargo)}</h2>
+        <p>Aceptar o proponer ajuste contrastando fecha solicitada, tiempo requerido de producción y capacidad disponible (RN-10).</p></div>
       <div class="sp">
-        <label class="sr-only" for="assignCargo">Ver el cargo</label>
+        <label for="assignCargo" style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase">Rol</label>
         <select id="assignCargo" class="btn" style="padding:0 10px">
           ${CARGOS.map(c => `<option ${c === cargo ? "selected" : ""}>${esc(c)}</option>`).join("")}</select>
+      </div></div>
+      <div class="card-b" style="padding:0"><div class="co-kpis" style="border:0">
+        ${strip.map(([l, n, k]) => `<div class="co-kpi"><span>${esc(l)}</span><b>${n}</b></div>`).join("")}
       </div></div></section>
+    ${coords.length ? `<section class="al-co"><div class="al-h">
+        <div><h3>${ico("briefcase", 15)}Coordinación de proyectos</h3>
+          <p class="note">Asignación independiente de las de producto, con su propio ciclo (Pendiente · En ajuste · Aceptada).</p></div></div>
+      <div style="padding:16px;display:grid;gap:14px">${coords.map(coordCard).join("")}</div></section>` : ""}
     ${rows.length ? [...groupBy(rows, r => r.p.company).entries()].map(([company, list]) => `
         <section class="al-co">
           <div class="al-h">
@@ -2777,9 +2929,11 @@ function renderAssignments() {
             <div><h3>${esc(company)}</h3><p class="note">${list.length} producto(s) a cargo</p></div>
             <div class="sp"><button class="btn btn-s" data-filter-key="company" data-filter-value="${esc(company)}">Ver ficha</button></div>
           </div>
-          <div style="padding:16px;display:grid;gap:14px">${list.map(({ p, pr }) => renderProductCard(p, pr)).join("")}</div>
+          <div style="padding:16px;display:grid;gap:14px">${list.map(({ p, pr }) => prodCard(p, pr)).join("")}</div>
         </section>`).join("")
-      : `<section class="card">${empty("Sin asignaciones", `No hay productos asignados al cargo ${cargo} con los filtros actuales.`)}</section>`}`;
+      : coords.length ? ""
+      : `<section class="card">${empty("Sin asignaciones para este rol",
+          `El rol ${cargo} no tiene productos ni coordinaciones pendientes con los filtros actuales. Cambie el rol arriba o limpie los filtros.`)}</section>`}`;
 }
 
 /* ================== 10.5 PLANES DE TRABAJO FINAL (§9 · RN-13) ================== */
@@ -2801,7 +2955,7 @@ function renderPlans(projects) {
             ${p.finalPlan?.version ? `versión ${p.finalPlan.version} aprobada ${formatDate(p.finalPlan.approvedAt, true)}` : "sin plan final"}</p></div>
         <div class="sp">
           ${(p.planHistory || []).length ? `<button class="btn btn-s" data-plan-history="${esc(p.id)}">Ver ${p.planHistory.length} versión(es) anterior(es)</button>` : ""}
-          <button class="btn btn-pri btn-s" data-plan-edit="${esc(p.id)}">${p.finalPlan?.version ? "Nueva versión" : "Construir plan final"}</button>
+          <button class="btn btn-pri btn-s" data-plan-edit="${esc(p.id)}" style="font-weight:800">${p.finalPlan?.version ? "Plan de trabajo · nueva versión" : "Construir plan de trabajo"}</button>
         </div>
       </div>
       <div class="card-b">
@@ -2809,7 +2963,23 @@ function renderPlans(projects) {
           <div class="c4"><span class="note"><b>Plan estimado de la venta</b><br>${esc(p.estimatedPlan || "—")}</span></div>
           <div class="c4"><span class="note"><b>Observaciones de la venta</b><br>${esc(p.saleNotes || "—")}</span></div>
           <div class="c4"><span class="note"><b>Diferencias registradas</b><br>${esc(p.finalPlan?.deviationReason || "—")}</span></div>
+          ${p.finalPlan?.version ? `
+          <div class="c6"><span class="note"><b>Compromisos del cliente</b><br>${esc(p.finalPlan.clientCommitments || "—")}</span></div>
+          <div class="c6"><span class="note"><b>Compromisos de Rehavid</b><br>${esc(p.finalPlan.rehavidCommitments || "—")}</span></div>` : ""}
         </div>
+        <div class="sec-title">Plan de venta frente a plan final</div>
+        <div class="tw" style="margin-bottom:14px"><table class="t">
+          <thead><tr><th>Producto</th><th>Plan de venta</th><th>Plan final</th><th class="rt">Diferencia</th><th class="rt">Horas</th></tr></thead>
+          <tbody>${(p.products || []).map(pr => {
+            const d = planDrift(pr);
+            return `<tr>
+              <td class="sm"><b>${esc(pr.name)}</b>${pr.technology ? `<div class="xs muted">${esc(pr.technology)}</div>` : ""}</td>
+              <td class="sm muted">${pr.plannedStart || pr.plannedEnd ? `${formatDate(pr.plannedStart, true) || "—"} → ${formatDate(pr.plannedEnd, true) || "—"}` : "—"}</td>
+              <td class="sm">${pr.startDate || pr.endDate ? `${formatDate(pr.startDate, true) || "—"} → ${formatDate(pr.endDate, true) || "—"}` : "sin fechas"}</td>
+              <td class="nm" ${d ? `style="color:${d > 0 ? "var(--bad)" : "var(--grd)"};font-weight:800"` : ""}>${d ? `${d > 0 ? "+" : ""}${d} d` : "0 d"}</td>
+              <td class="nm">${fmtNum(pr.hoursSold)}</td></tr>`;
+          }).join("")}</tbody>
+        </table></div>
         ${planRange(p) ? renderGantt(p, planRange(p)) : `<p class="note">Sin fechas definitivas todavía.</p>`}
       </div>
     </section>`).join("")}`;
@@ -2867,6 +3037,8 @@ function calendarEvents(projects) {
   const map = new Map();
   const push = (date, e) => { if (!date) return; if (!map.has(date)) map.set(date, []); map.get(date).push({ ...e, date }); };
   projects.forEach(p => (p.products || []).forEach(pr => {
+    // Al filtrar por líder o categoría, el calendario muestra solo esos productos (obs. Gestor de Datos).
+    if (!productMatchesFilters(pr, p)) return;
     const done = !isOpenProduct(pr);
     if (pr.startDate) push(pr.startDate, { projectId: p.id, productId: pr.id, company: p.company,
       title: `Inicio · ${pr.name}`, subtitle: `${p.code} · ${pr.role}`, kind: done ? "o" : "" });
@@ -2969,6 +3141,7 @@ function renderNewProject() {
     </div></div>`;
 }
 function saleStep1(p) {
+  if (!state.selectedId && p.state === "Borrador") { p.seller = currentUser(); p.sellerRole = myCargo(); }
   return `<section class="card"><div class="card-h"><div><h2>Datos de la venta</h2>
       <p>Todos los campos son obligatorios antes de activar el proyecto (RN-04)</p></div></div>
     <div class="card-b"><div class="grid">
@@ -2977,10 +3150,11 @@ function saleStep1(p) {
       ${fld({ label: "PPR *", path: "ppr", value: p.ppr, span: "c4", list: "dlPprs" })}
       ${sel({ label: "Tipo de proyecto *", path: "type", value: p.type, options: PROJECT_TYPES, span: "c3",
               hint: "Define el cargo que coordina el proyecto." })}
-      ${sel({ label: "Cargo del vendedor *", path: "sellerRole", value: p.sellerRole, options: CARGOS_VENTA, span: "c3",
-              hint: "Solo estos cargos pueden vender (RN-01)." })}
-      ${fld({ label: "Vendedor *", path: "seller", value: p.seller, span: "c3", list: "dlPeople" })}
-      ${fld({ label: "Fecha de venta", path: "saleDate", value: p.saleDate, type: "date", span: "c3" })}
+      ${fld({ label: "Vendedor", path: "seller", value: p.seller, span: "c3", readonly: true,
+              hint: "Bloqueado al usuario en sesión (RN-01). Una corrección excepcional se hace desde la ficha y queda en bitácora." })}
+      ${fld({ label: "Cargo del vendedor", path: "sellerRole", value: p.sellerRole, span: "c3", readonly: true })}
+      ${fld({ label: "Fecha de venta", path: "saleDate", value: p.saleDate, span: "c3", readonly: true,
+              hint: "Fecha de registro, bloqueada." })}
       ${fld({ label: "Orden de servicio", path: "commercialRef", value: p.commercialRef, span: "c4", list: "dlOrders" })}
       ${fld({ label: "Valor facturado a la fecha", path: "invoicedValue", value: p.invoicedValue, type: "number", min: 0, step: 1000, span: "c4" })}
       ${txt({ label: "Plan de trabajo estimado de la venta *", path: "estimatedPlan", value: p.estimatedPlan, span: "c6",
@@ -3133,7 +3307,7 @@ function renderDataModule(projects) {
 
     <div class="cols2">
       <section class="card">
-        <div class="card-h"><div><h2>Cargar base</h2><p>Restauración completa o actualización parcial</p></div></div>
+        <div class="card-h"><div><h2>Cargar base</h2><p>Restaura un respaldo JSON descargado antes, o actualiza registros puntuales con un CSV. No borra lo existente sin confirmación.</p></div></div>
         <div class="card-b">
           <div class="row"><button class="btn" data-action="restore-json">Subir base completa (JSON)</button>
             <button class="btn" data-action="import-csv">Subir actualización (CSV)</button></div>
@@ -3250,6 +3424,9 @@ function productsEditor(p) {
                   options: state.settings.catalogs.technologies || TECHNOLOGIES, span: "c4", allowEmpty: true, emptyLabel: "Seleccione" }) : ""}
           ${pr.routing === "Diseño" ? sel({ label: "Complejidad *", path: `${base}.complexity`, value: pr.complexity,
                   options: COMPLEXITIES, span: "c4", allowEmpty: true, emptyLabel: "Seleccione" }) : ""}
+          ${pr.routing === "Cápsulas" ? fld({ label: "Personas a impactar", path: `${base}.peopleImpact`, value: pr.peopleImpact,
+                  type: "number", min: 0, span: "c4",
+                  hint: "Las cápsulas se miden por personas impactadas; la equivalencia con horas está pendiente de definición." }) : ""}
           ${fld({ label: "Fecha solicitada en la venta", path: `${base}.assignment.requestedDate`, value: pr.assignment.requestedDate,
                   type: "date", span: "c4", hint: "Compromiso preliminar que el responsable contrastará con su capacidad." })}
           ${txt({ label: "Notas del producto", path: `${base}.notes`, value: pr.notes, span: "c12" })}
@@ -3286,7 +3463,7 @@ function startNewSale() {
   state.selectedId = null;
   const p = makeProject({
     state: "Borrador", saleDate: dateISO(), seller: currentUser(),
-    sellerRole: CARGOS_VENTA.includes(myCargo()) ? myCargo() : CARGOS_VENTA[0],
+    sellerRole: myCargo(),
     products: [makeProduct({ name: "", hoursSold: 0, routing: "Otro" })],
     contacts: [makeContact({ primary: true, enabled: true })]
   });
@@ -3530,6 +3707,127 @@ function findPair(projectId, productId) {
   const pr = p ? (p.products || []).find(x => x.id === productId) : null;
   return { p, pr };
 }
+const COORD_ACTIONS = {
+  accept: p => openForm({
+    title: `Aceptar la coordinación · ${p.code} (${p.type})`,
+    intro: `La coordinación ${p.type} es una asignación independiente de las de producto, con su propio ciclo de aceptación (ajuste de la validación de usuarios).`,
+    fields: [
+      { id: "req", type: "static", label: "Fecha de referencia", value: formatDate(p.coordination.requestedDate) || "sin fecha", span: "c4" },
+      { id: "capacity", type: "text", label: "Capacidad disponible *", value: p.coordination.capacity, required: true, span: "c8" },
+      { id: "note", type: "textarea", label: "Observación", value: "", span: "c12" }
+    ],
+    submit: "Aceptar coordinación",
+    run: v => {
+      p.coordination.status = "Aceptada";
+      p.coordination.acceptedAt = new Date().toISOString();
+      p.coordination.acceptedBy = currentUser();
+      p.coordination.capacity = v.capacity;
+      pushAssignHistory(p.coordination, "Aceptada", `${v.capacity}. ${v.note}`);
+      logEvent(p, { type: "Aceptado", entity: "Coordinación", field: "asignación",
+                    before: "Pendiente de aceptación", after: "Aceptada", reason: `Capacidad: ${v.capacity}. ${v.note}` });
+      afterMutation(p, "Coordinación aceptada", `${p.code} · ${p.coordinatorRole}`);
+    }
+  }),
+  adjust: p => openForm({
+    title: `Proponer ajuste de la coordinación · ${p.code}`,
+    intro: "El ajuste queda registrado con fecha, capacidad, justificación y usuario; la dirección lo resuelve.",
+    fields: [
+      { id: "proposedDate", type: "date", label: "Fecha propuesta *", value: p.coordination.proposedDate || "", required: true, span: "c4" },
+      { id: "capacity", type: "text", label: "Capacidad disponible *", value: p.coordination.capacity, required: true, span: "c8" },
+      { id: "justification", type: "textarea", label: "Justificación *", value: p.coordination.justification, required: true, span: "c12" }
+    ],
+    submit: "Proponer ajuste",
+    run: v => {
+      p.coordination.status = "En ajuste";
+      p.coordination.proposedDate = v.proposedDate;
+      p.coordination.proposedAt = new Date().toISOString();
+      p.coordination.capacity = v.capacity;
+      p.coordination.justification = v.justification;
+      pushAssignHistory(p.coordination, "Ajuste propuesto", `${formatDate(v.proposedDate, true)} · ${v.justification}`);
+      logEvent(p, { type: "Ajuste propuesto", entity: "Coordinación", field: "fecha y capacidad",
+                    after: formatDate(v.proposedDate, true), reason: v.justification });
+      afterMutation(p, "Ajuste de coordinación propuesto", "La dirección debe resolverlo.");
+    }
+  }),
+  resolve: p => openForm({
+    title: `Resolver el ajuste de coordinación · ${p.code}`,
+    intro: `${p.coordinatorRole} propuso el ${formatDate(p.coordination.proposedDate)} porque: ${p.coordination.justification || "sin justificación"}.`,
+    fields: [
+      { id: "decision", type: "select", label: "Decisión *",
+        options: ["Aceptar la propuesta", "Devolver para reformulación"], value: "Aceptar la propuesta", span: "c6" },
+      { id: "reason", type: "textarea", label: "Motivo *", required: true, value: "", span: "c12" }
+    ],
+    submit: "Resolver",
+    run: v => {
+      if (v.decision === "Aceptar la propuesta") {
+        p.coordination.status = "Aceptada";
+        p.coordination.acceptedAt = new Date().toISOString();
+        p.coordination.acceptedBy = currentUser();
+      } else {
+        p.coordination.status = "Pendiente de aceptación";
+      }
+      pushAssignHistory(p.coordination, v.decision, v.reason);
+      logEvent(p, { type: "Ajuste resuelto", entity: "Coordinación", field: "asignación", after: p.coordination.status, reason: `${v.decision}. ${v.reason}` });
+      afterMutation(p, "Ajuste de coordinación resuelto", p.coordination.status);
+    }
+  })
+};
+function openCoordAction(kind, projectId) {
+  const p = state.projects.find(x => x.id === projectId);
+  if (!p) return;
+  const puede = kind === "resolve" ? isAdmin() : (isAdmin() || norm(p.coordinatorRole) === norm(myCargo()));
+  if (!puede) { toast("Sin permisos", kind === "resolve" ? "El ajuste de coordinación lo resuelve la dirección." : `La coordinación corresponde al cargo ${p.coordinatorRole}.`, "error"); return; }
+  const build = COORD_ACTIONS[kind];
+  if (build) build(p);
+}
+
+/** Consolida los requisitos «Definido» de todos los productos del proyecto en una sola
+    solicitud al cliente, con reunión, medio, asistentes y evidencia (RN-11). */
+function openProjectRequest(projectId) {
+  const p = state.projects.find(x => x.id === projectId);
+  if (!p) return;
+  const perm = permissionFor("coordinate", p);
+  if (!perm.ok) { toast("Sin permisos", perm.reason, "error"); return; }
+  const grupos = (p.products || [])
+    .map(pr => ({ pr, reqs: (pr.requirements || []).filter(r => r.status === "Definido") }))
+    .filter(g => g.reqs.length);
+  if (!grupos.length) { toast("Nada por solicitar", "Ningún producto tiene requisitos definidos sin solicitar.", "warning"); return; }
+  const total = grupos.reduce((n, g) => n + g.reqs.length, 0);
+  openForm({
+    title: `Solicitud consolidada al cliente · ${p.code}`,
+    intro: `Una sola solicitud agrupa los ${total} requisito(s) definidos en ${grupos.length} producto(s), en lugar de gestionarlos por separado (RN-11).`,
+    fields: [
+      { id: "list", type: "static", label: "Requisitos consolidados",
+        value: grupos.map(g => `${g.pr.name}: ${g.reqs.map(r => r.description).join("; ")}`).join("  ·  "), span: "c12" },
+      { id: "date", type: "date", label: "Fecha de la reunión o solicitud *", value: dateISO(), required: true, span: "c4" },
+      { id: "medium", type: "select", label: "Medio *", options: ["Reunión", "Llamada", "Correo", "Mensaje"], value: "Reunión", span: "c4" },
+      { id: "contact", type: "select", label: "Contacto del cliente",
+        options: (p.contacts || []).filter(c => c.enabled !== false).map(c => `${c.name}${c.primary ? " (principal)" : ""}`).concat(["Sin registrar"]), span: "c4" },
+      { id: "attendees", type: "text", label: "Asistentes", value: "", span: "c6", hint: "Personas de Rehavid y del cliente." },
+      { id: "evidence", type: "text", label: "Evidencia (acta, correo, enlace)", value: "", span: "c6" },
+      { id: "notes", type: "textarea", label: "Acuerdos y observaciones", value: "", span: "c12" }
+    ],
+    submit: "Registrar solicitud consolidada",
+    run: v => {
+      grupos.forEach(g => {
+        g.reqs.forEach(r => { r.status = "Solicitado al cliente"; r.requestedAt = v.date; r.requestedBy = currentUser(); r.evidence = v.evidence; });
+        g.pr.novelties.unshift(makeNovelty({ type: "Solicitud de información",
+          cause: `Solicitud consolidada del proyecto (${g.reqs.length} requisito(s)) por ${v.medium.toLowerCase()} a ${v.contact}`, action: v.evidence }));
+        g.pr.lastUpdateAt = new Date().toISOString();
+      });
+      p.clientRequests = p.clientRequests || [];
+      p.clientRequests.unshift({ id: uid("req"), date: v.date, by: currentUser(), role: myCargo(), consolidated: true,
+                                 medium: v.medium, attendees: v.attendees, contact: v.contact,
+                                 items: grupos.flatMap(g => g.reqs.map(r => `${g.pr.name}: ${r.description}`)),
+                                 evidence: v.evidence, notes: v.notes });
+      logEvent(p, { type: "Solicitud consolidada", entity: "Proyecto", field: "requisitos de información",
+                    after: `${total} requisito(s) de ${grupos.length} producto(s)`,
+                    reason: `${v.medium} con ${v.contact} el ${formatDate(v.date, true)}. ${v.notes}` });
+      afterMutation(p, "Solicitud consolidada registrada", `${total} requisito(s) solicitados en una sola gestión.`);
+    }
+  });
+}
+
 function openProductAction(kind, projectId, productId, extra = {}) {
   const { p, pr } = findPair(projectId, productId);
   if (!p || !pr) return;
@@ -3561,6 +3859,7 @@ const PRODUCT_ACTIONS = {
       pr.assignment.acceptedBy = currentUser();
       pr.assignment.requiredTime = v.requiredTime;
       pr.assignment.capacity = v.capacity;
+      pushAssignHistory(pr.assignment, "Aceptada", `Tiempo requerido ${v.requiredTime} día(s) · ${v.capacity}. ${v.note}`);
       if (v.startDate) pr.startDate = v.startDate;
       if (v.endDate) pr.endDate = v.endDate;
       if (!pr.plannedStart) pr.plannedStart = v.startDate;
@@ -3591,6 +3890,7 @@ const PRODUCT_ACTIONS = {
       pr.assignment.proposedDate = v.proposedDate;
       pr.assignment.proposedAt = new Date().toISOString();
       pr.assignment.justification = v.justification;
+      pushAssignHistory(pr.assignment, "Ajuste propuesto", `${formatDate(v.proposedDate, true)} · ${v.justification}`);
       pr.lastUpdateAt = new Date().toISOString();
       logEvent(p, { type: "Ajuste propuesto", entity: pr.name, field: "fecha y capacidad",
                     before: formatDate(pr.assignment.requestedDate, true), after: formatDate(v.proposedDate, true), reason: v.justification });
@@ -3599,21 +3899,46 @@ const PRODUCT_ACTIONS = {
   }),
   resolve: (p, pr) => openForm({
     title: `Resolver el ajuste propuesto · ${pr.name}`,
-    intro: `El cargo ${pr.role} propuso el ${formatDate(pr.assignment.proposedDate)} porque: ${pr.assignment.justification || "sin justificación"}.`,
+    intro: `El cargo ${pr.role} propuso el ${formatDate(pr.assignment.proposedDate)} porque: ${pr.assignment.justification || "sin justificación"}. `
+         + "Puede aceptar, hacer una contrapropuesta (sigue en ajuste) o devolver al líder para reformulación.",
     fields: [
-      { id: "decision", type: "select", label: "Decisión *", options: ["Aceptar la fecha propuesta", "Mantener la fecha solicitada"], value: "Aceptar la fecha propuesta", span: "c6" },
-      { id: "endDate", type: "date", label: "Fecha objetivo definitiva", value: pr.assignment.proposedDate || pr.assignment.requestedDate || "", span: "c3" },
+      { id: "decision", type: "select", label: "Decisión *",
+        options: ["Aceptar la fecha propuesta", "Mantener la fecha solicitada",
+                  "Contrapropuesta (sigue en ajuste)", "Devolver para reformulación"],
+        value: "Aceptar la fecha propuesta", span: "c6" },
+      { id: "endDate", type: "date", label: "Fecha objetivo o contrapropuesta", value: pr.assignment.proposedDate || pr.assignment.requestedDate || "", span: "c3" },
       { id: "startDate", type: "date", label: "Inicio definitivo", value: pr.startDate || dateISO(), span: "c3" },
       { id: "reason", type: "textarea", label: "Motivo de la decisión *", required: true, value: "", span: "c12" }
     ],
-    submit: "Resolver y aceptar",
+    submit: "Resolver",
     run: v => {
       const before = `${pr.startDate || "—"} → ${pr.endDate || "—"}`;
+      pushAssignHistory(pr.assignment, v.decision, v.reason);
+      if (v.decision === "Devolver para reformulación") {
+        // Vuelve al líder: la asignación queda otra vez pendiente, con el motivo registrado.
+        pr.assignment.status = "Pendiente de aceptación";
+        pr.assignment.justification = "";
+        pr.lastUpdateAt = new Date().toISOString();
+        logEvent(p, { type: "Ajuste devuelto", entity: pr.name, field: "asignación",
+                      before: "En ajuste", after: "Pendiente de aceptación", reason: v.reason });
+        afterMutation(p, "Ajuste devuelto", `${pr.name} vuelve al cargo ${pr.role} para reformulación.`);
+        return;
+      }
+      if (v.decision === "Contrapropuesta (sigue en ajuste)") {
+        pr.assignment.proposedDate = v.endDate || pr.assignment.proposedDate;
+        pr.assignment.proposedAt = new Date().toISOString();
+        pr.assignment.justification = `Contrapropuesta de la coordinación: ${v.reason}`;
+        pr.lastUpdateAt = new Date().toISOString();
+        logEvent(p, { type: "Contrapropuesta", entity: pr.name, field: "fecha objetivo",
+                      before, after: formatDate(v.endDate, true), reason: v.reason });
+        afterMutation(p, "Contrapropuesta registrada", `${pr.name} sigue en ajuste; el cargo ${pr.role} puede aceptarla.`);
+        return;
+      }
       pr.assignment.status = "Aceptada";
       pr.assignment.acceptedAt = new Date().toISOString();
       pr.assignment.acceptedBy = currentUser();
       pr.startDate = v.startDate || pr.startDate;
-      pr.endDate = v.endDate || pr.endDate;
+      pr.endDate = (v.decision === "Mantener la fecha solicitada" ? pr.assignment.requestedDate : v.endDate) || pr.endDate;
       if (!pr.plannedEnd) pr.plannedEnd = pr.assignment.requestedDate;
       if (!pr.plannedStart) pr.plannedStart = v.startDate;
       if (pr.status === "Pendiente de información" && pr.startDate && pr.endDate) pr.status = "Programado";
@@ -3645,18 +3970,19 @@ const PRODUCT_ACTIONS = {
     }
   }),
   novelty: (p, pr, extra) => {
-    const type = extra.type || "Avance";
-    const needsCause = ["Retraso", "Suspensión"].includes(type);
+    const cerrado = pr.status === "Cerrado";
+    const type = cerrado ? "Nota" : (extra.type || "Avance");
+    const needsCause = ["Retraso", "Suspensión", "Bloqueo"].includes(type);
     const fields = [
-      { id: "type", type: "select", label: "Tipo de novedad *", options: NOVELTY_TYPES, value: type, span: "c4", refresh: "novelty" },
+      { id: "type", type: "select", label: "Tipo de novedad *", options: cerrado ? ["Nota"] : NOVELTY_TYPES, value: type, span: "c4", refresh: "novelty" },
       ...(usesMilestoneProgress(pr)
         ? [{ id: "info", type: "static", label: "Avance", value: `${fmtPct(productProgress(pr))} calculado desde los hitos.`, span: "c4" }]
         : [{ id: "progress", type: "number", label: "Avance %", value: pr.progress, min: 0, max: 100, span: "c2" }]),
       { id: "hoursExecuted", type: "number", label: "Horas ejecutadas", value: pr.hoursExecuted, min: 0, step: 0.5, span: "c3" },
       { id: "cause", type: "textarea", label: needsCause ? "Causa *" : "Descripción de la novedad *", value: "", required: true, span: "c6" },
       ...(needsCause || type === "Reprogramación" ? [
-        { id: "action", type: "textarea", label: "Acción correctiva *", value: "", required: needsCause, span: "c6" },
-        { id: "owner", type: "text", label: "Responsable de la acción *", list: "dlPeople", value: pr.owner, required: needsCause, span: "c4" },
+        { id: "action", type: "textarea", label: "Acción correctiva *", value: "", required: true, span: "c6" },
+        { id: "owner", type: "text", label: "Responsable de la acción *", list: "dlPeople", value: pr.owner, required: true, span: "c4" },
         { id: "newDate", type: "date", label: "Nueva fecha objetivo *", value: pr.endDate, required: true, span: "c4" },
         { id: "shift", type: "checkbox", label: "Desplazar también los hitos pendientes", value: true, span: "c4" }
       ] : []),
@@ -3666,8 +3992,10 @@ const PRODUCT_ACTIONS = {
     ];
     openForm({
       title: `Registrar novedad · ${pr.name}`,
-      intro: type === "Suspensión" || type === "Retraso"
-        ? "Un retraso o una suspensión exigen causa, responsable, acción y nueva fecha (RN-15). El plan se recalcula con ese desplazamiento."
+      intro: cerrado
+        ? "El producto está cerrado: la observación queda en la bitácora sin modificar el estado ni el avance."
+        : needsCause
+        ? "Un retraso, una suspensión o un bloqueo exigen causa, responsable, acción y nueva fecha (RN-15). El plan se recalcula con ese desplazamiento."
         : "El líder del producto mantiene actualizado el panel: avance, horas, fechas, novedades y próxima acción (§11).",
       fields, submit: "Registrar novedad",
       context: { kind: "novelty", projectId: p.id, productId: pr.id },
@@ -3675,6 +4003,14 @@ const PRODUCT_ACTIONS = {
       run: v => {
         const beforeState = pr.status, beforeEnd = pr.endDate;
         const beforeProgress = productProgress(pr);
+        if (cerrado) {
+          // Observación posterior al cierre: bitácora sí, estado no.
+          pr.novelties.unshift(makeNovelty({ type: "Nota", cause: v.cause }));
+          logEvent(p, { type: "Observación tras el cierre", entity: pr.name, field: "bitácora", after: v.cause,
+                        reason: "El producto cerrado no se modifica; la novedad queda registrada." });
+          afterMutation(p, "Observación registrada", `${pr.name} sigue cerrado.`);
+          return;
+        }
         if (!usesMilestoneProgress(pr) && v.progress !== undefined) pr.progress = clamp(v.progress, 0, 100);
         if (v.hoursExecuted !== undefined) pr.hoursExecuted = Number(v.hoursExecuted) || 0;
         if (v.newDate && v.newDate !== pr.endDate) {
@@ -3692,6 +4028,7 @@ const PRODUCT_ACTIONS = {
                         reason: `${v.cause}${v.shift && days > 0 ? ` · hitos pendientes desplazados ${days} día(s)` : ""}` });
         }
         if (v.type === "Suspensión") pr.status = "Suspendido";
+        // Un bloqueo no cambia el estado: el producto sigue donde estaba, con la alerta en la bitácora.
         if (v.type === "Reanudación") pr.status = "En ejecución";
         if (["Avance", "Retraso"].includes(v.type) && pr.status === "Programado") pr.status = "En ejecución";
         if (v.nextAction) pr.nextAction = { description: v.nextAction, owner: currentUser(), date: v.nextDate || "" };
@@ -3706,6 +4043,65 @@ const PRODUCT_ACTIONS = {
       }
     });
   },
+  milestones: (p, pr) => {
+    const list = pr.milestones || [];
+    if (!list.length) { toast("Sin hitos", "Este producto no tiene hitos en el plan.", "warning"); return; }
+    modalHandlers = {};
+    modalHandlers.submit = () => {
+      const cambios = [];
+      list.forEach((m, i) => {
+        const pg = clamp(Number(document.getElementById(`mh_p_${i}`).value) || 0, 0, 100);
+        const dt = document.getElementById(`mh_d_${i}`).value;
+        const he = Number(document.getElementById(`mh_h_${i}`).value) || 0;
+        if (pg !== m.progress) { cambios.push(`${m.name}: ${fmtPct(m.progress)} → ${fmtPct(pg)}`); m.progress = pg; }
+        if (dt && dt !== m.date) { if (!m.baselineDate) m.baselineDate = m.date; cambios.push(`${m.name}: fecha ${formatDate(m.date, true)} → ${formatDate(dt, true)}`); m.date = dt; }
+        if (he !== (m.hoursExecuted || 0)) m.hoursExecuted = he;
+      });
+      closeModal();
+      if (cambios.length) {
+        pr.hoursExecuted = Math.max(pr.hoursExecuted, sum(list, m => Number(m.hoursExecuted) || 0));
+        pr.lastUpdateAt = new Date().toISOString();
+        if (pr.status === "Programado" && list.some(m => m.progress > 0)) pr.status = "En ejecución";
+        logEvent(p, { type: "Hitos actualizados", entity: pr.name, field: "avance por hito",
+                      after: `${fmtPct(productProgress(pr))} global`, reason: cambios.join(" · ") });
+        afterMutation(p, "Hitos actualizados", `${pr.name} · avance ${fmtPct(productProgress(pr))}`);
+      }
+      return true;
+    };
+    openModal(`<div class="m-h"><h2>Actualizar hitos · ${esc(pr.name)}</h2>
+        <button class="btn btn-ico btn-plain" data-action="close-modal" aria-label="Cerrar">✕</button></div>
+      <div class="m-b">
+        <p class="note" style="margin:0 0 14px">El avance del producto se calcula desde sus hitos. Registre porcentaje, fecha y horas de cada uno.</p>
+        <div class="tw"><table class="t">
+          <thead><tr><th>Hito</th><th class="rt">Avance %</th><th>Fecha</th><th class="rt">Horas ejecutadas</th></tr></thead>
+          <tbody>${list.map((m, i) => `<tr>
+            <td class="sm"><b>${esc(m.name)}</b>${m.baselineDate && m.baselineDate !== m.date ? `<div class="xs muted">venta: ${formatDate(m.baselineDate, true)}</div>` : ""}</td>
+            <td><input id="mh_p_${i}" type="number" min="0" max="100" value="${m.progress}" style="width:70px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px;text-align:right"></td>
+            <td><input id="mh_d_${i}" type="date" value="${esc(m.date || "")}" style="height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px"></td>
+            <td><input id="mh_h_${i}" type="number" min="0" step="0.5" value="${m.hoursExecuted || 0}" style="width:80px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px;text-align:right"></td>
+          </tr>`).join("")}</tbody>
+        </table></div>
+      </div>
+      <div class="m-f"><button class="btn" data-action="close-modal">Cancelar</button>
+        <button class="btn btn-pri" data-modal-submit="1">Guardar hitos</button></div>`);
+  },
+  nextaction: (p, pr) => openForm({
+    title: `Próxima acción · ${pr.name}`,
+    intro: "Qué sigue, quién lo hace y cuándo. Alimenta el calendario y la ficha del producto.",
+    fields: [
+      { id: "description", type: "text", label: "Próxima acción *", value: pr.nextAction?.description || "", required: true, span: "c8" },
+      { id: "date", type: "date", label: "Fecha *", value: pr.nextAction?.date || "", required: true, span: "c4" },
+      { id: "owner", type: "text", label: "Responsable", list: "dlPeople", value: pr.nextAction?.owner || pr.owner, span: "c6" }
+    ],
+    submit: "Guardar próxima acción",
+    run: v => {
+      pr.nextAction = { description: v.description, owner: v.owner || pr.owner, date: v.date };
+      pr.lastUpdateAt = new Date().toISOString();
+      logEvent(p, { type: "Próxima acción", entity: pr.name, field: "compromiso",
+                    after: `${v.description} · ${formatDate(v.date, true)}`, reason: `Responsable: ${v.owner || pr.owner}` });
+      afterMutation(p, "Próxima acción registrada", `${v.description}`);
+    }
+  }),
   requirements: (p, pr) => {
     const list = pr.requirements || [];
     modalHandlers = {};
@@ -3783,13 +4179,21 @@ const PRODUCT_ACTIONS = {
         { id: "which", type: "select", label: "Requisito *", options: pend.map(r => r.description), value: pend[0]?.description, span: "c12" },
         { id: "status", type: "select", label: "Resultado *", options: ["Recibido", "No recibido"], value: "Recibido", span: "c4" },
         { id: "date", type: "date", label: "Fecha de la respuesta *", value: dateISO(), required: true, span: "c4" },
-        { id: "response", type: "textarea", label: "Detalle de la respuesta *", required: true, value: "", span: "c12" }
+        { id: "location", type: "text", label: "Dónde queda alojada la información", value: "", span: "c4",
+          hint: "Si fue recibida: carpeta, enlace o repositorio, para confirmar el recibido a satisfacción." },
+        { id: "response", type: "textarea", label: "Detalle de la respuesta *", required: true, value: "", span: "c12" },
+        { id: "commitDate", type: "date", label: "Nueva fecha comprometida por el cliente", value: "", span: "c4",
+          hint: "Solo si quedó pendiente; al vencerse genera alerta." },
+        { id: "followUp", type: "text", label: "Responsable del seguimiento", list: "dlPeople", value: "", span: "c4" },
+        { id: "nextStep", type: "text", label: "Próxima gestión", value: "", span: "c4" }
       ],
       submit: "Registrar respuesta",
       run: v => {
         const r = pend.find(x => x.description === v.which);
         if (!r) return;
         r.status = v.status; r.response = v.response; r.responseAt = v.date;
+        r.location = v.location || r.location;
+        if (v.status === "No recibido") { r.commitDate = v.commitDate || ""; r.followUp = v.followUp || ""; r.nextStep = v.nextStep || ""; }
         pr.lastUpdateAt = new Date().toISOString();
         if (v.status === "Recibido" && pr.status === "Pendiente de información" && pr.startDate && pr.endDate) pr.status = "Programado";
         logEvent(p, { type: "Respuesta del cliente", entity: pr.name, field: r.description,
@@ -3822,7 +4226,7 @@ const PRODUCT_ACTIONS = {
       pr.lastUpdateAt = pr.completedAt;
       logEvent(p, { type: "Completado", entity: pr.name, field: "estado", before, after: "Completado",
                     reason: `Entregable: ${v.description}. ${v.note}` });
-      const v2 = validateClosure(pr);
+      const v2 = validateClosure(pr, p);
       afterMutation(p, "Producto declarado completado",
         v2.ok ? "La aplicación ejecutará el cierre automático." : `Falta para el cierre: ${v2.missing.join(", ")}.`);
     }
@@ -3841,16 +4245,38 @@ function openPlanEditor(projectId) {
   modalHandlers.submit = () => {
     const reason = document.getElementById("pa_reason").value.trim();
     if (!reason) { toast("Motivo obligatorio", "Toda versión del plan exige justificación (RN-14).", "error"); return false; }
+    // El plan final no se aprueba con asignaciones sin resolver (ajuste de la validación de usuarios).
+    const sinResolver = (p.products || []).filter(pr => isOpenProduct(pr) && pr.assignment.status !== "Aceptada");
+    if (sinResolver.length) {
+      toast("Aprobación bloqueada", `Asignaciones sin resolver: ${sinResolver.map(x => `${x.name} (${x.assignment.status})`).join("; ")}.`, "error");
+      return false;
+    }
     const items = [];
     let bad = "";
+    const sinFechas = [];
     (p.products || []).forEach((pr, i) => {
       const s = document.getElementById(`pa_s_${i}`).value;
       const e = document.getElementById(`pa_e_${i}`).value;
+      const h = Number(document.getElementById(`pa_h_${i}`)?.value) || pr.hoursSold;
       if (s && e && e < s) bad = `${pr.name}: la fecha de cierre es anterior al inicio.`;
-      items.push({ productId: pr.id, name: pr.name, start: s, end: e, hours: pr.hoursSold, role: pr.role,
-                   milestones: (pr.milestones || []).map(m => ({ name: m.name, date: m.date })) });
+      if (isOpenProduct(pr) && (!s || !e)) sinFechas.push(pr.name);
+      const ms = (pr.milestones || []).map((m, j) => ({ name: m.name,
+        date: document.getElementById(`pa_m_${i}_${j}`)?.value || m.date }));
+      items.push({ productId: pr.id, name: pr.name, start: s, end: e, hours: h, role: pr.role, milestones: ms });
     });
     if (bad) { toast("Revise las fechas", bad, "error"); return false; }
+    if (sinFechas.length) { toast("Aprobación bloqueada", `Productos abiertos sin fechas definitivas: ${sinFechas.join(", ")}.`, "error"); return false; }
+    // Aviso preventivo: fechas en festivo o fin de semana (no bloquea, advierte).
+    const hols = new Map([...colombiaHolidays(new Date().getFullYear()), ...colombiaHolidays(new Date().getFullYear() + 1)]
+      .map(h => [h.date, h.name]));
+    const choques = [];
+    items.forEach(it => [["inicio", it.start], ["cierre", it.end], ...it.milestones.map(m => [m.name, m.date])].forEach(([lbl, d]) => {
+      if (!d) return;
+      const day = toDate(d)?.getDay();
+      if (hols.has(d)) choques.push(`${it.name} · ${lbl} cae en festivo (${hols.get(d)})`);
+      else if (day === 0 || day === 6) choques.push(`${it.name} · ${lbl} cae en fin de semana`);
+    }));
+    if (choques.length) toast("Revise el calendario", choques.slice(0, 4).join(" · "), "warning");
     if (fp.version) p.planHistory = [makeFinalPlan(fp), ...(p.planHistory || [])].slice(0, 20);
     const version = (fp.version || 0) + 1;
     p.finalPlan = makeFinalPlan({
@@ -3865,6 +4291,14 @@ function openPlanEditor(projectId) {
       if (!pr.plannedStart) pr.plannedStart = pr.startDate || it.start;
       if (!pr.plannedEnd) pr.plannedEnd = pr.assignment.requestedDate || pr.endDate || it.end;
       const before = `${pr.startDate || "—"} → ${pr.endDate || "—"}`;
+      if (Number(it.hours) > 0 && Number(it.hours) !== pr.hoursSold) {
+        logEvent(p, { type: "Plan final", entity: pr.name, field: "horas", before: String(pr.hoursSold), after: String(it.hours), reason });
+        pr.hoursSold = Number(it.hours);
+      }
+      it.milestones.forEach((m, j) => {
+        const mm = (pr.milestones || [])[j];
+        if (mm && m.date && m.date !== mm.date) { if (!mm.baselineDate) mm.baselineDate = mm.date; mm.date = m.date; }
+      });
       pr.startDate = it.start; pr.endDate = it.end;
       if (pr.status === "Pendiente de información" && it.start && it.end && pr.assignment.status === "Aceptada") pr.status = "Programado";
       if (before !== `${it.start} → ${it.end}`)
@@ -3885,13 +4319,19 @@ function openPlanEditor(projectId) {
       <div class="tw" style="margin-bottom:16px"><table class="t">
         <thead><tr><th>Producto</th><th>Cargo</th><th class="rt">Horas</th><th>Fecha solicitada</th><th>Inicio</th><th>Cierre</th></tr></thead>
         <tbody>${(p.products || []).map((pr, i) => `<tr>
-          <td class="sm"><b>${esc(pr.name)}</b><div class="xs muted">${esc(pr.assignment.status)}</div></td>
+          <td class="sm"><b>${esc(pr.name)}</b><div class="xs muted">${esc(pr.assignment.status)}${pr.technology ? ` · ${esc(pr.technology)}` : ""}${pr.complexity ? ` · ${esc(pr.complexity)}` : ""}</div></td>
           <td class="sm muted">${esc(pr.role || "—")}</td>
-          <td class="nm">${fmtNum(pr.hoursSold)}</td>
+          <td><input id="pa_h_${i}" type="number" min="0" step="0.5" value="${esc(pr.hoursSold)}" style="width:76px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px;text-align:right"></td>
           <td class="sm muted">${formatDate(pr.assignment.requestedDate, true)}</td>
           <td><input id="pa_s_${i}" type="date" value="${esc(pr.startDate || "")}" style="height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px"></td>
           <td><input id="pa_e_${i}" type="date" value="${esc(pr.endDate || pr.assignment.proposedDate || pr.assignment.requestedDate || "")}" style="height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px"></td>
-        </tr>`).join("")}</tbody>
+        </tr>
+        ${(pr.milestones || []).length ? `<tr><td colspan="6" style="padding:4px 10px 10px;background:var(--rvl3)">
+          <div class="row" style="align-items:center;gap:10px">
+            <span class="xs" style="font-weight:700;color:var(--muted);text-transform:uppercase">Hitos</span>
+            ${pr.milestones.map((m, j) => `<label class="xs" style="display:inline-flex;align-items:center;gap:5px">${esc(m.name)}
+              <input id="pa_m_${i}_${j}" type="date" value="${esc(m.date || "")}" style="height:30px;border:1px solid var(--line);border-radius:6px;padding:0 6px"></label>`).join("")}
+          </div></td></tr>` : ""}`).join("")}</tbody>
       </table></div>
       <div class="grid">
         <div class="f c6"><label for="pa_cc">Compromisos del cliente</label>
@@ -3943,6 +4383,7 @@ function buildDataset(key, projects) {
     horas_vendidas: pr.hoursSold, valor_hora: pr.hourRate, valor: productValue(pr),
     horas_ejecutadas: pr.hoursExecuted, saldo_horas: productHoursBalance(pr),
     estado: pr.status, condicion: productCondition(pr, p), avance: Math.round(productProgress(pr)),
+    personas_a_impactar: pr.peopleImpact || "",
     inicio: pr.startDate, fecha_objetivo: pr.endDate, plan_venta_fin: pr.plannedEnd, desviacion_dias: planDrift(pr)
   })));
   if (key === "contactos") list.forEach(p => (p.contacts || []).filter(c => c.enabled !== false).forEach(c => rows.push({
@@ -4205,9 +4646,16 @@ function showDayEvents(date) {
   const list = calendarEvents(visibleProjects()).get(date) || [];
   openModal(`<div class="m-h"><h2>Eventos del ${formatDate(date)}</h2>
       <button class="btn btn-ico btn-plain" data-action="close-modal" aria-label="Cerrar">✕</button></div>
-    <div class="m-b">${list.map(e => `<div class="box"><div class="box-h">
+    <div class="m-b">${list.map(e => {
+      const { p, pr } = findPair(e.projectId, e.productId);
+      const puedo = p && pr && permissionFor("update", p, pr).ok && isOpenProduct(pr);
+      return `<div class="box"><div class="box-h">
       <button class="lk" data-open-project="${esc(e.projectId)}" data-open-product="${esc(e.productId)}" data-close-modal="1">${esc(e.title)}</button>
-      <span>${esc(e.company)}</span></div><p class="note">${esc(e.subtitle)}</p></div>`).join("") || `<p class="note">Sin eventos.</p>`}</div>`);
+      <span>${esc(e.company)}</span>
+      ${puedo ? `<button class="btn btn-s" data-product-action="novelty" data-project="${esc(e.projectId)}"
+        data-product="${esc(e.productId)}" data-novelty-type="Reprogramación" title="Reprogramar o registrar novedad sin salir del calendario">Registrar novedad</button>` : ""}
+      </div><p class="note">${esc(e.subtitle)}</p></div>`;
+    }).join("") || `<p class="note">Sin eventos.</p>`}</div>`);
 }
 
 /* --------------------- 15. PARAMETRIZACIÓN: ALTAS Y BAJAS --------------------- */
@@ -4217,7 +4665,7 @@ const CATALOG_TEMPLATES = {
   pprs: () => ({ name: "", notes: "" }),
   companies: () => ({ name: "", nit: "", notes: "" }),
   serviceOrders: () => ({ name: "", company: "", date: dateISO(), notes: "" }),
-  people: () => ({ name: "", cargo: "Analista de Datos" })
+  people: () => ({ name: "", cargo: "Analista de Proyectos" })
 };
 const CATALOG_LABELS = { products: "producto", pprs: "PPR", companies: "empresa", serviceOrders: "orden de servicio", people: "persona" };
 function addCatalogRow(key) {
@@ -4522,7 +4970,12 @@ document.addEventListener("click", e => {
   if (del) { removeRow(del.dataset.removeRow, Number(del.dataset.index)); return; }
 
   const pa = t.closest("[data-product-action]");
-  if (pa) { openProductAction(pa.dataset.productAction, pa.dataset.project, pa.dataset.product); return; }
+  if (pa) { openProductAction(pa.dataset.productAction, pa.dataset.project, pa.dataset.product,
+                              pa.dataset.noveltyType ? { type: pa.dataset.noveltyType } : {}); return; }
+  const ca = t.closest("[data-coord-action]");
+  if (ca) { openCoordAction(ca.dataset.coordAction, ca.dataset.project); return; }
+  const prq = t.closest("[data-project-request]");
+  if (prq) { openProjectRequest(prq.dataset.projectRequest); return; }
 
   const planEdit = t.closest("[data-plan-edit]");
   if (planEdit) { openPlanEditor(planEdit.dataset.planEdit); return; }

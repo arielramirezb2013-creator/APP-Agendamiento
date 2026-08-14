@@ -1,11 +1,11 @@
-# Rehavid · Gestión de proyectos v9
+# Rehavid · Gestión de proyectos v10
 
 Aplicación web de un solo archivo que implementa la **Especificación funcional y flujograma
 del proceso de gestión de proyectos, versión 1.1** (Rehavid S.A.S.).
 
 | Archivo | Contenido |
 |---|---|
-| `Rehavid_Gestion_Proyectos_v9.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
+| `Rehavid_Gestion_Proyectos_v10.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
 | `Mapa_de_usuario_y_validacion_Rehavid.xlsx` | Mapa de usuario y hoja de observaciones, una pestaña por cargo. |
 | `ESPECIFICACION_FUNCIONAL_v1.1.txt` | Especificación vigente que se implementó. |
 | `ESPECIFICACION_FUNCIONAL_v1.txt` | Versión 1.0, conservada como referencia. |
@@ -13,7 +13,53 @@ del proceso de gestión de proyectos, versión 1.1** (Rehavid S.A.S.).
 
 ---
 
-## 0. Un tablero que responde al clic
+## 0. Lo que cambió con la validación de usuarios
+
+La versión 10 aplica las observaciones registradas en el Excel de validación por los revisores
+(Director de Proyectos, Jefe de Operaciones, Gestor de Datos, Diseñador y Supervisor), y el
+ajuste de usuarios y permisos definido por la gerencia.
+
+**Usuarios y permisos.** Los usuarios de la aplicación son nueve: CEO, Gerente, Jefe de
+Operaciones, Gestor de Datos 1 y 2, Analista Proyectos 1 y 2, Supervisor de Proyectos
+Contactabilidad y Diseñador. Solo **CEO, Gerente, Jefe de Operaciones y Director de
+Proyectos** pueden registrar ventas (RN-01). Los cargos *Diseñador Ergónomo* y *Supervisor de
+Proyectos Especiales* pasan a llamarse *Diseñador* y *Supervisor de Proyectos Contactabilidad*;
+aparece el cargo *Analista de Proyectos* (lidera las mediciones objetivas) y las bases guardadas
+con los nombres anteriores se renombran solas al cargar. El cargo *Director de Proyectos* sigue
+existiendo —coordina los proyectos Tipo 2 y puede vender— pero no tiene persona asignada:
+se define en Parametrización cuando la gerencia lo decida.
+
+**Ajustes aplicados por observación de los revisores:**
+
+| Observación | Cómo quedó |
+|---|---|
+| Vendedor editable y datos sin validar (Director) | Vendedor, cargo y fecha quedan **bloqueados a la sesión**; empresa y PPR se validan **contra el catálogo**; cada producto exige **fecha solicitada** antes de activar. |
+| La coordinación no era una tarea gestionable (Director, Jefe de Operaciones) | La coordinación es ahora una **asignación independiente** del proyecto maestro, con su ciclo *Pendiente · En ajuste · Aceptada*, aceptación, ajuste, historial y trazabilidad propios. En la demo, la coordinación Tipo 1 de DEM-002 nace pendiente para poder probar el flujo. |
+| Resolver un ajuste solo permitía aceptar (Director, Jefe de Operaciones) | La resolución tiene **cuatro decisiones**: aceptar la propuesta, mantener la fecha solicitada, **contrapropuesta** (sigue en ajuste) y **devolver para reformulación**; cada ronda queda en el historial de la asignación. |
+| Requisitos gestionados producto por producto (Director, Jefe de Operaciones) | Botón **«Solicitud consolidada»** en la ficha del proyecto: agrupa los requisitos definidos de todos los productos en una sola solicitud con fecha, medio, contacto, asistentes y evidencia. |
+| Pendientes del cliente sin seguimiento (Director, Jefe de Operaciones) | La respuesta registra **dónde queda alojada la información** y, si queda pendiente, **nueva fecha comprometida, responsable del seguimiento y próxima gestión**; al vencerse la fecha comprometida se genera alerta. |
+| El plan final se aprobaba con asignaciones sin resolver (Director) | La aprobación se **bloquea** si hay asignaciones pendientes o en ajuste, o productos abiertos sin fechas; el editor permite **modificar horas y fechas de hitos**; al aprobar se **advierte** si alguna fecha cae en festivo de Colombia o fin de semana. |
+| Comparación venta vs. final poco explícita (Director) | El módulo de planes muestra la tabla **«Plan de venta frente a plan final»** por producto, con diferencia en días resaltada, y los compromisos del cliente y de Rehavid a la vista. |
+| Sin interfaz para actualizar hitos (Director) | Acción **«Actualizar hitos»**: porcentaje, fecha y horas de cada hito; el avance global se recalcula. |
+| Faltaba «Bloqueo» como novedad (Director) | Tipo **Bloqueo** agregado; retraso, suspensión, bloqueo y reprogramación exigen causa, acción, responsable y nueva fecha. |
+| Botones poco claros (Diseñador, Jefe de Operaciones) | La tarjeta del producto ofrece botones explícitos: **Registrar avance, Registrar novedad, Suspender / Reanudar, Próxima acción, Actualizar hitos**; el botón del plan se llama **«Plan de trabajo»** y resalta. |
+| El cierre pasaba con requisitos sin resolver (Director) | El cierre exige **todo requisito resuelto** (recibido o exceptuado con justificación) y **plan de trabajo final aprobado**, además de fecha real, horas y entregable. |
+| Producto cerrado sin poder registrar novedades (Gestor de Datos) | En productos cerrados se puede **registrar una observación** que queda en bitácora sin modificar el estado. |
+| Gestionar la alerta exigía abrir la ficha (Jefe de Operaciones) | Cada alerta trae el **botón de la acción que la resuelve** (aceptar, resolver, solicitar, responder, novedad, plan…). |
+| Alertas y calendario mezclaban líderes (Gestor de Datos) | El filtro por cargo **poda las filas de alertas y los eventos del calendario** a los productos de ese líder. |
+| Mis asignaciones confusa (Diseñador) | Selector **«Rol»** con la sesión por defecto, resumen *Pendientes · En ajuste · Aceptadas · Coordinación*, tarjetas con plan estimado, contacto principal y acceso al proyecto, y estado vacío claro. |
+| Cápsulas medidas en personas (Supervisor) | Campo **«Personas a impactar»** en los productos de cápsulas, visible en la tarjeta y en el conjunto descargable. |
+| Reprogramar desde el calendario (Jefe de Operaciones) | El detalle del día ofrece **«Registrar novedad»** sobre los productos propios sin salir del calendario. |
+
+**Pendientes de definición que dejaron los revisores** (no son cambios de la aplicación):
+la tabla de equivalencias entre horas y personas a impactar en cápsulas; el procedimiento de
+grabaciones en sitio; el flujo de recepción de cápsulas con orden de servicio y profesional
+SST; y la homologación del cargo contractual del Diseñador («Diseñador de Experiencias
+Laborales»).
+
+---
+
+## 0bis. Un tablero que responde al clic
 
 Todo lo que se ve significa algo, y todo lo que significa algo se puede pulsar. El gesto
 central es el que pidió Rehavid: **hacer clic sobre una barra o sobre una parte de un
