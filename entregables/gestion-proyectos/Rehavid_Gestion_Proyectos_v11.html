@@ -661,12 +661,14 @@ const LEGACY_KEYS = ["rehavid_gestion_proyectos_v5", "rehavid_project_hub_v1"];
 
 // RN-02 · las asignaciones se parametrizan por cargo, nunca por nombre de persona.
 const CARGOS = ["CEO", "Gerente", "Director de Proyectos", "Jefe de Operaciones",
-                "Gestor de Datos", "Analista de Proyectos", "Diseñador",
-                "Supervisor de Proyectos Contactabilidad"];
+                "Supervisor Contactabilidad", "Gestor de Datos 1", "Gestor de Datos 2", "Diseñador"];
 // Cargos que venían de versiones anteriores y su denominación vigente.
 const CARGO_RENAMES = { "Diseñador Ergónomo": "Diseñador",
-                        "Supervisor de Proyectos Especiales": "Supervisor de Proyectos Contactabilidad",
-                        "Analista de Datos": "Analista de Proyectos", "Vendedor": "Analista de Proyectos" };
+                        "Supervisor de Proyectos Especiales": "Supervisor Contactabilidad",
+                        "Gestor de Datos 1": "Gestor de Datos 1",
+                        "Analista de Datos": "Gestor de Datos 1",
+                        "Analista de Proyectos": "Director de Proyectos",
+                        "Vendedor": "Director de Proyectos" };
 function renameCargo(c) { return CARGO_RENAMES[c] || c; }
 const CARGOS_VENTA = ["CEO", "Gerente", "Jefe de Operaciones", "Director de Proyectos"];   // RN-01
 const CARGOS_ADMIN = ["CEO", "Gerente"];
@@ -973,10 +975,10 @@ const DEFAULT_SETTINGS = {
   assignmentRules: [
     { id: "r_t1",  scope: "project", field: "type",    value: "Tipo 1",            role: "Jefe de Operaciones", active: true },
     { id: "r_t2",  scope: "project", field: "type",    value: "Tipo 2",            role: "Director de Proyectos", active: true },
-    { id: "r_mo",  scope: "product", field: "routing", value: "Medición objetiva", role: "Analista de Proyectos", active: true },
-    { id: "r_bi",  scope: "product", field: "routing", value: "Tablero BI",        role: "Gestor de Datos", active: true },
+    { id: "r_mo",  scope: "product", field: "routing", value: "Medición objetiva", role: "Director de Proyectos", active: true },
+    { id: "r_bi",  scope: "product", field: "routing", value: "Tablero BI",        role: "Gestor de Datos 1", active: true },
     { id: "r_di",  scope: "product", field: "routing", value: "Diseño",            role: "Diseñador", active: true },
-    { id: "r_ca",  scope: "product", field: "routing", value: "Cápsulas",          role: "Supervisor de Proyectos Contactabilidad", active: true }
+    { id: "r_ca",  scope: "product", field: "routing", value: "Cápsulas",          role: "Supervisor Contactabilidad", active: true }
   ],
   catalogs: {
     companies: [],
@@ -992,15 +994,16 @@ const DEFAULT_SETTINGS = {
       { name: "Diagnóstico ergonómico", hours: 60, rate: 95000, routing: "Otro" },
       { name: "Acompañamiento técnico", hours: 40, rate: 105000, routing: "Otro" }
     ],
+    // Los usuarios de la aplicación son los cargos mismos; cuando la gerencia asigne
+    // titulares, basta cambiar el nombre de cada fila en Parametrización.
     people: [
       { name: "CEO", cargo: "CEO" },
       { name: "Gerente", cargo: "Gerente" },
+      { name: "Director de Proyectos", cargo: "Director de Proyectos" },
       { name: "Jefe de Operaciones", cargo: "Jefe de Operaciones" },
-      { name: "Gestor de Datos 1", cargo: "Gestor de Datos" },
-      { name: "Gestor de Datos 2", cargo: "Gestor de Datos" },
-      { name: "Analista Proyectos 1", cargo: "Analista de Proyectos" },
-      { name: "Analista Proyectos 2", cargo: "Analista de Proyectos" },
-      { name: "Supervisor de Proyectos Contactabilidad", cargo: "Supervisor de Proyectos Contactabilidad" },
+      { name: "Supervisor Contactabilidad", cargo: "Supervisor Contactabilidad" },
+      { name: "Gestor de Datos 1", cargo: "Gestor de Datos 1" },
+      { name: "Gestor de Datos 2", cargo: "Gestor de Datos 2" },
       { name: "Diseñador", cargo: "Diseñador" }
     ],
     technologies: TECHNOLOGIES.slice(),
@@ -1587,8 +1590,8 @@ function normalizeCatalogs(c) {
   c.products = objs(c.products, { hours: 0, rate: 0, routing: "Otro" })
     .map(x => ({ ...x, hours: Number(x.hours) || 0, rate: Number(x.rate) || 0,
                  routing: ROUTINGS.includes(x.routing) ? x.routing : "Otro" }));
-  c.people = objs(c.people, { cargo: "Analista de Datos" })
-    .map(x => ({ ...x, cargo: (c => CARGOS.includes(c) ? c : "Analista de Proyectos")(renameCargo(x.cargo || x.role)) }));
+  c.people = objs(c.people, { cargo: "Gestor de Datos 1" })
+    .map(x => ({ ...x, cargo: (c => CARGOS.includes(c) ? c : "Gestor de Datos 1")(renameCargo(x.cargo || x.role)) }));
   c.serviceOrders = objs(c.serviceOrders, { company: "", date: "", notes: "" });
   c.technologies = unique((c.technologies || []).map(x => (typeof x === "string" ? x : x.name)));
   c.deliverables = unique((c.deliverables || []).map(x => (typeof x === "string" ? x : x.name)));
@@ -1649,7 +1652,7 @@ function syncCatalogs() {
   add("pprs", state.projects.map(p => p.ppr), { notes: "" });
   add("products", state.projects.flatMap(p => (p.products || []).map(x => x.name)), { hours: 0, rate: 0, routing: "Otro" });
   add("people", state.projects.flatMap(p => [p.seller, p.coordinator, ...(p.products || []).map(x => x.owner)]),
-      { cargo: "Analista de Proyectos" });
+      { cargo: "Gestor de Datos 1" });
   state.projects.filter(p => p.commercialRef).forEach(p => {
     if (!catalogFind("serviceOrders", p.commercialRef))
       c.serviceOrders.push({ name: p.commercialRef, company: p.company, date: p.saleDate, notes: "" });
@@ -1660,7 +1663,7 @@ function syncCatalogs() {
 /** Convierte bases anteriores (v5 con nombres propios, o v4 con actividades) al modelo 1.1. */
 function migrateLegacy(old = {}, key = "") {
   const cargoFromName = n => ({ "Kelly Segura": "Jefe de Operaciones", "Jhon Orrego": "Director de Proyectos",
-                                "Gestor de datos": "Gestor de Datos", "Diseñador": "Diseñador" })[n] || "";
+                                "Gestor de datos": "Gestor de Datos 1", "Diseñador": "Diseñador" })[n] || "";
   const stateMap = { "Pendiente de contacto": "Pendiente de información", "Programado": "Programado",
                      "En ejecución": "En ejecución", "Suspendido": "Suspendido",
                      "Finalizado": "Completado", "Cerrado": "Cerrado" };
@@ -1730,16 +1733,16 @@ function demoProjects() {
         { name: "Mediciones objetivas de carga física", hoursSold: 120, hourRate: 130000, routing: "Medición objetiva",
           technology: "Xsens", status: "En ejecución", progress: 70, hoursExecuted: 104,
           startDate: dateOffset(-30), endDate: dateOffset(-3), plannedStart: dateOffset(-30), plannedEnd: dateOffset(-12),
-          assignment: { status: "Aceptada", assignedAt: ago(40), acceptedAt: ago(38), acceptedBy: "Analista Proyectos 1",
+          assignment: { status: "Aceptada", assignedAt: ago(40), acceptedAt: ago(38), acceptedBy: "Director de Proyectos",
                         requestedDate: dateOffset(-12), requiredTime: 22, capacity: "Dos sesiones por semana" },
           requirements: [
-            { description: "Organigrama y matriz de cargos por línea", status: "Recibido", definedBy: "Analista Proyectos 1",
+            { description: "Organigrama y matriz de cargos por línea", status: "Recibido", definedBy: "Director de Proyectos",
               definedAt: ago(38), requestedAt: ago(37), requestedBy: "Gerente", response: "Entregado en Excel", responseAt: ago(35) },
-            { description: "Autorización de ingreso en turno nocturno", status: "Recibido", definedBy: "Analista Proyectos 1",
+            { description: "Autorización de ingreso en turno nocturno", status: "Recibido", definedBy: "Director de Proyectos",
               definedAt: ago(38), requestedAt: ago(37), requestedBy: "Gerente", response: "Autorizado por SST", responseAt: ago(34) }
           ],
           lastUpdateAt: ago(9),
-          nextAction: { description: "Consolidar informe de resultados de la sede sur", owner: "Analista Proyectos 1", date: dateOffset(2) },
+          nextAction: { description: "Consolidar informe de resultados de la sede sur", owner: "Director de Proyectos", date: dateOffset(2) },
           milestones: [
             { name: "Sesión de mediciones sede norte", date: dateOffset(-24), baselineDate: dateOffset(-24), confirmed: true, progress: 100, hoursAssigned: 50, hoursExecuted: 52 },
             { name: "Sesión de mediciones sede sur", date: dateOffset(-8), baselineDate: dateOffset(-18), confirmed: true, progress: 80, hoursAssigned: 40, hoursExecuted: 38 },
@@ -1747,7 +1750,7 @@ function demoProjects() {
           ],
           novelties: [
             { type: "Retraso", cause: "La sede sur aplazó la ventana de medición por paro de línea.",
-              action: "Reprogramar la sesión y recuperar en la semana siguiente.", owner: "Analista Proyectos 1",
+              action: "Reprogramar la sesión y recuperar en la semana siguiente.", owner: "Director de Proyectos",
               newDate: dateOffset(-3), date: ago(12) },
             { type: "Avance", cause: "Sesión de la sede norte ejecutada al cien por ciento.", progress: 70, hoursExecuted: 104, date: ago(9) }
           ] },
@@ -1766,13 +1769,13 @@ function demoProjects() {
         { name: "Cápsulas formativas", hoursSold: 40, hourRate: 95000, routing: "Cápsulas",
           status: "Programado", progress: 15, hoursExecuted: 6,
           startDate: dateOffset(-4), endDate: dateOffset(20), plannedStart: dateOffset(-4), plannedEnd: dateOffset(20),
-          assignment: { status: "Aceptada", assignedAt: ago(40), acceptedAt: ago(39), acceptedBy: "Supervisor de Proyectos Contactabilidad",
+          assignment: { status: "Aceptada", assignedAt: ago(40), acceptedAt: ago(39), acceptedBy: "Supervisor Contactabilidad",
                         requestedDate: dateOffset(20), requiredTime: 20, capacity: "Una cápsula por semana" },
           requirements: [{ description: "Guion aprobado y autorización de imagen del personal", status: "Recibido",
-                           definedBy: "Supervisor de Proyectos Contactabilidad", definedAt: ago(35), requestedAt: ago(34),
+                           definedBy: "Supervisor Contactabilidad", definedAt: ago(35), requestedAt: ago(34),
                            requestedBy: "Gerente", response: "Aprobado por comunicaciones", responseAt: ago(30) }],
           lastUpdateAt: ago(4),
-          nextAction: { description: "Grabar la cápsula 2 en la sede norte", owner: "Supervisor de Proyectos Contactabilidad", date: dateOffset(6) },
+          nextAction: { description: "Grabar la cápsula 2 en la sede norte", owner: "Supervisor Contactabilidad", date: dateOffset(6) },
           milestones: [
             { name: "Cápsula 1 · manejo de cargas", date: dateOffset(2), baselineDate: dateOffset(2), confirmed: true, progress: 40, hoursAssigned: 14, hoursExecuted: 6 },
             { name: "Cápsula 2 · posturas", date: dateOffset(12), baselineDate: dateOffset(12), confirmed: false, progress: 0, hoursAssigned: 13, hoursExecuted: 0 },
@@ -4665,7 +4668,7 @@ const CATALOG_TEMPLATES = {
   pprs: () => ({ name: "", notes: "" }),
   companies: () => ({ name: "", nit: "", notes: "" }),
   serviceOrders: () => ({ name: "", company: "", date: dateISO(), notes: "" }),
-  people: () => ({ name: "", cargo: "Analista de Proyectos" })
+  people: () => ({ name: "", cargo: "Gestor de Datos 1" })
 };
 const CATALOG_LABELS = { products: "producto", pprs: "PPR", companies: "empresa", serviceOrders: "orden de servicio", people: "persona" };
 function addCatalogRow(key) {
@@ -5016,7 +5019,7 @@ document.addEventListener("click", e => {
     "restore-json": () => document.getElementById("importFile").click(),
     "import-csv": () => document.getElementById("importFile").click(),
     "add-rule": () => { state.settings.assignmentRules.push({ id: uid("rule"), scope: "product", field: "routing",
-                          value: "", role: "Analista de Datos", active: true }); saveState(); renderApp(); },
+                          value: "", role: "Gestor de Datos 1", active: true }); saveState(); renderApp(); },
     "remove-demo": () => confirmModal("Eliminar datos demostrativos",
       "Se eliminarán solo los proyectos marcados como demostrativos.",
       [{ label: "Cancelar" }, { label: "Eliminar", kind: "btn-bad", action: () => {
