@@ -1444,15 +1444,16 @@ function runAutoClosure(p) {
 
 /* ------------------- 5. CARGOS, PERSONAS Y PERMISOS (RN-02) ------------------- */
 
-function peopleList() { return (state.settings.catalogs.people || []).map(x => x.name); }
+/* Los usuarios de la aplicación son los cargos, y solo los cargos. La lista sale de la
+   constante CARGOS: ningún dato guardado, importado o migrado puede agregar nombres. */
+function peopleList() { return CARGOS.slice(); }
 function cargoOf(name) {
+  const c = renameCargo(String(name || "").trim());
+  if (CARGOS.includes(c)) return c;
   const p = (state.settings.catalogs.people || []).find(x => norm(x.name) === norm(name));
-  return p ? p.cargo : "";
+  return p ? renameCargo(p.cargo) : "";
 }
-function personForCargo(cargo) {
-  const p = (state.settings.catalogs.people || []).find(x => norm(x.cargo) === norm(cargo));
-  return p ? p.name : "";
-}
+function personForCargo(cargo) { return CARGOS.includes(cargo) ? cargo : renameCargo(cargo) || ""; }
 function myCargo() { return cargoOf(currentUser()) || "Sin cargo"; }
 function isAdmin() { return CARGOS_ADMIN.includes(myCargo()); }
 function canSell() { return isAdmin() || CARGOS_VENTA.includes(myCargo()); }                 // RN-01
@@ -1591,8 +1592,9 @@ function normalizeCatalogs(c) {
   c.products = objs(c.products, { hours: 0, rate: 0, routing: "Otro" })
     .map(x => ({ ...x, hours: Number(x.hours) || 0, rate: Number(x.rate) || 0,
                  routing: ROUTINGS.includes(x.routing) ? x.routing : "Otro" }));
-  c.people = objs(c.people, { cargo: "Gestor de Datos 1" })
-    .map(x => ({ ...x, cargo: (c => CARGOS.includes(c) ? c : "Gestor de Datos 1")(renameCargo(x.cargo || x.role)) }));
+  // Solo cargos: cualquier resto de bases anteriores (nombres propios, actividades,
+  // productos) se descarta y el catálogo vuelve a los ocho cargos exactos.
+  c.people = CARGOS.map(x => ({ name: x, cargo: x }));
   c.serviceOrders = objs(c.serviceOrders, { company: "", date: "", notes: "" });
   c.technologies = unique((c.technologies || []).map(x => (typeof x === "string" ? x : x.name)));
   c.deliverables = unique((c.deliverables || []).map(x => (typeof x === "string" ? x : x.name)));
@@ -1652,13 +1654,12 @@ function syncCatalogs() {
   add("companies", state.projects.map(p => p.company), { nit: "", notes: "" });
   add("pprs", state.projects.map(p => p.ppr), { notes: "" });
   add("products", state.projects.flatMap(p => (p.products || []).map(x => x.name)), { hours: 0, rate: 0, routing: "Otro" });
-  add("people", state.projects.flatMap(p => [p.seller, p.coordinator, ...(p.products || []).map(x => x.owner)]),
-      { cargo: "Gestor de Datos 1" });
+  // Las personas no se sincronizan desde los proyectos: los usuarios son los cargos.
   state.projects.filter(p => p.commercialRef).forEach(p => {
     if (!catalogFind("serviceOrders", p.commercialRef))
       c.serviceOrders.push({ name: p.commercialRef, company: p.company, date: p.saleDate, notes: "" });
   });
-  if (!peopleList().includes(state.session.user)) state.session.user = peopleList()[0] || "Usuario";
+  if (!CARGOS.includes(state.session.user)) state.session.user = CARGOS.includes(renameCargo(state.session.user)) ? renameCargo(state.session.user) : "Gerente";
 }
 
 /** Convierte bases anteriores (v5 con nombres propios, o v4 con actividades) al modelo 1.1. */
@@ -2106,9 +2107,9 @@ function renderNav() {
   }).join("");
 }
 function renderSession() {
-  const people = unique([...peopleList(), state.session.user]);
+  if (!CARGOS.includes(state.session.user)) state.session.user = "Gerente";
   document.getElementById("sessionUser").innerHTML =
-    people.map(x => `<option ${x === state.session.user ? "selected" : ""}>${esc(x)}</option>`).join("");
+    CARGOS.map(x => `<option ${x === state.session.user ? "selected" : ""}>${esc(x)}</option>`).join("");
   document.getElementById("sessionRole").textContent = myCargo();
   document.getElementById("sessionAvatar").textContent = initials(state.session.user);
 }
@@ -2606,7 +2607,7 @@ function renderProductCard(p, pr) {
       </div>
     </div>
     <div class="pd-grid">
-      <div><span>Cargo responsable</span><b>${pr.role ? fv("role", pr.role, pr.role) : "sin asignar"}</b><small>${esc(pr.owner || "sin persona")}</small></div>
+      <div><span>Cargo responsable</span><b>${pr.role ? fv("role", pr.role, pr.role) : "sin asignar"}</b>${pr.owner && norm(pr.owner) !== norm(pr.role) ? `<small>${esc(pr.owner)}</small>` : ""}</div>
       <div><span>Avance</span>${progress(productProgress(pr), condK(cond), exp)}
         <small>${exp !== null ? `esperado ${fmtPct(exp)}` : "sin programación"}</small></div>
       <div><span>Horas</span><b>${fmtNum(pr.hoursExecuted)} / ${fmtNum(pr.hoursSold)}</b><small>saldo ${fmtNum(productHoursBalance(pr))} h${pr.routing === "Cápsulas" && pr.peopleImpact ? ` · ${fmtNum(pr.peopleImpact)} persona(s) a impactar` : ""}</small></div>
@@ -3205,8 +3206,15 @@ function renderParams() {
     ${crudCard("serviceOrders", "Órdenes de servicio", "Referencia comercial que une la venta con la operación.",
       [{ f: "name", l: "Orden", w: "1fr" }, { f: "company", l: "Empresa", w: "1.6fr", list: "dlCompanies" },
        { f: "date", l: "Fecha", w: "1fr", t: "date" }])}
-    ${crudCard("people", "Personas y cargos", "Las asignaciones se hacen por cargo (RN-02); aquí se define qué persona ocupa cada cargo.",
-      [{ f: "name", l: "Persona", w: "2fr" }, { f: "cargo", l: "Cargo", w: "1.6fr", sel: CARGOS }])}
+    <section class="card">
+      <div class="card-h"><div><h2>Cargos de la aplicación</h2><p>${CARGOS.length} cargos · son los usuarios de la sesión</p></div></div>
+      <div class="card-b">
+        <div class="tags">${CARGOS.map(c => pill(c, CARGOS_VENTA.includes(c) ? "a" : "g")).join("")}</div>
+        <p class="note" style="margin-top:12px">Los usuarios son los cargos, sin nombres de persona (RN-02).
+          Los resaltados pueden generar un nuevo proyecto (RN-01): ${CARGOS_VENTA.join(", ")}.
+          Las asignaciones, la bitácora y las tareas se firman con el cargo.</p>
+      </div>
+    </section>
 
     <section class="card">
       <div class="card-h"><div><h2>Motor de asignación</h2><p>Matriz del §8, parametrizada por cargo</p></div>
@@ -4668,8 +4676,7 @@ const CATALOG_TEMPLATES = {
   products: () => ({ name: "", routing: "Otro", hours: 0, rate: 0 }),
   pprs: () => ({ name: "", notes: "" }),
   companies: () => ({ name: "", nit: "", notes: "" }),
-  serviceOrders: () => ({ name: "", company: "", date: dateISO(), notes: "" }),
-  people: () => ({ name: "", cargo: "Gestor de Datos 1" })
+  serviceOrders: () => ({ name: "", company: "", date: dateISO(), notes: "" })
 };
 const CATALOG_LABELS = { products: "producto", pprs: "PPR", companies: "empresa", serviceOrders: "orden de servicio", people: "persona" };
 function addCatalogRow(key) {

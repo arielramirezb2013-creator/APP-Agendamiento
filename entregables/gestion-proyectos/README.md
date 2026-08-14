@@ -1,12 +1,12 @@
-# Rehavid · Gestión de proyectos v11
+# Rehavid · Gestión de proyectos v12
 
 Aplicación web de un solo archivo que implementa la **Especificación funcional y flujograma
 del proceso de gestión de proyectos, versión 1.1** (Rehavid S.A.S.).
 
 | Archivo | Contenido |
 |---|---|
-| `Rehavid_Gestion_Proyectos_v11.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
-| `Mapa_de_usuario_y_validacion_Rehavid_v11.xlsx` | **Segunda ronda de validación**: mapa de usuario y hoja de observaciones sobre la versión 11, una pestaña por cargo. |
+| `Rehavid_Gestion_Proyectos_v12.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
+| `Mapa_de_usuario_y_validacion_Rehavid_v12.xlsx` | **Segunda ronda de validación** sobre la versión 12: diagrama del proceso, mapa de usuario y una pestaña de observaciones por cargo. |
 | `Mapa_de_usuario_y_validacion_Rehavid.xlsx` | Primera ronda (respondida), conservada como evidencia. |
 | `ESPECIFICACION_FUNCIONAL_v1.1.txt` | Especificación vigente que se implementó. |
 | `ESPECIFICACION_FUNCIONAL_v1.txt` | Versión 1.0, conservada como referencia. |
@@ -20,16 +20,17 @@ La versión 10 aplica las observaciones registradas en el Excel de validación p
 (Director de Proyectos, Jefe de Operaciones, Gestor de Datos, Diseñador y Supervisor), y el
 ajuste de usuarios y permisos definido por la gerencia.
 
-**Usuarios y permisos (versión 11).** Los usuarios de la aplicación son **los cargos, sin
-nombres de persona**: CEO, Gerente, Director de Proyectos, Jefe de Operaciones, Supervisor
-Contactabilidad, Gestor de Datos 1, Gestor de Datos 2 y Diseñador. Solo **CEO, Gerente,
-Director de Proyectos y Jefe de Operaciones** pueden generar un nuevo proyecto (RN-01).
-El Director de Proyectos coordina los Tipo 2 y lidera las mediciones objetivas; el Tablero BI
-corresponde a Gestor de Datos 1; las cápsulas al Supervisor Contactabilidad; el diseño al
-Diseñador (todo parametrizable en el módulo 08). Cuando la gerencia asigne titulares, basta
-cambiar el nombre de cada fila en Parametrización → Personas y cargos. Las bases guardadas con
-denominaciones anteriores (Diseñador Ergónomo, Supervisor de Proyectos Especiales o
-Contactabilidad, Gestor de Datos, Analista de Proyectos) se renombran solas al cargar.
+**Usuarios y permisos (versión 12).** Los usuarios de la aplicación son **los cargos, y solo
+los cargos**: CEO, Gerente, Director de Proyectos, Jefe de Operaciones, Supervisor
+Contactabilidad, Gestor de Datos 1, Gestor de Datos 2 y Diseñador. La lista del selector de
+sesión sale de una constante de la aplicación: **ninguna base guardada, importada o migrada
+puede agregarle nombres** (la versión anterior tomaba la lista del catálogo de personas, que en
+bases viejas venía contaminado con nombres de productos y actividades; al cargar, ese catálogo
+ahora se depura automáticamente a los ocho cargos). Solo **CEO, Gerente, Director de Proyectos
+y Jefe de Operaciones** pueden generar un nuevo proyecto (RN-01). El Director de Proyectos
+coordina los Tipo 2 y lidera las mediciones; el Tablero BI corresponde a Gestor de Datos 1;
+las cápsulas al Supervisor Contactabilidad; el diseño al Diseñador (parametrizable en el
+módulo 08).
 
 **Ajustes aplicados por observación de los revisores:**
 
