@@ -30,6 +30,9 @@ services:
       - cosmos-emulator
     environment:
       COSMOS_ENDPOINT: "https://cosmos-emulator:8081"
+      # El emulador usa certificado self-signed; sin esto el SDK rechaza el TLS.
+      # NO llevar a producción (el arranque lo bloquea si ENVIRONMENT=production).
+      COSMOS_CONNECTION_VERIFY: "false"
     volumes:
       - ./app:/app/app  # hot reload en dev
     command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

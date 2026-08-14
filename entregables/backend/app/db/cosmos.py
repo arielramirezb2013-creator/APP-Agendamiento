@@ -26,7 +26,13 @@ class CosmosRepository:
     """Repositorio simple para operaciones CRUD contra Cosmos DB."""
 
     def __init__(self):
-        self.client = CosmosClient(settings.cosmos_endpoint, settings.cosmos_key)
+        # connection_verify=False solo aplica al emulador local (cert self-signed);
+        # validar_para_arranque() impide llevar ese ajuste a producción.
+        self.client = CosmosClient(
+            settings.cosmos_endpoint,
+            settings.cosmos_key,
+            connection_verify=settings.cosmos_connection_verify,
+        )
         self.db = self.client.create_database_if_not_exists(settings.cosmos_database)
         self._containers = {}
         for name, cfg in CONTAINERS.items():

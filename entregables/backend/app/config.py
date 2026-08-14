@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     cosmos_endpoint: str = "https://localhost:8081"
     cosmos_key: str = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw=="  # default emulador
     cosmos_database: str = "rehavid"
+    # SOLO para el emulador local (certificado self-signed). En Azure real debe
+    # quedar en true; validar_para_arranque() lo exige en producción.
+    cosmos_connection_verify: bool = True
 
     # ─────────────────────────────────────────────
     # Azure Blob Storage (logos, archivos adjuntos)
@@ -84,6 +87,8 @@ class Settings(BaseSettings):
             problemas.append("JWT_SECRET usa el valor por defecto o es demasiado corto (<32).")
         if self.cosmos_key == self._EMULATOR_COSMOS_KEY:
             problemas.append("COSMOS_KEY es la clave pública del emulador, no la de producción.")
+        if not self.cosmos_connection_verify:
+            problemas.append("COSMOS_CONNECTION_VERIFY=false (TLS sin verificar) solo es válido con el emulador local.")
         return problemas
 
     def validar_para_arranque(self) -> None:

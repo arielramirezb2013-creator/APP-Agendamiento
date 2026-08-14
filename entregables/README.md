@@ -49,22 +49,10 @@ entregables/
 ├── frontend/                       ← Entregable 3 · HTML productivo
 │   └── rehavid_v13_produccion.html
 │
-├── docs/                           ← Entregable 4 · Documentación de despliegue
-│   ├── instrucciones_azure_ingeniero.md
-│   └── CHECKLIST_DESPLIEGUE.md
-│
-└── gestion-proyectos/              ← App de gestión de proyectos (producto aparte)
-    ├── README.md                                    ← trazabilidad contra la especificación
-    ├── Rehavid_Gestion_Proyectos_v12.html            ← la aplicación
-    ├── Mapa_de_usuario_y_validacion_Rehavid.xlsx    ← mapa de usuario y hoja de observaciones
-    ├── ESPECIFICACION_FUNCIONAL_v1.1.txt            ← especificación vigente
-    ├── ESPECIFICACION_FUNCIONAL_v1.txt
-    └── Rehavid_Gestion_Proyectos_v4_baseline.html
+└── docs/                           ← Entregable 4 · Documentación de despliegue
+    ├── instrucciones_azure_ingeniero.md
+    └── CHECKLIST_DESPLIEGUE.md
 ```
-
-> **Nota:** `gestion-proyectos/` es un producto independiente del sistema de agendamiento.
-> Implementa la *Especificación funcional y flujograma del proceso de gestión de proyectos v1.1*
-> (venta → activación → asignación → programación → ejecución → cierre por producto).
 
 ---
 
@@ -152,7 +140,7 @@ Modos:
 12. Static Web App (frontend)
 13. DNS personalizado
 14. CI/CD con GitHub Actions
-15. Estimación de costos ($71-$458/mes)
+15. Estimación de costos (USD 150–250/mes piloto · 400–700/mes a escala)
 16. Mantenimiento operacional
 17. Troubleshooting
 18. Checklist post-despliegue
@@ -233,3 +221,21 @@ echo "ML OK"
 ```
 
 Si los 4 echo aparecen, el paquete está íntegro.
+
+
+---
+
+## Producto aparte: `gestion-proyectos/`
+
+`entregables/gestion-proyectos/` es un producto independiente del sistema de agendamiento:
+la aplicación de **gestión de proyectos** (venta → activación → asignación → capacidad →
+plan final → ejecución → cierre automático), según la *Especificación funcional y flujograma
+del proceso de gestión de proyectos v1.1*.
+
+| Archivo | Contenido |
+|---|---|
+| `Rehavid_Gestion_Proyectos_v12.html` | La aplicación (un solo archivo; los usuarios son los ocho cargos). |
+| `Mapa_de_usuario_y_validacion_Rehavid_v12.xlsx` | Segunda ronda de validación: diagrama del proceso, mapa de usuario y una pestaña por cargo. |
+| `Mapa_de_usuario_y_validacion_Rehavid.xlsx` | Primera ronda respondida, como evidencia. |
+| `README.md` | Trazabilidad completa contra la especificación. |
+| `herramientas/` | Generadores del Excel (diagrama + libro). |

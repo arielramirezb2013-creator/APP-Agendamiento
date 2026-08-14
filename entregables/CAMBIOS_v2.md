@@ -4,7 +4,7 @@
 
 Esta versión incorpora **21 observaciones** identificadas en la revisión de QA por parte de Rehavid sobre la versión inicial. De las 21:
 
-- **7 ya estaban resueltas** en la v1 (R002-R009 del Excel original)
+- **7 ya estaban resueltas** en la v1 (cubiertas por las 8 observaciones R002–R009 del Excel original, ya implementadas)
 - **14 fueron implementadas** en esta entrega
 
 ## Las 14 observaciones aplicadas

@@ -156,9 +156,71 @@ críticos y de alto impacto fueron corregidos y verificados.
     (incluida `antiguedad_cliente`, opcional en `PrediccionRequest`) en vez de
     `cliente` (que el modelo no usa).
 
+### Tercera pasada (revisión de la versión corregida)
+
+27. **Wrappers UI sin `await` rompían el modo producción** · frontend.
+    `cancelarReservaUI`, `reprogramarReservaUI`, `confirmarRetornoUI`,
+    `marcarEquipoListoUI`, `enviarAMantenimientoUI` y `darDeBajaUI` hacían
+    `const res = fn(...); if (res.ok)`, pero con backend los interceptores son
+    async → `res` era una Promise y la UI siempre mostraba error aunque la
+    operación hubiera funcionado. Ahora son `async` y aguardan el resultado
+    (en demo `await` sobre un objeto plano es transparente).
+
+28. **`darDeBajaEquipo` sin interceptor de backend** · frontend. La baja (O18)
+    solo mutaba el array local en producción; ahora llama a
+    `POST /equipos/{id}/baja` cuando `USE_BACKEND=true`.
+
+29. **Inyección JS residual vía atributos `onclick`** · frontend. El navegador
+    des-escapa entidades HTML en atributos antes de evaluar el JS, así que
+    `escapeHtml` no protege strings dentro de `onclick="fn('...')"`. El saneo de
+    ingesta de Excel ahora también elimina comillas y backticks.
+
+30. **Solicitud cancelada se mostraba como "Pendiente · 24h"** · frontend.
+    El pill de estados no tenía entrada `cancelada` y su fallback era
+    `pendiente`; se añadió la entrada y el fallback ahora muestra el estado tal
+    cual, nunca "Pendiente".
+
+31. **Export/Import Excel de equipos con claves inexistentes** · frontend.
+    El schema usaba `nombre`/`servicio`/`ciudad`/`activo` (no existen en
+    EQUIPOS) → columnas vacías al exportar y objetos rotos al importar.
+    Alineado a `modelo`/`categoria`/`ciudad_base`/`responsable`, y el import
+    normaliza el estado ("En uso" → `en_uso`) y aplica defaults.
+
+32. **KPI del Brief contaba equipos dados de baja en el total** (O02/O18) y el
+    **gauge "salud del backlog" incluía canceladas** en el denominador ·
+    frontend. Ambos cálculos ahora excluyen lo no operativo.
+
+33. **`filterPlan` dependía del global implícito `event`** · frontend. Los
+    botones ahora pasan `this` y hay respaldo a `window.event`.
+
+34. **`docker-compose up` fallaba el TLS contra el emulador Cosmos** · backend.
+    El certificado self-signed del emulador rompía el handshake del SDK. Nueva
+    variable `COSMOS_CONNECTION_VERIFY` (false solo en el compose local);
+    `validar_para_arranque()` bloquea ese ajuste en producción.
+
+35. **Errores del endpoint ML enmascarados** · backend. `score.py` responde
+    `{"error":...}` con HTTP 200; `_real_prediccion` ahora lo detecta y propaga
+    la causa real al log antes del fallback al mock.
+
+36. **Contrato de estados de Solicitud incompleto** · backend. Se añadieron
+    `en_curso` y `rechazada` al Literal (la UI los usa en pills y filtros).
+
+37. **Menores**: `datetime.utcnow()` deprecado en la ficha de equipo → aware
+    UTC; cota de memoria en el rate limiter de login (purga de entradas
+    expiradas); fallback seguro en `EQUIPO_ESTADOS[...]` ante estados
+    desconocidos; costos del README alineados con la guía Azure (USD 150–250 /
+    400–700); conteo de observaciones de CAMBIOS_v2 aclarado (7 de las 21 de QA
+    cubiertas por las 8 R002–R009).
+
 ---
 
 ## Limitaciones conocidas (trabajo recomendado, no incluido)
+
+- **No existe pantalla de "Nueva reserva"** en el frontend: `crearReserva`
+  (local y backend) está implementado y probado, pero ninguna vista lo invoca —
+  "Atender" una solicitud la confirma sin crear la reserva. Es una brecha
+  funcional del diseño original que requiere una pantalla nueva (decisión de
+  producto, no un bug).
 
 - **Dato de `antiguedad_cliente`**: el contrato ya la contempla, pero mientras la
   UI/negocio no capture la antigüedad real del cliente, el modelo la recibe como 0.
