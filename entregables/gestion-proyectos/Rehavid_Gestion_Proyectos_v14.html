@@ -505,6 +505,8 @@
     .kcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .12s,border-color .12s;width:100%}
     .kcard:hover{box-shadow:var(--sh-2);border-color:var(--line-3)}
     .kcard .kt{font-size:12.5px;font-weight:500;color:var(--ink);line-height:1.45;display:block}
+    .kcard .kco,.un-item .kco{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .un-item .kco{font-size:10.5px;margin-top:2px}
     .kcard .ke{margin:7px 0 0;display:flex;gap:5px;flex-wrap:wrap}
     .kcard .kf{display:flex;align-items:center;gap:7px;margin-top:9px}
     .kcard .kf svg{width:14px;height:14px;color:var(--rv);flex:none}
@@ -3218,6 +3220,7 @@ function renderCalendar(projects) {
       <div class="un-list">
         ${sinProgramar.map(({ pr, p }) => `<button class="un-item" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}">
             <span class="ut">${esc(pr.name)}</span>
+            <span class="kco">${esc(p.company || "Sin empresa")}</span>
             <span class="uf">${ico("check", 13)}<span class="kcode">${esc(p.code)}</span>${pill(pr.status, stateK(pr.status))}</span>
           </button>`).join("") ||
           `<p class="note">Todo lo abierto tiene fechas comprometidas. ✓</p>`}
@@ -3441,6 +3444,7 @@ function kanbanCard({ pr, p }) {
   return `<button class="kcard" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}"
       title="${esc(p.company)} · ${esc(pr.status)} · abrir la ficha">
     <span class="kt">${esc(pr.name)}</span>
+    <span class="kco">${esc(p.company || "Sin empresa")}</span>
     <span class="ke">${pill(pr.routing || "Producto", "e")}${isOpenProduct(pr) && c !== "En tiempo" ? pill(c, kk) : ""}</span>
     ${isOpenProduct(pr) ? `<span class="kprog"><span class="prog ${kk}"><i style="width:${avance}%"></i></span></span>` : ""}
     <span class="kf">${ico("check", 14)}<span class="kcode">${esc(p.code)}</span>
