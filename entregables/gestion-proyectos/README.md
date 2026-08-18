@@ -1,11 +1,12 @@
-# Rehavid · Gestión de proyectos v13
+# Rehavid · Gestión de proyectos v14
 
 Aplicación web de un solo archivo que implementa la **Especificación funcional y flujograma
 del proceso de gestión de proyectos, versión 1.1** (Rehavid S.A.S.).
 
 | Archivo | Contenido |
 |---|---|
-| `Rehavid_Gestion_Proyectos_v13.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
+| `Rehavid_Gestion_Proyectos_v14.html` | **La aplicación** (interfaz estilo Jira Premium). Se abre con doble clic; no requiere servidor. |
+| `Rehavid_Gestion_Proyectos_v13.html` | Versión anterior, conservada mientras corre la segunda ronda de validación documentada en el mapa v13. |
 | `bases/Base_BI.xlsx` | Base de alimentación del frente de **Tableros BI** (la llena Gestor de Datos 1 y 2). |
 | `bases/Base_Diseno_Ergonomico.xlsx` | Base de alimentación del frente de **Diseño ergonómico** (la llena el Diseñador). |
 | `bases/Base_General.xlsx` | Base de alimentación de los **demás productos y los catálogos**: empresas, PPR, productos y tarifas, órdenes de servicio (la llena Gerente / CEO). |
@@ -34,6 +35,23 @@ y Jefe de Operaciones** pueden generar un nuevo proyecto (RN-01). El Director de
 coordina los Tipo 2 y lidera las mediciones; el Tablero BI corresponde a Gestor de Datos 1;
 las cápsulas al Supervisor Contactabilidad; el diseño al Diseñador (parametrizable en el
 módulo 08).
+
+**Novedades de la versión 14 · interfaz estilo Jira Premium.**
+
+- **Chrome tipo Jira:** barra superior blanca con buscador global y botón azul **Crear**
+  (el registro de la venta, RN-01), barra lateral con «Para ti · Guía», accesos del espacio,
+  las empresas con proyectos activos y la configuración; pestañas de vista subrayadas en azul
+  (Resumen · Tablero · Lista · Calendario · Empresas y productos · Alertas · Mis asignaciones ·
+  Planes de trabajo) y paleta Atlassian con lozenges de estado.
+- **Tablero (nuevo):** las actividades como tarjetas kanban en cuatro columnas —Por hacer,
+  En curso, En pausa y Finalizada— con chip de categoría, condición, avance, código y cargo;
+  el estado se mueve con las acciones del proceso y cada tarjeta abre su ficha.
+- **Lista (nueva):** todas las actividades en una tabla ordenable (código, actividad, empresa,
+  categoría, responsable, estado, condición, avance, fechas y horas).
+- **Calendario:** botón «Hoy», navegación por mes y panel **«Actividad no programada»** con las
+  actividades abiertas sin fechas, para abrirlas y comprometer fechas.
+- Todo el dominio se conserva: cargos, activación, asignación, coordinación, planes, cierre y
+  las bases de alimentación (RN-01 a RN-18); 54 verificaciones de navegador en verde.
 
 **Novedades de la versión 13.**
 

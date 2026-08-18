@@ -234,7 +234,7 @@ del proceso de gestión de proyectos v1.1*.
 
 | Archivo | Contenido |
 |---|---|
-| `Rehavid_Gestion_Proyectos_v13.html` | La aplicación (un solo archivo; los usuarios son los ocho cargos; arranca con un módulo de guía). |
+| `Rehavid_Gestion_Proyectos_v14.html` | La aplicación (un solo archivo; interfaz estilo Jira Premium con tablero kanban, lista y calendario; los usuarios son los ocho cargos). |
 | `bases/` | Las tres bases de alimentación en Excel: `Base_BI.xlsx`, `Base_Diseno_Ergonomico.xlsx` y `Base_General.xlsx` (productos restantes + catálogos). |
 | `Mapa_de_usuario_y_validacion_Rehavid_v13.xlsx` | Segunda ronda de validación (v13): diagrama del proceso, mapa de usuario y una pestaña por cargo. |
 | `Mapa_de_usuario_y_validacion_Rehavid.xlsx` | Primera ronda respondida, como evidencia. |
