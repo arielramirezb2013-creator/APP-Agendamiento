@@ -215,7 +215,8 @@
 
     /* ---------------- Gráficos ---------------- */
     .charts{display:grid;gap:14px;margin-bottom:14px}
-    .chart-row-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+    .chart-row-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:14px}
+    .chart-row-2>.card{margin-top:0}
     .donut-wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
     .donut{position:relative;width:128px;height:128px;flex:none}
     .donut svg{width:100%;height:100%;display:block;transform:rotate(-90deg)}
@@ -278,6 +279,7 @@
     table.t tfoot td{background:var(--rvl3);font-weight:700;color:var(--ink);border-top:1px solid var(--line);border-bottom:0}
     .rt{text-align:right}
     .nm{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+    table.t td.code{white-space:nowrap}
     .lk{border:0;background:transparent;padding:0;text-align:left;color:var(--rv);font-weight:600;font-size:12px}
     .lk:hover{text-decoration:underline}
     .fv{border:0;background:transparent;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
@@ -587,9 +589,11 @@
       .cal-wrap{grid-template-columns:minmax(0,1fr)}
       .cal-side{border-left:0;border-top:1px solid var(--line)}
     }
+    .sbveil{display:none}
     @media(max-width:1100px){
-      .sidebar{position:fixed;left:0;top:49px;z-index:55;transform:translateX(-105%);transition:transform .2s;box-shadow:var(--sh-2)}
+      .sidebar{position:fixed;left:0;top:0;height:100vh;z-index:56;transform:translateX(-105%);transition:transform .2s;box-shadow:var(--sh-2)}
       .shell.sb-open .sidebar{transform:translateX(0)}
+      .shell.sb-open .sbveil{display:block;position:fixed;inset:0;background:rgba(9,30,66,.45);z-index:54}
       .hdr-burger{display:inline-flex}
     }
     @media(max-width:960px){
@@ -665,6 +669,7 @@
   <div class="accent"></div>
 
   <div class="body-wrap">
+    <div class="sbveil" id="sbVeil" aria-hidden="true"></div>
     <aside class="sidebar" id="sidebar" aria-label="Navegación del espacio">
       <nav class="sb-nav" id="sbNav"></nav>
       <div class="sb-foot">
@@ -801,7 +806,7 @@ const ALERT_DEFS = [
     test: (pr, p, sla) => {
       if (pr.assignment.status !== "En ajuste") return false;
       const d = Math.floor(hoursSince(pr.assignment.proposedAt || pr.assignment.assignedAt) / 24);
-      return `Ajuste propuesto hace ${d} día(s): ${pr.assignment.justification || "sin justificación"}.`;
+      return `Ajuste propuesto hace ${d} día(s): ${String(pr.assignment.justification || "sin justificación").replace(/\.+$/, "")}.`;
     } },
   { code: "req_undefined", label: "Requisitos sin definir", sev: "Media",
     desc: "El líder del producto no ha definido qué información necesita del cliente.",
@@ -2183,7 +2188,7 @@ function renderSidebar(counts) {
     const on = state.view === id;
     return `<button class="sb-item ${on ? "active" : ""}" data-view="${esc(id)}">${ico(icon, 16)}<span>${esc(label)}</span>${extra}</button>`;
   };
-  const activas = [...groupBy(state.projects.filter(p => p.state === "Activo"), p => p.company || "Sin empresa").entries()]
+  const activas = [...groupBy(state.projects.filter(p => p.state === "Activo" && String(p.company || "").trim()), p => p.company).entries()]
     .sort((a, b) => b[1].length - a[1].length).slice(0, 5);
   host.innerHTML = `
     ${item("guide", "info", "Para ti · Guía")}
@@ -2301,6 +2306,10 @@ function sortTable(th) {
   const valor = tr => {
     const c = tr.children[i];
     if (!c) return "";
+    if (c.dataset.sort !== undefined) {
+      const n = Number(c.dataset.sort);
+      return c.dataset.sort !== "" && isFinite(n) ? n : norm(c.dataset.sort);
+    }
     const txt = c.textContent.trim();
     const num = Number(txt.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", "."));
     const esNum = /\d/.test(txt) && isFinite(num) && (c.classList.contains("nm") || c.classList.contains("rt") || /^[\s$+-]*[\d.,]+\s*\w{0,3}$/.test(txt));
@@ -2457,7 +2466,7 @@ function hbars(rows, filterKey) {
     <div class="mini-legend">
       ${["En tiempo", "En riesgo", "Retrasado"].map(c => `<button class="mleg${markOf(condSel, c)}" ${filterAttrs("condition", c)}
         title="Clic para acotar por ${esc(c)} · Ctrl+clic para sumar"><i style="background:${COND_COLOR[c]}"></i>${c}</button>`).join("")}
-      <span class="mleg-off"><i style="background:var(--faint)"></i>completado o cerrado</span>
+      <span class="mleg-off"><i style="background:var(--faint)"></i>Completado o cerrado</span>
     </div>`;
 }
 
@@ -2604,7 +2613,7 @@ function renderCompanies(projects) {
           <span class="co-mark" style="width:40px;height:40px;font-size:14px">${esc(initials(company))}</span>
           <div><h2 style="font-size:16px">${esc(company)}</h2>
             <p>${list.length} proyecto(s) · ${prods.length} producto(s) · ${fmtNum(sum(list, projectHoursSold))} h · ${fmtMoneyShort(sum(list, projectValue))}</p></div>
-          <div class="sp">${pill(cond, condK(cond))}${alerts ? pill(`${alerts} alerta(s)`, "b") : pill("sin alertas", "o")}
+          <div class="sp">${pill(cond, condK(cond))}${alerts ? pill(`${alerts} alerta(s)`, "b") : pill("Sin alertas", "o")}
             <button class="btn btn-pri btn-s" data-filter-key="company" data-filter-value="${esc(company)}">Abrir ficha</button></div>
         </div></section>`;
     }).join("")}`;
@@ -2632,7 +2641,7 @@ function renderCompanyFile(company, list) {
       </div>
       <div class="row">
         ${pill(cond, condK(cond))}
-        ${alerts.length ? pill(`${alerts.length} alerta(s)`, "b") : pill("sin alertas", "o")}
+        ${alerts.length ? pill(`${alerts.length} alerta(s)`, "b") : pill("Sin alertas", "o")}
         <button class="btn btn-s" data-remove-filter="company" data-value="${esc(company)}">← Todas las empresas</button>
       </div>
     </div>
@@ -3164,16 +3173,13 @@ function calendarEvents(projects) {
   return map;
 }
 function renderCalendar(projects) {
-  const co = state.ui.calendarCompany;
-  const scoped = co ? projects.filter(p => p.company === co) : projects;
+  const scoped = projects;
   const { year, month } = state.calendar;
   const cells = calendarCells(year, month);
   const hol = colombiaHolidays(year), holMap = new Map(hol.map(h => [h.date, h]));
   const events = calendarEvents(scoped);
   const monthEvents = cells.filter(c => c.inMonth).flatMap(c => events.get(c.date) || []);
   const monthHol = hol.filter(h => toDate(h.date)?.getMonth() === month);
-  const companies = unique(projects.map(p => p.company));
-  const years = Array.from({ length: 9 }, (_, i) => year - 4 + i);
   const sinProgramar = scoped.flatMap(p => (p.products || [])
     .filter(pr => productMatchesFilters(pr, p) && isOpenProduct(pr) && !pr.startDate && !pr.endDate)
     .map(pr => ({ pr, p })));
@@ -3185,16 +3191,7 @@ function renderCalendar(projects) {
         <button class="btn btn-s btn-ico" data-cal-shift="1" aria-label="Mes siguiente">→</button>
         <h2>${MONTHS[month]} ${year}</h2>
       </div>
-      <p class="note">${co ? esc(co) : "Todas las empresas"} · ${scoped.length} proyecto(s) · ${monthEvents.length} evento(s)</p>
-      <div class="cal-ctl" style="margin-left:auto">
-        <label class="sr-only" for="calCompany">Empresa</label>
-        <select id="calCompany"><option value="">Todas las empresas</option>
-          ${companies.map(c => `<option ${c === co ? "selected" : ""}>${esc(c)}</option>`).join("")}</select>
-        <label class="sr-only" for="calMonth">Mes</label>
-        <select id="calMonth">${MONTHS.map((m, i) => `<option value="${i}" ${i === month ? "selected" : ""}>${m}</option>`).join("")}</select>
-        <label class="sr-only" for="calYear">Año</label>
-        <select id="calYear">${years.map(y => `<option ${y === year ? "selected" : ""}>${y}</option>`).join("")}</select>
-      </div>
+      <p class="note" style="margin-left:auto">${activeFilterCount() ? "Corte según los filtros activos" : "Todas las empresas"} · ${scoped.length} proyecto(s) · ${monthEvents.length} evento(s)</p>
     </div>
     <div class="cal-wrap">
     <div class="cal-main">
@@ -3437,6 +3434,7 @@ function boardRows(projects) {
 
 function kanbanCard({ pr, p }) {
   const c = productCondition(pr, p), kk = condK(c);
+  const avance = Math.round(clamp(productProgress(pr), 0, 100));
   const role = pr.role || "";
   const due = pr.endDate || pr.plannedEnd || "";
   const late = c === "Retrasado";
@@ -3444,7 +3442,7 @@ function kanbanCard({ pr, p }) {
       title="${esc(p.company)} · ${esc(pr.status)} · abrir la ficha">
     <span class="kt">${esc(pr.name)}</span>
     <span class="ke">${pill(pr.routing || "Producto", "e")}${isOpenProduct(pr) && c !== "En tiempo" ? pill(c, kk) : ""}</span>
-    ${isOpenProduct(pr) ? `<span class="kprog"><span class="prog ${kk}"><i style="width:${Math.round(clamp(pr.progress || 0, 0, 100))}%"></i></span></span>` : ""}
+    ${isOpenProduct(pr) ? `<span class="kprog"><span class="prog ${kk}"><i style="width:${avance}%"></i></span></span>` : ""}
     <span class="kf">${ico("check", 14)}<span class="kcode">${esc(p.code)}</span>
       ${due ? `<span class="kdue ${late ? "late" : ""}">${formatDate(due, true)}</span>` : ""}
       <span class="kav" title="${esc(role || "Sin asignar")}">${esc(initials(role || "·"))}</span></span>
@@ -3453,6 +3451,10 @@ function kanbanCard({ pr, p }) {
 
 function renderBoard(projects) {
   const rows = boardRows(projects);
+  if (!rows.length && (activeFilterCount() > 0 || state.search)) {
+    return `<section class="card">${empty("Sin actividades con este corte",
+      "Los filtros o la búsqueda activos no dejan ninguna actividad en el tablero. Límpialos para volver a ver las tarjetas.")}</section>`;
+  }
   if (!rows.length) {
     return `<section class="card"><div class="empty">
       ${ico("columns", 44)}
@@ -3493,18 +3495,19 @@ function renderList(projects) {
         <th>Estado</th><th>Condición</th><th>Avance</th><th>Inicio</th><th>Objetivo</th><th class="rt">Horas</th></tr></thead>
       <tbody>${rows.map(({ pr, p }) => {
         const c = productCondition(pr, p), abierto = isOpenProduct(pr);
+        const avance = Math.round(clamp(productProgress(pr), 0, 100));
         return `<tr>
-          <td class="sm muted num">${esc(p.code)}</td>
+          <td class="sm muted num code">${esc(p.code)}</td>
           <td><button class="lk" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}">${esc(pr.name)}</button></td>
           <td class="sm">${esc(p.company)}</td>
           <td>${pill(pr.routing || "—", "e")}</td>
           <td class="sm">${esc(pr.role || "Sin asignar")}</td>
           <td>${pill(pr.status, stateK(pr.status))}</td>
           <td>${abierto ? pill(c, condK(c)) : `<span class="muted sm">—</span>`}</td>
-          <td><span class="progline"><span class="prog ${abierto ? condK(c) : "o"}"><i style="width:${Math.round(clamp(pr.progress || 0, 0, 100))}%"></i></span><b>${Math.round(pr.progress || 0)}%</b></span></td>
-          <td class="sm num">${pr.startDate ? formatDate(pr.startDate, true) : "—"}</td>
-          <td class="sm num">${pr.endDate ? formatDate(pr.endDate, true) : "—"}</td>
-          <td class="nm">${fmtNum(pr.hoursExecuted || 0)} / ${fmtNum(pr.hoursSold || 0)}</td>
+          <td data-sort="${avance}"><span class="progline"><span class="prog ${abierto ? condK(c) : "o"}"><i style="width:${avance}%"></i></span><b>${avance}%</b></span></td>
+          <td class="sm num" data-sort="${esc(pr.startDate || "")}">${pr.startDate ? formatDate(pr.startDate, true) : "—"}</td>
+          <td class="sm num" data-sort="${esc(pr.endDate || "")}">${pr.endDate ? formatDate(pr.endDate, true) : "—"}</td>
+          <td class="nm" data-sort="${Number(pr.hoursExecuted) || 0}">${fmtNum(pr.hoursExecuted || 0)} / ${fmtNum(pr.hoursSold || 0)}</td>
         </tr>`;
       }).join("") || `<tr><td colspan="11" class="muted sm">Sin actividades con los filtros actuales.</td></tr>`}</tbody>
     </table></div></div>
@@ -5770,9 +5773,6 @@ document.addEventListener("change", e => {
   }
   if (el.id === "assignCargo") { state.ui.assignmentOwner = el.value; renderApp(); return; }
   if (el.id === "sessionUser") { state.session.user = el.value; saveState(); renderApp(); return; }
-  if (el.id === "calCompany") { state.ui.calendarCompany = el.value; renderView(); return; }
-  if (el.id === "calMonth") { state.calendar.month = Number(el.value); renderView(); return; }
-  if (el.id === "calYear") { state.calendar.year = Number(el.value); renderView(); return; }
   if (el.matches("[data-sla]")) { state.settings.sla[el.dataset.sla] = clamp(Number(el.value) || 0, 0, 1000); saveState(); renderApp(); return; }
   if (el.matches("[data-setting]")) { state.settings[el.dataset.setting] = el.value; saveState(); return; }
   if (el.matches("[data-cat]")) { updateCatalogField(el.dataset.cat, Number(el.dataset.index), el.dataset.catField, el.value); return; }
@@ -5878,6 +5878,10 @@ document.getElementById("sidebar").addEventListener("click", e => {
     document.getElementById("shell").classList.remove("sb-open");
     document.getElementById("sbToggle").setAttribute("aria-expanded", "false");
   }
+});
+document.getElementById("sbVeil").addEventListener("click", () => {
+  document.getElementById("shell").classList.remove("sb-open");
+  document.getElementById("sbToggle").setAttribute("aria-expanded", "false");
 });
 
 /* ------------------------------ 19. INICIO ------------------------------ */
