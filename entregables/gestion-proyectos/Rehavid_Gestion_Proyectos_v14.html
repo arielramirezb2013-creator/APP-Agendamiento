@@ -505,6 +505,24 @@
     .kcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:10px 12px;text-align:left;cursor:pointer;transition:box-shadow .12s,border-color .12s;width:100%}
     .kcard:hover{box-shadow:var(--sh-2);border-color:var(--line-3)}
     .kcard .kt{font-size:12.5px;font-weight:500;color:var(--ink);line-height:1.45;display:block}
+    .vpills{display:flex;gap:2px;align-items:center;flex-wrap:wrap;margin-left:6px}
+    .vpill{border:0;background:transparent;color:var(--muted);font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;cursor:pointer;white-space:nowrap;transition:background .12s,color .12s}
+    .vpill:hover{background:var(--rvl3);color:var(--ink)}
+    .vpill.on{color:var(--rv);background:var(--rvl);box-shadow:inset 0 0 0 1px var(--rv)}
+    .softlz{display:inline-flex;align-items:center;gap:6px;border-radius:4px;padding:3px 10px;font-size:11.5px;font-weight:600;white-space:nowrap}
+    .softlz.o{background:var(--grl);color:var(--grd)}
+    .softlz.w{background:var(--warn-soft);color:var(--warn)}
+    .softlz.b{background:var(--bad-soft);color:var(--bad)}
+    .softlz.g{background:var(--line-2);color:var(--ink-2)}
+    .score{border-radius:4px;padding:1px 7px;font-size:10.5px;font-weight:800;font-variant-numeric:tabular-nums;flex:none}
+    .score.o{background:var(--grl);color:var(--grd)}
+    .score.w{background:var(--warn-soft);color:var(--warn)}
+    .score.b{background:var(--bad-soft);color:var(--bad)}
+    .score.g{background:var(--line-2);color:var(--ink-2)}
+    .datechip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:6px;padding:2px 8px;font-size:11px;color:var(--ink-2);white-space:nowrap}
+    .datechip svg{color:var(--muted)}
+    .owner{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+    .avmini{width:20px;height:20px;border-radius:50%;background:var(--rv);color:#fff;display:inline-grid;place-items:center;font-size:8.5px;font-weight:800;flex:none}
     .kcard .kco,.un-item .kco{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .un-item .kco{font-size:10.5px;margin-top:2px}
     .kcard .ke{margin:7px 0 0;display:flex;gap:5px;flex-wrap:wrap}
@@ -1097,7 +1115,7 @@ const state = {
   calendar: { year: new Date().getFullYear(), month: new Date().getMonth() },
   ui: { collapsedProjects: new Set(), collapsedCompanies: new Set(), openPlans: new Set(),
         openSections: new Set(["sec-master", "sec-products"]), openProducts: new Set(),
-        assignmentOwner: "", calendarCompany: "", dataSet: "productos" },
+        assignmentOwner: "", calendarCompany: "", dataSet: "productos", listScope: "todas" },
   draft: null, draftBaseline: null, selectedId: null, drawerMode: null, wizardStep: 1
 };
 
@@ -1466,6 +1484,16 @@ function nextCommitment(p) {
       items.push({ date: n.newDate, label: `Revisión de suspensión · ${pr.name}`, owner: n.owner || pr.owner, productId: pr.id });
   });
   return items.sort((a, b) => a.date.localeCompare(b.date))[0] || null;
+}
+function timeAgo(iso) {
+  if (!iso) return "\u2014";
+  const d = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (!isFinite(d)) return "\u2014";
+  if (d <= 0) return "Hoy";
+  if (d === 1) return "Hace 1 d\u00eda";
+  if (d < 30) return `Hace ${d} d\u00edas`;
+  const m = Math.floor(d / 30);
+  return m === 1 ? "Hace 1 mes" : `Hace ${m} meses`;
 }
 function lastProjectUpdate(p) {
   return [p.updatedAt, ...(p.products || []).map(x => x.lastUpdateAt)].filter(Boolean).sort().at(-1) || p.updatedAt;
@@ -2546,6 +2574,33 @@ function renderDashboard(projects) {
   </section>
 
   <section class="card">
+    <div class="card-h"><div><h2>${ico("briefcase", 14)}${projects.length} proyecto(s)</h2>
+      <p>El portafolio maestro: estado, avance, fecha prevista, quién coordina y su última actualización · clic en el nombre para abrir la ficha</p></div></div>
+    <div class="card-b tight"><div class="tw"><table class="t">
+      <thead><tr><th>Proyecto</th><th>Empresa</th><th>Estado</th><th>Avance</th><th>Fecha prevista</th><th>Propietario</th><th>Última actualización</th></tr></thead>
+      <tbody>${projects.map(p => {
+        const cerrado = p.state === "Cerrado", borrador = p.state === "Borrador";
+        const cond = projectCondition(p);
+        const est = cerrado ? ["Finalizado", "g"] : borrador ? ["Borrador", "g"]
+          : cond === "En tiempo" ? ["Según lo previsto", "o"] : cond === "En riesgo" ? ["En riesgo", "w"] : ["Atrasado", "b"];
+        const av = Math.round(clamp(projectProgress(p), 0, 100));
+        const kk = cerrado || borrador ? "o" : condK(cond);
+        const fin = (p.products || []).map(x => x.endDate).filter(Boolean).sort().at(-1) || "";
+        const upd = lastProjectUpdate(p);
+        return `<tr>
+          <td><button class="lk" data-open-project="${esc(p.id)}"><span class="code">${esc(p.code)}</span> · ${esc(p.type)}</button></td>
+          <td class="sm">${esc(p.company)}</td>
+          <td data-sort="${esc(est[0])}"><span class="softlz ${est[1]}"><i class="dot ${est[1]}"></i>${est[0]}</span></td>
+          <td data-sort="${av}"><span class="progline"><span class="prog ${kk}"><i style="width:${av}%"></i></span><span class="score ${est[1]}">${(av / 100).toFixed(1)}</span></span></td>
+          <td class="sm num" data-sort="${esc(fin)}">${fin ? `<span class="datechip">${ico("calendar", 12)}${formatDate(fin, true)}</span>` : `<span class="muted">\u2014</span>`}</td>
+          <td class="sm"><span class="owner"><span class="avmini" title="${esc(p.coordinatorRole || "Sin definir")}">${esc(initials(p.coordinatorRole || "\u00b7"))}</span>${esc(p.coordinatorRole || "Sin definir")}</span></td>
+          <td class="sm muted num" data-sort="${esc(upd || "")}">${timeAgo(upd)}</td>
+        </tr>`;
+      }).join("") || `<tr><td colspan="7" class="muted sm">Sin proyectos con los filtros actuales.</td></tr>`}</tbody>
+    </table></div></div>
+  </section>
+
+  <section class="card">
     <div class="card-h"><div><h2>${ico("layers", 14)}Por tipo de proyecto</h2><p>Clasificación que gobierna la coordinación asignada</p></div></div>
     <div class="card-b">
       <div class="donut-wrap">
@@ -3488,15 +3543,21 @@ function renderBoard(projects) {
 }
 
 function renderList(projects) {
-  const rows = boardRows(projects);
+  const todas = boardRows(projects);
+  const scope = state.ui.listScope || "todas";
+  const rows = scope === "mias" ? todas.filter(({ pr }) => pr.role === myCargo())
+    : scope === "cerradas" ? todas.filter(({ pr }) => !isOpenProduct(pr))
+    : todas;
   const abiertos = rows.filter(({ pr }) => isOpenProduct(pr)).length;
+  const vp = (k, label) => `<button class="vpill ${scope === k ? "on" : ""}" data-list-scope="${k}">${label}</button>`;
   return `<section class="card">
-    <div class="card-h"><div><h2>${ico("rows", 15)}Todas las actividades</h2>
-      <p>${rows.length} actividad(es) · ${abiertos} abiertas · clic en un encabezado para ordenar, en el nombre para abrir</p></div>
+    <div class="card-h"><div><h2>${ico("rows", 15)}${rows.length} actividad(es)</h2>
+      <p>${abiertos} abiertas · clic en un encabezado para ordenar, en el nombre para abrir</p></div>
+      <div class="vpills">${vp("todas", "Todas las actividades")}${vp("mias", "Mis actividades")}${vp("cerradas", "Cerradas")}</div>
       <div class="sp">${canSell() ? `<button class="btn btn-s btn-pri" data-view="newproject">+ Crear</button>` : ""}</div></div>
     <div class="card-b tight"><div class="tw"><table class="t">
       <thead><tr><th>Código</th><th>Actividad</th><th>Empresa</th><th>Categoría</th><th>Responsable</th>
-        <th>Estado</th><th>Condición</th><th>Avance</th><th>Inicio</th><th>Objetivo</th><th class="rt">Horas</th></tr></thead>
+        <th>Estado</th><th>Condición</th><th>Avance</th><th>Inicio</th><th>Objetivo</th><th class="rt">Horas</th><th>Última actualización</th></tr></thead>
       <tbody>${rows.map(({ pr, p }) => {
         const c = productCondition(pr, p), abierto = isOpenProduct(pr);
         const avance = Math.round(clamp(productProgress(pr), 0, 100));
@@ -3512,8 +3573,9 @@ function renderList(projects) {
           <td class="sm num" data-sort="${esc(pr.startDate || "")}">${pr.startDate ? formatDate(pr.startDate, true) : "—"}</td>
           <td class="sm num" data-sort="${esc(pr.endDate || "")}">${pr.endDate ? formatDate(pr.endDate, true) : "—"}</td>
           <td class="nm" data-sort="${Number(pr.hoursExecuted) || 0}">${fmtNum(pr.hoursExecuted || 0)} / ${fmtNum(pr.hoursSold || 0)}</td>
+          <td class="sm muted num" data-sort="${esc(pr.lastUpdateAt || "")}">${timeAgo(pr.lastUpdateAt)}</td>
         </tr>`;
-      }).join("") || `<tr><td colspan="11" class="muted sm">Sin actividades con los filtros actuales.</td></tr>`}</tbody>
+      }).join("") || `<tr><td colspan="12" class="muted sm">Sin actividades ${scope === "mias" ? "de su cargo " : scope === "cerradas" ? "cerradas " : ""}con los filtros actuales.</td></tr>`}</tbody>
     </table></div></div>
   </section>`;
 }
@@ -5627,6 +5689,8 @@ document.addEventListener("click", e => {
             if (keep !== false) closeModal(); return; }
   if (t.closest("[data-modal-submit]")) { if (modalHandlers.submit) modalHandlers.submit(); return; }
 
+  const lsc = t.closest("[data-list-scope]");
+  if (lsc) { state.ui.listScope = lsc.dataset.listScope; renderView(); return; }
   const coj = t.closest("[data-co-jump]");
   if (coj) {
     state.filters.company = [coj.dataset.coJump];
