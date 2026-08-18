@@ -1,12 +1,15 @@
-# Rehavid · Gestión de proyectos v12
+# Rehavid · Gestión de proyectos v13
 
 Aplicación web de un solo archivo que implementa la **Especificación funcional y flujograma
 del proceso de gestión de proyectos, versión 1.1** (Rehavid S.A.S.).
 
 | Archivo | Contenido |
 |---|---|
-| `Rehavid_Gestion_Proyectos_v12.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
-| `Mapa_de_usuario_y_validacion_Rehavid_v12.xlsx` | **Segunda ronda de validación** sobre la versión 12: diagrama del proceso, mapa de usuario y una pestaña de observaciones por cargo. |
+| `Rehavid_Gestion_Proyectos_v13.html` | La aplicación. Se abre con doble clic; no requiere servidor. |
+| `bases/Base_BI.xlsx` | Base de alimentación del frente de **Tableros BI** (la llena Gestor de Datos 1 y 2). |
+| `bases/Base_Diseno_Ergonomico.xlsx` | Base de alimentación del frente de **Diseño ergonómico** (la llena el Diseñador). |
+| `bases/Base_General.xlsx` | Base de alimentación de los **demás productos y los catálogos**: empresas, PPR, productos y tarifas, órdenes de servicio (la llena Gerente / CEO). |
+| `Mapa_de_usuario_y_validacion_Rehavid_v13.xlsx` | **Segunda ronda de validación**, actualizada a la versión 13: diagrama del proceso (incluida la alimentación por bases), mapa de usuario y una pestaña de observaciones por cargo. |
 | `Mapa_de_usuario_y_validacion_Rehavid.xlsx` | Primera ronda (respondida), conservada como evidencia. |
 | `ESPECIFICACION_FUNCIONAL_v1.1.txt` | Especificación vigente que se implementó. |
 | `ESPECIFICACION_FUNCIONAL_v1.txt` | Versión 1.0, conservada como referencia. |
@@ -31,6 +34,23 @@ y Jefe de Operaciones** pueden generar un nuevo proyecto (RN-01). El Director de
 coordina los Tipo 2 y lidera las mediciones; el Tablero BI corresponde a Gestor de Datos 1;
 las cápsulas al Supervisor Contactabilidad; el diseño al Diseñador (parametrizable en el
 módulo 08).
+
+**Novedades de la versión 13.**
+
+- **Módulo 00 · Guía.** Primer módulo de la aplicación: qué es la herramienta, el flujo en
+  seis pasos, cómo se alimenta con las tres bases de Excel y cómo se gestiona según el cargo.
+  La primera vez que alguien abre la aplicación, arranca en la guía; después queda disponible
+  en su pestaña.
+- **Bases de alimentación en Excel.** Tres libros en `bases/`, uno por frente: `Base_BI.xlsx`
+  (Tableros BI), `Base_Diseno_Ergonomico.xlsx` (Diseño ergonómico) y `Base_General.xlsx`
+  (los demás productos **y los catálogos**: empresas, PPR, productos y tarifas, órdenes).
+  Cada libro trae hoja de instrucciones, fila de pistas, ejemplos y listas desplegables.
+- **Carga dentro de la aplicación.** En **Bases y auditoría → Cargar base** (o desde la guía)
+  se sube el `.xlsx`; la aplicación lo lee sin ninguna librería externa, valida las hojas,
+  **crea lo nuevo y actualiza lo que coincide** por código de proyecto y nombre de producto
+  (no borra nada), aplica contactos, hitos, seguimiento y catálogos, y si el proyecto viene
+  con `activar = SI` corre las validaciones de activación y genera las asignaciones por cargo.
+  Al final muestra un resumen de lo cargado y todo queda en la bitácora (RN-18).
 
 **Ajustes aplicados por observación de los revisores:**
 

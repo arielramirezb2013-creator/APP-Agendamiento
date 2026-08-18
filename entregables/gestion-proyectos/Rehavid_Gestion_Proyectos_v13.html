@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Rehavid · Gestión de proyectos v8 · venta, activación, asignación por cargos, negociación de capacidad, plan de trabajo final, ejecución y cierre automático." />
-  <title>Rehavid | Gestión de proyectos</title>
+  <title>Rehavid | Gestión de proyectos v13</title>
   <style>
     /* =====================================================================
        Identidad Rehavid · hoja blanca centrada sobre fondo lila, cabecera
@@ -580,7 +580,12 @@
       .card,.co-card,.al-co{break-inside:avoid}
     }
     @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-  </style>
+    .guide-step{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--line-2)}
+  .guide-step:last-child{border-bottom:0}
+  .guide-num{flex:0 0 34px;width:34px;height:34px;border-radius:50%;background:var(--rvl);color:var(--rv);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+  .guide-body{flex:1;min-width:0}
+</style>
 </head>
 <body>
 <div class="shell">
@@ -639,7 +644,7 @@
 </aside>
 
 <div class="mveil" id="modalVeil"><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
-<input type="file" id="importFile" accept=".json,.csv,application/json,text/csv" hidden />
+<input type="file" id="importFile" accept=".json,.csv,.xlsx,application/json,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden />
 <div id="dataLists"></div>
 <div class="toasts" id="toastZone" role="status" aria-live="polite"></div>
 
@@ -701,6 +706,8 @@ const DATE_LONG  = new Intl.DateTimeFormat("es-CO", { day: "2-digit", month: "sh
 const DATE_SHORT = new Intl.DateTimeFormat("es-CO", { day: "2-digit", month: "short" });
 
 const VIEWS = [
+  { id: "guide",       n: "00", group: "a", label: "Guía", title: "Cómo funciona la aplicación",
+    subtitle: "Qué hace la herramienta, cómo se gestiona y cómo se alimenta con las bases en Excel" },
   { id: "dashboard",   n: "01", group: "a", label: "Dashboard", title: "Dashboard",
     subtitle: "Portafolio por tipo de proyecto, empresa, PPR y estado operativo" },
   { id: "companies",   n: "02", group: "a", label: "Empresas y productos", title: "Empresas y productos",
@@ -1611,6 +1618,7 @@ function loadState() {
       state.outbox = Array.isArray(saved.outbox) ? saved.outbox : [];
       state.settings = mergeDeep(clone(DEFAULT_SETTINGS), saved.settings || {});
       if (saved.session?.user) state.session.user = saved.session.user;
+      if (saved.session?.guideSeen) state.session.guideSeen = true;
       syncCatalogs();
       return;
     } catch (e) { console.error(e); toast("No se pudieron leer los datos", "Se cargó una base demostrativa.", "warning"); }
@@ -2069,7 +2077,7 @@ function ico(name, size = 16) {
   return `<svg class="i" width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
 }
 const VIEW_ICON = {
-  dashboard: "grid", companies: "briefcase", alerts: "alert", assignments: "check",
+  guide: "info", dashboard: "grid", companies: "briefcase", alerts: "alert", assignments: "check",
   plans: "clipboard", calendar: "calendar", newproject: "plus", params: "sliders", data: "database"
 };
 
@@ -2171,6 +2179,7 @@ function renderView() {
   const root = document.getElementById("viewRoot");
   const projects = visibleProjects();
   const map = {
+    guide: () => renderGuide(),
     dashboard: () => renderDashboard(projects),
     companies: () => renderCompanies(projects),
     alerts: () => renderAlerts(projects),
@@ -3294,6 +3303,81 @@ const DATASETS = [
   { key: "entregables", label: "Entregables y cierre", desc: "Evidencias, fecha real, validación, cierre de producto y de proyecto." },
   { key: "auditoria",  label: "Auditoría",   desc: "Usuario, fecha, dato anterior, dato nuevo y motivo de cada modificación." }
 ];
+/* --------------------- 8bis. MODULO 00 · GUIA DE USO --------------------- */
+
+function renderGuide() {
+  const paso = (num, titulo, texto, vista) => `<div class="guide-step">
+      <div class="guide-num">${num}</div>
+      <div class="guide-body"><b>${titulo}</b><p class="sm muted" style="margin:2px 0 0">${texto}</p></div>
+      ${vista ? `<button class="btn btn-s" data-view="${vista}">Abrir</button>` : ""}
+    </div>`;
+  return `<section class="card" style="margin-bottom:16px">
+      <div class="card-h"><div><h2>¿Qué es esta aplicación?</h2></div></div>
+      <div class="card-b">
+        <p>Es la herramienta de <b>gestión de proyectos de Rehavid</b>: acompaña cada proyecto desde que se
+        registra la venta hasta su cierre, pasando por la activación, la asignación de responsables por cargo,
+        la coordinación de fechas, el plan de trabajo final y el seguimiento de la ejecución.</p>
+        <p style="margin-top:8px">Los usuarios son los <b>ocho cargos</b> de la compañía (elige el tuyo arriba a la derecha).
+        Todo se guarda automáticamente en este navegador; desde <b>Bases y auditoría</b> puedes descargar un respaldo
+        completo cuando quieras.</p>
+      </div>
+    </section>
+
+    <section class="card" style="margin-bottom:16px">
+      <div class="card-h"><div><h2>El flujo de trabajo, en seis pasos</h2>
+        <p>Así se gestiona un proyecto de principio a fin.</p></div></div>
+      <div class="card-b">
+        ${paso(1, "Registrar la venta", "Solo el CEO, el Gerente, el Director de Proyectos o el Jefe de Operaciones registran un proyecto nuevo con su empresa, productos y plan estimado (RN-01).", "newproject")}
+        ${paso(2, "Activación automática", "Si el registro está completo, la herramienta activa el proyecto sin pasos manuales; si falta algo, queda en Borrador y te dice qué falta.", "")}
+        ${paso(3, "Asignar y coordinar", "El motor asigna cada producto al cargo que corresponde según su tipo. El asignado acepta en «Mis asignaciones» o propone un ajuste de fecha y capacidad.", "assignments")}
+        ${paso(4, "Pedir los requerimientos", "Cada producto pide al cliente su información (bases de datos, listados, logos). Nada inicia sin requerimientos recibidos o exceptuados.", "companies")}
+        ${paso(5, "Plan final y ejecución", "Se aprueba el plan de trabajo final contra el plan de la venta y se reportan avances, hitos y novedades desde la ficha de cada producto.", "plans")}
+        ${paso(6, "Cierre automático", "Cuando todos los productos terminan (100 %, horas y entregable registrados), el proyecto se cierra solo y queda en el histórico (RN-16).", "dashboard")}
+      </div>
+    </section>
+
+    <div class="cols2">
+      <section class="card">
+        <div class="card-h"><div><h2>Cómo se alimenta la aplicación</h2>
+          <p>Tres bases en Excel, una por frente de trabajo.</p></div></div>
+        <div class="card-b">
+          <div class="tw"><table class="t">
+            <thead><tr><th>Base</th><th>Qué alimenta</th><th>Quién la llena</th></tr></thead>
+            <tbody>
+              <tr><td><b>Base_BI.xlsx</b></td><td class="sm">Proyectos y productos de <b>Tableros BI</b></td><td class="sm">Gestor de Datos 1 y 2</td></tr>
+              <tr><td><b>Base_Diseno_Ergonomico.xlsx</b></td><td class="sm">Proyectos de <b>Diseño ergonómico</b></td><td class="sm">Diseñador</td></tr>
+              <tr><td><b>Base_General.xlsx</b></td><td class="sm">Los demás productos <b>y los catálogos</b> (empresas, PPR, tarifas, órdenes)</td><td class="sm">Gerente / CEO</td></tr>
+            </tbody>
+          </table></div>
+          <p class="note" style="margin-top:12px">Llena las hojas de la base (cada una trae instrucciones y ejemplos),
+          guárdala y súbela aquí. La herramienta valida, crea o actualiza los proyectos <b>sin borrar lo existente</b>,
+          y si marcaste <b>activar = SI</b> intenta activarlos de una vez. Al final muestra un resumen de lo cargado.</p>
+          <div class="row" style="margin-top:12px">
+            <button class="btn btn-pri" data-action="import-xlsx">Cargar una base ahora</button>
+            <button class="btn" data-view="data">Ir a Bases y auditoría</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-h"><div><h2>Cómo se gestiona, según tu cargo</h2></div></div>
+        <div class="card-b">
+          <div class="tw"><table class="t">
+            <thead><tr><th>Cargo</th><th>Su día a día en la herramienta</th></tr></thead>
+            <tbody>
+              <tr><td class="sm"><b>CEO · Gerente</b></td><td class="sm">Registran ventas, vigilan el Dashboard y las Alertas, aprueban planes finales y cargan la Base General.</td></tr>
+              <tr><td class="sm"><b>Director de Proyectos · Jefe de Operaciones</b></td><td class="sm">Registran ventas, resuelven ajustes de coordinación, gestionan requerimientos y planes de trabajo.</td></tr>
+              <tr><td class="sm"><b>Supervisor Contactabilidad · Gestor de Datos 1 y 2 · Diseñador</b></td><td class="sm">Aceptan sus asignaciones, reportan avances, hitos y novedades, y cargan la base de su frente.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="note" style="margin-top:12px"><b>Trucos:</b> pulsa las barras y las porciones de los gráficos
+          para filtrar todo el módulo · pulsa una empresa para abrir su ficha · <b>Ctrl/Cmd + K</b> busca en todo ·
+          cada tabla se ordena pulsando su encabezado · las descargas salen completas o con los filtros activos (RN-07).</p>
+        </div>
+      </section>
+    </div>`;
+}
+
 function renderDataModule(projects) {
   const audit = state.projects.flatMap(p => (p.log || []).map(l => ({ ...l, project: p })))
     .sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 60);
@@ -3319,8 +3403,14 @@ function renderDataModule(projects) {
 
     <div class="cols2">
       <section class="card">
-        <div class="card-h"><div><h2>Cargar base</h2><p>Restaura un respaldo JSON descargado antes, o actualiza registros puntuales con un CSV. No borra lo existente sin confirmación.</p></div></div>
+        <div class="card-h"><div><h2>Cargar base</h2><p>Alimenta la aplicación con las bases de Excel, restaura un respaldo JSON o actualiza registros puntuales con un CSV. No borra lo existente sin confirmación.</p></div></div>
         <div class="card-b">
+          <p class="sm" style="margin:0 0 10px"><b>Bases de alimentación (.xlsx):</b> <span class="muted">Base_BI (Tableros BI) ·
+          Base_Diseno_Ergonomico (Diseño ergonómico) · Base_General (demás productos y catálogos). La carga crea o
+          actualiza proyectos, productos, contactos, hitos, seguimiento y catálogos, y activa los proyectos marcados
+          con activar = SI. La <a href="#" data-view="guide">Guía</a> explica cómo llenarlas.</span></p>
+          <div class="row"><button class="btn btn-pri" data-action="import-xlsx">Cargar base de alimentación (Excel)</button></div>
+          <hr style="border:0;border-top:1px solid var(--line-2);margin:14px 0">
           <div class="row"><button class="btn" data-action="restore-json">Subir base completa (JSON)</button>
             <button class="btn" data-action="import-csv">Subir actualización (CSV)</button></div>
           <p class="note" style="margin-top:12px"><b>JSON</b> reemplaza toda la base previa confirmación.
@@ -4796,6 +4886,411 @@ function importCSVText(text) {
   syncCatalogs(); saveState(); renderApp();
   toast("CSV importado", `${created} creados · ${updProjects} actualizados · ${updProducts} producto(s) · ${skipped} fila(s) sin identificador.`);
 }
+/* ============== 16bis. BASES DE ALIMENTACIÓN EN EXCEL (.xlsx) ==============
+   Lector de libros de Excel sin dependencias: un .xlsx es un ZIP con XML.
+   El ZIP se recorre por su directorio central y cada entrada se descomprime
+   con DecompressionStream, disponible en los navegadores actuales.         */
+
+async function unzipXlsx(buf) {
+  const dv = new DataView(buf);
+  const u8 = new Uint8Array(buf);
+  // Fin del directorio central (firma 06054b50), buscado desde el final.
+  let eocd = -1;
+  for (let i = buf.byteLength - 22; i >= Math.max(0, buf.byteLength - 65558); i--) {
+    if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error("El archivo no es un libro de Excel válido (.xlsx).");
+  const total = dv.getUint16(eocd + 10, true);
+  let off = dv.getUint32(eocd + 16, true);
+  const td = new TextDecoder("utf-8");
+  const entries = new Map();
+  for (let k = 0; k < total; k++) {
+    if (dv.getUint32(off, true) !== 0x02014b50) break;
+    const method = dv.getUint16(off + 10, true);
+    const compSize = dv.getUint32(off + 20, true);
+    const nameLen = dv.getUint16(off + 28, true);
+    const extraLen = dv.getUint16(off + 30, true);
+    const commentLen = dv.getUint16(off + 32, true);
+    const localOff = dv.getUint32(off + 42, true);
+    const name = td.decode(u8.subarray(off + 46, off + 46 + nameLen));
+    const lNameLen = dv.getUint16(localOff + 26, true);
+    const lExtraLen = dv.getUint16(localOff + 28, true);
+    const start = localOff + 30 + lNameLen + lExtraLen;
+    entries.set(name, { method, data: u8.subarray(start, start + compSize) });
+    off += 46 + nameLen + extraLen + commentLen;
+  }
+  const out = new Map();
+  for (const [name, e] of entries) {
+    if (e.method === 0) { out.set(name, e.data); continue; }
+    if (e.method !== 8) continue;
+    if (typeof DecompressionStream === "undefined")
+      throw new Error("Este navegador no puede descomprimir el archivo; actualícelo (Chrome, Edge, Firefox o Safari recientes).");
+    const stream = new Blob([e.data]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+    out.set(name, new Uint8Array(await new Response(stream).arrayBuffer()));
+  }
+  return out;
+}
+function xmlOf(entries, name) {
+  const raw = entries.get(name);
+  if (!raw) return null;
+  return new DOMParser().parseFromString(new TextDecoder("utf-8").decode(raw), "application/xml");
+}
+function colIndex(ref) {
+  let n = 0;
+  for (const ch of ref) {
+    if (ch >= "A" && ch <= "Z") n = n * 26 + (ch.charCodeAt(0) - 64);
+    else break;
+  }
+  return n - 1;
+}
+/** Devuelve { nombreDeHoja: filas[][] } con textos y números tal como vienen. */
+async function parseXlsx(buf) {
+  const entries = await unzipXlsx(buf);
+  const wbXml = xmlOf(entries, "xl/workbook.xml");
+  if (!wbXml) throw new Error("El libro no tiene la estructura de Excel esperada.");
+  const relsXml = xmlOf(entries, "xl/_rels/workbook.xml.rels");
+  const rels = {};
+  if (relsXml) [...relsXml.getElementsByTagName("Relationship")].forEach(r => {
+    rels[r.getAttribute("Id")] = r.getAttribute("Target").replace(/^\//, "");
+  });
+  const shared = [];
+  const ssXml = xmlOf(entries, "xl/sharedStrings.xml");
+  if (ssXml) [...ssXml.getElementsByTagName("si")].forEach(si => {
+    shared.push([...si.getElementsByTagName("t")].map(t => t.textContent).join(""));
+  });
+  const sheets = {};
+  for (const sh of [...wbXml.getElementsByTagName("sheet")]) {
+    const rid = sh.getAttribute("r:id") || sh.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships", "id");
+    let target = rels[rid] || "worksheets/sheet1.xml";
+    if (!target.startsWith("xl/")) target = "xl/" + target;
+    const sXml = xmlOf(entries, target);
+    if (!sXml) continue;
+    const rows = [];
+    for (const row of [...sXml.getElementsByTagName("row")]) {
+      const out = [];
+      for (const c of [...row.getElementsByTagName("c")]) {
+        const ref = c.getAttribute("r") || "";
+        const t = c.getAttribute("t") || "";
+        let v = "";
+        if (t === "inlineStr") {
+          v = [...c.getElementsByTagName("t")].map(x => x.textContent).join("");
+        } else {
+          const vEl = c.getElementsByTagName("v")[0];
+          if (!vEl) { out[colIndex(ref)] = ""; continue; }
+          if (t === "s") v = shared[Number(vEl.textContent)] ?? "";
+          else if (t === "b") v = vEl.textContent === "1" ? "SI" : "NO";
+          else if (t === "str") v = vEl.textContent;
+          else v = Number(vEl.textContent);
+        }
+        out[colIndex(ref)] = v;
+      }
+      rows.push(out);
+    }
+    sheets[sh.getAttribute("name")] = rows;
+  }
+  return sheets;
+}
+
+/* --------- conversión de la base al modelo de la aplicación --------- */
+
+function excelDateToISO(n) {
+  // Serial de Excel: días desde el 30 de diciembre de 1899.
+  const d = new Date(Date.UTC(1899, 11, 30) + Math.round(Number(n)) * 86400000);
+  return d.toISOString().slice(0, 10);
+}
+function baseDate(v) {
+  if (v === undefined || v === null || v === "") return "";
+  if (typeof v === "number") return v > 20000 && v < 80000 ? excelDateToISO(v) : "";
+  const t = String(v).trim();
+  let m = t.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+  m = t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) return `${m[3]}-${String(m[2]).padStart(2, "0")}-${String(m[1]).padStart(2, "0")}`;
+  return "";
+}
+function baseNum(v) {
+  if (typeof v === "number") return v;
+  const t = String(v ?? "").trim().replace(/\./g, m => m).replace(",", ".");
+  const n = Number(t);
+  return isFinite(n) ? n : 0;
+}
+function baseSi(v) { return /^s[ií]$/i.test(String(v ?? "").trim()); }
+
+/** Convierte una hoja en objetos {encabezado: valor}, saltando el título,
+    la fila de pistas y las filas vacías. */
+function sheetObjects(rows, conocidos) {
+  let hIdx = -1, headers = [];
+  for (let i = 0; i < Math.min(rows.length, 8); i++) {
+    const hs = (rows[i] || []).map(x => norm(String(x ?? "")));
+    const hits = conocidos.filter(k => hs.includes(k)).length;
+    if (hits >= 2) { hIdx = i; headers = hs; break; }
+  }
+  if (hIdx < 0) return null;
+  const out = [];
+  for (let i = hIdx + 1; i < rows.length; i++) {
+    const fila = rows[i] || [];
+    const celdas = fila.filter(x => x !== "" && x !== undefined && x !== null);
+    if (!celdas.length) continue;
+    // La fila de pistas de la plantilla: solo texto y todas las celdas terminan en punto.
+    if (i === hIdx + 1 && celdas.every(x => typeof x === "string" && /[.\u2026]\s*$/.test(x))) continue;
+    const obj = {};
+    headers.forEach((h, j) => { if (h) obj[h] = fila[j] ?? ""; });
+    out.push(obj);
+  }
+  return out;
+}
+
+/** Alimenta la aplicación con una base de Excel (BI, Diseño o General). No borra:
+    crea lo nuevo y actualiza lo que coincide por código y nombre (RN-18). */
+function importExcelData(sheets, fileName) {
+  const res = { proyectosNuevos: [], proyectosActualizados: [], activados: [], enBorrador: [],
+                productos: 0, contactos: 0, hitos: 0, novedades: 0, catalogos: 0, avisos: [] };
+  const hoja = nombre => {
+    const key = Object.keys(sheets).find(k => norm(k) === norm(nombre));
+    return key ? sheets[key] : null;
+  };
+  const porCodigo = code => state.projects.find(p => norm(p.code) === norm(code));
+  const stamp = new Date().toISOString();
+  const cargaPor = `Carga de base «${fileName}» por ${myCargo()}`;
+
+  // ---- Proyectos ----
+  const filasP = sheetObjects(hoja("Proyectos") || [], ["codigo", "empresa", "ppr", "tipo"]) || [];
+  filasP.forEach(f => {
+    const code = String(f.codigo || "").trim();
+    const empresa = String(f.empresa || "").trim();
+    if (!empresa) { res.avisos.push(`Proyecto sin empresa (código «${code || "—"}»): fila ignorada.`); return; }
+    let p = code ? porCodigo(code) : null;
+    const nuevo = !p;
+    if (nuevo) {
+      p = makeProject({
+        code, company: empresa, ppr: String(f.ppr || "").trim(),
+        type: String(f.tipo || "").trim(), commercialRef: String(f.orden_servicio || "").trim(),
+        saleDate: baseDate(f.fecha_venta) || dateISO(),
+        invoicedValue: baseNum(f.valor_facturado),
+        estimatedPlan: String(f.plan_estimado || "").trim(),
+        saleNotes: String(f.observaciones_venta || "").trim(),
+        seller: currentUser(),
+        sellerRole: CARGOS_VENTA.includes(myCargo()) ? myCargo() : "Gerente",
+        state: "Borrador"
+      });
+      state.projects.unshift(p);
+      res.proyectosNuevos.push(p.code);
+      logEvent(p, { type: "Importado", entity: "Proyecto", field: "base de alimentación", after: p.code, reason: cargaPor });
+    } else {
+      ["ppr", "tipo"].forEach(() => {});
+      if (String(f.ppr || "").trim()) p.ppr = String(f.ppr).trim();
+      if (String(f.plan_estimado || "").trim()) p.estimatedPlan = String(f.plan_estimado).trim();
+      if (String(f.observaciones_venta || "").trim()) p.saleNotes = String(f.observaciones_venta).trim();
+      if (baseNum(f.valor_facturado)) p.invoicedValue = baseNum(f.valor_facturado);
+      res.proyectosActualizados.push(p.code);
+      logEvent(p, { type: "Importado", entity: "Proyecto", field: "base de alimentación", after: "actualizado", reason: cargaPor });
+    }
+    if (String(f.nit || "").trim()) {
+      const emp = catalogFind("companies", empresa);
+      if (emp) emp.nit = emp.nit || String(f.nit).trim();
+      else state.settings.catalogs.companies.push({ name: empresa, nit: String(f.nit).trim(), notes: "" });
+    }
+    p._activarTrasCarga = baseSi(f.activar);
+  });
+
+  // ---- Productos ----
+  const filasPr = sheetObjects(hoja("Productos") || [], ["proyecto", "producto", "categoria", "horas_vendidas"]) || [];
+  filasPr.forEach(f => {
+    const p = porCodigo(f.proyecto);
+    if (!p) { res.avisos.push(`Producto «${f.producto || "—"}»: el proyecto «${f.proyecto || "—"}» no existe.`); return; }
+    const nombre = String(f.producto || "").trim();
+    const horas = baseNum(f.horas_vendidas);
+    if (!nombre || !(horas > 0)) { res.avisos.push(`Producto sin nombre u horas en ${p.code}: fila ignorada.`); return; }
+    let pr = (p.products || []).find(x => norm(x.name) === norm(nombre));
+    if (!pr) { pr = makeProduct({ name: nombre }); p.products.push(pr); }
+    pr.hoursSold = horas;
+    if (baseNum(f.valor_hora)) pr.hourRate = baseNum(f.valor_hora);
+    const cat = String(f.categoria || "").trim();
+    if (ROUTINGS.includes(cat)) pr.routing = cat;
+    if (String(f.tecnologia || "").trim()) pr.technology = String(f.tecnologia).trim();
+    if (COMPLEXITIES.includes(String(f.complejidad || "").trim())) pr.complexity = String(f.complejidad).trim();
+    if (pr.routing === "Cápsulas" && baseNum(f.personas_a_impactar)) pr.peopleImpact = baseNum(f.personas_a_impactar);
+    if (baseDate(f.fecha_solicitada)) pr.assignment.requestedDate = baseDate(f.fecha_solicitada);
+    if (baseDate(f.inicio)) pr.startDate = baseDate(f.inicio);
+    if (baseDate(f.fecha_objetivo)) pr.endDate = baseDate(f.fecha_objetivo);
+    if (String(f.notas || "").trim()) pr.notes = String(f.notas).trim();
+    const avance = baseNum(f.avance_pct), horasEj = baseNum(f.horas_ejecutadas);
+    if (avance > 0 || horasEj > 0) {
+      // Producto que ya viene andando: entra con la asignación aceptada y en ejecución.
+      pr.progress = clamp(avance, 0, 100);
+      pr.hoursExecuted = horasEj;
+      pr.assignment.status = "Aceptada";
+      pr.assignment.acceptedAt = stamp;
+      pr.assignment.acceptedBy = cargaPor;
+      pr.status = "En ejecución";
+      pr.lastUpdateAt = stamp;
+    } else if (pr.startDate && pr.endDate && pr.assignment.status === "Aceptada") {
+      pr.status = "Programado";
+    }
+    res.productos++;
+  });
+
+  // ---- Contactos ----
+  const filasC = sheetObjects(hoja("Contactos") || [], ["proyecto", "nombre", "correo", "telefono"]) || [];
+  filasC.forEach(f => {
+    const p = porCodigo(f.proyecto);
+    if (!p) { res.avisos.push(`Contacto «${f.nombre || "—"}»: el proyecto «${f.proyecto || "—"}» no existe.`); return; }
+    const nombre = String(f.nombre || "").trim();
+    if (!nombre) return;
+    let c = (p.contacts || []).find(x => norm(x.name) === norm(nombre));
+    if (!c) {
+      if ((p.contacts || []).length >= 3) { res.avisos.push(`${p.code}: máximo tres contactos; «${nombre}» no se agregó.`); return; }
+      c = makeContact({ name: nombre, enabled: true });
+      p.contacts.push(c);
+    }
+    if (String(f.cargo || "").trim()) c.role = String(f.cargo).trim();
+    if (String(f.correo || "").trim()) c.email = String(f.correo).trim();
+    if (String(f.telefono || "").trim()) c.phone = String(f.telefono).trim();
+    if (baseSi(f.principal)) { (p.contacts || []).forEach(x => x.primary = false); c.primary = true; }
+    c.enabled = true;
+    res.contactos++;
+  });
+
+  // ---- Hitos ----
+  const filasH = sheetObjects(hoja("Hitos") || [], ["proyecto", "producto", "hito", "fecha"]) || [];
+  filasH.forEach(f => {
+    const p = porCodigo(f.proyecto);
+    const pr = p && (p.products || []).find(x => norm(x.name) === norm(String(f.producto || "")));
+    if (!pr) { res.avisos.push(`Hito «${f.hito || "—"}»: no existe ${f.proyecto || "—"} · ${f.producto || "—"}.`); return; }
+    const nombre = String(f.hito || "").trim();
+    if (!nombre) return;
+    let m = (pr.milestones || []).find(x => norm(x.name) === norm(nombre));
+    if (!m) { m = makeMilestone({ name: nombre }); pr.milestones.push(m); }
+    if (baseDate(f.fecha)) { if (!m.baselineDate) m.baselineDate = baseDate(f.fecha); m.date = baseDate(f.fecha); m.confirmed = true; }
+    m.progress = clamp(baseNum(f.avance_pct), 0, 100);
+    if (baseNum(f.horas_asignadas)) m.hoursAssigned = baseNum(f.horas_asignadas);
+    if (baseNum(f.horas_ejecutadas)) m.hoursExecuted = baseNum(f.horas_ejecutadas);
+    res.hitos++;
+  });
+
+  // ---- Seguimiento ----
+  const filasS = sheetObjects(hoja("Seguimiento") || [], ["proyecto", "producto", "fecha", "tipo"]) || [];
+  filasS.forEach(f => {
+    const p = porCodigo(f.proyecto);
+    const pr = p && (p.products || []).find(x => norm(x.name) === norm(String(f.producto || "")));
+    if (!pr) { res.avisos.push(`Seguimiento: no existe ${f.proyecto || "—"} · ${f.producto || "—"}.`); return; }
+    const tipo = NOVELTY_TYPES.includes(String(f.tipo || "").trim()) ? String(f.tipo).trim() : "Nota";
+    const causa = String(f.descripcion || "").trim();
+    const fecha = baseDate(f.fecha) || dateISO();
+    if ((pr.novelties || []).some(n => n.type === tipo && norm(n.cause) === norm(causa) && String(n.date).slice(0, 10) === fecha)) return;
+    pr.novelties.unshift(makeNovelty({
+      type: tipo, cause: causa, action: String(f.accion || "").trim(),
+      owner: renameCargo(String(f.responsable || "").trim()) || pr.role,
+      newDate: baseDate(f.nueva_fecha),
+      progress: baseNum(f.avance_pct) || null, hoursExecuted: baseNum(f.horas_ejecutadas) || null,
+      date: fecha + "T12:00:00.000Z"
+    }));
+    if (baseNum(f.avance_pct) > 0 && !usesMilestoneProgress(pr)) pr.progress = clamp(baseNum(f.avance_pct), 0, 100);
+    if (baseNum(f.horas_ejecutadas) > 0) pr.hoursExecuted = baseNum(f.horas_ejecutadas);
+    if (tipo === "Suspensión") pr.status = "Suspendido";
+    if (tipo === "Reanudación") pr.status = "En ejecución";
+    if (baseDate(f.nueva_fecha) && ["Retraso", "Reprogramación", "Bloqueo"].includes(tipo)) {
+      if (!pr.plannedEnd) pr.plannedEnd = pr.endDate;
+      pr.endDate = baseDate(f.nueva_fecha);
+    }
+    pr.lastUpdateAt = fecha + "T12:00:00.000Z";
+    res.novedades++;
+  });
+
+  // ---- Catálogos (solo la base general los trae) ----
+  const cat = state.settings.catalogs;
+  (sheetObjects(hoja("Empresas") || [], ["empresa", "nit"]) || []).forEach(f => {
+    const nombre = String(f.empresa || "").trim();
+    if (!nombre) return;
+    let e = catalogFind("companies", nombre);
+    if (!e) { cat.companies.push({ name: nombre, nit: String(f.nit || "").trim(), notes: String(f.notas || "").trim() }); res.catalogos++; }
+    else { if (String(f.nit || "").trim()) e.nit = String(f.nit).trim(); if (String(f.notas || "").trim()) e.notes = String(f.notas).trim(); }
+  });
+  (sheetObjects(hoja("PPR") || [], ["codigo", "descripcion"]) || []).forEach(f => {
+    const code = String(f.codigo || "").trim();
+    if (!code) return;
+    if (!catalogFind("pprs", code)) { cat.pprs.push({ name: code, notes: String(f.descripcion || "").trim() }); res.catalogos++; }
+  });
+  (sheetObjects(hoja("Productos y tarifas") || [], ["producto", "categoria", "horas", "valor_hora"]) || []).forEach(f => {
+    const nombre = String(f.producto || "").trim();
+    if (!nombre) return;
+    let e = catalogFind("products", nombre);
+    if (!e) { e = { name: nombre, routing: "Otro", hours: 0, rate: 0 }; cat.products.push(e); res.catalogos++; }
+    if (ROUTINGS.includes(String(f.categoria || "").trim())) e.routing = String(f.categoria).trim();
+    if (baseNum(f.horas)) e.hours = baseNum(f.horas);
+    if (baseNum(f.valor_hora)) e.rate = baseNum(f.valor_hora);
+  });
+  (sheetObjects(hoja("Ordenes de servicio") || [], ["orden", "empresa", "fecha"]) || []).forEach(f => {
+    const orden = String(f.orden || "").trim();
+    if (!orden) return;
+    if (!catalogFind("serviceOrders", orden)) {
+      cat.serviceOrders.push({ name: orden, company: String(f.empresa || "").trim(), date: baseDate(f.fecha), notes: "" });
+      res.catalogos++;
+    }
+  });
+
+  // ---- Activación de los proyectos marcados con activar = SI ----
+  state.projects.filter(p => p._activarTrasCarga).forEach(p => {
+    delete p._activarTrasCarga;
+    if (p.state !== "Borrador") return;
+    const fallas = ACTIVATION_CHECKS.map(c => ({ ...c, ...c.run(p) })).filter(r => !r.ok);
+    if (fallas.length) {
+      res.enBorrador.push(`${p.code}: ${fallas.map(x => x.label).join("; ")}`);
+      return;
+    }
+    p.state = "Activo";
+    p.activatedAt = stamp;
+    p.products.forEach(pr => { if (!pr.plannedEnd) pr.plannedEnd = pr.assignment.requestedDate; });
+    logEvent(p, { type: "Activado", entity: "Proyecto", field: "estado", before: "Borrador", after: "Activo", reason: cargaPor });
+    runAssignmentEngine(p);
+    // Los productos que la base trajo andando conservan su asignación aceptada.
+    p.products.forEach(pr => {
+      if (pr.progress > 0 || pr.hoursExecuted > 0) {
+        pr.assignment.status = "Aceptada";
+        pr.assignment.acceptedAt = stamp;
+        pr.assignment.acceptedBy = cargaPor;
+        pr.status = "En ejecución";
+      }
+    });
+    res.activados.push(p.code);
+  });
+  state.projects.forEach(p => delete p._activarTrasCarga);
+
+  syncCatalogs();
+  saveState();
+  renderApp();
+  return res;
+}
+
+async function importExcelFile(file) {
+  try {
+    const sheets = await parseXlsx(await file.arrayBuffer());
+    const nombres = Object.keys(sheets).map(norm);
+    if (!nombres.some(n => ["proyectos", "productos"].includes(n)))
+      throw new Error("El libro no tiene hojas «Proyectos» o «Productos»; use las plantillas de bases de alimentación.");
+    const r = importExcelData(sheets, file.name);
+    const li = [];
+    if (r.proyectosNuevos.length) li.push(`<b>${r.proyectosNuevos.length} proyecto(s) nuevo(s)</b>: ${esc(r.proyectosNuevos.join(", "))}`);
+    if (r.proyectosActualizados.length) li.push(`${r.proyectosActualizados.length} proyecto(s) actualizado(s): ${esc(r.proyectosActualizados.join(", "))}`);
+    li.push(`${r.productos} producto(s) · ${r.contactos} contacto(s) · ${r.hitos} hito(s) · ${r.novedades} novedad(es) de seguimiento` +
+            (r.catalogos ? ` · ${r.catalogos} registro(s) de catálogo` : ""));
+    if (r.activados.length) li.push(`<b>Activados</b> con asignaciones generadas por cargo: ${esc(r.activados.join(", "))}`);
+    r.enBorrador.forEach(x => li.push(`<span style="color:var(--warn)">Quedó en Borrador · ${esc(x)}</span>`));
+    r.avisos.forEach(x => li.push(`<span class="muted">${esc(x)}</span>`));
+    openModal(`<div class="m-h"><h2>Base cargada · ${esc(file.name)}</h2>
+        <button class="btn btn-ico btn-plain" data-action="close-modal" aria-label="Cerrar">✕</button></div>
+      <div class="m-b">
+        <p class="note" style="margin:0 0 12px">La carga no borra información: crea lo nuevo y actualiza lo que coincide
+          por código de proyecto y nombre de producto. Todo quedó en la bitácora (RN-18).</p>
+        ${li.map(x => `<p class="sm" style="margin:0 0 8px">• ${x}</p>`).join("")}
+      </div>
+      <div class="m-f"><button class="btn btn-pri" data-action="close-modal">Entendido</button></div>`);
+  } catch (e) {
+    console.error(e);
+    toast("No fue posible cargar la base", e.message, "error");
+  }
+}
+
 function importFile(file) {
   const reader = new FileReader();
   reader.onload = () => {
@@ -5024,6 +5519,7 @@ document.addEventListener("click", e => {
     "export-alerts": () => exportAlerts(),
     "export-plans": () => downloadDataset("planes", "all"),
     "backup-json": () => exportJSON(),
+    "import-xlsx": () => document.getElementById("importFile").click(),
     "restore-json": () => document.getElementById("importFile").click(),
     "import-csv": () => document.getElementById("importFile").click(),
     "add-rule": () => { state.settings.assignmentRules.push({ id: uid("rule"), scope: "product", field: "routing",
@@ -5123,7 +5619,8 @@ document.getElementById("modalVeil").addEventListener("click", e => {
 });
 document.getElementById("importFile").addEventListener("change", e => {
   const f = e.target.files?.[0];
-  if (f) importFile(f);
+  if (f && /\.xlsx$/i.test(f.name)) importExcelFile(f);
+  else if (f) importFile(f);
   e.target.value = "";
 });
 document.addEventListener("keydown", e => {
@@ -5160,6 +5657,8 @@ window.addEventListener("beforeunload", e => {
 loadState();
 // Al abrir, la aplicación revisa si hay cierres automáticos pendientes (RN-16, RN-17).
 state.projects.forEach(p => runAutoClosure(p));
+// La primera vez que alguien abre la herramienta, arranca en la guía de uso.
+if (!state.session.guideSeen) { state.view = "guide"; state.session.guideSeen = true; saveState(true); }
 renderApp();
 </script>
 </body>
