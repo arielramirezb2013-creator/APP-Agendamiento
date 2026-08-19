@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Rehavid · Gestión de proyectos v14 · interfaz estilo Jira Premium: tablero, backlog, lista, calendario e informes sobre el flujo venta → activación → asignación → plan final → cierre." />
-  <title>Rehavid | Gestión de proyectos v14</title>
+  <meta name="description" content="Rehavid · Gestión de proyectos v15 · tracker ágil de avance: Resumen, Actividades, Mi trabajo y Calendario sobre el flujo venta → activación → asignación → plan final → cierre." />
+  <title>Rehavid | Gestión de proyectos v15</title>
   <style>
     /* =====================================================================
        Rehavid · Gestión de proyectos — piel visual inspirada en Jira Premium
@@ -786,21 +786,13 @@ const DATE_SHORT = new Intl.DateTimeFormat("es-CO", { day: "2-digit", month: "sh
 
 const VIEWS = [
   { id: "dashboard",   n: "01", group: "a", label: "Resumen", title: "Resumen",
-    subtitle: "Portafolio por tipo de proyecto, empresa, PPR y estado operativo" },
-  { id: "board",       n: "02", group: "a", label: "Tablero", title: "Tablero",
-    subtitle: "Las actividades (productos) como tarjetas, por momento del proceso" },
-  { id: "list",        n: "03", group: "a", label: "Lista", title: "Lista",
-    subtitle: "Todas las actividades en una tabla ordenable; clic en el encabezado para ordenar" },
+    subtitle: "El portafolio de un vistazo: proyectos, estado, avance y análisis" },
+  { id: "board",       n: "02", group: "a", label: "Actividades", title: "Actividades",
+    subtitle: "Todas las actividades como tablero o como lista; clic en una para gestionarla" },
+  { id: "work",        n: "03", group: "a", label: "Mi trabajo", title: "Mi trabajo",
+    subtitle: "Lo que le corresponde a su cargo: aceptar asignaciones, actualizar avances y retrasos, y atender sus alertas", badge: "assignments" },
   { id: "calendar",    n: "04", group: "a", label: "Calendario", title: "Calendario",
     subtitle: "Programación consolidada con festivos de Colombia y actividad no programada" },
-  { id: "companies",   n: "05", group: "b", label: "Empresas y productos", title: "Empresas y productos",
-    subtitle: "Ficha de la empresa, sus proyectos y la gestión de cada producto" },
-  { id: "alerts",      n: "06", group: "b", label: "Alertas", title: "Alertas por empresa",
-    subtitle: "Qué empresa y qué producto requieren acción, con gestión directa", badge: "alerts" },
-  { id: "assignments", n: "07", group: "b", label: "Mis asignaciones", title: "Mis asignaciones",
-    subtitle: "Aceptar la asignación o proponer un ajuste de fecha y capacidad", badge: "assignments" },
-  { id: "plans",       n: "08", group: "b", label: "Planes de trabajo", title: "Planes de trabajo final",
-    subtitle: "Plan final versionado por proyecto, contrastado con el plan de la venta" },
   { id: "guide",       n: "00", group: "c", tab: false, label: "Guía", title: "Cómo funciona la aplicación",
     subtitle: "Qué hace la herramienta, cómo se gestiona y cómo se alimenta con las bases en Excel" },
   { id: "newproject",  n: "09", group: "c", tab: false, label: "Crear", title: "Crear · nuevo proyecto (venta realizada)",
@@ -1115,7 +1107,7 @@ const state = {
   calendar: { year: new Date().getFullYear(), month: new Date().getMonth() },
   ui: { collapsedProjects: new Set(), collapsedCompanies: new Set(), openPlans: new Set(),
         openSections: new Set(["sec-master", "sec-products"]), openProducts: new Set(),
-        assignmentOwner: "", calendarCompany: "", dataSet: "productos", listScope: "todas" },
+        assignmentOwner: "", calendarCompany: "", dataSet: "productos", listScope: "todas", actMode: "tablero" },
   draft: null, draftBaseline: null, selectedId: null, drawerMode: null, wizardStep: 1
 };
 
@@ -1631,7 +1623,7 @@ function notificationBody(p, a) {
     lines.push(`  · ${c.name} (${c.role || "sin cargo"}) — ${c.email || "sin correo"} — ${c.phone || "sin teléfono"}${c.primary ? "  [PRINCIPAL]" : ""}`));
   if (!(p.contacts || []).length) lines.push("  · sin contactos registrados");
   lines.push("", "Acción requerida: aceptar la asignación o proponer un ajuste de fecha y capacidad con justificación.",
-             `Enlace directo: abrir la aplicación → Mis asignaciones → ${p.code}${pr ? ` → ${pr.name}` : ""}`, "",
+             `Enlace directo: abrir la aplicación → Mi trabajo → ${p.code}${pr ? ` → ${pr.name}` : ""}`, "",
              `Contacto principal: ${main ? `${main.name} · ${main.email || "sin correo"} · ${main.phone || "sin teléfono"}` : "sin definir"}`);
   return lines.join("\n");
 }
@@ -1998,12 +1990,10 @@ const FILTER_DEFS = [
     optionLabel: v => ALERT_BY_CODE[v]?.label || v }
 ];
 const VIEW_FILTERS = {
-  dashboard:   ["type", "company", "ppr", "projectState", "productStatus"],
-  companies:   ["company", "type", "ppr", "role", "condition", "routing"],
-  alerts:      ["company", "type", "role", "alert", "condition"],
-  assignments: ["company", "type", "condition"],
-  plans:       ["company", "type", "coordinatorRole"],
-  calendar:    ["company", "type", "role"]
+  dashboard: ["type", "company", "ppr", "projectState", "productStatus"],
+  board:     ["company", "type", "role", "condition", "routing"],
+  work:      ["company", "type", "condition"],
+  calendar:  ["company", "type", "role"]
 };
 const SPECIAL_FILTERS = {
   active:        { label: "Proyectos activos",  test: p => p.state === "Activo" },
@@ -2172,7 +2162,7 @@ function ico(name, size = 16) {
   return `<svg class="i" width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
 }
 const VIEW_ICON = {
-  guide: "info", dashboard: "grid", board: "columns", list: "rows", companies: "briefcase", alerts: "alert", assignments: "check",
+  guide: "info", work: "check", dashboard: "grid", board: "columns", list: "rows", companies: "briefcase", alerts: "alert", assignments: "check",
   plans: "clipboard", calendar: "calendar", newproject: "plus", params: "sliders", data: "database"
 };
 
@@ -2223,19 +2213,15 @@ function renderSidebar(counts) {
   host.innerHTML = `
     ${item("guide", "info", "Para ti · Guía")}
     ${item("dashboard", "grid", "Resumen")}
-    ${item("alerts", "alert", "Alertas", `<span class="badge hot ${counts.alerts ? "" : "zero"}">${counts.alerts}</span>`)}
-    ${item("assignments", "check", "Mis asignaciones", `<span class="badge hot ${counts.assignments ? "" : "zero"}">${counts.assignments}</span>`)}
+    ${item("work", "check", "Mi trabajo", `<span class="badge hot ${counts.assignments ? "" : "zero"}">${counts.assignments}</span>`)}
     <div class="sb-group">Espacio</div>
     <div class="sb-space"><span class="sb-mark" aria-hidden="true">RO</span><span>Rehavid Operaciones</span></div>
     <div class="sb-sub">
-      ${item("board", "columns", "Tablero")}
-      ${item("list", "rows", "Lista")}
-      ${item("companies", "briefcase", "Empresas y productos")}
-      ${item("plans", "clipboard", "Planes de trabajo")}
+      ${item("board", "columns", "Actividades")}
       ${item("calendar", "calendar", "Calendario")}
     </div>
     ${activas.length ? `<div class="sb-group">Empresas con proyectos activos</div>` + activas.map(([name, list]) =>
-      `<button class="sb-item" data-co-jump="${esc(name)}" title="Abrir ${esc(name)} en Empresas y productos">
+      `<button class="sb-item" data-co-jump="${esc(name)}" title="Ver las actividades de ${esc(name)}">
         ${ico("building", 16)}<span>${esc(name)}</span><span class="badge">${list.length}</span></button>`).join("") : ""}
     <div class="sb-group">Configuración</div>
     ${item("params", "sliders", "Parametrización")}
@@ -2308,12 +2294,8 @@ function renderView() {
   const map = {
     guide: () => renderGuide(),
     board: () => renderBoard(projects),
-    list: () => renderList(projects),
     dashboard: () => renderDashboard(projects),
-    companies: () => renderCompanies(projects),
-    alerts: () => renderAlerts(projects),
-    assignments: () => renderAssignments(),
-    plans: () => renderPlans(projects),
+    work: () => renderAssignments(),
     calendar: () => renderCalendar(projects),
     newproject: () => renderNewProject(),
     params: () => renderParams(),
@@ -2838,14 +2820,11 @@ function productActions(p, pr) {
     out.push(b("resolve", "Resolver ajuste", "btn-pri", "coordinate"));
   }
   if (isOpenProduct(pr) && pr.assignment.status === "Aceptada") {
-    // Cada gesto tiene su botón, con el mismo formulario por debajo (obs. de los usuarios).
-    out.push(b("novelty", "Registrar avance", "btn-pri", "update", 'data-novelty-type="Avance"'));
-    out.push(b("novelty", "Registrar novedad", "", "update"));
-    out.push(pr.status === "Suspendido"
-      ? b("novelty", "Reanudar", "btn-ok", "update", 'data-novelty-type="Reanudación"')
-      : b("novelty", "Suspender", "", "update", 'data-novelty-type="Suspensión"'));
-    out.push(b("nextaction", "Próxima acción", "", "update"));
-    if ((pr.milestones || []).length) out.push(b("milestones", "Actualizar hitos", "", "update"));
+    // Un solo gesto de actualización: avance, retraso, suspensión, bloqueo, nota y próxima acción
+    // en el mismo formulario (observación repetida de la segunda ronda).
+    out.push(b("novelty", "Actualizar", "btn-pri", "update"));
+    if (pr.status === "Suspendido") out.push(b("novelty", "Reanudar", "btn-ok", "update", 'data-novelty-type="Reanudación"'));
+    out.push(b("milestones", (pr.milestones || []).length ? `Hitos (${pr.milestones.length})` : "Hitos", "", "update"));
     out.push(b("requirements", "Requisitos de información", "", "update"));
   }
   if (isOpenProduct(pr) && (pr.requirements || []).some(r => r.status === "Definido"))
@@ -3082,8 +3061,8 @@ function renderAssignments() {
     ${renderProductCard(p, pr)}</div>`;
 
   return `<section class="card" style="margin-bottom:16px"><div class="card-h">
-      <div><h2>${ico("check", 14)}Asignaciones del rol ${esc(cargo)}</h2>
-        <p>Aceptar o proponer ajuste contrastando fecha solicitada, tiempo requerido de producción y capacidad disponible (RN-10).</p></div>
+      <div><h2>${ico("check", 14)}Mi trabajo · ${esc(cargo)}</h2>
+        <p>Sus asignaciones y coordinaciones, con sus alertas dentro de cada tarjeta. Acepte, proponga ajuste y registre avances y retrasos con «Actualizar».</p></div>
       <div class="sp">
         <label for="assignCargo" style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase">Rol</label>
         <select id="assignCargo" class="btn" style="padding:0 10px">
@@ -3509,6 +3488,14 @@ function kanbanCard({ pr, p }) {
 }
 
 function renderBoard(projects) {
+  const mode = state.ui.actMode || "tablero";
+  const pills = `<div class="vpills" style="margin:0 0 12px">
+    <button class="vpill ${mode === "tablero" ? "on" : ""}" data-act-mode="tablero">Tablero</button>
+    <button class="vpill ${mode === "lista" ? "on" : ""}" data-act-mode="lista">Lista</button>
+  </div>`;
+  return pills + (mode === "lista" ? renderList(projects) : renderKanban(projects));
+}
+function renderKanban(projects) {
   const rows = boardRows(projects);
   if (!rows.length && (activeFilterCount() > 0 || state.search)) {
     return `<section class="card">${empty("Sin actividades con este corte",
@@ -3521,7 +3508,7 @@ function renderBoard(projects) {
       <p>Registra una venta con el botón «Crear», carga una base de alimentación en Excel o abre
       Empresas y productos para ver las tarjetas aquí, organizadas por momento del proceso.</p>
       <div class="row">${canSell() ? `<button class="btn btn-pri" data-view="newproject">Crear proyecto</button>` : ""}
-        <button class="btn" data-view="companies">Ir a Empresas y productos</button>
+        <button class="btn" data-view="board">Ir a Actividades</button>
         <button class="btn" data-view="data">Cargar una base</button></div>
     </div></section>`;
   }
@@ -3594,9 +3581,12 @@ function renderGuide() {
         <p>Es la herramienta de <b>gestión de proyectos de Rehavid</b>: acompaña cada proyecto desde que se
         registra la venta hasta su cierre, pasando por la activación, la asignación de responsables por cargo,
         la coordinación de fechas, el plan de trabajo final y el seguimiento de la ejecución.</p>
-        <p style="margin-top:8px">Los usuarios son los <b>ocho cargos</b> de la compañía (elige el tuyo arriba a la derecha).
-        Todo se guarda automáticamente en este navegador; desde <b>Bases y auditoría</b> puedes descargar un respaldo
-        completo cuando quieras.</p>
+        <p style="margin-top:8px">Los usuarios son los <b>ocho cargos</b> de la compañía (elige el tuyo arriba a la derecha);
+        la <b>dirección</b> son el CEO y el Gerente. Se navega con cuatro pestañas: <b>Resumen</b> (el portafolio),
+        <b>Actividades</b> (tablero o lista), <b>Mi trabajo</b> (lo suyo) y <b>Calendario</b>.</p>
+        <p class="note" style="margin-top:8px"><b>Dónde viven los datos:</b> cada navegador guarda su propia copia de la
+        información (no hay servidor todavía). Para trabajar entre varios, aliméntenla con las <b>bases de Excel</b> y
+        compartan el <b>respaldo JSON</b> de Bases y auditoría; el trabajo simultáneo en línea llegará con la versión de servidor.</p>
       </div>
     </section>
 
@@ -3605,11 +3595,11 @@ function renderGuide() {
         <p>Así se gestiona un proyecto de principio a fin.</p></div></div>
       <div class="card-b">
         ${paso(1, "Registrar la venta", "Con el botón azul «Crear» (arriba a la derecha). Solo el CEO, el Gerente, el Director de Proyectos o el Jefe de Operaciones registran un proyecto nuevo con su empresa, productos y plan estimado (RN-01).", "newproject")}
-        ${paso(2, "Activación automática", "Si el registro está completo, la herramienta activa el proyecto sin pasos manuales; si falta algo, queda en Borrador y te dice qué falta.", "")}
-        ${paso(3, "Asignar y coordinar", "El motor asigna cada producto al cargo que corresponde según su tipo. El asignado acepta en «Mis asignaciones» o propone un ajuste de fecha y capacidad.", "assignments")}
-        ${paso(4, "Pedir los requerimientos", "Cada producto pide al cliente su información (bases de datos, listados, logos). Nada inicia sin requerimientos recibidos o exceptuados.", "companies")}
-        ${paso(5, "Plan final y ejecución", "Se aprueba el plan de trabajo final contra el plan de la venta y se reportan avances, hitos y novedades desde la ficha de cada producto.", "plans")}
-        ${paso(6, "Cierre automático", "Cuando todos los productos terminan (100 %, horas y entregable registrados), el proyecto se cierra solo y queda en el histórico (RN-16).", "dashboard")}
+        ${paso(2, "Activación automática", "Si el registro está completo, la herramienta activa el proyecto sin pasos manuales; si falta algo, queda en Borrador y el Resumen muestra qué falta.", "dashboard")}
+        ${paso(3, "Asignar y coordinar", "El motor asigna cada producto al cargo que corresponde según su tipo. El asignado acepta en «Mi trabajo» o propone un ajuste de fecha y capacidad.", "work")}
+        ${paso(4, "Pedir los requerimientos", "Cada líder define qué necesita del cliente y el coordinador lo pide en una sola solicitud consolidada. Nada inicia sin requerimientos recibidos o exceptuados.", "board")}
+        ${paso(5, "Plan final y ejecución", "Se aprueba el plan de trabajo final contra el plan de la venta (en la ficha del proyecto) y cada responsable registra avances, retrasos e hitos con el botón «Actualizar» de su producto.", "work")}
+        ${paso(6, "Cierre automático", "Cuando todos los productos terminan, el cierre exige plan final aprobado, requisitos recibidos o exceptuados, fecha real, horas y entregable; con eso el proyecto se cierra solo (RN-16).", "dashboard")}
       </div>
     </section>
 
@@ -3642,14 +3632,15 @@ function renderGuide() {
           <div class="tw"><table class="t">
             <thead><tr><th>Cargo</th><th>Su día a día en la herramienta</th></tr></thead>
             <tbody>
-              <tr><td class="sm"><b>CEO · Gerente</b></td><td class="sm">Registran ventas, vigilan el Dashboard y las Alertas, aprueban planes finales y cargan la Base General.</td></tr>
+              <tr><td class="sm"><b>CEO · Gerente</b></td><td class="sm">Registran ventas, vigilan el Resumen, resuelven ajustes como dirección, aprueban planes finales y cargan la Base General.</td></tr>
               <tr><td class="sm"><b>Director de Proyectos · Jefe de Operaciones</b></td><td class="sm">Registran ventas, resuelven ajustes de coordinación, gestionan requerimientos y planes de trabajo.</td></tr>
-              <tr><td class="sm"><b>Supervisor Contactabilidad · Gestor de Datos 1 y 2 · Diseñador</b></td><td class="sm">Aceptan sus asignaciones, reportan avances, hitos y novedades, y cargan la base de su frente.</td></tr>
+              <tr><td class="sm"><b>Supervisor Contactabilidad · Gestor de Datos 1 y 2 · Diseñador</b></td><td class="sm">Trabajan desde «Mi trabajo»: aceptan sus asignaciones, registran avances y retrasos con «Actualizar», y cargan la base de su frente.</td></tr>
             </tbody>
           </table></div>
-          <p class="note" style="margin-top:12px"><b>Trucos:</b> el <b>Tablero</b> muestra las actividades como tarjetas por momento del proceso y la <b>Lista</b> toda la operación en una tabla ordenable · pulsa las barras y las porciones de los gráficos
-          para filtrar todo el módulo · pulsa una empresa para abrir su ficha · <b>Ctrl/Cmd + K</b> busca en todo ·
-          cada tabla se ordena pulsando su encabezado · las descargas salen completas o con los filtros activos (RN-07).</p>
+          <p class="note" style="margin-top:12px"><b>Trucos:</b> en <b>Actividades</b> alterna entre tablero y lista con las píldoras ·
+          pulsa las barras y las porciones de los gráficos para filtrar todo el módulo · pulsa una empresa en la barra lateral para ver
+          sus actividades · <b>Ctrl/Cmd + K</b> busca en todo · cada tabla se ordena pulsando su encabezado ·
+          las descargas salen completas o con los filtros activos (RN-07).</p>
         </div>
       </section>
     </div>`;
@@ -4353,7 +4344,7 @@ const PRODUCT_ACTIONS = {
     const type = cerrado ? "Nota" : (extra.type || "Avance");
     const needsCause = ["Retraso", "Suspensión", "Bloqueo"].includes(type);
     const fields = [
-      { id: "type", type: "select", label: "Tipo de novedad *", options: cerrado ? ["Nota"] : NOVELTY_TYPES, value: type, span: "c4", refresh: "novelty" },
+      { id: "type", type: "select", label: "Qué registra *", options: cerrado ? ["Nota"] : NOVELTY_TYPES, value: type, span: "c4", refresh: "novelty" },
       ...(usesMilestoneProgress(pr)
         ? [{ id: "info", type: "static", label: "Avance", value: `${fmtPct(productProgress(pr))} calculado desde los hitos.`, span: "c4" }]
         : [{ id: "progress", type: "number", label: "Avance %", value: pr.progress, min: 0, max: 100, span: "c2" }]),
@@ -4361,7 +4352,7 @@ const PRODUCT_ACTIONS = {
       { id: "cause", type: "textarea", label: needsCause ? "Causa *" : "Descripción de la novedad *", value: "", required: true, span: "c6" },
       ...(needsCause || type === "Reprogramación" ? [
         { id: "action", type: "textarea", label: "Acción correctiva *", value: "", required: true, span: "c6" },
-        { id: "owner", type: "text", label: "Responsable de la acción *", list: "dlPeople", value: pr.owner, required: true, span: "c4" },
+        { id: "owner", type: "select", label: "Responsable de la acción *", options: CARGOS, value: CARGOS.includes(pr.owner) ? pr.owner : pr.role, required: true, span: "c4" },
         { id: "newDate", type: "date", label: "Nueva fecha objetivo *", value: pr.endDate, required: true, span: "c4" },
         { id: "shift", type: "checkbox", label: "Desplazar también los hitos pendientes", value: true, span: "c4" }
       ] : []),
@@ -4370,13 +4361,13 @@ const PRODUCT_ACTIONS = {
       { id: "nextDate", type: "date", label: "Fecha de la próxima acción", value: pr.nextAction?.date || "", span: "c4" }
     ];
     openForm({
-      title: `Registrar novedad · ${pr.name}`,
+      title: `Actualizar · ${pr.name}`,
       intro: cerrado
         ? "El producto está cerrado: la observación queda en la bitácora sin modificar el estado ni el avance."
         : needsCause
         ? "Un retraso, una suspensión o un bloqueo exigen causa, responsable, acción y nueva fecha (RN-15). El plan se recalcula con ese desplazamiento."
         : "El líder del producto mantiene actualizado el panel: avance, horas, fechas, novedades y próxima acción (§11).",
-      fields, submit: "Registrar novedad",
+      fields, submit: "Guardar actualización",
       context: { kind: "novelty", projectId: p.id, productId: pr.id },
       validate: v => (v.newDate && pr.startDate && v.newDate < pr.startDate) ? "La nueva fecha no puede ser anterior al inicio." : "",
       run: v => {
@@ -4423,11 +4414,11 @@ const PRODUCT_ACTIONS = {
     });
   },
   milestones: (p, pr) => {
-    const list = pr.milestones || [];
-    if (!list.length) { toast("Sin hitos", "Este producto no tiene hitos en el plan.", "warning"); return; }
+    const list = pr.milestones = pr.milestones || [];
     modalHandlers = {};
     modalHandlers.submit = () => {
       const cambios = [];
+      // Primero se leen los hitos existentes (sus campos están en el modal); el nuevo se agrega después.
       list.forEach((m, i) => {
         const pg = clamp(Number(document.getElementById(`mh_p_${i}`).value) || 0, 0, 100);
         const dt = document.getElementById(`mh_d_${i}`).value;
@@ -4436,6 +4427,14 @@ const PRODUCT_ACTIONS = {
         if (dt && dt !== m.date) { if (!m.baselineDate) m.baselineDate = m.date; cambios.push(`${m.name}: fecha ${formatDate(m.date, true)} → ${formatDate(dt, true)}`); m.date = dt; }
         if (he !== (m.hoursExecuted || 0)) m.hoursExecuted = he;
       });
+      const nn = document.getElementById("mh_new_n").value.trim();
+      if (nn) {
+        const nd = document.getElementById("mh_new_d").value;
+        const nh = Number(document.getElementById("mh_new_h").value) || 0;
+        list.push({ name: nn, date: nd || pr.endDate || dateISO(), baselineDate: nd || pr.endDate || dateISO(),
+                    confirmed: true, progress: 0, hoursAssigned: nh, hoursExecuted: 0 });
+        cambios.push(`Hito nuevo: ${nn}`);
+      }
       closeModal();
       if (cambios.length) {
         pr.hoursExecuted = Math.max(pr.hoursExecuted, sum(list, m => Number(m.hoursExecuted) || 0));
@@ -4450,8 +4449,10 @@ const PRODUCT_ACTIONS = {
     openModal(`<div class="m-h"><h2>Actualizar hitos · ${esc(pr.name)}</h2>
         <button class="btn btn-ico btn-plain" data-action="close-modal" aria-label="Cerrar">✕</button></div>
       <div class="m-b">
-        <p class="note" style="margin:0 0 14px">El avance del producto se calcula desde sus hitos. Registre porcentaje, fecha y horas de cada uno.</p>
-        <div class="tw"><table class="t">
+        <p class="note" style="margin:0 0 14px">${list.length
+          ? "Cuando el producto tiene hitos, su avance global se calcula desde ellos (ponderado por horas): registre aquí el porcentaje, la fecha y las horas de cada hito."
+          : "Este producto no tiene hitos todavía: agregue el primero abajo. Desde entonces el avance global se calculará desde los hitos."}</p>
+        ${list.length ? `<div class="tw"><table class="t">
           <thead><tr><th>Hito</th><th class="rt">Avance %</th><th>Fecha</th><th class="rt">Horas ejecutadas</th></tr></thead>
           <tbody>${list.map((m, i) => `<tr>
             <td class="sm"><b>${esc(m.name)}</b>${m.baselineDate && m.baselineDate !== m.date ? `<div class="xs muted">venta: ${formatDate(m.baselineDate, true)}</div>` : ""}</td>
@@ -4459,7 +4460,15 @@ const PRODUCT_ACTIONS = {
             <td><input id="mh_d_${i}" type="date" value="${esc(m.date || "")}" style="height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px"></td>
             <td><input id="mh_h_${i}" type="number" min="0" step="0.5" value="${m.hoursExecuted || 0}" style="width:80px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px;text-align:right"></td>
           </tr>`).join("")}</tbody>
-        </table></div>
+        </table></div>` : ""}
+        <div class="box" style="margin-top:14px">
+          <div class="box-h"><strong>Agregar un hito nuevo</strong><span>Queda confirmado con su fecha como línea base.</span></div>
+          <div class="row">
+            <input id="mh_new_n" type="text" placeholder="Nombre del hito" style="flex:2;min-width:180px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 10px">
+            <input id="mh_new_d" type="date" style="height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px">
+            <input id="mh_new_h" type="number" min="0" step="0.5" placeholder="Horas" style="width:90px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px;text-align:right">
+          </div>
+        </div>
       </div>
       <div class="m-f"><button class="btn" data-action="close-modal">Cancelar</button>
         <button class="btn btn-pri" data-modal-submit="1">Guardar hitos</button></div>`);
@@ -4470,7 +4479,7 @@ const PRODUCT_ACTIONS = {
     fields: [
       { id: "description", type: "text", label: "Próxima acción *", value: pr.nextAction?.description || "", required: true, span: "c8" },
       { id: "date", type: "date", label: "Fecha *", value: pr.nextAction?.date || "", required: true, span: "c4" },
-      { id: "owner", type: "text", label: "Responsable", list: "dlPeople", value: pr.nextAction?.owner || pr.owner, span: "c6" }
+      { id: "owner", type: "select", label: "Responsable", options: CARGOS, value: CARGOS.includes(pr.nextAction?.owner) ? pr.nextAction.owner : pr.role, span: "c6" }
     ],
     submit: "Guardar próxima acción",
     run: v => {
@@ -4563,7 +4572,7 @@ const PRODUCT_ACTIONS = {
         { id: "response", type: "textarea", label: "Detalle de la respuesta *", required: true, value: "", span: "c12" },
         { id: "commitDate", type: "date", label: "Nueva fecha comprometida por el cliente", value: "", span: "c4",
           hint: "Solo si quedó pendiente; al vencerse genera alerta." },
-        { id: "followUp", type: "text", label: "Responsable del seguimiento", list: "dlPeople", value: "", span: "c4" },
+        { id: "followUp", type: "select", label: "Responsable del seguimiento", options: [""].concat(CARGOS), value: "", span: "c4" },
         { id: "nextStep", type: "text", label: "Próxima gestión", value: "", span: "c4" }
       ],
       submit: "Registrar respuesta",
@@ -4970,7 +4979,7 @@ function activateProject() {
   commitDraft({ skipDiff: true });
   const stored = state.projects.find(x => x.id === state.selectedId);
   state.draft = null; state.draftBaseline = null; state.drawerMode = null; state.wizardStep = 1;
-  state.view = "companies";
+  state.view = "board";
   state.filters.company = [p.company];
   renderApp();
   toast("Proyecto activado", `${p.code} · ${plan.length} asignación(es) generadas por cargo.`);
@@ -5691,10 +5700,12 @@ document.addEventListener("click", e => {
 
   const lsc = t.closest("[data-list-scope]");
   if (lsc) { state.ui.listScope = lsc.dataset.listScope; renderView(); return; }
+  const acm = t.closest("[data-act-mode]");
+  if (acm) { state.ui.actMode = acm.dataset.actMode; renderView(); return; }
   const coj = t.closest("[data-co-jump]");
   if (coj) {
     state.filters.company = [coj.dataset.coJump];
-    state.view = "companies";
+    state.view = "board";
     window.scrollTo(0, 0);
     renderApp();
     return;

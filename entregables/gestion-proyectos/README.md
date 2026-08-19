@@ -5,7 +5,7 @@ del proceso de gestión de proyectos, versión 1.1** (Rehavid S.A.S.).
 
 | Archivo | Contenido |
 |---|---|
-| `Rehavid_Gestion_Proyectos_v14.html` | **La aplicación** (interfaz estilo Jira Premium). Se abre con doble clic; no requiere servidor. |
+| `Rehavid_Gestion_Proyectos_v15.html` | **La aplicación** (interfaz estilo Jira Premium). Se abre con doble clic; no requiere servidor. |
 | `Rehavid_Gestion_Proyectos_v13.html` | Versión anterior, conservada mientras corre la segunda ronda de validación documentada en el mapa v13. |
 | `bases/Base_BI.xlsx` | Base de alimentación del frente de **Tableros BI** (la llena Gestor de Datos 1 y 2). |
 | `bases/Base_Diseno_Ergonomico.xlsx` | Base de alimentación del frente de **Diseño ergonómico** (la llena el Diseñador). |
@@ -52,6 +52,20 @@ módulo 08).
   actividades abiertas sin fechas, para abrirlas y comprometer fechas.
 - Todo el dominio se conserva: cargos, activación, asignación, coordinación, planes, cierre y
   las bases de alimentación (RN-01 a RN-18); 54 verificaciones de navegador en verde.
+
+**Novedades de la versión 15 (simplificación).**
+
+- **Cuatro pestañas**: Resumen (portafolio), Actividades (tablero o lista, con alternador),
+  Mi trabajo (asignaciones, coordinaciones y alertas del cargo en sesión, con registro de
+  avances y retrasos) y Calendario. Empresas y productos, Alertas, Mis asignaciones, Lista y
+  Planes dejaron de ser módulos: la empresa es un filtro (barra lateral), las alertas viven en
+  la tarjeta de cada producto, y el plan final vive en la ficha del proyecto.
+- **Un solo botón «Actualizar» por producto**: avance, retraso, reprogramación, suspensión,
+  reanudación, bloqueo, nota y próxima acción en el mismo formulario (observación repetida de
+  la segunda ronda). Los hitos ganan «Agregar hito» y el responsable de una acción se elige
+  entre los ocho cargos, ya no es texto libre.
+- Guía alineada con la segunda ronda: paso a paso con botón en todos los pasos, solicitud
+  consolidada y cierre estricto explicados, y nota honesta de persistencia por navegador.
 
 **Novedades de la versión 13.**
 
