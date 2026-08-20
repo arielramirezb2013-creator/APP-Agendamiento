@@ -61,7 +61,7 @@ ROLES = {
   "Las 14 validaciones deciden la activación; el duplicado se advierte antes de activar."),
  (6, "Resolver un ajuste desde «Para resolver como dirección»",
   "Abra Mi trabajo con su sesión: la sección «Para resolver como dirección» lista los ajustes de todos los cargos "
-  "(en la base demostrativa, el Tablero BI de DEM-001). Use «Resolver ajuste» y pruebe las cuatro decisiones.",
+  "(en la demo: el Tablero BI de DEM-001 y la coordinación de DEM-003). Use «Resolver ajuste» y pruebe las cuatro decisiones.",
   "Aceptar, mantener, contrapropuesta y devolver existen y quedan en el historial. PENDIENTE reconocido: el turno "
   "del líder tras una contrapropuesta todavía no muestra botón de aceptación — confirme si bloquea la salida."),
  (8, "Aprobar el plan final desde la ficha",
@@ -99,8 +99,8 @@ ROLES = {
   "Con «Crear», registre una venta de dos productos de categorías distintas.",
   "Cada producto exige horas, tarifa y fecha solicitada; el asistente muestra las asignaciones que generará el motor."),
  (6, "Negociar capacidad desde «Para resolver como dirección»",
-  "Su Mi trabajo trae la sección «Para resolver como dirección» con los ajustes de todos los cargos. Resuelva el "
-  "del Tablero BI demostrativo con contrapropuesta; observe el estado que queda.",
+  "Su Mi trabajo trae la sección «Para resolver como dirección» con dos casos demo: el Tablero BI de DEM-001 y la "
+  "coordinación de DEM-003. Resuelva uno con contrapropuesta; observe el estado que queda.",
   "La ronda queda en el historial. PENDIENTE reconocido: el líder aún no tiene botón para aceptar la "
   "contrapropuesta — evalúe la urgencia."),
  (7, "Registrar la respuesta del cliente",
@@ -125,12 +125,14 @@ ROLES = {
   "Revise la guía: botón «Abrir» en los seis pasos, texto del paso 4 (solicitud consolidada del coordinador), "
   "paso 6 (cierre exige plan aprobado y requisitos resueltos) y la nota de persistencia/multiusuario.",
   "CORREGIDO EN v15: los tres puntos de su observación N°1 quedaron alineados. Verifíquelo y ciérrelo o reábralo."),
- (4, "Recibir la coordinación Tipo 2 en Mi trabajo",
-  "Active un Tipo 2 y abra Mi trabajo.",
-  "La coordinación llega como tarjeta independiente con su ciclo propio (validado en la segunda ronda; confirme "
-  "que sigue igual tras la simplificación)."),
+ (4, "Revisar sus coordinaciones Tipo 2 en Mi trabajo",
+  "Abra Mi trabajo: la demo trae la coordinación de DEM-001 (aceptada) y la de DEM-003 «En ajuste» con la "
+  "propuesta que usted mismo hizo por el corrimiento de la parada de mantenimiento.",
+  "Cada coordinación es una tarjeta independiente con su ciclo y su historial; la que está en ajuste espera la "
+  "decisión de la dirección."),
  (6, "Aceptar producto y proponer ajuste",
-  "Acepte la asignación de mediciones declarando tiempo y capacidad; en otro producto proponga ajuste.",
+  "Acepte la «Medición objetiva de carga postural» (DEM-003) que llega pendiente en su bandeja, declarando tiempo "
+  "y capacidad; en otro producto proponga ajuste.",
   "PENDIENTE reconocido: la coherencia de fechas (inicio posterior al cierre) y el contraste horas/capacidad aún "
   "no se validan — confirme si bloquea la salida a producción."),
  (7, "Definir y consolidar requisitos",
@@ -213,12 +215,14 @@ ROLES = {
   "revise su tarjeta.",
   "La columna existe en la hoja Productos (su N°10 de la segunda ronda apuntaba al conjunto descargable); el valor "
   "llega a la tarjeta. PENDIENTE reconocido: la homologación horas ↔ personas — priorícela en su veredicto."),
- (4, "Revisar la asignación de cápsulas",
-  "En Mi trabajo revise su tarjeta de cápsulas.",
-  "Muestra horas vendidas y personas a impactar; los botones de aceptar aparecen en la propia tarjeta cuando está "
-  "pendiente (su N°3: verifique que ahora es visible)."),
+ (4, "Revisar sus asignaciones de cápsulas",
+  "En Mi trabajo revise sus dos tarjetas demo: las cápsulas en curso (DEM-001) y las «Cápsulas de seguridad para "
+  "líderes de línea» (DEM-002) pendientes, con 120 personas a impactar y su hoja de vida de contenidos definida.",
+  "Los botones «Aceptar asignación» y «Proponer ajuste» están en la propia tarjeta pendiente (su N°3 de la "
+  "segunda ronda: verifique que ahora es visible)."),
  (6, "Aceptar y proponer ajuste",
-  "Acepte declarando tiempo y capacidad; en otra asignación proponga ajuste por disponibilidad de producción.",
+  "Acepte las cápsulas pendientes declarando tiempo y capacidad; luego proponga un ajuste por disponibilidad de "
+  "producción.",
   "La aceptación queda en el historial de la asignación con usuario y fecha."),
  (7, "Definir insumos y ver su trazabilidad",
   "Defina los insumos de las cápsulas como requisitos; pida la solicitud consolidada al coordinador y registre "
@@ -251,10 +255,10 @@ ROLES = {
   "responsable (1 o 2) desde el Excel — priorícela en su veredicto (su N°1)."),
  (4, "Revisar la asignación en Mi trabajo",
   "Abra Mi trabajo en su sesión.",
-  "El resumen (Pendientes · En ajuste · Aceptadas · Coordinación) encabeza su bandeja; su producto aparece con las "
-  "alertas dentro de la tarjeta."),
+  "Su bandeja demo trae el «Tablero BI de control · fase 2» (DEM-003) pendiente de aceptar y el tablero de DEM-001 "
+  "en ajuste esperando a la dirección, con las alertas dentro de cada tarjeta."),
  (6, "Aceptar y negociar",
-  "Acepte la asignación del tablero; en otra pruebe proponer ajuste y reciba la decisión de la dirección.",
+  "Acepte la fase 2 declarando tiempo y capacidad; observe en la otra tarjeta la negociación en curso.",
   "El ciclo Pendiente → En ajuste → Aceptada se conserva con su historial."),
  (9, "Cerrar su hallazgo del botón duplicado",
   "En su producto use «Actualizar»: registre un avance; luego vuelva y registre un retraso en el mismo formulario.",

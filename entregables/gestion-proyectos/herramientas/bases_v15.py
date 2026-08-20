@@ -252,6 +252,7 @@ EJ_DIS = {
   ],
   "Productos": [
     ["DIS-001", "Rediseño del puesto de corte", "Diseño", 90, 120000, "", "Alta", "", "2026-11-28", "", "", "", "", "Depende de la parada de planta"],
+    ["DIS-001", "Rediseño de la estación de empaque", "Diseño", 45, 120000, "", "Media", "", "2026-12-10", "", "", "", "", ""],
   ],
   "Contactos": [
     ["DIS-001", "Marta Gil", "Gerente de operaciones", "marta.gil@metalandina.demo", "3208889090", "SI"],
@@ -274,6 +275,7 @@ EJ_GEN = {
   "Productos": [
     ["GEN-001", "Mediciones objetivas línea de empaque", "Medición objetiva", 100, 130000, "Xsens", "", "", "2026-10-30", "2026-09-01", "2026-10-30", "", "", ""],
     ["GEN-001", "Cápsulas para líderes de línea", "Cápsulas", 40, 95000, "", "", 150, "2026-11-15", "", "", "", "", ""],
+    ["GEN-001", "Cápsulas de refuerzo para supervisores", "Cápsulas", 20, 95000, "", "", 80, "2026-12-01", "", "", "", "", ""],
     ["GEN-001", "Acompañamiento a la implementación", "Otro", 30, 105000, "", "", "", "2026-12-10", "", "", "", "", ""],
   ],
   "Contactos": [
