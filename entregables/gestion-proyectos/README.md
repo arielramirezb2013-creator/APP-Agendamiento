@@ -10,6 +10,7 @@ del proceso de gestión de proyectos, versión 1.1** (Rehavid S.A.S.).
 | `bases/Base_BI.xlsx` | Base de alimentación del frente de **Tableros BI** (la llena Gestor de Datos 1 y 2). |
 | `bases/Base_Diseno_Ergonomico.xlsx` | Base de alimentación del frente de **Diseño ergonómico** (la llena el Diseñador). |
 | `bases/Base_General.xlsx` | Base de alimentación de los **demás productos y los catálogos**: empresas, PPR, productos y tarifas, órdenes de servicio (la llena Gerente / CEO). |
+| `Historia_de_usuario_Rehavid_v15.xlsx` | **Tercera ronda · salida a producción**: historia de usuario por épicas, hoja «Flujo del app», una pestaña por cargo (con los hallazgos de la segunda ronda marcados CORREGIDO/PENDIENTE) y la tabla de decisión de salida a producción. |
 | `Mapa_de_usuario_y_validacion_Rehavid_v13.xlsx` | **Segunda ronda de validación**, actualizada a la versión 13: diagrama del proceso (incluida la alimentación por bases), mapa de usuario y una pestaña de observaciones por cargo. |
 | `Mapa_de_usuario_y_validacion_Rehavid.xlsx` | Primera ronda (respondida), conservada como evidencia. |
 | `ESPECIFICACION_FUNCIONAL_v1.1.txt` | Especificación vigente que se implementó. |

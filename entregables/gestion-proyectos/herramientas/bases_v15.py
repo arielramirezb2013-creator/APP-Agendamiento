@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Genera las tres bases de alimentación de Rehavid · Gestión de proyectos v13.
+"""Genera las tres bases de alimentación de Rehavid · Gestión de proyectos v15.
 1. Base_BI.xlsx — productos de Tablero BI (Gestor de Datos)
 2. Base_Diseno_Ergonomico.xlsx — productos de Diseño (Diseñador)
 3. Base_General.xlsx — mediciones, cápsulas y demás, más los catálogos.
 Las tres comparten el mismo formato de hojas; la app las carga desde
-09 Bases y auditoría → Bases de alimentación (Excel)."""
+la barra lateral → Bases y auditoría → Cargar base de alimentación (Excel)."""
 import os
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -182,8 +182,8 @@ def hoja_instrucciones(wb, titulo, alcance, hojas_nombres):
       "6. Guarde el archivo como .xlsx (formato normal de Excel).",
       "",
       "CÓMO SE CARGA EN LA APLICACIÓN",
-      "Abra la aplicación → módulo 09 Bases y auditoría → tarjeta «Bases de alimentación (Excel)» →",
-      "«Subir base de alimentación» → elija este archivo. La carga NO borra lo existente: crea lo nuevo y",
+      "Abra la aplicación → barra lateral → Bases y auditoría → «Cargar base de alimentación (Excel)» →",
+      "elija este archivo (también desde la pestaña Guía, botón «Cargar una base ahora»). La carga NO borra lo existente: crea lo nuevo y",
       "actualiza lo que coincida por código de proyecto y nombre de producto, y muestra un resumen de lo cargado.",
       "",
       "REGLAS QUE APLICA LA CARGA",
