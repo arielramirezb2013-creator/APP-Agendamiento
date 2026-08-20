@@ -47,8 +47,8 @@ ROLES = {
 "CEO": dict(nombre="CEO", responsabilidad=(
     "Dirección. Registra ventas, resuelve ajustes, aprueba planes y decide la salida a producción."), filas=[
  (0, "Recorrer la guía nueva con pantallazos",
-  "Abra la aplicación en una ventana privada (arranca en la guía) y recorra «Los módulos, uno a uno»: texto, "
-  "pantallazo y botón «Abrir» de cada módulo, y el resumen «El total del app».",
+  "Abra la aplicación en una ventana privada (arranca en la guía) y recorra «Los módulos, uno a uno: qué hace cada botón»: "
+  "texto, lista de botones y funciones, pantallazo y botón «Abrir» de cada módulo, y «El total del app».",
   "La guía explica qué hace y qué permite cada módulo con su captura real; los seis pasos del flujo tienen botón; "
   "la nota de persistencia dice dónde viven los datos y cómo operar entre varios mientras no hay servidor."),
  BASE_REVIEW("Base_General.xlsx", "la llena la dirección"),
@@ -59,9 +59,9 @@ ROLES = {
  (3, "Activar y probar el control de duplicados",
   "Active el proyecto; luego intente registrar otra venta con la misma empresa y PPR.",
   "Las 14 validaciones deciden la activación; el duplicado se advierte antes de activar."),
- (6, "Resolver un ajuste como dirección",
-  "En Mi trabajo cambie el selector «Rol» a un cargo con ajustes propuestos, o provoque uno; use «Resolver ajuste» "
-  "y pruebe las cuatro decisiones.",
+ (6, "Resolver un ajuste desde «Para resolver como dirección»",
+  "Abra Mi trabajo con su sesión: la sección «Para resolver como dirección» lista los ajustes de todos los cargos "
+  "(en la base demostrativa, el Tablero BI de DEM-001). Use «Resolver ajuste» y pruebe las cuatro decisiones.",
   "Aceptar, mantener, contrapropuesta y devolver existen y quedan en el historial. PENDIENTE reconocido: el turno "
   "del líder tras una contrapropuesta todavía no muestra botón de aceptación — confirme si bloquea la salida."),
  (8, "Aprobar el plan final desde la ficha",
@@ -98,8 +98,9 @@ ROLES = {
  (1, "Registrar una venta completa",
   "Con «Crear», registre una venta de dos productos de categorías distintas.",
   "Cada producto exige horas, tarifa y fecha solicitada; el asistente muestra las asignaciones que generará el motor."),
- (6, "Negociar capacidad con un líder",
-  "Provoque un ajuste y resuélvalo con contrapropuesta; observe el estado que queda.",
+ (6, "Negociar capacidad desde «Para resolver como dirección»",
+  "Su Mi trabajo trae la sección «Para resolver como dirección» con los ajustes de todos los cargos. Resuelva el "
+  "del Tablero BI demostrativo con contrapropuesta; observe el estado que queda.",
   "La ronda queda en el historial. PENDIENTE reconocido: el líder aún no tiene botón para aceptar la "
   "contrapropuesta — evalúe la urgencia."),
  (7, "Registrar la respuesta del cliente",
@@ -286,9 +287,14 @@ ROLES = {
   "Abra la guía, sección «Cómo se alimenta la aplicación», y el pantallazo de Bases y auditoría.",
   "La Base BI corresponde a los Gestores de Datos 1 y 2. PENDIENTE reconocido: elegir el responsable (1 o 2) desde "
   "el Excel — confirme prioridad en su veredicto (su N°1)."),
- (4, "Verificar el estado vacío de Mi trabajo",
-  "Abra Mi trabajo en su sesión, sin productos a cargo.",
-  "Estado vacío claro, sin asignaciones de otros cargos."),
+ (4, "Revisar su bandeja demostrativa",
+  "Abra Mi trabajo en su sesión.",
+  "La base demostrativa trae el «Tablero de control de indicadores» (DEM-002) reasignado a su cargo por la "
+  "dirección, en «Pendiente de aceptación», para que practique el flujo completo."),
+ (6, "Aceptar la asignación reasignada",
+  "En esa tarjeta use «Aceptar asignación» declarando tiempo y capacidad.",
+  "La asignación pasa a Aceptada a nombre de su cargo y aparecen los botones de ejecución («Actualizar», «Hitos», "
+  "«Requisitos de información»)."),
  (6, "Recibir un producto por reasignación",
   "Pida a la dirección reasignar el tablero a su cargo («Reasignar cargo» en la tarjeta) y revise Mi trabajo.",
   "La asignación vuelve a «Pendiente de aceptación» a nombre de su cargo y los botones de aceptar aparecen en su "
