@@ -72,7 +72,9 @@ export function TarjetaAmbar({ disparada, onCerrada }: TarjetaAmbarProps) {
             {interpolar(banderas.ambar.llamarA, { contacto: nombreContacto })}
           </button>
         ) : (
-          <p className="text-base text-tinta-suave">{banderas.ambar.sinContacto}</p>
+          <p className="text-base text-tinta-suave">
+            {t(banderas.ambar.sinContacto, trato)}
+          </p>
         )}
         <button
           type="button"

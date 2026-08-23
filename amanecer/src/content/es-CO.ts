@@ -322,7 +322,10 @@ export const banderas = {
     llamarA: '📞 Llamar a {contacto}',
     recordarManana: 'Recordármelo mañana',
     yaHablamos: 'Ya lo hablamos',
-    sinContacto: 'Coméntelo en su próximo control. Quedó anotado para el reporte.',
+    sinContacto: {
+      usted: 'Coméntelo en su próximo control. Quedó anotado para el reporte.',
+      tu: 'Coméntalo en tu próximo control. Quedó anotado para el reporte.',
+    } as Frase,
   },
 } as const;
 
@@ -386,6 +389,8 @@ export const cuidador = {
   registros: {
     titulo: 'Registros',
     editar: 'Corregir',
+    eliminar: 'Eliminar',
+    eliminado: 'Registro eliminado ✓',
     llenadoPor: { paciente: 'Llenado por ella', cuidador: 'Llenado por el cuidador' },
     sinRegistros: 'No hay registros en este periodo.',
   },
@@ -442,6 +447,11 @@ export const cuidador = {
     altoContraste: 'Alto contraste extra',
     cambiarPin: 'Cambiar PIN',
     diaPeso: 'Día del recordatorio de peso',
+    umbralesTitulo: 'Umbral de aviso por pérdida de peso',
+    umbralesNota:
+      'Ajústelo con el equipo de nutrición. La app avisa si el peso baja más que esto.',
+    umbralKg: 'Kilos perdidos en 4 semanas',
+    umbralPct: 'Porcentaje perdido en 8 semanas',
     exportar: 'Exportar todo (respaldo cifrado)',
     exportarPass: 'Contraseña para cifrar el respaldo',
     importar: 'Restaurar desde respaldo',

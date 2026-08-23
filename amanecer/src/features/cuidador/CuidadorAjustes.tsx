@@ -2,10 +2,11 @@
 // exportar respaldo cifrado, restaurar y "Borrar todo" con doble confirmación.
 // Los datos son de ella y de su familia, siempre.
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { comun, cuidador as copy } from '@/content/es-CO';
 import { db } from '@/db/dexie';
 import { borrarTodo, exportarTodo, hashPin, importarTodo } from '@/db/backup';
+import { UMBRALES_PESO_DEFECTO } from '@/rules/weight';
 import type { Perfil } from '@/types/models';
 import { useApp } from '@/store';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -26,6 +27,28 @@ export function CuidadorAjustes({ perfil }: { perfil: Perfil }) {
   const [primerPin, setPrimerPin] = useState<string>();
   const [aviso, setAviso] = useState<string>();
   const archivoRef = useRef<HTMLInputElement>(null);
+  // Umbrales de la regla de peso A6 (§6.3): editables por el cuidador con su equipo.
+  const [umbralKg, setUmbralKg] = useState(String(UMBRALES_PESO_DEFECTO.pesoKg4Sem));
+  const [umbralPct, setUmbralPct] = useState(
+    String(UMBRALES_PESO_DEFECTO.pesoPorcentaje8Sem),
+  );
+
+  useEffect(() => {
+    void db.config.get('default').then((c) => {
+      if (c) {
+        setUmbralKg(String(c.pesoKg4Sem));
+        setUmbralPct(String(c.pesoPorcentaje8Sem));
+      }
+    });
+  }, []);
+
+  const guardarUmbrales = async () => {
+    const kg = Number(umbralKg.replace(',', '.'));
+    const pct = Number(umbralPct.replace(',', '.'));
+    if (!kg || kg <= 0 || !pct || pct <= 0) return;
+    await db.config.put({ id: 'default', pesoKg4Sem: kg, pesoPorcentaje8Sem: pct });
+    setAviso(comun.guardado);
+  };
 
   const actualizar = async (cambios: Partial<Perfil>) => {
     await db.perfiles.update(perfil.id, cambios);
@@ -211,6 +234,33 @@ export function CuidadorAjustes({ perfil }: { perfil: Perfil }) {
             />
           ))}
         </div>
+      </fieldset>
+
+      <fieldset className="rounded-token bg-superficie p-4">
+        <legend className="text-base font-bold text-tinta">
+          ⚖️ {copy.ajustes.umbralesTitulo}
+        </legend>
+        <p className="mb-2 text-min text-tinta-suave">{copy.ajustes.umbralesNota}</p>
+        <label className="flex flex-col gap-1 text-base font-bold text-tinta">
+          {copy.ajustes.umbralKg}
+          <input
+            value={umbralKg}
+            inputMode="decimal"
+            onChange={(e) => setUmbralKg(e.target.value)}
+            onBlur={() => void guardarUmbrales()}
+            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+          />
+        </label>
+        <label className="mt-2 flex flex-col gap-1 text-base font-bold text-tinta">
+          {copy.ajustes.umbralPct}
+          <input
+            value={umbralPct}
+            inputMode="decimal"
+            onChange={(e) => setUmbralPct(e.target.value)}
+            onBlur={() => void guardarUmbrales()}
+            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+          />
+        </label>
       </fieldset>
 
       <button
