@@ -24,3 +24,6 @@ amanecer/dist/
 amanecer/dev-dist/
 amanecer/test-results/
 amanecer/playwright-report/
+
+# Node
+node_modules/
