@@ -27,7 +27,7 @@ export function BigChoice({ etiqueta, emoji, seleccionado, onSelect, ancho }: Bi
         }`}
     >
       {emoji ? (
-        <span aria-hidden="true" className="text-[32px] leading-none">
+        <span aria-hidden="true" className="text-[1.6rem] leading-none">
           {emoji}
         </span>
       ) : null}

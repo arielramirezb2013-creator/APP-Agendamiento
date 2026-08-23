@@ -33,13 +33,17 @@ export const comun = {
   si: 'Sí',
   no: 'No',
   errorGuardar: 'No se pudo guardar. Ya lo intento de nuevo; no se perdió nada.',
-  errorAudio: 'No se pudo guardar el audio. Vuelva a intentar o escriba la nota.',
+  errorAudio: {
+    usted: 'No se pudo guardar el audio. Vuelva a intentar o escriba la nota.',
+    tu: 'No se pudo guardar el audio. Vuelve a intentar o escribe la nota.',
+  } as Frase,
   grabarNota: '🎙️ Grabar nota de voz',
   escribir: '⌨️ Escribir',
   detenerGrabacion: 'Detener y guardar',
   grabando: 'Grabando…',
   noGracias: 'No, gracias',
   anotar: 'Anotar',
+  comaDecimal: 'coma decimal',
 } as const;
 
 export const inicio = {
@@ -173,7 +177,10 @@ export const checkin = {
       usted: '¿Quiere contar algo más?',
       tu: '¿Quieres contar algo más?',
     } as Frase,
-    placeholder: 'Escriba aquí lo que quiera contar…',
+    placeholder: {
+      usted: 'Escriba aquí lo que quiera contar…',
+      tu: 'Escribe aquí lo que quieras contar…',
+    } as Frase,
   },
   cierre: {
     usted: 'Listo, {nombre} ✓ Gracias por contarme. Que tenga un lindo día.',
@@ -202,7 +209,10 @@ export const episodios = {
     { valor: 'fuerte', etiqueta: 'Fuerte' },
   ],
   queHicieron: '¿Qué hicieron?',
-  queHicieronDetalle: 'Puede contarlo con voz o por escrito. También puede pasar.',
+  queHicieronDetalle: {
+    usted: 'Puede contarlo con voz o por escrito. También puede pasar.',
+    tu: 'Puedes contarlo con voz o por escrito. También puedes pasar.',
+  } as Frase,
   sigueAtorada: {
     usted: '¿Ya pasó o sigue atorada?',
     tu: '¿Ya pasó o sigues atorada?',
@@ -225,8 +235,14 @@ export const comidas = {
     usted: '¿Qué comió?',
     tu: '¿Qué comiste?',
   } as Frase,
-  queComioDetalle: 'Puede contarlo con voz, con foto o por escrito.',
+  queComioDetalle: {
+    usted: 'Puede contarlo con voz, con foto o por escrito.',
+    tu: 'Puedes contarlo con voz, con foto o por escrito.',
+  } as Frase,
   foto: '📷 Tomar foto',
+  fotoAlt: 'Foto de la comida',
+  atoroEpisodioConDescripcion: 'Comiendo: {descripcion}',
+  atoroEpisodioSinDescripcion: 'Durante la comida',
   cuanto: {
     usted: '¿Cuánto se comió?',
     tu: '¿Cuánto te comiste?',
@@ -263,6 +279,10 @@ export const comidas = {
     haBajado: 'Ha bajado — vale la pena comentárselo a {contacto}',
     registrar: 'Anotar mi peso',
     sinDatos: 'Aún no hay pesos anotados.',
+    fueraDeRango: {
+      usted: 'Ese número no parece un peso. Revíselo y vuelva a intentar.',
+      tu: 'Ese número no parece un peso. Revísalo y vuelve a intentar.',
+    } as Frase,
   },
 } as const;
 
@@ -315,6 +335,16 @@ export const recordatorios = {
   laboratorio: '🧪 {titulo}',
   pesoSemanal: '⚖️ Hoy toca anotar el peso',
   ejercicio: '🤸 {titulo}',
+  anotarPeso: 'Anotar el peso',
+  // Voz de casa en la notificación del sistema (§6.6).
+  notificacionPastilla: {
+    usted: '{nombre}, es hora de su pastilla de las {hora}: {medicina}',
+    tu: '{nombre}, es hora de tu pastilla de las {hora}: {medicina}',
+  } as Frase,
+  labsTituloMes: 'Laboratorio de riluzol (mes {n})',
+  labsTituloTrimestral: 'Laboratorio de riluzol (trimestral)',
+  labsTituloAnual: 'Laboratorio de riluzol (anual)',
+  labsDisclaimer: 'Esquema orientativo de guía; confirme fechas con su médico tratante.',
 } as const;
 
 export const cuidador = {
@@ -427,10 +457,14 @@ export const cuidador = {
     titulo: 'Señales urgentes',
     intro: '¿Está viendo alguna de estas señales en este momento?',
     opciones: [
+      // Rojas (R5): urgencia inmediata.
       { valor: 'cianosis', etiqueta: 'Labios o cara morados' },
       { valor: 'confusion', etiqueta: 'Confusión o somnolencia marcada' },
       { valor: 'no_habla_no_respira', etiqueta: 'No puede hablar ni respirar' },
+      // Ámbar: rutas de consulta (A4, A3, A9).
       { valor: 'tos_debil', etiqueta: 'Tos débil que no saca la flema' },
+      { valor: 'somnolencia_diurna', etiqueta: 'Somnolencia durante el día' },
+      { valor: 'tropiezos', etiqueta: 'Tropiezos al caminar' },
     ],
     ninguna: 'Ninguna de estas',
   },
@@ -454,7 +488,15 @@ export const reporte = {
     'Registro de autorreporte generado por la app {app} — no es un documento clínico.',
   peso: 'Tendencia de peso (kg)',
   animo: 'Resumen de ánimo (1=muy triste, 5=muy bien)',
+  animoResumen:
+    'Días registrados: {dias} · promedio {promedio}/5 · días con ánimo bajo (≤2): {bajos}',
   medicacion: 'Adherencia a medicación',
+  medicacionLinea:
+    '{nombre} ({horarios}): {tomadas} tomas confirmadas ({pct}% de las programadas desde {desde})',
+  medicacionSinTomas: '{nombre} ({horarios}): sin registros de toma en el periodo',
+  pesoUmbralCruzado: '⚠ Pérdida de peso que cruza el umbral configurado ({umbral}).',
+  umbralKg4Sem: '≥{kg} kg en 4 semanas',
+  umbralPct8Sem: '≥{pct}% en 8 semanas',
   episodios: 'Episodios',
   episodiosCols: ['Fecha', 'Tipo', 'Severidad', 'Qué se hizo'],
   senalesRespiratorias: 'Señales respiratorias reportadas',
@@ -504,18 +546,46 @@ export const etiquetasEpisodio: Record<
 
 // Copy de reglas ámbar (§7.3) — patrón: cercano, sin tecnicismos, sin miedo.
 // {contacto} se reemplaza por el nombre del contacto mapeado al tema.
-export const copyReglas: Record<string, string> = {
-  A1: 'Ha amanecido con dolor de cabeza varios días. A veces eso tiene que ver con cómo se respira de noche, y su especialista sabe qué revisar. ¿Le avisamos a {contacto}?',
-  A2: 'Anoche le faltó el aire estando acostada. Eso vale la pena contárselo pronto a {contacto}. ¿La llamamos?',
-  A3: 'Lleva varias noches durmiendo mal. Su equipo sabe qué revisar para que descanse mejor. ¿Le avisamos a {contacto}?',
+export const copyReglas: Record<string, Frase> = {
+  A1: {
+    usted:
+      'Ha amanecido con dolor de cabeza varios días. A veces eso tiene que ver con cómo se respira de noche, y su especialista sabe qué revisar. ¿Le avisamos a {contacto}?',
+    tu: 'Has amanecido con dolor de cabeza varios días. A veces eso tiene que ver con cómo se respira de noche, y tu especialista sabe qué revisar. ¿Le avisamos a {contacto}?',
+  },
+  A2: {
+    usted:
+      'Anoche le faltó el aire estando acostada. Eso vale la pena contárselo pronto a {contacto}. ¿La llamamos?',
+    tu: 'Anoche te faltó el aire estando acostada. Eso vale la pena contárselo pronto a {contacto}. ¿La llamamos?',
+  },
+  A3: {
+    usted:
+      'Lleva varias noches durmiendo mal. Su equipo sabe qué revisar para que descanse mejor. ¿Le avisamos a {contacto}?',
+    tu: 'Llevas varias noches durmiendo mal. Tu equipo sabe qué revisar para que descanses mejor. ¿Le avisamos a {contacto}?',
+  },
   A4: 'Esa tos que no logra sacar la flema tiene ayuda. ¿Le avisamos a {contacto}?',
-  A5: 'La comida ha costado más estos días. {contacto} sabe cómo hacerla más fácil y segura. ¿La llamamos?',
+  A5: {
+    usted:
+      'La comida ha costado más estos días. {contacto} sabe cómo hacerla más fácil y segura. ¿La llamamos?',
+    tu: 'La comida ha costado más estos días. {contacto} sabe cómo hacerla más fácil y segura. ¿La llamamos?',
+  },
   A6: 'El peso ha bajado un poquito estas semanas. Vale la pena comentárselo a {contacto}. ¿La llamamos?',
   A7: 'La saliva espesa lleva varios días molestando. Eso tiene manejo. ¿Le contamos a {contacto}?',
   A8: 'El dolor ha estado presente varios días. No hay que aguantarlo. ¿Le avisamos a {contacto}?',
-  A9: 'Van dos tropiezos en poco tiempo. {contacto} puede ayudar a moverse con más seguridad. ¿La llamamos?',
-  A10: 'La he notado triste estos días. ¿Quiere que llamemos a {contacto}? También puede contárselo a su familia.',
-  A11: 'Ese llanto o risa que llega sin avisar se ha repetido. Su médico sabe de esto y tiene manejo. ¿Le avisamos a {contacto}?',
+  A9: {
+    usted:
+      'Van dos tropiezos en poco tiempo. {contacto} puede ayudar a que se mueva con más seguridad. ¿La llamamos?',
+    tu: 'Van dos tropiezos en poco tiempo. {contacto} puede ayudar a que te muevas con más seguridad. ¿La llamamos?',
+  },
+  A10: {
+    usted:
+      'La he notado triste estos días. ¿Quiere que llamemos a {contacto}? También puede contárselo a su familia.',
+    tu: 'Te he notado triste estos días. ¿Quieres que llamemos a {contacto}? También puedes contárselo a tu familia.',
+  },
+  A11: {
+    usted:
+      'Ese llanto o risa que llega sin avisar se ha repetido. Su médico sabe de esto y tiene manejo. ¿Le avisamos a {contacto}?',
+    tu: 'Ese llanto o risa que llega sin avisar se ha repetido. Tu médico sabe de esto y tiene manejo. ¿Le avisamos a {contacto}?',
+  },
   A12: 'Con gripa o fiebre, y más si la respiración cambia, conviene consultar temprano. ¿Le avisamos a {contacto}?',
 };
 

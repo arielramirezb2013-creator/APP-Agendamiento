@@ -2,7 +2,7 @@
 // fichas grandes, todas omitibles con "Pasar", ≤90 segundos.
 // Bandera roja interrumpe de inmediato (R1); la ámbar espera al cierre.
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { BigChoice } from '@/components/BigChoice';
 import { CardQuestion } from '@/components/CardQuestion';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -56,6 +56,8 @@ export function Checkin({ perfil, rol }: CheckinProps) {
   const [escribiendo, setEscribiendo] = useState(false);
   const [ambar, setAmbar] = useState<BanderaDisparada>();
   const [error, setError] = useState<string>();
+  // Un doble toque (frecuente con motricidad reducida, E2) no debe guardar dos veces.
+  const guardando = useRef(false);
 
   // Un check-in por día, editable (§6.1): precarga si ya existe.
   useEffect(() => {
@@ -135,6 +137,8 @@ export function Checkin({ perfil, rol }: CheckinProps) {
     const nuevos = { ...datos, respiracion: 'mucho' as const };
     setDatos(nuevos);
     if (!ahora) return avanzar('respiracionAhora');
+    if (guardando.current) return;
+    guardando.current = true;
     const registro = await persistir(nuevos);
     const res = await procesarBanderas({
       checkinHoy: registro,
@@ -146,15 +150,23 @@ export function Checkin({ perfil, rol }: CheckinProps) {
       });
       ir({ id: 'banderaRoja', reglaId: res.rojas[0].regla.id });
     } else {
+      guardando.current = false;
       avanzar('respiracionAhora');
     }
   }
 
-  async function cerrar() {
+  /**
+   * Cierra y persiste. `extra` permite pasar datos recién producidos (p. ej. la
+   * nota de voz) SIN depender del estado de React, que aún no se actualizó.
+   */
+  async function cerrar(extra: Partial<CheckinDiario> = {}) {
+    if (guardando.current) return;
+    guardando.current = true;
     try {
       const registro = await persistir({
         ...datos,
         nota: textoNota ? { ...datos.nota, texto: textoNota } : datos.nota,
+        ...extra,
       });
       const res = await procesarBanderas({ checkinHoy: registro });
       const ids = [
@@ -175,6 +187,8 @@ export function Checkin({ perfil, rol }: CheckinProps) {
     } catch {
       setError(comun.errorGuardar);
       setPaso('cierre');
+    } finally {
+      guardando.current = false;
     }
   }
 
@@ -258,7 +272,11 @@ export function Checkin({ perfil, rol }: CheckinProps) {
         pregunta={preguntaZonas}
         progreso={progreso}
         onVolver={retroceder}
-        onPasar={() => avanzar('dolorZonas')}
+        onPasar={() => {
+          // "Pasar" no descarta lo ya marcado: las zonas elegidas se conservan.
+          setDatos((d) => ({ ...d, dolor: { nivel: d.dolor?.nivel ?? 1, zonas } }));
+          avanzar('dolorZonas');
+        }}
         pie={
           <PrimaryButton
             onClick={() => {
@@ -361,9 +379,16 @@ export function Checkin({ perfil, rol }: CheckinProps) {
               seleccionado={datos.sueno?.calidad === o.valor}
               onSelect={() => {
                 const calidad = o.valor as 'bien' | 'regular' | 'mal';
-                setDatos((d) => ({ ...d, sueno: { calidad, senales } }));
-                if (calidad === 'bien') avanzar('sueno');
-                else setPaso('suenoSenales');
+                // "Bien" limpia señales previas: si corrige la respuesta, no
+                // deben quedar ortopnea/cefalea huérfanas que disparen A1/A2.
+                if (calidad === 'bien') {
+                  setSenales([]);
+                  setDatos((d) => ({ ...d, sueno: { calidad, senales: [] } }));
+                  avanzar('sueno');
+                } else {
+                  setDatos((d) => ({ ...d, sueno: { calidad, senales } }));
+                  setPaso('suenoSenales');
+                }
               }}
             />
           ))}
@@ -378,7 +403,14 @@ export function Checkin({ perfil, rol }: CheckinProps) {
         pregunta={copy.sueno.quePaso}
         progreso={progreso}
         onVolver={retroceder}
-        onPasar={() => avanzar('suenoSenales')}
+        onPasar={() => {
+          // "Pasar" no descarta señales NICE ya marcadas (ortopnea/cefalea → A1/A2).
+          setDatos((d) => ({
+            ...d,
+            sueno: { calidad: d.sueno?.calidad ?? 'regular', senales },
+          }));
+          avanzar('suenoSenales');
+        }}
         pie={
           <PrimaryButton
             onClick={() => {
@@ -512,12 +544,17 @@ export function Checkin({ perfil, rol }: CheckinProps) {
       <div className="flex flex-col gap-3">
         <NotaVozBoton
           origen="checkin"
+          trato={trato}
           onNota={(nota) => {
-            setDatos((d) => ({
-              ...d,
-              nota: { ...d.nota, audioRef: nota.id, texto: nota.transcripcion ?? d.nota?.texto },
-            }));
-            void cerrar();
+            // La nota se pasa DIRECTO a cerrar(): el setState de React es
+            // asíncrono y `datos` aún no la tendría al persistir.
+            const notaFinal = {
+              ...datos.nota,
+              audioRef: nota.id,
+              texto: nota.transcripcion ?? textoNota ?? datos.nota?.texto,
+            };
+            setDatos((d) => ({ ...d, nota: notaFinal }));
+            void cerrar({ nota: notaFinal });
           }}
           onError={(m) => setError(m)}
         />
@@ -527,7 +564,7 @@ export function Checkin({ perfil, rol }: CheckinProps) {
             onChange={(e) => setTextoNota(e.target.value)}
             rows={4}
             aria-label={t(copy.nota.pregunta, trato)}
-            placeholder={copy.nota.placeholder}
+            placeholder={t(copy.nota.placeholder, trato)}
             className="w-full rounded-token border-2 border-tinta-suave/40 bg-superficie p-4 text-base"
           />
         ) : (

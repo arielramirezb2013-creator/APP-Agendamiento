@@ -42,7 +42,7 @@ export function Toast({ estado, onCerrar }: ToastProps) {
             setVisible(false);
             onCerrar();
           }}
-          className="min-h-[48px] rounded-token px-3 font-bold underline"
+          className="min-h-chip min-w-chip rounded-token px-3 font-bold underline"
         >
           {comun.deshacer}
         </button>

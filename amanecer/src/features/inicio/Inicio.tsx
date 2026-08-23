@@ -1,7 +1,7 @@
 // Inicio del modo paciente (§9.2): saludo cálido, check-in como único objetivo
 // primario, accesos grandes y recordatorios del día. Sin menús, sin tabs.
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { comun, inicio, interpolar, recordatorios as copyRec, t } from '@/content/es-CO';
@@ -39,10 +39,14 @@ export function Inicio({ perfil }: { perfil: Perfil }) {
 
   useEffect(cargarItems, [cargarItems]);
 
+  const confirmando = useRef(false);
+
   const confirmarToma = async (item: ItemHoy) => {
-    if (!item.medicinaId || !item.hora) return;
+    if (!item.medicinaId || !item.hora || confirmando.current) return;
+    confirmando.current = true;
     const { medicinaId, hora } = item;
     await marcarToma(medicinaId, hora, 'tomada');
+    confirmando.current = false;
     // Confirmación en pasado + deshacer durante 6 s (§3.1).
     setToast({
       mensaje: comun.guardado,
@@ -57,7 +61,7 @@ export function Inicio({ perfil }: { perfil: Perfil }) {
     <div className="transicion-tarjeta flex min-h-dvh flex-col gap-6 bg-fondo px-4 py-6">
       {/* Firma visual §10.3: la tarjeta de saludo es el único elemento expresivo. */}
       <header className="text-center">
-        <p aria-hidden="true" className="text-[40px] leading-none">
+        <p aria-hidden="true" className="text-[2rem] leading-none">
           ☀️
         </p>
         <h1 className="font-titular text-saludo text-tinta">
@@ -141,7 +145,7 @@ export function Inicio({ perfil }: { perfil: Perfil }) {
                 <button
                   type="button"
                   onClick={() => void confirmarToma(item)}
-                  className="min-h-[56px] shrink-0 rounded-token bg-primario px-3
+                  className="min-h-chip shrink-0 rounded-token bg-primario px-3
                     text-min font-bold text-white"
                 >
                   {copyRec.yaLaTome}
@@ -151,7 +155,7 @@ export function Inicio({ perfil }: { perfil: Perfil }) {
                 <button
                   type="button"
                   onClick={() => ir({ id: 'peso' })}
-                  className="min-h-[56px] shrink-0 rounded-token bg-primario px-3
+                  className="min-h-chip shrink-0 rounded-token bg-primario px-3
                     text-min font-bold text-white"
                 >
                   {comun.anotar}

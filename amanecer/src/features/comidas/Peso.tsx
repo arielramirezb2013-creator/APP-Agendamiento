@@ -2,14 +2,14 @@
 // solo dos anotaciones posibles: estable ✓ / "ha bajado — coménteselo a
 // [nutricionista]". Evidencia: hipermetabolismo ~50% (§2.2-3).
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CardQuestion } from '@/components/CardQuestion';
 import { NumericKeypad } from '@/components/NumericKeypad';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { comidas, comun, interpolar, t } from '@/content/es-CO';
 import { ahoraISO, db, hoyLocal, nuevoId } from '@/db/dexie';
 import { enVentana } from '@/rules/recurrence';
-import { evaluarPeso } from '@/rules/weight';
+import { evaluarPeso, UMBRALES_PESO_DEFECTO, type UmbralesPeso } from '@/rules/weight';
 import { contactoParaTema, procesarBanderas } from '@/services/banderas';
 import type { BanderaDisparada } from '@/rules/flags';
 import type { Perfil, Peso as PesoModelo, Rol } from '@/types/models';
@@ -67,6 +67,9 @@ export function Peso({ perfil, rol }: PesoProps) {
   const [ambar, setAmbar] = useState<BanderaDisparada>();
   const [nombreNutri, setNombreNutri] = useState<string>();
   const [error, setError] = useState<string>();
+  // Umbrales editables por el cuidador (§6.3): la anotación de tendencia usa
+  // la MISMA configuración que la regla A6, nunca solo los valores por defecto.
+  const [umbrales, setUmbrales] = useState<UmbralesPeso>(UMBRALES_PESO_DEFECTO);
 
   const cargar = async () => {
     const hoy = hoyLocal();
@@ -77,11 +80,27 @@ export function Peso({ perfil, rol }: PesoProps) {
   useEffect(() => {
     void cargar();
     void contactoParaTema('nutricion').then((c) => setNombreNutri(c?.nombre));
+    void db.config.get('default').then((c) => {
+      if (c) {
+        setUmbrales({
+          pesoPorcentaje8Sem: c.pesoPorcentaje8Sem,
+          pesoKg4Sem: c.pesoKg4Sem,
+        });
+      }
+    });
   }, []);
+
+  const guardando = useRef(false);
 
   async function guardar() {
     const kg = Number(valor);
-    if (!kg || kg < 20 || kg > 250) return;
+    // Los errores dicen qué pasó y qué hacer (§10.2): nada de rechazos mudos.
+    if (!kg || kg < 20 || kg > 250) {
+      setError(t(copy.fueraDeRango, trato));
+      return;
+    }
+    if (guardando.current) return;
+    guardando.current = true;
     try {
       const registro: PesoModelo = {
         id: nuevoId(),
@@ -96,6 +115,8 @@ export function Peso({ perfil, rol }: PesoProps) {
       setGuardadoOk(true);
     } catch {
       setError(comun.errorGuardar);
+    } finally {
+      guardando.current = false;
     }
   }
 
@@ -103,10 +124,7 @@ export function Peso({ perfil, rol }: PesoProps) {
     if (ambar) {
       return <TarjetaAmbar disparada={ambar} onCerrada={() => setAmbar(undefined)} />;
     }
-    const resultado = evaluarPeso(
-      historial,
-      hoyLocal(),
-    );
+    const resultado = evaluarPeso(historial, hoyLocal(), umbrales);
     return (
       <div className="transicion-tarjeta flex min-h-dvh flex-col justify-center gap-6 bg-fondo px-4 py-8">
         <p className="text-center text-pregunta font-bold text-exito">{comun.listo}</p>
@@ -142,13 +160,20 @@ export function Peso({ perfil, rol }: PesoProps) {
     >
       <NumericKeypad
         valor={valor}
-        onCambio={setValor}
+        onCambio={(v) => {
+          setError(undefined);
+          setValor(v);
+        }}
         maxLargo={4}
         conComa
         etiquetaBorrar={copy.borrar}
       />
       <p className="text-center text-base text-tinta-suave">{copy.kg}</p>
-      {error ? <p className="text-base text-rojo">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-center text-base font-bold text-rojo">
+          {error}
+        </p>
+      ) : null}
     </CardQuestion>
   );
 }

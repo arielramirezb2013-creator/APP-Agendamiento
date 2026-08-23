@@ -3,9 +3,11 @@
 // Nunca alarmista; registra la decisión; recuerda máx. 1 vez.
 
 import { useEffect, useState } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import type { BanderaDisparada } from '@/rules/flags';
 import type { Contacto } from '@/types/models';
-import { banderas, copyReglas, interpolar } from '@/content/es-CO';
+import { banderas, copyReglas, interpolar, t } from '@/content/es-CO';
+import { db } from '@/db/dexie';
 import {
   contactoParaTema,
   decidirEventoAmbar,
@@ -20,6 +22,8 @@ interface TarjetaAmbarProps {
 export function TarjetaAmbar({ disparada, onCerrada }: TarjetaAmbarProps) {
   const [contacto, setContacto] = useState<Contacto>();
   const [eventoId, setEventoId] = useState<string>();
+  const trato =
+    useLiveQuery(() => db.perfiles.toArray(), [])?.[0]?.tratamiento ?? 'usted';
 
   useEffect(() => {
     let activo = true;
@@ -45,8 +49,8 @@ export function TarjetaAmbar({ disparada, onCerrada }: TarjetaAmbarProps) {
   };
 
   const nombreContacto = contacto?.nombre ?? '';
-  const copy = interpolar(copyReglas[disparada.regla.id] ?? '', {
-    contacto: nombreContacto || 'su equipo',
+  const copy = interpolar(t(copyReglas[disparada.regla.id] ?? '', trato), {
+    contacto: nombreContacto || (trato === 'tu' ? 'tu equipo' : 'su equipo'),
   });
 
   return (

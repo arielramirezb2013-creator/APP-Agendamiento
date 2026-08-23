@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   evaluarBanderas,
   filtrarYaAtendidas,
+  reglasParaRecordar,
   seleccionarParaSesion,
   type ContextoEvaluacion,
 } from '../flags';
@@ -135,6 +136,20 @@ describe('A2 — ortopnea reportada hoy', () => {
       }),
     };
     expect(ids(ctx)).not.toContain('A2');
+  });
+});
+
+describe('A3 — somnolencia diurna reportada (checklist del cuidador)', () => {
+  it('dispara ámbar con somnolencia diurna sin señales de sueño', () => {
+    const res = ids({ ...ctxBase(), checklistCuidador: ['somnolencia_diurna'] });
+    expect(res).toContain('A3');
+    expect(res).not.toContain('R5'); // la marcada con confusión es otra ruta
+  });
+});
+
+describe('A9 — tropiezos reportados (checklist del cuidador)', () => {
+  it('dispara ámbar con tropiezos sin caídas registradas', () => {
+    expect(ids({ ...ctxBase(), checklistCuidador: ['tropiezos'] })).toContain('A9');
   });
 });
 
@@ -453,6 +468,11 @@ describe('filtrarYaAtendidas (§7.1 — recuerda máx. 1 vez)', () => {
     decision: dec,
   });
 
+  it('"llamó" silencia la regla esa semana (no se insiste tras llamar)', () => {
+    expect(
+      filtrarYaAtendidas(disparada(), [evento('llamo', sumarDias(HOY, -2))], HOY),
+    ).toHaveLength(0);
+  });
   it('"ya lo hablamos" silencia la regla esa semana', () => {
     expect(
       filtrarYaAtendidas(disparada(), [evento('ya_hablado', sumarDias(HOY, -2))], HOY),
@@ -494,5 +514,63 @@ describe('filtrarYaAtendidas (§7.1 — recuerda máx. 1 vez)', () => {
       { id: 'r', reglaId: 'R4', nivel: 'roja', fechaHora: `${HOY}T07:00:00.000Z` },
     ];
     expect(filtrarYaAtendidas(rojas, eventos, HOY).length).toBeGreaterThan(0);
+  });
+});
+
+describe('reglasParaRecordar — "recordármelo mañana" en reglas puntuales (§7.1)', () => {
+  const eventoRecordar = (reglaId: string, fecha: string): EventoBandera => ({
+    id: `e-${reglaId}-${fecha}`,
+    reglaId,
+    nivel: 'ambar',
+    fechaHora: `${fecha}T08:00:00`,
+    decision: 'recordar',
+  });
+
+  it('re-ofrece hoy una regla puntual recordada ayer (A2)', () => {
+    const ctx = ctxBase();
+    const recordadas = reglasParaRecordar(
+      [eventoRecordar('A2', sumarDias(HOY, -1))],
+      HOY,
+      ctx,
+    );
+    expect(recordadas.map((r) => r.regla.id)).toEqual(['A2']);
+    expect(recordadas[0].contactoTema).toBe('respiracion');
+    // Y el filtro fino aún la deja pasar (solo 1 "recordar" en la semana).
+    expect(
+      filtrarYaAtendidas(recordadas, [eventoRecordar('A2', sumarDias(HOY, -1))], HOY),
+    ).toHaveLength(1);
+  });
+
+  it('NO re-ofrece recordatorios de hace 2 días ni de hoy', () => {
+    const ctx = ctxBase();
+    expect(
+      reglasParaRecordar([eventoRecordar('A2', sumarDias(HOY, -2))], HOY, ctx),
+    ).toHaveLength(0);
+    expect(reglasParaRecordar([eventoRecordar('A2', HOY)], HOY, ctx)).toHaveLength(0);
+  });
+
+  it('tras el segundo "recordar", filtrarYaAtendidas corta la cadena (máx. 1 recordatorio)', () => {
+    const ctx = ctxBase();
+    const eventos = [
+      eventoRecordar('A2', sumarDias(HOY, -2)),
+      eventoRecordar('A2', sumarDias(HOY, -1)),
+    ];
+    const recordadas = reglasParaRecordar(eventos, HOY, ctx);
+    expect(filtrarYaAtendidas(recordadas, eventos, HOY)).toHaveLength(0);
+  });
+});
+
+describe('A8 — zonas con memoria para el mapeo de contacto', () => {
+  it('sin zonas hoy, usa las del registro más reciente de la semana', () => {
+    const ctx = {
+      ...ctxBase(),
+      checkinHoy: checkin(HOY, { dolor: { nivel: 2 as const } }),
+      checkins: [
+        checkin(sumarDias(HOY, -1), { dolor: { nivel: 2 as const, zonas: ['Piernas'] } }),
+        checkin(sumarDias(HOY, -2), { dolor: { nivel: 2 as const, zonas: ['Cabeza'] } }),
+      ],
+    };
+    const d = evaluarBanderas(ctx).find((x) => x.regla.id === 'A8');
+    expect(d?.contactoTema).toBe('moverme');
   });
 });

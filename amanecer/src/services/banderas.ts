@@ -5,6 +5,7 @@ import { db, hoyLocal, nuevoId, ahoraISO } from '@/db/dexie';
 import {
   evaluarBanderas,
   filtrarYaAtendidas,
+  reglasParaRecordar,
   seleccionarParaSesion,
   type BanderaDisparada,
   type ContextoEvaluacion,
@@ -55,7 +56,11 @@ export async function procesarBanderas(
   const ctx = await construirContexto(extras);
   const disparadas = evaluarBanderas(ctx);
   const eventos = await db.eventosBandera.toArray();
-  const vigentes = filtrarYaAtendidas(disparadas, eventos, ctx.hoy);
+  // "Recordármelo mañana" de reglas puntuales: se re-ofrecen hoy una vez.
+  const recordadas = reglasParaRecordar(eventos, ctx.hoy, ctx).filter(
+    (r) => !disparadas.some((d) => d.regla.id === r.regla.id),
+  );
+  const vigentes = filtrarYaAtendidas([...disparadas, ...recordadas], eventos, ctx.hoy);
   const sel = seleccionarParaSesion(vigentes);
 
   // Registrar de una vez: rojas y silenciosas. La ámbar visible se registra al

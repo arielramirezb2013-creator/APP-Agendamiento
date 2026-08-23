@@ -54,7 +54,7 @@ export function CuidadorRegistros() {
                 <button
                   type="button"
                   onClick={() => ir({ id: 'checkin' })}
-                  className="min-h-[48px] rounded-token px-3 text-min font-bold text-primario underline"
+                  className="min-h-chip rounded-token px-3 text-min font-bold text-primario underline"
                 >
                   {copy.registros.editar}
                 </button>

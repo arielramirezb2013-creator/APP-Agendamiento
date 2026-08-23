@@ -3,6 +3,7 @@
 
 import { db, nuevoId } from './dexie';
 import type { Contacto } from '@/types/models';
+import { interpolar, recordatorios as copyRec } from '@/content/es-CO';
 
 export async function sembrarPrecargas(): Promise<void> {
   const existentes = await db.contactos.count();
@@ -24,7 +25,8 @@ export async function sembrarPrecargas(): Promise<void> {
       telefono: '3002037108',
       whatsapp: '573002037108',
       temas: ['tramites', 'animo', 'otro'],
-      paraQue: 'Asociación de pacientes con ELA: orientación y acompañamiento',
+      // §13: nunca "paciente" en pantallas de paciente.
+      paraQue: 'Personas que conocen la ELA de cerca: orientación y compañía',
       esEmergencia: false,
       orden: 10,
     },
@@ -46,12 +48,12 @@ export function fechasLabsRiluzol(desde: Date): Array<{ fecha: string; titulo: s
       titulo,
     });
   };
-  agregar(1, 'Laboratorio de riluzol (mes 1)');
-  agregar(2, 'Laboratorio de riluzol (mes 2)');
-  agregar(3, 'Laboratorio de riluzol (mes 3)');
-  agregar(6, 'Laboratorio de riluzol (trimestral)');
-  agregar(9, 'Laboratorio de riluzol (trimestral)');
-  agregar(12, 'Laboratorio de riluzol (trimestral)');
-  agregar(24, 'Laboratorio de riluzol (anual)');
+  agregar(1, interpolar(copyRec.labsTituloMes, { n: '1' }));
+  agregar(2, interpolar(copyRec.labsTituloMes, { n: '2' }));
+  agregar(3, interpolar(copyRec.labsTituloMes, { n: '3' }));
+  agregar(6, copyRec.labsTituloTrimestral);
+  agregar(9, copyRec.labsTituloTrimestral);
+  agregar(12, copyRec.labsTituloTrimestral);
+  agregar(24, copyRec.labsTituloAnual);
   return fechas;
 }

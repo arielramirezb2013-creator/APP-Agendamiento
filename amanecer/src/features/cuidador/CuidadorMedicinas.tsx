@@ -199,7 +199,7 @@ export function CuidadorMedicinas() {
                 <button
                   type="button"
                   onClick={() => void db.recordatorios.delete(laboratorio.id)}
-                  className="min-h-[48px] rounded-token px-2 text-min text-rojo underline"
+                  className="min-h-chip rounded-token px-2 text-min text-rojo underline"
                 >
                   {copy.medicinas.eliminar}
                 </button>
@@ -231,7 +231,7 @@ export function CuidadorMedicinas() {
             <button
               type="button"
               onClick={() => void db.recordatorios.delete(cita.id)}
-              className="min-h-[48px] rounded-token px-2 text-min text-rojo underline"
+              className="min-h-chip rounded-token px-2 text-min text-rojo underline"
             >
               {copy.medicinas.eliminar}
             </button>

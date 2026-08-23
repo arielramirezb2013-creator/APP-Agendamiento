@@ -4,6 +4,12 @@
 import { db, hoyLocal, nuevoId } from '@/db/dexie';
 import type { Medicina, Perfil, Recordatorio } from '@/types/models';
 import { fechasLabsRiluzol } from '@/db/seed';
+import {
+  interpolar,
+  recordatorios as copyRec,
+  t,
+  type Tratamiento,
+} from '@/content/es-CO';
 
 export interface ItemHoy {
   tipo: 'medicina' | 'laboratorio' | 'cita' | 'ejercicio' | 'peso' | 'alsfrs';
@@ -55,7 +61,7 @@ export async function itemsDeHoy(perfil?: Perfil): Promise<ItemHoy[]> {
     new Date().getDay() === perfil.diaPeso &&
     !items.some((i) => i.tipo === 'peso')
   ) {
-    items.push({ tipo: 'peso', titulo: 'Anotar el peso' });
+    items.push({ tipo: 'peso', titulo: copyRec.anotarPeso });
   }
 
   return items.sort((a, b) => (a.hora ?? '99').localeCompare(b.hora ?? '99'));
@@ -95,8 +101,7 @@ export async function activarPlantillaRiluzol(): Promise<void> {
       id: nuevoId(),
       tipo: 'laboratorio',
       titulo: f.titulo,
-      detalle:
-        'Esquema orientativo de guía; confirme fechas con su médico tratante.',
+      detalle: copyRec.labsDisclaimer,
       cron: `${f.fecha}T08:00`,
       activo: true,
       plantilla: 'labs_riluzol',
@@ -117,7 +122,10 @@ export async function pedirPermisoNotificaciones(): Promise<boolean> {
   return r === 'granted';
 }
 
-export function iniciarVigilanciaNotificaciones(nombre: string): void {
+export function iniciarVigilanciaNotificaciones(
+  nombre: string,
+  trato: Tratamiento = 'usted',
+): void {
   if (!('Notification' in window)) return;
   if (intervalo !== undefined) return;
   const revisar = async () => {
@@ -133,10 +141,13 @@ export function iniciarVigilanciaNotificaciones(nombre: string): void {
       if (notificadas.has(clave)) continue;
       notificadas.add(clave);
       // Voz de casa (§6.6): "[Nombre], es hora de su pastilla de las 8".
-      const horaCorta = String(Number(item.hora.slice(0, 2)));
       // La confirmación de toma sigue siendo explícita en pantalla ("Ya la tomé ✓").
       new Notification('Amanecer', {
-        body: `${nombre}, es hora de su pastilla de las ${horaCorta}: ${item.titulo}`,
+        body: interpolar(t(copyRec.notificacionPastilla, trato), {
+          nombre,
+          hora: String(Number(item.hora.slice(0, 2))),
+          medicina: item.titulo,
+        }),
       });
     }
   };

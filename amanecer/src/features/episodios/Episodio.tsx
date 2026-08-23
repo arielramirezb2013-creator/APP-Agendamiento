@@ -2,7 +2,7 @@
 // Atragantamiento que sigue → roja R3. Disnea "ahora" → roja R2.
 // Tras guardar: microcopy de contención por tipo + evaluación de recurrencia.
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { BigChoice } from '@/components/BigChoice';
 import { CardQuestion } from '@/components/CardQuestion';
 import { PrimaryButton } from '@/components/PrimaryButton';
@@ -17,6 +17,7 @@ import type { BanderaDisparada } from '@/rules/flags';
 import type { Contacto, Episodio as EpisodioModelo, Perfil, Rol, TipoEpisodio } from '@/types/models';
 import { useApp } from '@/store';
 import { TarjetaAmbar } from '@/features/banderas/TarjetaAmbar';
+import { Toast, type ToastEstado } from '@/components/Toast';
 
 type Paso = 'tipo' | 'sigue' | 'cuando' | 'cuandoDia' | 'severidad' | 'queHicieron' | 'contencion';
 
@@ -52,6 +53,10 @@ export function Episodio({ perfil, rol }: EpisodioProps) {
   const [ambar, setAmbar] = useState<BanderaDisparada>();
   const [contacto, setContacto] = useState<Contacto>();
   const [guardado, setGuardado] = useState<EpisodioModelo>();
+  const [toast, setToast] = useState<ToastEstado>();
+  // Guarda anti-doble-toque: dos toques rápidos no deben duplicar el episodio
+  // (dos atragantamientos falsos dispararían A5 de inmediato).
+  const guardando = useRef(false);
 
   const retroceder = () => {
     const orden: Paso[] = ['tipo', 'sigue', 'cuando', 'cuandoDia', 'severidad', 'queHicieron'];
@@ -66,7 +71,7 @@ export function Episodio({ perfil, rol }: EpisodioProps) {
   };
 
   async function guardar(extra: Partial<EpisodioModelo> = {}) {
-    if (!tipo) return;
+    if (!tipo || guardado) return guardado;
     const registro: EpisodioModelo = {
       id: nuevoId(),
       tipo,
@@ -91,6 +96,16 @@ export function Episodio({ perfil, rol }: EpisodioProps) {
 
   /** R3: atragantamiento que no cede → roja inmediata, el registro se completa después. */
   async function responderSigue(sigue: boolean) {
+    if (guardando.current) return;
+    guardando.current = true;
+    try {
+      await responderSigueInterno(sigue);
+    } finally {
+      guardando.current = false;
+    }
+  }
+
+  async function responderSigueInterno(sigue: boolean) {
     if (sigue) {
       const registro = await guardar({
         cuando: ahoraISO(),
@@ -116,6 +131,16 @@ export function Episodio({ perfil, rol }: EpisodioProps) {
 
   /** R2: disnea "ahora" → roja directa antes de pedir más datos (§6.2). */
   async function responderCuando(valor: 'ahora' | 'hoy' | 'otro') {
+    if (guardando.current) return;
+    guardando.current = true;
+    try {
+      await responderCuandoInterno(valor);
+    } finally {
+      guardando.current = false;
+    }
+  }
+
+  async function responderCuandoInterno(valor: 'ahora' | 'hoy' | 'otro') {
     if (valor === 'ahora') {
       setEsAhora(true);
       setCuando(ahoraISO());
@@ -148,6 +173,16 @@ export function Episodio({ perfil, rol }: EpisodioProps) {
   }
 
   async function cerrarYEvaluar() {
+    if (guardando.current) return;
+    guardando.current = true;
+    try {
+      await cerrarYEvaluarInterno();
+    } finally {
+      guardando.current = false;
+    }
+  }
+
+  async function cerrarYEvaluarInterno() {
     const registro = guardado ?? (await guardar());
     if (!registro) return;
     const res = await procesarBanderas({
@@ -166,6 +201,15 @@ export function Episodio({ perfil, rol }: EpisodioProps) {
       await db.episodios.update(registro.id, { banderas: [res.ambar.regla.id] });
     }
     setAmbar(res.ambar);
+    if (!res.ambar) {
+      // Deshacer durante 6 s (§3.1): un registro por error se puede retirar.
+      setToast({
+        mensaje: comun.guardado,
+        onDeshacer: () => {
+          void db.episodios.delete(registro.id).then(aInicio);
+        },
+      });
+    }
     setPaso('contencion');
   }
 
@@ -279,9 +323,12 @@ export function Episodio({ perfil, rol }: EpisodioProps) {
         onPasar={() => void cerrarYEvaluar()}
         pie={<PrimaryButton onClick={() => void cerrarYEvaluar()}>{comun.guardar}</PrimaryButton>}
       >
-        <p className="text-min text-tinta-suave">{copy.queHicieronDetalle}</p>
+        <p className="text-min text-tinta-suave">
+          {t(copy.queHicieronDetalle, perfil.tratamiento)}
+        </p>
         <NotaVozBoton
           origen="episodio"
+          trato={perfil.tratamiento}
           onNota={(nota) => {
             setAudioRef(nota.id);
             if (nota.transcripcion) setQueHicieron(nota.transcripcion);
@@ -310,7 +357,10 @@ export function Episodio({ perfil, rol }: EpisodioProps) {
   }
   const mc = tipo ? microcopyEpisodios[tipo] : undefined;
   const mensaje = mc
-    ? interpolar(mc.mensaje, { contacto: contacto?.nombre ?? 'su equipo' })
+    ? interpolar(t(mc.mensaje, perfil.tratamiento), {
+        contacto:
+          contacto?.nombre ?? (perfil.tratamiento === 'tu' ? 'tu equipo' : 'su equipo'),
+      })
     : comun.listo;
   return (
     <div className="transicion-tarjeta flex min-h-dvh flex-col justify-center gap-6 bg-fondo px-4 py-8">
@@ -341,6 +391,7 @@ export function Episodio({ perfil, rol }: EpisodioProps) {
         </button>
       ) : null}
       <PrimaryButton onClick={aInicio}>{comun.seguir}</PrimaryButton>
+      <Toast estado={toast} onCerrar={() => setToast(undefined)} />
     </div>
   );
 }

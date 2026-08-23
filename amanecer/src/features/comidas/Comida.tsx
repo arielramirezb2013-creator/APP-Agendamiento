@@ -2,12 +2,12 @@
 // "Se atoró" crea automáticamente un episodio de atragantamiento leve
 // vinculado, sin repetir preguntas. La app JAMÁS recomienda texturas.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BigChoice } from '@/components/BigChoice';
 import { CardQuestion } from '@/components/CardQuestion';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { NotaVozBoton } from '@/components/NotaVozBoton';
-import { comidas as copy, comun, t } from '@/content/es-CO';
+import { comidas as copy, comun, interpolar, t } from '@/content/es-CO';
 import { ahoraISO, db, hoyLocal, nuevoId } from '@/db/dexie';
 import { procesarBanderas } from '@/services/banderas';
 import type { BanderaDisparada } from '@/rules/flags';
@@ -20,6 +20,7 @@ import type {
 } from '@/types/models';
 import { useApp } from '@/store';
 import { TarjetaAmbar } from '@/features/banderas/TarjetaAmbar';
+import { Toast, type ToastEstado } from '@/components/Toast';
 
 type Paso = 'momento' | 'que' | 'cuanto' | 'tragando' | 'cierre';
 
@@ -53,6 +54,10 @@ export function Comida({ perfil, rol }: ComidaProps) {
   const [ambar, setAmbar] = useState<BanderaDisparada>();
   const [huboAtoro, setHuboAtoro] = useState(false);
   const [texturaDia, setTexturaDia] = useState<ComidaModelo['texturaDia']>();
+  const [toast, setToast] = useState<ToastEstado>();
+  // Un doble toque (motricidad reducida, E2) no debe crear registros duplicados
+  // ni disparar banderas falsas (A5 con dos "atoros" del mismo momento).
+  const guardando = useRef(false);
 
   // Textura del día: la configura el cuidador según fonoaudiología; aquí solo
   // etiqueta el registro (§6.3). Se hereda de la última comida de hoy.
@@ -72,6 +77,8 @@ export function Comida({ perfil, rol }: ComidaProps) {
   };
 
   async function guardar(tragando: ComidaModelo['tragando']) {
+    if (guardando.current) return;
+    guardando.current = true;
     const id = nuevoId();
     let episodioVinculadoId: string | undefined;
     try {
@@ -82,7 +89,9 @@ export function Comida({ perfil, rol }: ComidaProps) {
           tipo: 'atragantamiento',
           cuando: ahoraISO(),
           severidad: 'leve',
-          queHicieron: descripcion ? `Comiendo: ${descripcion}` : 'Durante la comida',
+          queHicieron: descripcion
+            ? interpolar(copy.atoroEpisodioConDescripcion, { descripcion })
+            : copy.atoroEpisodioSinDescripcion,
           resueltoEnElMomento: true,
           llenado: { por: rol, fecha: ahoraISO() },
           banderas: [],
@@ -107,10 +116,25 @@ export function Comida({ perfil, rol }: ComidaProps) {
       await db.comidas.add(registro);
       const res = await procesarBanderas({});
       setAmbar(res.ambar);
+      if (!res.ambar) {
+        // Deshacer durante 6 s (§3.1): retira la comida y su episodio vinculado.
+        setToast({
+          mensaje: comun.guardado,
+          onDeshacer: () => {
+            void (async () => {
+              await db.comidas.delete(id);
+              if (episodioVinculadoId) await db.episodios.delete(episodioVinculadoId);
+              aInicio();
+            })();
+          },
+        });
+      }
       setPaso('cierre');
     } catch {
       setError(comun.errorGuardar);
       setPaso('cierre');
+    } finally {
+      guardando.current = false;
     }
   }
 
@@ -147,9 +171,10 @@ export function Comida({ perfil, rol }: ComidaProps) {
           ) : undefined
         }
       >
-        <p className="text-min text-tinta-suave">{copy.queComioDetalle}</p>
+        <p className="text-min text-tinta-suave">{t(copy.queComioDetalle, trato)}</p>
         <NotaVozBoton
           origen="comida"
+          trato={trato}
           onNota={(nota) => {
             setAudioRef(nota.id);
             if (nota.transcripcion) setDescripcion(nota.transcripcion);
@@ -177,7 +202,7 @@ export function Comida({ perfil, rol }: ComidaProps) {
           />
         </label>
         {fotoRef ? (
-          <img src={fotoRef} alt="Foto de la comida" className="max-h-40 w-auto rounded-token" />
+          <img src={fotoRef} alt={copy.fotoAlt} className="max-h-40 w-auto rounded-token" />
         ) : null}
         {escribiendo ? (
           <textarea
@@ -247,6 +272,7 @@ export function Comida({ perfil, rol }: ComidaProps) {
       ) : null}
       {error ? <p className="text-base text-rojo">{error}</p> : null}
       <PrimaryButton onClick={aInicio}>{comun.seguir}</PrimaryButton>
+      <Toast estado={toast} onCerrar={() => setToast(undefined)} />
     </div>
   );
 }

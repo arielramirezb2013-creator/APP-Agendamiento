@@ -22,13 +22,16 @@ export default {
         ui: ['"Atkinson Hyperlegible"', 'system-ui', 'sans-serif'],
         titular: ['Bitter', 'Georgia', 'serif'],
       },
+      // En rem sobre html{font-size:125%} → 1rem = 20px con la preferencia del
+      // sistema en 100%, y TODA la tipografía escala si la usuaria agranda el
+      // texto en su navegador/SO (§3.1: escalable a 200% sin romper el layout).
       fontSize: {
-        min: ['18px', '1.4'],
-        base: ['20px', '1.5'],
-        boton: ['22px', '1.3'],
-        pregunta: ['28px', '1.3'],
-        saludo: ['32px', '1.25'],
-        urgencia: ['32px', '1.2'],
+        min: ['0.9rem', '1.4'], // 18px
+        base: ['1rem', '1.5'], // 20px
+        boton: ['1.1rem', '1.3'], // 22px
+        pregunta: ['1.4rem', '1.3'], // 28px
+        saludo: ['1.6rem', '1.25'], // 32px
+        urgencia: ['1.6rem', '1.2'], // 32px
       },
       minHeight: {
         chip: '64px',

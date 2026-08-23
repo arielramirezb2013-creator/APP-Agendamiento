@@ -1,5 +1,7 @@
 // Teclado numérico GIGANTE (§6.3): botones de 72 px para el peso y el PIN.
 
+import { comun } from '@/content/es-CO';
+
 interface NumericKeypadProps {
   valor: string;
   onCambio: (v: string) => void;
@@ -32,9 +34,10 @@ export function NumericKeypad({
       <output
         aria-live="polite"
         className="min-h-primario w-full rounded-token border-2 border-tinta-suave/40
-          bg-superficie px-4 text-center font-ui text-[44px] font-bold leading-[72px] tracking-widest"
+          bg-superficie px-4 text-center font-ui text-[2.2rem] font-bold leading-[72px] tracking-widest"
       >
-        {oculto ? '•'.repeat(valor.length) : valor || ' '}
+        {/* En Colombia el decimal se escribe con coma; el valor interno usa punto. */}
+        {oculto ? '•'.repeat(valor.length) : valor.replace('.', ',') || ' '}
       </output>
       <div className="grid w-full grid-cols-3 gap-2">
         {teclas.map((t) => (
@@ -42,7 +45,7 @@ export function NumericKeypad({
             key={t}
             type="button"
             onClick={() => pulsar(t)}
-            className="min-h-primario rounded-token bg-superficie text-[32px] font-bold
+            className="min-h-primario rounded-token bg-superficie text-[1.6rem] font-bold
               border-2 border-tinta-suave/30"
           >
             {t}
@@ -52,8 +55,8 @@ export function NumericKeypad({
           <button
             type="button"
             onClick={() => pulsar(',')}
-            aria-label="coma decimal"
-            className="min-h-primario rounded-token bg-superficie text-[32px] font-bold
+            aria-label={comun.comaDecimal}
+            className="min-h-primario rounded-token bg-superficie text-[1.6rem] font-bold
               border-2 border-tinta-suave/30"
           >
             ,
@@ -64,7 +67,7 @@ export function NumericKeypad({
         <button
           type="button"
           onClick={() => pulsar('0')}
-          className="min-h-primario rounded-token bg-superficie text-[32px] font-bold
+          className="min-h-primario rounded-token bg-superficie text-[1.6rem] font-bold
             border-2 border-tinta-suave/30"
         >
           0

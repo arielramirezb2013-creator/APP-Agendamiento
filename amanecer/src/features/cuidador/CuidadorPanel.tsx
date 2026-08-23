@@ -7,7 +7,7 @@ import { db, hoyLocal } from '@/db/dexie';
 import { enVentana, sumarDias } from '@/rules/recurrence';
 import { todasLasReglas } from '@/rules/flags';
 import { decidirEventoAmbar } from '@/services/banderas';
-import { copyReglas, interpolar } from '@/content/es-CO';
+import { copyReglas, interpolar, t } from '@/content/es-CO';
 import { useApp } from '@/store';
 
 export function CuidadorPanel() {
@@ -48,24 +48,25 @@ export function CuidadorPanel() {
         </button>
       </header>
 
-      {/* Semana: ánimo por día (ícono + palabra vía title, nunca solo color §3.1) */}
+      {/* Semana: ánimo por día — ícono + palabra (sr-only), nunca solo el emoji (§3.1). */}
       <section aria-label={copy.panel.checkins} className="rounded-token bg-superficie p-4">
         <div className="grid grid-cols-7 gap-1 text-center">
           {dias.map((d) => {
             const c = (checkins ?? []).find((x) => x.fecha === d);
-            const emoji = c?.animo
-              ? copyCheckin.animo.opciones.find((o) => o.valor === c.animo)?.emoji
-              : c
-                ? '✓'
-                : '·';
+            const opcion = c?.animo
+              ? copyCheckin.animo.opciones.find((o) => o.valor === c.animo)
+              : undefined;
+            const emoji = opcion?.emoji ?? (c ? '✓' : '·');
+            const etiqueta = opcion?.etiqueta ?? (c ? 'registrado' : 'sin registro');
             return (
               <div key={d} className="flex flex-col items-center gap-1">
                 <span className="text-min text-tinta-suave">
                   {copy.panel.dias[new Date(`${d}T12:00:00`).getDay()]}
                 </span>
-                <span aria-hidden="true" className="text-[24px]">
+                <span aria-hidden="true" className="text-[1.2rem]" title={etiqueta}>
                   {emoji}
                 </span>
+                <span className="sr-only">{etiqueta}</span>
               </div>
             );
           })}
@@ -104,14 +105,15 @@ export function CuidadorPanel() {
                   {e.fechaHora.slice(0, 10)}
                 </p>
                 <p className="text-min text-tinta">
-                  {interpolar(copyReglas[e.reglaId] ?? regla?.fuente ?? '', {
-                    contacto: 'su equipo',
-                  })}
+                  {interpolar(
+                    t(copyReglas[e.reglaId] ?? regla?.fuente ?? '', 'usted'),
+                    { contacto: 'su equipo' },
+                  )}
                 </p>
                 <button
                   type="button"
                   onClick={() => void decidirEventoAmbar(e.id, 'descartada_por_cuidador')}
-                  className="mt-2 min-h-[48px] rounded-token px-3 text-min font-bold underline"
+                  className="mt-2 min-h-chip rounded-token px-3 text-min font-bold underline"
                 >
                   {copy.panel.marcarRevisada}
                 </button>

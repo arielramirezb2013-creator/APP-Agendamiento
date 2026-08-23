@@ -4,7 +4,7 @@
 
 import { jsPDF } from 'jspdf';
 import { db, hoyLocal } from '@/db/dexie';
-import { enVentana, sumarDias } from '@/rules/recurrence';
+import { diffDias, enVentana, sumarDias } from '@/rules/recurrence';
 import { evaluarPeso } from '@/rules/weight';
 import { interpolar, reporte as copy } from '@/content/es-CO';
 import type { Perfil } from '@/types/models';
@@ -79,12 +79,23 @@ export async function generarReporte(perfil: Perfil): Promise<void> {
       .map((p) => `${p.fecha.slice(5)}: ${p.kg} kg`)
       .join('   ·   ');
     texto(serie, 10);
-    const resultado = evaluarPeso(pesos, hoy);
+    const config = await db.config.get('default');
+    const umbrales = config
+      ? { pesoPorcentaje8Sem: config.pesoPorcentaje8Sem, pesoKg4Sem: config.pesoKg4Sem }
+      : undefined;
+    const resultado = evaluarPeso(pesos, hoy, umbrales);
     if (resultado.nivel === 'ambar') {
       texto(
-        `⚠ Pérdida de peso que cruza el umbral configurado (${
-          resultado.motivo === 'kg_4_semanas' ? '≥2 kg en 4 semanas' : '≥5% en 8 semanas'
-        }).`,
+        interpolar(copy.pesoUmbralCruzado, {
+          umbral:
+            resultado.motivo === 'kg_4_semanas'
+              ? interpolar(copy.umbralKg4Sem, {
+                  kg: String(umbrales?.pesoKg4Sem ?? 2),
+                })
+              : interpolar(copy.umbralPct8Sem, {
+                  pct: String(umbrales?.pesoPorcentaje8Sem ?? 5),
+                }),
+        }),
         10,
         AMBAR,
         true,
@@ -126,7 +137,11 @@ export async function generarReporte(perfil: Perfil): Promise<void> {
     ).toFixed(1);
     const bajos = conAnimo.filter((c) => (c.animo ?? 5) <= 2).length;
     texto(
-      `Días registrados: ${conAnimo.length} · promedio ${promedio}/5 · días con ánimo bajo (≤2): ${bajos}`,
+      interpolar(copy.animoResumen, {
+        dias: String(conAnimo.length),
+        promedio,
+        bajos: String(bajos),
+      }),
       10,
     );
   }
@@ -139,10 +154,34 @@ export async function generarReporte(perfil: Perfil): Promise<void> {
     for (const m of medicinas) {
       const tomasPeriodo = m.tomas.filter((toma) => enVentana(toma.fechaHora, hoy, dias));
       const tomadas = tomasPeriodo.filter((toma) => toma.estado === 'tomada').length;
-      const esperadas = m.horarios.length * dias;
-      const pct = esperadas > 0 ? Math.min(100, Math.round((tomadas / esperadas) * 100)) : 0;
+      // Denominador honesto: días desde el PRIMER registro de toma dentro del
+      // periodo (la fecha de alta de la medicina no se almacena). Un fármaco
+      // iniciado hace 2 semanas no debe reportar 17% sobre 12 semanas.
+      const primeraToma = [...m.tomas]
+        .map((toma) => toma.fechaHora.slice(0, 10))
+        .sort()[0];
+      const inicioEfectivo = primeraToma && primeraToma > desde ? primeraToma : desde;
+      const diasActivos = m.tomas.length > 0 ? diffDias(hoy, inicioEfectivo) + 1 : 0;
+      const esperadas = m.horarios.length * diasActivos;
+      if (esperadas === 0) {
+        texto(
+          interpolar(copy.medicacionSinTomas, {
+            nombre: m.nombre,
+            horarios: m.horarios.join(', '),
+          }),
+          10,
+        );
+        continue;
+      }
+      const pct = Math.min(100, Math.round((tomadas / esperadas) * 100));
       texto(
-        `${m.nombre} (${m.horarios.join(', ')}): ${tomadas} tomas confirmadas (${pct}% de las programadas)`,
+        interpolar(copy.medicacionLinea, {
+          nombre: m.nombre,
+          horarios: m.horarios.join(', '),
+          tomadas: String(tomadas),
+          pct: String(pct),
+          desde: inicioEfectivo,
+        }),
         10,
       );
     }

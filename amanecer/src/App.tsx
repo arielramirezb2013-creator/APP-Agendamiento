@@ -53,7 +53,7 @@ export default function App() {
   useEffect(() => {
     if (perfil) {
       void sembrarPrecargas();
-      iniciarVigilanciaNotificaciones(perfil.nombre);
+      iniciarVigilanciaNotificaciones(perfil.nombre, perfil.tratamiento);
     }
   }, [perfil?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 

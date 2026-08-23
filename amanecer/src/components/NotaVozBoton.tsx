@@ -2,7 +2,7 @@
 // Graba audio local + transcripción es-CO si el navegador la ofrece.
 
 import { useRef, useState } from 'react';
-import { comun } from '@/content/es-CO';
+import { comun, t, type Tratamiento } from '@/content/es-CO';
 import { iniciarGrabacion, soportaGrabacion, type Grabadora } from '@/services/voz';
 import type { NotaVoz } from '@/types/models';
 
@@ -10,9 +10,10 @@ interface NotaVozBotonProps {
   origen: NotaVoz['origen'];
   onNota: (nota: NotaVoz) => void;
   onError: (mensaje: string) => void;
+  trato?: Tratamiento;
 }
 
-export function NotaVozBoton({ origen, onNota, onError }: NotaVozBotonProps) {
+export function NotaVozBoton({ origen, onNota, onError, trato = 'usted' }: NotaVozBotonProps) {
   const [grabando, setGrabando] = useState(false);
   const grabadora = useRef<Grabadora>();
 
@@ -24,9 +25,9 @@ export function NotaVozBoton({ origen, onNota, onError }: NotaVozBotonProps) {
       try {
         const nota = await grabadora.current?.detener();
         if (nota) onNota(nota);
-        else onError(comun.errorAudio);
+        else onError(t(comun.errorAudio, trato));
       } catch {
-        onError(comun.errorAudio);
+        onError(t(comun.errorAudio, trato));
       }
       return;
     }
@@ -34,7 +35,7 @@ export function NotaVozBoton({ origen, onNota, onError }: NotaVozBotonProps) {
       grabadora.current = await iniciarGrabacion(origen);
       setGrabando(true);
     } catch {
-      onError(comun.errorAudio);
+      onError(t(comun.errorAudio, trato));
     }
   };
 

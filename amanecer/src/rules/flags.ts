@@ -185,7 +185,8 @@ export const reglasAmbar: ReglaBandera[] = [
       senalRespiratoriaEnVentana(ctx, 7),
   },
   {
-    id: 'A3', // Sueño "mal" ≥3 días en 7 (somnolencia diurna marcada es roja R5)
+    id: 'A3', // Sueño "mal" ≥3 días en 7, o somnolencia diurna reportada
+    // (la somnolencia MARCADA con confusión es roja R5; esta es la ruta suave).
     fuente: 'NICE NG42 Tabla 1',
     nivel: 'ambar',
     contactoTema: 'respiracion',
@@ -196,7 +197,7 @@ export const reglasAmbar: ReglaBandera[] = [
         ctx.hoy,
         7,
         (c) => c.sueno?.calidad === 'mal',
-      ) >= 3,
+      ) >= 3 || (ctx.checklistCuidador ?? []).includes('somnolencia_diurna'),
   },
   {
     id: 'A4', // Tos débil que no saca la flema (checklist cuidador u episodio)
@@ -257,9 +258,15 @@ export const reglasAmbar: ReglaBandera[] = [
     fuente: 'EAN 2024 ("evaluar activamente el dolor")',
     nivel: 'ambar',
     // Según localización: zonas musculoesqueléticas → fisioterapia (moverme);
-    // cabeza u otro → médico tratante (medicinas).
+    // cabeza u otro → médico tratante (medicinas). Si hoy no hay zonas
+    // marcadas, se usan las del registro más reciente de la semana con dolor.
     contactoTema: (ctx) => {
-      const zonas = hoyCheckin(ctx)?.dolor?.zonas ?? [];
+      const recientes = checkinsUnicos(ctx)
+        .filter((c) => enVentana(c.fecha, ctx.hoy, 7) && (c.dolor?.zonas?.length ?? 0) > 0)
+        .sort((a, b) => b.fecha.localeCompare(a.fecha));
+      const zonas = hoyCheckin(ctx)?.dolor?.zonas?.length
+        ? hoyCheckin(ctx)!.dolor!.zonas!
+        : (recientes[0]?.dolor?.zonas ?? []);
       const fisio = ['Cuello', 'Hombros', 'Brazos', 'Espalda', 'Piernas'];
       return zonas.some((z) => fisio.includes(z)) ? 'moverme' : 'medicinas';
     },
@@ -291,13 +298,14 @@ export const reglasAmbar: ReglaBandera[] = [
     },
   },
   {
-    id: 'A9', // 2.ª caída en 30 días
+    id: 'A9', // 2.ª caída en 30 días, o tropiezos reportados
     fuente: 'NICE NG42',
     nivel: 'ambar',
     contactoTema: 'moverme',
     prioridad: 55,
     condicion: (ctx) =>
-      contarEpisodios(episodiosTodos(ctx), 'caida', ctx.hoy, 30) >= 2,
+      contarEpisodios(episodiosTodos(ctx), 'caida', ctx.hoy, 30) >= 2 ||
+      (ctx.checklistCuidador ?? []).includes('tropiezos'),
   },
   {
     id: 'A11', // Risa/llanto sin control recurrente (≥2 episodios / 14 días)
@@ -345,7 +353,8 @@ export function evaluarBanderas(ctx: ContextoEvaluacion): BanderaDisparada[] {
 /**
  * Filtra reglas ámbar ya atendidas (§7.1: "recuerda máx. 1 vez"):
  * - hoy ya se mostró la misma regla → no repetir en la sesión;
- * - decisión "ya lo hablamos" o descartada por cuidador en los últimos 7 días → silenciar;
+ * - decisión "llamó", "ya lo hablamos" o descartada por cuidador en los
+ *   últimos 7 días → silenciar (si ya llamó, no se insiste esa semana);
  * - ya hubo 2 recordatorios ("recordar") en 7 días → silenciar (quedó 1 recordatorio).
  */
 export function filtrarYaAtendidas(
@@ -361,7 +370,10 @@ export function filtrarYaAtendidas(
     if (delRegla.some((e) => e.fechaHora.slice(0, 10) === hoy)) return false;
     if (
       delRegla.some(
-        (e) => e.decision === 'ya_hablado' || e.decision === 'descartada_por_cuidador',
+        (e) =>
+          e.decision === 'llamo' ||
+          e.decision === 'ya_hablado' ||
+          e.decision === 'descartada_por_cuidador',
       )
     ) {
       return false;
@@ -369,6 +381,41 @@ export function filtrarYaAtendidas(
     const recordatorios = delRegla.filter((e) => e.decision === 'recordar').length;
     return recordatorios < 2;
   });
+}
+
+/**
+ * "Recordármelo mañana" para reglas puntuales (§7.1): una regla cuya condición
+ * solo mira el registro de HOY (p. ej. A2-ortopnea o la crisis de A10) no
+ * volvería a dispararse sola al día siguiente. Esta función devuelve las
+ * reglas ámbar con decisión "recordar" AYER, para re-ofrecerlas hoy una vez.
+ * El silenciamiento fino (máx. 1 recordatorio, ya hablado, etc.) lo aplica
+ * después filtrarYaAtendidas sobre el resultado combinado.
+ */
+export function reglasParaRecordar(
+  eventos: EventoBandera[],
+  hoy: string,
+  ctx: ContextoEvaluacion,
+): BanderaDisparada[] {
+  const ayer = eventos.filter(
+    (e) =>
+      e.nivel === 'ambar' &&
+      e.decision === 'recordar' &&
+      // diffDias(hoy, día del evento) === 1 → fue ayer
+      enVentana(e.fechaHora, hoy, 2) &&
+      e.fechaHora.slice(0, 10) !== hoy,
+  );
+  const vistos = new Set<string>();
+  const resultado: BanderaDisparada[] = [];
+  for (const e of ayer) {
+    if (vistos.has(e.reglaId)) continue;
+    vistos.add(e.reglaId);
+    const regla = reglasAmbar.find((r) => r.id === e.reglaId);
+    if (!regla) continue;
+    const tema =
+      typeof regla.contactoTema === 'function' ? regla.contactoTema(ctx) : regla.contactoTema;
+    resultado.push({ regla, contactoTema: tema });
+  }
+  return resultado;
 }
 
 /**
