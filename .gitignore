@@ -17,3 +17,10 @@ entregables/ml/modelo/REPORTE_ENTRENAMIENTO.md
 
 # OS
 .DS_Store
+
+# Amanecer (PWA)
+amanecer/node_modules/
+amanecer/dist/
+amanecer/dev-dist/
+amanecer/test-results/
+amanecer/playwright-report/

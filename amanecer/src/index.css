@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Principios §3.1: tipografía base ≥20px, foco visible de 3px, sin animaciones
+   si prefers-reduced-motion, contraste AAA con los tokens §10.1. */
+
+:root {
+  --color-fondo: #faf7f2;
+  --color-tinta: #292019;
+}
+
+/* Modo alto contraste extra (§10.2): tinta #000 sobre fondo #FFF. */
+.alto-contraste {
+  --color-fondo: #ffffff;
+  --color-tinta: #000000;
+}
+
+html {
+  font-family: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  font-size: 20px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-tinta);
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Foco de teclado/pulsador visible en TODO elemento interactivo (§3.1). */
+:focus-visible {
+  outline: 3px solid #1a73e8;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Animaciones solo funcionales (<200 ms); cero si el sistema lo pide (§3.1). */
+.transicion-tarjeta {
+  animation: aparecer 160ms ease-out;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
+}
+
+/* Área segura para el botón primario anclado abajo (§3.1). */
+.safe-area-abajo {
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}

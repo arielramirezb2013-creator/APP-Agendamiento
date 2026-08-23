@@ -1,0 +1,56 @@
+// Botón 🎙️ presente en check-in, episodios y comidas (§6.9).
+// Graba audio local + transcripción es-CO si el navegador la ofrece.
+
+import { useRef, useState } from 'react';
+import { comun } from '@/content/es-CO';
+import { iniciarGrabacion, soportaGrabacion, type Grabadora } from '@/services/voz';
+import type { NotaVoz } from '@/types/models';
+
+interface NotaVozBotonProps {
+  origen: NotaVoz['origen'];
+  onNota: (nota: NotaVoz) => void;
+  onError: (mensaje: string) => void;
+}
+
+export function NotaVozBoton({ origen, onNota, onError }: NotaVozBotonProps) {
+  const [grabando, setGrabando] = useState(false);
+  const grabadora = useRef<Grabadora>();
+
+  if (!soportaGrabacion()) return null;
+
+  const alternar = async () => {
+    if (grabando) {
+      setGrabando(false);
+      try {
+        const nota = await grabadora.current?.detener();
+        if (nota) onNota(nota);
+        else onError(comun.errorAudio);
+      } catch {
+        onError(comun.errorAudio);
+      }
+      return;
+    }
+    try {
+      grabadora.current = await iniciarGrabacion(origen);
+      setGrabando(true);
+    } catch {
+      onError(comun.errorAudio);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={() => void alternar()}
+      aria-pressed={grabando}
+      className={`min-h-chip w-full rounded-token border-2 px-4 text-boton font-bold
+        ${
+          grabando
+            ? 'border-rojo bg-rojo-fondo text-rojo'
+            : 'border-primario bg-superficie text-primario'
+        }`}
+    >
+      {grabando ? `⏺ ${comun.grabando} — ${comun.detenerGrabacion}` : comun.grabarNota}
+    </button>
+  );
+}
