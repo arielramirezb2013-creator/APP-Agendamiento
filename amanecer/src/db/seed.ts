@@ -40,7 +40,11 @@ export function fechasLabsRiluzol(desde: Date): Array<{ fecha: string; titulo: s
   const agregar = (meses: number, titulo: string) => {
     const d = new Date(desde);
     d.setMonth(d.getMonth() + meses);
-    fechas.push({ fecha: d.toISOString().slice(0, 10), titulo });
+    const p = (n: number) => String(n).padStart(2, '0');
+    fechas.push({
+      fecha: `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`,
+      titulo,
+    });
   };
   agregar(1, 'Laboratorio de riluzol (mes 1)');
   agregar(2, 'Laboratorio de riluzol (mes 2)');

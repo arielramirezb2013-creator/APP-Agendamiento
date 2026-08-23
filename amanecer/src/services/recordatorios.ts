@@ -74,6 +74,18 @@ export async function marcarToma(
   });
 }
 
+/** Deshacer (§3.1): retira la última toma registrada hoy para esa hora. */
+export async function desmarcarToma(medicinaId: string, hora: string): Promise<void> {
+  const m = await db.medicinas.get(medicinaId);
+  if (!m) return;
+  const clave = `${hoyLocal()}T${hora}`;
+  const idx = m.tomas.map((t) => t.fechaHora).lastIndexOf(clave);
+  if (idx === -1) return;
+  await db.medicinas.update(medicinaId, {
+    tomas: m.tomas.filter((_, i) => i !== idx),
+  });
+}
+
 /** Activa la plantilla de laboratorios de riluzol (§6.6): crea recordatorios
  * puntuales editables. Incluye el disclaimer en el detalle. */
 export async function activarPlantillaRiluzol(): Promise<void> {

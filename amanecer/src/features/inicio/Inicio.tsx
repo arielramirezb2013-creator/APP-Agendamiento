@@ -6,7 +6,12 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { comun, inicio, interpolar, recordatorios as copyRec, t } from '@/content/es-CO';
 import { db, hoyLocal } from '@/db/dexie';
-import { itemsDeHoy, marcarToma, type ItemHoy } from '@/services/recordatorios';
+import {
+  desmarcarToma,
+  itemsDeHoy,
+  marcarToma,
+  type ItemHoy,
+} from '@/services/recordatorios';
 import type { Perfil } from '@/types/models';
 import { useApp } from '@/store';
 import { Toast, type ToastEstado } from '@/components/Toast';
@@ -36,8 +41,15 @@ export function Inicio({ perfil }: { perfil: Perfil }) {
 
   const confirmarToma = async (item: ItemHoy) => {
     if (!item.medicinaId || !item.hora) return;
-    await marcarToma(item.medicinaId, item.hora, 'tomada');
-    setToast({ mensaje: comun.guardado });
+    const { medicinaId, hora } = item;
+    await marcarToma(medicinaId, hora, 'tomada');
+    // Confirmación en pasado + deshacer durante 6 s (§3.1).
+    setToast({
+      mensaje: comun.guardado,
+      onDeshacer: () => {
+        void desmarcarToma(medicinaId, hora).then(cargarItems);
+      },
+    });
     cargarItems();
   };
 

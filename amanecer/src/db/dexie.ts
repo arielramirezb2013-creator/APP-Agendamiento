@@ -64,6 +64,16 @@ export function hoyLocal(): string {
   return `${d.getFullYear()}-${mes}-${dia}`;
 }
 
+/**
+ * Instante actual en hora LOCAL (sin zona): "yyyy-mm-ddTHH:mm:ss".
+ * Importante para las reglas: en Colombia (UTC−5) un registro nocturno en UTC
+ * caería en el día siguiente y se saldría de las ventanas de recurrencia.
+ * El formato conserva el orden lexicográfico y slice(0,10) = día local.
+ */
 export function ahoraISO(): string {
-  return new Date().toISOString();
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(
+    d.getHours(),
+  )}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
 }

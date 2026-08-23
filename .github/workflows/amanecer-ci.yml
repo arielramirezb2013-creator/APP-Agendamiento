@@ -1,0 +1,32 @@
+name: Amanecer CI
+
+on:
+  push:
+    paths: ['amanecer/**', '.github/workflows/amanecer-ci.yml']
+  pull_request:
+    paths: ['amanecer/**', '.github/workflows/amanecer-ci.yml']
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: amanecer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: amanecer/package-lock.json
+      - run: npm ci
+      - name: Lint (incluye jsx-a11y estricto)
+        run: npm run lint
+      - name: Tests de reglas clínicas (100% de reglas cubiertas)
+        run: npm test
+      - name: Build de producción (PWA)
+        run: npm run build
+      - name: Flujos críticos E2E (check-in, R1, SOS, PIN)
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e
