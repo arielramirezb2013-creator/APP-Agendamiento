@@ -341,7 +341,7 @@ export function Episodio({ perfil, rol }: EpisodioProps) {
             onChange={(e) => setQueHicieron(e.target.value)}
             rows={3}
             aria-label={copy.queHicieron}
-            className="w-full rounded-token border-2 border-tinta-suave/40 bg-superficie p-4 text-base"
+            className="w-full rounded-token border-2 border-tinta-suave/20 bg-superficie p-4 text-base"
           />
         ) : (
           <BigChoice ancho etiqueta={comun.escribir} onSelect={() => setEscribiendo(true)} />

@@ -36,12 +36,15 @@ export function CardQuestion({
           <span />
         )}
         {progreso ? (
-          <span className="px-3 text-min text-tinta-suave">{progreso}</span>
+          <span className="mr-2 rounded-full bg-primario-suave px-3 py-1 text-min font-bold text-tinta">
+            {progreso}
+          </span>
         ) : null}
       </header>
 
       <main className="flex flex-1 flex-col gap-6 px-4 pb-4">
-        <h1 className="font-ui text-pregunta font-bold text-tinta">{pregunta}</h1>
+        {/* Bitter también en las preguntas: voz de casa, no de formulario. */}
+        <h1 className="font-titular text-pregunta font-semibold text-tinta">{pregunta}</h1>
         <div className="flex flex-col gap-4">{children}</div>
       </main>
 

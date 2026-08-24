@@ -1,5 +1,5 @@
-// Tendencia de peso (§6.3): línea única en esmeralda con eje de kg legible,
-// rejilla recesiva, relleno suave y etiquetas directas en los extremos.
+// Tendencia de peso (§6.3): línea única en marrón café con relleno miel,
+// eje de kg legible, rejilla recesiva y etiquetas directas en los extremos.
 // Serie única → sin leyenda (el título la nombra). Tooltip al tocar/pasar.
 
 import { useMemo, useRef, useState } from 'react';
@@ -83,7 +83,7 @@ export function GraficaPeso({ pesos, interactivo }: GraficaPesoProps) {
               x2={geo.ancho - geo.m.der}
               y1={geo.y(kg)}
               y2={geo.y(kg)}
-              stroke="#E7E0D4"
+              stroke="#EADFCE"
               strokeWidth="1"
             />
             <text
@@ -91,7 +91,7 @@ export function GraficaPeso({ pesos, interactivo }: GraficaPesoProps) {
               y={geo.y(kg) + 3.5}
               textAnchor="end"
               fontSize="10"
-              fill="#5C5248"
+              fill="#7A6357"
               style={{ fontVariantNumeric: 'tabular-nums' }}
             >
               {Number.isInteger(kg) ? kg : kg.toFixed(1)}
@@ -99,7 +99,7 @@ export function GraficaPeso({ pesos, interactivo }: GraficaPesoProps) {
           </g>
         ))}
         {/* fechas de los extremos */}
-        <text x={geo.m.izq} y={geo.alto - 6} fontSize="10" fill="#5C5248">
+        <text x={geo.m.izq} y={geo.alto - 6} fontSize="10" fill="#7A6357">
           {fechaCorta(primero.p.fecha)}
         </text>
         <text
@@ -107,29 +107,29 @@ export function GraficaPeso({ pesos, interactivo }: GraficaPesoProps) {
           y={geo.alto - 6}
           textAnchor="end"
           fontSize="10"
-          fill="#5C5248"
+          fill="#7A6357"
         >
           {fechaCorta(ultimo.p.fecha)}
         </text>
 
-        <polygon points={geo.area} fill="#0B6B5D" opacity="0.08" />
+        <polygon points={geo.area} fill="#D98E2B" opacity="0.12" />
         <polyline
           points={geo.linea}
           fill="none"
-          stroke="#0B6B5D"
+          stroke="#43302B"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         {/* punto final enfatizado con anillo de superficie */}
         <circle cx={ultimo.px} cy={ultimo.py} r="6" fill="#FFFFFF" />
-        <circle cx={ultimo.px} cy={ultimo.py} r="4" fill="#0B6B5D" />
+        <circle cx={ultimo.px} cy={ultimo.py} r="4" fill="#43302B" />
         {/* etiquetas directas: primero y último */}
         <text
           x={primero.px}
           y={primero.py - 8}
           fontSize="11"
-          fill="#5C5248"
+          fill="#7A6357"
           style={{ fontVariantNumeric: 'tabular-nums' }}
         >
           {primero.p.kg}
@@ -140,7 +140,7 @@ export function GraficaPeso({ pesos, interactivo }: GraficaPesoProps) {
           textAnchor="end"
           fontSize="12"
           fontWeight="bold"
-          fill="#292019"
+          fill="#43302B"
           style={{ fontVariantNumeric: 'tabular-nums' }}
         >
           {ultimo.p.kg} kg
@@ -154,12 +154,12 @@ export function GraficaPeso({ pesos, interactivo }: GraficaPesoProps) {
               x2={sel.px}
               y1={geo.m.arr}
               y2={geo.alto - geo.m.aba}
-              stroke="#5C5248"
+              stroke="#7A6357"
               strokeWidth="1"
               strokeDasharray="3 3"
             />
             <circle cx={sel.px} cy={sel.py} r="6" fill="#FFFFFF" />
-            <circle cx={sel.px} cy={sel.py} r="4" fill="#0E8271" />
+            <circle cx={sel.px} cy={sel.py} r="4" fill="#B4532A" />
           </g>
         ) : null}
       </svg>

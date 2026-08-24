@@ -79,14 +79,14 @@ export function TarjetaAmbar({ disparada, onCerrada }: TarjetaAmbarProps) {
         <button
           type="button"
           onClick={() => void decidir('recordar')}
-          className="min-h-chip w-full rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 text-boton"
+          className="min-h-chip w-full rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 text-boton"
         >
           {banderas.ambar.recordarManana}
         </button>
         <button
           type="button"
           onClick={() => void decidir('ya_hablado')}
-          className="min-h-chip w-full rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 text-boton"
+          className="min-h-chip w-full rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 text-boton"
         >
           {banderas.ambar.yaHablamos}
         </button>

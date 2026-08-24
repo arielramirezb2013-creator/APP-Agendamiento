@@ -184,7 +184,7 @@ export function CuidadorAjustes({ perfil }: { perfil: Perfil }) {
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           onBlur={() => void actualizar({ nombre: nombre.trim() || perfil.nombre })}
-          className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+          className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
         />
       </label>
 
@@ -194,7 +194,7 @@ export function CuidadorAjustes({ perfil }: { perfil: Perfil }) {
           value={appName}
           onChange={(e) => setAppName(e.target.value)}
           onBlur={() => void actualizar({ appName: appName.trim() || perfil.appName })}
-          className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+          className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
         />
       </label>
 
@@ -204,7 +204,7 @@ export function CuidadorAjustes({ perfil }: { perfil: Perfil }) {
           value={ciudad}
           onChange={(e) => setCiudad(e.target.value)}
           onBlur={() => void actualizar({ ciudad: ciudad.trim() || undefined })}
-          className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+          className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
         />
       </label>
 
@@ -259,7 +259,7 @@ export function CuidadorAjustes({ perfil }: { perfil: Perfil }) {
             inputMode="decimal"
             onChange={(e) => setUmbralKg(e.target.value)}
             onBlur={() => void guardarUmbrales()}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <label className="mt-2 flex flex-col gap-1 text-base font-bold text-tinta">
@@ -269,7 +269,7 @@ export function CuidadorAjustes({ perfil }: { perfil: Perfil }) {
             inputMode="decimal"
             onChange={(e) => setUmbralPct(e.target.value)}
             onBlur={() => void guardarUmbrales()}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
       </fieldset>
@@ -290,7 +290,7 @@ export function CuidadorAjustes({ perfil }: { perfil: Perfil }) {
             type="password"
             value={passExport}
             onChange={(e) => setPassExport(e.target.value)}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <PrimaryButton onClick={() => void exportar()} deshabilitado={!passExport}>

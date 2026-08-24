@@ -26,6 +26,7 @@ import { CuidadorChecklist } from '@/features/cuidador/CuidadorChecklist';
 import { CuidadorMiPlan } from '@/features/cuidador/CuidadorMiPlan';
 import { CuidadorRed } from '@/features/cuidador/CuidadorRed';
 import { RedApoyo } from '@/features/red/RedApoyo';
+import { Comunidad } from '@/features/comunidad/Comunidad';
 import { MiSemana } from '@/features/semana/MiSemana';
 import { CuestionarioAlsfrs } from '@/features/alsfrs/CuestionarioAlsfrs';
 
@@ -92,6 +93,8 @@ export default function App() {
       return <Directorio temaFiltro={pantalla.tema} />;
     case 'redApoyo':
       return <RedApoyo perfil={perfil} rol={rol} />;
+    case 'comunidad':
+      return <Comunidad perfil={perfil} rol={rol} />;
     case 'miSemana':
       return <MiSemana perfil={perfil} />;
     case 'alsfrs':

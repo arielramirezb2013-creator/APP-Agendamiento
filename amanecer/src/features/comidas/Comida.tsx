@@ -183,7 +183,7 @@ export function Comida({ perfil, rol }: ComidaProps) {
         />
         <label
           className="flex min-h-chip w-full cursor-pointer items-center justify-center
-            rounded-token border-2 border-tinta-suave/40 bg-superficie text-boton"
+            rounded-token border-2 border-tinta-suave/20 bg-superficie text-boton"
         >
           {copy.foto}
           <input
@@ -210,7 +210,7 @@ export function Comida({ perfil, rol }: ComidaProps) {
             onChange={(e) => setDescripcion(e.target.value)}
             rows={2}
             aria-label={t(copy.queComio, trato)}
-            className="w-full rounded-token border-2 border-tinta-suave/40 bg-superficie p-4 text-base"
+            className="w-full rounded-token border-2 border-tinta-suave/20 bg-superficie p-4 text-base"
           />
         ) : (
           <BigChoice ancho etiqueta={comun.escribir} onSelect={() => setEscribiendo(true)} />

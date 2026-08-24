@@ -116,6 +116,35 @@ test('el cuestionario del mes guarda por subescalas', async ({ page }) => {
   await expect(page.getByText('24/24')).toBeVisible();
 });
 
+test('la comunidad muestra grupos, experiencias con sello y lugares con mapa', async ({
+  page,
+}) => {
+  await configurarPerfil(page);
+  await page.getByRole('button', { name: 'Comunidad' }).click();
+  await expect(page.getByText('Experiencias compartidas')).toBeVisible();
+  await expect(page.getByText(/banco de voz/i)).toBeVisible();
+  await expect(
+    page.getByText(/Experiencia personal — no es consejo médico/).first(),
+  ).toBeVisible();
+  await expect(page.getByRole('link', { name: /Cómo llegar/ }).first()).toHaveAttribute(
+    'href',
+    /google\.com\/maps/,
+  );
+
+  // Compartir una experiencia propia queda guardada localmente.
+  await page.getByRole('button', { name: /Contar mi experiencia/ }).click();
+  await page.getByRole('button', { name: '⌨️ Escribir' }).click();
+  await page
+    .getByLabel(/¿Qué le ha servido/)
+    .fill('El cojín de la abuela me ayudó a estar más cómoda en la sala.');
+  await page.getByRole('button', { name: 'Seguir' }).click();
+  await page.getByRole('button', { name: /La ELA en el día a día/ }).click();
+  await expect(page.getByText(/Guardada ✓/)).toBeVisible();
+  await page.getByRole('button', { name: 'Seguir' }).click();
+  await expect(page.getByText(/cojín de la abuela/)).toBeVisible();
+  await expect(page.getByText(/· Tuya/)).toBeVisible();
+});
+
 test('el modo cuidador exige PIN y abre el panel', async ({ page }) => {
   await configurarPerfil(page);
   await page.getByRole('button', { name: 'Soy el cuidador' }).click();

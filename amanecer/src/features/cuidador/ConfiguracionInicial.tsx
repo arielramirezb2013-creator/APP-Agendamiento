@@ -81,7 +81,7 @@ export function ConfiguracionInicial({ onListo }: { onListo: () => void }) {
         <input
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 text-base font-normal"
+          className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 text-base font-normal"
         />
       </label>
 

@@ -23,19 +23,19 @@ function MiniLinea({ valores, max }: { valores: number[]; max: number }) {
   const fy = y(valores[valores.length - 1]);
   return (
     <svg viewBox={`0 0 ${ancho} ${alto}`} aria-hidden="true" className="h-[34px] w-[120px]">
-      <line x1="6" x2={ancho - 6} y1={y(0)} y2={y(0)} stroke="#E7E0D4" strokeWidth="1" />
+      <line x1="6" x2={ancho - 6} y1={y(0)} y2={y(0)} stroke="#EADFCE" strokeWidth="1" />
       {valores.length > 1 ? (
         <polyline
           points={linea}
           fill="none"
-          stroke="#0B6B5D"
+          stroke="#43302B"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       ) : null}
       <circle cx={fx} cy={fy} r="5" fill="#FFFFFF" />
-      <circle cx={fx} cy={fy} r="3.5" fill="#0B6B5D" />
+      <circle cx={fx} cy={fy} r="3.5" fill="#43302B" />
     </svg>
   );
 }

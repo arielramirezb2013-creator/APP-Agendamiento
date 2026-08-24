@@ -105,6 +105,11 @@ try {
   await f.getByText(/ACELA/).waitFor();
   await page.screenshot({ path: `${dirSalida}/v2-red.png` });
 
+  await f.getByRole('button', { name: '‹ Volver' }).click();
+  await f.getByRole('button', { name: 'Comunidad' }).click();
+  await f.getByText('Experiencias compartidas').waitFor();
+  await page.screenshot({ path: `${dirSalida}/v2-comunidad.png` });
+
   // Panel del cuidador con las gráficas
   await f.getByRole('button', { name: '‹ Volver' }).click();
   await f.getByRole('button', { name: 'Soy el cuidador' }).click();

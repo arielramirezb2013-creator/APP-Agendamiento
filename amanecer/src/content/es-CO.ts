@@ -64,8 +64,9 @@ export const inicio = {
   miComida: 'Mi comida',
   miPeso: 'Mi peso',
   miSemana: 'Mi semana',
-  miRed: 'Mi red de apoyo 🤝',
-  aQuienLlamo: '¿A quién llamo? 📞',
+  miRed: 'Mi red de apoyo',
+  comunidad: 'Comunidad',
+  aQuienLlamo: '¿A quién llamo?',
   recordatoriosHoy: 'Hoy:',
   sinRecordatorios: 'Hoy no hay recordatorios.',
   soyCuidador: 'Soy el cuidador',
@@ -375,6 +376,45 @@ export const redApoyo = {
   ciudadCampo: 'Ciudad',
   marcarRespondida: 'Anotar la respuesta recibida',
   respuestaCampo: 'Qué respondieron',
+} as const;
+
+// Comunidad: grupos, experiencias y lugares. La conversación directa llega
+// con la fase en línea; mientras tanto todo lo propio se guarda en el aparato.
+export const comunidad = {
+  titulo: 'Comunidad',
+  intro: {
+    usted: 'Personas e instituciones que viven la ELA de cerca comparten lo que les ha servido.',
+    tu: 'Personas e instituciones que viven la ELA de cerca comparten lo que les ha servido.',
+  } as Frase,
+  selloExperiencia: 'Experiencia personal — no es consejo médico. Confírmelo con su equipo.',
+  grupos: 'Grupos',
+  todos: 'Todos',
+  experiencias: 'Experiencias compartidas',
+  meSirvio: 'Me sirvió',
+  conversar: 'Conversar',
+  conversarNota:
+    'Los mensajes entre miembros llegan con la comunidad en línea. Por ahora puede escribirle a la red de apoyo.',
+  compartir: 'Contar mi experiencia',
+  compartirPregunta: {
+    usted: '¿Qué le ha servido que quiera compartir?',
+    tu: '¿Qué te ha servido que quieras compartir?',
+  } as Frase,
+  compartirDetalle: {
+    usted: 'Escríbala o díctela. Sin nombres de medicamentos ni dosis: eso es del médico.',
+    tu: 'Escríbela o díctala. Sin nombres de medicamentos ni dosis: eso es del médico.',
+  } as Frase,
+  elegirGrupo: '¿En qué grupo va mejor?',
+  publicada:
+    'Guardada ✓ Vive en este aparato y se compartirá cuando la comunidad esté en línea.',
+  tuya: 'Tuya',
+  ejemplo: 'Ejemplo',
+  lugares: 'Lugares y clínicas',
+  lugaresNota: 'En Colombia y el mundo. Los teléfonos se piden por su EPS o por ACELA.',
+  comoLlegar: 'Cómo llegar',
+  sitioWeb: 'Sitio web',
+  enLineaNota:
+    'Vista con contenido de ejemplo: así se verá la comunidad cuando esté en línea y las personas puedan responderse entre ellas.',
+  sinPublicaciones: 'Todavía no hay experiencias en este grupo.',
 } as const;
 
 export const miSemana = {

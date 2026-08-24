@@ -1,6 +1,7 @@
 // Un solo componente para TODAS las respuestas (§10.2): chips ≥64 px,
-// ícono opcional + palabra, seleccionado = ✓ + relleno primario claro.
-// Nunca comunica estado solo con color (§3.1).
+// ícono opcional + palabra, seleccionado = ✓ + relleno durazno.
+// Rediseño cálido: sin bordes duros — superficie con sombra tibia;
+// el borde terracota aparece solo al elegir. Nunca color solo (§3.1).
 
 interface BigChoiceProps {
   etiqueta: string;
@@ -22,8 +23,8 @@ export function BigChoice({ etiqueta, emoji, seleccionado, onSelect, ancho }: Bi
         ${ancho ? 'w-full' : ''}
         ${
           seleccionado
-            ? 'border-primario bg-primario/10 text-primario font-bold'
-            : 'border-tinta-suave/40 bg-superficie text-tinta'
+            ? 'border-primario bg-primario-suave font-bold text-tinta'
+            : 'border-transparent bg-superficie text-tinta'
         }`}
     >
       {emoji ? (
@@ -32,7 +33,11 @@ export function BigChoice({ etiqueta, emoji, seleccionado, onSelect, ancho }: Bi
         </span>
       ) : null}
       <span>{etiqueta}</span>
-      {seleccionado ? <span aria-hidden="true">✓</span> : null}
+      {seleccionado ? (
+        <span aria-hidden="true" className="font-bold text-primario">
+          ✓
+        </span>
+      ) : null}
     </button>
   );
 }

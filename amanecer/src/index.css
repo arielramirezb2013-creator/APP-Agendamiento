@@ -6,14 +6,20 @@
    si prefers-reduced-motion, contraste AAA con los tokens §10.1. */
 
 :root {
-  --color-fondo: #faf7f2;
-  --color-tinta: #292019;
+  --color-fondo: #faf1e4;
+  --color-tinta: #43302b;
 }
 
 /* Modo alto contraste extra (§10.2): tinta #000 sobre fondo #FFF. */
 .alto-contraste {
   --color-fondo: #ffffff;
   --color-tinta: #000000;
+}
+
+/* Toda superficie clara lleva una sombra tibia: tarjetas y botones se
+   despegan del fondo sin bordes duros (rediseño cálido). */
+.bg-superficie {
+  box-shadow: 0 2px 10px rgba(140, 90, 50, 0.1), 0 1px 3px rgba(140, 90, 50, 0.08);
 }
 
 html {

@@ -6,14 +6,14 @@ import { checkin as copyCheckin, cuidador, miSemana } from '@/content/es-CO';
 import type { CheckinDiario } from '@/types/models';
 import { sumarDias } from '@/rules/recurrence';
 
-// Tintes divergentes de refuerzo (ámbar → neutro → esmeralda), decorativos:
+// Tintes divergentes de refuerzo (ámbar → neutro → salvia), decorativos:
 // la identidad la lleva el emoji + texto accesible.
 const TINTES: Record<number, string> = {
-  1: '#F4D3B0',
-  2: '#F8E3C9',
-  3: '#EFEBE3',
-  4: '#DCEBE5',
-  5: '#C2E0D7',
+  1: '#F3CDA6',
+  2: '#F8E0C2',
+  3: '#F1EADC',
+  4: '#E3E8D3',
+  5: '#CFE3C6',
 };
 
 interface MapaAnimoProps {

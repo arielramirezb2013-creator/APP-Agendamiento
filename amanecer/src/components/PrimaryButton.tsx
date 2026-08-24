@@ -17,9 +17,9 @@ export function PrimaryButton({
   deshabilitado,
 }: PrimaryButtonProps) {
   const estilos = {
-    primario: 'bg-primario text-white',
-    rojo: 'bg-rojo text-white',
-    neutro: 'bg-superficie text-tinta border-2 border-tinta-suave/40',
+    primario: 'bg-primario text-white shadow-calida-alta',
+    rojo: 'bg-rojo text-white shadow-calida-alta',
+    neutro: 'bg-superficie text-tinta',
   }[variante];
   return (
     <button
@@ -27,7 +27,7 @@ export function PrimaryButton({
       onClick={onClick}
       disabled={deshabilitado}
       className={`min-h-primario w-full rounded-token px-6 text-boton font-bold font-ui
-        disabled:opacity-50 ${estilos}`}
+        disabled:opacity-50 disabled:shadow-none ${estilos}`}
     >
       {children}
     </button>

@@ -98,7 +98,7 @@ export function CuidadorContactos() {
           <input
             value={form.nombre}
             onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <label className="flex flex-col gap-1 text-base font-bold text-tinta">
@@ -107,7 +107,7 @@ export function CuidadorContactos() {
             value={form.telefono}
             inputMode="tel"
             onChange={(e) => setForm({ ...form, telefono: e.target.value })}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <label className="flex flex-col gap-1 text-base font-bold text-tinta">
@@ -116,7 +116,7 @@ export function CuidadorContactos() {
             value={form.whatsapp}
             inputMode="tel"
             onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <label className="flex flex-col gap-1 text-base font-bold text-tinta">
@@ -124,7 +124,7 @@ export function CuidadorContactos() {
           <input
             value={form.paraQue}
             onChange={(e) => setForm({ ...form, paraQue: e.target.value })}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
 

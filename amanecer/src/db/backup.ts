@@ -69,6 +69,7 @@ export async function exportarTodo(password: string): Promise<Blob> {
     redApoyo: await db.redApoyo.toArray(),
     inquietudes: await db.inquietudes.toArray(),
     alsfrs: await db.alsfrs.toArray(),
+    publicaciones: await db.publicaciones.toArray(),
     notasVoz,
   };
 
@@ -126,6 +127,7 @@ export async function importarTodo(archivo: string, password: string): Promise<v
       db.redApoyo,
       db.inquietudes,
       db.alsfrs,
+      db.publicaciones,
     ],
     async () => {
       await Promise.all([
@@ -143,6 +145,7 @@ export async function importarTodo(archivo: string, password: string): Promise<v
         db.redApoyo.clear(),
         db.inquietudes.clear(),
         db.alsfrs.clear(),
+        db.publicaciones.clear(),
       ]);
       await db.perfiles.bulkAdd(datos.perfiles ?? []);
       await db.contactos.bulkAdd(datos.contactos ?? []);
@@ -158,6 +161,7 @@ export async function importarTodo(archivo: string, password: string): Promise<v
       await db.redApoyo.bulkAdd(datos.redApoyo ?? []);
       await db.inquietudes.bulkAdd(datos.inquietudes ?? []);
       await db.alsfrs.bulkAdd(datos.alsfrs ?? []);
+      await db.publicaciones.bulkAdd(datos.publicaciones ?? []);
     },
   );
   // Notas de voz fuera de la transacción (reconstruyen Blob).

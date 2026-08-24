@@ -22,18 +22,18 @@ const shell = `<title>Amanecer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <style>
-  /* Tokens del escritorio de demo, derivados de la paleta de la app (§10.1):
-     lino, café tostado, esmeralda. La app dentro del marco trae su propio
-     sistema de diseño completo; este marco solo la sostiene. */
+  /* Tokens del escritorio de demo, derivados de la paleta cálida de la app:
+     crema durazno, marrón café, terracota. La app dentro del marco trae su
+     propio sistema de diseño completo; este marco solo la sostiene. */
   :root {
-    --escritorio: #ECE5D8;
-    --escritorio-veta: #E3DACA;
-    --texto: #292019;
-    --texto-suave: #5C5248;
-    --bisel: #292019;
-    --bisel-borde: #443627;
-    --acento: #0B6B5D;
-    --pantalla: #FAF7F2;
+    --escritorio: #F2E4D0;
+    --escritorio-veta: #EDD9BE;
+    --texto: #43302B;
+    --texto-suave: #7A6357;
+    --bisel: #3A2A22;
+    --bisel-borde: #55402F;
+    --acento: #B4532A;
+    --pantalla: #FAF1E4;
     --superficie: #FFFFFF;
   }
   @media (prefers-color-scheme: dark) {
@@ -44,7 +44,7 @@ const shell = `<title>Amanecer</title>
       --texto-suave: #B5A996;
       --bisel: #0E0B08;
       --bisel-borde: #3A2F24;
-      --acento: #4FB39F;
+      --acento: #E0906B;
       --superficie: #2A231C;
     }
   }
@@ -55,7 +55,7 @@ const shell = `<title>Amanecer</title>
     --texto-suave: #B5A996;
     --bisel: #0E0B08;
     --bisel-borde: #3A2F24;
-    --acento: #4FB39F;
+    --acento: #E0906B;
     --superficie: #2A231C;
   }
 
@@ -179,9 +179,9 @@ const shell = `<title>Amanecer</title>
 
 <header class="marca">
   <svg class="sol" viewBox="0 0 64 64" aria-hidden="true">
-    <path d="M18 38a14 14 0 0 1 28 0z" fill="#0B6B5D"/>
+    <path d="M18 38a14 14 0 0 1 28 0z" fill="#B4532A"/>
     <rect x="8" y="38" width="48" height="3" rx="1.5" fill="currentColor"/>
-    <g stroke="#0E8271" stroke-width="3" stroke-linecap="round">
+    <g stroke="#D98E2B" stroke-width="3" stroke-linecap="round">
       <line x1="32" y1="14" x2="32" y2="8"/>
       <line x1="18" y1="20" x2="14" y2="16"/>
       <line x1="46" y1="20" x2="50" y2="16"/>
@@ -223,7 +223,7 @@ const shell = `<title>Amanecer</title>
 
   async function reiniciar(boton) {
     boton.disabled = true;
-    marco.srcdoc = '<!doctype html><body style="background:#FAF7F2">';
+    marco.srcdoc = '<!doctype html><body style="background:#FAF1E4">';
     await new Promise((r) => setTimeout(r, 250));
     await new Promise((resolver) => {
       try {

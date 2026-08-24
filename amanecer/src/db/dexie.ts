@@ -16,6 +16,7 @@ import type {
   OrganizacionApoyo,
   Perfil,
   Peso,
+  PublicacionComunidad,
   Recordatorio,
   TarjetaPlan,
 } from '@/types/models';
@@ -36,6 +37,7 @@ export class AmanecerDB extends Dexie {
   redApoyo!: Table<OrganizacionApoyo, string>;
   inquietudes!: Table<Inquietud, string>;
   alsfrs!: Table<AlsfrsR, string>;
+  publicaciones!: Table<PublicacionComunidad, string>;
 
   constructor() {
     super('amanecer');
@@ -58,6 +60,10 @@ export class AmanecerDB extends Dexie {
       redApoyo: 'id, alcance, orden',
       inquietudes: 'id, fechaHora, estado',
       alsfrs: 'id, fecha',
+    });
+    // v3: publicaciones propias de la comunidad (locales hasta la fase en línea).
+    this.version(3).stores({
+      publicaciones: 'id, fechaHora, grupo',
     });
   }
 }

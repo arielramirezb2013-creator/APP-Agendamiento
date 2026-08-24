@@ -13,6 +13,7 @@ export type Pantalla =
   | { id: 'directorio' }
   | { id: 'directorioTema'; tema: Tema; reglaId?: string }
   | { id: 'redApoyo' }
+  | { id: 'comunidad' }
   | { id: 'miSemana' }
   | { id: 'alsfrs' }
   | { id: 'cuidadorRed' }

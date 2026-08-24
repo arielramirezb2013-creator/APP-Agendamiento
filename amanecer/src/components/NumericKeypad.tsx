@@ -33,7 +33,7 @@ export function NumericKeypad({
     <div className="flex flex-col items-center gap-3">
       <output
         aria-live="polite"
-        className="min-h-primario w-full rounded-token border-2 border-tinta-suave/40
+        className="min-h-primario w-full rounded-token border-2 border-tinta-suave/20
           bg-superficie px-4 text-center font-ui text-[2.2rem] font-bold leading-[72px] tracking-widest"
       >
         {/* En Colombia el decimal se escribe con coma; el valor interno usa punto. */}
@@ -46,7 +46,7 @@ export function NumericKeypad({
             type="button"
             onClick={() => pulsar(t)}
             className="min-h-primario rounded-token bg-superficie text-[1.6rem] font-bold
-              border-2 border-tinta-suave/30"
+              border-2 border-tinta-suave/20"
           >
             {t}
           </button>
@@ -57,7 +57,7 @@ export function NumericKeypad({
             onClick={() => pulsar(',')}
             aria-label={comun.comaDecimal}
             className="min-h-primario rounded-token bg-superficie text-[1.6rem] font-bold
-              border-2 border-tinta-suave/30"
+              border-2 border-tinta-suave/20"
           >
             ,
           </button>
@@ -68,7 +68,7 @@ export function NumericKeypad({
           type="button"
           onClick={() => pulsar('0')}
           className="min-h-primario rounded-token bg-superficie text-[1.6rem] font-bold
-            border-2 border-tinta-suave/30"
+            border-2 border-tinta-suave/20"
         >
           0
         </button>
@@ -76,7 +76,7 @@ export function NumericKeypad({
           type="button"
           onClick={() => onCambio(valor.slice(0, -1))}
           className="min-h-primario rounded-token bg-superficie text-boton font-bold
-            border-2 border-tinta-suave/30"
+            border-2 border-tinta-suave/20"
         >
           {etiquetaBorrar}
         </button>

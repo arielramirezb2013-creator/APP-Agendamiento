@@ -90,7 +90,7 @@ export function CuidadorMedicinas() {
           <input
             value={form.nombre}
             onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <label className="flex flex-col gap-1 text-base font-bold text-tinta">
@@ -99,7 +99,7 @@ export function CuidadorMedicinas() {
             value={form.horarios}
             onChange={(e) => setForm({ ...form, horarios: e.target.value })}
             placeholder="08:00, 20:00"
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <label className="flex flex-col gap-1 text-base font-bold text-tinta">
@@ -108,7 +108,7 @@ export function CuidadorMedicinas() {
             value={form.instrucciones}
             onChange={(e) => setForm({ ...form, instrucciones: e.target.value })}
             rows={3}
-            className="rounded-token border-2 border-tinta-suave/40 bg-superficie p-4 font-normal"
+            className="rounded-token border-2 border-tinta-suave/20 bg-superficie p-4 font-normal"
           />
         </label>
         <p className="text-min text-tinta-suave">{copy.medicinas.instruccionesNota}</p>
@@ -244,7 +244,7 @@ export function CuidadorMedicinas() {
               <input
                 value={formCita.titulo}
                 onChange={(e) => setFormCita({ ...formCita, titulo: e.target.value })}
-                className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+                className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
               />
             </label>
             <label className="flex flex-col gap-1 text-base font-bold text-tinta">
@@ -253,7 +253,7 @@ export function CuidadorMedicinas() {
                 type="datetime-local"
                 value={formCita.fechaHora}
                 onChange={(e) => setFormCita({ ...formCita, fechaHora: e.target.value })}
-                className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+                className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
               />
             </label>
             <label className="flex flex-col gap-1 text-base font-bold text-tinta">
@@ -262,7 +262,7 @@ export function CuidadorMedicinas() {
                 value={formCita.queLlevar}
                 placeholder={copy.medicinas.queLlevarDefecto}
                 onChange={(e) => setFormCita({ ...formCita, queLlevar: e.target.value })}
-                className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+                className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
               />
             </label>
             <PrimaryButton onClick={() => void guardarCita()}>

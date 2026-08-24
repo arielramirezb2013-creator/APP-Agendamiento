@@ -68,7 +68,7 @@ export function CuidadorRed() {
           <input
             value={form.nombre}
             onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <div className="grid grid-cols-2 gap-2">
@@ -89,7 +89,7 @@ export function CuidadorRed() {
             <input
               value={form.ciudad}
               onChange={(e) => setForm({ ...form, ciudad: e.target.value })}
-              className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+              className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
             />
           </label>
         ) : null}
@@ -98,7 +98,7 @@ export function CuidadorRed() {
           <input
             value={form.paraQue}
             onChange={(e) => setForm({ ...form, paraQue: e.target.value })}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <label className="flex flex-col gap-1 text-base font-bold text-tinta">
@@ -107,7 +107,7 @@ export function CuidadorRed() {
             value={form.telefono}
             inputMode="tel"
             onChange={(e) => setForm({ ...form, telefono: e.target.value })}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <label className="flex flex-col gap-1 text-base font-bold text-tinta">
@@ -116,7 +116,7 @@ export function CuidadorRed() {
             value={form.whatsapp}
             inputMode="tel"
             onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <PrimaryButton onClick={() => void guardar()}>{comun.guardar}</PrimaryButton>
@@ -212,7 +212,7 @@ export function CuidadorRed() {
                         value={respuesta}
                         onChange={(e) => setRespuesta(e.target.value)}
                         rows={2}
-                        className="rounded-token border-2 border-tinta-suave/40 bg-superficie p-3 text-base font-normal"
+                        className="rounded-token border-2 border-tinta-suave/20 bg-superficie p-3 text-base font-normal"
                       />
                     </label>
                     <PrimaryButton

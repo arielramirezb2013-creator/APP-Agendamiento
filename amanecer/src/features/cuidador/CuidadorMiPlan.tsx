@@ -59,7 +59,7 @@ export function CuidadorMiPlan() {
           <input
             value={form.titulo}
             onChange={(e) => setForm({ ...form, titulo: e.target.value })}
-            className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+            className="min-h-chip rounded-token border-2 border-tinta-suave/20 bg-superficie px-4 font-normal"
           />
         </label>
         <label className="flex flex-col gap-1 text-base font-bold text-tinta">
@@ -68,7 +68,7 @@ export function CuidadorMiPlan() {
             value={form.contenido}
             onChange={(e) => setForm({ ...form, contenido: e.target.value })}
             rows={5}
-            className="rounded-token border-2 border-tinta-suave/40 bg-superficie p-4 font-normal"
+            className="rounded-token border-2 border-tinta-suave/20 bg-superficie p-4 font-normal"
           />
         </label>
         <BigChoice

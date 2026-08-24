@@ -195,6 +195,26 @@ export interface Inquietud {
   llenado: Llenado;
 }
 
+// ——— Comunidad (pedida por la familia; reemplaza la guarda §14-5) ———
+// En el MVP sin servidor: los grupos, experiencias de ejemplo y lugares son
+// contenido curado local; las publicaciones propias se guardan en el aparato
+// y se compartirán cuando la comunidad esté en línea (fase V1.1).
+
+export type RolComunidad = 'persona' | 'cuidador' | 'institucion';
+
+export interface PublicacionComunidad {
+  id: string;
+  fechaHora: string; // local ISO
+  autor: string;
+  rolAutor: RolComunidad;
+  grupo: string; // clave de GrupoComunidad
+  texto: string;
+  meSirvio: number;
+  /** true = contenido curado de ejemplo (demo); false = escrita en este aparato. */
+  esEjemplo?: boolean;
+  llenado?: Llenado;
+}
+
 // ——— ALSFRS-R mensual autoadministrada (§6.4) ———
 
 export interface AlsfrsR {
