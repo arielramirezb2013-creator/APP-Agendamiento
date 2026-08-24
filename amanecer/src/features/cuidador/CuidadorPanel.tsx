@@ -2,34 +2,43 @@
 // accesos a todas las secciones de configuración.
 
 import { useLiveQuery } from 'dexie-react-hooks';
-import { cuidador as copy, checkin as copyCheckin } from '@/content/es-CO';
+import { cuidador as copy, miSemana as copyMiSemana } from '@/content/es-CO';
 import { db, hoyLocal } from '@/db/dexie';
 import { enVentana, sumarDias } from '@/rules/recurrence';
 import { todasLasReglas } from '@/rules/flags';
 import { decidirEventoAmbar } from '@/services/banderas';
 import { copyReglas, interpolar, t } from '@/content/es-CO';
 import { useApp } from '@/store';
+import { GraficaPeso } from '@/components/graficas/GraficaPeso';
+import { MapaAnimo } from '@/components/graficas/MapaAnimo';
+import { PerfilAlsfrs } from '@/components/graficas/PerfilAlsfrs';
 
 export function CuidadorPanel() {
   const { ir, aInicio } = useApp();
   const hoy = hoyLocal();
 
   const checkins = useLiveQuery(
-    () => db.checkins.where('fecha').aboveOrEqual(sumarDias(hoy, -6)).toArray(),
+    () => db.checkins.where('fecha').aboveOrEqual(sumarDias(hoy, -27)).toArray(),
     [hoy],
   );
   const eventos = useLiveQuery(() => db.eventosBandera.toArray(), []);
+  const pesos = useLiveQuery(() => db.pesos.orderBy('fecha').toArray(), []);
+  const alsfrs = useLiveQuery(
+    () => db.alsfrs.orderBy('fecha').toArray().then((r) => r.filter((x) => !x.borrador)),
+    [],
+  );
+  const pesos8 = (pesos ?? []).filter((p) => enVentana(p.fecha, hoy, 7 * 8));
 
   const pendientes = (eventos ?? []).filter(
     (e) => enVentana(e.fechaHora, hoy, 7) && !e.decision,
   );
 
-  const dias = Array.from({ length: 7 }, (_, i) => sumarDias(hoy, i - 6));
-
   const secciones = [
     { etiqueta: copy.panel.verRegistros, pantalla: { id: 'cuidadorRegistros' } as const },
     { etiqueta: copy.panel.contactos, pantalla: { id: 'cuidadorContactos' } as const },
+    { etiqueta: copy.panel.redApoyo, pantalla: { id: 'cuidadorRed' } as const },
     { etiqueta: copy.panel.medicinas, pantalla: { id: 'cuidadorMedicinas' } as const },
+    { etiqueta: copy.panel.cuestionarioMes, pantalla: { id: 'alsfrs' } as const },
     { etiqueta: copy.panel.reporte, pantalla: { id: 'cuidadorReporte' } as const },
     { etiqueta: copy.panel.miPlan, pantalla: { id: 'cuidadorMiPlan' } as const },
     { etiqueta: copy.panel.ajustes, pantalla: { id: 'cuidadorAjustes' } as const },
@@ -48,29 +57,10 @@ export function CuidadorPanel() {
         </button>
       </header>
 
-      {/* Semana: ánimo por día — ícono + palabra (sr-only), nunca solo el emoji (§3.1). */}
+      {/* Ánimo del mes: emoji + palabra accesible, tinte de refuerzo (§3.1). */}
       <section aria-label={copy.panel.checkins} className="rounded-token bg-superficie p-4">
-        <div className="grid grid-cols-7 gap-1 text-center">
-          {dias.map((d) => {
-            const c = (checkins ?? []).find((x) => x.fecha === d);
-            const opcion = c?.animo
-              ? copyCheckin.animo.opciones.find((o) => o.valor === c.animo)
-              : undefined;
-            const emoji = opcion?.emoji ?? (c ? '✓' : '·');
-            const etiqueta = opcion?.etiqueta ?? (c ? 'registrado' : 'sin registro');
-            return (
-              <div key={d} className="flex flex-col items-center gap-1">
-                <span className="text-min text-tinta-suave">
-                  {copy.panel.dias[new Date(`${d}T12:00:00`).getDay()]}
-                </span>
-                <span aria-hidden="true" className="text-[1.2rem]" title={etiqueta}>
-                  {emoji}
-                </span>
-                <span className="sr-only">{etiqueta}</span>
-              </div>
-            );
-          })}
-        </div>
+        <h2 className="mb-2 text-base font-bold text-tinta">{copyMiSemana.animoTitulo}</h2>
+        <MapaAnimo checkins={checkins ?? []} hoy={hoy} semanas={4} />
         <button
           type="button"
           onClick={() => ir({ id: 'checkin' })}
@@ -80,6 +70,22 @@ export function CuidadorPanel() {
           {copy.panel.llenarPorElla}
         </button>
       </section>
+
+      {pesos8.length >= 2 ? (
+        <section className="rounded-token bg-superficie p-4">
+          <h2 className="mb-2 text-base font-bold text-tinta">{copyMiSemana.pesoTitulo}</h2>
+          <GraficaPeso pesos={pesos8} interactivo />
+        </section>
+      ) : null}
+
+      {(alsfrs?.length ?? 0) > 0 ? (
+        <section className="rounded-token bg-superficie p-4">
+          <h2 className="mb-2 text-base font-bold text-tinta">
+            {copy.panel.cuestionarioMes}
+          </h2>
+          <PerfilAlsfrs registros={alsfrs ?? []} />
+        </section>
+      ) : null}
 
       {/* Banderas pendientes de revisión */}
       <section className="flex flex-col gap-2">

@@ -12,6 +12,10 @@ export type Pantalla =
   | { id: 'peso' }
   | { id: 'directorio' }
   | { id: 'directorioTema'; tema: Tema; reglaId?: string }
+  | { id: 'redApoyo' }
+  | { id: 'miSemana' }
+  | { id: 'alsfrs' }
+  | { id: 'cuidadorRed' }
   | { id: 'banderaRoja'; reglaId: string }
   | { id: 'cuidadorPin' }
   | { id: 'cuidadorPanel' }

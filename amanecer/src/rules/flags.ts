@@ -230,6 +230,22 @@ export const reglasAmbar: ReglaBandera[] = [
     },
   },
   {
+    id: 'A13', // Habla "casi no me entienden" reportada, o "con esfuerzo" ≥3 días en 7
+    // Regla de producto añadida por la familia (dominio bulbar → fonoaudiología).
+    fuente: 'Producto (familia) — orientativa; dominio bulbar',
+    nivel: 'ambar',
+    contactoTema: 'tragar', // la fonoaudióloga cubre habla y deglución
+    prioridad: 72,
+    condicion: (ctx) =>
+      hoyCheckin(ctx)?.habla === 'casi_no' ||
+      contarDiasConSenal(
+        checkinsUnicos(ctx),
+        ctx.hoy,
+        7,
+        (c) => c.habla === 'esfuerzo' || c.habla === 'casi_no',
+      ) >= 3,
+  },
+  {
     id: 'A7', // Saliva espesa ≥3 días en 7 (ruta distinta a saliva fina, §2.2-4)
     fuente: 'MND Assoc.',
     nivel: 'ambar',
@@ -306,6 +322,22 @@ export const reglasAmbar: ReglaBandera[] = [
     condicion: (ctx) =>
       contarEpisodios(episodiosTodos(ctx), 'caida', ctx.hoy, 30) >= 2 ||
       (ctx.checklistCuidador ?? []).includes('tropiezos'),
+  },
+  {
+    id: 'A14', // Movilidad "casi no me pude mover" hoy, o "necesité ayuda" ≥3 días en 7
+    // Regla de producto añadida por la familia (ruta fisioterapia).
+    fuente: 'Producto (familia) — orientativa; movilidad',
+    nivel: 'ambar',
+    contactoTema: 'moverme',
+    prioridad: 53,
+    condicion: (ctx) =>
+      hoyCheckin(ctx)?.movilidad === 'casi_no' ||
+      contarDiasConSenal(
+        checkinsUnicos(ctx),
+        ctx.hoy,
+        7,
+        (c) => c.movilidad === 'con_ayuda' || c.movilidad === 'casi_no',
+      ) >= 3,
   },
   {
     id: 'A11', // Risa/llanto sin control recurrente (≥2 episodios / 14 días)

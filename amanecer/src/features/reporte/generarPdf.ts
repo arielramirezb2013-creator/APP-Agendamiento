@@ -22,14 +22,18 @@ export async function generarReporte(perfil: Perfil): Promise<void> {
   const desde = sumarDias(hoy, -7 * SEMANAS);
   const dias = 7 * SEMANAS;
 
-  const [checkins, episodios, comidas, pesos, medicinas, eventos] = await Promise.all([
-    db.checkins.where('fecha').aboveOrEqual(desde).sortBy('fecha'),
-    db.episodios.toArray(),
-    db.comidas.where('fecha').aboveOrEqual(desde).toArray(),
-    db.pesos.orderBy('fecha').toArray(),
-    db.medicinas.toArray(),
-    db.eventosBandera.toArray(),
-  ]);
+  const [checkins, episodios, comidas, pesos, medicinas, eventos, alsfrsTodos, inquietudes] =
+    await Promise.all([
+      db.checkins.where('fecha').aboveOrEqual(desde).sortBy('fecha'),
+      db.episodios.toArray(),
+      db.comidas.where('fecha').aboveOrEqual(desde).toArray(),
+      db.pesos.orderBy('fecha').toArray(),
+      db.medicinas.toArray(),
+      db.eventosBandera.toArray(),
+      db.alsfrs.orderBy('fecha').toArray(),
+      db.inquietudes.toArray(),
+    ]);
+  const alsfrsCompletos = alsfrsTodos.filter((r) => !r.borrador);
   const episodiosPeriodo = episodios
     .filter((e) => enVentana(e.cuando, hoy, dias))
     .sort((a, b) => a.cuando.localeCompare(b.cuando));
@@ -124,6 +128,26 @@ export async function generarReporte(perfil: Perfil): Promise<void> {
       }
       y = gy + gh + 6;
     }
+  }
+
+  // Perfil ALSFRS-R por subescalas con sello de autorreporte (§6.4/§6.8)
+  tituloSeccion(copy.alsfrsTitulo);
+  if (alsfrsCompletos.length === 0) {
+    texto(copy.sinDatos, 10, SUAVE);
+  } else {
+    for (const r of alsfrsCompletos.slice(-4)) {
+      texto(
+        interpolar(copy.alsfrsLinea, {
+          fecha: r.fecha,
+          b: String(r.sub.bulbar),
+          m: String(r.sub.motora),
+          r: String(r.sub.respiratoria),
+          t: String(r.total),
+        }),
+        10,
+      );
+    }
+    texto(copy.alsfrsSello, 8, AMBAR);
   }
 
   // Ánimo: mini-mapa de calor textual por semana
@@ -267,6 +291,37 @@ export async function generarReporte(perfil: Perfil): Promise<void> {
     }),
     10,
   );
+
+  tituloSeccion(copy.hablaMovilidad);
+  texto(
+    interpolar(copy.diasHablaEsfuerzo, {
+      n: String(diasCon((c) => c.habla === 'esfuerzo' || c.habla === 'casi_no')),
+    }),
+    10,
+  );
+  texto(
+    interpolar(copy.diasMovilidadAyuda, {
+      n: String(
+        diasCon((c) => c.movilidad === 'con_ayuda' || c.movilidad === 'casi_no'),
+      ),
+    }),
+    10,
+  );
+
+  tituloSeccion(copy.inquietudesTitulo);
+  {
+    const delPeriodo = inquietudes.filter((q) => enVentana(q.fechaHora, hoy, dias));
+    if (delPeriodo.length === 0) texto(copy.sinDatos, 10, SUAVE);
+    else {
+      texto(
+        interpolar(copy.inquietudesResumen, {
+          n: String(delPeriodo.length),
+          r: String(delPeriodo.filter((q) => q.estado === 'respondida').length),
+        }),
+        10,
+      );
+    }
+  }
 
   tituloSeccion(copy.banderasTitulo);
   if (eventosPeriodo.length === 0) {

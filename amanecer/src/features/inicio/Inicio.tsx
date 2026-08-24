@@ -4,8 +4,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { PrimaryButton } from '@/components/PrimaryButton';
-import { comun, inicio, interpolar, recordatorios as copyRec, t } from '@/content/es-CO';
+import {
+  alsfrs as copyAlsfrs,
+  comun,
+  inicio,
+  interpolar,
+  recordatorios as copyRec,
+  t,
+} from '@/content/es-CO';
 import { db, hoyLocal } from '@/db/dexie';
+import { sumarDias } from '@/rules/recurrence';
 import {
   desmarcarToma,
   itemsDeHoy,
@@ -32,6 +40,18 @@ export function Inicio({ perfil }: { perfil: Perfil }) {
     () => db.checkins.where('fecha').equals(hoyLocal()).first(),
     [],
   );
+
+  // Recordatorio mensual suave del cuestionario (§6.4): aparece si no hay uno
+  // completado en los últimos 28 días. "Luego" lo oculta por la sesión.
+  const [cuestionarioPospuesto, setCuestionarioPospuesto] = useState(false);
+  const alsfrsRegistros = useLiveQuery(() => db.alsfrs.toArray(), []);
+  const hayBorradorAlsfrs = (alsfrsRegistros ?? []).some((r) => r.borrador);
+  const cuestionarioPendiente =
+    alsfrsRegistros !== undefined &&
+    !cuestionarioPospuesto &&
+    !(alsfrsRegistros ?? []).some(
+      (r) => !r.borrador && r.fecha >= sumarDias(hoyLocal(), -28),
+    );
 
   const cargarItems = useCallback(() => {
     void itemsDeHoy(perfil).then(setItems);
@@ -91,6 +111,30 @@ export function Inicio({ perfil }: { perfil: Perfil }) {
         </section>
       )}
 
+      {cuestionarioPendiente ? (
+        <section className="rounded-token border-2 border-primario/30 bg-superficie p-4">
+          <p className="mb-3 text-base text-tinta">🗓️ {t(copyAlsfrs.invitacion, perfil.tratamiento)}</p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => ir({ id: 'alsfrs' })}
+              className="min-h-chip rounded-token bg-primario px-3 text-boton font-bold text-white"
+            >
+              {hayBorradorAlsfrs ? copyAlsfrs.continuar : copyAlsfrs.empezar}
+            </button>
+            <button
+              type="button"
+              onClick={() => setCuestionarioPospuesto(true)}
+              className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie
+                px-3 text-boton text-tinta"
+            >
+              {copyAlsfrs.luego}
+            </button>
+          </div>
+        </section>
+      ) : null}
+
+      {/* Todas las secciones a la vista, en fichas grandes (≥64 px). */}
       <section className="grid grid-cols-2 gap-3">
         <button
           type="button"
@@ -108,6 +152,22 @@ export function Inicio({ perfil }: { perfil: Perfil }) {
         >
           {inicio.miComida}
         </button>
+        <button
+          type="button"
+          onClick={() => ir({ id: 'peso' })}
+          className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie
+            px-3 text-boton font-bold text-tinta"
+        >
+          ⚖️ {inicio.miPeso}
+        </button>
+        <button
+          type="button"
+          onClick={() => ir({ id: 'miSemana' })}
+          className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie
+            px-3 text-boton font-bold text-tinta"
+        >
+          🌤️ {inicio.miSemana}
+        </button>
       </section>
       <button
         type="button"
@@ -116,6 +176,14 @@ export function Inicio({ perfil }: { perfil: Perfil }) {
           px-4 text-boton font-bold text-primario"
       >
         {inicio.aQuienLlamo}
+      </button>
+      <button
+        type="button"
+        onClick={() => ir({ id: 'redApoyo' })}
+        className="min-h-chip w-full rounded-token border-2 border-tinta-suave/40 bg-superficie
+          px-4 text-boton font-bold text-tinta"
+      >
+        {inicio.miRed}
       </button>
 
       <section aria-label={inicio.recordatoriosHoy} className="flex flex-col gap-2">

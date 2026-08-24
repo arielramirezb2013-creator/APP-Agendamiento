@@ -3,14 +3,17 @@
 
 import Dexie, { type Table } from 'dexie';
 import type {
+  AlsfrsR,
   CheckinDiario,
   Comida,
   ConfigUmbrales,
   Contacto,
   Episodio,
   EventoBandera,
+  Inquietud,
   Medicina,
   NotaVoz,
+  OrganizacionApoyo,
   Perfil,
   Peso,
   Recordatorio,
@@ -30,6 +33,9 @@ export class AmanecerDB extends Dexie {
   notasVoz!: Table<NotaVoz, string>;
   tarjetasPlan!: Table<TarjetaPlan, string>;
   config!: Table<ConfigUmbrales, string>;
+  redApoyo!: Table<OrganizacionApoyo, string>;
+  inquietudes!: Table<Inquietud, string>;
+  alsfrs!: Table<AlsfrsR, string>;
 
   constructor() {
     super('amanecer');
@@ -46,6 +52,12 @@ export class AmanecerDB extends Dexie {
       notasVoz: 'id, fechaHora',
       tarjetasPlan: 'id, orden',
       config: 'id',
+    });
+    // v2: red de apoyo (local/nacional), inquietudes y ALSFRS-R mensual.
+    this.version(2).stores({
+      redApoyo: 'id, alcance, orden',
+      inquietudes: 'id, fechaHora, estado',
+      alsfrs: 'id, fecha',
     });
   }
 }

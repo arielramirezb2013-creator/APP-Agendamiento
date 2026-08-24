@@ -25,6 +25,8 @@ type Paso =
   | 'suenoSenales'
   | 'tragar'
   | 'saliva'
+  | 'habla'
+  | 'movilidad'
   | 'fatiga'
   | 'nota'
   | 'cierre';
@@ -36,9 +38,13 @@ const ORDEN: Paso[] = [
   'sueno',
   'tragar',
   'saliva',
+  'habla',
+  'movilidad',
   'fatiga',
   'nota',
 ];
+
+const TOTAL_PREGUNTAS = ORDEN.length;
 
 interface CheckinProps {
   perfil: Perfil;
@@ -82,15 +88,17 @@ export function Checkin({ perfil, rol }: CheckinProps) {
       suenoSenales: 4,
       tragar: 5,
       saliva: 6,
-      fatiga: 7,
-      nota: 8,
+      habla: 7,
+      movilidad: 8,
+      fatiga: 9,
+      nota: 10,
     };
-    return base[paso] ?? 8;
+    return base[paso] ?? TOTAL_PREGUNTAS;
   }, [paso]);
 
   const progreso = interpolar(copy.progreso, {
     n: String(numeroPregunta),
-    total: '8',
+    total: String(TOTAL_PREGUNTAS),
   });
 
   const avanzar = (desde: Paso) => {
@@ -494,6 +502,63 @@ export function Checkin({ perfil, rol }: CheckinProps) {
               onSelect={() => {
                 setDatos((d) => ({ ...d, saliva: o.valor as CheckinDiario['saliva'] }));
                 avanzar('saliva');
+              }}
+            />
+          ))}
+        </div>
+      </CardQuestion>
+    );
+  }
+
+  if (paso === 'habla') {
+    // Dominio bulbar (ruta fonoaudiología, regla A13).
+    return (
+      <CardQuestion
+        pregunta={t(copy.habla.pregunta, trato)}
+        progreso={progreso}
+        onVolver={retroceder}
+        onPasar={() => avanzar('habla')}
+      >
+        <div className="flex flex-col gap-3">
+          {copy.habla.opciones.map((o) => (
+            <BigChoice
+              key={o.valor}
+              ancho
+              etiqueta={o.etiqueta}
+              seleccionado={datos.habla === o.valor}
+              onSelect={() => {
+                setDatos((d) => ({ ...d, habla: o.valor as CheckinDiario['habla'] }));
+                avanzar('habla');
+              }}
+            />
+          ))}
+        </div>
+      </CardQuestion>
+    );
+  }
+
+  if (paso === 'movilidad') {
+    // Ruta fisioterapia (regla A14).
+    return (
+      <CardQuestion
+        pregunta={t(copy.movilidad.pregunta, trato)}
+        progreso={progreso}
+        onVolver={retroceder}
+        onPasar={() => avanzar('movilidad')}
+      >
+        <div className="flex flex-col gap-3">
+          {copy.movilidad.opciones.map((o) => (
+            <BigChoice
+              key={o.valor}
+              ancho
+              etiqueta={o.etiqueta}
+              seleccionado={datos.movilidad === o.valor}
+              onSelect={() => {
+                setDatos((d) => ({
+                  ...d,
+                  movilidad: o.valor as CheckinDiario['movilidad'],
+                }));
+                avanzar('movilidad');
               }}
             />
           ))}

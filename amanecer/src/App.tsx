@@ -24,6 +24,10 @@ import { CuidadorReporte } from '@/features/cuidador/CuidadorReporte';
 import { CuidadorAjustes } from '@/features/cuidador/CuidadorAjustes';
 import { CuidadorChecklist } from '@/features/cuidador/CuidadorChecklist';
 import { CuidadorMiPlan } from '@/features/cuidador/CuidadorMiPlan';
+import { CuidadorRed } from '@/features/cuidador/CuidadorRed';
+import { RedApoyo } from '@/features/red/RedApoyo';
+import { MiSemana } from '@/features/semana/MiSemana';
+import { CuestionarioAlsfrs } from '@/features/alsfrs/CuestionarioAlsfrs';
 
 const PANTALLAS_CUIDADOR = new Set([
   'cuidadorPanel',
@@ -34,6 +38,7 @@ const PANTALLAS_CUIDADOR = new Set([
   'cuidadorAjustes',
   'cuidadorChecklist',
   'cuidadorMiPlan',
+  'cuidadorRed',
 ]);
 
 export default function App() {
@@ -85,6 +90,14 @@ export default function App() {
       return <Directorio />;
     case 'directorioTema':
       return <Directorio temaFiltro={pantalla.tema} />;
+    case 'redApoyo':
+      return <RedApoyo perfil={perfil} rol={rol} />;
+    case 'miSemana':
+      return <MiSemana perfil={perfil} />;
+    case 'alsfrs':
+      return <CuestionarioAlsfrs perfil={perfil} rol={rol} />;
+    case 'cuidadorRed':
+      return <CuidadorRed />;
     case 'banderaRoja':
       return <BanderaRoja />;
     case 'cuidadorPin':

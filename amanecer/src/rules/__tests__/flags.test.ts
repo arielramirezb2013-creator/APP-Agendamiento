@@ -375,6 +375,58 @@ describe('A10 — ánimo bajo sostenido o crisis', () => {
   });
 });
 
+describe('A13 — habla (regla de producto, ruta fonoaudiología)', () => {
+  it('dispara si hoy "casi no me entienden"', () => {
+    const ctx = { ...ctxBase(), checkinHoy: checkin(HOY, { habla: 'casi_no' as const }) };
+    const d = evaluarBanderas(ctx).find((x) => x.regla.id === 'A13');
+    expect(d?.contactoTema).toBe('tragar');
+  });
+  it('dispara con habla "con esfuerzo" ≥3 días en 7', () => {
+    const ctx = {
+      ...ctxBase(),
+      checkins: [
+        checkin(HOY, { habla: 'esfuerzo' as const }),
+        checkin(sumarDias(HOY, -2), { habla: 'esfuerzo' as const }),
+        checkin(sumarDias(HOY, -4), { habla: 'esfuerzo' as const }),
+      ],
+    };
+    expect(ids(ctx)).toContain('A13');
+  });
+  it('NO dispara con habla bien o esfuerzo aislado', () => {
+    const ctx = { ...ctxBase(), checkinHoy: checkin(HOY, { habla: 'esfuerzo' as const }) };
+    expect(ids(ctx)).not.toContain('A13');
+  });
+});
+
+describe('A14 — movilidad (regla de producto, ruta fisioterapia)', () => {
+  it('dispara si hoy "casi no me pude mover"', () => {
+    const ctx = {
+      ...ctxBase(),
+      checkinHoy: checkin(HOY, { movilidad: 'casi_no' as const }),
+    };
+    const d = evaluarBanderas(ctx).find((x) => x.regla.id === 'A14');
+    expect(d?.contactoTema).toBe('moverme');
+  });
+  it('dispara con "necesité ayuda" ≥3 días en 7', () => {
+    const ctx = {
+      ...ctxBase(),
+      checkins: [
+        checkin(HOY, { movilidad: 'con_ayuda' as const }),
+        checkin(sumarDias(HOY, -1), { movilidad: 'con_ayuda' as const }),
+        checkin(sumarDias(HOY, -3), { movilidad: 'con_ayuda' as const }),
+      ],
+    };
+    expect(ids(ctx)).toContain('A14');
+  });
+  it('NO dispara con ayuda un solo día', () => {
+    const ctx = {
+      ...ctxBase(),
+      checkinHoy: checkin(HOY, { movilidad: 'con_ayuda' as const }),
+    };
+    expect(ids(ctx)).not.toContain('A14');
+  });
+});
+
 describe('A11 — afecto pseudobulbar recurrente', () => {
   it('dispara con 2 episodios en 14 días', () => {
     const ctx = {

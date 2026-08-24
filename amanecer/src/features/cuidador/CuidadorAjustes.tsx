@@ -19,6 +19,7 @@ export function CuidadorAjustes({ perfil }: { perfil: Perfil }) {
   const { volver, aInicio } = useApp();
   const [nombre, setNombre] = useState(perfil.nombre);
   const [appName, setAppName] = useState(perfil.appName);
+  const [ciudad, setCiudad] = useState(perfil.ciudad ?? '');
   const [passExport, setPassExport] = useState('');
   const [fase, setFase] = useState<'normal' | 'nuevoPin' | 'confirmarBorrado' | 'pinBorrado'>(
     'normal',
@@ -193,6 +194,16 @@ export function CuidadorAjustes({ perfil }: { perfil: Perfil }) {
           value={appName}
           onChange={(e) => setAppName(e.target.value)}
           onBlur={() => void actualizar({ appName: appName.trim() || perfil.appName })}
+          className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1 text-base font-bold text-tinta">
+        {copy.ajustes.ciudad}
+        <input
+          value={ciudad}
+          onChange={(e) => setCiudad(e.target.value)}
+          onBlur={() => void actualizar({ ciudad: ciudad.trim() || undefined })}
           className="min-h-chip rounded-token border-2 border-tinta-suave/40 bg-superficie px-4 font-normal"
         />
       </label>

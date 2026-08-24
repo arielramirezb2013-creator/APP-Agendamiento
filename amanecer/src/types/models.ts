@@ -18,6 +18,7 @@ export interface Perfil {
   pinHash?: string; // SHA-256 del PIN de 4 dígitos del cuidador
   altoContraste?: boolean; // §10.2 modo alto contraste extra
   diaPeso?: number; // 0=domingo..6=sábado — recordatorio semanal de peso
+  ciudad?: string; // para la red de apoyo local; sin ciudad → red nacional
 }
 
 export type Tema =
@@ -57,6 +58,8 @@ export interface CheckinDiario {
   };
   tragar?: 'no' | 'algo' | 'bastante';
   saliva?: 'no' | 'fina_abundante' | 'espesa';
+  habla?: 'bien' | 'esfuerzo' | 'casi_no'; // dominio bulbar — ruta fonoaudiología
+  movilidad?: 'bien' | 'con_ayuda' | 'casi_no'; // ruta fisioterapia
   fatiga?: 'buena' | 'poca' | 'casi_nada';
   nota?: { texto?: string; audioRef?: string };
   llenado: Llenado;
@@ -159,4 +162,48 @@ export interface ConfigUmbrales {
   id: string; // 'default'
   pesoPorcentaje8Sem: number; // 5 (%)
   pesoKg4Sem: number; // 2 (kg)
+}
+
+// ——— Red de apoyo (local en la ciudad → nacional si no existe) ———
+
+export interface OrganizacionApoyo {
+  id: string;
+  nombre: string;
+  /** 'nacional' acompaña siempre; 'local' solo aparece si coincide la ciudad. */
+  alcance: 'nacional' | 'local';
+  ciudad?: string;
+  paraQue: string; // en una línea, lenguaje de casa
+  telefono?: string;
+  whatsapp?: string; // número internacional sin '+' para wa.me
+  web?: string;
+  precargada?: boolean; // sugerencia editable/eliminable
+  orden: number;
+}
+
+/** Inquietud enviada a la red de apoyo. El envío sale por WhatsApp (wa.me)
+ * y el registro local guarda el estado; el cuidador anota la respuesta. */
+export interface Inquietud {
+  id: string;
+  fechaHora: string; // local ISO
+  texto: string;
+  audioRef?: string;
+  destinoId: string;
+  destinoNombre: string;
+  canal: 'whatsapp' | 'llamada';
+  estado: 'enviada' | 'respondida';
+  respuesta?: string; // anotada por el cuidador al recibirla
+  llenado: Llenado;
+}
+
+// ——— ALSFRS-R mensual autoadministrada (§6.4) ———
+
+export interface AlsfrsR {
+  id: string;
+  fecha: string; // yyyy-mm-dd
+  items: number[]; // 12 ítems, 4..0 (−1 = sin responder en borrador)
+  sub: { bulbar: number; motora: number; respiratoria: number };
+  total: number;
+  autorreporte: true;
+  borrador?: boolean; // se puede pausar y retomar
+  llenado: Llenado;
 }

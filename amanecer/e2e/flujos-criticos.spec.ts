@@ -35,9 +35,13 @@ test('configuración inicial y check-in completo en toques simples', async ({ pa
   await page.getByRole('button', { name: 'No', exact: true }).click();
   // 6. Saliva: No
   await page.getByRole('button', { name: 'No', exact: true }).click();
-  // 7. Energía: Buena
+  // 7. Habla: Bien, como siempre
+  await page.getByRole('button', { name: 'Bien, como siempre' }).click();
+  // 8. Movilidad: Bien, sola
+  await page.getByRole('button', { name: 'Bien, sola' }).click();
+  // 9. Energía: Buena
   await page.getByRole('button', { name: /Buena/ }).click();
-  // 8. Nota: No, gracias
+  // 10. Nota: No, gracias
   await page.getByRole('button', { name: 'No, gracias' }).click();
 
   // Cierre cálido con su nombre.
@@ -75,6 +79,41 @@ test('SOS del directorio → pantalla roja con 123 (R4), en ≤2 toques', async 
   );
   await page.getByRole('button', { name: /SOS/ }).click();
   await expect(page.getByText('ESTO ES URGENTE')).toBeVisible();
+});
+
+test('todas las secciones a la vista: red de apoyo, mi semana y cuestionario del mes', async ({
+  page,
+}) => {
+  await configurarPerfil(page);
+  // Invitación mensual al cuestionario (sin registros previos).
+  await expect(page.getByText(/cuestionario del mes/i)).toBeVisible();
+
+  // Red de apoyo: nacional (ACELA) siempre presente, con opción de preguntar.
+  await page.getByRole('button', { name: /Mi red de apoyo/ }).click();
+  await expect(page.getByText(/ACELA/)).toBeVisible();
+  await expect(page.getByRole('button', { name: /Preguntar algo/ }).first()).toBeVisible();
+  await page.getByRole('button', { name: '‹ Volver' }).click();
+
+  // Mi semana existe y no alarma cuando está vacía.
+  await page.getByRole('button', { name: /Mi semana/ }).click();
+  await expect(page.getByText(/se verá su semana|se verá tu semana/)).toBeVisible();
+});
+
+test('el cuestionario del mes guarda por subescalas', async ({ page }) => {
+  await configurarPerfil(page);
+  await page.getByRole('button', { name: 'Empezar', exact: true }).click();
+  // Responder las 12 preguntas con la primera opción (4 puntos).
+  for (let i = 0; i < 12; i++) {
+    await page
+      .locator('main')
+      .getByRole('button')
+      .first()
+      .click();
+  }
+  await expect(page.getByText(/Habla, saliva y tragar/)).toBeVisible();
+  // Perfil por subescalas: bulbar 12/12, motora 24/24, respiratoria 12/12.
+  await expect(page.getByText('12/12')).toHaveCount(2);
+  await expect(page.getByText('24/24')).toBeVisible();
 });
 
 test('el modo cuidador exige PIN y abre el panel', async ({ page }) => {

@@ -62,6 +62,9 @@ export const inicio = {
   volverAContar: 'Cambiar mi respuesta de hoy',
   pasoAlgo: 'Pasó algo',
   miComida: 'Mi comida',
+  miPeso: 'Mi peso',
+  miSemana: 'Mi semana',
+  miRed: 'Mi red de apoyo 🤝',
   aQuienLlamo: '¿A quién llamo? 📞',
   recordatoriosHoy: 'Hoy:',
   sinRecordatorios: 'Hoy no hay recordatorios.',
@@ -159,6 +162,28 @@ export const checkin = {
       { valor: 'no', etiqueta: 'No' },
       { valor: 'fina_abundante', etiqueta: 'Mucha y líquida' },
       { valor: 'espesa', etiqueta: 'Espesa y pegajosa' },
+    ],
+  },
+  habla: {
+    pregunta: {
+      usted: '¿Cómo le fue hablando hoy?',
+      tu: '¿Cómo te fue hablando hoy?',
+    } as Frase,
+    opciones: [
+      { valor: 'bien', etiqueta: 'Bien, como siempre' },
+      { valor: 'esfuerzo', etiqueta: 'Con esfuerzo' },
+      { valor: 'casi_no', etiqueta: 'Casi no me entienden' },
+    ],
+  },
+  movilidad: {
+    pregunta: {
+      usted: '¿Cómo se movió hoy por la casa?',
+      tu: '¿Cómo te moviste hoy por la casa?',
+    } as Frase,
+    opciones: [
+      { valor: 'bien', etiqueta: 'Bien, sola' },
+      { valor: 'con_ayuda', etiqueta: 'Necesité ayuda' },
+      { valor: 'casi_no', etiqueta: 'Casi no me pude mover' },
     ],
   },
   fatiga: {
@@ -306,6 +331,95 @@ export const directorio = {
   } as Record<string, { etiqueta: string; emoji: string }>,
 } as const;
 
+// Red de apoyo (local en su ciudad → nacional si no existe) e inquietudes.
+export const redApoyo = {
+  titulo: 'Mi red de apoyo',
+  intro: {
+    usted: 'Gente y entidades que la acompañan. Puede llamarlas o mandarles una pregunta.',
+    tu: 'Gente y entidades que te acompañan. Puedes llamarlas o mandarles una pregunta.',
+  } as Frase,
+  cercaDeUsted: 'Cerca de usted, en {ciudad}',
+  cercaDeTi: 'Cerca de ti, en {ciudad}',
+  enTodoElPais: 'En todo el país',
+  sinLocales:
+    'En {ciudad} aún no hay grupo local registrado. La red nacional la acompaña igual.',
+  sinCiudad:
+    'El cuidador puede poner la ciudad en Ajustes para mostrar la red local.',
+  preguntarAlgo: 'Preguntar algo',
+  escribaInquietud: {
+    usted: '¿Qué quiere preguntar?',
+    tu: '¿Qué quieres preguntar?',
+  } as Frase,
+  inquietudDetalle: {
+    usted: 'Escríbala o díctela. Se envía por WhatsApp y queda anotada aquí.',
+    tu: 'Escríbela o díctala. Se envía por WhatsApp y queda anotada aquí.',
+  } as Frase,
+  aQuien: '¿A quién se la mandamos?',
+  enviarPorWhatsapp: 'Enviar por WhatsApp',
+  soloLlamada: 'Esta entidad no tiene WhatsApp; puede llamarla directamente.',
+  enviada: 'Pregunta enviada ✓ Quedó anotada; la respuesta se guarda aquí.',
+  misPreguntas: 'Mis preguntas',
+  sinPreguntas: 'Todavía no hay preguntas enviadas.',
+  estadoEnviada: '📨 Enviada — esperando respuesta',
+  estadoRespondida: '✅ Respondida',
+  verRespuesta: 'Respuesta: {respuesta}',
+  plantillaMensaje:
+    'Hola, escribo desde la app {app} por {nombre}. Nuestra pregunta: {texto}',
+  // Modo cuidador
+  gestionTitulo: 'Red de apoyo',
+  gestionNota:
+    'Entidades locales de su ciudad y red nacional. Las precargadas son sugerencias verificadas; complete teléfonos con su EPS o con ACELA.',
+  nueva: 'Agregar entidad',
+  alcanceLocal: 'Local (de la ciudad)',
+  alcanceNacional: 'Nacional',
+  ciudadCampo: 'Ciudad',
+  marcarRespondida: 'Anotar la respuesta recibida',
+  respuestaCampo: 'Qué respondieron',
+} as const;
+
+export const miSemana = {
+  titulo: 'Mi semana',
+  intro: {
+    usted: 'Así ha estado usted estos días. Esto mismo lo ve su equipo en el reporte.',
+    tu: 'Así has estado estos días. Esto mismo lo ve tu equipo en el reporte.',
+  } as Frase,
+  animoTitulo: 'Ánimo de los últimos días',
+  pesoTitulo: 'Peso (8 semanas)',
+  comidasTitulo: 'Comidas de la semana',
+  comidasBien: '{n} comidas registradas · {bien} pasaron bien',
+  sinDatosSemana: 'Cuando registre sus días, aquí se verá su semana.',
+  sinDatosSemanaTu: 'Cuando registres tus días, aquí se verá tu semana.',
+  diasSinRegistro: 'sin registro',
+  registrado: 'registrado',
+} as const;
+
+export const alsfrs = {
+  titulo: 'Cuestionario del mes',
+  invitacion: {
+    usted: '¿Hacemos el cuestionario del mes? Son 12 preguntas cortas.',
+    tu: '¿Hacemos el cuestionario del mes? Son 12 preguntas cortas.',
+  } as Frase,
+  empezar: 'Empezar',
+  continuar: 'Continuar donde quedamos',
+  luego: 'Luego',
+  progreso: 'Pregunta {n}/12',
+  pausar: 'Guardar y seguir después',
+  cierre: {
+    usted: 'Listo ✓ Gracias. Su equipo verá esta evolución en el próximo control.',
+    tu: 'Listo ✓ Gracias. Tu equipo verá esta evolución en el próximo control.',
+  } as Frase,
+  // Resultados SIEMPRE por subescalas, como perfil (§6.4, Mehdipour 2023).
+  subescalas: {
+    bulbar: 'Habla, saliva y tragar',
+    motora: 'Manos y movimiento',
+    respiratoria: 'Respiración',
+  },
+  selloAutorreporte:
+    'Autorreporte. Los estudios muestran que el autorreporte tiende a puntuar ~1,3 puntos por encima de la evaluación del profesional; no compare estas cifras con las de la consulta, compare la tendencia de esta misma serie.',
+  ultimoMes: 'Último registro: {fecha}',
+  sinRegistros: 'Aún no hay cuestionarios respondidos.',
+} as const;
+
 export const banderas = {
   roja: {
     titulo: '🚨 ESTO ES URGENTE',
@@ -381,6 +495,8 @@ export const cuidador = {
     reporte: 'Preparar reporte para la cita',
     ajustes: 'Ajustes',
     miPlan: 'Mi plan',
+    redApoyo: 'Red de apoyo e inquietudes',
+    cuestionarioMes: 'Cuestionario del mes',
     salir: 'Salir del modo cuidador',
     llenarPorElla: 'Llenar el registro de hoy por ella',
     dias: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
@@ -452,6 +568,7 @@ export const cuidador = {
       'Ajústelo con el equipo de nutrición. La app avisa si el peso baja más que esto.',
     umbralKg: 'Kilos perdidos en 4 semanas',
     umbralPct: 'Porcentaje perdido en 8 semanas',
+    ciudad: 'Ciudad donde vive (para la red de apoyo local)',
     exportar: 'Exportar todo (respaldo cifrado)',
     exportarPass: 'Contraseña para cifrar el respaldo',
     importar: 'Restaurar desde respaldo',
@@ -522,6 +639,15 @@ export const reporte = {
   salivaEspesa: 'Días con saliva espesa: {n}',
   dolorTitulo: 'Dolor',
   diasDolor: 'Días con dolor moderado o intenso: {n}',
+  hablaMovilidad: 'Habla y movilidad (autorreporte diario)',
+  diasHablaEsfuerzo: 'Días con habla con esfuerzo o poco inteligible: {n}',
+  diasMovilidadAyuda: 'Días que requirió ayuda para moverse: {n}',
+  alsfrsTitulo: 'ALSFRS-R autoadministrada (perfil por subescalas)',
+  alsfrsLinea: '{fecha} — Bulbar {b}/12 · Motora {m}/24 · Respiratoria {r}/12 · Total {t}/48',
+  alsfrsSello:
+    'Autorreporte: tiende a puntuar ~1,3 puntos por encima de la evaluación presencial; compare solo la tendencia de esta serie (ALS&FTD 2024).',
+  inquietudesTitulo: 'Inquietudes enviadas a la red de apoyo',
+  inquietudesResumen: 'Enviadas: {n} · respondidas: {r}',
   banderasTitulo: 'Alertas del periodo (motor de reglas orientativo)',
   notas: 'Notas destacadas',
   sinDatos: 'Sin datos en el periodo.',
@@ -597,6 +723,16 @@ export const copyReglas: Record<string, Frase> = {
     tu: 'Ese llanto o risa que llega sin avisar se ha repetido. Tu médico sabe de esto y tiene manejo. ¿Le avisamos a {contacto}?',
   },
   A12: 'Con gripa o fiebre, y más si la respiración cambia, conviene consultar temprano. ¿Le avisamos a {contacto}?',
+  A13: {
+    usted:
+      'Hablar ha costado más estos días. {contacto} tiene ejercicios y trucos que ayudan. ¿La llamamos?',
+    tu: 'Hablar ha costado más estos días. {contacto} tiene ejercicios y trucos que ayudan. ¿La llamamos?',
+  },
+  A14: {
+    usted:
+      'Moverse ha costado más estos días. {contacto} sabe cómo ayudar a que sea más fácil y seguro. ¿La llamamos?',
+    tu: 'Moverte ha costado más estos días. {contacto} sabe cómo ayudar a que sea más fácil y seguro. ¿La llamamos?',
+  },
 };
 
 export const texturas = [

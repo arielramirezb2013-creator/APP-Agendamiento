@@ -66,6 +66,9 @@ export async function exportarTodo(password: string): Promise<Blob> {
     eventosBandera: await db.eventosBandera.toArray(),
     tarjetasPlan: await db.tarjetasPlan.toArray(),
     config: await db.config.toArray(),
+    redApoyo: await db.redApoyo.toArray(),
+    inquietudes: await db.inquietudes.toArray(),
+    alsfrs: await db.alsfrs.toArray(),
     notasVoz,
   };
 
@@ -120,6 +123,9 @@ export async function importarTodo(archivo: string, password: string): Promise<v
       db.eventosBandera,
       db.tarjetasPlan,
       db.config,
+      db.redApoyo,
+      db.inquietudes,
+      db.alsfrs,
     ],
     async () => {
       await Promise.all([
@@ -134,6 +140,9 @@ export async function importarTodo(archivo: string, password: string): Promise<v
         db.eventosBandera.clear(),
         db.tarjetasPlan.clear(),
         db.config.clear(),
+        db.redApoyo.clear(),
+        db.inquietudes.clear(),
+        db.alsfrs.clear(),
       ]);
       await db.perfiles.bulkAdd(datos.perfiles ?? []);
       await db.contactos.bulkAdd(datos.contactos ?? []);
@@ -146,6 +155,9 @@ export async function importarTodo(archivo: string, password: string): Promise<v
       await db.eventosBandera.bulkAdd(datos.eventosBandera ?? []);
       await db.tarjetasPlan.bulkAdd(datos.tarjetasPlan ?? []);
       await db.config.bulkAdd(datos.config ?? []);
+      await db.redApoyo.bulkAdd(datos.redApoyo ?? []);
+      await db.inquietudes.bulkAdd(datos.inquietudes ?? []);
+      await db.alsfrs.bulkAdd(datos.alsfrs ?? []);
     },
   );
   // Notas de voz fuera de la transacción (reconstruyen Blob).
