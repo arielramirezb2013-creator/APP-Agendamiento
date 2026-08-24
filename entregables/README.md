@@ -221,3 +221,13 @@ echo "ML OK"
 ```
 
 Si los 4 echo aparecen, el paquete está íntegro.
+
+---
+
+## Anexo · Modelo Predictivo de Enfermedad Laboral (proyecto aparte)
+
+La carpeta `prediccion_enfermedad_laboral/` contiene un proyecto independiente del paquete
+Rehavid Operaciones: el pipeline predictivo de enfermedad laboral V4.0 (código neutro,
+horizontes de 12/24/60 meses; patologías × cargos × centros), sus versiones para Google
+Colab y para asistentes de IA, los dos documentos Word de entrega y la memoria del
+proyecto (`prediccion_enfermedad_laboral/MEMORIA.md`).
