@@ -113,8 +113,18 @@ persona; la purga reduce el entrenamiento en horizontes largos.
   código exacto). `ast.parse` OK.
 - Los dos .docx validados contra el esquema OOXML; los párrafos de código extraídos del Word
   coinciden 1:1 con las fuentes (3.628 y 3.624 párrafos respectivamente); el código extraído
-  compila; verificación adversarial adicional multi-agente sobre estructura, instrucciones y
-  copy-paste.
+  compila (`compile()` por celda y del bloque completo) y el conjunto de celdas 2–17 ejecuta
+  sin errores en un subproceso.
+- Verificación adversarial multi-agente (3 verificadores, 33 comprobaciones superadas):
+  estructura OOXML (US Letter, estilo Code con Consolas y `xml:space="preserve"` en el 100 %
+  de las líneas indentadas, campos de paginación reales, tablas DXA), veracidad de las
+  instrucciones frente al código, y simulación de copy-paste desde Word. Se detectaron y
+  corrigieron 3 imprecisiones de redacción en las instrucciones: conteo de líneas (3.604→3.603),
+  la advertencia del salt ahora señala la Celda 18 (doc Colab) / Sección 15 (doc IA), y el
+  paso 6 del doc Colab ahora ubica correctamente los CSV en `tables/` y el ZIP en `/content`
+  (junto a la carpeta de salida). Nota: LibreOffice/pandoc no funcionan en el contenedor de
+  trabajo, por lo que el render se validó vía conversión HTML (mammoth) + capturas en Chromium,
+  no con PDF de Word.
 
 ## 9. Posibles siguientes pasos (no solicitados aún)
 
