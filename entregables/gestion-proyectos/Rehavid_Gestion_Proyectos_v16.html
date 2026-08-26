@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Rehavid · Gestión de proyectos v15 · tracker ágil de avance: Resumen, Actividades, Mi trabajo y Calendario sobre el flujo venta → activación → asignación → plan final → cierre." />
-  <title>Rehavid | Gestión de proyectos v15</title>
+  <meta name="description" content="Rehavid · Gestión de proyectos v16 (versión final) · tracker ágil con administradores: Resumen, Actividades, Mi trabajo y Calendario sobre el flujo venta → activación → asignación → plan final → cierre." />
+  <title>Rehavid | Gestión de proyectos v16 · versión final</title>
   <style>
     /* =====================================================================
        Rehavid · Gestión de proyectos — piel visual inspirada en Jira Premium
@@ -545,6 +545,8 @@
     .wd{background:var(--rvl3);color:var(--muted);font-size:11px;font-weight:600;padding:7px 9px;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line)}
     .wd:last-child{border-right:0}
     .dy{min-height:104px;padding:6px 7px;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2);background:#fff}
+    .dy[data-day-open]{cursor:pointer}
+    .dy[data-day-open]:hover{background:var(--rvl3)}
     .dy.out{background:var(--rvl3);color:var(--faint)}
     .dy.today{background:#fff}
     .dy.hol{background:#FFFDF3}
@@ -781,7 +783,9 @@ const CARGO_RENAMES = { "Diseñador Ergónomo": "Diseñador",
                         "Vendedor": "Director de Proyectos" };
 function renameCargo(c) { return CARGO_RENAMES[c] || c; }
 const CARGOS_VENTA = ["CEO", "Gerente", "Jefe de Operaciones", "Director de Proyectos"];   // RN-01
-const CARGOS_ADMIN = ["CEO", "Gerente"];
+// Administradores: crean proyectos, ven costos y acceden a Parametrización y Bases (decisión de la 3.ª ronda).
+const CARGOS_ADMIN = ["CEO", "Gerente", "Director de Proyectos", "Jefe de Operaciones"];
+const CARGOS_GESTORES = ["Gestor de Datos 1", "Gestor de Datos 2"];
 
 const PROJECT_TYPES   = ["Tipo 1", "Tipo 2"];
 const PROJECT_STATES  = ["Borrador", "Activo", "Cerrado"];                 // §11.1
@@ -1179,8 +1183,10 @@ function hoursSince(stamp) {
   return Number.isNaN(d.getTime()) ? 0 : Math.max(0, (Date.now() - d.getTime()) / 3600000);
 }
 function addDays(base, days) { const d = new Date(base); d.setDate(d.getDate() + days); return d; }
-function fmtMoney(v) { return MONEY.format(Number(v) || 0); }
+function canSeeMoney() { return isAdmin(); }
+function fmtMoney(v) { return canSeeMoney() ? MONEY.format(Number(v) || 0) : "\u2014"; }
 function fmtMoneyShort(v) {
+  if (!canSeeMoney()) return "\u2014";
   const n = Number(v) || 0, abs = Math.abs(n);
   if (abs >= 1e6) return `$ ${NUM.format(n / 1e6)} M`;
   if (abs >= 1e3) return `$ ${NUM.format(Math.round(n / 1e3))} k`;
@@ -1294,6 +1300,7 @@ function makeProduct(raw = {}) {
     id: raw.id || uid("prd"),
     name: String(raw.name || "").trim(),
     hoursSold: Number(raw.hoursSold) || 0,
+    plannedHours: Number(raw.plannedHours) || 0,   // horas del plan final; no tocan la venta (3.ª ronda)
     hourRate: Number(raw.hourRate) || 0,
     routing,
     technology: routing === "Medición objetiva" ? String(raw.technology || "").trim() : "",
@@ -1588,6 +1595,8 @@ function permissionFor(kind, p, pr) {
     update: () => [canUpdateProduct(p, pr), `Solo el cargo ${pr?.role || "responsable"} (${pr?.owner || "sin asignar"}) puede actualizar este producto.`],
     assign: () => [canAnswerAssignment(p, pr), `La asignación la responde el cargo ${pr?.role || "responsable"}.`],
     coordinate: () => [canCoordinate(p), `Esta acción corresponde a la coordinación del proyecto (${p?.coordinatorRole || "sin definir"}).`],
+    reassign: () => [isAdmin() || (CARGOS_GESTORES.includes(myCargo()) && CARGOS_GESTORES.includes(pr?.role)),
+      "Reasigna un administrador; entre Gestor de Datos 1 y 2 pueden reasignarse entre sí (3.ª ronda)."],
     sell: () => [canSell(), `Solo ${CARGOS_VENTA.join(", ")} pueden registrar ventas (RN-01).`],
     configure: () => [canConfigure(), "La parametrización corresponde a dirección o coordinación."]
   };
@@ -2285,9 +2294,9 @@ function renderSidebar(counts) {
     ${activas.length ? `<div class="sb-group">Empresas con proyectos activos</div>` + activas.map(([name, list]) =>
       `<button class="sb-item" data-co-jump="${esc(name)}" title="Ver las actividades de ${esc(name)}">
         ${ico("building", 16)}<span>${esc(name)}</span><span class="badge">${list.length}</span></button>`).join("") : ""}
-    <div class="sb-group">Configuración</div>
+    ${isAdmin() ? `<div class="sb-group">Configuración</div>
     ${item("params", "sliders", "Parametrización")}
-    ${item("data", "database", "Bases y auditoría")}`;
+    ${item("data", "database", "Bases y auditoría")}` : ""}`;
 }
 function renderSession() {
   if (!CARGOS.includes(state.session.user)) state.session.user = "Gerente";
@@ -2360,8 +2369,8 @@ function renderView() {
     work: () => renderAssignments(),
     calendar: () => renderCalendar(projects),
     newproject: () => renderNewProject(),
-    params: () => renderParams(),
-    data: () => renderDataModule(projects)
+    params: () => isAdmin() ? renderParams() : renderRestricted("Parametrización"),
+    data: () => isAdmin() ? renderDataModule(projects) : renderRestricted("Bases y auditoría")
   };
   root.innerHTML = (map[state.view] || map.dashboard)();
   animateCharts();
@@ -2589,7 +2598,7 @@ function renderDashboard(projects) {
   const byCompany = [...groupBy(baseCompany, p => p.company || "Sin empresa").entries()].map(([label, list]) => {
     const prods = list.flatMap(p => (p.products || []).map(pr => ({ pr, p })));
     return { label, total: prods.length, parts: condParts(prods),
-             display: `${prods.length} prod · ${fmtMoneyShort(sum(list, projectValue))}` };
+             display: canSeeMoney() ? `${prods.length} prod · ${fmtMoneyShort(sum(list, projectValue))}` : `${prods.length} prod` };
   }).sort((a, b) => b.total - a.total);
 
   // Por PPR
@@ -2652,13 +2661,13 @@ function renderDashboard(projects) {
         <div style="flex:1;min-width:260px">
           ${legend(byType.map(t => ({ ...t, display: `${t.value} proy.` })), "type")}
           <div class="tw" style="margin-top:14px"><table class="t">
-            <thead><tr><th>Tipo</th><th>Coordinación</th><th class="rt">Proyectos</th><th class="rt">Productos</th><th class="rt">Horas</th><th class="rt">Valor</th></tr></thead>
+            <thead><tr><th>Tipo</th><th>Coordinación</th><th class="rt">Proyectos</th><th class="rt">Productos</th><th class="rt">Horas</th>${canSeeMoney() ? `<th class="rt">Valor</th>` : ""}</tr></thead>
             <tbody>${PROJECT_TYPES.map(t => {
               const list = baseType.filter(p => p.type === t);
               const role = (state.settings.assignmentRules.find(r => r.scope === "project" && r.value === t) || {}).role || "—";
               return `<tr><td>${fv("type", t, t)}</td><td class="sm muted">${esc(role)}</td>
                 <td class="nm">${list.length}</td><td class="nm">${sum(list, p => (p.products || []).length)}</td>
-                <td class="nm">${fmtNum(sum(list, projectHoursSold))}</td><td class="nm">${fmtMoneyShort(sum(list, projectValue))}</td></tr>`;
+                <td class="nm">${fmtNum(sum(list, projectHoursSold))}</td>${canSeeMoney() ? `<td class="nm">${fmtMoneyShort(sum(list, projectValue))}</td>` : ""}</tr>`;
             }).join("")}</tbody>
           </table></div>
         </div>
@@ -2774,7 +2783,7 @@ function renderCompanyProject(p) {
     <div class="prj-h">
       <button class="btn btn-s btn-plain" data-collapse-project="${esc(p.id)}" aria-expanded="${!collapsed}">${collapsed ? "▸" : "▾"}</button>
       <div><h3>${esc(p.code)} · ${esc(p.type)} · ${esc(p.ppr)}</h3>
-        <p class="note">${(p.products || []).length} producto(s) · ${fmtNum(projectHoursSold(p))} h · ${fmtMoneyShort(projectValue(p))} ·
+        <p class="note">${(p.products || []).length} producto(s) · ${fmtNum(projectHoursSold(p))} h${canSeeMoney() ? ` · ${fmtMoneyShort(projectValue(p))}` : ""} ·
           coordina ${esc(p.coordinatorRole || "sin definir")} · plan final ${esc(plan)}</p></div>
       <div class="sp">
         ${pillF(gState, stateK(gState), "globalState", gState)}${pillF(cond, condK(cond), "condition", cond)}
@@ -2810,7 +2819,7 @@ function renderProductCard(p, pr) {
       <div class="ti">
         <h4>${ico("package", 14)}${esc(pr.name || "Producto sin nombre")}</h4>
         <p>${fv("routing", pr.routing, pr.routing)}${pr.technology ? ` · ${esc(pr.technology)}` : ""}${pr.complexity ? ` · complejidad ${esc(pr.complexity)}` : ""}
-          · ${fmtNum(pr.hoursSold)} h × ${fmtMoney(pr.hourRate)} = ${fmtMoneyShort(productValue(pr))}</p>
+          · ${fmtNum(pr.hoursSold)} h${canSeeMoney() ? ` × ${fmtMoney(pr.hourRate)} = ${fmtMoneyShort(productValue(pr))}` : ""}</p>
       </div>
       <div class="st">
         ${pillF(pr.status, stateK(pr.status), "productStatus", pr.status)}
@@ -2838,7 +2847,7 @@ function renderProductCard(p, pr) {
       ${ico("alert", 13)}<button class="al-lk" ${filterAttrs("alert", a.code)}
         title="Ver todos los productos con esta alerta">${esc(a.label)}</button><span>${esc(a.detail)}</span></div>`).join("")}</div>` : ""}
     ${pr.assignment.status === "En ajuste" ? `<div class="pd-alerts"><div class="pd-alert w">
-      ${ico("clock", 13)}<b>Ajuste propuesto</b><span>Nueva fecha ${formatDate(pr.assignment.proposedDate, true)} ·
+      ${ico("clock", 13)}<b>Ajuste propuesto · decide la administración</b><span>Nueva fecha ${formatDate(pr.assignment.proposedDate, true)} ·
       ${esc(pr.assignment.justification || "sin justificación")} · tiempo requerido ${fmtNum(pr.assignment.requiredTime)} día(s) ·
       capacidad: ${esc(pr.assignment.capacity || "sin declarar")}</span></div></div>` : ""}
     ${!reqs.length && isOpenProduct(pr) && permissionFor("update", p, pr).ok ? `<div style="margin:0 16px 12px">
@@ -2896,7 +2905,7 @@ function productActions(p, pr) {
   if (["Programado", "En ejecución"].includes(pr.status)) out.push(b("complete", "Declarar completado", "btn-ok", "update"));
   if (pr.status === "Completado") out.push(b("complete", "Corregir datos de cierre", "btn-ok", "update"));
   if (pr.status === "Cerrado") out.push(b("novelty", "Registrar observación", "", "update"));
-  if (isOpenProduct(pr) && pr.assignment.status === "Aceptada") out.push(b("reassign", "Reasignar cargo", "", "coordinate"));
+  if (isOpenProduct(pr) && ["Pendiente de aceptación", "Aceptada"].includes(pr.assignment.status)) out.push(b("reassign", "Reasignar cargo", "", "reassign"));
   out.push(`<button class="btn btn-s" data-open-project="${esc(p.id)}" data-open-product="${esc(pr.id)}">Abrir ficha</button>`);
   return out.join("");
 }
@@ -3079,7 +3088,11 @@ function renderAssignments() {
              CONDITION_RANK[productCondition(a.pr, a.p)] - CONDITION_RANK[productCondition(b.pr, b.p)];
     });
   const coords = state.projects.filter(p => p.state === "Activo" && matchesFilters(p) &&
-                                            norm(p.coordinatorRole) === norm(cargo));
+                                            norm(p.coordinatorRole) === norm(cargo))
+    .sort((a, b) => {
+      const rk = st => st === "Pendiente de aceptación" ? 0 : st === "En ajuste" ? 1 : 2;
+      return rk(a.coordination?.status || "Aceptada") - rk(b.coordination?.status || "Aceptada");
+    });
   // La dirección ve aquí lo que solo ella puede resolver: ajustes de producto y de coordinación de todos los cargos.
   const soyYo = norm(cargo) === norm(myCargo());
   const porResolver = isAdmin() && soyYo ? state.projects
@@ -3110,7 +3123,7 @@ function renderAssignments() {
         <div><span>Plan estimado de la venta</span><b style="font-weight:600">${esc(p.estimatedPlan || "sin registrar")}</b></div>
         <div><span>Contacto principal</span><b>${esc(main?.name || "sin definir")}</b><small>${esc(main?.email || "")}</small></div>
         <div><span>Fecha de referencia</span><b>${formatDate(p.coordination?.requestedDate, true) || "—"}</b></div>
-        ${st === "En ajuste" ? `<div><span>Propuesta</span><b>${formatDate(p.coordination.proposedDate, true)}</b>
+        ${st === "En ajuste" ? `<div><span>Propuesta · decide la administración</span><b>${formatDate(p.coordination.proposedDate, true)}</b>
           <small>${esc(p.coordination.justification || "")}</small></div>` : ""}
       </div>
       ${(p.coordination?.history || []).length ? `<div class="tl">${p.coordination.history.slice(-3).reverse().map(h => `
@@ -3126,9 +3139,13 @@ function renderAssignments() {
     </article>`;
   };
 
-  const prodCard = (p, pr) => `<div>
-    <p class="note" style="margin-bottom:6px">${esc(p.code)} · ${esc(p.type)} · plan estimado: ${esc(p.estimatedPlan || "sin registrar")}</p>
+  const prodCard = (p, pr) => {
+    const main = (p.contacts || []).find(c => c.primary && c.enabled !== false);
+    return `<div>
+    <p class="note" style="margin-bottom:6px">${esc(p.code)} · ${esc(p.type)} · plan estimado: ${esc(p.estimatedPlan || "sin registrar")}
+      ${main ? ` · contacto: <b>${esc(main.name)}</b>${main.email ? ` (${esc(main.email)})` : ""}` : ""}</p>
     ${renderProductCard(p, pr)}</div>`;
+  };
 
   return `<section class="card" style="margin-bottom:16px"><div class="card-h">
       <div><h2>${ico("check", 14)}Mi trabajo · ${esc(cargo)}</h2>
@@ -3316,7 +3333,7 @@ function renderCalendar(projects) {
       ${WEEKDAYS.map(d => `<div class="wd">${d}</div>`).join("")}
       ${cells.map(c => {
         const evs = events.get(c.date) || [], h = holMap.get(c.date);
-        return `<div class="dy ${c.inMonth ? "" : "out"} ${c.today ? "today" : ""} ${h ? "hol" : ""}">
+        return `<div class="dy ${c.inMonth ? "" : "out"} ${c.today ? "today" : ""} ${h ? "hol" : ""}" ${c.inMonth ? `data-day-open="${esc(c.date)}" role="button" tabindex="0" title="Ver el detalle del día"` : ""}>
           <div class="dy-n"><span>${c.day}</span>${h ? `<span class="dy-h">${esc(h.name)}</span>` : ""}</div>
           ${evs.slice(0, 3).map(e => `<button class="ev ${e.kind}" data-open-project="${esc(e.projectId)}" data-open-product="${esc(e.productId)}">
             <b>${esc(e.title)}</b><span>${esc(e.company)}</span></button>`).join("")}
@@ -3567,9 +3584,11 @@ function kanbanCard({ pr, p }) {
 
 function renderBoard(projects) {
   const mode = state.ui.actMode || "tablero";
+  const mio = (state.filters.role || []).length === 1 && state.filters.role[0] === myCargo();
   const pills = `<div class="vpills" style="margin:0 0 12px">
     <button class="vpill ${mode === "tablero" ? "on" : ""}" data-act-mode="tablero">Tablero</button>
     <button class="vpill ${mode === "lista" ? "on" : ""}" data-act-mode="lista">Lista</button>
+    <button class="vpill ${mio ? "on" : ""}" data-my-cargo="1" title="Solo las actividades de su cargo">Mi cargo</button>
   </div>`;
   return pills + (mode === "lista" ? renderList(projects) : renderKanban(projects));
 }
@@ -3669,8 +3688,9 @@ function renderGuide() {
         <p>Es la herramienta de <b>gestión de proyectos de Rehavid</b>: acompaña cada proyecto desde que se
         registra la venta hasta su cierre, pasando por la activación, la asignación de responsables por cargo,
         la coordinación de fechas, el plan de trabajo final y el seguimiento de la ejecución.</p>
-        <p style="margin-top:8px">Los usuarios son los <b>ocho cargos</b> de la compañía (elige el tuyo arriba a la derecha);
-        la <b>dirección</b> son el CEO y el Gerente. Se navega con cuatro pestañas: <b>Resumen</b> (el portafolio),
+        <p style="margin-top:8px">Los usuarios son los <b>ocho cargos</b> de la compañía (elige el tuyo arriba a la derecha).
+        Los <b>administradores</b> son CEO, Gerente, Director de Proyectos y Jefe de Operaciones: solo ellos crean
+        proyectos, ven los valores en dinero y acceden a Parametrización y Bases y auditoría. Se navega con cuatro pestañas: <b>Resumen</b> (el portafolio),
         <b>Actividades</b> (tablero o lista), <b>Mi trabajo</b> (lo suyo) y <b>Calendario</b>.</p>
         <p class="note" style="margin-top:8px"><b>Dónde viven los datos:</b> cada navegador guarda su propia copia de la
         información (no hay servidor todavía). Para trabajar entre varios, aliméntenla con las <b>bases de Excel</b> y
@@ -3787,7 +3807,7 @@ function renderGuide() {
            ["Descartar", "abandona el registro previa confirmación"]])}
         ${gmod("bases", "Bases y auditoría", "data",
           "La alimentación y el respaldo: carga de las tres bases de Excel, respaldo JSON, actualización CSV, descargas de los ocho conjuntos y el historial de auditoría.",
-          "La carga NUNCA borra: crea lo nuevo y actualiza lo que coincide por código de proyecto y nombre de producto.",
+          "Solo administradores. La carga NUNCA borra: crea lo nuevo y actualiza lo que coincide por código de proyecto y nombre de producto.",
           [["Cargar base de alimentación (Excel)", "sube Base_BI, Base_Diseno_Ergonomico o Base_General; muestra el resumen de lo cargado y activa lo marcado con activar = SI"],
            ["Subir base completa (JSON)", "restaura un respaldo previo (reemplaza, con confirmación)"],
            ["Subir actualización (CSV)", "actualiza registros puntuales y deja cada cambio en la bitácora"],
@@ -3797,7 +3817,7 @@ function renderGuide() {
            ["Cargar base demostrativa · Vaciar proyectos", "reponer los ejemplos o empezar de cero (con confirmación)"]])}
         ${gmod("parametrizacion", "Parametrización", "params",
           "Los catálogos que gobiernan la operación y las reglas del motor de asignación.",
-          "Es de la dirección: lo que se define aquí alimenta el registro de venta y decide quién recibe cada asignación.",
+          "Solo administradores (CEO, Gerente, Director de Proyectos, Jefe de Operaciones): lo que se define aquí alimenta el registro de venta y decide quién recibe cada asignación.",
           [["Productos y tarifas", "cada producto con su categoría, horas y valor hora por defecto (+ Agregar · ✕ eliminar)"],
            ["PPR · Empresas · Órdenes de servicio", "los catálogos que valida el registro de venta"],
            ["Personas y cargos", "los ocho cargos; cuando haya titulares, se cambia el nombre de la fila"],
@@ -3826,10 +3846,11 @@ function renderGuide() {
           <p class="note" style="margin-top:12px">Llena las hojas de la base (cada una trae instrucciones y ejemplos),
           guárdala y súbela aquí. La herramienta valida, crea o actualiza los proyectos <b>sin borrar lo existente</b>,
           y si marcaste <b>activar = SI</b> intenta activarlos de una vez. Al final muestra un resumen de lo cargado.</p>
-          <div class="row" style="margin-top:12px">
+          ${isAdmin() ? `<div class="row" style="margin-top:12px">
             <button class="btn btn-pri" data-action="import-xlsx">Cargar una base ahora</button>
             <button class="btn" data-view="data">Ir a Bases y auditoría</button>
-          </div>
+          </div>` : `<p class="note" style="margin-top:12px"><b>La carga la hace un administrador</b> (CEO, Gerente,
+            Director de Proyectos o Jefe de Operaciones); su cargo diligencia el Excel de su frente y lo entrega.</p>`}
         </div>
       </section>
 
@@ -3839,8 +3860,8 @@ function renderGuide() {
           <div class="tw"><table class="t">
             <thead><tr><th>Cargo</th><th>Su día a día en la herramienta</th></tr></thead>
             <tbody>
-              <tr><td class="sm"><b>CEO · Gerente</b></td><td class="sm">Registran ventas, vigilan el Resumen, resuelven ajustes como dirección, aprueban planes finales y cargan la Base General.</td></tr>
-              <tr><td class="sm"><b>Director de Proyectos · Jefe de Operaciones</b></td><td class="sm">Registran ventas, resuelven ajustes de coordinación, gestionan requerimientos y planes de trabajo.</td></tr>
+              <tr><td class="sm"><b>CEO · Gerente</b></td><td class="sm">Administradores: crean proyectos, ven los costos, resuelven ajustes, aprueban planes y cargan las bases de Excel.</td></tr>
+              <tr><td class="sm"><b>Director de Proyectos · Jefe de Operaciones</b></td><td class="sm">Administradores: además coordinan sus tipos de proyecto, gestionan requerimientos y planes de trabajo.</td></tr>
               <tr><td class="sm"><b>Supervisor Contactabilidad · Gestor de Datos 1 y 2 · Diseñador</b></td><td class="sm">Trabajan desde «Mi trabajo»: aceptan sus asignaciones, registran avances y retrasos con «Actualizar», y cargan la base de su frente.</td></tr>
             </tbody>
           </table></div>
@@ -3853,6 +3874,11 @@ function renderGuide() {
     </div>`;
 }
 
+function renderRestricted(nombre) {
+  return `<section class="card">${empty("Módulo restringido",
+    `${nombre} corresponde a los administradores (${CARGOS_ADMIN.join(", ")}). Su cargo gestiona desde Mi trabajo y las Actividades.`,
+    `<button class="btn btn-pri" data-view="work">Ir a Mi trabajo</button>`, "lock")}</section>`;
+}
 function renderDataModule(projects) {
   const audit = state.projects.flatMap(p => (p.log || []).map(l => ({ ...l, project: p })))
     .sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 60);
@@ -4122,7 +4148,7 @@ function renderDrawerHead() {
     <div class="t"><span>Proyecto · ${esc(p.code)}</span>
       <h2 id="drawerHeading">${esc(p.company || p.code)}</h2>
       <p>${esc(p.type)} · ${esc(p.ppr || "sin PPR")} · coordina ${esc(p.coordinatorRole || "sin definir")} ·
-        ${(p.products || []).length} producto(s) · ${fmtNum(projectHoursSold(p))} h · ${fmtMoney(projectValue(p))}</p></div>
+        ${(p.products || []).length} producto(s) · ${fmtNum(projectHoursSold(p))} h${canSeeMoney() ? ` · ${fmtMoney(projectValue(p))}` : ""}</p></div>
     <div class="row">${pill(g, stateK(g))}${pill(c, condK(c))}</div>
     <button class="btn btn-ico btn-plain" data-action="close-drawer" aria-label="Cerrar ficha">✕</button>`;
 }
@@ -4138,6 +4164,7 @@ function renderDrawerBody() {
       <div><span>Horas</span><b>${fmtNum(used)} / ${fmtNum(sold)}</b></div>
       <div><span>Plan final</span><b>${p.finalPlan?.version ? `v${p.finalPlan.version}` : "sin plan"}</b></div>
       <div><span>Alertas</span><b>${alerts.length}</b></div>
+      ${p.state === "Cerrado" ? `<div><span>Cierre</span><b style="color:var(--grd)">Automático · ${formatDate(p.closedAt, true) || "—"}</b></div>` : ""}
     </div>
     ${section("sec-master", "1. Proyecto maestro", `<div class="grid">
         ${fld({ label: "ID del proyecto", path: "code", value: p.code, span: "c3", readonly: true })}
@@ -4149,7 +4176,7 @@ function renderDrawerBody() {
         ${fld({ label: "Fecha de venta", path: "saleDate", value: p.saleDate, type: "date", span: "c3" })}
         ${sel({ label: "Cargo que coordina", path: "coordinatorRole", value: p.coordinatorRole, options: CARGOS, span: "c4" })}
         ${fld({ label: "Orden de servicio", path: "commercialRef", value: p.commercialRef, span: "c4", list: "dlOrders" })}
-        ${fld({ label: "Valor facturado", path: "invoicedValue", value: p.invoicedValue, type: "number", min: 0, step: 1000, span: "c4" })}
+        ${canSeeMoney() ? fld({ label: "Valor facturado", path: "invoicedValue", value: p.invoicedValue, type: "number", min: 0, step: 1000, span: "c4" }) : ""}
         ${txt({ label: "Plan estimado de la venta", path: "estimatedPlan", value: p.estimatedPlan, span: "c6" })}
         ${txt({ label: "Observaciones de la reunión de venta", path: "saleNotes", value: p.saleNotes, span: "c6" })}
         ${txt({ label: "Notas de gestión", path: "notes", value: p.notes, span: "c12" })}
@@ -4378,10 +4405,10 @@ function openProjectRequest(projectId) {
         value: grupos.map(g => `${g.pr.name}: ${g.reqs.map(r => r.description).join("; ")}`).join("  ·  "), span: "c12" },
       { id: "date", type: "date", label: "Fecha de la reunión o solicitud *", value: dateISO(), required: true, span: "c4" },
       { id: "medium", type: "select", label: "Medio *", options: ["Reunión", "Llamada", "Correo", "Mensaje"], value: "Reunión", span: "c4" },
-      { id: "contact", type: "select", label: "Contacto del cliente",
-        options: (p.contacts || []).filter(c => c.enabled !== false).map(c => `${c.name}${c.primary ? " (principal)" : ""}`).concat(["Sin registrar"]), span: "c4" },
+      { id: "contact", type: "select", label: "Contacto del cliente *", required: true,
+        options: (p.contacts || []).filter(c => c.enabled !== false).map(c => `${c.name}${c.primary ? " (principal)" : ""}`), span: "c4" },
       { id: "attendees", type: "text", label: "Asistentes", value: "", span: "c6", hint: "Personas de Rehavid y del cliente." },
-      { id: "evidence", type: "text", label: "Evidencia (acta, correo, enlace)", value: "", span: "c6" },
+      { id: "evidence", type: "text", label: "Evidencia (acta, correo o enlace) *", required: true, value: "", span: "c6" },
       { id: "notes", type: "textarea", label: "Acuerdos y observaciones", value: "", span: "c12" }
     ],
     submit: "Registrar solicitud consolidada",
@@ -4409,7 +4436,8 @@ function openProductAction(kind, projectId, productId, extra = {}) {
   const { p, pr } = findPair(projectId, productId);
   if (!p || !pr) return;
   const permKind = ["accept", "adjust"].includes(kind) ? "assign"
-                 : ["resolve", "request", "response", "reassign"].includes(kind) ? "coordinate" : "update";
+                 : kind === "reassign" ? "reassign"
+                 : ["resolve", "request", "response"].includes(kind) ? "coordinate" : "update";
   const perm = permissionFor(permKind, p, pr);
   if (!perm.ok) { toast("Sin permisos", perm.reason, "error"); return; }
   const build = PRODUCT_ACTIONS[kind];
@@ -4529,7 +4557,7 @@ const PRODUCT_ACTIONS = {
     title: `Reasignar el cargo responsable · ${pr.name}`,
     intro: "Las asignaciones se parametrizan por cargo (RN-02). Al reasignar se genera una nueva tarea y se reinicia la aceptación.",
     fields: [
-      { id: "role", type: "select", label: "Nuevo cargo responsable *", options: CARGOS, value: pr.role, span: "c6" },
+      { id: "role", type: "select", label: "Nuevo cargo responsable *", options: isAdmin() ? CARGOS : CARGOS_GESTORES, value: pr.role, span: "c6" },
       { id: "reason", type: "textarea", label: "Motivo *", required: true, value: "", span: "c12" }
     ],
     submit: "Reasignar",
@@ -4657,7 +4685,7 @@ const PRODUCT_ACTIONS = {
         <button class="btn btn-ico btn-plain" data-action="close-modal" aria-label="Cerrar">✕</button></div>
       <div class="m-b">
         <p class="note" style="margin:0 0 14px">${list.length
-          ? "Cuando el producto tiene hitos, su avance global se calcula desde ellos (ponderado por horas): registre aquí el porcentaje, la fecha y las horas de cada hito."
+          ? "Cuando el producto tiene hitos, su avance global se pondera por las horas asignadas de cada hito (un hito de 40 h pesa el doble que uno de 20 h). Registre aquí el porcentaje, la fecha y las horas de cada uno."
           : "Este producto no tiene hitos todavía: agregue el primero abajo. Desde entonces el avance global se calculará desde los hitos."}</p>
         ${list.length ? `<div class="tw"><table class="t">
           <thead><tr><th>Hito</th><th class="rt">Avance %</th><th>Fecha</th><th class="rt">Horas ejecutadas</th></tr></thead>
@@ -4709,8 +4737,24 @@ const PRODUCT_ACTIONS = {
                         reason: `Definido por el cargo ${myCargo()}` });
         });
       }
+      let faltaUbicacion = "";
       list.forEach((r, i) => {
         const el = document.getElementById(`pa_st_${i}`);
+        const ub = document.getElementById(`pa_ub_${i}`);
+        const ubVal = ub ? ub.value.trim() : "";
+        if (el && el.value === "Recibido" && !ubVal && !r.response) faltaUbicacion = r.description;
+      });
+      if (faltaUbicacion) {
+        toast("Falta la ubicación", `«${faltaUbicacion}» quedó Recibido: registre dónde queda alojada la información (3.ª ronda, Gestor de Datos 1).`, "error");
+        return false;
+      }
+      list.forEach((r, i) => {
+        const el = document.getElementById(`pa_st_${i}`);
+        const ub = document.getElementById(`pa_ub_${i}`);
+        if (ub && ub.value.trim() && ub.value.trim() !== (r.response || "")) {
+          r.response = ub.value.trim(); r.responseAt = new Date().toISOString();
+          logEvent(p, { type: "Requisito actualizado", entity: pr.name, field: r.description, after: r.response, reason: "Ubicación / respuesta registrada" });
+        }
         if (el && el.value !== r.status) {
           logEvent(p, { type: "Requisito actualizado", entity: pr.name, field: r.description, before: r.status, after: el.value, reason: "Actualizado desde la ficha del producto" });
           r.status = el.value;
@@ -4727,10 +4771,12 @@ const PRODUCT_ACTIONS = {
         <p class="note" style="margin:0 0 16px">El líder define qué datos, documentos, accesos o validaciones necesita.
           La coordinación (${esc(p.coordinatorRole || "sin definir")}) los consolida y los solicita al cliente (RN-11, RN-12).</p>
         ${list.length ? `<div class="tw" style="margin-bottom:16px"><table class="t">
-          <thead><tr><th>Requisito</th><th>Estado</th><th>Definido por</th></tr></thead>
+          <thead><tr><th>Requisito</th><th>Estado</th><th>Ubicación / respuesta</th><th>Definido por</th></tr></thead>
           <tbody>${list.map((r, i) => `<tr><td class="sm">${esc(r.description)}</td>
             <td><select id="pa_st_${i}" style="height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px">
               ${REQ_STATES.map(s => `<option ${s === r.status ? "selected" : ""}>${esc(s)}</option>`).join("")}</select></td>
+            <td><input id="pa_ub_${i}" type="text" value="${esc(r.response || "")}" placeholder="Carpeta, enlace o repositorio"
+              style="min-width:170px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px"></td>
             <td class="sm muted">${esc(r.definedBy || "—")}</td></tr>`).join("")}</tbody>
         </table></div>` : ""}
         <div class="grid"><div class="f c12"><label for="pa_new">Agregar requisitos (uno por línea)</label>
@@ -4846,13 +4892,18 @@ function openPlanEditor(projectId) {
       toast("Aprobación bloqueada", `Asignaciones sin resolver: ${sinResolver.map(x => `${x.name} (${x.assignment.status})`).join("; ")}.`, "error");
       return false;
     }
+    // La coordinación también bloquea el plan (condición de la 3.ª ronda, Director de Proyectos).
+    if (p.state === "Activo" && p.coordination && p.coordination.status !== "Aceptada") {
+      toast("Aprobación bloqueada", `La coordinación del proyecto está «${p.coordination.status}»: resuélvala antes de aprobar el plan.`, "error");
+      return false;
+    }
     const items = [];
     let bad = "";
     const sinFechas = [];
     (p.products || []).forEach((pr, i) => {
       const s = document.getElementById(`pa_s_${i}`).value;
       const e = document.getElementById(`pa_e_${i}`).value;
-      const h = Number(document.getElementById(`pa_h_${i}`)?.value) || pr.hoursSold;
+      const h = Number(document.getElementById(`pa_h_${i}`)?.value) || pr.plannedHours || pr.hoursSold;
       if (s && e && e < s) bad = `${pr.name}: la fecha de cierre es anterior al inicio.`;
       if (isOpenProduct(pr) && (!s || !e)) sinFechas.push(pr.name);
       const ms = (pr.milestones || []).map((m, j) => ({ name: m.name,
@@ -4886,9 +4937,12 @@ function openPlanEditor(projectId) {
       if (!pr.plannedStart) pr.plannedStart = pr.startDate || it.start;
       if (!pr.plannedEnd) pr.plannedEnd = pr.assignment.requestedDate || pr.endDate || it.end;
       const before = `${pr.startDate || "—"} → ${pr.endDate || "—"}`;
-      if (Number(it.hours) > 0 && Number(it.hours) !== pr.hoursSold) {
-        logEvent(p, { type: "Plan final", entity: pr.name, field: "horas", before: String(pr.hoursSold), after: String(it.hours), reason });
-        pr.hoursSold = Number(it.hours);
+      // Las horas vendidas son la línea base comercial y NO se tocan desde el plan (3.ª ronda);
+      // el plan guarda sus propias horas planificadas.
+      if (Number(it.hours) > 0 && Number(it.hours) !== (pr.plannedHours || pr.hoursSold)) {
+        logEvent(p, { type: "Plan final", entity: pr.name, field: "horas planificadas",
+                      before: String(pr.plannedHours || pr.hoursSold), after: String(it.hours), reason });
+        pr.plannedHours = Number(it.hours);
       }
       it.milestones.forEach((m, j) => {
         const mm = (pr.milestones || [])[j];
@@ -4909,14 +4963,15 @@ function openPlanEditor(projectId) {
       <button class="btn btn-ico btn-plain" data-action="close-modal" aria-label="Cerrar">✕</button></div>
     <div class="m-b">
       <p class="note" style="margin:0 0 16px">Contraste el plan estimado de la venta con la capacidad aceptada, los requisitos y las fechas
-        acordadas. El resultado se versiona y reemplaza al plan de venta como referencia operativa (RN-13, RN-14).</p>
+        acordadas. El resultado se versiona y reemplaza al plan de venta como referencia operativa (RN-13, RN-14).
+        Las <b>horas del plan son planificadas</b>: las horas vendidas (línea base comercial) no cambian desde aquí.</p>
       <p class="note" style="margin:0 0 16px"><b>Plan estimado de la venta:</b> ${esc(p.estimatedPlan || "—")}</p>
       <div class="tw" style="margin-bottom:16px"><table class="t">
-        <thead><tr><th>Producto</th><th>Cargo</th><th class="rt">Horas</th><th>Fecha solicitada</th><th>Inicio</th><th>Cierre</th></tr></thead>
+        <thead><tr><th>Producto</th><th>Cargo</th><th class="rt">Horas plan</th><th>Fecha solicitada</th><th>Inicio</th><th>Cierre</th></tr></thead>
         <tbody>${(p.products || []).map((pr, i) => `<tr>
           <td class="sm"><b>${esc(pr.name)}</b><div class="xs muted">${esc(pr.assignment.status)}${pr.technology ? ` · ${esc(pr.technology)}` : ""}${pr.complexity ? ` · ${esc(pr.complexity)}` : ""}</div></td>
           <td class="sm muted">${esc(pr.role || "—")}</td>
-          <td><input id="pa_h_${i}" type="number" min="0" step="0.5" value="${esc(pr.hoursSold)}" style="width:76px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px;text-align:right"></td>
+          <td><input id="pa_h_${i}" type="number" min="0" step="0.5" value="${esc(pr.plannedHours || pr.hoursSold)}" style="width:76px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px;text-align:right"></td>
           <td class="sm muted">${formatDate(pr.assignment.requestedDate, true)}</td>
           <td><input id="pa_s_${i}" type="date" value="${esc(pr.startDate || "")}" style="height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px"></td>
           <td><input id="pa_e_${i}" type="date" value="${esc(pr.endDate || pr.assignment.proposedDate || pr.assignment.requestedDate || "")}" style="height:34px;border:1px solid var(--line);border-radius:8px;padding:0 8px"></td>
@@ -5587,7 +5642,7 @@ function importExcelData(sheets, fileName) {
   });
 
   // ---- Productos ----
-  const filasPr = sheetObjects(hoja("Productos") || [], ["proyecto", "producto", "categoria", "horas_vendidas"]) || [];
+  const filasPr = sheetObjects(hoja("Productos") || [], ["proyecto", "producto", "categoria", "horas_vendidas", "responsable"]) || [];
   filasPr.forEach(f => {
     const p = porCodigo(f.proyecto);
     if (!p) { res.avisos.push(`Producto «${f.producto || "—"}»: el proyecto «${f.proyecto || "—"}» no existe.`); return; }
@@ -5602,6 +5657,9 @@ function importExcelData(sheets, fileName) {
     if (ROUTINGS.includes(cat)) pr.routing = cat;
     if (String(f.tecnologia || "").trim()) pr.technology = String(f.tecnologia).trim();
     if (COMPLEXITIES.includes(String(f.complejidad || "").trim())) pr.complexity = String(f.complejidad).trim();
+    // Columna «responsable» (3.ª ronda, Gestores de Datos): elige el cargo desde el Excel.
+    const respBase = renameCargo(String(f.responsable || "").trim());
+    if (CARGOS.includes(respBase)) { pr.role = respBase; pr.owner = personForCargo(respBase) || pr.owner; }
     if (pr.routing === "Cápsulas" && baseNum(f.personas_a_impactar)) pr.peopleImpact = baseNum(f.personas_a_impactar);
     if (baseDate(f.fecha_solicitada)) pr.assignment.requestedDate = baseDate(f.fecha_solicitada);
     if (baseDate(f.inicio)) pr.startDate = baseDate(f.inicio);
@@ -5778,6 +5836,7 @@ async function importExcelFile(file) {
         ${li.map(x => `<p class="sm" style="margin:0 0 8px">• ${x}</p>`).join("")}
       </div>
       <div class="m-f"><button class="btn btn-pri" data-action="close-modal">Entendido</button></div>`);
+    toast("Base cargada con éxito", `${file.name} · revise el resumen y los módulos.`);
   } catch (e) {
     console.error(e);
     toast("No fue posible cargar la base", e.message, "error");
@@ -5909,6 +5968,13 @@ document.addEventListener("click", e => {
   if (lsc) { state.ui.listScope = lsc.dataset.listScope; renderView(); return; }
   const acm = t.closest("[data-act-mode]");
   if (acm) { state.ui.actMode = acm.dataset.actMode; renderView(); return; }
+  const myc = t.closest("[data-my-cargo]");
+  if (myc) {
+    const yo = myCargo();
+    const puesto = (state.filters.role || []).length === 1 && state.filters.role[0] === yo;
+    state.filters.role = puesto ? [] : [yo];
+    renderApp(); return;
+  }
   const coj = t.closest("[data-co-jump]");
   if (coj) {
     state.filters.company = [coj.dataset.coJump];
@@ -5917,6 +5983,8 @@ document.addEventListener("click", e => {
     renderApp();
     return;
   }
+  const dayOpen = t.closest("[data-day-open]");
+  if (dayOpen && !t.closest("[data-open-project],[data-day-events]")) { showDayEvents(dayOpen.dataset.dayOpen); return; }
   const view = t.closest("[data-view]");
   if (view) {
     const id = view.dataset.view;
