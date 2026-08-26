@@ -47,6 +47,11 @@ ROLES = {
 "CEO": dict(nombre="CEO", responsabilidad=(
     "Administrador. Decide la salida a producción."), filas=[
  ADMIN_CHECK,
+ (0, "Asignar perfiles de acceso",
+  "En Parametrización → «Perfiles y accesos» cambie el Supervisor Contactabilidad a Administrador; verifique con su "
+  "sesión que gana Configuración, costos y el botón «Crear», y devuélvalo a Operativo. Intente dejar cero administradores.",
+  "El perfil de cada cargo se asigna aquí y rige de inmediato; la aplicación impide quedarse sin administradores y "
+  "el cambio queda guardado con el respaldo."),
  (0, "Cargar una base como administrador",
   "Cargue Base_BI.xlsx desde Bases y auditoría; observe el resumen y el aviso «Base cargada con éxito». Revise en "
   "la hoja Productos del Excel la columna nueva «responsable» (la fase 2 trae «Gestor de Datos 2» de ejemplo).",
@@ -229,7 +234,9 @@ LIDERES = [("Director de Proyectos", "mediciones objetivas"), ("Gestor de Datos 
 
 for rol in ADMINS:
     _m(0, rol, "Administra: crea proyectos, ve los costos, carga las bases de Excel y gestiona Parametrización y Bases y auditoría.",
-       "Crear · Configuración (barra lateral)", "Catálogos, bases y ventas administrados", "Ser administrador (CEO, Gerente, Director, Jefe)")
+       "Crear · Configuración (barra lateral)", "Catálogos, bases y ventas administrados", "Perfil Administrador (asignable)")
+    _m(0, rol, "Asigna el perfil de cada cargo (Administrador u Operativo) para controlar los accesos a la información.",
+       "Parametrización · Perfiles y accesos", "Accesos controlados, con mínimo un administrador", "Perfil Administrador")
 for rol in [r for r in TODOS if r not in ADMINS]:
     _m(0, rol, "Gestiona todo lo operativo sin ver costos ni configuración: su bandeja, sus actividades, el calendario y las fichas.",
        "Resumen · Actividades · Mi trabajo · Calendario", "Gestión operativa completa de su frente", "Cualquier cargo")
