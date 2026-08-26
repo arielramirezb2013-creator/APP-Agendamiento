@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Genera las tres bases de alimentación de Rehavid · Gestión de proyectos v15.
+"""Genera las tres bases de alimentación de Rehavid · Gestión de proyectos v16 (versión final).
 1. Base_BI.xlsx — productos de Tablero BI (Gestor de Datos)
 2. Base_Diseno_Ergonomico.xlsx — productos de Diseño (Diseñador)
 3. Base_General.xlsx — mediciones, cápsulas y demás, más los catálogos.
@@ -68,6 +68,7 @@ def hojas_comunes(ejemplos):
         ("avance_pct", 11, "0 a 100. Solo si el producto ya viene andando."),
         ("horas_ejecutadas", 15, "Solo si ya viene andando."),
         ("notas", 30, "Opcional."),
+        ("responsable", 24, "Opcional. Uno de los ocho cargos; si va vacío, asigna el motor."),
       ], ejemplos["Productos"], {"C": '"Medición objetiva,Tablero BI,Diseño,Cápsulas,Otro"', "G": '"Baja,Media,Alta"'}),
       ("Contactos", [
         ("proyecto", 12, "Código de la hoja Proyectos."),
@@ -182,12 +183,13 @@ def hoja_instrucciones(wb, titulo, alcance, hojas_nombres):
       "6. Guarde el archivo como .xlsx (formato normal de Excel).",
       "",
       "CÓMO SE CARGA EN LA APLICACIÓN",
-      "Abra la aplicación → barra lateral → Bases y auditoría → «Cargar base de alimentación (Excel)» →",
-      "elija este archivo (también desde la pestaña Guía, botón «Cargar una base ahora»). La carga NO borra lo existente: crea lo nuevo y",
+      "La carga la hace un ADMINISTRADOR (CEO, Gerente, Director de Proyectos o Jefe de Operaciones):",
+      "barra lateral → Bases y auditoría → «Cargar base de alimentación (Excel)» → elija este archivo. La carga NO borra lo existente: crea lo nuevo y",
       "actualiza lo que coincida por código de proyecto y nombre de producto, y muestra un resumen de lo cargado.",
       "",
       "REGLAS QUE APLICA LA CARGA",
-      "· El cargo responsable de cada producto lo asigna el motor según la categoría (no se escribe en la base):",
+      "· El cargo responsable lo asigna el motor según la categoría, salvo que la columna «responsable» traiga",
+      "  uno de los ocho cargos (sirve, por ejemplo, para elegir entre Gestor de Datos 1 y 2):",
       "  Medición objetiva → Director de Proyectos · Tablero BI → Gestor de Datos 1 · Diseño → Diseñador ·",
       "  Cápsulas → Supervisor Contactabilidad · Otro → coordinación del tipo.",
       "· Los usuarios de la aplicación son los ocho cargos: " + CARGOS_TXT + ".",
@@ -229,7 +231,7 @@ EJ_BI = {
   ],
   "Productos": [
     ["BI-001", "Tablero BI de ausentismo", "Tablero BI", 60, 110000, "", "", "", "2026-10-15", "2026-08-25", "2026-10-15", 10, 6, "Con actualización semanal"],
-    ["BI-001", "Tablero BI de indicadores DME", "Tablero BI", 45, 110000, "", "", "", "2026-11-10", "", "", "", "", ""],
+    ["BI-001", "Tablero BI de indicadores DME", "Tablero BI", 45, 110000, "", "", "", "2026-11-10", "", "", "", "", "", "Gestor de Datos 2"],
   ],
   "Contactos": [
     ["BI-001", "Laura Méndez", "Directora de Gestión Humana", "laura.mendez@elcedro.demo", "3125550011", "SI"],
