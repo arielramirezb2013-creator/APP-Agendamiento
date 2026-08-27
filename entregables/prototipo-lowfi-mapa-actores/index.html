@@ -28,6 +28,7 @@
     --edge-control: #97A0B4;
     --edge-teal: #2E7D74;
     --node-fill: #FFFFFF;
+    --overlay: rgba(27, 42, 82, .45);
     --shadow: 0 1px 2px rgba(27,42,82,.06), 0 4px 16px rgba(27,42,82,.08);
   }
   @media (prefers-color-scheme: dark) {
@@ -57,6 +58,7 @@
       --edge-control: #5D6981;
       --edge-teal: #58B0A5;
       --node-fill: #1C2537;
+      --overlay: rgba(4, 8, 16, .62);
       --shadow: 0 1px 2px rgba(0,0,0,.35), 0 4px 16px rgba(0,0,0,.35);
     }
   }
@@ -86,6 +88,7 @@
     --edge-control: #5D6981;
     --edge-teal: #58B0A5;
     --node-fill: #1C2537;
+    --overlay: rgba(4, 8, 16, .62);
     --shadow: 0 1px 2px rgba(0,0,0,.35), 0 4px 16px rgba(0,0,0,.35);
   }
 
@@ -98,55 +101,63 @@
     font-size: 15px;
     line-height: 1.55;
   }
-  .wrap { max-width: 1240px; margin: 0 auto; padding: 28px 24px 64px; }
+  .wrap { max-width: 1260px; margin: 0 auto; padding: 26px 24px 64px; }
 
   h1, h2, h3 { font-family: "Source Serif 4", Georgia, "Times New Roman", serif; text-wrap: balance; margin: 0; }
-  .eyebrow {
-    font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--ink-soft); font-weight: 600; margin-bottom: 6px;
+  .eyebrow { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; margin-bottom: 6px; }
+  header.top h1 { font-size: 28px; font-weight: 700; line-height: 1.15; }
+  header.top .sub { color: var(--ink-soft); margin-top: 6px; max-width: 76ch; }
+
+  .rolebar {
+    margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; box-shadow: var(--shadow);
   }
-  header.top { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: flex-end; justify-content: space-between; margin-bottom: 22px; }
-  header.top h1 { font-size: 30px; font-weight: 700; line-height: 1.15; }
-  header.top .sub { color: var(--ink-soft); margin-top: 6px; max-width: 62ch; }
-  .participant { display: flex; flex-direction: column; gap: 4px; min-width: 240px; }
-  .participant label { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); }
+  .rolebar .youchip { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+  .rolebar .youchip .tag { background: var(--navy); color: var(--navy-ink); border-radius: 999px; padding: 3px 12px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+  .rolebar .fin { color: var(--ink-soft); font-size: 13.5px; }
+  .rolebar .grow { flex: 1; }
+  .rolebar button, .btn {
+    font: inherit; font-weight: 600; cursor: pointer; border-radius: 9px; padding: 7px 14px;
+    border: 1.5px solid var(--navy); background: var(--surface); color: var(--navy);
+  }
+  .btn-primary { background: var(--navy); color: var(--navy-ink); }
+  .btn-danger { border-color: var(--red); color: var(--red); }
+  button:disabled { opacity: .45; cursor: default; }
   input[type="text"], textarea {
     font: inherit; color: var(--ink); background: var(--surface);
     border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%;
   }
-  textarea { resize: vertical; min-height: 68px; }
-  input:focus-visible, textarea:focus-visible, button:focus-visible, .node:focus-visible {
-    outline: 2px solid var(--navy); outline-offset: 2px;
-  }
+  textarea { resize: vertical; min-height: 56px; }
+  input:focus-visible, textarea:focus-visible, button:focus-visible, .node:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 
-  .grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr); gap: 20px; align-items: start; }
-  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+  .grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1fr); gap: 20px; align-items: start; margin-top: 20px; }
+  @media (max-width: 1020px) { .grid { grid-template-columns: 1fr; } }
 
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
-  .card-pad { padding: 18px 20px; }
+  .card-pad { padding: 16px 20px 20px; }
 
   .map-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 16px 20px 0; }
-  .map-head h2 { font-size: 20px; }
-  .mode-note { color: var(--ink-soft); font-size: 13.5px; padding: 4px 20px 0; max-width: 78ch; }
-
+  .map-head h2 { font-size: 19px; }
+  .mode-note { color: var(--ink-soft); font-size: 13px; padding: 4px 20px 0; max-width: 80ch; }
   .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--surface-2); }
-  .seg button {
-    font: inherit; font-weight: 600; font-size: 13.5px; border: 0; background: transparent; color: var(--ink-soft);
-    padding: 6px 16px; border-radius: 999px; cursor: pointer;
-  }
+  .seg button { font: inherit; font-weight: 600; font-size: 13.5px; border: 0; background: transparent; color: var(--ink-soft); padding: 6px 16px; border-radius: 999px; cursor: pointer; }
   .seg button[aria-pressed="true"] { background: var(--navy); color: var(--navy-ink); }
 
-  .map-scroll { overflow-x: auto; padding: 8px 8px 4px; }
-  .map-scroll svg { display: block; width: 100%; min-width: 660px; height: auto; }
-  #mapbox { transition: opacity .18s ease; }
-  @media (prefers-reduced-motion: reduce) { #mapbox { transition: none; } }
+  .map-scroll { overflow-x: auto; padding: 6px 8px 0; }
+  .map-scroll svg { display: block; width: 100%; min-width: 640px; height: auto; }
 
-  .edge-info { stroke: var(--edge-info); stroke-width: 1.6; }
-  .edge-dictamen { stroke: var(--edge-dictamen); stroke-width: 1.8; }
-  .edge-tension { stroke: var(--edge-tension); stroke-width: 1.7; stroke-dasharray: 7 5; }
-  .edge-control { stroke: var(--edge-control); stroke-width: 1.3; stroke-dasharray: 2 5; stroke-linecap: round; }
-  .edge-teal { stroke: var(--edge-teal); stroke-width: 1.8; }
-  .edge-navy { stroke: var(--edge-info); stroke-width: 2.2; }
+  .edge-info { stroke: var(--edge-info); stroke-width: 1.4; }
+  .edge-dictamen { stroke: var(--edge-dictamen); stroke-width: 1.6; }
+  .edge-tension { stroke: var(--edge-tension); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  .edge-control { stroke: var(--edge-control); stroke-width: 1.2; stroke-dasharray: 2 5; stroke-linecap: round; }
+  .edge-teal { stroke: var(--edge-teal); stroke-width: 1.6; }
+  .edge-dim { opacity: .22; }
+  .flow-pend { stroke: var(--amber); stroke-width: 2.6; stroke-dasharray: 8 5; }
+  .flow-ok { stroke: var(--green); stroke-width: 2.8; }
+  .flow-den { stroke: var(--red); stroke-width: 2.4; stroke-dasharray: 3 4; }
+  .pulse { animation: pulse 1.2s ease-out 2; }
+  @keyframes pulse { 0% { stroke-width: 6; } 100% { stroke-width: 2.6; } }
+  @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
 
   .elabel {
     font-family: "IBM Plex Sans", Arial, sans-serif; font-size: 10.5px; fill: var(--ink-soft);
@@ -167,108 +178,138 @@
   .node-mod rect { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 1.8; }
   .node-mod .nname { fill: var(--teal); font-size: 13.5px; }
   .node-mod .nrole { fill: var(--ink-soft); }
-  .node.selected rect { stroke: var(--ink); stroke-width: 2.6; }
-  .node.valorado .dot { fill: var(--green); }
-  .dot { fill: transparent; }
-
+  .node-dim { opacity: .35; }
+  .node-you rect { stroke: var(--gold); stroke-width: 3; }
+  .youtag { font-size: 9px; font-weight: 700; letter-spacing: .12em; fill: var(--gold); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
   .anclabox { fill: none; stroke: var(--gold); stroke-width: 1.2; stroke-dasharray: 6 5; rx: 14; }
   .anclatag { font-size: 10px; font-weight: 600; letter-spacing: .08em; fill: var(--gold); }
 
-  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 10px 20px 16px; font-size: 12.5px; color: var(--ink-soft); }
-  .legend span { display: inline-flex; align-items: center; gap: 7px; }
-  .lg { width: 26px; height: 0; border-top: 2.5px solid; border-radius: 2px; }
-  .lg-info { border-color: var(--edge-info); }
-  .lg-dictamen { border-color: var(--edge-dictamen); }
-  .lg-tension { border-color: var(--edge-tension); border-top-style: dashed; }
-  .lg-control { border-color: var(--edge-control); border-top-style: dotted; border-top-width: 3px; }
-  .lg-teal { border-color: var(--edge-teal); }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 10px 20px 16px; font-size: 12px; color: var(--ink-soft); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .lg { width: 24px; height: 0; border-top: 2.5px solid; border-radius: 2px; }
+  .lg-pend { border-color: var(--amber); border-top-style: dashed; }
+  .lg-ok { border-color: var(--green); }
+  .lg-den { border-color: var(--red); border-top-style: dotted; border-top-width: 3px; }
+  .lg-base { border-color: var(--edge-control); }
 
-  .rules { border-top: 1px solid var(--line); padding: 14px 20px 18px; display: none; }
-  .rules.visible { display: block; }
-  .rules h3 { font-size: 15px; margin-bottom: 10px; }
-  .rules ol { margin: 0; padding: 0 0 0 2px; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px 16px; }
-  .rules li { font-size: 13px; color: var(--ink-soft); }
-  .rules b { color: var(--ink); display: block; font-size: 13px; }
-  .rules .n { display: inline-grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; background: var(--gold-soft); color: var(--gold); font-weight: 600; font-size: 11.5px; margin-right: 6px; }
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); padding: 12px 16px 0; }
+  .tabs button {
+    font: inherit; font-weight: 600; font-size: 14px; cursor: pointer; border: 1px solid transparent; border-bottom: 0;
+    background: transparent; color: var(--ink-soft); padding: 8px 16px; border-radius: 10px 10px 0 0;
+  }
+  .tabs button[aria-selected="true"] { background: var(--surface-2); color: var(--ink); border-color: var(--line); }
+  .tabbody { padding: 16px 18px 18px; }
 
-  /* ---- Panel de actor ---- */
+  .finline { background: var(--gold-soft); border: 1px solid var(--gold); border-radius: 10px; padding: 8px 12px; font-size: 13.5px; margin-bottom: 12px; }
+  .finline b { color: var(--gold); }
+
+  .docrow { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; background: var(--surface-2); }
+  .docrow .dname { flex: 1; font-size: 13.5px; }
+  .docrow .dname small { display: block; color: var(--ink-faint); font-size: 11.5px; }
+  .docstate { font-size: 11px; font-weight: 600; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+  .st-none { background: var(--surface); color: var(--ink-faint); border: 1px solid var(--line); }
+  .st-pend { background: var(--amber-soft); color: var(--amber); }
+  .st-ok { background: var(--green-soft); color: var(--green); }
+  .st-den { background: var(--red-soft); color: var(--red); }
+  .docrow button { font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; border-radius: 8px; padding: 5px 11px; border: 1.5px solid var(--navy); background: var(--surface); color: var(--navy); white-space: nowrap; }
+
+  .simstats { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: var(--ink-soft); margin: 12px 0 4px; font-variant-numeric: tabular-nums; }
+  .simstats b { font-size: 17px; color: var(--ink); display: block; line-height: 1.2; }
+  .simstats .bad b { color: var(--red); }
+  .simstats .good b { color: var(--green); }
+
+  .completeness { height: 9px; border-radius: 999px; background: var(--surface-2); overflow: hidden; margin: 6px 0 2px; }
+  .completeness div { height: 100%; background: var(--green); }
+
+  .bitacora { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+  .bitacora h3 { font-size: 14px; margin-bottom: 8px; }
+  .bitacora ul { list-style: none; margin: 0; padding: 0; max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+  .bitacora li { font-size: 12.5px; border-left: 3px solid var(--line); padding: 3px 10px; color: var(--ink-soft); }
+  .bit-accion { border-left-color: var(--navy); }
+  .bit-friccion { border-left-color: var(--amber); background: var(--amber-soft); border-radius: 0 8px 8px 0; }
+  .bit-log { border-left-color: var(--teal); font-family: "IBM Plex Mono", Consolas, monospace; font-size: 11.5px; }
+  .bit-den { border-left-color: var(--red); background: var(--red-soft); border-radius: 0 8px 8px 0; }
+  .bit-hito { border-left-color: var(--green); background: var(--green-soft); border-radius: 0 8px 8px 0; font-weight: 600; color: var(--ink); }
+  .bitacora .dia { font-family: "IBM Plex Mono", Consolas, monospace; font-size: 10.5px; color: var(--ink-faint); margin-right: 6px; }
+
+  /* Validar */
   .chip { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; border-radius: 999px; padding: 3px 10px; }
   .chip-focal { background: var(--navy); color: var(--navy-ink); }
   .chip-ancla { background: var(--gold-soft); color: var(--gold); }
   .chip-core { background: var(--surface-2); color: var(--ink-soft); }
   .chip-control { background: var(--surface-2); color: var(--ink-faint); }
-
-  #actor-panel h2 { font-size: 21px; margin: 8px 0 2px; }
-  .field { margin-top: 14px; }
-  .field .flabel { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); margin-bottom: 3px; }
+  .field { margin-top: 13px; }
+  .flabel { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); margin-bottom: 4px; }
   .prec { display: inline-block; font-family: "IBM Plex Mono", Consolas, monospace; font-size: 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; margin: 2px 4px 0 0; color: var(--ink-soft); }
-  .contract { background: var(--teal-soft); border: 1px solid var(--teal); border-radius: 10px; padding: 10px 12px; color: var(--ink); font-size: 14.5px; }
-
-  .verdicts { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-  .verdicts button {
-    font: inherit; font-weight: 600; font-size: 13.5px; cursor: pointer;
-    border-radius: 999px; padding: 7px 15px; border: 1.5px solid var(--line);
-    background: var(--surface); color: var(--ink-soft);
+  .contract { background: var(--teal-soft); border: 1px solid var(--teal); border-radius: 10px; padding: 9px 12px; font-size: 14px; }
+  .optrow { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .optrow button {
+    font: inherit; font-weight: 600; font-size: 12.5px; cursor: pointer; border-radius: 999px; padding: 5px 12px;
+    border: 1.5px solid var(--line); background: var(--surface); color: var(--ink-soft);
   }
-  .verdicts button[data-v="aceptar"][aria-pressed="true"] { background: var(--green-soft); border-color: var(--green); color: var(--green); }
-  .verdicts button[data-v="ajustar"][aria-pressed="true"] { background: var(--amber-soft); border-color: var(--amber); color: var(--amber); }
-  .verdicts button[data-v="rechazar"][aria-pressed="true"] { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+  .optrow button[aria-pressed="true"] { background: var(--navy); color: var(--navy-ink); border-color: var(--navy); }
+  .optrow.sem button[data-v="aceptar"][aria-pressed="true"] { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+  .optrow.sem button[data-v="ajustar"][aria-pressed="true"] { background: var(--amber-soft); border-color: var(--amber); color: var(--amber); }
+  .optrow.sem button[data-v="rechazar"][aria-pressed="true"] { background: var(--red-soft); border-color: var(--red); color: var(--red); }
 
-  .progress { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 14px; }
-  .pbar { height: 10px; border-radius: 999px; background: var(--surface-2); overflow: hidden; display: flex; margin-top: 8px; }
-  .pbar div { height: 100%; }
-  .pbar .p-aceptar { background: var(--green); }
-  .pbar .p-ajustar { background: var(--amber); }
-  .pbar .p-rechazar { background: var(--red); }
-  .pstats { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-soft); margin-top: 7px; font-variant-numeric: tabular-nums; }
-  .pstats i { font-style: normal; font-weight: 600; }
-  .i-aceptar { color: var(--green); } .i-ajustar { color: var(--amber); } .i-rechazar { color: var(--red); }
-
-  /* ---- Secciones inferiores ---- */
-  .below { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 20px; margin-top: 20px; align-items: start; }
+  /* Resultados */
+  .below { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 20px; align-items: start; }
   .below h2 { font-size: 18px; }
-  .below .hint { color: var(--ink-soft); font-size: 13.5px; margin: 4px 0 12px; }
-
-  ol.rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-  ol.rank li { display: flex; align-items: center; gap: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+  .below .hint { color: var(--ink-soft); font-size: 13px; margin: 4px 0 12px; }
+  table.cmp { border-collapse: collapse; width: 100%; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+  table.cmp th, table.cmp td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  table.cmp th { font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  table.cmp td.num { text-align: right; font-weight: 600; }
+  td.mejor { color: var(--green); }
+  td.peor { color: var(--red); }
+  .rolchips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .rolchips span { font-size: 11.5px; border-radius: 999px; padding: 3px 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-soft); }
+  .rolchips span.done { background: var(--green-soft); color: var(--green); border-color: var(--green); }
+  ol.rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+  ol.rank li { display: flex; align-items: center; gap: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; }
   ol.rank .pos { font-family: "IBM Plex Mono", monospace; font-weight: 600; color: var(--gold); min-width: 20px; text-align: center; }
-  ol.rank .rtxt { flex: 1; font-size: 13.5px; }
+  ol.rank .rtxt { flex: 1; font-size: 13px; }
   ol.rank .mv { display: flex; gap: 4px; }
-  ol.rank button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft); border-radius: 7px; width: 28px; height: 28px; line-height: 1; }
-  ol.rank button:disabled { opacity: .35; cursor: default; }
-
-  .gate-crit { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
-  .gate-crit label { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; cursor: pointer; }
+  ol.rank .mv button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft); border-radius: 7px; width: 27px; height: 27px; line-height: 1; }
+  .gate-crit { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .gate-crit label { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; cursor: pointer; }
   .gate-crit input { width: 17px; height: 17px; margin-top: 2px; accent-color: var(--teal); }
-  .gate-verdict { margin-top: 14px; border-radius: 10px; padding: 10px 14px; font-weight: 600; font-size: 14.5px; }
+  .gate-verdict { margin-top: 13px; border-radius: 10px; padding: 9px 13px; font-weight: 600; font-size: 14px; }
   .gate-go { background: var(--green-soft); color: var(--green); border: 1px solid var(--green); }
   .gate-wait { background: var(--amber-soft); color: var(--amber); border: 1px solid var(--amber); }
-
-  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; align-items: center; }
-  .actions button {
-    font: inherit; font-weight: 600; cursor: pointer; border-radius: 9px; padding: 9px 18px;
-    border: 1.5px solid var(--navy); background: var(--navy); color: var(--navy-ink);
-  }
-  .actions button.ghost { background: var(--surface); color: var(--navy); }
-  .actions button.danger { border-color: var(--red); background: var(--surface); color: var(--red); }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; align-items: center; }
   .actions .msg { font-size: 13px; color: var(--teal); font-weight: 600; }
 
-  footer.src { margin-top: 30px; border-top: 1px solid var(--line); padding-top: 14px; color: var(--ink-faint); font-size: 12.5px; max-width: 100ch; }
+  /* Selector de rol */
+  .picker { position: fixed; inset: 0; background: var(--overlay); display: none; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; z-index: 50; }
+  .picker.open { display: flex; }
+  .picker-inner { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); max-width: 880px; width: 100%; padding: 24px 26px 26px; }
+  .picker-inner h2 { font-size: 22px; }
+  .picker-inner .hint { color: var(--ink-soft); font-size: 14px; margin: 6px 0 16px; max-width: 74ch; }
+  .rolegrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+  .rolegrid button {
+    font: inherit; text-align: left; cursor: pointer; border: 1.5px solid var(--line); border-radius: 12px;
+    background: var(--surface-2); color: var(--ink); padding: 10px 12px;
+  }
+  .rolegrid button:hover { border-color: var(--navy); }
+  .rolegrid .rn { font-weight: 600; font-size: 14px; display: block; }
+  .rolegrid .rf { font-size: 12px; color: var(--ink-soft); display: block; margin-top: 2px; }
+  .rolegrid .rj { font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); display: block; margin-top: 4px; }
+  .participant { margin-top: 16px; max-width: 340px; }
+
+  footer.src { margin-top: 30px; border-top: 1px solid var(--line); padding-top: 14px; color: var(--ink-faint); font-size: 12.5px; max-width: 105ch; }
   footer.src b { color: var(--ink-soft); }
 </style>
 
 <div class="wrap">
   <header class="top">
-    <div>
-      <div class="eyebrow">Prototipo Low-Fi 01 &middot; DGIT 6202 &middot; Caso de estudio SURA</div>
-      <h1>Mapa de actores de la ruta de incapacidad</h1>
-      <p class="sub">Instrumento de validaci&oacute;n: compare el sistema actual (AS-IS) con la configuraci&oacute;n federada propuesta (TO-BE), valore cada contrato futuro con el sem&aacute;foro y registre la evidencia para el gate de decisi&oacute;n. Escenario sint&eacute;tico; no contiene datos reales.</p>
-    </div>
-    <div class="participant">
-      <label for="participante">Participante / rol en la sesi&oacute;n</label>
-      <input type="text" id="participante" placeholder="p. ej. Referente jur&iacute;dico" autocomplete="off">
-    </div>
+    <div class="eyebrow">Prototipo Low-Fi 01 &middot; DGIT 6202 &middot; Caso de estudio SURA &middot; escenario sint&eacute;tico</div>
+    <h1>Simulador del mapa de actores: ruta de incapacidad</h1>
+    <p class="sub">Asuma un rol y viva la ruta dos veces con el mismo caso: en <b>AS-IS</b> el sistema le impone la fricci&oacute;n real (solicitudes devueltas, evidencia dispersa, el costo cae en el trabajador); en <b>TO-BE</b> opera bajo las reglas del blueprint federado (acceso por finalidad, m&iacute;nimo necesario, trazabilidad). Cada acci&oacute;n deja resultados medibles que alimentan el gate de decisi&oacute;n.</p>
   </header>
+
+  <div class="rolebar" id="rolebar"></div>
 
   <div class="grid">
     <section class="card" aria-label="Mapa de actores">
@@ -284,44 +325,31 @@
         <svg id="mapbox" viewBox="0 0 1000 645" role="img" aria-label="Diagrama de los 12 actores de la ruta de incapacidad"></svg>
       </div>
       <div class="legend" id="legend"></div>
-      <div class="rules" id="rules">
-        <h3>Reglas del blueprint federado</h3>
-        <ol>
-          <li><b><span class="n">1</span>Custodia distribuida</b> Cada organizaci&oacute;n conserva sus repositorios y responsabilidades legales.</li>
-          <li><b><span class="n">2</span>Intercambio por finalidad</b> Solo circula la evidencia requerida para un caso de uso y una decisi&oacute;n expl&iacute;cita.</li>
-          <li><b><span class="n">3</span>M&iacute;nimo necesario</b> Las vistas por rol excluyen datos no pertinentes para la finalidad declarada.</li>
-          <li><b><span class="n">4</span>Responsabilidad visible</b> Cada suministro, consulta y escalamiento tiene responsable y plazo.</li>
-          <li><b><span class="n">5</span>Trazabilidad auditable</b> Toda consulta, decisi&oacute;n y cambio de estado deja registro verificable.</li>
-        </ol>
-      </div>
     </section>
 
-    <aside class="card card-pad" id="actor-panel" aria-live="polite">
-      <!-- se llena por JS -->
+    <aside class="card" id="panel">
+      <div class="tabs" role="tablist">
+        <button type="button" id="tab-actuar" role="tab" aria-selected="true">Actuar</button>
+        <button type="button" id="tab-validar" role="tab" aria-selected="false">Validar mi rol</button>
+      </div>
+      <div class="tabbody" id="tabbody"></div>
     </aside>
   </div>
 
   <div class="below">
     <section class="card card-pad">
-      <h2>Ranking de rupturas</h2>
-      <p class="hint">Ordene las cinco rupturas del sistema actual de m&aacute;s cr&iacute;tica (1) a menos cr&iacute;tica (5).</p>
-      <ol class="rank" id="rank"></ol>
+      <h2>Resultados AS-IS vs TO-BE</h2>
+      <p class="hint" id="cmp-hint"></p>
+      <div id="cmp"></div>
     </section>
 
     <section class="card card-pad">
-      <h2>Anotaciones de la sesi&oacute;n</h2>
-      <p class="hint">Evidencia cualitativa que pide el protocolo de validaci&oacute;n.</p>
+      <h2>Evidencia agregada de la sesi&oacute;n</h2>
+      <p class="hint">Se consolida autom&aacute;ticamente con cada rol jugado y validado.</p>
+      <div id="agg"></div>
       <div class="field">
-        <div class="flabel">Actores o v&iacute;nculos faltantes</div>
-        <textarea id="nota-faltantes" placeholder="&iquest;Falta alg&uacute;n actor, relaci&oacute;n o flujo cr&iacute;tico en el mapa?"></textarea>
-      </div>
-      <div class="field">
-        <div class="flabel">Desacuerdos y justificaci&oacute;n de permisos</div>
-        <textarea id="nota-desacuerdos" placeholder="Conflictos de rol, permisos que requieren justificaci&oacute;n, puntos sin consenso&hellip;"></textarea>
-      </div>
-      <div class="field">
-        <div class="flabel">Riesgos &eacute;ticos y mitigaci&oacute;n</div>
-        <textarea id="nota-riesgos" placeholder="Asimetr&iacute;as de poder, datos sensibles, riesgos identificados y c&oacute;mo mitigarlos&hellip;"></textarea>
+        <div class="flabel">Ranking de rupturas (1 = m&aacute;s cr&iacute;tica)</div>
+        <ol class="rank" id="rank"></ol>
       </div>
     </section>
 
@@ -336,24 +364,36 @@
       </ul>
       <div class="gate-verdict" id="gate-verdict"></div>
       <div class="actions">
-        <button type="button" id="btn-copy">Copiar resultados (JSON)</button>
-        <button type="button" class="ghost" id="btn-download">Descargar JSON</button>
-        <button type="button" class="danger" id="btn-reset">Borrar respuestas</button>
+        <button type="button" class="btn btn-primary" id="btn-copy">Copiar resultados (JSON)</button>
+        <button type="button" class="btn" id="btn-download">Descargar JSON</button>
+        <button type="button" class="btn btn-danger" id="btn-reset">Borrar sesi&oacute;n</button>
         <span class="msg" id="save-msg" role="status"></span>
       </div>
     </section>
   </div>
 
   <footer class="src">
-    <b>Fuentes:</b> Prototipo de baja fidelidad &laquo;Mapa de actores AS-IS &rarr; TO-BE&raquo; (Proyecto 2, DGIT 6202, Universidad de los Andes); mapa exploratorio de 12 actores &laquo;Pensi&oacute;n por invalidez — origen laboral&raquo;. Documento exploratorio: verificar normas y jurisprudencia en fuentes primarias antes de uso jur&iacute;dico o acad&eacute;mico. La configuraci&oacute;n TO-BE es una hip&oacute;tesis de dise&ntilde;o para validaci&oacute;n; no representa una implementaci&oacute;n aprobada. Precauciones &eacute;ticas: escenario sint&eacute;tico, sin datos cl&iacute;nicos ni laborales identificables.
+    <b>Caso sint&eacute;tico:</b> &laquo;M.P., trabajadora con incapacidad temporal prolongada (d&iacute;a 150) y controversia de origen&raquo;. <b>Fuentes:</b> Prototipo de baja fidelidad &laquo;Mapa de actores AS-IS &rarr; TO-BE&raquo; (Proyecto 2, DGIT 6202, Universidad de los Andes); mapa exploratorio de 12 actores. La configuraci&oacute;n TO-BE es una hip&oacute;tesis de dise&ntilde;o para validaci&oacute;n; no representa una implementaci&oacute;n aprobada. Precauciones &eacute;ticas: escenario sint&eacute;tico, sin datos cl&iacute;nicos ni laborales identificables.
   </footer>
+</div>
+
+<div class="picker" id="picker" role="dialog" aria-modal="true" aria-label="Seleccione un rol">
+  <div class="picker-inner">
+    <h2>&iquest;Desde qu&eacute; rol va a operar la ruta?</h2>
+    <p class="hint">El sistema le mostrar&aacute; solo lo que ese actor ve, le permitir&aacute; solo lo que ese actor puede hacer, y medir&aacute; d&iacute;as, pasos y trazabilidad de sus acciones. Puede cambiar de rol cuando quiera; cada rol conserva sus resultados.</p>
+    <div class="rolegrid" id="rolegrid"></div>
+    <div class="participant">
+      <div class="flabel">Su nombre o perfil (para el registro de la sesi&oacute;n)</div>
+      <input type="text" id="participante" placeholder="p. ej. Referente jur&iacute;dico" autocomplete="off">
+    </div>
+  </div>
 </div>
 
 <script>
 (function () {
   "use strict";
 
-  /* ---------------- Datos (matriz ejecutiva, diapositivas 2-4) ---------------- */
+  /* ================= Datos base (diapositivas 2-4) ================= */
   var ACTORES = [
     { id:"tra", nombre:"Trabajador / familia", rol:"Actor focal", grupo:"focal",
       funcion:"Impulsa, recurre y aporta prueba.",
@@ -404,61 +444,57 @@
       tension:"Subsidiariedad y corrección de dictámenes.", precedentes:["T-119/26","SU-111/25"],
       contrato:"Paquete auditado: cronología, decisiones y evidencia de acceso." }
   ];
+  function actor(id) { return ACTORES.filter(function (a) { return a.id === id; })[0]; }
 
-  var MOD = { id:"mod", nombre:"Módulo interoperable", grupo:"mod" };
-
-  var POS = {
-    asis: {
-      tra:[500,300], ips:[320,112], emp:[122,208], eps:[585,95], arl:[812,152],
-      afp:[856,332], jr:[655,458], jn:[380,472],
-      mintrab:[140,588], minsalud:[380,594], supersalud:[620,594], jueces:[860,588]
-    },
-    tobe: {
-      mod:[500,330], tra:[500,120], ips:[295,105], emp:[118,228], eps:[705,105],
-      arl:[874,228], afp:[880,402], jr:[726,508], jn:[268,508],
-      mintrab:[118,402],
-      minsalud:[140,592], supersalud:[500,600], jueces:[858,592]
-    }
+  /* ================= Modelo de simulación ================= */
+  var DOCS = {
+    hc:  { n:"Historia clínica",              c:"ips" },
+    inc: { n:"Certificados de incapacidad",   c:"eps" },
+    apt: { n:"Matriz de exposición (APT)",    c:"emp" },
+    lab: { n:"Historia laboral y semanas",    c:"afp" },
+    dic: { n:"Dictamen de PCL y origen",      c:"jr"  },
+    pres:{ n:"Registro de prestaciones",      c:"arl" }
   };
-  // supersalud abajo queda entre jn y jr: se separa un poco
-  POS.tobe.supersalud = [500, 606];
+  var DOC_IDS = ["hc","inc","apt","lab","dic","pres"];
 
-  var EDGES = {
-    asis: [
-      { a:"ips", b:"tra", t:"info", label:"evidencia clínica" },
-      { a:"emp", b:"tra", t:"info", label:"evidencia laboral" },
-      { a:"tra", b:"eps", t:"info", label:"solicita · carga", o:-9, lt:0.62 },
-      { a:"tra", b:"afp", t:"info", label:"reenvía evidencia", o:-9, lt:0.45 },
-      { a:"tra", b:"jr", t:"info", label:"recurre", o:-9, lt:0.34 },
-      { a:"eps", b:"tra", t:"dictamen", label:"incapacidades", o:-9, lt:0.62 },
-      { a:"arl", b:"tra", t:"dictamen", label:"prestaciones" },
-      { a:"jr", b:"tra", t:"dictamen", label:"dictamen", o:-9, lt:0.34 },
-      { a:"afp", b:"tra", t:"dictamen", label:"decisión pensional", o:-9, lt:0.42 },
-      { a:"jn", b:"tra", t:"dictamen", label:"dictamen final" },
-      { a:"eps", b:"arl", t:"tension", label:"¿origen?" },
-      { a:"arl", b:"afp", t:"tension", label:"¿quién paga?" },
-      { a:"jr", b:"jn", t:"tension", label:"apelación" },
-      { a:"mintrab", b:"emp", t:"control" },
-      { a:"mintrab", b:"arl", t:"control" },
-      { a:"minsalud", b:"ips", t:"control" },
-      { a:"supersalud", b:"eps", t:"control" },
-      { a:"jueces", b:"jn", t:"control" }
-    ],
-    tobe: [
-      { a:"tra", b:"mod", t:"navy", label:"vista de estado y trazabilidad", lt:0.32 },
-      { a:"ips", b:"mod", t:"teal", label:"resumen clínico" },
-      { a:"emp", b:"mod", t:"teal", label:"evidencia de exposición" },
-      { a:"eps", b:"mod", t:"teal", label:"incapacidad · rehabilitación" },
-      { a:"arl", b:"mod", t:"teal", label:"prestación · origen" },
-      { a:"afp", b:"mod", t:"teal", label:"historia laboral" },
-      { a:"jr", b:"mod", t:"teal", label:"dictamen · recursos" },
-      { a:"jn", b:"mod", t:"teal", label:"apelación motivada" },
-      { a:"mintrab", b:"mod", t:"control" },
-      { a:"minsalud", b:"mod", t:"control" },
-      { a:"supersalud", b:"mod", t:"control" },
-      { a:"jueces", b:"mod", t:"control" }
-    ]
+  var ROLES = {
+    tra:      { tipo:"trabajador", finalidad:"Impulsar y seguir mi caso", necesita:["hc","apt","lab"],
+                decision:"Radicar el expediente completo ante la Junta" },
+    emp:      { tipo:"entidad", finalidad:"Reubicación laboral y prevención", necesita:["inc"],
+                decision:"Emitir plan de reubicación con restricciones" },
+    ips:      { tipo:"entidad", finalidad:"Atención y rehabilitación", necesita:["inc"],
+                decision:"Actualizar el plan de rehabilitación" },
+    eps:      { tipo:"entidad", finalidad:"Calificación de origen en primera oportunidad", necesita:["hc","apt"],
+                decision:"Emitir la calificación de origen" },
+    arl:      { tipo:"entidad", finalidad:"Investigación de origen y prestaciones", necesita:["hc","apt","inc"],
+                decision:"Decidir prestaciones y postura de origen" },
+    afp:      { tipo:"entidad", finalidad:"Estudio de pensión de invalidez", necesita:["dic","inc"],
+                decision:"Decidir el reconocimiento pensional" },
+    jr:       { tipo:"entidad", finalidad:"Dictamen de primera instancia", necesita:["hc","inc","apt","lab"],
+                decision:"Emitir dictamen de PCL y origen" },
+    jn:       { tipo:"entidad", finalidad:"Resolución de la apelación", necesita:["dic","hc","inc"],
+                decision:"Resolver la apelación con motivación íntegra" },
+    mintrab:  { tipo:"control", finalidad:"Inspección de tiempos e incidencias", objetivo:["emp","arl"] },
+    minsalud: { tipo:"control", finalidad:"Verificación del uso clínico-laboral", objetivo:["eps","ips"] },
+    supersalud:{ tipo:"control", finalidad:"Trámite de quejas sobre EPS e IPS", objetivo:["eps","ips"] },
+    jueces:   { tipo:"control", finalidad:"Revisión judicial del expediente", objetivo:["jr","jn"] }
   };
+
+  function custodiaDe(rolId) {
+    return DOC_IDS.filter(function (d) { return DOCS[d].c === rolId; });
+  }
+
+  /* Cuestionario cerrado, idéntico para todos los roles (cuantificable y comparable) */
+  var PREGUNTAS = [
+    { id:"q_claridad", txt:"Con las reglas TO-BE, ¿qué tan clara queda SU responsabilidad en la ruta?", tipo:"escala" },
+    { id:"q_mejora",   txt:"Frente al AS-IS que acaba de operar, ¿cuánto mejora el TO-BE su función?", tipo:"escala" },
+    { id:"q_cubre",    txt:"¿El contrato TO-BE de su actor cubre lo que su función necesita?", tipo:"opciones",
+      ops:[["si","Sí"],["parcial","Parcial"],["no","No"]] },
+    { id:"q_riesgo",   txt:"Riesgo dominante desde su rol para adoptar el módulo:", tipo:"opciones",
+      ops:[["privacidad","Privacidad"],["carga","Carga operativa"],["competencia","Competencia jurídica"],["dato","Calidad del dato"],["ninguno","Ninguno"]] },
+    { id:"q_traza",    txt:"La trazabilidad auditable de sus consultas le genera:", tipo:"opciones",
+      ops:[["confianza","Confianza"],["neutral","Indiferencia"],["carga","Carga / riesgo"]] }
+  ];
 
   var RUPTURAS = [
     { id:"r1", txt:"Historia clínica y laboral incompleta o dispersa" },
@@ -468,23 +504,33 @@
     { id:"r5", txt:"Competencias y lenguaje diagnóstico no alineados" }
   ];
 
-  var MODE_NOTES = {
-    asis: "La ruta opera como una red fragmentada, no como una secuencia: la evidencia permanece dispersa entre múltiples custodios y el trabajador absorbe buena parte del trabajo de coordinación. Haga clic en un actor para ver su ficha y valorar su contrato futuro.",
-    tobe: "Blueprint de gobernanza federada: cada actor conserva la custodia en origen y comparte evidencia mínima, jurídicamente admisible y trazable según finalidad, a través de un módulo con índice, reglas y logs. No se centralizan historias clínicas."
-  };
-
-  /* ---------------- Estado ---------------- */
-  var LS_KEY = "lowfi01_validacion_v1";
+  /* ================= Estado ================= */
+  var LS_KEY = "lowfi01_simulador_v2";
   var state = {
     participante: "",
+    rol: null,
     modo: "asis",
-    seleccion: "tra",
-    contratos: {},
+    tab: "actuar",
+    sim: {},        // sim[rol][modo] = {dias,pasos,docs:{},cargaTra,denegados,regs,finalidad,supervision,decidido,bitacora:[]}
+    valid: {},      // valid[rol] = {verdict,comentario,q_claridad,...}
     rupturas: RUPTURAS.map(function (r) { return r.id; }),
-    notas: { faltantes:"", desacuerdos:"", riesgos:"" },
     gate: { g1:false, g2:false, g3:false, g4:false }
   };
-  ACTORES.forEach(function (a) { state.contratos[a.id] = { verdict:null, comentario:"" }; });
+  var lastFlash = null; // {a,b} arista a resaltar tras la última acción
+
+  function freshSim() {
+    return { dias:0, pasos:0, docs:{}, cargaTra:0, denegados:0, regs:0,
+             finalidad:false, supervision:false, decidido:false, bitacora:[] };
+  }
+  function simFor(rol, modo) {
+    if (!state.sim[rol]) state.sim[rol] = {};
+    if (!state.sim[rol][modo]) state.sim[rol][modo] = freshSim();
+    return state.sim[rol][modo];
+  }
+  function validFor(rol) {
+    if (!state.valid[rol]) state.valid[rol] = { verdict:null, comentario:"" };
+    return state.valid[rol];
+  }
 
   function loadState() {
     try {
@@ -492,298 +538,670 @@
       if (!raw) return;
       var s = JSON.parse(raw);
       if (s && typeof s === "object") {
-        state.participante = typeof s.participante === "string" ? s.participante : "";
-        state.modo = s.modo === "tobe" ? "tobe" : "asis";
-        state.seleccion = ACTORES.some(function (a) { return a.id === s.seleccion; }) ? s.seleccion : "tra";
-        ACTORES.forEach(function (a) {
-          var c = s.contratos && s.contratos[a.id];
-          if (c) state.contratos[a.id] = {
-            verdict: ["aceptar","ajustar","rechazar"].indexOf(c.verdict) >= 0 ? c.verdict : null,
-            comentario: typeof c.comentario === "string" ? c.comentario : ""
-          };
+        ["participante","rol","modo","tab"].forEach(function (k) {
+          if (typeof s[k] === "string" || s[k] === null) state[k] = s[k];
         });
+        if (!ROLES[state.rol]) state.rol = null;
+        if (state.modo !== "tobe") state.modo = "asis";
+        if (state.tab !== "validar") state.tab = "actuar";
+        if (s.sim && typeof s.sim === "object") state.sim = s.sim;
+        if (s.valid && typeof s.valid === "object") state.valid = s.valid;
         if (Array.isArray(s.rupturas) && s.rupturas.length === RUPTURAS.length &&
             RUPTURAS.every(function (r) { return s.rupturas.indexOf(r.id) >= 0; })) {
           state.rupturas = s.rupturas.slice();
         }
-        if (s.notas) ["faltantes","desacuerdos","riesgos"].forEach(function (k) {
-          if (typeof s.notas[k] === "string") state.notas[k] = s.notas[k];
-        });
         if (s.gate) ["g1","g2","g3","g4"].forEach(function (k) { state.gate[k] = !!s.gate[k]; });
       }
-    } catch (e) { /* almacenamiento no disponible: la sesión sigue en memoria */ }
+    } catch (e) { /* sin almacenamiento: la sesión vive en memoria */ }
   }
-
   var saveTimer = null;
   function saveState() {
     clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
       try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { /* sin persistencia */ }
-    }, 250);
+    }, 200);
   }
-
-  /* ---------------- Mapa SVG ---------------- */
-  var svg = document.getElementById("mapbox");
-  var NW = 152, NH = 54, MW = 262, MH = 80;
 
   function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
-  function nodeSize(id) { return id === "mod" ? [MW, MH] : [NW, NH]; }
+  /* ================= Motor de simulación ================= */
+  function bit(sim, tipo, txt) { sim.bitacora.push({ dia: sim.dias, tipo: tipo, txt: txt }); }
 
-  function edgeLine(mode, e) {
-    var p1 = POS[mode][e.a].slice(), p2 = POS[mode][e.b].slice();
-    if (e.o) {
-      var dx = p2[0] - p1[0], dy = p2[1] - p1[1];
-      var len = Math.sqrt(dx * dx + dy * dy) || 1;
-      var nx = -dy / len * e.o, ny = dx / len * e.o;
-      p1[0] += nx; p1[1] += ny; p2[0] += nx; p2[1] += ny;
+  // AS-IS: máquina de fricción por documento (0 nada → 1 devuelta → 2 incompleta → 3 disponible)
+  function asisAccion(docId) {
+    var rol = state.rol, sim = simFor(rol, "asis");
+    var st = sim.docs[docId] || 0;
+    var doc = DOCS[docId], cust = actor(doc.c).nombre;
+    sim.pasos++;
+    if (st === 0) {
+      sim.dias += 12; sim.docs[docId] = 1;
+      bit(sim, "accion", "Solicitó «" + doc.n + "» a " + cust + " por oficio/correo.");
+      bit(sim, "friccion", "Día " + sim.dias + ": la solicitud fue devuelta (formato/competencia) o no obtuvo respuesta en término. Sin acuse trazable.");
+    } else if (st === 1) {
+      sim.dias += 10; sim.docs[docId] = 2;
+      bit(sim, "accion", "Reiteró la solicitud de «" + doc.n + "».");
+      bit(sim, "friccion", "Día " + sim.dias + ": llegó una copia incompleta o desactualizada de «" + doc.n + "».");
+    } else if (st === 2) {
+      sim.dias += 8; sim.docs[docId] = 3; sim.cargaTra++;
+      if (rol === "tra") {
+        bit(sim, "accion", "Usted mismo fue hasta " + cust + " a conseguir la copia física.");
+      } else {
+        bit(sim, "accion", "Le pidió al trabajador que consiguiera y aportara «" + doc.n + "».");
+      }
+      bit(sim, "hito", "Día " + sim.dias + ": «" + doc.n + "» quedó disponible — el costo de coordinación recayó en el trabajador.");
     }
-    var cls = { info:"edge-info", dictamen:"edge-dictamen", tension:"edge-tension", control:"edge-control", teal:"edge-teal", navy:"edge-navy" }[e.t];
-    var out = '<line class="' + cls + '" x1="' + p1[0] + '" y1="' + p1[1] + '" x2="' + p2[0] + '" y2="' + p2[1] + '"></line>';
-    if (e.label) {
-      var t = typeof e.lt === "number" ? e.lt : 0.5;
-      var mx = p1[0] + (p2[0] - p1[0]) * t;
-      var my = p1[1] + (p2[1] - p1[1]) * t - 4;
-      var lcls = e.t === "tension" ? "elabel elabel-tension" : "elabel";
-      out += '<text class="' + lcls + '" x="' + mx + '" y="' + my + '" text-anchor="middle">' + esc(e.label) + "</text>";
+    lastFlash = { a: rol, b: doc.c };
+    afterAction();
+  }
+
+  // TO-BE: declarar finalidad + consultas por finalidad con mínimo necesario
+  function tobeDeclarar() {
+    var sim = simFor(state.rol, "tobe");
+    if (sim.finalidad) return;
+    sim.finalidad = true; sim.pasos++;
+    bit(sim, "accion", "Declaró la finalidad «" + ROLES[state.rol].finalidad + "». El contrato de acceso quedó activado.");
+    bit(sim, "log", "REG-" + pad(++sim.regs) + " · finalidad declarada · responsable y plazo asignados · acuse automático");
+    lastFlash = { a: state.rol, b: "mod" };
+    afterAction();
+  }
+  function tobeConsultar(docId) {
+    var rol = state.rol, sim = simFor(rol, "tobe"), cfg = ROLES[rol];
+    var doc = DOCS[docId];
+    sim.pasos++;
+    if ((cfg.necesita || []).indexOf(docId) >= 0) {
+      sim.dias += 1; sim.docs[docId] = "ok"; sim.regs++;
+      bit(sim, "accion", "Consultó «" + doc.n + "» a través del módulo (vista mínima por finalidad).");
+      bit(sim, "log", "REG-" + pad(sim.regs) + " · " + actor(rol).nombre + " consultó «" + doc.n + "» · custodio: " + actor(doc.c).nombre + " · día " + sim.dias + " · finalidad: " + cfg.finalidad);
+    } else {
+      sim.docs[docId] = "den"; sim.denegados++;
+      bit(sim, "den", "DENEGADO: «" + doc.n + "» no es pertinente para su finalidad declarada (regla 3 · mínimo necesario). El intento quedó registrado.");
     }
+    lastFlash = { a: "mod", b: doc.c };
+    afterAction();
+  }
+  function pad(n) { return (n < 10 ? "00" : n < 100 ? "0" : "") + n; }
+
+  function decidir(modo) {
+    var rol = state.rol, sim = simFor(rol, modo), cfg = ROLES[rol];
+    if (sim.decidido) return;
+    sim.decidido = true; sim.pasos++;
+    if (modo === "asis") {
+      bit(sim, "hito", "Día " + sim.dias + ": " + cfg.decision + ". El expediente tardó " + sim.dias + " días y " + sim.pasos + " pasos; nada quedó trazable para los demás actores.");
+    } else {
+      sim.regs++;
+      bit(sim, "log", "REG-" + pad(sim.regs) + " · decisión registrada con responsable, plazo y evidencia de acceso");
+      bit(sim, "hito", "Día " + sim.dias + ": " + cfg.decision + " con evidencia completa, mínima y auditable (" + sim.regs + " registros).");
+    }
+    afterAction();
+  }
+
+  // Roles de control
+  function controlAsis(objetivoId) {
+    var sim = simFor(state.rol, "asis");
+    var key = "informe_" + objetivoId;
+    var st = sim.docs[key] || 0;
+    sim.pasos++;
+    var nom = actor(objetivoId).nombre;
+    if (st === 0) {
+      sim.dias += 15; sim.docs[key] = 1;
+      bit(sim, "accion", "Requirió informe a " + nom + ".");
+      bit(sim, "friccion", "Día " + sim.dias + ": sin respuesta en término; no hay término ni acuse verificable.");
+    } else if (st === 1) {
+      sim.dias += 12; sim.docs[key] = 3;
+      bit(sim, "accion", "Reiteró el requerimiento a " + nom + " con apremio.");
+      bit(sim, "hito", "Día " + sim.dias + ": llegó un informe parcial en formato propio, no comparable con los demás.");
+    }
+    lastFlash = { a: state.rol, b: objetivoId };
+    afterAction();
+  }
+  function controlTobe() {
+    var sim = simFor(state.rol, "tobe");
+    sim.pasos++;
+    sim.supervision = true;
+    sim.dias += 1;
+    sim.regs++;
+    bit(sim, "accion", "Abrió la vista de supervisión del módulo (según su competencia).");
+    bit(sim, "log", "REG-" + pad(sim.regs) + " · acceso de supervisión de " + actor(state.rol).nombre + " · día " + sim.dias + " · alcance: " + ROLES[state.rol].objetivo.map(function (o) { return actor(o).nombre; }).join(", "));
+    lastFlash = { a: state.rol, b: "mod" };
+    afterAction();
+  }
+  // Trabajador en TO-BE: vista de estado
+  function traTobeVista() {
+    var sim = simFor("tra", "tobe");
+    sim.pasos++;
+    if (!sim.finalidad) {
+      sim.finalidad = true;
+      bit(sim, "accion", "Abrió su vista de estado: caso, plazos y quién consulta su evidencia, sin perseguir documentos.");
+    } else {
+      bit(sim, "accion", "Actualizó su vista de estado.");
+    }
+    lastFlash = { a: "tra", b: "mod" };
+    afterAction();
+  }
+
+  function globalLogs() {
+    var out = [];
+    Object.keys(state.sim).forEach(function (rol) {
+      var t = state.sim[rol] && state.sim[rol].tobe;
+      if (t) t.bitacora.forEach(function (b) { if (b.tipo === "log") out.push({ rol: rol, dia: b.dia, txt: b.txt }); });
+    });
     return out;
   }
-
-  function nodeBox(mode, actor) {
-    var p = POS[mode][actor.id];
-    if (!p) return "";
-    var sz = nodeSize(actor.id), w = sz[0], h = sz[1];
-    var x = p[0] - w / 2, y = p[1] - h / 2;
-    var sel = state.seleccion === actor.id ? " selected" : "";
-    var val = state.contratos[actor.id] && state.contratos[actor.id].verdict ? " valorado" : "";
-    var cls = "node node-" + actor.grupo + sel + val;
-    var html = '<g class="' + cls + '" data-id="' + actor.id + '" tabindex="0" role="button" aria-label="' + esc(actor.nombre) + '">';
-    html += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="10"></rect>';
-    if (actor.id === "mod") {
-      html += '<text class="nname" x="' + p[0] + '" y="' + (p[1] - 12) + '" text-anchor="middle">Índice + reglas + logs</text>';
-      html += '<text class="nrole" x="' + p[0] + '" y="' + (p[1] + 6) + '" text-anchor="middle">acceso por finalidad · mínimo necesario</text>';
-      html += '<text class="nrole" x="' + p[0] + '" y="' + (p[1] + 22) + '" text-anchor="middle">la evidencia permanece en sus repositorios de origen</text>';
-    } else {
-      html += '<text class="nname" x="' + p[0] + '" y="' + (p[1] - 3) + '" text-anchor="middle">' + esc(actor.nombre) + "</text>";
-      html += '<text class="nrole" x="' + p[0] + '" y="' + (p[1] + 14) + '" text-anchor="middle">' + esc(actor.rol) + "</text>";
-      html += '<circle class="dot" cx="' + (x + w - 11) + '" cy="' + (y + 11) + '" r="4"></circle>';
-    }
-    html += "</g>";
-    return html;
+  function globalCargaTra() {
+    var n = 0;
+    Object.keys(state.sim).forEach(function (rol) {
+      var a = state.sim[rol] && state.sim[rol].asis;
+      if (a) n += a.cargaTra;
+    });
+    return n;
   }
 
-  function anclaFrame(mode) {
-    var eps = POS[mode].eps, arl = POS[mode].arl;
-    var x1 = Math.min(eps[0], arl[0]) - NW / 2 - 14;
-    var x2 = Math.max(eps[0], arl[0]) + NW / 2 + 14;
-    var y1 = Math.min(eps[1], arl[1]) - NH / 2 - 26;
-    var y2 = Math.max(eps[1], arl[1]) + NH / 2 + 12;
-    return '<rect class="anclabox" x="' + x1 + '" y="' + y1 + '" width="' + (x2 - x1) + '" height="' + (y2 - y1) + '" rx="14"></rect>' +
-           '<text class="anclatag" x="' + ((x1 + x2) / 2) + '" y="' + (y1 + 15) + '" text-anchor="middle">SURA · ORGANIZACIÓN ANCLA</text>';
+  function afterAction() { saveState(); renderAll(); }
+
+  /* ================= Mapa ================= */
+  var POS = {
+    asis: {
+      tra:[500,300], ips:[320,112], emp:[122,208], eps:[585,95], arl:[812,152],
+      afp:[856,332], jr:[655,458], jn:[380,472],
+      mintrab:[140,588], minsalud:[380,594], supersalud:[620,594], jueces:[860,588]
+    },
+    tobe: {
+      mod:[500,330], tra:[500,120], ips:[295,105], emp:[118,228], eps:[705,105],
+      arl:[874,228], afp:[880,402], jr:[726,508], jn:[268,508],
+      mintrab:[118,402], minsalud:[140,592], supersalud:[500,606], jueces:[858,592]
+    }
+  };
+  var BASE_EDGES = {
+    asis: [
+      { a:"ips", b:"tra", t:"info" }, { a:"emp", b:"tra", t:"info" },
+      { a:"tra", b:"eps", t:"info" }, { a:"tra", b:"afp", t:"info" }, { a:"tra", b:"jr", t:"info" },
+      { a:"eps", b:"tra", t:"dictamen" }, { a:"arl", b:"tra", t:"dictamen" },
+      { a:"jr", b:"tra", t:"dictamen" }, { a:"afp", b:"tra", t:"dictamen" }, { a:"jn", b:"tra", t:"dictamen" },
+      { a:"eps", b:"arl", t:"tension", label:"¿origen?" },
+      { a:"arl", b:"afp", t:"tension", label:"¿quién paga?" },
+      { a:"jr", b:"jn", t:"tension", label:"apelación" },
+      { a:"mintrab", b:"emp", t:"control" }, { a:"mintrab", b:"arl", t:"control" },
+      { a:"minsalud", b:"ips", t:"control" }, { a:"supersalud", b:"eps", t:"control" },
+      { a:"jueces", b:"jn", t:"control" }
+    ],
+    tobe: [
+      { a:"tra", b:"mod", t:"info" },
+      { a:"ips", b:"mod", t:"teal" }, { a:"emp", b:"mod", t:"teal" }, { a:"eps", b:"mod", t:"teal" },
+      { a:"arl", b:"mod", t:"teal" }, { a:"afp", b:"mod", t:"teal" }, { a:"jr", b:"mod", t:"teal" }, { a:"jn", b:"mod", t:"teal" },
+      { a:"mintrab", b:"mod", t:"control" }, { a:"minsalud", b:"mod", t:"control" },
+      { a:"supersalud", b:"mod", t:"control" }, { a:"jueces", b:"mod", t:"control" }
+    ]
+  };
+  var MODE_NOTES = {
+    asis: "Red fragmentada: cada evidencia vive con un custodio distinto y se pide por oficio, sin acuse ni término trazable. Las aristas resaltadas muestran SUS gestiones: ámbar = en fricción, verde = conseguida.",
+    tobe: "Configuración federada: declara una finalidad y consulta solo la evidencia pertinente a través del módulo (índice + reglas + logs). Verde = vista mínima obtenida; rojo punteado = intento denegado por mínimo necesario."
+  };
+
+  var svg = document.getElementById("mapbox");
+  var NW = 152, NH = 54, MW = 262, MH = 80;
+
+  function relevantes() {
+    var rol = state.rol;
+    if (!rol) return null;
+    var cfg = ROLES[rol];
+    var set = { }; set[rol] = 1; set.mod = 1; set.tra = 1;
+    (cfg.necesita || []).forEach(function (d) { set[DOCS[d].c] = 1; });
+    (cfg.objetivo || []).forEach(function (o) { set[o] = 1; });
+    custodiaDe(rol).forEach(function () { });
+    return set;
+  }
+
+  function lineHtml(cls, p1, p2, extra) {
+    return '<line class="' + cls + (extra || "") + '" x1="' + p1[0] + '" y1="' + p1[1] + '" x2="' + p2[0] + '" y2="' + p2[1] + '"></line>';
   }
 
   function renderMap() {
-    var mode = state.modo;
-    var html = anclaFrame(mode);
-    EDGES[mode].forEach(function (e) { html += edgeLine(mode, e); });
-    if (mode === "tobe") html += nodeBox(mode, MOD);
-    ACTORES.forEach(function (a) { html += nodeBox(mode, a); });
-    svg.innerHTML = html;
+    var mode = state.modo, rol = state.rol;
+    var rel = relevantes();
+    var html = "";
 
+    // marco SURA
+    var eps = POS[mode].eps, arl = POS[mode].arl;
+    var fx1 = Math.min(eps[0], arl[0]) - NW/2 - 14, fx2 = Math.max(eps[0], arl[0]) + NW/2 + 14;
+    var fy1 = Math.min(eps[1], arl[1]) - NH/2 - 26, fy2 = Math.max(eps[1], arl[1]) + NH/2 + 12;
+    html += '<rect class="anclabox" x="' + fx1 + '" y="' + fy1 + '" width="' + (fx2-fx1) + '" height="' + (fy2-fy1) + '" rx="14"></rect>' +
+            '<text class="anclatag" x="' + ((fx1+fx2)/2) + '" y="' + (fy1+15) + '" text-anchor="middle">SURA · ORGANIZACIÓN ANCLA</text>';
+
+    // aristas base (atenuadas si hay rol y no lo tocan)
+    BASE_EDGES[mode].forEach(function (e) {
+      var cls = { info:"edge-info", dictamen:"edge-dictamen", tension:"edge-tension", control:"edge-control", teal:"edge-teal" }[e.t];
+      var dim = rel && !(e.a === rol || e.b === rol || (mode === "tobe" && (e.a === "mod" || e.b === "mod") && (rel[e.a] || rel[e.b])));
+      if (rel && (rel[e.a] && rel[e.b])) dim = false;
+      html += lineHtml(cls + (dim ? " edge-dim" : ""), POS[mode][e.a], POS[mode][e.b]);
+      if (e.label && !dim) {
+        var mx = (POS[mode][e.a][0] + POS[mode][e.b][0]) / 2, my = (POS[mode][e.a][1] + POS[mode][e.b][1]) / 2 - 4;
+        html += '<text class="elabel elabel-tension" x="' + mx + '" y="' + my + '" text-anchor="middle">' + esc(e.label) + "</text>";
+      }
+    });
+
+    // sobre-aristas de la simulación del rol activo
+    if (rol) {
+      var sim = simFor(rol, mode), cfg = ROLES[rol];
+      function flow(aId, bId, cls) {
+        var extra = (lastFlash && ((lastFlash.a === aId && lastFlash.b === bId) || (lastFlash.a === bId && lastFlash.b === aId))) ? " pulse" : "";
+        html += lineHtml(cls, POS[mode][aId], POS[mode][bId], extra);
+      }
+      if (mode === "asis") {
+        if (cfg.tipo === "control") {
+          (cfg.objetivo || []).forEach(function (o) {
+            var st = sim.docs["informe_" + o] || 0;
+            if (st === 0) return;
+            flow(rol, o, st === 3 ? "flow-ok" : "flow-pend");
+          });
+        } else {
+          (cfg.necesita || []).forEach(function (d) {
+            var st = sim.docs[d] || 0;
+            if (st === 0) return;
+            flow(rol, DOCS[d].c, st === 3 ? "flow-ok" : "flow-pend");
+          });
+        }
+      } else {
+        if (sim.finalidad || cfg.tipo === "control" && sim.supervision) flow(rol, "mod", "flow-ok");
+        Object.keys(sim.docs).forEach(function (d) {
+          if (!DOCS[d]) return;
+          flow("mod", DOCS[d].c, sim.docs[d] === "ok" ? "flow-ok" : "flow-den");
+        });
+      }
+    }
+
+    // nodos
+    if (mode === "tobe") {
+      var p = POS.tobe.mod;
+      html += '<g class="node node-mod" data-id="mod"><rect x="' + (p[0]-MW/2) + '" y="' + (p[1]-MH/2) + '" width="' + MW + '" height="' + MH + '" rx="12"></rect>' +
+        '<text class="nname" x="' + p[0] + '" y="' + (p[1]-12) + '" text-anchor="middle">Índice + reglas + logs</text>' +
+        '<text class="nrole" x="' + p[0] + '" y="' + (p[1]+6) + '" text-anchor="middle">acceso por finalidad · mínimo necesario</text>' +
+        '<text class="nrole" x="' + p[0] + '" y="' + (p[1]+22) + '" text-anchor="middle">la evidencia permanece en sus repositorios de origen</text></g>';
+    }
+    ACTORES.forEach(function (a) {
+      var p = POS[mode][a.id];
+      var x = p[0]-NW/2, y = p[1]-NH/2;
+      var you = rol === a.id;
+      var dim = rel && !rel[a.id] && !you;
+      var cls = "node node-" + a.grupo + (you ? " node-you" : "") + (dim ? " node-dim" : "");
+      html += '<g class="' + cls + '" data-id="' + a.id + '" tabindex="0" role="button" aria-label="Asumir rol: ' + esc(a.nombre) + '">' +
+        '<rect x="' + x + '" y="' + y + '" width="' + NW + '" height="' + NH + '" rx="10"></rect>' +
+        '<text class="nname" x="' + p[0] + '" y="' + (p[1]-3) + '" text-anchor="middle">' + esc(a.nombre) + "</text>" +
+        '<text class="nrole" x="' + p[0] + '" y="' + (p[1]+14) + '" text-anchor="middle">' + esc(a.rol) + "</text>";
+      if (you) html += '<text class="youtag" x="' + p[0] + '" y="' + (y + NH + 14) + '" text-anchor="middle">USTED</text>';
+      html += "</g>";
+    });
+
+    svg.innerHTML = html;
     svg.querySelectorAll(".node").forEach(function (g) {
       var id = g.getAttribute("data-id");
-      if (id === "mod") { g.removeAttribute("tabindex"); g.removeAttribute("role"); g.style.cursor = "default"; return; }
-      g.addEventListener("click", function () { selectActor(id); });
+      if (id === "mod") { g.removeAttribute("tabindex"); g.style.cursor = "default"; return; }
+      g.addEventListener("click", function () { setRol(id); });
       g.addEventListener("keydown", function (ev) {
-        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); selectActor(id); }
+        if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); setRol(id); }
       });
     });
 
-    document.getElementById("map-title").textContent =
-      mode === "asis" ? "AS-IS · red fragmentada" : "TO-BE · configuración federada";
+    document.getElementById("map-title").textContent = mode === "asis" ? "AS-IS · red fragmentada" : "TO-BE · configuración federada";
     document.getElementById("mode-note").textContent = MODE_NOTES[mode];
-    document.getElementById("rules").classList.toggle("visible", mode === "tobe");
-    renderLegend();
+    document.getElementById("legend").innerHTML =
+      '<span><i class="lg lg-base"></i>Relación estructural</span>' +
+      '<span><i class="lg lg-pend"></i>Su gestión en fricción</span>' +
+      '<span><i class="lg lg-ok"></i>Evidencia obtenida / acceso activo</span>' +
+      (mode === "tobe" ? '<span><i class="lg lg-den"></i>Denegado por mínimo necesario</span>' : "") +
+      '<span style="margin-left:auto">Haga clic en un actor para asumir su rol</span>';
+    lastFlash = null;
   }
 
-  function renderLegend() {
-    var items = state.modo === "asis"
-      ? [["lg-info","Información y evidencia"],["lg-dictamen","Dictamen / prestación"],["lg-tension","Tensión o controversia"],["lg-control","Autoridad / supervisión"]]
-      : [["lg-info","Vista de estado del trabajador"],["lg-teal","Intercambio por finalidad"],["lg-control","Autoridad / supervisión"]];
-    document.getElementById("legend").innerHTML = items.map(function (it) {
-      return "<span><i class=\"lg " + it[0] + "\"></i>" + it[1] + "</span>";
-    }).join("");
+  /* ================= Barra de rol ================= */
+  function renderRolebar() {
+    var el = document.getElementById("rolebar");
+    if (!state.rol) {
+      el.innerHTML = '<span class="fin">Ning&uacute;n rol asumido todav&iacute;a.</span><span class="grow"></span>' +
+        '<button type="button" class="btn btn-primary" id="rb-pick">Asumir un rol</button>';
+    } else {
+      var a = actor(state.rol), cfg = ROLES[state.rol];
+      var cust = custodiaDe(state.rol).map(function (d) { return DOCS[d].n; });
+      el.innerHTML =
+        '<span class="youchip"><span class="tag">Usted es</span> ' + esc(a.nombre) + "</span>" +
+        '<span class="fin">Finalidad: ' + esc(cfg.finalidad) + (cust.length ? " · Custodia: " + esc(cust.join(", ")) : "") + "</span>" +
+        '<span class="grow"></span>' +
+        '<button type="button" id="rb-pick">Cambiar rol</button>';
+    }
+    el.querySelector("#rb-pick").addEventListener("click", openPicker);
   }
 
-  function setMode(mode) {
-    if (state.modo === mode) return;
-    state.modo = mode;
-    document.getElementById("btn-asis").setAttribute("aria-pressed", String(mode === "asis"));
-    document.getElementById("btn-tobe").setAttribute("aria-pressed", String(mode === "tobe"));
-    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) { renderMap(); saveState(); return; }
-    svg.style.opacity = "0";
-    setTimeout(function () { renderMap(); svg.style.opacity = "1"; }, 180);
-    saveState();
+  /* ================= Panel: Actuar ================= */
+  function docStateChip(mode, st) {
+    if (mode === "asis") {
+      if (!st) return '<span class="docstate st-none">sin solicitar</span>';
+      if (st === 1) return '<span class="docstate st-pend">devuelta / sin respuesta</span>';
+      if (st === 2) return '<span class="docstate st-pend">incompleta</span>';
+      return '<span class="docstate st-ok">disponible</span>';
+    }
+    if (st === "ok") return '<span class="docstate st-ok">vista mínima</span>';
+    if (st === "den") return '<span class="docstate st-den">denegado · regla 3</span>';
+    return '<span class="docstate st-none">sin consultar</span>';
+  }
+  function asisBtnLabel(st) {
+    if (!st) return "Solicitar";
+    if (st === 1) return "Reiterar";
+    if (st === 2) return "Que la consiga el trabajador";
+    return "";
   }
 
-  /* ---------------- Panel del actor ---------------- */
-  var GRUPO_CHIP = {
-    focal: ["chip-focal", "Actor focal"],
-    ancla: ["chip-ancla", "SURA · organización ancla"],
-    core: ["chip-core", "Actor directo"],
-    control: ["chip-control", "Indirecto / control"]
-  };
+  function renderActuar() {
+    var rol = state.rol, mode = state.modo;
+    if (!rol) return "<p>Asuma un rol para operar la ruta.</p>";
+    var cfg = ROLES[rol], sim = simFor(rol, mode);
+    var h = "";
 
-  function selectActor(id) {
-    state.seleccion = id;
-    renderMap();
-    renderPanel();
-    saveState();
+    h += '<div class="finline"><b>Su finalidad:</b> ' + esc(cfg.finalidad) + (mode === "tobe" ? (sim.finalidad ? " · <b>declarada</b>" : " · sin declarar") : "") + "</div>";
+
+    if (cfg.tipo === "control") {
+      if (mode === "asis") {
+        h += '<p style="font-size:13.5px;color:var(--ink-soft)">Como autoridad, hoy usted solo puede requerir informes por oficio, sin t&eacute;rminos trazables:</p>';
+        (cfg.objetivo || []).forEach(function (o) {
+          var st = sim.docs["informe_" + o] || 0;
+          h += '<div class="docrow"><span class="dname">Informe de ' + esc(actor(o).nombre) + '</span>' + docStateChip("asis", st === 3 ? 3 : st) +
+            (st < 3 ? '<button type="button" data-act="ctl-asis" data-arg="' + o + '">' + (st === 0 ? "Requerir" : "Reiterar con apremio") + "</button>" : "") + "</div>";
+        });
+      } else {
+        h += '<p style="font-size:13.5px;color:var(--ink-soft)">En el TO-BE su competencia se traduce en una vista de supervisi&oacute;n: tiempos, incidencias y accesos, sin pedir informes ad hoc.</p>';
+        h += '<div class="docrow"><span class="dname">Vista de supervisi&oacute;n (' + esc((cfg.objetivo || []).map(function (o) { return actor(o).nombre; }).join(", ")) + ")</span>" +
+          (sim.supervision ? '<span class="docstate st-ok">activa</span>' : '<button type="button" data-act="ctl-tobe">Abrir vista</button>') + "</div>";
+        if (sim.supervision) {
+          var gl = globalLogs();
+          var den = 0; Object.keys(state.sim).forEach(function (r) { var t = state.sim[r] && state.sim[r].tobe; if (t) den += t.denegados; });
+          h += '<div class="simstats"><span><b>' + gl.length + "</b>registros auditables</span><span><b>" + den + "</b>intentos denegados</span><span><b>0</b>informes por oficio</span></div>";
+          if (!gl.length) h += '<p style="font-size:12.5px;color:var(--ink-faint)">A&uacute;n no hay actividad de otros actores: juegue otros roles en TO-BE y vuelva aqu&iacute;.</p>';
+        }
+      }
+    } else if (rol === "tra" && mode === "tobe") {
+      h += '<div class="docrow"><span class="dname">Vista de estado de mi caso<small>qui&eacute;n consulta mi evidencia, con qu&eacute; finalidad y en qu&eacute; plazo</small></span>' +
+        '<button type="button" data-act="tra-vista">' + (sim.finalidad ? "Actualizar" : "Abrir") + "</button></div>";
+      if (sim.finalidad) {
+        var logs = globalLogs();
+        h += '<div class="simstats"><span class="good"><b>' + logs.length + '</b>consultas trazables sobre su evidencia</span><span class="good"><b>0</b>documentos que usted tuvo que llevar</span></div>';
+        if (logs.length) {
+          h += '<div class="bitacora"><h3>Trazabilidad de su evidencia (regla 5)</h3><ul>' +
+            logs.slice(-8).map(function (l) { return '<li class="bit-log"><span class="dia">d&iacute;a ' + l.dia + "</span>" + esc(l.txt) + "</li>"; }).join("") +
+            "</ul></div>";
+        } else {
+          h += '<p style="font-size:12.5px;color:var(--ink-faint)">A&uacute;n nadie consulta su evidencia. Juegue EPS, ARL o Junta en TO-BE y vuelva a esta vista: cada consulta aparecer&aacute; aqu&iacute;, con finalidad y acuse.</p>';
+        }
+      }
+    } else {
+      // entidades (y trabajador en AS-IS): expediente accionable
+      var need = cfg.necesita || [];
+      if (mode === "tobe" && !sim.finalidad) {
+        h += '<div class="docrow"><span class="dname">Contrato de acceso<small>requisito del m&oacute;dulo: toda consulta exige una finalidad expl&iacute;cita (regla 2)</small></span>' +
+          '<button type="button" data-act="declarar">Declarar finalidad</button></div>';
+      }
+      var listDocs = mode === "asis" ? need : DOC_IDS.filter(function (d) { return DOCS[d].c !== rol; });
+      listDocs.forEach(function (d) {
+        var st = sim.docs[d];
+        var esNecesaria = need.indexOf(d) >= 0;
+        var row = '<div class="docrow"><span class="dname">' + esc(DOCS[d].n) +
+          "<small>custodio: " + esc(actor(DOCS[d].c).nombre) + (mode === "tobe" && !esNecesaria ? " · fuera de su finalidad" : "") + "</small></span>" +
+          docStateChip(mode, st);
+        if (mode === "asis") {
+          if ((st || 0) < 3) row += '<button type="button" data-act="asis-doc" data-arg="' + d + '">' + asisBtnLabel(st || 0) + "</button>";
+        } else if (sim.finalidad && st !== "ok" && st !== "den") {
+          row += '<button type="button" data-act="tobe-doc" data-arg="' + d + '">Consultar</button>';
+        }
+        row += "</div>";
+        h += row;
+      });
+
+      var listos = need.filter(function (d) { return mode === "asis" ? sim.docs[d] === 3 : sim.docs[d] === "ok"; }).length;
+      h += '<div class="flabel" style="margin-top:10px">Evidencia para su decisi&oacute;n: ' + listos + " de " + need.length + "</div>" +
+        '<div class="completeness"><div style="width:' + (need.length ? listos / need.length * 100 : 0) + '%"></div></div>';
+      if (cfg.decision) {
+        h += '<div style="margin-top:10px"><button type="button" class="btn btn-primary" data-act="decidir" ' +
+          (listos === need.length && !sim.decidido ? "" : "disabled") + ">" + esc(cfg.decision) + "</button>" +
+          (sim.decidido ? ' <span class="docstate st-ok" style="vertical-align:middle">decisi&oacute;n emitida</span>' : "") + "</div>";
+      }
+    }
+
+    // estadísticas del modo
+    h += '<div class="simstats">' +
+      '<span class="' + (mode === "asis" ? "bad" : "good") + '"><b>' + sim.dias + "</b>d&iacute;as simulados</span>" +
+      "<span><b>" + sim.pasos + "</b>pasos</span>" +
+      '<span class="' + (sim.cargaTra ? "bad" : "") + '"><b>' + sim.cargaTra + "</b>cargas al trabajador</span>" +
+      '<span class="' + (mode === "tobe" ? "good" : "bad") + '"><b>' + (mode === "tobe" ? sim.regs : 0) + "</b>registros trazables</span>" +
+      (mode === "tobe" ? "<span><b>" + sim.denegados + "</b>denegados (regla 3)</span>" : "") +
+      "</div>";
+
+    // bitácora
+    h += '<div class="bitacora"><h3>' + (mode === "asis" ? "Bit&aacute;cora (sin acuse ni t&eacute;rmino verificable)" : "Registro auditable del m&oacute;dulo") + "</h3>";
+    if (!sim.bitacora.length) {
+      h += '<p style="font-size:12.5px;color:var(--ink-faint)">Sin actividad todav&iacute;a: ejecute una acci&oacute;n arriba y compare luego con el otro modo.</p>';
+    } else {
+      h += "<ul>" + sim.bitacora.slice(-14).map(function (b) {
+        return '<li class="bit-' + b.tipo + '"><span class="dia">d&iacute;a ' + b.dia + "</span>" + esc(b.txt) + "</li>";
+      }).join("") + "</ul>";
+    }
+    h += "</div>";
+    return h;
   }
 
+  /* ================= Panel: Validar ================= */
+  var GRUPO_CHIP = { focal:["chip-focal","Actor focal"], ancla:["chip-ancla","SURA · organización ancla"], core:["chip-core","Actor directo"], control:["chip-control","Indirecto / control"] };
+
+  function optButtons(name, ops, current, extraCls) {
+    return '<div class="optrow ' + (extraCls || "") + '" data-q="' + name + '">' + ops.map(function (o) {
+      return '<button type="button" data-v="' + o[0] + '" aria-pressed="' + String(current === o[0]) + '">' + o[1] + "</button>";
+    }).join("") + "</div>";
+  }
+
+  function renderValidar() {
+    var rol = state.rol;
+    if (!rol) return "<p>Asuma un rol para validarlo.</p>";
+    var a = actor(rol), v = validFor(rol), chip = GRUPO_CHIP[a.grupo];
+    var h = '<span class="chip ' + chip[0] + '">' + chip[1] + "</span>" +
+      '<h2 style="font-size:20px;margin:8px 0 2px">' + esc(a.nombre) + "</h2>" +
+      '<div class="field"><div class="flabel">Tensi&oacute;n observada + precedente</div><div style="font-size:14px">' + esc(a.tension) + "</div><div>" +
+        a.precedentes.map(function (p) { return '<span class="prec">' + esc(p) + "</span>"; }).join("") + "</div></div>" +
+      '<div class="field"><div class="flabel">Contrato TO-BE a validar</div><div class="contract">' + esc(a.contrato) + "</div>" +
+      optButtons("verdict", [["aceptar","Aceptar"],["ajustar","Ajustar"],["rechazar","Rechazar"]], v.verdict, "sem") + "</div>";
+
+    PREGUNTAS.forEach(function (q) {
+      var ops = q.tipo === "escala" ? [["1","1"],["2","2"],["3","3"],["4","4"],["5","5"]] : q.ops;
+      h += '<div class="field"><div class="flabel" style="text-transform:none;letter-spacing:0;font-size:13px">' + esc(q.txt) +
+        (q.tipo === "escala" ? ' <span style="color:var(--ink-faint)">(1 = nada &middot; 5 = totalmente)</span>' : "") + "</div>" +
+        optButtons(q.id, ops, v[q.id]) + "</div>";
+    });
+
+    h += '<div class="field"><div class="flabel">Ajuste propuesto (opcional)</div>' +
+      '<textarea id="v-coment" placeholder="Solo si marc&oacute; Ajustar/Rechazar o quiere precisar algo">' + esc(v.comentario || "") + "</textarea></div>";
+    return h;
+  }
+
+  /* ================= Panel: tabs + eventos ================= */
   function renderPanel() {
-    var a = ACTORES.filter(function (x) { return x.id === state.seleccion; })[0] || ACTORES[0];
-    var c = state.contratos[a.id];
-    var chip = GRUPO_CHIP[a.grupo];
-    var panel = document.getElementById("actor-panel");
-    panel.innerHTML =
-      '<span class="chip ' + chip[0] + '">' + chip[1] + "</span>" +
-      "<h2>" + esc(a.nombre) + "</h2>" +
-      '<div class="field"><div class="flabel">Función dominante</div><div>' + esc(a.funcion) + "</div></div>" +
-      '<div class="field"><div class="flabel">Tensión observada + precedente</div><div>' + esc(a.tension) + "</div><div>" +
-        a.precedentes.map(function (p) { return '<span class="prec">' + esc(p) + "</span>"; }).join("") +
-      "</div></div>" +
-      '<div class="field"><div class="flabel">Contrato TO-BE a validar</div><div class="contract">' + esc(a.contrato) + "</div></div>" +
-      '<div class="field"><div class="flabel">Semáforo de validación</div>' +
-        '<div class="verdicts" role="group" aria-label="Veredicto del contrato">' +
-          verdictBtn("aceptar", "Aceptar", c.verdict) +
-          verdictBtn("ajustar", "Ajustar", c.verdict) +
-          verdictBtn("rechazar", "Rechazar", c.verdict) +
-        "</div>" +
-      "</div>" +
-      '<div class="field"><div class="flabel">Comentario / ajuste propuesto</div>' +
-        '<textarea id="comentario" placeholder="&iquest;Qué falta, sobra o debe cambiar en este contrato?">' + esc(c.comentario) + "</textarea>" +
-      "</div>" +
-      '<div class="progress" id="progress"></div>';
+    var body = document.getElementById("tabbody");
+    document.getElementById("tab-actuar").setAttribute("aria-selected", String(state.tab === "actuar"));
+    document.getElementById("tab-validar").setAttribute("aria-selected", String(state.tab === "validar"));
+    body.innerHTML = state.tab === "actuar" ? renderActuar() : renderValidar();
 
-    panel.querySelectorAll(".verdicts button").forEach(function (btn) {
+    body.querySelectorAll("[data-act]").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        var v = btn.getAttribute("data-v");
-        c.verdict = c.verdict === v ? null : v;
-        renderPanel();
-        renderMap();
-        saveState();
+        var act = btn.getAttribute("data-act"), arg = btn.getAttribute("data-arg");
+        if (act === "asis-doc") asisAccion(arg);
+        else if (act === "tobe-doc") tobeConsultar(arg);
+        else if (act === "declarar") tobeDeclarar();
+        else if (act === "decidir") decidir(state.modo);
+        else if (act === "ctl-asis") controlAsis(arg);
+        else if (act === "ctl-tobe") controlTobe();
+        else if (act === "tra-vista") traTobeVista();
       });
     });
-    panel.querySelector("#comentario").addEventListener("input", function (ev) {
-      c.comentario = ev.target.value;
-      saveState();
+    body.querySelectorAll(".optrow").forEach(function (row) {
+      var q = row.getAttribute("data-q");
+      row.querySelectorAll("button").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var v = validFor(state.rol);
+          var val = btn.getAttribute("data-v");
+          v[q === "verdict" ? "verdict" : q] = (v[q === "verdict" ? "verdict" : q] === val) ? null : val;
+          saveState(); renderAll();
+        });
+      });
     });
-    renderProgress();
+    var ta = body.querySelector("#v-coment");
+    if (ta) ta.addEventListener("input", function () { validFor(state.rol).comentario = ta.value; saveState(); });
   }
 
-  function verdictBtn(v, label, current) {
-    return '<button type="button" data-v="' + v + '" aria-pressed="' + String(current === v) + '">' + label + "</button>";
+  /* ================= Resultados ================= */
+  function metricRow(nombre, a, b, invertir) {
+    var aBetter = invertir ? a > b : a < b;
+    var cls1 = (a === b) ? "" : (aBetter ? "mejor" : "peor");
+    var cls2 = (a === b) ? "" : (aBetter ? "peor" : "mejor");
+    return "<tr><td>" + nombre + '</td><td class="num ' + cls1 + '">' + a + '</td><td class="num ' + cls2 + '">' + b + "</td></tr>";
   }
+  function renderResultados() {
+    var el = document.getElementById("cmp"), hint = document.getElementById("cmp-hint");
+    if (!state.rol) { hint.textContent = "Asuma un rol y opere en ambos modos para ver la comparación."; el.innerHTML = ""; }
+    else {
+      var a = simFor(state.rol, "asis"), t = simFor(state.rol, "tobe");
+      hint.textContent = "Métricas de SU recorrido como " + actor(state.rol).nombre + " con el mismo caso sintético (hipótesis H3: mejora observable).";
+      if (!a.pasos && !t.pasos) {
+        el.innerHTML = '<p style="font-size:13.5px;color:var(--ink-faint)">Sin acciones todavía. Opere la ruta en AS-IS, cambie a TO-BE y repita: la tabla se llena sola.</p>';
+      } else {
+        el.innerHTML = '<table class="cmp"><thead><tr><th>M&eacute;trica</th><th>AS-IS</th><th>TO-BE</th></tr></thead><tbody>' +
+          metricRow("Días simulados", a.dias, t.dias, false) +
+          metricRow("Pasos ejecutados", a.pasos, t.pasos, false) +
+          metricRow("Cargas trasladadas al trabajador", a.cargaTra, t.cargaTra, false) +
+          metricRow("Registros trazables", 0, t.regs, true) +
+          metricRow("Accesos denegados (mínimo necesario)", 0, t.denegados, true) +
+          "</tbody></table>" +
+          '<p style="font-size:12px;color:var(--ink-faint);margin-top:8px">Verde = mejor. Las denegaciones cuentan a favor: demuestran que la regla 3 restringe su propio rol.</p>';
+      }
+    }
 
-  function renderProgress() {
+    // agregado
+    var agg = document.getElementById("agg");
+    var jugados = Object.keys(state.sim).filter(function (r) {
+      var s = state.sim[r];
+      return (s.asis && s.asis.pasos) || (s.tobe && s.tobe.pasos);
+    });
+    var validados = Object.keys(state.valid).filter(function (r) { return state.valid[r] && state.valid[r].verdict; });
     var counts = { aceptar:0, ajustar:0, rechazar:0 };
-    ACTORES.forEach(function (a) {
-      var v = state.contratos[a.id].verdict;
-      if (v) counts[v]++;
+    validados.forEach(function (r) { counts[state.valid[r].verdict]++; });
+    var claridad = [], mejora = [];
+    Object.keys(state.valid).forEach(function (r) {
+      var v = state.valid[r];
+      if (v.q_claridad) claridad.push(+v.q_claridad);
+      if (v.q_mejora) mejora.push(+v.q_mejora);
     });
-    var total = ACTORES.length;
-    var done = counts.aceptar + counts.ajustar + counts.rechazar;
-    var el = document.getElementById("progress");
-    if (!el) return;
-    el.innerHTML =
-      '<div class="flabel">Avance de la sesión</div>' +
-      "<div>Contratos valorados: <b>" + done + " de " + total + "</b></div>" +
-      '<div class="pbar">' +
-        '<div class="p-aceptar" style="width:' + (counts.aceptar / total * 100) + '%"></div>' +
-        '<div class="p-ajustar" style="width:' + (counts.ajustar / total * 100) + '%"></div>' +
-        '<div class="p-rechazar" style="width:' + (counts.rechazar / total * 100) + '%"></div>' +
+    function avg(xs) { return xs.length ? (xs.reduce(function (p, c) { return p + c; }, 0) / xs.length).toFixed(1) : "—"; }
+    agg.innerHTML =
+      '<div class="simstats">' +
+      "<span><b>" + jugados.length + " / 12</b>roles jugados</span>" +
+      "<span><b>" + validados.length + " / 12</b>contratos valorados</span>" +
+      '<span class="bad"><b>' + globalCargaTra() + "</b>veces que el costo cay&oacute; en el trabajador (AS-IS)</span>" +
+      '<span class="good"><b>' + globalLogs().length + "</b>registros auditables (TO-BE)</span>" +
       "</div>" +
-      '<div class="pstats">' +
-        '<span><i class="i-aceptar">' + counts.aceptar + "</i> aceptados</span>" +
-        '<span><i class="i-ajustar">' + counts.ajustar + "</i> por ajustar</span>" +
-        '<span><i class="i-rechazar">' + counts.rechazar + "</i> rechazados</span>" +
-      "</div>";
-    renderGate(counts, done);
+      '<div class="simstats"><span><b>' + counts.aceptar + "</b>aceptar</span><span><b>" + counts.ajustar + "</b>ajustar</span><span><b>" + counts.rechazar + "</b>rechazar</span>" +
+      "<span><b>" + avg(claridad) + "</b>claridad media (1-5)</span><span><b>" + avg(mejora) + "</b>mejora media (1-5)</span></div>" +
+      '<div class="rolchips">' + ACTORES.map(function (ac) {
+        var done = validados.indexOf(ac.id) >= 0, played = jugados.indexOf(ac.id) >= 0;
+        return '<span class="' + (done ? "done" : "") + '">' + esc(ac.nombre) + (done ? " ✓" : played ? " · jugado" : "") + "</span>";
+      }).join("") + "</div>";
+
+    renderGate(counts, validados.length);
   }
 
-  /* ---------------- Ranking de rupturas ---------------- */
   function renderRank() {
     var ol = document.getElementById("rank");
     ol.innerHTML = state.rupturas.map(function (rid, i) {
       var r = RUPTURAS.filter(function (x) { return x.id === rid; })[0];
-      return "<li>" +
-        '<span class="pos">' + (i + 1) + "</span>" +
-        '<span class="rtxt">' + esc(r.txt) + "</span>" +
-        '<span class="mv">' +
-          '<button type="button" data-i="' + i + '" data-d="-1" aria-label="Subir" ' + (i === 0 ? "disabled" : "") + ">↑</button>" +
-          '<button type="button" data-i="' + i + '" data-d="1" aria-label="Bajar" ' + (i === state.rupturas.length - 1 ? "disabled" : "") + ">↓</button>" +
-        "</span></li>";
+      return '<li><span class="pos">' + (i + 1) + '</span><span class="rtxt">' + esc(r.txt) + '</span><span class="mv">' +
+        '<button type="button" data-i="' + i + '" data-d="-1" aria-label="Subir" ' + (i === 0 ? "disabled" : "") + ">↑</button>" +
+        '<button type="button" data-i="' + i + '" data-d="1" aria-label="Bajar" ' + (i === state.rupturas.length - 1 ? "disabled" : "") + ">↓</button></span></li>";
     }).join("");
     ol.querySelectorAll("button").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        var i = parseInt(btn.getAttribute("data-i"), 10);
-        var d = parseInt(btn.getAttribute("data-d"), 10);
-        var j = i + d;
+        var i = +btn.getAttribute("data-i"), d = +btn.getAttribute("data-d"), j = i + d;
         if (j < 0 || j >= state.rupturas.length) return;
-        var tmp = state.rupturas[i];
-        state.rupturas[i] = state.rupturas[j];
-        state.rupturas[j] = tmp;
-        renderRank();
-        saveState();
+        var tmp = state.rupturas[i]; state.rupturas[i] = state.rupturas[j]; state.rupturas[j] = tmp;
+        saveState(); renderRank();
       });
     });
   }
 
-  /* ---------------- Gate ---------------- */
-  function renderGate(counts, done) {
+  function renderGate(counts, nValidados) {
     var allChecked = state.gate.g1 && state.gate.g2 && state.gate.g3 && state.gate.g4;
     var el = document.getElementById("gate-verdict");
-    if (done < ACTORES.length) {
+    if (nValidados < ACTORES.length) {
       el.className = "gate-verdict gate-wait";
-      el.textContent = "En curso: faltan " + (ACTORES.length - done) + " contratos por valorar.";
+      el.textContent = "En curso: faltan " + (ACTORES.length - nValidados) + " contratos por valorar (juegue y valide cada rol).";
     } else if (counts.rechazar > 0) {
       el.className = "gate-verdict gate-wait";
-      el.textContent = "Aún no: hay " + counts.rechazar + " contrato(s) rechazado(s) que requieren rediseño antes de avanzar.";
+      el.textContent = "Aún no: hay " + counts.rechazar + " contrato(s) rechazado(s) que requieren rediseño.";
     } else if (!allChecked) {
       el.className = "gate-verdict gate-wait";
-      el.textContent = "Contratos valorados. Falta confirmar los criterios del gate para avanzar.";
+      el.textContent = "Contratos valorados. Falta confirmar los criterios del gate.";
     } else {
       el.className = "gate-verdict gate-go";
-      el.textContent = "Gate superado: avanzar al prototipo de media fidelidad (los contratos «por ajustar» entran como backlog).";
+      el.textContent = "Gate superado: avanzar al prototipo de media fidelidad (los «ajustar» entran como backlog).";
     }
   }
 
-  /* ---------------- Exportar ---------------- */
-  function buildExport() {
-    var contratos = ACTORES.map(function (a) {
-      var c = state.contratos[a.id];
-      return { actor:a.nombre, contrato:a.contrato, veredicto:c.verdict || "sin valorar", comentario:c.comentario };
+  /* ================= Selector de rol ================= */
+  function openPicker() {
+    document.getElementById("picker").classList.add("open");
+  }
+  function setRol(id) {
+    state.rol = id;
+    document.getElementById("picker").classList.remove("open");
+    saveState(); renderAll();
+  }
+  function renderPicker() {
+    document.getElementById("rolegrid").innerHTML = ACTORES.map(function (a) {
+      return '<button type="button" data-rol="' + a.id + '"><span class="rn">' + esc(a.nombre) + '</span><span class="rf">' + esc(a.funcion) + '</span><span class="rj">' + esc(ROLES[a.id].finalidad) + "</span></button>";
+    }).join("");
+    document.getElementById("rolegrid").querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () { setRol(b.getAttribute("data-rol")); });
     });
-    var counts = { aceptar:0, ajustar:0, rechazar:0 };
-    ACTORES.forEach(function (a) { var v = state.contratos[a.id].verdict; if (v) counts[v]++; });
+  }
+
+  /* ================= Exportar ================= */
+  function buildExport() {
+    var porRol = {};
+    ACTORES.forEach(function (a) {
+      var s = state.sim[a.id] || {};
+      var v = state.valid[a.id] || {};
+      porRol[a.id] = {
+        actor: a.nombre,
+        contrato: a.contrato,
+        semaforo: v.verdict || "sin valorar",
+        cuestionario: {
+          claridad_1a5: v.q_claridad || null,
+          mejora_1a5: v.q_mejora || null,
+          contrato_cubre: v.q_cubre || null,
+          riesgo_dominante: v.q_riesgo || null,
+          percepcion_trazabilidad: v.q_traza || null,
+          ajuste_propuesto: v.comentario || ""
+        },
+        simulacion: {
+          asis: s.asis ? { dias:s.asis.dias, pasos:s.asis.pasos, cargas_al_trabajador:s.asis.cargaTra, decidido:!!s.asis.decidido } : null,
+          tobe: s.tobe ? { dias:s.tobe.dias, pasos:s.tobe.pasos, registros:s.tobe.regs, denegados:s.tobe.denegados, decidido:!!s.tobe.decidido } : null
+        }
+      };
+    });
     return {
-      instrumento: "Prototipo Low-Fi 01 · validación del mapa de actores (DGIT 6202)",
+      instrumento: "Prototipo Low-Fi 01 · simulador y validación del mapa de actores (DGIT 6202)",
       participante: state.participante,
       fecha: new Date().toISOString(),
-      resumen: counts,
-      contratos: contratos,
+      totales: {
+        cargas_al_trabajador_asis: globalCargaTra(),
+        registros_auditables_tobe: globalLogs().length
+      },
+      por_rol: porRol,
       ranking_rupturas: state.rupturas.map(function (rid, i) {
         var r = RUPTURAS.filter(function (x) { return x.id === rid; })[0];
         return { prioridad: i + 1, ruptura: r.txt };
       }),
-      anotaciones: {
-        actores_o_vinculos_faltantes: state.notas.faltantes,
-        desacuerdos_y_justificacion_de_permisos: state.notas.desacuerdos,
-        riesgos_eticos_y_mitigacion: state.notas.riesgos
-      },
       gate: {
         sin_actor_critico_faltante: state.gate.g1,
         acuerdo_flujos_esenciales: state.gate.g2,
@@ -800,48 +1218,19 @@
     flashMsg._t = setTimeout(function () { el.textContent = ""; }, 3200);
   }
 
-  document.getElementById("btn-copy").addEventListener("click", function () {
-    var json = JSON.stringify(buildExport(), null, 2);
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(json).then(
-        function () { flashMsg("Resultados copiados al portapapeles."); },
-        function () { fallbackCopy(json); }
-      );
-    } else { fallbackCopy(json); }
-  });
-
-  function fallbackCopy(json) {
-    var ta = document.createElement("textarea");
-    ta.value = json;
-    ta.style.position = "fixed"; ta.style.opacity = "0";
-    document.body.appendChild(ta);
-    ta.select();
-    var ok = false;
-    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
-    document.body.removeChild(ta);
-    flashMsg(ok ? "Resultados copiados al portapapeles." : "No se pudo copiar: use Descargar JSON.");
-  }
-
   var downloadsNS = null;
   if (window.claude && typeof window.claude.use === "function") {
-    try {
-      window.claude.use("downloads").then(function (ns) { downloadsNS = ns; }, function () {});
-    } catch (e) { /* runtime sin capacidades */ }
+    try { window.claude.use("downloads").then(function (ns) { downloadsNS = ns; }, function () {}); } catch (e) { /* runtime sin capacidades */ }
   }
-
   function blobDownload(json) {
     var blob = new Blob([json], { type: "application/json" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
-    a.href = url;
-    a.download = "validacion-mapa-actores.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a.href = url; a.download = "validacion-mapa-actores.json";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
     flashMsg("Si la descarga no inicia, use Copiar JSON.");
   }
-
   document.getElementById("btn-download").addEventListener("click", function () {
     var json = JSON.stringify(buildExport(), null, 2);
     if (downloadsNS) {
@@ -854,61 +1243,63 @@
           else flashMsg("No se pudo guardar el archivo: use Copiar JSON.");
         }
       );
-    } else {
-      blobDownload(json);
-    }
+    } else blobDownload(json);
   });
-
+  document.getElementById("btn-copy").addEventListener("click", function () {
+    var json = JSON.stringify(buildExport(), null, 2);
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = json; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      flashMsg(ok ? "Resultados copiados." : "No se pudo copiar: use Descargar JSON.");
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(json).then(function () { flashMsg("Resultados copiados."); }, fallback);
+    } else fallback();
+  });
   document.getElementById("btn-reset").addEventListener("click", function () {
-    if (!window.confirm("Esto borra veredictos, comentarios, ranking y anotaciones de esta sesión. ¿Continuar?")) return;
-    state.participante = "";
-    state.contratos = {};
-    ACTORES.forEach(function (a) { state.contratos[a.id] = { verdict:null, comentario:"" }; });
+    if (!window.confirm("Esto borra todos los roles jugados, veredictos y anotaciones de esta sesión. ¿Continuar?")) return;
+    state.rol = null; state.modo = "asis"; state.tab = "actuar";
+    state.sim = {}; state.valid = {};
     state.rupturas = RUPTURAS.map(function (r) { return r.id; });
-    state.notas = { faltantes:"", desacuerdos:"", riesgos:"" };
     state.gate = { g1:false, g2:false, g3:false, g4:false };
     try { localStorage.removeItem(LS_KEY); } catch (e) { /* sin persistencia */ }
-    bindStaticInputs(true);
-    renderRank();
-    renderMap();
-    renderPanel();
-    flashMsg("Respuestas borradas.");
+    ["g1","g2","g3","g4"].forEach(function (k) { document.getElementById(k).checked = false; });
+    renderRank(); renderAll(); openPicker();
+    flashMsg("Sesión borrada.");
   });
 
-  /* ---------------- Entradas fijas ---------------- */
-  function bindStaticInputs(refreshOnly) {
-    var p = document.getElementById("participante");
-    var nf = document.getElementById("nota-faltantes");
-    var nd = document.getElementById("nota-desacuerdos");
-    var nr = document.getElementById("nota-riesgos");
-    p.value = state.participante;
-    nf.value = state.notas.faltantes;
-    nd.value = state.notas.desacuerdos;
-    nr.value = state.notas.riesgos;
-    ["g1","g2","g3","g4"].forEach(function (k) { document.getElementById(k).checked = state.gate[k]; });
-    if (refreshOnly) return;
-    p.addEventListener("input", function () { state.participante = p.value; saveState(); });
-    nf.addEventListener("input", function () { state.notas.faltantes = nf.value; saveState(); });
-    nd.addEventListener("input", function () { state.notas.desacuerdos = nd.value; saveState(); });
-    nr.addEventListener("input", function () { state.notas.riesgos = nr.value; saveState(); });
-    ["g1","g2","g3","g4"].forEach(function (k) {
-      document.getElementById(k).addEventListener("change", function (ev) {
-        state.gate[k] = ev.target.checked;
-        renderProgress();
-        saveState();
-      });
+  /* ================= Wiring general ================= */
+  function setMode(mode) {
+    if (state.modo === mode) return;
+    state.modo = mode; saveState(); renderAll();
+  }
+  document.getElementById("btn-asis").addEventListener("click", function () { setMode("asis"); });
+  document.getElementById("btn-tobe").addEventListener("click", function () { setMode("tobe"); });
+  document.getElementById("tab-actuar").addEventListener("click", function () { state.tab = "actuar"; saveState(); renderPanel(); });
+  document.getElementById("tab-validar").addEventListener("click", function () { state.tab = "validar"; saveState(); renderPanel(); });
+  ["g1","g2","g3","g4"].forEach(function (k) {
+    document.getElementById(k).addEventListener("change", function (ev) {
+      state.gate[k] = ev.target.checked; saveState(); renderResultados();
     });
-    document.getElementById("btn-asis").addEventListener("click", function () { setMode("asis"); });
-    document.getElementById("btn-tobe").addEventListener("click", function () { setMode("tobe"); });
+  });
+  var pInput = document.getElementById("participante");
+  pInput.addEventListener("input", function () { state.participante = pInput.value; saveState(); });
+
+  function renderAll() {
+    document.getElementById("btn-asis").setAttribute("aria-pressed", String(state.modo === "asis"));
+    document.getElementById("btn-tobe").setAttribute("aria-pressed", String(state.modo === "tobe"));
+    renderRolebar(); renderMap(); renderPanel(); renderResultados();
   }
 
-  /* ---------------- Inicio ---------------- */
+  /* ================= Inicio ================= */
   loadState();
-  document.getElementById("btn-asis").setAttribute("aria-pressed", String(state.modo === "asis"));
-  document.getElementById("btn-tobe").setAttribute("aria-pressed", String(state.modo === "tobe"));
-  bindStaticInputs(false);
-  renderRank();
-  renderMap();
-  renderPanel();
+  pInput.value = state.participante;
+  ["g1","g2","g3","g4"].forEach(function (k) { document.getElementById(k).checked = state.gate[k]; });
+  renderPicker(); renderRank(); renderAll();
+  if (!state.rol) openPicker();
 })();
 </script>
