@@ -1,0 +1,1139 @@
+<title>Módulo Interoperable Clínico-Laboral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #F2F5F9;
+    --surface: #FFFFFF;
+    --surface-2: #EAEEF5;
+    --ink: #1A2438;
+    --ink-soft: #4C5870;
+    --ink-faint: #8791A5;
+    --line: #D9DFE9;
+    --side: #16223D;
+    --side-ink: #E8EDF7;
+    --side-faint: #8FA0BF;
+    --primary: #1F7A6F;
+    --primary-ink: #FFFFFF;
+    --primary-soft: #DDEEEA;
+    --navy: #2E5AA8;
+    --navy-soft: #E2EAF7;
+    --gold: #A87C10;
+    --gold-soft: #F6EDD3;
+    --red: #B3372B;
+    --red-soft: #F7E4E1;
+    --green: #2E7D46;
+    --green-soft: #E0F0E5;
+    --overlay: rgba(22, 34, 61, .5);
+    --shadow: 0 1px 2px rgba(22,34,61,.06), 0 6px 20px rgba(22,34,61,.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1320;
+      --surface: #161E30;
+      --surface-2: #1E2740;
+      --ink: #E7EBF4;
+      --ink-soft: #ACB6CC;
+      --ink-faint: #6E7992;
+      --line: #2B3650;
+      --side: #0B1120;
+      --side-ink: #E8EDF7;
+      --side-faint: #7484A3;
+      --primary: #4FA89C;
+      --primary-ink: #0B1120;
+      --primary-soft: #14332F;
+      --navy: #7C9BD8;
+      --navy-soft: #1B2A47;
+      --gold: #D9A93E;
+      --gold-soft: #382D10;
+      --red: #E0796D;
+      --red-soft: #3D1E1A;
+      --green: #6CC08A;
+      --green-soft: #16301F;
+      --overlay: rgba(2, 6, 14, .66);
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1320;
+    --surface: #161E30;
+    --surface-2: #1E2740;
+    --ink: #E7EBF4;
+    --ink-soft: #ACB6CC;
+    --ink-faint: #6E7992;
+    --line: #2B3650;
+    --side: #0B1120;
+    --side-ink: #E8EDF7;
+    --side-faint: #7484A3;
+    --primary: #4FA89C;
+    --primary-ink: #0B1120;
+    --primary-soft: #14332F;
+    --navy: #7C9BD8;
+    --navy-soft: #1B2A47;
+    --gold: #D9A93E;
+    --gold-soft: #382D10;
+    --red: #E0796D;
+    --red-soft: #3D1E1A;
+    --green: #6CC08A;
+    --green-soft: #16301F;
+    --overlay: rgba(2, 6, 14, .66);
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+    font-size: 14.5px; line-height: 1.55;
+  }
+  h1, h2, h3, h4 { margin: 0; font-family: "IBM Plex Sans", Arial, sans-serif; }
+  .serif { font-family: "Source Serif 4", Georgia, serif; }
+  button { font: inherit; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; }
+  input, textarea, select { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; }
+  textarea { width: 100%; resize: vertical; }
+  input:focus-visible, textarea:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  .mono { font-family: "IBM Plex Mono", Consolas, monospace; }
+
+  /* ---------- Login ---------- */
+  #login { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 30px 20px; }
+  .login-card { max-width: 860px; width: 100%; }
+  .brandmark { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .brandmark .logo { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; font-size: 30px; letter-spacing: .01em; }
+  .brandmark .ver { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--primary); border: 1px solid var(--primary); border-radius: 999px; padding: 2px 10px; }
+  .login-card > p.lead { color: var(--ink-soft); max-width: 72ch; margin: 6px 0 22px; }
+  .entgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .entgrid button {
+    text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px;
+    padding: 14px 16px; color: var(--ink); box-shadow: var(--shadow);
+  }
+  .entgrid button:hover { border-color: var(--primary); }
+  .entgrid .en { font-weight: 700; font-size: 15px; display: block; }
+  .entgrid .eu { font-size: 12.5px; color: var(--ink-soft); display: block; margin-top: 3px; }
+  .entgrid .ef { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--primary); display: block; margin-top: 8px; }
+  .login-note { margin-top: 20px; font-size: 12.5px; color: var(--ink-faint); max-width: 88ch; }
+
+  /* ---------- Shell ---------- */
+  #app { display: none; min-height: 100vh; }
+  #app.on { display: grid; grid-template-columns: 244px minmax(0, 1fr); }
+  @media (max-width: 900px) { #app.on { grid-template-columns: 1fr; } aside.side { position: static; height: auto; } }
+  aside.side {
+    background: var(--side); color: var(--side-ink); padding: 18px 14px;
+    display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh;
+  }
+  aside.side .logo { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; font-size: 21px; padding: 0 10px 2px; }
+  aside.side .tagline { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--side-faint); padding: 0 10px 14px; }
+  aside.side nav { display: flex; flex-direction: column; gap: 2px; }
+  aside.side nav button {
+    display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; background: transparent;
+    color: var(--side-faint); font-weight: 600; font-size: 13.5px; padding: 9px 10px; border-radius: 9px;
+  }
+  aside.side nav button[aria-current="true"] { background: rgba(255,255,255,.09); color: var(--side-ink); }
+  aside.side nav button:hover { color: var(--side-ink); }
+  aside.side nav .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); margin-left: auto; }
+  aside.side .spacer { flex: 1; }
+  .userblock { border-top: 1px solid rgba(255,255,255,.12); padding: 12px 10px 2px; font-size: 12.5px; }
+  .userblock .un { font-weight: 700; color: var(--side-ink); }
+  .userblock .ue { color: var(--side-faint); }
+  .userblock button { margin-top: 8px; width: 100%; border: 1px solid rgba(255,255,255,.25); background: transparent; color: var(--side-ink); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 600; }
+
+  main { padding: 0 26px 46px; min-width: 0; }
+  .topbar { display: flex; align-items: center; gap: 14px; padding: 16px 0 14px; flex-wrap: wrap; }
+  .topbar h1 { font-size: 20px; font-weight: 700; }
+  .topbar .grow { flex: 1; }
+  .casepill { font-size: 12.5px; font-weight: 600; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; color: var(--ink-soft); }
+  .bell { position: relative; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 13px; font-weight: 600; font-size: 13px; color: var(--ink-soft); }
+  .bell .n { position: absolute; top: -6px; right: -6px; background: var(--red); color: #fff; font-size: 10.5px; font-weight: 700; border-radius: 999px; min-width: 18px; height: 18px; display: grid; place-items: center; padding: 0 4px; }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+  .card-pad { padding: 16px 18px; }
+  .card h2 { font-size: 16px; margin-bottom: 10px; }
+  .grid2 { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 1100px) { .grid2 { grid-template-columns: 1fr; } }
+  .stack { display: flex; flex-direction: column; gap: 16px; }
+
+  /* tablas */
+  .twrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; white-space: nowrap; }
+  tr.rowbtn { cursor: pointer; }
+  tr.rowbtn:hover td { background: var(--surface-2); }
+  td.num { font-variant-numeric: tabular-nums; }
+  tr.mine td { background: var(--primary-soft); }
+
+  .chip { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .05em; border-radius: 999px; padding: 2.5px 10px; white-space: nowrap; }
+  .ch-etapa { background: var(--navy-soft); color: var(--navy); }
+  .ch-accion { background: var(--gold-soft); color: var(--gold); }
+  .ch-ok { background: var(--green-soft); color: var(--green); }
+  .ch-den { background: var(--red-soft); color: var(--red); }
+  .ch-mute { background: var(--surface-2); color: var(--ink-faint); }
+  .ch-alert { background: var(--red-soft); color: var(--red); }
+
+  /* stepper */
+  .stepper { display: flex; gap: 0; flex-wrap: wrap; margin: 4px 0 2px; }
+  .step { flex: 1; min-width: 110px; position: relative; padding: 0 6px 0 0; }
+  .step .bar { height: 5px; border-radius: 999px; background: var(--surface-2); margin-bottom: 7px; }
+  .step.done .bar { background: var(--green); }
+  .step.now .bar { background: var(--gold); }
+  .step .sl { font-size: 11px; font-weight: 600; color: var(--ink-faint); line-height: 1.3; }
+  .step.done .sl { color: var(--green); }
+  .step.now .sl { color: var(--gold); }
+
+  /* checklist / acciones */
+  .req { display: flex; align-items: center; gap: 9px; font-size: 13px; padding: 5px 0; color: var(--ink-soft); }
+  .req .tick { width: 19px; height: 19px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; background: var(--surface-2); color: var(--ink-faint); flex: none; }
+  .req.ok .tick { background: var(--green-soft); color: var(--green); }
+  .btn { border-radius: 9px; padding: 8px 15px; font-weight: 600; border: 1.5px solid var(--primary); background: var(--primary); color: var(--primary-ink); }
+  .btn-sec { background: var(--surface); color: var(--primary); }
+  .btn-ghost { background: var(--surface); color: var(--ink-soft); border-color: var(--line); }
+  .btn-danger { background: var(--surface); color: var(--red); border-color: var(--red); }
+  .btn-sm { padding: 5px 11px; font-size: 12.5px; border-radius: 8px; }
+
+  .docitem { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 11px; padding: 9px 12px; margin-bottom: 8px; background: var(--surface-2); }
+  .docitem .di { flex: 1; min-width: 0; }
+  .docitem .dn { font-weight: 600; font-size: 13.5px; }
+  .docitem .dc { font-size: 11.5px; color: var(--ink-faint); }
+  .lock { color: var(--ink-faint); }
+
+  /* timeline */
+  .tl { list-style: none; margin: 0; padding: 0; }
+  .tl li { position: relative; padding: 0 0 14px 24px; border-left: 2px solid var(--line); margin-left: 8px; }
+  .tl li:last-child { padding-bottom: 2px; }
+  .tl li::before { content: ""; position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+  .tl li.hito::before { background: var(--primary); }
+  .tl li.alerta::before { background: var(--gold); }
+  .tl .td { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-faint); }
+  .tl .tt { font-size: 13.5px; }
+  .tl .tt b { font-weight: 600; }
+
+  /* notif panel */
+  .notifpanel { position: fixed; top: 64px; right: 22px; width: min(380px, 92vw); max-height: 70vh; overflow-y: auto; z-index: 40; display: none; }
+  .notifpanel.open { display: block; }
+  .notifpanel .nitem { border-bottom: 1px solid var(--line); padding: 10px 14px; font-size: 13px; }
+  .notifpanel .nd { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--ink-faint); }
+
+  /* modal */
+  .modal { position: fixed; inset: 0; background: var(--overlay); display: none; align-items: flex-start; justify-content: center; padding: 42px 18px; overflow-y: auto; z-index: 60; }
+  .modal.open { display: flex; }
+  .modal-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); max-width: 640px; width: 100%; padding: 20px 22px; }
+  .modal-card h3 { font-size: 17px; }
+  .modal-card .sub { color: var(--ink-soft); font-size: 12.5px; margin: 3px 0 12px; }
+  .contractline { background: var(--primary-soft); border: 1px solid var(--primary); border-radius: 10px; padding: 8px 12px; font-size: 12.5px; margin-bottom: 12px; }
+  .fieldrow { display: flex; gap: 10px; border-bottom: 1px solid var(--line); padding: 7px 2px; font-size: 13.5px; }
+  .fieldrow .fk { width: 44%; min-width: 130px; color: var(--ink-soft); font-size: 12.5px; }
+  .fieldrow .fv { flex: 1; }
+  .fieldrow.redacted .fv { color: var(--ink-faint); }
+  .fieldrow.redacted .fv .bar { display: inline-block; background: var(--surface-2); border: 1px dashed var(--line); border-radius: 5px; color: var(--ink-faint); font-size: 11.5px; padding: 1px 8px; }
+  .radioopt { display: flex; gap: 10px; align-items: flex-start; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; }
+  .radioopt input { margin-top: 3px; accent-color: var(--primary); }
+  .radioopt.sel { border-color: var(--primary); background: var(--primary-soft); }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
+
+  /* KPIs */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .kpi { background: var(--surface-2); border: 1px solid var(--line); border-radius: 11px; padding: 10px 13px; }
+  .kpi b { display: block; font-size: 21px; font-variant-numeric: tabular-nums; }
+  .kpi span { font-size: 11.5px; color: var(--ink-soft); }
+  .kpi.warn b { color: var(--gold); }
+  .kpi.badv b { color: var(--red); }
+  .kpi.goodv b { color: var(--green); }
+
+  .emptymsg { color: var(--ink-faint); font-size: 13px; padding: 8px 0; }
+  .footer-note { margin-top: 26px; color: var(--ink-faint); font-size: 12px; max-width: 110ch; border-top: 1px solid var(--line); padding-top: 12px; }
+  .msgflash { font-size: 13px; color: var(--primary); font-weight: 600; }
+</style>
+
+<!-- ============ LOGIN ============ -->
+<div id="login">
+  <div class="login-card">
+    <div class="brandmark"><span class="logo">M&oacute;dulo Interoperable Cl&iacute;nico-Laboral</span><span class="ver">Prototipo medio &middot; datos sint&eacute;ticos</span></div>
+    <p class="lead">Intercambio federado de evidencia para la ruta de incapacidad: cada entidad conserva la custodia en origen y consulta solo lo pertinente a su finalidad, con registro auditable de cada acceso y decisi&oacute;n. Seleccione la entidad con la que va a ingresar:</p>
+    <div class="entgrid" id="entgrid"></div>
+    <p class="login-note"><b>Escenarios cargados:</b> CASO-2026-0417 (M.P., lumbago con ci&aacute;tica &middot; controversia de origen) y CASO-2026-0533 (J.R., trastorno depresivo &middot; origen com&uacute;n). Prototipo acad&eacute;mico DGIT 6202 &middot; caso de estudio SURA. No contiene datos personales reales ni se conecta a sistemas de las entidades.</p>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <aside class="side">
+    <div class="logo">MICL</div>
+    <div class="tagline">expediente federado</div>
+    <nav id="nav"></nav>
+    <div class="spacer"></div>
+    <div class="userblock" id="userblock"></div>
+  </aside>
+  <main>
+    <div class="topbar">
+      <h1 id="vtitle"></h1>
+      <span class="casepill" id="casepill" style="display:none"></span>
+      <span class="grow"></span>
+      <span class="msgflash" id="flash" role="status"></span>
+      <button type="button" class="bell" id="bell">Notificaciones<span class="n" id="belln" style="display:none"></span></button>
+    </div>
+    <div id="main"></div>
+    <p class="footer-note"><b>Acerca de este prototipo (H2):</b> instancia el m&oacute;dulo interoperable de la metodolog&iacute;a — contratos de acceso por finalidad, vistas por rol con m&iacute;nimo necesario a nivel de campo, autenticaci&oacute;n por entidad y trazabilidad auditable — ejecutando escenarios end-to-end sin centralizar historias cl&iacute;nicas. Interfaz y datos son sint&eacute;ticos; no representa una implementaci&oacute;n aprobada. Fuente: Arquitectura Sist&eacute;mica y Prototipo Low-Fi 01 (DGIT 6202, Universidad de los Andes).</p>
+  </main>
+</div>
+
+<div class="notifpanel card" id="notifpanel"></div>
+<div class="modal" id="modal"><div class="modal-card" id="modalcard"></div></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ================== Catálogos ================== */
+  var ENT = {
+    eps:     { n:"EPS SURA",                        user:"Ana Torres",   cargo:"Analista de calificación" },
+    arl:     { n:"ARL SURA",                        user:"Camilo Rueda", cargo:"Investigador de origen" },
+    afp:     { n:"AFP · Colpensiones",              user:"Diana Prieto", cargo:"Analista de prestaciones" },
+    jr:      { n:"Junta Regional de Calificación",  user:"Dr. Luis Peña", cargo:"Ponente" },
+    jn:      { n:"Junta Nacional de Calificación",  user:"Dra. Marta Gil", cargo:"Sala de decisión" },
+    tra:     { n:"Portal del Trabajador",           user:"Trabajador(a) del caso", cargo:"Actor focal" },
+    mintrab: { n:"MinTrabajo · Supervisión",        user:"Insp. Rojas",  cargo:"Inspección laboral" }
+  };
+  var FIN = {
+    cal: { n:"Calificación de origen en primera oportunidad", plazo:"10 días hábiles" },
+    inv: { n:"Investigación de origen y prestaciones",        plazo:"15 días hábiles" },
+    dic: { n:"Dictamen de primera instancia",                 plazo:"30 días hábiles" },
+    ape: { n:"Resolución de apelación",                       plazo:"30 días hábiles" },
+    pen: { n:"Estudio de prestaciones e invalidez",           plazo:"20 días hábiles" },
+    sup: { n:"Supervisión de tiempos e incidencias",          plazo:"permanente" }
+  };
+  var ROL_FIN = { eps:"cal", arl:"inv", jr:"dic", jn:"ape", afp:"pen", mintrab:"sup" };
+  // Docs permitidos por finalidad (nivel documento)
+  var ACCESO = {
+    cal: ["rc","apt","inc"],
+    inv: ["rc","apt","inc","dic"],
+    dic: ["rc","apt","inc","hl"],
+    ape: ["dic","rc","inc"],
+    pen: ["dic","inc","hl"]
+  };
+  var DOCM = {
+    rc:  { n:"Resumen clínico estructurado",   cust:"IPS Clínica del Norte" },
+    apt: { n:"Matriz de exposición y APT",     cust:"Empleador (SG-SST)" },
+    inc: { n:"Certificados de incapacidad",    cust:"EPS SURA" },
+    hl:  { n:"Historia laboral y semanas",     cust:"AFP · Colpensiones" },
+    dic: { n:"Dictamen de calificación",       cust:"Junta Regional" }
+  };
+  var CUSTODIA = { eps:["inc"], afp:["hl"], jr:["dic"] };
+
+  /* Campos por documento y caso; fins = finalidades que pueden ver el campo */
+  var DOCDATA = {
+    C1: {
+      rc: [
+        { k:"Diagnóstico principal (CIE-10)", v:"M54.4 · Lumbago con ciática", fins:["cal","inv","dic","ape"] },
+        { k:"Incapacidad continua", v:"Desde 2026-03-30 · 150 días a la fecha", fins:["cal","inv","dic","ape","pen"] },
+        { k:"Restricciones vigentes", v:"Sin cargas > 10 kg · sin bipedestación prolongada", fins:["cal","inv","dic"] },
+        { k:"Concepto de rehabilitación", v:"Favorable con reintegro modificado", fins:["dic","ape","pen"] },
+        { k:"Evolución clínica completa (14 notas)", v:"", fins:[] },
+        { k:"Antecedentes psicosociales y de familia", v:"", fins:[] }
+      ],
+      apt: [
+        { k:"Cargo evaluado", v:"Operaria de producción · línea de empaque", fins:["cal","inv","dic"] },
+        { k:"Exposición documentada", v:"Manipulación manual de cargas 12-18 kg · 7,5 h/turno", fins:["cal","inv","dic"] },
+        { k:"Mediciones higiénicas (2024-2025)", v:"Índice de levantamiento NIOSH 2,1 (alto)", fins:["cal","inv","dic"] },
+        { k:"Nómina y datos salariales del área", v:"", fins:[] }
+      ],
+      inc: [
+        { k:"Certificados emitidos", v:"7 certificados continuos (SIN-2026-0331 a 0812)", fins:["cal","inv","dic","ape","pen"] },
+        { k:"Prórroga vigente", v:"Hasta día 165 · pago al 66,6 % IBC", fins:["cal","inv","pen"] }
+      ],
+      hl: [
+        { k:"Semanas cotizadas", v:"612 semanas · densidad últimos 3 años: 92 %", fins:["dic","pen"] },
+        { k:"IBC promedio 12 meses", v:"$ 1.845.000", fins:["pen"] },
+        { k:"Historial de empleadores", v:"", fins:[] }
+      ],
+      dic: [] // se llena al emitirse
+    },
+    C2: {
+      rc: [
+        { k:"Diagnóstico principal (CIE-10)", v:"F33.1 · Trastorno depresivo recurrente, episodio moderado", fins:["cal","inv","dic","ape"] },
+        { k:"Incapacidad continua", v:"Desde 2026-05-24 · 95 días a la fecha", fins:["cal","inv","dic","ape","pen"] },
+        { k:"Restricciones vigentes", v:"Jornada progresiva · evitar turnos nocturnos", fins:["cal","inv","dic"] },
+        { k:"Concepto de rehabilitación", v:"Favorable · tratamiento en curso", fins:["dic","ape","pen"] },
+        { k:"Notas de psiquiatría (texto completo)", v:"", fins:[] }
+      ],
+      apt: [
+        { k:"Cargo evaluado", v:"Auxiliar administrativo", fins:["cal","inv","dic"] },
+        { k:"Exposición documentada", v:"Sin factores de riesgo psicosocial priorizados (batería 2025: riesgo bajo)", fins:["cal","inv","dic"] },
+        { k:"Nómina y datos salariales del área", v:"", fins:[] }
+      ],
+      inc: [
+        { k:"Certificados emitidos", v:"5 certificados continuos (SIN-2026-0524 a 0818)", fins:["cal","inv","dic","ape","pen"] },
+        { k:"Prórroga vigente", v:"Hasta día 120 · pago al 66,6 % IBC", fins:["cal","inv","pen"] }
+      ],
+      hl: [
+        { k:"Semanas cotizadas", v:"438 semanas · densidad últimos 3 años: 88 %", fins:["dic","pen"] },
+        { k:"IBC promedio 12 meses", v:"$ 2.310.000", fins:["pen"] },
+        { k:"Historial de empleadores", v:"", fins:[] }
+      ],
+      dic: []
+    }
+  };
+
+  var ETAPAS = {
+    cal:      { n:"Calificación de origen",            resp:"eps",  fase:0 },
+    resp_arl: { n:"Término de controversia (ARL)",     resp:"arl",  fase:1 },
+    jr:       { n:"Primera instancia · Junta Regional", resp:"jr",  fase:2 },
+    resp_dic: { n:"Término de apelación",              resp:"arl",  fase:3 },
+    jn:       { n:"Apelación · Junta Nacional",        resp:"jn",   fase:3 },
+    firme:    { n:"Decisión en firme · prestaciones",  resp:null,   fase:4 },
+    cerrado:  { n:"Caso cerrado",                      resp:null,   fase:4 }
+  };
+  var FASES = ["Calificación", "Controversia", "Primera instancia", "Apelación", "Cierre"];
+
+  /* ================== Estado ================== */
+  var LS_KEY = "micl_medio_v1";
+  function casoBase(id, corto, datos) {
+    return {
+      id: id, corto: corto,
+      trabajador: datos.trabajador, cargo: datos.cargo, empresa: datos.empresa, dx: datos.dx,
+      dia: datos.dia, etapa: "cal", etapaDia: datos.dia,
+      origen: null, pcl: null, firmeVia: null,
+      reg: 0, consultado: {}, hitos: [], logs: [], notifs: []
+    };
+  }
+  var state = null;
+  function freshState() {
+    var s = {
+      rol: null, vista: "bandeja", caso: null,
+      casos: {
+        C1: casoBase("CASO-2026-0417", "C1", { trabajador:"M.P. (41 años)", cargo:"Operaria de producción", empresa:"Alimentos Andinos S.A.S.", dx:"Lumbago con ciática (M54.4)", dia:150 }),
+        C2: casoBase("CASO-2026-0533", "C2", { trabajador:"J.R. (36 años)", cargo:"Auxiliar administrativo", empresa:"Logística Sabana S.A.", dx:"Trastorno depresivo (F33.1)", dia:95 })
+      },
+      leidas: {}
+    };
+    hito(s.casos.C1, "hito", "Caso radicado en el módulo por vencimiento de día 120 sin definición de origen.");
+    hito(s.casos.C2, "hito", "Caso radicado en el módulo para calificación de origen en primera oportunidad.");
+    notificar(s.casos.C1, ["eps"], "Nuevo caso asignado: pendiente calificación de origen (término: 10 días).");
+    notificar(s.casos.C2, ["eps"], "Nuevo caso asignado: pendiente calificación de origen (término: 10 días).");
+    return s;
+  }
+  function hito(caso, tipo, txt) { caso.hitos.push({ dia: caso.dia, tipo: tipo, txt: txt }); }
+  function log(caso, rol, accion, docId, finId, resultado, detalle) {
+    caso.reg++;
+    var id = "REG-" + caso.corto + "-" + (caso.reg < 10 ? "00" : caso.reg < 100 ? "0" : "") + caso.reg;
+    caso.logs.push({ id: id, dia: caso.dia, rol: rol, accion: accion, doc: docId || null, fin: finId || null, resultado: resultado, detalle: detalle || "" });
+    return id;
+  }
+  function notificar(caso, roles, txt) {
+    caso.notifs.push({ dia: caso.dia, para: roles.concat(["tra"]).filter(function (v, i, a) { return a.indexOf(v) === i; }), txt: txt, leidaPor: {} });
+  }
+
+  function rebuildDic() {
+    ["C1","C2"].forEach(function (cid) {
+      var c = state.casos[cid];
+      if (c && c.pcl) {
+        DOCDATA[cid].dic = [
+          { k:"Decisión", v:(c.origen === "laboral" ? "Origen laboral" : "Origen común") + " · PCL " + c.pcl, fins:["ape","pen","inv"] },
+          { k:"Fecha de estructuración", v:"2026-03-30", fins:["ape","pen"] },
+          { k:"Motivación íntegra", v:"Nexo causal valorado sobre evidencia consultada por finalidad (ver trazabilidad).", fins:["ape"] },
+          { k:"Salvamentos de voto", v:"", fins:[] }
+        ];
+      }
+    });
+  }
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      if (raw) { var s = JSON.parse(raw); if (s && s.casos && s.casos.C1) { state = s; rebuildDic(); return; } }
+    } catch (e) { /* sin almacenamiento */ }
+    state = freshState();
+  }
+  var saveT = null;
+  function save() {
+    clearTimeout(saveT);
+    saveT = setTimeout(function () {
+      try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { /* sin persistencia */ }
+    }, 150);
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+
+  /* ================== Motor ================== */
+  function miFin() { return ROL_FIN[state.rol] || null; }
+  function consultado(caso, rol, docId) { return caso.consultado[rol] && caso.consultado[rol][docId]; }
+
+  function consultar(casoId, docId) {
+    var caso = state.casos[casoId], rol = state.rol, f = miFin();
+    var permitido = f && (ACCESO[f] || []).indexOf(docId) >= 0;
+    var propio = (CUSTODIA[rol] || []).indexOf(docId) >= 0;
+    if (docId === "dic" && !state.casos[casoId].pcl) {
+      abrirModal(`<h3>Documento no disponible</h3><p class="sub">El dictamen aún no ha sido emitido por la Junta Regional.</p>
+        <div class="modal-actions"><button type="button" class="btn" data-close>Entendido</button></div>`);
+      return;
+    }
+    if (!permitido && !propio) {
+      log(caso, rol, "consulta", docId, f, "denegado", "No pertinente para la finalidad declarada (regla 3 · mínimo necesario)");
+      save();
+      abrirModal(`<h3>Acceso denegado</h3>
+        <p class="sub">${esc(DOCM[docId].n)} · custodio: ${esc(DOCM[docId].cust)}</p>
+        <div class="contractline" style="background:var(--red-soft);border-color:var(--red)">
+          <b>Regla 3 · mínimo necesario:</b> este documento no es pertinente para su finalidad declarada
+          (&laquo;${esc(FIN[f].n)}&raquo;). El intento quedó registrado en la trazabilidad del caso y es visible para el trabajador y la supervisión.
+        </div>
+        <div class="modal-actions"><button type="button" class="btn" data-close>Entendido</button></div>`);
+      renderAll();
+      return;
+    }
+    if (!caso.consultado[rol]) caso.consultado[rol] = {};
+    var primera = !caso.consultado[rol][docId];
+    caso.consultado[rol][docId] = true;
+    var regId = log(caso, rol, "consulta", docId, propio ? null : f, "ok", primera ? "Vista mínima entregada" : "Reconsulta de vista mínima");
+    save();
+    abrirVisor(casoId, docId, regId, propio);
+    renderAll();
+  }
+
+  function abrirVisor(casoId, docId, regId, propio) {
+    var caso = state.casos[casoId], f = miFin();
+    var campos = DOCDATA[casoId][docId] || [];
+    var filas = campos.map(function (c) {
+      var visible = propio || (c.fins || []).indexOf(f) >= 0;
+      if (visible) {
+        return `<div class="fieldrow"><div class="fk">${esc(c.k)}</div><div class="fv">${esc(c.v)}</div></div>`;
+      }
+      return `<div class="fieldrow redacted"><div class="fk">${esc(c.k)}</div><div class="fv"><span class="bar">&#128274; retenido en origen &middot; regla 3</span></div></div>`;
+    }).join("");
+    var visibles = campos.filter(function (c) { return propio || (c.fins || []).indexOf(f) >= 0; }).length;
+    abrirModal(`<h3>${esc(DOCM[docId].n)}</h3>
+      <p class="sub">${esc(caso.id)} · custodio: ${esc(DOCM[docId].cust)} · el documento permanece en su repositorio de origen</p>
+      <div class="contractline"><b>Contrato de acceso ${esc(regId)}:</b> ${propio ? "consulta sobre documento bajo su custodia" : "finalidad &laquo;" + esc(FIN[f].n) + "&raquo; · plazo de uso: " + esc(FIN[f].plazo)} · acuse automático registrado · vista mínima: ${visibles} de ${campos.length} campos.</div>
+      ${filas || '<p class="emptymsg">Documento sin campos registrados.</p>'}
+      <div class="modal-actions"><button type="button" class="btn" data-close>Cerrar</button></div>`);
+  }
+
+  /* ---------- Decisiones ---------- */
+  function reqConsultas(caso, rol, docs) {
+    return docs.map(function (d) {
+      var propio = (CUSTODIA[rol] || []).indexOf(d) >= 0;
+      return { doc: d, ok: propio || !!consultado(caso, rol, d), propio: propio };
+    });
+  }
+  function todasOk(reqs) { return reqs.every(function (r) { return r.ok; }); }
+
+  var DECISIONES = {
+    d_cal: {
+      rol:"eps", etapas:["cal"], label:"Emitir calificación de origen", req:["rc","apt","inc"],
+      abrir: function (caso) {
+        var sugerido = caso.corto === "C1" ? "laboral" : "comun";
+        abrirModal(`<h3>Emitir calificación de origen</h3>
+          <p class="sub">${esc(caso.id)} · ${esc(caso.trabajador)} · con base en la evidencia consultada por finalidad</p>
+          <label class="radioopt ${sugerido === "laboral" ? "sel" : ""}"><input type="radio" name="origen" value="laboral" ${sugerido === "laboral" ? "checked" : ""}>
+            <span><b>Origen laboral</b><br><small>La exposición documentada (APT) es compatible con el diagnóstico.</small></span></label>
+          <label class="radioopt ${sugerido === "comun" ? "sel" : ""}"><input type="radio" name="origen" value="comun" ${sugerido === "comun" ? "checked" : ""}>
+            <span><b>Origen común</b><br><small>No se evidencia relación de causalidad con la exposición ocupacional.</small></span></label>
+          <div><div style="font-size:12px;color:var(--ink-soft);margin:6px 0 4px">Motivación (obligatoria, queda en el registro)</div>
+          <textarea id="mot">${caso.corto === "C1"
+            ? "Índice de levantamiento NIOSH 2,1 y exposición a cargas 12-18 kg/turno compatibles con M54.4; concepto de medicina laboral favorable a origen laboral."
+            : "Batería de riesgo psicosocial con riesgo bajo y ausencia de factores ocupacionales priorizados; el cuadro F33.1 se califica de origen común."}</textarea></div>
+          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
+          <button type="button" class="btn" data-decidir="d_cal">Firmar y notificar</button></div>`, caso.corto);
+      },
+      ejecutar: function (caso, datos) {
+        caso.dia += 3; caso.origen = datos.origen;
+        caso.etapa = "resp_arl"; caso.etapaDia = caso.dia;
+        var lbl = datos.origen === "laboral" ? "ORIGEN LABORAL" : "ORIGEN COMÚN";
+        log(caso, "eps", "decisión", null, "cal", "ok", "Calificación emitida: " + lbl);
+        hito(caso, "hito", "EPS emitió calificación de origen: " + lbl + ". Motivación registrada y notificada.");
+        notificar(caso, ["arl","afp"], "EPS calificó el caso como " + lbl + ". Término de controversia para ARL: 10 días con acuse automático.");
+      }
+    },
+    d_resp_arl: {
+      rol:"arl", etapas:["resp_arl"], label:"Responder a la calificación", req:["rc","apt"],
+      abrir: function (caso) {
+        abrirModal(`<h3>Responder a la calificación de la EPS</h3>
+          <p class="sub">${esc(caso.id)} · calificación vigente: ${caso.origen === "laboral" ? "origen laboral" : "origen común"}</p>
+          <label class="radioopt"><input type="radio" name="resp" value="aceptar" ${caso.corto === "C2" ? "checked" : ""}>
+            <span><b>Aceptar la calificación</b><br><small>La evidencia consultada respalda la decisión de la EPS; el caso queda en firme.</small></span></label>
+          <label class="radioopt"><input type="radio" name="resp" value="controvertir" ${caso.corto === "C1" ? "checked" : ""}>
+            <span><b>Controvertir ante la Junta Regional</b><br><small>Existen discrepancias sobre la causalidad; se remite el expediente trazable a primera instancia.</small></span></label>
+          <div><div style="font-size:12px;color:var(--ink-soft);margin:6px 0 4px">Motivación</div>
+          <textarea id="mot">${caso.corto === "C1"
+            ? "La ARL considera que la magnitud de exposición no explica la severidad del cuadro; se solicita dictamen de primera instancia."
+            : "La evidencia consultada por finalidad respalda la calificación de origen común; no hay mérito para controversia."}</textarea></div>
+          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
+          <button type="button" class="btn" data-decidir="d_resp_arl">Firmar y notificar</button></div>`);
+      },
+      ejecutar: function (caso, datos) {
+        caso.dia += 5;
+        if (datos.resp === "controvertir") {
+          caso.etapa = "jr"; caso.etapaDia = caso.dia;
+          log(caso, "arl", "decisión", null, "inv", "ok", "Controversia radicada ante Junta Regional");
+          hito(caso, "hito", "ARL controvirtió la calificación. Expediente remitido íntegro y trazable a la Junta Regional.");
+          notificar(caso, ["eps","jr"], "ARL controvirtió la calificación. La Junta Regional recibe el expediente con checklist completo.");
+        } else {
+          caso.etapa = "firme"; caso.etapaDia = caso.dia;
+          caso.firmeVia = caso.origen;
+          log(caso, "arl", "decisión", null, "inv", "ok", "Calificación aceptada; queda en firme");
+          hito(caso, "hito", "ARL aceptó la calificación de la EPS. La decisión de origen queda en firme sin controversia.");
+          notificar(caso, ["eps","afp"], "ARL aceptó la calificación (" + (caso.origen === "laboral" ? "laboral" : "común") + "). Continúa la etapa de prestaciones.");
+        }
+      }
+    },
+    d_dic: {
+      rol:"jr", etapas:["jr"], label:"Emitir dictamen de primera instancia", req:["rc","apt","inc","hl"],
+      abrir: function (caso) {
+        abrirModal(`<h3>Emitir dictamen de primera instancia</h3>
+          <p class="sub">${esc(caso.id)} · checklist de expediente verificado por el módulo</p>
+          <label class="radioopt sel"><input type="radio" name="dic" value="lab38" checked>
+            <span><b>Origen laboral · PCL 38,5 %</b><br><small>Causalidad acreditada por exposición; pérdida de capacidad laboral parcial.</small></span></label>
+          <label class="radioopt"><input type="radio" name="dic" value="com12">
+            <span><b>Origen común · PCL 12,0 %</b><br><small>Sin nexo causal ocupacional acreditado.</small></span></label>
+          <div><div style="font-size:12px;color:var(--ink-soft);margin:6px 0 4px">Motivación del ponente</div>
+          <textarea id="mot">Valorados el resumen clínico, la matriz de exposición, las incapacidades y la historia laboral consultados por finalidad, la sala acoge el nexo causal ocupacional y fija la PCL con la tabla vigente.</textarea></div>
+          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
+          <button type="button" class="btn" data-decidir="d_dic">Firmar dictamen</button></div>`);
+      },
+      ejecutar: function (caso, datos) {
+        caso.dia += 8;
+        var lab = datos.dic !== "com12";
+        caso.origen = lab ? "laboral" : "comun";
+        caso.pcl = lab ? "38,5 %" : "12,0 %";
+        DOCDATA[caso.corto].dic = [
+          { k:"Decisión", v:(lab ? "Origen laboral" : "Origen común") + " · PCL " + caso.pcl, fins:["ape","pen","inv"] },
+          { k:"Fecha de estructuración", v:"2026-03-30", fins:["ape","pen"] },
+          { k:"Motivación íntegra", v:"Nexo causal valorado sobre evidencia consultada por finalidad (ver trazabilidad).", fins:["ape"] },
+          { k:"Salvamentos de voto", v:"", fins:[] }
+        ];
+        caso.etapa = "resp_dic"; caso.etapaDia = caso.dia;
+        log(caso, "jr", "decisión", "dic", "dic", "ok", "Dictamen: " + (lab ? "laboral" : "común") + " · PCL " + caso.pcl);
+        hito(caso, "hito", "Junta Regional emitió dictamen: " + (lab ? "origen laboral" : "origen común") + " · PCL " + caso.pcl + ". Notificación con acuse a todas las partes.");
+        notificar(caso, ["eps","arl","afp"], "Dictamen de primera instancia: " + (lab ? "origen laboral" : "origen común") + " · PCL " + caso.pcl + ". Término de apelación: 10 días.");
+      }
+    },
+    d_resp_dic: {
+      rol:"arl", etapas:["resp_dic"], label:"Responder al dictamen", req:["dic"],
+      abrir: function (caso) {
+        abrirModal(`<h3>Responder al dictamen de primera instancia</h3>
+          <p class="sub">${esc(caso.id)} · dictamen: ${caso.origen === "laboral" ? "origen laboral" : "origen común"} · PCL ${esc(caso.pcl || "")}</p>
+          <label class="radioopt sel"><input type="radio" name="resp" value="apelar" checked>
+            <span><b>Apelar ante la Junta Nacional</b><br><small>El paquete de apelación viaja íntegro con la motivación y la trazabilidad.</small></span></label>
+          <label class="radioopt"><input type="radio" name="resp" value="aceptar">
+            <span><b>Aceptar el dictamen</b><br><small>La decisión queda en firme y pasa a prestaciones.</small></span></label>
+          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
+          <button type="button" class="btn" data-decidir="d_resp_dic">Firmar y notificar</button></div>`);
+      },
+      ejecutar: function (caso, datos) {
+        caso.dia += 4;
+        if (datos.resp === "apelar") {
+          caso.etapa = "jn"; caso.etapaDia = caso.dia;
+          log(caso, "arl", "decisión", null, "inv", "ok", "Apelación radicada ante Junta Nacional");
+          hito(caso, "hito", "ARL apeló el dictamen. Paquete de apelación íntegro remitido a la Junta Nacional.");
+          notificar(caso, ["jn","eps","afp"], "ARL apeló el dictamen. La Junta Nacional recibe el paquete íntegro y motivado.");
+        } else {
+          caso.etapa = "firme"; caso.etapaDia = caso.dia; caso.firmeVia = caso.origen;
+          log(caso, "arl", "decisión", null, "inv", "ok", "Dictamen aceptado; en firme");
+          hito(caso, "hito", "ARL aceptó el dictamen; la decisión queda en firme.");
+          notificar(caso, ["eps","afp"], "El dictamen quedó en firme. Continúa la etapa de prestaciones.");
+        }
+      }
+    },
+    d_ape: {
+      rol:"jn", etapas:["jn"], label:"Resolver la apelación", req:["dic","rc"],
+      abrir: function (caso) {
+        abrirModal(`<h3>Resolver la apelación</h3>
+          <p class="sub">${esc(caso.id)} · dictamen apelado: ${caso.origen === "laboral" ? "origen laboral" : "origen común"} · PCL ${esc(caso.pcl || "")}</p>
+          <label class="radioopt sel"><input type="radio" name="ape" value="confirmar" checked>
+            <span><b>Confirmar el dictamen</b><br><small>La motivación de primera instancia se ajusta a la evidencia trazable.</small></span></label>
+          <label class="radioopt"><input type="radio" name="ape" value="modificar">
+            <span><b>Modificar: origen común · PCL 12,0 %</b><br><small>La sala se aparta del nexo causal acreditado.</small></span></label>
+          <div><div style="font-size:12px;color:var(--ink-soft);margin:6px 0 4px">Motivación de la sala</div>
+          <textarea id="mot">La sala revisó el paquete íntegro de apelación (dictamen, resumen clínico y trazabilidad de accesos) y resuelve con motivación completa.</textarea></div>
+          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
+          <button type="button" class="btn" data-decidir="d_ape">Firmar resolución</button></div>`);
+      },
+      ejecutar: function (caso, datos) {
+        caso.dia += 10;
+        if (datos.ape === "modificar") { caso.origen = "comun"; caso.pcl = "12,0 %"; }
+        caso.etapa = "firme"; caso.etapaDia = caso.dia; caso.firmeVia = caso.origen;
+        log(caso, "jn", "decisión", "dic", "ape", "ok", (datos.ape === "modificar" ? "Dictamen modificado" : "Dictamen confirmado") + " · en firme");
+        hito(caso, "hito", "Junta Nacional " + (datos.ape === "modificar" ? "modificó" : "confirmó") + " el dictamen (" + (caso.origen === "laboral" ? "laboral" : "común") + " · PCL " + caso.pcl + "). Decisión en firme.");
+        notificar(caso, ["eps","arl","afp"], "La Junta Nacional dejó el dictamen en firme: " + (caso.origen === "laboral" ? "origen laboral" : "origen común") + " · PCL " + caso.pcl + ".");
+      }
+    },
+    d_prest_arl: {
+      rol:"arl", etapas:["firme"], soloSi: function (caso) { return caso.firmeVia === "laboral"; },
+      label:"Reconocer prestaciones económicas", req:["dic"],
+      abrir: function (caso) {
+        abrirModal(`<h3>Reconocer prestaciones económicas</h3>
+          <p class="sub">${esc(caso.id)} · origen laboral en firme · PCL ${esc(caso.pcl || "")}</p>
+          <div class="contractline">Liquidación sugerida por el módulo: indemnización por incapacidad permanente parcial (PCL entre 5 % y 50 %) + subsidio pendiente desde el día 121, con trazabilidad de pagos.</div>
+          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
+          <button type="button" class="btn" data-decidir="d_prest_arl">Reconocer y notificar</button></div>`);
+      },
+      ejecutar: function (caso) {
+        caso.dia += 6;
+        caso.etapa = "cerrado"; caso.etapaDia = caso.dia;
+        log(caso, "arl", "decisión", null, "inv", "ok", "Prestaciones reconocidas y programadas");
+        hito(caso, "hito", "ARL reconoció indemnización y regularizó subsidios. Caso cerrado con expediente auditable completo.");
+        notificar(caso, ["eps","afp"], "ARL reconoció las prestaciones. El caso queda cerrado; el expediente auditable permanece disponible.");
+      }
+    },
+    d_pen_afp: {
+      rol:"afp", etapas:["firme"], soloSi: function (caso) { return caso.firmeVia === "comun"; },
+      label:"Decidir continuidad de la prestación", req:["inc"],
+      abrir: function (caso) {
+        abrirModal(`<h3>Decidir continuidad de la prestación</h3>
+          <p class="sub">${esc(caso.id)} · origen común en firme · concepto de rehabilitación favorable</p>
+          <label class="radioopt sel"><input type="radio" name="pen" value="subsidio" checked>
+            <span><b>Asumir subsidio desde el día 181 con concepto favorable</b><br><small>Continuidad del ingreso mientras avanza la rehabilitación (sin ruptura de pagos).</small></span></label>
+          <label class="radioopt"><input type="radio" name="pen" value="junta">
+            <span><b>Remitir a calificación de PCL</b><br><small>Solo si el concepto fuera desfavorable; inicia trámite pensional.</small></span></label>
+          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
+          <button type="button" class="btn" data-decidir="d_pen_afp">Firmar y notificar</button></div>`);
+      },
+      ejecutar: function (caso, datos) {
+        caso.dia += 6;
+        caso.etapa = "cerrado"; caso.etapaDia = caso.dia;
+        var sub = datos.pen !== "junta";
+        log(caso, "afp", "decisión", null, "pen", "ok", sub ? "Subsidio asumido desde día 181 (concepto favorable)" : "Remitido a calificación de PCL");
+        hito(caso, "hito", "AFP " + (sub ? "asumió el subsidio de incapacidad desde el día 181, sin ruptura de ingresos." : "remitió el caso a calificación de pérdida de capacidad laboral.") + " Caso cerrado en el módulo.");
+        notificar(caso, ["eps","arl"], "AFP decidió la continuidad de la prestación. El caso queda cerrado con trazabilidad completa.");
+      }
+    }
+  };
+
+  function decisionesDe(caso, rol) {
+    return Object.keys(DECISIONES).map(function (k) {
+      var d = DECISIONES[k];
+      if (d.rol !== rol) return null;
+      if (d.etapas.indexOf(caso.etapa) < 0) return null;
+      if (d.soloSi && !d.soloSi(caso)) return null;
+      return { id: k, d: d, reqs: reqConsultas(caso, rol, d.req) };
+    }).filter(Boolean);
+  }
+
+  /* ================== Modal ================== */
+  var modal = document.getElementById("modal"), modalcard = document.getElementById("modalcard");
+  var modalCaso = null;
+  function abrirModal(html, casoCorto) {
+    modalCaso = casoCorto || (state.caso || null);
+    modalcard.innerHTML = html;
+    modal.classList.add("open");
+    modalcard.querySelectorAll("[data-close]").forEach(function (b) { b.addEventListener("click", cerrarModal); });
+    modalcard.querySelectorAll(".radioopt input").forEach(function (r) {
+      r.addEventListener("change", function () {
+        modalcard.querySelectorAll(".radioopt").forEach(function (o) { o.classList.toggle("sel", o.querySelector("input").checked); });
+      });
+    });
+    modalcard.querySelectorAll("[data-decidir]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var key = b.getAttribute("data-decidir");
+        var caso = state.casos[state.caso];
+        var datos = {};
+        modalcard.querySelectorAll("input[type=radio]:checked").forEach(function (r) { datos[r.name] = r.value; });
+        var mot = modalcard.querySelector("#mot");
+        if (mot && !mot.value.trim()) { mot.focus(); return; }
+        DECISIONES[key].ejecutar(caso, datos);
+        cerrarModal(); save(); renderAll();
+        flash("Decisión registrada y notificada con acuse.");
+      });
+    });
+  }
+  function cerrarModal() { modal.classList.remove("open"); modalcard.innerHTML = ""; }
+  modal.addEventListener("click", function (ev) { if (ev.target === modal) cerrarModal(); });
+
+  function flash(txt) {
+    var el = document.getElementById("flash");
+    el.textContent = txt;
+    clearTimeout(flash._t);
+    flash._t = setTimeout(function () { el.textContent = ""; }, 3500);
+  }
+
+  /* ================== Vistas ================== */
+  function chipEtapa(caso) {
+    if (caso.etapa === "cerrado") return '<span class="chip ch-ok">Cerrado · día ' + caso.dia + "</span>";
+    return '<span class="chip ch-etapa">' + esc(ETAPAS[caso.etapa].n) + "</span>";
+  }
+  function requiereAccion(caso, rol) {
+    if (rol === "tra" || rol === "mintrab") return false;
+    return decisionesDe(caso, rol).length > 0;
+  }
+
+  function vBandeja() {
+    var rol = state.rol;
+    var rows = ["C1","C2"].map(function (cid) {
+      var c = state.casos[cid];
+      var acc = requiereAccion(c, rol);
+      return `<tr class="rowbtn" data-caso="${cid}">
+        <td class="mono">${esc(c.id)}</td>
+        <td>${esc(c.trabajador)}<br><small style="color:var(--ink-faint)">${esc(c.dx)}</small></td>
+        <td>${esc(c.empresa)}</td>
+        <td>${chipEtapa(c)}</td>
+        <td class="num">${c.dia}</td>
+        <td>${acc ? '<span class="chip ch-accion">Requiere su acción</span>' : '<span class="chip ch-mute">En seguimiento</span>'}</td>
+      </tr>`;
+    }).join("");
+    return `<div class="card"><div class="card-pad" style="padding-bottom:6px"><h2>Bandeja de casos</h2></div>
+      <div class="twrap"><table>
+        <thead><tr><th>Caso</th><th>Trabajador</th><th>Empresa</th><th>Etapa</th><th>Día incap.</th><th>Estado para usted</th></tr></thead>
+        <tbody>${rows}</tbody></table></div></div>`;
+  }
+
+  function stepper(caso) {
+    var fase = ETAPAS[caso.etapa].fase;
+    var cerrado = caso.etapa === "cerrado";
+    return '<div class="stepper">' + FASES.map(function (f, i) {
+      var cls = cerrado || i < fase ? "done" : (i === fase ? "now" : "");
+      return `<div class="step ${cls}"><div class="bar"></div><div class="sl">${f}</div></div>`;
+    }).join("") + "</div>";
+  }
+
+  function vCaso() {
+    var caso = state.casos[state.caso], rol = state.rol, f = miFin();
+    if (!caso) return vBandeja();
+    var decs = decisionesDe(caso, rol);
+
+    // Documentos: permitidos + propios + bloqueados
+    var permitidos = f ? (ACCESO[f] || []) : [];
+    var propios = CUSTODIA[rol] || [];
+    var docsHtml = Object.keys(DOCM).map(function (d) {
+      var propio = propios.indexOf(d) >= 0;
+      var permitido = permitidos.indexOf(d) >= 0;
+      var visto = consultado(caso, rol, d);
+      var estado = visto ? '<span class="chip ch-ok">consultado</span>' :
+        (permitido || propio) ? '<span class="chip ch-mute">disponible</span>' : '<span class="chip ch-den">&#128274; fuera de finalidad</span>';
+      var sub = DOCM[d].cust + (propio ? " · bajo su custodia" : "");
+      if (d === "dic" && !caso.pcl) { estado = '<span class="chip ch-mute">no emitido</span>'; }
+      return `<div class="docitem"><div class="di"><div class="dn">${esc(DOCM[d].n)}</div><div class="dc">${esc(sub)}</div></div>
+        ${estado}
+        <button type="button" class="btn btn-sec btn-sm" data-consultar="${d}">Abrir</button></div>`;
+    }).join("");
+
+    var accionesHtml = decs.length ? decs.map(function (x) {
+      var reqs = x.reqs.map(function (r) {
+        return `<div class="req ${r.ok ? "ok" : ""}"><span class="tick">${r.ok ? "✓" : "•"}</span>${esc(DOCM[r.doc].n)}${r.propio ? " (propio)" : ""}</div>`;
+      }).join("");
+      var listo = todasOk(x.reqs);
+      return `<div style="margin-bottom:14px"><div class="chip ch-accion" style="margin-bottom:8px">Pendiente de ${esc(ENT[rol].n)}</div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:6px">${esc(x.d.label)}</div>
+        ${reqs}
+        <button type="button" class="btn" style="margin-top:8px" data-abrir-dec="${x.id}" ${listo ? "" : "disabled"}>${listo ? x.d.label : "Complete las consultas requeridas"}</button></div>`;
+    }).join("") : `<p class="emptymsg">${caso.etapa === "cerrado" ? "El caso está cerrado; el expediente auditable sigue disponible." :
+        "No hay decisiones pendientes de su entidad en esta etapa. Responsable actual: " + (ETAPAS[caso.etapa].resp ? esc(ENT[ETAPAS[caso.etapa].resp].n) : "—") + "."}</p>`;
+
+    var hitosHtml = caso.hitos.slice().reverse().map(function (h) {
+      return `<li class="${h.tipo}"><div class="td">día ${h.dia}</div><div class="tt">${esc(h.txt)}</div></li>`;
+    }).join("");
+
+    return `<div class="stack">
+      <div class="card card-pad">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between">
+          <div><h2 style="font-size:18px">${esc(caso.trabajador)} · ${esc(caso.dx)}</h2>
+          <div style="font-size:12.5px;color:var(--ink-soft)">${esc(caso.cargo)} · ${esc(caso.empresa)} · día ${caso.dia} de incapacidad</div></div>
+          ${chipEtapa(caso)}
+        </div>
+        ${stepper(caso)}
+      </div>
+      <div class="grid2">
+        <div class="stack">
+          <div class="card card-pad"><h2>Evidencia federada</h2>
+            <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 10px">Su finalidad: <b>${f ? esc(FIN[f].n) : "—"}</b>. Cada apertura entrega la vista mínima y deja registro con acuse.</p>
+            ${docsHtml}</div>
+          <div class="card card-pad"><h2>Línea de tiempo del caso</h2><ul class="tl">${hitosHtml}</ul></div>
+        </div>
+        <div class="stack">
+          <div class="card card-pad"><h2>Acciones de su entidad</h2>${accionesHtml}</div>
+          <div class="card card-pad"><h2>Trazabilidad del caso</h2>${tablaLogs(caso, 8)}
+            <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" data-nav="trazabilidad">Ver registro completo</button></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function tablaLogs(caso, limite, soloRol) {
+    var logs = caso.logs.slice();
+    if (soloRol) logs = logs.filter(function (l) { return l.rol === state.rol; });
+    logs.reverse();
+    if (limite) logs = logs.slice(0, limite);
+    if (!logs.length) return '<p class="emptymsg">Sin registros todavía.</p>';
+    var rows = logs.map(function (l) {
+      return `<tr class="${l.rol === state.rol ? "mine" : ""}">
+        <td class="mono">${esc(l.id)}</td><td class="num">${l.dia}</td>
+        <td>${esc(ENT[l.rol] ? ENT[l.rol].n : l.rol)}</td>
+        <td>${esc(l.accion)}${l.doc ? " · " + esc(DOCM[l.doc].n) : ""}</td>
+        <td>${l.fin ? esc(FIN[l.fin].n) : "—"}</td>
+        <td>${l.resultado === "ok" ? '<span class="chip ch-ok">ok · acuse</span>' : '<span class="chip ch-den">denegado</span>'}</td>
+      </tr>`;
+    }).join("");
+    return `<div class="twrap"><table><thead><tr><th>Registro</th><th>Día</th><th>Entidad</th><th>Acción</th><th>Finalidad</th><th>Resultado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+
+  function vTrazabilidad() {
+    var html = "";
+    ["C1","C2"].forEach(function (cid) {
+      var c = state.casos[cid];
+      html += `<div class="card card-pad" style="margin-bottom:16px"><h2>${esc(c.id)} · ${esc(c.trabajador)}</h2>${tablaLogs(c)}</div>`;
+    });
+    return html + '<p style="font-size:12px;color:var(--ink-faint)">Sus accesos aparecen resaltados. Regla 5: toda consulta, decisión y denegación deja registro verificable visible para las partes, el trabajador y la supervisión.</p>';
+  }
+
+  function vPortal() {
+    var caso = state.casos[state.caso || "C1"];
+    var consultas = caso.logs.filter(function (l) { return l.accion === "consulta"; });
+    var okC = consultas.filter(function (l) { return l.resultado === "ok"; });
+    var den = consultas.length - okC.length;
+    var notifs = caso.notifs.slice().reverse().slice(0, 8).map(function (n) {
+      return `<li class="hito"><div class="td">día ${n.dia}</div><div class="tt">${esc(n.txt)}</div></li>`;
+    }).join("");
+    var accesos = okC.slice().reverse().slice(0, 10).map(function (l) {
+      return `<tr><td class="num">${l.dia}</td><td>${esc(ENT[l.rol].n)}</td><td>${esc(DOCM[l.doc].n)}</td><td>${l.fin ? esc(FIN[l.fin].n) : "documento propio"}</td></tr>`;
+    }).join("");
+    return `<div class="stack">
+      <div class="card card-pad">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between">
+          <div><h2 style="font-size:18px">Mi caso · ${esc(caso.id)}</h2>
+          <div style="font-size:12.5px;color:var(--ink-soft)">${esc(caso.dx)} · día ${caso.dia} de incapacidad</div></div>
+          ${chipEtapa(caso)}</div>
+        ${stepper(caso)}
+        <div class="kpis" style="margin-top:10px">
+          <div class="kpi goodv"><b>0</b><span>documentos que usted ha tenido que llevar</span></div>
+          <div class="kpi"><b>${okC.length}</b><span>consultas sobre su evidencia, todas con finalidad</span></div>
+          <div class="kpi ${den ? "warn" : ""}"><b>${den}</b><span>intentos denegados por m&iacute;nimo necesario</span></div>
+          <div class="kpi"><b>${caso.logs.filter(function (l) { return l.accion === "decisión"; }).length}</b><span>decisiones motivadas y notificadas</span></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="card card-pad"><h2>&iquest;Qui&eacute;n ha consultado mi evidencia?</h2>
+          ${okC.length ? '<div class="twrap"><table><thead><tr><th>D&iacute;a</th><th>Entidad</th><th>Documento</th><th>Finalidad declarada</th></tr></thead><tbody>' + accesos + "</tbody></table></div>" : '<p class="emptymsg">A&uacute;n nadie ha consultado su evidencia. Cuando las entidades act&uacute;en, cada acceso aparecer&aacute; aqu&iacute; autom&aacute;ticamente.</p>'}
+        </div>
+        <div class="card card-pad"><h2>Notificaciones de mi caso</h2>
+          ${notifs ? '<ul class="tl">' + notifs + "</ul>" : '<p class="emptymsg">Sin notificaciones todav&iacute;a.</p>'}</div>
+      </div>
+    </div>`;
+  }
+
+  function vSupervision() {
+    var totalC = 0, totalD = 0, totalDec = 0;
+    var rows = ["C1","C2"].map(function (cid) {
+      var c = state.casos[cid];
+      var cons = c.logs.filter(function (l) { return l.accion === "consulta" && l.resultado === "ok"; }).length;
+      var den = c.logs.filter(function (l) { return l.resultado === "denegado"; }).length;
+      var dec = c.logs.filter(function (l) { return l.accion === "decisión"; }).length;
+      totalC += cons; totalD += den; totalDec += dec;
+      var enEtapa = c.dia - c.etapaDia;
+      var alerta = c.etapa !== "cerrado" && enEtapa > 15;
+      return `<tr>
+        <td class="mono">${esc(c.id)}</td><td>${chipEtapa(c)}</td>
+        <td>${ETAPAS[c.etapa].resp ? esc(ENT[ETAPAS[c.etapa].resp].n) : "—"}</td>
+        <td class="num">${enEtapa}</td>
+        <td class="num">${cons}</td><td class="num">${den}</td><td class="num">${dec}</td>
+        <td>${alerta ? '<span class="chip ch-alert">SLA vencido</span>' : '<span class="chip ch-ok">en t&eacute;rmino</span>'}</td>
+      </tr>`;
+    }).join("");
+    return `<div class="stack">
+      <div class="card card-pad"><h2>Panel de supervisi&oacute;n</h2>
+        <div class="kpis">
+          <div class="kpi"><b>2</b><span>casos activos en la ruta</span></div>
+          <div class="kpi"><b>${totalC}</b><span>consultas con finalidad y acuse</span></div>
+          <div class="kpi ${totalD ? "warn" : ""}"><b>${totalD}</b><span>denegaciones (regla 3)</span></div>
+          <div class="kpi"><b>${totalDec}</b><span>decisiones motivadas</span></div>
+        </div></div>
+      <div class="card"><div class="card-pad" style="padding-bottom:4px"><h2>Estado por caso</h2></div>
+        <div class="twrap"><table><thead><tr><th>Caso</th><th>Etapa</th><th>Responsable actual</th><th>D&iacute;as en etapa</th><th>Consultas</th><th>Deneg.</th><th>Decisiones</th><th>SLA</th></tr></thead><tbody>${rows}</tbody></table></div></div>
+      <div class="card card-pad"><h2>Registro auditable global</h2>${vTrazaGlobal()}</div>
+    </div>`;
+  }
+  function vTrazaGlobal() {
+    var all = [];
+    ["C1","C2"].forEach(function (cid) {
+      state.casos[cid].logs.forEach(function (l) { all.push({ c: state.casos[cid], l: l }); });
+    });
+    if (!all.length) return '<p class="emptymsg">Sin actividad todavía: las entidades aún no operan los casos.</p>';
+    all.sort(function (a, b) { return a.l.id < b.l.id ? 1 : -1; });
+    var rows = all.slice(0, 14).map(function (x) {
+      return `<tr><td class="mono">${esc(x.l.id)}</td><td class="num">${x.l.dia}</td><td>${esc(ENT[x.l.rol].n)}</td>
+        <td>${esc(x.l.accion)}${x.l.doc ? " · " + esc(DOCM[x.l.doc].n) : ""}</td>
+        <td>${x.l.resultado === "ok" ? '<span class="chip ch-ok">ok</span>' : '<span class="chip ch-den">denegado</span>'}</td></tr>`;
+    }).join("");
+    return `<div class="twrap"><table><thead><tr><th>Registro</th><th>D&iacute;a</th><th>Entidad</th><th>Acci&oacute;n</th><th>Resultado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+
+  /* ================== Notificaciones ================== */
+  function misNotifs() {
+    var out = [];
+    ["C1","C2"].forEach(function (cid) {
+      state.casos[cid].notifs.forEach(function (n, i) {
+        if (n.para.indexOf(state.rol) >= 0) out.push({ cid: cid, i: i, n: n });
+      });
+    });
+    return out;
+  }
+  function notifsNoLeidas() {
+    return misNotifs().filter(function (x) { return !x.n.leidaPor[state.rol]; }).length;
+  }
+  var notifpanel = document.getElementById("notifpanel");
+  document.getElementById("bell").addEventListener("click", function () {
+    var abierto = notifpanel.classList.toggle("open");
+    if (abierto) {
+      var items = misNotifs().slice().reverse();
+      notifpanel.innerHTML = items.length ? items.map(function (x) {
+        return `<div class="nitem"><div class="nd">${esc(state.casos[x.cid].id)} · día ${x.n.dia}</div>${esc(x.n.txt)}</div>`;
+      }).join("") : '<div class="nitem">Sin notificaciones para su entidad.</div>';
+      misNotifs().forEach(function (x) { x.n.leidaPor[state.rol] = true; });
+      save(); renderTopbar();
+    }
+  });
+  document.addEventListener("click", function (ev) {
+    if (!notifpanel.contains(ev.target) && ev.target.id !== "bell" && !document.getElementById("bell").contains(ev.target)) {
+      notifpanel.classList.remove("open");
+    }
+  });
+
+  /* ================== Shell / render ================== */
+  var VISTAS = {
+    bandeja:      { t:"Bandeja de casos", roles:["eps","arl","afp","jr","jn","tra"] },
+    caso:         { t:"Expediente del caso", roles:["eps","arl","afp","jr","jn"] },
+    portal:       { t:"Mi caso", roles:["tra"] },
+    trazabilidad: { t:"Trazabilidad", roles:["eps","arl","afp","jr","jn"] },
+    supervision:  { t:"Supervisión", roles:["mintrab"] }
+  };
+  function navItems() {
+    var rol = state.rol, items = [];
+    if (rol === "mintrab") { items = ["supervision"]; }
+    else if (rol === "tra") { items = ["bandeja","portal"]; }
+    else { items = ["bandeja","caso","trazabilidad"]; }
+    return items;
+  }
+
+  function renderNav() {
+    var nav = document.getElementById("nav");
+    nav.innerHTML = navItems().map(function (v) {
+      var pend = v === "bandeja" && state.rol !== "tra" &&
+        ["C1","C2"].some(function (cid) { return requiereAccion(state.casos[cid], state.rol); });
+      return `<button type="button" data-nav="${v}" aria-current="${String(state.vista === v)}">${esc(VISTAS[v].t)}${pend ? '<span class="dot"></span>' : ""}</button>`;
+    }).join("");
+    nav.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () { irA(b.getAttribute("data-nav")); });
+    });
+    var ub = document.getElementById("userblock");
+    ub.innerHTML = `<div class="un">${esc(ENT[state.rol].user)}</div><div class="ue">${esc(ENT[state.rol].n)}${ENT[state.rol].cargo ? " · " + esc(ENT[state.rol].cargo) : ""}</div>
+      <button type="button" id="btn-salir">Cambiar de entidad</button>
+      <button type="button" id="btn-export" style="margin-top:6px">Exportar sesi&oacute;n (JSON)</button>
+      <button type="button" id="btn-reset" style="margin-top:6px;border-color:rgba(224,121,109,.6);color:#E0796D">Reiniciar escenarios</button>`;
+    ub.querySelector("#btn-salir").addEventListener("click", function () {
+      state.rol = null; save(); render();
+    });
+    ub.querySelector("#btn-export").addEventListener("click", exportar);
+    ub.querySelector("#btn-reset").addEventListener("click", function () {
+      if (!window.confirm("Esto reinicia los dos escenarios (etapas, registros y notificaciones). ¿Continuar?")) return;
+      var rol = state.rol;
+      state = freshState(); state.rol = rol;
+      try { localStorage.removeItem(LS_KEY); } catch (e) { /* sin persistencia */ }
+      save(); render(); flash("Escenarios reiniciados.");
+    });
+  }
+
+  function irA(vista, casoId) {
+    if (casoId) state.caso = casoId;
+    if (vista === "caso" && !state.caso) state.caso = "C1";
+    if (vista === "portal" && !state.caso) state.caso = "C1";
+    state.vista = vista;
+    save(); renderAll();
+  }
+
+  function renderTopbar() {
+    document.getElementById("vtitle").textContent = VISTAS[state.vista] ? VISTAS[state.vista].t : "";
+    var cp = document.getElementById("casepill");
+    if ((state.vista === "caso" || state.vista === "portal") && state.caso) {
+      var c = state.casos[state.caso];
+      cp.style.display = ""; cp.textContent = c.id + " · día " + c.dia;
+    } else cp.style.display = "none";
+    var n = notifsNoLeidas(), bn = document.getElementById("belln");
+    if (n > 0) { bn.style.display = ""; bn.textContent = n; } else bn.style.display = "none";
+  }
+
+  function renderMain() {
+    var main = document.getElementById("main");
+    var v = state.vista;
+    if (v === "bandeja") main.innerHTML = vBandeja();
+    else if (v === "caso") main.innerHTML = vCaso();
+    else if (v === "portal") main.innerHTML = vPortal();
+    else if (v === "trazabilidad") main.innerHTML = vTrazabilidad();
+    else if (v === "supervision") main.innerHTML = vSupervision();
+    else main.innerHTML = vBandeja();
+
+    main.querySelectorAll("tr[data-caso]").forEach(function (tr) {
+      tr.addEventListener("click", function () {
+        irA(state.rol === "tra" ? "portal" : "caso", tr.getAttribute("data-caso"));
+      });
+    });
+    main.querySelectorAll("[data-consultar]").forEach(function (b) {
+      b.addEventListener("click", function () { consultar(state.caso, b.getAttribute("data-consultar")); });
+    });
+    main.querySelectorAll("[data-abrir-dec]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var key = b.getAttribute("data-abrir-dec");
+        DECISIONES[key].abrir(state.casos[state.caso]);
+      });
+    });
+    main.querySelectorAll("[data-nav]").forEach(function (b) {
+      b.addEventListener("click", function () { irA(b.getAttribute("data-nav")); });
+    });
+  }
+
+  function renderAll() { renderNav(); renderTopbar(); renderMain(); }
+
+  function render() {
+    var login = document.getElementById("login"), app = document.getElementById("app");
+    if (!state.rol) {
+      app.classList.remove("on"); login.style.display = "flex";
+      document.getElementById("entgrid").innerHTML = Object.keys(ENT).map(function (r) {
+        return `<button type="button" data-rol="${r}"><span class="en">${esc(ENT[r].n)}</span><span class="eu">${esc(ENT[r].user)}${ENT[r].cargo ? " · " + esc(ENT[r].cargo) : ""}</span><span class="ef">${ROL_FIN[r] ? esc(FIN[ROL_FIN[r]].n) : "Vista de estado y trazabilidad"}</span></button>`;
+      }).join("");
+      document.getElementById("entgrid").querySelectorAll("button").forEach(function (b) {
+        b.addEventListener("click", function () {
+          state.rol = b.getAttribute("data-rol");
+          state.vista = state.rol === "mintrab" ? "supervision" : "bandeja";
+          save(); render();
+        });
+      });
+      return;
+    }
+    login.style.display = "none"; app.classList.add("on");
+    if (navItems().indexOf(state.vista) < 0) state.vista = navItems()[0];
+    renderAll();
+  }
+
+  /* ================== Export ================== */
+  var downloadsNS = null;
+  if (window.claude && typeof window.claude.use === "function") {
+    try { window.claude.use("downloads").then(function (ns) { downloadsNS = ns; }, function () {}); } catch (e) { /* sin runtime */ }
+  }
+  function exportar() {
+    var data = {
+      instrumento: "MICL · prototipo de media fidelidad (DGIT 6202)",
+      fecha: new Date().toISOString(),
+      casos: ["C1","C2"].map(function (cid) {
+        var c = state.casos[cid];
+        return { id: c.id, etapa: ETAPAS[c.etapa].n, dia: c.dia, origen: c.origen, pcl: c.pcl,
+          hitos: c.hitos, registros: c.logs, notificaciones: c.notifs.map(function (n) { return { dia: n.dia, para: n.para, txt: n.txt }; }) };
+      })
+    };
+    var json = JSON.stringify(data, null, 2);
+    if (downloadsNS) {
+      downloadsNS.save({ filename: "micl-sesion.json", data: json }).then(
+        function () { flash("Archivo guardado."); },
+        function (err) {
+          if (err && err.code === "declined") flash("Descarga cancelada.");
+          else flash("No se pudo guardar; se copió al portapapeles.");
+        }
+      );
+    } else {
+      var blob = new Blob([json], { type: "application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = "micl-sesion.json";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).catch(function () {});
+  }
+
+  /* ================== Inicio ================== */
+  loadState();
+  render();
+})();
+</script>
