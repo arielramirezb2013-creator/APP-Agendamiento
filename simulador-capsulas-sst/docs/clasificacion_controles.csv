@@ -1,0 +1,118 @@
+﻿ID;ND;Control declarado;Fuente;Medio;Individuo
+PAN-01;10;Sin control;Sin control;Sin control;Sin control
+PAN-01;6;Amasadora; sin pausas;Amasadora;—;Sin pausas
+PAN-01;2;Amasadora, pausas y rotación;Amasadora;—;Pausas; Rotación
+PAN-02;10;Sin control;Sin control;Sin control;Sin control
+PAN-02;6;Manejo entre dos;—;—;Manejo entre dos
+PAN-02;2;Carretilla / bultos pequeños;Carretilla; Bultos pequeños;—;—
+PAN-03;10;Sin control;Sin control;Sin control;Sin control
+PAN-03;6;Tapabocas a veces;—;—;Tapabocas a veces
+PAN-03;2;Tapabocas + limpieza húmeda;—;Limpieza húmeda;Tapabocas
+PAN-04;10;Sin control;Sin control;Sin control;Sin control
+PAN-04;6;Sin ventilación extra;—;Sin ventilación extra;—
+PAN-04;2;Ventilación / horno cerrado;Horno cerrado;Ventilación;—
+PAN-05;10;Sin control;Sin control;Sin control;Sin control
+PAN-05;6;Guarda que se retira;Guarda que se retira;—;—
+PAN-05;2;Guardas fijas; apagado para limpiar;Guardas fijas;—;Apagado para limpiar
+PAN-06;10;Sin control;Sin control;Sin control;Sin control
+PAN-06;6;Limpieza ocasional;—;Limpieza ocasional;—
+PAN-06;2;Aseo + antideslizante;—;Aseo; Antideslizante;—
+PAN-07;10;Sin control;Sin control;Sin control;Sin control
+PAN-07;6;Extintor; sin revisión de gas;—;Extintor; Sin revisión de gas;—
+PAN-07;2;Revisión de gas + extintor + ventilación;—;Revisión de gas; Extintor; Ventilación;—
+PAN-08;10;Sin control;Sin control;Sin control;Sin control
+PAN-08;6;Turnos a veces;Turnos a veces;—;—
+PAN-08;2;Horario diurno;Horario diurno;—;—
+PAN-09;10;Sin control;Sin control;Sin control;Sin control
+PAN-09;6;Conocimiento básico;—;—;Conocimiento básico
+PAN-09;2;Plan de emergencia + aseguramiento;—;Aseguramiento;Plan de emergencia
+PEL-01;10;Sin control;Sin control;Sin control;Sin control
+PEL-01;6;Descansos cortos;—;—;Descansos cortos
+PEL-01;2;Silla + pausas;—;Silla;Pausas
+PEL-02;10;Sin control;Sin control;Sin control;Sin control
+PEL-02;6;Sin pausas;—;—;Sin pausas
+PEL-02;2;Pausas y estiramiento;—;—;Pausas; Estiramiento
+PEL-03;10;Sin control;Sin control;Sin control;Sin control
+PEL-03;6;Guantes a veces;—;—;Guantes a veces
+PEL-03;2;Guantes + ventilación;—;Ventilación;Guantes
+PEL-04;10;Sin control;Sin control;Sin control;Sin control
+PEL-04;6;Cuchilla desechable;Cuchilla desechable;—;—
+PEL-04;2;Desechable + desinfección;Desechable;Desinfección;—
+PEL-05;10;Sin control;Sin control;Sin control;Sin control
+PEL-05;6;Tomas sin polo a tierra;—;Tomas sin polo a tierra;—
+PEL-05;2;Tomas con tierra + buenas prácticas;—;Tomas con tierra;Buenas prácticas
+PEL-06;10;Sin control;Sin control;Sin control;Sin control
+PEL-06;6;Conocimiento básico;—;—;Conocimiento básico
+PEL-06;2;Plan de emergencia + aseguramiento;—;Aseguramiento;Plan de emergencia
+TAL-01;10;Sin control;Sin control;Sin control;Sin control
+TAL-01;6;Guantes a veces;—;—;Guantes a veces
+TAL-01;2;Guantes + ventilación;—;Ventilación;Guantes
+TAL-02;10;Sin control;Sin control;Sin control;Sin control
+TAL-02;6;Ventilación parcial;—;Ventilación parcial;—
+TAL-02;2;Extractor / al aire libre;—;Extractor; Al aire libre;—
+TAL-03;10;Sin control;Sin control;Sin control;Sin control
+TAL-03;6;Tapabocas común;—;—;Tapabocas común
+TAL-03;2;Cabina / respirador;—;Cabina;Respirador
+TAL-04;10;Sin control;Sin control;Sin control;Sin control
+TAL-04;6;Protección auditiva ocasional;—;—;Protección auditiva ocasional
+TAL-04;2;Protección auditiva;—;—;Protección auditiva
+TAL-05;10;Sin control;Sin control;Sin control;Sin control
+TAL-05;6;Ayuda ocasional;—;—;Ayuda ocasional
+TAL-05;2;Ayudas mecánicas + rotación;Ayudas mecánicas;—;Rotación
+TAL-06;10;Sin control;Sin control;Sin control;Sin control
+TAL-06;6;Soportes a veces;Soportes a veces;—;—
+TAL-06;2;Elevador/soportes + mantenimiento;Elevador; Soportes;Mantenimiento;—
+TAL-07;10;Sin control;Sin control;Sin control;Sin control
+TAL-07;6;Gafas a veces;—;—;Gafas a veces
+TAL-07;2;Gafas/careta + guarda;Guarda;—;Gafas; Careta
+TAL-08;10;Sin control;Sin control;Sin control;Sin control
+TAL-08;6;Careta; sin extracción;—;Sin extracción;Careta
+TAL-08;2;Careta + extracción;—;Extracción;Careta
+TAL-09;10;Sin control;Sin control;Sin control;Sin control
+TAL-09;6;Extintor; mal almacenamiento;—;Extintor; Mal almacenamiento;—
+TAL-09;2;Extintor + almacenamiento seguro;—;Extintor; Almacenamiento seguro;—
+TAL-10;10;Sin control;Sin control;Sin control;Sin control
+TAL-10;6;Conocimiento básico;—;—;Conocimiento básico
+TAL-10;2;Plan de emergencia + aseguramiento;—;Aseguramiento;Plan de emergencia
+RES-01;10;Sin control;Sin control;Sin control;Sin control
+RES-01;6;Sin ventilación suficiente;—;Sin ventilación suficiente;—
+RES-01;2;Extractor / ventilación;—;Extractor; Ventilación;—
+RES-02;10;Sin control;Sin control;Sin control;Sin control
+RES-02;6;Sin guante de malla;—;—;Sin guante de malla
+RES-02;2;Cuchillos afilados + técnica/guante;Cuchillos afilados;—;Técnica; Guante
+RES-03;10;Sin control;Sin control;Sin control;Sin control
+RES-03;6;Sin EPP específico;—;—;Sin EPP específico
+RES-03;2;Guantes/mangas + cuidado;—;—;Guantes; Mangas; Cuidado
+RES-04;10;Sin control;Sin control;Sin control;Sin control
+RES-04;6;Limpieza ocasional;—;Limpieza ocasional;—
+RES-04;2;Aseo + antideslizante;—;Aseo; Antideslizante;—
+RES-05;10;Sin control;Sin control;Sin control;Sin control
+RES-05;6;Ayuda ocasional;—;—;Ayuda ocasional
+RES-05;2;Pausas + manejo entre dos;—;—;Pausas; Manejo entre dos
+RES-06;10;Sin control;Sin control;Sin control;Sin control
+RES-06;6;Extintor; sin revisión de gas;—;Extintor; Sin revisión de gas;—
+RES-06;2;Revisión de gas + extintor;—;Revisión de gas; Extintor;—
+RES-07;10;Sin control;Sin control;Sin control;Sin control
+RES-07;6;Casco;—;—;Casco
+RES-07;2;Casco + vehículo en regla;Vehículo en regla;—;Casco
+RES-08;10;Sin control;Sin control;Sin control;Sin control
+RES-08;6;Conocimiento básico;—;—;Conocimiento básico
+RES-08;2;Plan de emergencia + aseguramiento;—;Aseguramiento;Plan de emergencia
+OFI-01;10;Sin control;Sin control;Sin control;Sin control
+OFI-01;6;Puesto sin ajustar; pocas pausas;—;Puesto sin ajustar;Pocas pausas
+OFI-01;2;Puesto ajustado + pausas;—;Puesto ajustado;Pausas
+OFI-02;10;Sin control;Sin control;Sin control;Sin control
+OFI-02;6;Picos de carga;Picos de carga;—;—
+OFI-02;2;Carga organizada + pausas;Carga organizada;—;Pausas
+OFI-03;10;Sin control;Sin control;Sin control;Sin control
+OFI-03;6;Sobrecarga parcial;—;Sobrecarga parcial;—
+OFI-03;2;Instalación ordenada;—;Instalación ordenada;—
+OFI-04;10;Sin control;Sin control;Sin control;Sin control
+OFI-04;6;Orden parcial;—;Orden parcial;—
+OFI-04;2;Orden y aseo;—;Orden; Aseo;—
+OFI-05;10;Sin control;Sin control;Sin control;Sin control
+OFI-05;6;Sin protocolo;—;—;Sin protocolo
+OFI-05;2;Protocolo de atención;—;—;Protocolo de atención
+OFI-06;10;Sin control;Sin control;Sin control;Sin control
+OFI-06;6;Conocimiento básico;—;—;Conocimiento básico
+OFI-06;2;Plan de emergencia + aseguramiento;—;Aseguramiento;Plan de emergencia

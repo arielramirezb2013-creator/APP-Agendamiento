@@ -1,0 +1,149 @@
+<!doctype html>
+<!-- Simulador Cápsulas SST · Rehavid S.A.S. · fuente modular; el archivo único se genera con build.py -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3c14c8">
+<meta name="author" content="Rehavid S.A.S.">
+<meta name="description" content="Simulador del modelo de cápsulas SST por WhatsApp y generador de matriz de peligros (IPEVR, GTC 45:2012) para el segmento Independiente Empresa de ARL SURA.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rehavid SST">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<title>Rehavid · Simulador Cápsulas SST y Matriz de Peligros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" integrity="sha384-fCAW/rDWORTbQXSiB7mOg0QtQ5c+r0f544y6XoKjuVva0nMBlCpNUjiFeG5iMdS3" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand"><img class="brand-logo" src="assets/logo.png" alt="Rehavid"></div>
+    <p class="eyebrow">Autodiagnóstico por WhatsApp · ARL SURA</p>
+    <h1 class="h1">Seguridad y salud en el trabajo <span class="thin">· por WhatsApp</span></h1>
+    <p class="sub">Segmento Independiente Empresa — aprende con una cápsula, construye tu matriz de peligros o reporta un accidente (FURAT) por voz, todo desde el chat.</p>
+    <div class="rule"></div>
+  </header>
+
+  <div class="workspace">
+
+    <aside class="rail">
+      <section class="panel">
+        <h2 class="panel-h">Cómo funciona</h2>
+        <p class="sector-note">Todo ocurre en el chat. El asesor te pregunta qué necesitas — <b>ver una cápsula</b> de SST, <b>generar tu matriz de peligros</b> o <b>reportar un accidente (FURAT)</b>: el asesor pregunta por escrito y tú respondes por voz. Si eliges la matriz, te la entrega como un <b>documento dentro de la conversación</b> para abrirla y descargarla.</p>
+      </section>
+
+      <section class="panel" id="sumPanel" hidden>
+        <h2 class="panel-h">Resumen</h2>
+        <div class="detail" id="sumDetail"></div>
+        <div class="haz-count" id="hazCount" hidden><span class="n" id="hazN">0</span><span class="l">peligros identificados</span></div>
+        <div class="niv-dist" id="nivDist" hidden></div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-h">Conversación</h2>
+        <div class="play-row">
+          <button class="btn" id="btnRestart">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 5V1L7 6l5 5V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z" fill="currentColor"/></svg>
+            <span>Reiniciar</span>
+          </button>
+        </div>
+        <p class="sector-note" style="margin-top:10px">Voz en el FURAT: escribe o di <b>«diagnóstico»</b> en el chat para ver los eventos del micrófono.</p>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-h">Formato de entrega</h2>
+        <div class="legalbox"><b>La matriz se entrega en el chat</b> como documento. Descárgala en <b>PDF</b> (resumen + matriz en dos bloques legibles), en <b>Excel (.xlsx)</b> o en <b>CSV</b>. Borrador estructurado bajo GTC 45:2012 a partir de la autodeclaración del empleador; valídalo con tu responsable del SG-SST antes de adoptarlo.</div>
+      </section>
+    </aside>
+
+    <!-- ================= PHONE STAGE ================= -->
+    <div class="stage">
+      <div class="phone">
+        <div class="notch"><div class="pill"></div></div>
+        <div class="screen">
+
+          <div class="statusbar">
+            <span id="sbTime">9:41</span>
+            <span class="sb-ic">
+              <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+              <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 2.2c2.4 0 4.6.9 6.2 2.4l-1.3 1.3A6.7 6.7 0 0 0 8 4.1 6.7 6.7 0 0 0 3.1 5.9L1.8 4.6A8.9 8.9 0 0 1 8 2.2Zm0 3.3c1.5 0 2.9.6 3.9 1.6l-1.3 1.3A3.7 3.7 0 0 0 8 6.8c-1 0-2 .4-2.6 1.1L4.1 6.6A5.5 5.5 0 0 1 8 5.5Zm0 3.2c.6 0 1.2.2 1.6.7L8 11 6.4 9.4c.4-.5 1-.7 1.6-.7Z"/></svg>
+              <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0.5" y="0.5" width="21" height="11" rx="2.5" fill="none" stroke="#fff" stroke-opacity="0.55"/><rect x="2" y="2" width="17" height="8" rx="1.5"/><rect x="22.5" y="3.5" width="2" height="5" rx="1"/></svg>
+            </span>
+          </div>
+
+          <div class="wa-header">
+            <button class="wa-back" id="waBack" type="button" aria-label="Volver al inicio">‹</button>
+            <div class="wa-av" id="waAv">S</div>
+            <div class="wa-id">
+              <div class="wa-name"><span id="waName">ARL SURA</span>
+                <span class="verif"><svg viewBox="0 0 24 24"><path d="M12 2l2.3 1.7 2.8-.3 1 2.6 2.6 1-.3 2.8L24 12l-1.6 2.3.3 2.8-2.6 1-1 2.6-2.8-.3L12 22l-2.3-1.6-2.8.3-1-2.6-2.6-1 .3-2.8L2 12l1.6-2.4-.3-2.8 2.6-1 1-2.6 2.8.3z" fill="#34b7f1"/><path d="M10.6 14.6l-2.2-2.2-1.2 1.2 3.4 3.4 6-6-1.2-1.2z" fill="#fff"/></svg></span>
+              </div>
+              <div class="wa-status" id="waStatus">en línea</div>
+            </div>
+            <div class="wa-acts">
+              <svg viewBox="0 0 24 24"><path d="M15 8a3 3 0 0 1 3 3m-3-7a7 7 0 0 1 7 7M5.6 10.8a13 13 0 0 0 5.6 5.6l1.9-1.9c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V19c0 .6-.4 1-1 1A16 16 0 0 1 5 5c0-.6.4-1 1-1h3a1 1 0 0 1 1 1c0 1.2.2 2.4.6 3.5.1.4 0 .8-.2 1z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11z"/></svg>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+            </div>
+          </div>
+
+          <div class="chat" id="chat" aria-live="polite"></div>
+
+          <div class="inputbar" id="inputbar">
+            <div class="input-field">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-3.5 7a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm7 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 17.5c-2.3 0-4.3-1.4-5.1-3.5h10.2c-.8 2.1-2.8 3.5-5.1 3.5z"/></svg>
+              <span class="ph" id="inputPh">Mensaje</span>
+              <input class="txt-in" id="txtIn" type="text" autocomplete="off" autocapitalize="sentences" enterkeyhint="send" placeholder="Toca el micrófono y responde" aria-label="Respuesta" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 6v9.5a4.5 4.5 0 0 1-9 0V5a3 3 0 0 1 6 0v9.5a1.5 1.5 0 0 1-3 0V6H9v8.5a3 3 0 0 0 6 0V5a4.5 4.5 0 0 0-9 0v16.5a6 6 0 0 0 12 0V6z"/></svg>
+            </div>
+            <button class="send-btn mic" id="micBtn" type="button" aria-label="Hablar" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V22h2v-3.1A7 7 0 0 0 19 12z"/></svg>
+            </button>
+            <button class="send-btn" id="sendBtn" type="button" aria-label="Enviar">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20l18-8L3 4v6l11 2-11 2z"/></svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <p class="hint">Toca los <b>botones del chat</b> para avanzar. El afiliado responde y la cápsula se ramifica. La flecha <b>‹</b> del encabezado vuelve al inicio.</p>
+    </div>
+
+  </div>
+  <!-- ================= VISTA PREVIA DE LA MATRIZ (overlay) ================= -->
+  <div class="mtx-modal" id="mtxModal" hidden>
+    <div class="mtx-dialog" id="mtxDialog" role="dialog" aria-modal="true" aria-labelledby="mtxName" aria-describedby="mtxSub">
+      <div class="mtx-bar">
+        <div class="mtx-bar-id"><span class="mtx-doc-ic" aria-hidden="true">📊</span><div><div class="mtx-bar-name" id="mtxName">Matriz de peligros</div><div class="mtx-bar-sub" id="mtxSub">IPEVR · GTC 45</div></div></div>
+        <button class="mtx-x" id="mtxClose" type="button" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="mtx-body" id="mtxBody"></div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <span>Rehavid</span><span class="dot"></span>
+    <span>Gestión Cápsulas SST 2026</span><span class="dot"></span>
+    <span>Simulador v16 · contenido de ejemplo, editable</span>
+  </footer>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="data/capsulas.js"></script>
+<script src="data/sectores.js"></script>
+<script src="data/personas_q.js"></script>
+<script src="data/sura.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/furat.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
