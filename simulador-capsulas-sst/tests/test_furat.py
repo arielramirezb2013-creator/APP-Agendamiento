@@ -6,7 +6,7 @@ Uso: python3 test_furat.py simulador_capsulas_sst_v11.html [carpeta_salida]
 import json, os, sys
 from playwright.sync_api import sync_playwright
 
-HTML = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dist", "simulador_capsulas_sst_v18.html"))
+HTML = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dist", "simulador_capsulas_sst_v19.html"))
 OUT = os.path.abspath(sys.argv[2] if len(sys.argv) > 2 else "furat_out"); os.makedirs(OUT, exist_ok=True)
 MOCK_SR = """
 window.__srStarts = 0; window.__srActive = null;
@@ -268,10 +268,19 @@ with sync_playwright() as p:
     page.wait_for_selector("#guion-g3", timeout=8000)
     solo34 = page.evaluate("FURAT_FIELDS.filter(f=>furatApplicable(f)&&!f.opt&&F.ans[f.id]===undefined).every(f=>['III','IV'].includes(f.sec))")
     check("Solo queda por preguntar el accidente (secciones III y IV)", solo34 and page.locator("#guion-g3").count() == 1)
+    # pausa por voz y reanudación con contexto
+    speak("parar")
+    check("«Parar» por voz pausa el micrófono con confirmación", not page.evaluate("Voice.wanted") and "pausa" in last_in().lower(), last_in()[:80])
+    page.click("#micBtn"); page.wait_for_function("() => Voice.on"); page.wait_for_timeout(300)
+    check("Al reanudar retoma donde iba el dictado del párrafo", "Seguimos" in last_in() and "Dime ahora" in last_in(), last_in()[:110])
     guion_lee("el accidente ocurrió el día ayer, a las dos y veinte de la tarde, en jornada normal, cuando el trabajador sí estaba realizando su labor habitual y llevaba tres horas y veinte de trabajo ese día. fue un accidente de tipo propios del trabajo. el accidente no causó la muerte del trabajador. ocurrió sí en el mismo municipio de la sede principal, en zona urbana; el lugar fue dentro de la empresa, en el sitio área de producción")
     check("Guion del accidente con las formas coloquiales nuevas (14:20 y 3 h 20 min)", page.evaluate("F.meta.horaAccidente.text") == "14:20" and page.evaluate("F.meta.tiempoLaborado.text") == "3 h 20 min", page.evaluate("({h:F.meta.horaAccidente&&F.meta.horaAccidente.text, t:F.meta.tiempoLaborado&&F.meta.tiempoLaborado.text})"))
-    guion_lee("El trabajador estaba sacando bandejas del horno, se resbaló con harina en el piso y se golpeó la rodilla derecha presentando un esguince")
+    guion_lee("El trabajador estaba sacando bandejas del horno")
+    guion_lee("para")
+    check("«Para» de hesitación durante la descripción NO pausa: se acumula al relato", page.evaluate("Voice.wanted") and page.evaluate("F.longBuf").endswith("para"), page.evaluate("F.longBuf")[-40:])
+    guion_lee("cambiar la lata, se resbaló con harina en el piso y se golpeó la rodilla derecha presentando un esguince")
     guion_lee("listo")
+    check("La descripción conserva el «para» narrativo", "horno para cambiar la lata" in page.evaluate("F.ans.descripcion || ''"), page.evaluate("(F.ans.descripcion||'').slice(0,80)"))
     guion_lee("correcto")
     guion_lee("no hubo personas que presenciaron el accidente")
     check("Testigos: no, y resumen final directo (responsable ya venía de la base)", "Todo correcto" in last_in(), last_in()[:80])
@@ -317,6 +326,8 @@ with sync_playwright() as p:
     check("Permiso denegado: no reintenta en bucle y avisa cómo seguir", fp.evaluate("!Voice.on && Voice.fatal") and "acceso al micrófono" in " ".join(fp.locator(".wa-bubble.in .txt").all_inner_texts()[-2:]))
     fp.fill("#txtIn", "diagnóstico"); fp.press("#txtIn", "Enter"); fp.wait_for_timeout(300)
     check("«diagnóstico» muestra navegador, estado, último error y eventos", "Diagnóstico de voz" in fp.locator(".wa-bubble.in .txt").last.inner_text() and "not-allowed" in fp.locator(".wa-bubble.in .txt").last.inner_text())
+    fp.click("#micBtn"); fp.wait_for_timeout(500)
+    check("Tras permiso denegado, un toque re-pide el permiso y reactiva la voz", fp.evaluate("Voice.primed && Voice.on && !Voice.fatal"))
 
     # Sin soporte de voz: respaldo por teclado
     nv = ctx.new_page(); nv.emulate_media(reduced_motion="reduce"); nv.add_init_script("delete window.SpeechRecognition; delete window.webkitSpeechRecognition;"); servir(nv); nv.goto(URL); nv.wait_for_timeout(500); nv.evaluate("S.speed=0")

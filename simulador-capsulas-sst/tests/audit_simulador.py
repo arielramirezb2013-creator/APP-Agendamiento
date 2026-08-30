@@ -10,7 +10,7 @@ accesibilidad básica del diálogo, reinicio en móvil y respuesta sin conexión
 import json, os, sys
 from playwright.sync_api import sync_playwright
 
-HTML = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dist", "simulador_capsulas_sst_v18.html"))
+HTML = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dist", "simulador_capsulas_sst_v19.html"))
 OUT = os.path.abspath(sys.argv[2] if len(sys.argv) > 2 else "audit_out")
 os.makedirs(OUT, exist_ok=True)
 URL = "file://" + HTML

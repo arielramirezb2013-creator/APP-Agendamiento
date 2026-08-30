@@ -30,7 +30,7 @@ vendor/                 librerías de exporte (jsPDF 2.5.1, autoTable 3.8.2, She
 build.py                genera dist/simulador_capsulas_sst_<version>.html (inyecta css, js en orden, imágenes,
                         librerías de vendor/ y fuente en base64: el dist no hace ninguna petición de red)
 tests/audit_simulador.py  suite base (26 verificaciones, Playwright headless)
-tests/test_furat.py       suite FURAT (114 verificaciones, con SpeechRecognition simulado)
+tests/test_furat.py       suite FURAT (119 verificaciones, con SpeechRecognition simulado)
 docs/                   informes de auditoría y notas
 iniciar_demo.py/.bat    opcional: sirve dist/ en http://localhost
 ```
@@ -38,8 +38,8 @@ iniciar_demo.py/.bat    opcional: sirve dist/ en http://localhost
 ## Cómo trabajar
 - Edita solo `src/`. Luego `python3 build.py` y prueba **contra `dist/`**:
   `pip install playwright && playwright install chromium`, después
-  `python3 tests/audit_simulador.py dist/simulador_capsulas_sst_v18.html out/` y
-  `python3 tests/test_furat.py dist/simulador_capsulas_sst_v18.html out/`.
+  `python3 tests/audit_simulador.py dist/simulador_capsulas_sst_v19.html out/` y
+  `python3 tests/test_furat.py dist/simulador_capsulas_sst_v19.html out/`.
   Ambas suites deben quedar en 100 % antes de entregar. Para desarrollo rápido puedes abrir `src/index.html` directamente
   (el logo no sale en los PDF en ese modo y las librerías cargan del CDN; en `dist/` todo va incrustado).
 - Al cambiar de versión, actualiza `version` en `src/js/config.js`; `build.py` nombra el archivo con ese valor.
@@ -49,11 +49,15 @@ iniciar_demo.py/.bat    opcional: sirve dist/ en http://localhost
   históricos del CDN); `src/index.html` conserva las etiquetas CDN con SRI solo para el modo de desarrollo. El `dist`
   funciona completo sin conexión (PDF, Excel, CSV y JSON incluidos); únicamente la voz necesita internet.
 
-## Estado actual y prioridad (30/08/2026 · v18)
+## Estado actual y prioridad (30/08/2026 · v19)
 v17 corrige los hallazgos de la auditoría (analizadores de hora/dinero/duración/fecha, «repetir» en guiones, contador
 de reinicios de voz, vigilante y carrera al reiniciar, fecha PENDIENTE, aviso de privacidad, confirmación antes de
-borrar un FURAT en curso) e incrusta librerías y fuente: el archivo único no hace peticiones de red. Suites: 26 + 114
-verificaciones en 100 %.
+borrar un FURAT en curso) e incrusta librerías y fuente: el archivo único no hace peticiones de red. v19 añade el
+control total del micrófono: una sola activación, pausa por voz («parar», o «parar el micrófono» durante la
+descripción, donde «para» suelto es narración y se acumula al relato), reanudación con un toque que repite el dato
+pendiente, pausa que congela los temporizadores del dictado sin perder lo acumulado, y recuperación del permiso con
+un toque tras un not-allowed (el stream se libera y el siguiente toque re-pide el permiso desde el chat). Suites:
+26 + 119 verificaciones en 100 %.
 
 El **paso pendiente sigue siendo la prueba con micrófono en Chrome real** (los mocks no reproducen a Chrome). Historial
 en `docs/auditoria_voz_furat_v16.md`. Plan: publicar el `dist` en un hosting estático con HTTPS (GitHub Pages, Netlify,

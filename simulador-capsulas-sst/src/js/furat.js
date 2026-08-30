@@ -384,8 +384,20 @@ const Voice = {
   note(ev, detail) { const h = new Date(); this.log.push(String(h.getHours()).padStart(2, "0") + ":" + String(h.getMinutes()).padStart(2, "0") + ":" + String(h.getSeconds()).padStart(2, "0") + " " + ev + (detail ? " · " + String(detail).replace(/\d{5,}/g, d => d.slice(0, 2) + "···").slice(0, 70) : "")); if (this.log.length > 80) this.log.shift(); },
   async prime() {
     if (this.primed) return true;
-    try { if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { this.stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } this.primed = true; this.note("mic", "permiso concedido"); return true; }
-    catch (e) { this.primed = false; this.lastErr = e && e.name ? e.name : "getUserMedia"; this.note("mic-error", this.lastErr); if (this.onState) this.onState("error", e && e.name === "NotAllowedError" ? "not-allowed" : "no-mic"); return false; }
+    if (this.priming) return this.priming;   /* dos toques durante el diálogo de permiso comparten la misma captura */
+    const p = (async () => {
+      try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+          if (this.stream && this.stream !== s) { try { this.stream.getTracks().forEach(t => t.stop()); } catch (e) { /* sin pistas */ } }
+          this.stream = s;
+        }
+        this.primed = true; this.note("mic", "permiso concedido"); return true;
+      }
+      catch (e) { this.primed = false; this.lastErr = e && e.name ? e.name : "getUserMedia"; this.note("mic-error", this.lastErr); if (this.onState) this.onState("error", e && e.name === "NotAllowedError" ? "not-allowed" : "no-mic"); return false; }
+      finally { this.priming = null; }
+    })();
+    this.priming = p; return p;
   },
   ensure() {
     if (this.rec) return this.rec;
@@ -400,13 +412,19 @@ const Voice = {
     };
     rec.onerror = e => { const err = e.error || "error"; this.lastErr = err; this.note("error", err);
       if (err === "no-speech" || err === "aborted") return;
-      if (err === "not-allowed" || err === "service-not-allowed" || err === "audio-capture" || err === "network" || err === "language-not-supported") { this.fatal = true; this.wanted = false; }
+      /* Permiso perdido: se libera la captura para que el siguiente toque del micrófono re-pida el permiso
+         desde el chat, sin obligar a ir a la configuración del navegador. */
+      if (err === "not-allowed" || err === "service-not-allowed" || err === "audio-capture") {
+        this.fatal = true; this.wanted = false;
+        if (this.stream) { try { this.stream.getTracks().forEach(t => t.stop()); } catch (x) { /* sin pistas */ } this.stream = null; }
+        this.primed = false;
+      } else if (err === "network" || err === "language-not-supported") { this.fatal = true; this.wanted = false; }
       if (this.onState) this.onState("error", err); };
     rec.onend = () => {
       this.on = false; const t = this.final.trim(); this.final = ""; this.note("end", t ? "→ entrega" : "sin texto");
       if (t) this.deliver(t);
       if (this.wanted && !this.fatal && this.restarts < 400) { this.restarts++; if (this.onState) this.onState("restart", ""); setTimeout(() => this.tryStart(), 120); }
-      else { const era = this.wanted; this.wanted = false; if (this.onState) this.onState(era ? "off" : "end", ""); }
+      else { const era = this.wanted; this.wanted = false; if (this.onState && !this.fatal) this.onState(era ? "off" : "end", ""); }
     };
     this.rec = rec; return rec;
   },
@@ -418,8 +436,9 @@ const Voice = {
   start() { const rec = this.ensure(); if (!rec) return false; this.wanted = true; this.fatal = false; this.tries = 0; this.restarts = 0; this.tryStart();
     if (!this.guard) this.guard = setInterval(() => { if (this.wanted && !this.on && !this.fatal) { this.note("guard", "rearme"); this.tryStart(); } }, 1500);
     return true; },
-  stop() { this.wanted = false; this.final = ""; if (this.rec && this.on) { try { this.rec.stop(); } catch (e) { /* ya detenido */ } } else if (this.onState) this.onState("end", ""); },
-  release() { this.stop(); if (this.guard) { clearInterval(this.guard); this.guard = null; } this.held = null; if (this.stream) { try { this.stream.getTracks().forEach(t => t.stop()); } catch (e) { /* sin pistas */ } this.stream = null; this.primed = false; } },
+  /* No borra this.final: si Chrome ya reconoció texto, onend lo entrega — pausar no pierde lo dicho. */
+  stop() { this.wanted = false; if (this.rec && this.on) { try { this.rec.stop(); } catch (e) { /* ya detenido */ } } else { this.final = ""; if (this.onState) this.onState("end", ""); } },
+  release() { this.stop(); if (this.guard) { clearInterval(this.guard); this.guard = null; } this.held = null; this.primed = false; if (this.stream) { try { this.stream.getTracks().forEach(t => t.stop()); } catch (e) { /* sin pistas */ } this.stream = null; } },
   deliver(t) { if (!F.cur) { this.held = { t, at: Date.now() }; this.note("held", t); if (this.onState) this.onState("wait", ""); return; } if (this.onResult) this.onResult(t); },
   takeHeld() { const h = this.held; this.held = null; if (h && Date.now() - h.at < 8000 && F.cur && this.onResult) this.onResult(h.t); },
   diagnostico() {
@@ -582,7 +601,7 @@ async function furatStart(run) {
     "Yo te hago las preguntas por escrito y *tú respondes hablando*. Iré llenando cada casilla del formato con lo que digas.",
     "Si un dato no lo tienes a la mano, di *«omitir»* y te lo pregunto al final: el FURAT debe quedar *completo*. Di *«repetir»* para volver a leer una pregunta."];
   if (!sup) intro.push("⚠️ Este navegador no soporta reconocimiento de voz (usa Google Chrome o Microsoft Edge). Puedes escribir las respuestas.");
-  else intro.push("Activa el micrófono una sola vez y permítelo cuando el navegador lo pida: quedará en *modo manos libres*. Habla solo cuando el botón del micrófono esté *en rojo*. 🎙️",
+  else intro.push("Activa el micrófono *una sola vez* y permítelo cuando el navegador lo pida: quedará en *modo manos libres* hasta que digas *«parar»*. Al tocarlo de nuevo retomamos exactamente donde íbamos. Habla solo cuando el botón esté *en rojo*. 🎙️",
     "🔒 *Privacidad:* tu voz se convierte en texto con el servicio de reconocimiento del navegador (en Chrome y Edge el audio se procesa en servidores de Google). Si lo prefieres, puedes escribir cualquier respuesta.");
   if (!await say(intro, run)) return;
   if (!await say("¿Cómo prefieres diligenciarlo? Con *guiones* te muestro un párrafo por capítulo con espacios en blanco: lo lees en voz alta llenando los espacios (o dictas solo los datos) y yo extraigo la información. *Pregunta a pregunta* es más lento pero más guiado.", run)) return;
@@ -595,7 +614,7 @@ async function furatStart(run) {
       Voice.handsFree = sup && okMic; furatMode(true); Voice.start();
       if (!okMic) { if (await say("No pude activar el micrófono. Revisa el permiso en el navegador (candado en la barra de dirección → Micrófono) o escribe las respuestas.", run)) furatAsk(run); return; }
       if (!await say("🎙️ Micrófono activo. Prueba rápida: di *«probando uno dos tres»* y espera mi respuesta.", run)) return;
-      F.cur = { type: "mic", id: "__mic" }; F.micTimer = setTimeout(() => { if (F.cur && F.cur.id === "__mic") { F.cur = null; Voice.held = null; furatDiag("⚠️ En 12 segundos no me llegó ningún texto. Puedes escribir las respuestas mientras revisamos el micrófono.").then(() => furatAsk(run)); } }, 12000);
+      F.cur = { type: "mic", id: "__mic" }; armarMicTimer(run);
       furatListen("Di «probando uno dos tres»");
     });
   });
@@ -614,6 +633,21 @@ async function furatAsk(run) {
   furatListen("Toca el micrófono y responde");
 }
 function furatListen(hint) { setTimeout(() => Voice.takeHeld(), 0); const hf = Voice.handsFree && Voice.wanted; $("txtIn").placeholder = hf ? (hint ? hint + " (habla)" : "Habla ahora…") : (hint || "Toca el micrófono y responde"); $("txtIn").value = ""; setHint(""); if (!hf) setStatus("en línea"); }
+function armarMicTimer(run) {
+  clearTimeout(F.micTimer);
+  F.micTimer = setTimeout(() => { if (F.cur && F.cur.id === "__mic") { F.cur = null; Voice.held = null; furatDiag("⚠️ En 12 segundos no me llegó ningún texto. Puedes escribir las respuestas mientras revisamos el micrófono.").then(() => furatAsk(run)); } }, 12000);
+}
+/* Pausar detiene también los temporizadores del dictado; lo acumulado en F.longBuf se conserva. */
+function furatPausarTimers() { clearTimeout(F.longTimer); clearTimeout(F.gtimer); clearTimeout(F.micTimer); }
+/* Al reanudar el micrófono, el asesor repite exactamente en qué dato iba el dictado. */
+async function furatReanudar() {
+  const run = S.run;
+  if (!F.cur || !(F.phase === "ask" || F.phase === "confirm")) return;
+  if (F.cur.id === "__mic") { armarMicTimer(run); furatListen("Di «probando uno dos tres»"); return; }
+  if (F.cur.type === "guion") { if (await say("🎙️ Seguimos. " + guionEstado(F.cur.g).msg, run)) guionFocus(F.cur.g); }
+  else if (F.cur.q) { if (await say("🎙️ Seguimos. " + F.cur.q, run)) furatListen(); }
+  else furatListen();
+}
 async function furatProponer(run) {
   const inf = F.infer, items = [];
   ["tipoLesion", "parteCuerpo", "agente", "mecanismo"].forEach(id => { if (inf[id] && F.ans[id] === undefined) items.push({ id, txt: inf[id].text }); });
@@ -742,6 +776,22 @@ async function furatAnswer(text, src) {
   const run = S.run; if (run !== F.run || !F.cur) return;
   const n0 = normTxt(text).replace(/[.,;:!?¿¡]+$/, "").trim();
   if (/^(diagnostico|diagnostico de voz|prueba de microfono)$/.test(n0)) { bubble("out", esc(text)); if (await furatDiag("")) { if (F.cur.type === "guion") guionFocus(F.cur.g); else furatListen(); } return; }
+  /* Comandos globales del micrófono, antes que cualquier estado. Durante un dictado largo (la descripción)
+     solo vale la forma explícita («parar el micrófono»): «para»/«detener» sueltos ahí son narración. */
+  const enDictadoLargo = F.cur && (F.cur.type === "long" || F.cur.cont === true || (F.cur.type === "guion" && F.cur.g && F.cur.g.long));
+  if (/^(para|parar|pausa|pausar|deten|detente|detener|apaga|apagar|apagalo)( (el|la))? (micro(fono)?|grabadora|voz)$/.test(n0) ||
+      (!enDictadoLargo && /^(parar|pausa|pausar|deten|detente|detener|silencio|apagalo)$/.test(n0))) {
+    bubble("out", (src === "voice" ? '<span class="mic-ic" aria-hidden="true">🎤</span> ' : "") + esc(text));
+    furatPausarTimers(); Voice.stop();
+    await say("🔇 Micrófono en pausa: no pierdo nada de lo dictado. *Tócalo* cuando quieras seguir y retomamos donde íbamos, o escribe la respuesta.", run);
+    return;
+  }
+  if (!Voice.wanted && Voice.supported() && /^(micro(fono)?|reanudar|enciende( el)? micro(fono)?|activa( el)? micro(fono)?|prende( el)? micro(fono)?)$/.test(n0)) {
+    bubble("out", esc(text));
+    if (Voice.primed) { Voice.start(); furatReanudar(); }
+    else Voice.prime().then(ok => { if (run !== S.run) { Voice.release(); return; } if (ok) { Voice.start(); furatReanudar(); } });
+    return;
+  }
   if (F.cur.id === "__mic") { clearTimeout(F.micTimer); bubble("out", (src === "voice" ? '<span class="mic-ic" aria-hidden="true">🎤</span> ' : "") + esc(text)); F.cur = null; if (await say("✅ Te escuché: «" + text + "». Empecemos. Habla cuando el micrófono esté en rojo; si digo «reconectando», espera un segundo.", run)) furatAsk(run); return; }
   /* Frase de prueba que llega tarde (red lenta): se reconoce y se descarta, nunca se registra como dato. */
   if (/^probando( uno dos tres)?$/.test(n0)) { bubble("out", (src === "voice" ? '<span class="mic-ic" aria-hidden="true">🎤</span> ' : "") + esc(text)); if (await say("✅ Te escuché. Sigamos donde íbamos.", run)) { if (F.cur && F.cur.type === "guion") guionFocus(F.cur.g); else furatListen(); } return; }
@@ -948,12 +998,13 @@ Voice.onState = (st, t) => {
 };
 $("micBtn").addEventListener("click", () => {
   if (!F.cur && !Voice.wanted) return;
-  if (Voice.wanted) { Voice.stop(); return; }
+  if (Voice.wanted) { furatPausarTimers(); Voice.stop(); return; }
   if (!Voice.supported()) { $("txtIn").placeholder = "Sin reconocimiento de voz en este navegador: escribe aquí"; $("txtIn").focus(); return; }
-  if (!Voice.primed) { Voice.prime().then(ok => { if (ok) Voice.start(); }); return; }
-  Voice.start();
+  const run = S.run;
+  if (!Voice.primed) { Voice.prime().then(ok => { if (run !== S.run) { Voice.release(); return; } if (ok) { Voice.start(); furatReanudar(); } }); return; }
+  Voice.start(); furatReanudar();
 });
-function furatSubmitTyped() { const inp = $("txtIn"), t = inp.value.trim(); if (!t || !F.cur) return; inp.value = ""; furatAnswer(t, "text"); }
+function furatSubmitTyped() { const inp = $("txtIn"), t = inp.value.trim(); if (!t || !F.cur) return; inp.value = ""; $("micBtn").hidden = false; $("sendBtn").hidden = true; furatAnswer(t, "text"); }
 $("txtIn").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); furatSubmitTyped(); } });
 $("txtIn").addEventListener("input", () => { const has = $("txtIn").value.trim().length > 0 && !Voice.wanted; $("micBtn").hidden = has; $("sendBtn").hidden = !has; });
 $("sendBtn").addEventListener("click", () => { if ($("inputbar").classList.contains("voice")) { furatSubmitTyped(); $("micBtn").hidden = false; $("sendBtn").hidden = true; } });
