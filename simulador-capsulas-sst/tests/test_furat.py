@@ -6,7 +6,7 @@ Uso: python3 test_furat.py simulador_capsulas_sst_v11.html [carpeta_salida]
 import json, os, sys
 from playwright.sync_api import sync_playwright
 
-HTML = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dist", "simulador_capsulas_sst_v17.html"))
+HTML = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dist", "simulador_capsulas_sst_v18.html"))
 OUT = os.path.abspath(sys.argv[2] if len(sys.argv) > 2 else "furat_out"); os.makedirs(OUT, exist_ok=True)
 MOCK_SR = """
 window.__srStarts = 0; window.__srActive = null;
@@ -81,6 +81,8 @@ with sync_playwright() as p:
       t.push(["duración reagrupada (mes y medio y veinte días)", JSON.stringify(parseDur("un mes y medio y veinte días","MD").value)==='{"meses":2,"dias":5}']);
       t.push(["fecha con ordinal (primero de mayo de 2024)", parseDate("primero de mayo de 2024",{past:true}).text==="01/05/2024"]);
       t.push(["cédulas intactas con cifras mixtas", wordsToNumbers("carrera 8 numero 15 30")==="carrera 8 numero 15 30"]);
+      t.push(["dictado por grupos («siete veintinueve» = 7 29, no 36)", wordsToNumbers("setenta y siete doble cero siete veintinueve")==="77 00 7 29" && parseDigits("setenta y siete doble cero siete veintinueve",{min:5}).value==="7700729"]);
+      t.push(["compuestos legítimos intactos (ciento veinte)", wordsToNumbers("ciento veinte")==="120" && wordsToNumbers("treinta y cinco mil")==="35000"]);
       return t; }""")
     for n, ok in tests: check("parser: " + n, ok)
 
@@ -102,7 +104,7 @@ with sync_playwright() as p:
     page.locator(".wa-actions .wa-action", has_text="Activar micrófono").click(); page.wait_for_timeout(250)
     check("Permiso pedido una sola vez y sesión de voz abierta", page.evaluate("Voice.primed && Voice.on && Voice.handsFree"))
     page.evaluate("window.__srSay('probando uno dos tres')"); page.wait_for_timeout(400)
-    check("Prueba rápida del micrófono confirmada en el chat", "Te escuché" in " ".join(page.locator(".wa-bubble.in .txt").all_inner_texts()[-2:]))
+    check("Prueba rápida del micrófono confirmada en el chat", "Te escuché" in " ".join(page.locator(".wa-bubble.in .txt").all_inner_texts()[-4:]))
     check("Modo voz activo: micrófono en rojo, entrada visible, sin botones", page.locator("#micBtn").is_visible() and "listening" in page.locator("#micBtn").get_attribute("class") and page.locator("#txtIn").is_visible() and page.locator(".wa-actions").count() == 0 and "escuchando" in page.locator("#waStatus").inner_text())
     n1 = page.evaluate("window.__srStarts"); page.evaluate("window.__srEnd()"); page.wait_for_timeout(400)
     check("Si Chrome cierra la sesión por silencio, se reanuda sola sin nuevo permiso", page.evaluate("window.__srStarts") == n1 + 1 and page.evaluate("Voice.on"))
@@ -114,6 +116,8 @@ with sync_playwright() as p:
     check("Tocar el micrófono restablece el contador y el manos libres", page.evaluate("Voice.restarts") == 0 and page.evaluate("Voice.on"))
     speak("probando uno dos tres")
     check("Frase de prueba tardía no se registra como dato", page.evaluate("F.ans.eps === undefined") and "Sigamos" in last_in(), last_in()[:60])
+    speak("omitir")  # sin base ARL: diligenciamiento completo por voz (flujo clásico)
+    check("«Omitir» en la identificación pasa al diligenciamiento completo por voz", "EPS" in last_in(), last_in()[:80])
     guion = [
       "Sanitas", "Sura", "Porvenir",
       "empleador", "panadería", "Panadería La Espiga", "nit", "nueve cero cero siete cero tres siete seis dos", "calle doce número cinco guion veinte",
@@ -167,6 +171,7 @@ with sync_playwright() as p:
     page.locator(".wa-actions .wa-action", has_text="guiones").click(); page.wait_for_timeout(150)
     page.locator(".wa-actions .wa-action", has_text="Activar micrófono").click(); page.wait_for_timeout(300)
     page.evaluate("window.__srSay('probando uno dos tres')"); page.wait_for_timeout(400)
+    page.wait_for_function("() => Voice.on"); page.evaluate("window.__srSay('omitir')"); page.wait_for_timeout(500)
     cobertura = page.evaluate("FURAT_FIELDS.filter(f => !GUION_DE[f.id] && !f.opt).map(f => f.id)")
     check("Todos los campos del FURAT están cubiertos por algún guion", cobertura == [], cobertura)
     adj = page.evaluate("GUIONES.filter(g => g.parts.some((p,i,a) => p.t==='s' && a[i+1] && a[i+1].t==='a' && !a[i+1].toks.length && a[i+2] && a[i+2].t==='s')).map(g=>g.id)")
@@ -234,7 +239,48 @@ with sync_playwright() as p:
     guion_lee("sí"); page.locator(".wa-doc").wait_for(timeout=5000)
     faltan = page.evaluate("FURAT_FIELDS.filter(f=>furatApplicable(f)&&!f.opt&&F.ans[f.id]===undefined).map(f=>f.id)")
     check("FURAT completo por guiones: 0 obligatorios sin dato, 11 turnos de lectura/dictado menos", faltan == [] and page.evaluate("Object.keys(F.gdone).length") >= 7, faltan)
+    txts = " ".join(page.locator(".wa-bubble.in .txt").all_inner_texts()[-4:])
+    check("Recomendación final: investigar en 15 días (Res. 1401/2007) con los canales de ARL SURA", "1401" in txts and "15 días" in txts and "sura.co/arl" in txts, txts[:120])
     page.screenshot(path=f"{OUT}/furat_guion_chat.png")
+
+    # ================= CONEXIÓN CON LA BASE DE LA ARL (simulada) =================
+    page.click("#btnRestart"); page.wait_for_timeout(150)
+    page.locator(".wa-actions .wa-action", has_text="FURAT").click(); page.wait_for_timeout(150)
+    page.locator(".wa-actions .wa-action", has_text="guiones").click(); page.wait_for_timeout(150)
+    page.locator(".wa-actions .wa-action", has_text="Activar micrófono").click(); page.wait_for_timeout(300)
+    page.evaluate("window.__srSay('probando uno dos tres')"); page.wait_for_timeout(400)
+    check("Identificación ofrecida antes de la entrevista", "NIT" in last_in() and "cédula" in last_in(), last_in()[:90])
+    speak("setenta y siete doble cero siete veintinueve")
+    page.wait_for_function("() => document.body.innerText.includes('Bienvenido')", timeout=8000); page.wait_for_timeout(150)
+    ult = " ".join(page.locator(".wa-bubble.in .txt").all_inner_texts()[-4:])
+    check("Cédula 7.700.729 → bienvenida con el nombre del empleador", "Bienvenido" in ult and "Ariel Javier Ramírez" in ult, ult[:120])
+    check("Empresa encontrada en la base con NIT y trabajadores", "La Espiga" in ult and "900703762" in ult and "3 personas" in ult)
+    page.locator(".wa-actions .wa-action").first.wait_for(timeout=5000)
+    check("Selector del accidentado con nombre y cédula (tú o tus trabajadores)", page.locator(".wa-actions .wa-action").count() == 3 and "accidente mío" in page.locator(".wa-actions .wa-action").first.inner_text())
+    speak("el accidente es de Juan Carlos")
+    page.wait_for_function("() => F.cur && F.cur.id === '__centro'", timeout=8000)
+    g = page.evaluate("({nit:F.ans.numIdEmpresa, eps:F.ans.eps, fn:F.meta.fechaNacimiento.text, dir:F.ans.direccionTrabajador, tel:F.ans.telefonoTrabajador, sal:F.ans.salario, resp:F.ans.responsableNombre, rnum:F.ans.responsableNumId, src:F.meta.numIdTrabajador.src})")
+    check("Secciones AF, I, II y V descargadas de la base de la ARL", g["nit"] == "900703762" and g["eps"] == "Sanitas" and g["fn"] == "15/03/1990" and g["dir"] == "Carrera 8 No. 15-30" and g["tel"] == "3115557788" and g["sal"] == 1600000 and "Ramírez" in g["resp"] and g["rnum"] == "7700729" and g["src"].startswith("base ARL"), g)
+    speak("sede principal")
+    page.wait_for_function("() => F.cur && F.cur.id === '__revisarBase'", timeout=8000)
+    check("Centro de trabajo: sede principal descargada", page.evaluate("F.ans.centroNombre") == "Sede principal" and page.evaluate("F.ans.centroMismo === true"))
+    speak("continuar")
+    page.wait_for_selector("#guion-g3", timeout=8000)
+    solo34 = page.evaluate("FURAT_FIELDS.filter(f=>furatApplicable(f)&&!f.opt&&F.ans[f.id]===undefined).every(f=>['III','IV'].includes(f.sec))")
+    check("Solo queda por preguntar el accidente (secciones III y IV)", solo34 and page.locator("#guion-g3").count() == 1)
+    guion_lee("el accidente ocurrió el día ayer, a las dos y veinte de la tarde, en jornada normal, cuando el trabajador sí estaba realizando su labor habitual y llevaba tres horas y veinte de trabajo ese día. fue un accidente de tipo propios del trabajo. el accidente no causó la muerte del trabajador. ocurrió sí en el mismo municipio de la sede principal, en zona urbana; el lugar fue dentro de la empresa, en el sitio área de producción")
+    check("Guion del accidente con las formas coloquiales nuevas (14:20 y 3 h 20 min)", page.evaluate("F.meta.horaAccidente.text") == "14:20" and page.evaluate("F.meta.tiempoLaborado.text") == "3 h 20 min", page.evaluate("({h:F.meta.horaAccidente&&F.meta.horaAccidente.text, t:F.meta.tiempoLaborado&&F.meta.tiempoLaborado.text})"))
+    guion_lee("El trabajador estaba sacando bandejas del horno, se resbaló con harina en el piso y se golpeó la rodilla derecha presentando un esguince")
+    guion_lee("listo")
+    guion_lee("correcto")
+    guion_lee("no hubo personas que presenciaron el accidente")
+    check("Testigos: no, y resumen final directo (responsable ya venía de la base)", "Todo correcto" in last_in(), last_in()[:80])
+    speak("sí")
+    page.locator(".wa-doc").last.wait_for(timeout=5000)
+    check("FURAT generado desde la base ARL: completo", "Completo" in page.locator(".wa-doc-sub").last.inner_text())
+    jj = page.evaluate("({resp:F.ans.responsableNombre, srcE:F.meta.eps.src, dia:F.ans.diaSemana})")
+    check("Responsable del informe pre-diligenciado con el empleador identificado", "Ramírez" in jj["resp"] and jj["srcE"].startswith("base ARL"), jj)
+    page.screenshot(path=f"{OUT}/furat_base_arl.png")
 
     # Campos pendientes tras tres rondas → PENDIENTE en rojo
     page.click("#btnRestart"); page.wait_for_timeout(150)
@@ -242,6 +288,7 @@ with sync_playwright() as p:
     page.locator(".wa-actions .wa-action", has_text="Pregunta a pregunta").click(); page.wait_for_timeout(150)
     page.locator(".wa-actions .wa-action", has_text="Activar micrófono").click(); page.wait_for_timeout(250)
     page.evaluate("window.__srSay('probando uno dos tres')"); page.wait_for_timeout(400)
+    speak("omitir")  # sin base ARL
     page.evaluate("""() => { FURAT_FIELDS.forEach(f => { if (f.id !== 'eps') { F.ans[f.id] = f.type==='bool' ? false : f.type==='date' ? {d:1,m:1,y:2024} : f.type==='multi' ? ['10'] : f.type==='enum' ? OPT[f.opts][0].c : 'x'; F.meta[f.id] = {text:'x', src:'text'}; } }); }""")
     for _ in range(3): speak("omitir")
     page.wait_for_timeout(100)
@@ -276,6 +323,7 @@ with sync_playwright() as p:
     nv.locator(".wa-actions .wa-action", has_text="FURAT").click(); nv.wait_for_timeout(150)
     nv.locator(".wa-actions .wa-action", has_text="Pregunta a pregunta").click(); nv.wait_for_timeout(150)
     check("Sin SpeechRecognition: aviso y entrada por teclado", "no soporta" in " ".join(nv.locator(".wa-bubble.in .txt").all_inner_texts()))
+    nv.fill("#txtIn", "omitir"); nv.press("#txtIn", "Enter"); nv.wait_for_timeout(150)
     nv.fill("#txtIn", "Compensar"); nv.press("#txtIn", "Enter"); nv.wait_for_timeout(100)
     check("Respuesta escrita registrada", nv.evaluate("F.ans.eps") == "Compensar")
     b.close()

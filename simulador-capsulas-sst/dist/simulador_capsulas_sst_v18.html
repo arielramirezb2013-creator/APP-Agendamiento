@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Simulador Cápsulas SST · Rehavid S.A.S. · v17 · generado por build.py a partir de src/ -->
+<!-- Simulador Cápsulas SST · Rehavid S.A.S. · v18 · generado por build.py a partir de src/ -->
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -885,7 +885,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
   <footer class="foot">
     <span>Rehavid</span><span class="dot"></span>
     <span>Gestión Cápsulas SST 2026</span><span class="dot"></span>
-    <span>Simulador v16 · contenido de ejemplo, editable</span>
+    <span>Simulador v18 · contenido de ejemplo, editable</span>
   </footer>
 
 </div>
@@ -894,7 +894,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
 "use strict";
 /* ===================== CONFIGURACIÓN ===================== */
 const CONFIG = {
-  version: "v17",
+  version: "v18",
   autor: "Rehavid S.A.S.",
   persona: "Carlos",            /* nombre del afiliado en la demostración */
   remitente: "ARL SURA",
@@ -2319,6 +2319,43 @@ const SURA = {
   Seguridad: "ARL SURA: asesoría en inspecciones de seguridad e investigación de accidentes (ATEL) y formación en el Colegio de Gestión del Riesgo."
 };
 
+/* ===================== BASE DE DATOS SIMULADA DE LA ARL (demo) =====================
+   Simula la consulta por API a la base de afiliados de la ARL: la empresa se identifica
+   por el NIT o por la cédula del empleador, y trae sus trabajadores con los datos que el
+   FURAT necesita en las secciones AF, I, II y V. Los valores usan los mismos tipos de
+   FURAT_FIELDS (fechas {d,m,y}, duraciones {meses,dias}, códigos de catálogo). */
+const ARL_DB = [
+  {
+    docs: ["7700729", "900703762"],
+    empresa: {
+      tipoVinculador: "1", actividadEconomica: "Panadería", razonSocial: "Panadería La Espiga",
+      tipoIdEmpresa: "NI", numIdEmpresa: "900703762", direccionEmpresa: "Calle 12 No. 5-20",
+      telefonoEmpresa: "6014055911", correo: "contacto@laespiga.com",
+      departamentoEmpresa: "Cundinamarca", municipioEmpresa: "Soacha", zonaEmpresa: "U",
+      centroNombre: "Sede principal", centroMismo: true
+    },
+    empleador: { nombres: "Ariel Javier", apellidos: "Ramírez", tipoId: "CC", numId: "7700729", cargo: "Empleador" },
+    trabajadores: [
+      { id: "empleador", icon: "🙋", nombres: "Ariel Javier", apellidos: "Ramírez", tipoIdTrabajador: "CC", numIdTrabajador: "7700729",
+        fechaNacimiento: { d: 12, m: 5, y: 1979 }, sexo: "M", direccionTrabajador: "Carrera 7 No. 45-12", telefonoTrabajador: "3104567890",
+        viveMismo: true, zonaTrabajador: "U", cargo: "Gerente y empleador", ocupacionHabitual: "Administrador de panadería",
+        tiempoOcupacion: { meses: 96, dias: 0 }, fechaIngreso: { d: 1, m: 2, y: 2018 }, salario: 3200000, jornadaHabitual: "1",
+        tipoVinculacion: "5", eps: "Sanitas", afp: "Porvenir" },
+      { icon: "👷", nombres: "Juan Carlos", apellidos: "Rodríguez Pérez", tipoIdTrabajador: "CC", numIdTrabajador: "1023456789",
+        fechaNacimiento: { d: 15, m: 3, y: 1990 }, sexo: "M", direccionTrabajador: "Carrera 8 No. 15-30", telefonoTrabajador: "3115557788",
+        viveMismo: true, zonaTrabajador: "U", cargo: "Panadero de horno", ocupacionHabitual: "Panadero",
+        tiempoOcupacion: { meses: 27, dias: 0 }, fechaIngreso: { d: 1, m: 2, y: 2024 }, salario: 1600000, jornadaHabitual: "1",
+        tipoVinculacion: "1", eps: "Sanitas", afp: "Porvenir" },
+      { icon: "👷‍♀️", nombres: "Ana María", apellidos: "Gómez Torres", tipoIdTrabajador: "CC", numIdTrabajador: "52123456",
+        fechaNacimiento: { d: 22, m: 11, y: 1994 }, sexo: "F", direccionTrabajador: "Calle 3 No. 8-15", telefonoTrabajador: "3129876543",
+        viveMismo: true, zonaTrabajador: "U", cargo: "Auxiliar de producción", ocupacionHabitual: "Auxiliar de panadería",
+        tiempoOcupacion: { meses: 14, dias: 0 }, fechaIngreso: { d: 15, m: 6, y: 2025 }, salario: 1423500, jornadaHabitual: "1",
+        tipoVinculacion: "1", eps: "Compensar", afp: "Colpensiones" }
+    ]
+  }
+];
+function arlBuscar(doc) { const d = String(doc).replace(/\D/g, ""); return ARL_DB.find(e => e.docs.includes(d)) || null; }
+
 /* Motor del simulador: valoración GTC 45, chat, matriz IPEVR y exportes. Los datos viven en src/data/. */
 
 const FRECUENCIA_OPS = [
@@ -2988,9 +3025,21 @@ function wordsToNumbers(text) {
   let i = 0;
   while (i < toks.length) {
     if (!isNumW(toks[i])) { out.push(toks[i]); i++; continue; }
-    let j = i; const run = [];
-    /* Una cifra en dígitos («600») se une a la corrida solo si le sigue un multiplicador («mil»), para no fusionar direcciones o teléfonos. */
-    while (j < toks.length && (isNumW(toks[j]) || (toks[j] === "y" && j + 1 < toks.length && NUMW[toks[j + 1]] !== undefined && run.length) || (/^\d+$/.test(toks[j]) && j + 1 < toks.length && MULTW[toks[j + 1]] !== undefined))) { if (toks[j] !== "y") run.push(toks[j]); j++; }
+    /* Una cifra en dígitos («600») se une a la corrida solo si le sigue un multiplicador («mil»).
+       Dos palabras numéricas seguidas SIN «y» solo se suman tras una centena o un multiplicador
+       («ciento veinte», «mil novecientos»); «siete veintinueve» es dictado y se separa en 7 29. */
+    let j = i; const run = []; let viaY = false, prev = null;
+    while (j < toks.length) {
+      const tk = toks[j];
+      if (tk === "y" && j + 1 < toks.length && NUMW[toks[j + 1]] !== undefined && run.length) { viaY = true; j++; continue; }
+      const esDig = /^\d+$/.test(tk) && j + 1 < toks.length && MULTW[toks[j + 1]] !== undefined;
+      if (!isNumW(tk) && !esDig) break;
+      if (run.length && !viaY && prev !== null && NUMW[tk] !== undefined && NUMW[prev] !== undefined) {
+        const a = NUMW[prev], b = NUMW[tk];
+        if (!(a >= 100 || (a <= 9 && b <= 9))) break;
+      }
+      run.push(tk); prev = tk; viaY = false; j++;
+    }
     if (run.length >= 3 && run.every(t => NUMW[t] !== undefined && NUMW[t] <= 9)) { out.push(run.map(t => String(NUMW[t])).join("")); i = j; continue; }
     let total = 0, cur = 0;
     if (MULTW[run[0]] && out.length && /^\d+$/.test(out[out.length - 1])) cur = Number(out.pop());
@@ -3326,7 +3375,7 @@ async function guionTerminar(g, run, ack) {
 }
 
 /* ---------- Estado y flujo de la entrevista ---------- */
-const F = { ans: {}, meta: {}, pending: [], cur: null, tries: 0, phase: "idle", ronda: 0, sec: null, run: 0, cont: false, infer: null, modo: "guion", gdone: {}, gbuf: "", gtimer: null, flushMs: 250 };
+const F = { ans: {}, meta: {}, pending: [], cur: null, tries: 0, phase: "idle", ronda: 0, sec: null, run: 0, cont: false, infer: null, modo: "guion", gdone: {}, gbuf: "", gtimer: null, flushMs: 250, identDone: false, emp: null, accidentado: null };
 function furatMode(on) {
   const bar = $("inputbar"); bar.classList.toggle("voice", on);
   $("inputPh").hidden = on; $("txtIn").hidden = !on; $("micBtn").hidden = !on; $("sendBtn").hidden = on;
@@ -3338,6 +3387,7 @@ function furatNext() { furatCopiar(); return FURAT_FIELDS.find(f => furatApplica
 function furatProgress() { const ap = FURAT_FIELDS.filter(furatApplicable); const done = ap.filter(f => F.ans[f.id] !== undefined).length; return done + "/" + ap.length; }
 async function furatStart(run) {
   F.ans = {}; F.meta = {}; F.pending = []; F.cur = null; F.tries = 0; F.phase = "ask"; F.ronda = 0; F.sec = null; F.run = run; F.infer = null; F.gdone = {}; F.gbuf = ""; F.flushMs = 250; clearTimeout(F.gtimer); F.longBuf = ""; clearTimeout(F.longTimer); clearTimeout(F.micTimer);
+  F.identDone = false; F.emp = null; F.accidentado = null;
   $("sumPanel").hidden = true; $("hazCount").hidden = true; $("nivDist").hidden = true;
   const sup = Voice.supported(); Voice.handsFree = false;
   const intro = ["Vamos a diligenciar el *FURAT* (informe de accidente de trabajo). 🚑",
@@ -3364,6 +3414,7 @@ async function furatStart(run) {
 }
 async function furatAsk(run) {
   if (run !== S.run) return;
+  if (!F.identDone) { furatIdent(run); return; }
   const f = furatNext();
   if (!f) { furatRevisar(run); return; }
   if (f.from && f.from(F.ans) !== undefined) { F.ans[f.id] = f.from(F.ans); F.meta[f.id] = { text: f.from(F.ans), src: "copiado" }; furatAsk(run); return; }
@@ -3390,6 +3441,110 @@ function furatInfer(desc) {
   FURAT_FIELDS.filter(f => f.infer).forEach(f => { const r = f.type === "multi" ? parseMulti(desc, f) : (() => { const m = matchEnum(desc, f.opts); return m.length ? { ok: true, value: m[0].o.c, text: m[0].o.l } : { ok: false }; })(); if (r.ok) out[f.id] = r; });
   return Object.keys(out).length ? out : null;
 }
+/* ---------- Conexión simulada con la base de datos de la ARL ---------- */
+function clearActions() { ui.chat.querySelectorAll(".wa-actions").forEach(b => b.remove()); }
+/* Registra un valor que viene de la base de la ARL, con el texto formateado según el tipo del campo. */
+function furatSetDB(id, value) {
+  const f = FIELD_BY_ID[id]; if (!f || value === undefined) return;
+  let text;
+  if (f.type === "date") text = fmtDate(value);
+  else if (f.type === "money") text = "$ " + Number(value).toLocaleString("es-CO");
+  else if (f.type === "enum") text = optLabel(f.opts, value);
+  else if (f.type === "multi") text = value.map(c => optLabel(f.opts, c)).join(" + ");
+  else if (f.type === "bool") text = value ? "Sí" : "No";
+  else if (f.type === "durMD") text = value.meses + " mes" + (value.meses === 1 ? "" : "es") + (value.dias ? " y " + value.dias + " día" + (value.dias === 1 ? "" : "s") : "");
+  else if (f.type === "durHM") text = value.horas + " h " + String(value.minutos).padStart(2, "0") + " min";
+  else text = String(value);
+  F.ans[id] = value; F.meta[id] = { text, src: "base ARL (simulada)" };
+}
+function furatBuscarCampo(q) {
+  let best = null, sc = 0;
+  FURAT_FIELDS.forEach(f => { if (!furatApplicable(f)) return; const names = (FURAT_ALIAS[f.id] || []).concat([normTxt(f.label)]); names.forEach(a => { if (q && (q.includes(a) || a.includes(q)) && a.length > sc) { sc = a.length; best = f; } }); });
+  return best;
+}
+async function furatIdent(run) {
+  F.cur = { id: "__ident", type: "ident" }; F.tries = 0;
+  if (!await say(["Primero me conecto con la *base de datos de la ARL* para no preguntarte lo que ya está registrado. 🔎",
+    "Dime el *NIT de la empresa* o la *cédula del empleador*, dígito por dígito. Si aún no estás en la base (demo), di *«omitir»* y diligenciamos todo el FURAT por voz."], run)) return;
+  furatListen("NIT o cédula (o di «omitir»)");
+}
+async function furatIdentAnswer(n, text, run) {
+  if (/^(omitir|omito|pasar|saltar|no estoy|no tengo|no aparezco|completo|manual)\b/.test(n)) { F.identDone = true; F.cur = null; if (await say("De acuerdo: diligenciamos todo el FURAT por voz. 📝", run)) furatAsk(run); return; }
+  const d = wordsToNumbers(text).replace(/\D/g, "");
+  if (d.length < 5) { if (await say("Necesito el *NIT* o la *cédula* completos, dígito por dígito (por ejemplo: «setenta y siete, doble cero, siete, veintinueve»). O di *«omitir»*.", run)) furatListen("NIT o cédula (o «omitir»)"); return; }
+  if (!await say("Consultando la base de datos de la ARL… ⏳", run)) return;
+  const e = arlBuscar(d);
+  if (!e) { if (await say("No encontré el documento *" + d + "* en la base de la ARL (demo). Intenta con la cédula *7.700.729* o el NIT *900.703.762*, o di *«omitir»* para diligenciar todo por voz.", run)) furatListen("NIT o cédula (o «omitir»)"); return; }
+  F.emp = e; F.identDone = true;
+  const emp = e.empleador;
+  if (!await say(["¡Bienvenido, *" + emp.nombres + " " + emp.apellidos + "*! 👋",
+    "Encontré tu empresa: *" + e.empresa.razonSocial + "* (NIT " + e.empresa.numIdEmpresa + "), afiliada a *ARL SURA*, con *" + e.trabajadores.length + " personas* registradas.",
+    "¿El accidente que vas a reportar es *tuyo* o de *uno de tus trabajadores*? Toca una opción, o dime el nombre o la cédula. 👇"], run)) return;
+  F.cur = { id: "__quien", type: "quien" };
+  options(e.trabajadores.map((t, i) => ({ t: t.icon + " " + (t.id === "empleador" ? "Es un accidente mío · " : "") + t.nombres + " " + t.apellidos + " · CC " + t.numIdTrabajador, i })), run,
+    op => { if (F.cur && F.cur.id === "__quien") furatSeleccionar(e.trabajadores[op.i], run); });
+  furatListen("Nombre o cédula del accidentado");
+}
+async function furatQuienAnswer(text, run) {
+  const e = F.emp, n = normTxt(wordsToNumbers(text)), d = n.replace(/\D/g, ""), nw = new Set(n.split(/\s+/));
+  let t = null;
+  if (/\b(mio|mia|yo|propio)\b/.test(n)) t = e.trabajadores.find(x => x.id === "empleador");
+  if (!t && d.length >= 5) t = e.trabajadores.find(x => x.numIdTrabajador === d) || null;
+  if (!t) { const cand = e.trabajadores.filter(x => normTxt(x.nombres + " " + x.apellidos).split(" ").some(w => w.length >= 3 && nw.has(w))); if (cand.length === 1) t = cand[0]; }
+  if (!t) { if (await say("No identifiqué a esa persona. Dime el *nombre* o la *cédula* de: " + e.trabajadores.map(x => "*" + x.nombres + " " + x.apellidos + "*").join(", ") + ".", run)) furatListen("Nombre o cédula"); return; }
+  clearActions(); furatSeleccionar(t, run);
+}
+async function furatSeleccionar(t, run) {
+  if (run !== S.run) return;
+  F.cur = null; F.accidentado = t;
+  const e = F.emp, emp = e.empleador;
+  Object.keys(e.empresa).forEach(id => furatSetDB(id, e.empresa[id]));
+  ["eps", "afp", "tipoVinculacion", "apellidos", "nombres", "tipoIdTrabajador", "numIdTrabajador", "fechaNacimiento", "sexo",
+    "direccionTrabajador", "telefonoTrabajador", "viveMismo", "zonaTrabajador", "cargo", "ocupacionHabitual", "tiempoOcupacion",
+    "fechaIngreso", "salario", "jornadaHabitual"].forEach(id => furatSetDB(id, t[id]));
+  furatSetDB("arl", "ARL SURA");
+  furatSetDB("responsableNombre", emp.apellidos + " " + emp.nombres); furatSetDB("responsableTipoId", emp.tipoId);
+  furatSetDB("responsableNumId", emp.numId); furatSetDB("responsableCargo", emp.cargo);
+  F.gdone.g0 = true; F.gdone.g2 = true; F.gdone.g6 = true;
+  if (!await say(["Perfecto: el accidentado es *" + t.nombres + " " + t.apellidos + "* (CC " + t.numIdTrabajador + "). Descargué de la base de la ARL: 📥",
+    "• *Empresa:* " + e.empresa.razonSocial + " · NIT " + e.empresa.numIdEmpresa + " · " + e.empresa.direccionEmpresa + ", " + e.empresa.municipioEmpresa +
+    "\n• *Afiliaciones:* EPS " + t.eps + " · ARL SURA · AFP " + t.afp +
+    "\n• *Persona:* nació el " + fmtDate(t.fechaNacimiento) + " · vive en " + t.direccionTrabajador + " · tel. " + t.telefonoTrabajador + " · cargo: " + t.cargo + " · salario " + F.meta.salario.text +
+    "\n• *Responsable del informe:* " + emp.nombres + " " + emp.apellidos + " (quien reporta)"], run)) return;
+  F.cur = { id: "__centro", type: "centro" };
+  if (!await say("¿*" + t.nombres.split(" ")[0] + "* labora en la *sede principal* o en *otro centro de trabajo*?", run)) return;
+  options([{ t: "🏢 Sede principal", v: "sede" }, { t: "📍 Otro centro de trabajo", v: "otro" }], run,
+    op => { if (F.cur && F.cur.id === "__centro") furatCentroSet(op.v === "otro", run); });
+  furatListen("«Sede principal» u «otro centro»");
+}
+async function furatCentroAnswer(n, run) {
+  if (/(principal|sede|misma|unica|unico)/.test(n)) { clearActions(); furatCentroSet(false, run); return; }
+  if (/(otro|otra|diferente|distinto)/.test(n)) { clearActions(); furatCentroSet(true, run); return; }
+  if (await say("Dime *«sede principal»* u *«otro centro de trabajo»*.", run)) furatListen("«Sede principal» u «otro centro»");
+}
+async function furatCentroSet(otro, run) {
+  if (run !== S.run) return;
+  F.cur = null;
+  if (!otro) { furatSetDB("centroNombre", F.emp.empresa.centroNombre); furatSetDB("centroMismo", true);
+    if (!await say("Listo: centro de trabajo *" + F.emp.empresa.centroNombre + "*, con los datos de la sede descargados. ✅", run)) return; }
+  else { delete F.ans.centroNombre; delete F.meta.centroNombre; furatSetDB("centroMismo", false);
+    if (!await say("De acuerdo: en un momento te pregunto los datos de ese centro de trabajo. 📍", run)) return; }
+  F.cur = { id: "__revisarBase", type: "revisar" };
+  if (!await say("¿Los datos descargados están al día? Di *«continuar»*, o *«corregir»* y el dato (por ejemplo: «corregir salario»).", run)) return;
+  furatListen("«Continuar» o «corregir …»");
+}
+async function furatRevisarBaseAnswer(n, text, run) {
+  const mc = n.match(/corregir\s+(.+)/) || n.match(/^(?:cambiar|modificar)\s+(.+)/);
+  if (mc) {
+    const best = furatBuscarCampo(mc[1]);
+    if (!best) { if (await say("¿Cuál dato quieres corregir? Di *«corregir»* y el nombre del campo (salario, dirección del trabajador, EPS…).", run)) furatListen("«Continuar» o «corregir …»"); return; }
+    delete F.ans[best.id]; delete F.meta[best.id]; F.cur = null;
+    if (await say("Corrijamos *" + best.label.split(" (")[0] + "*.", run)) furatAsk(run); return;
+  }
+  if (/^(continuar|continua|listo|correcto|todo correcto|si|ok|dale|seguir|sigue|adelante)\b/.test(n)) { F.cur = null; if (await say("Ahora sí: cuéntame del *accidente*. 🚑", run)) furatAsk(run); return; }
+  if (await say("Di *«continuar»* para seguir, o *«corregir»* y el dato.", run)) furatListen("«Continuar» o «corregir …»");
+}
+
 async function furatDiag(pre) {
   const d = Voice.diagnostico();
   const cuerpo = (pre ? pre + "\n" : "") + "*Diagnóstico de voz* · " + d.nav + " · origen " + d.origen + " · estado: " + d.estado + " · último error: " + d.ultimoError + (d.pistas.length ? "\n" + d.pistas.map(x => "• " + x).join("\n") : "") + (d.eventos.length ? "\n_" + d.eventos.join(" · ") + "_" : "");
@@ -3405,6 +3560,10 @@ async function furatAnswer(text, src) {
   if (F.cur.type === "guion") { furatGuionChunk(text, src); return; }
   const f = F.cur, n = normTxt(text);
   bubble("out", (src === "voice" ? '<span class="mic-ic" aria-hidden="true">🎤</span> ' : "") + esc(text));
+  if (f.id === "__ident") { furatIdentAnswer(n, text, run); return; }
+  if (f.id === "__quien") { furatQuienAnswer(text, run); return; }
+  if (f.id === "__centro") { furatCentroAnswer(n, run); return; }
+  if (f.id === "__revisarBase") { furatRevisarBaseAnswer(n, text, run); return; }
   if (/^(repetir|repite|repiteme|otra vez|que paso|que pasa|ayuda|que sigue|no entiendo|\?)\b/.test(n)) { if (await say((f.q ? "Estoy esperando esta respuesta: " + f.q : "Di *sí* para generar el FURAT o *«corregir»* y el dato."), run)) furatListen(); return; }
   if (F.phase === "ask" && f.id !== "__confirm" && /^(omitir|omito|pasar|saltar|no se|no lo se|no lo tengo|despues)\b/.test(n)) {
     if (f.opt) { F.ans[f.id] = "No registra"; F.meta[f.id] = { text: "No registra", src }; if (await say("Lo dejo como *No registra*.", run)) furatAsk(run); return; }
@@ -3462,9 +3621,7 @@ async function furatConfirmar(text, run) {
   const n = normTxt(text);
   const mc = n.match(/corregir\s+(.+)/) || n.match(/^(?:cambiar|modificar)\s+(.+)/);
   if (mc || /^no\b/.test(n)) {
-    const q = mc ? mc[1] : "";
-    let best = null, sc = 0;
-    FURAT_FIELDS.forEach(f => { if (!furatApplicable(f)) return; const names = (FURAT_ALIAS[f.id] || []).concat([normTxt(f.label)]); names.forEach(a => { if (q && (q.includes(a) || a.includes(q)) && a.length > sc) { sc = a.length; best = f; } }); });
+    const best = furatBuscarCampo(mc ? mc[1] : "");
     if (!best) { if (await say("¿Cuál dato quieres corregir? Dime *«corregir»* y el nombre del campo (por ejemplo: salario, hora, dirección del trabajador, mecanismo).", run)) furatListen("Di «corregir …»"); return; }
     delete F.ans[best.id]; delete F.meta[best.id]; F.phase = "ask"; F.cur = null; if (GUION_DE[best.id]) F.gdone[GUION_DE[best.id].id] = true;
     if (await say("Corrijamos *" + best.label.split(" (")[0] + "*.", run)) furatAsk(run); return;
@@ -3475,6 +3632,8 @@ async function furatConfirmar(text, run) {
   const pend = Object.keys(F.ans).filter(k => F.ans[k] === "PENDIENTE").length;
   buildFuratModal(); furatDocCard(pend);
   if (!await say(["¡Listo! 🎉 Diligencié el FURAT con tus respuestas" + (pend ? ", con *" + pend + " campo" + (pend === 1 ? "" : "s") + " pendiente" + (pend === 1 ? "" : "s") + "* marcados en rojo" : " y quedó *completo*") + ".", "Tócalo para verlo y descargarlo en *PDF*, *Excel* o *JSON*. Recuerda: el reporte oficial se radica ante la ARL y la EPS dentro de los *dos días hábiles* siguientes al accidente. 📲"], run)) return;
+  if (!await say(["📌 *Siguiente paso obligatorio: la investigación del accidente.* La *Resolución 1401 de 2007* te exige investigarlo dentro de los *15 días* siguientes, con un equipo formado por el jefe inmediato, un representante del COPASST o el vigía de SST y el responsable del SG-SST." + (F.ans.causoMuerte === true ? " Como el accidente fue *mortal*, debe participar un profesional con licencia en SST y la investigación se *remite a la ARL* dentro de esos mismos 15 días." : " Si el accidente es *grave o mortal*, debe participar un profesional con licencia en SST y la investigación se remite a la ARL dentro de esos mismos 15 días."),
+    "🧭 El *formato de investigación* y la asesoría para complementarla los encuentras con *ARL SURA*: sura.co/arl → Servicios en Línea, o en las líneas *01 8000 511 414* y *01 8000 941 414* con tu asesor asignado."], run)) return;
   finDeFlujo(run);
 }
 function furatFileBase() { return "FURAT_" + slug((F.ans.apellidos || "trabajador") + "_" + (F.ans.fechaAccidente && F.ans.fechaAccidente.d ? fmtDate(F.ans.fechaAccidente) : "")); }

@@ -1,7 +1,7 @@
 "use strict";
 /* ===================== CONFIGURACIÓN ===================== */
 const CONFIG = {
-  version: "v17",
+  version: "v18",
   autor: "Rehavid S.A.S.",
   persona: "Carlos",            /* nombre del afiliado en la demostración */
   remitente: "ARL SURA",

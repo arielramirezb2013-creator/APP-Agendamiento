@@ -8,7 +8,7 @@ Uso: python3 build.py            → dist/simulador_capsulas_sst_v17.html (versi
 import base64, os, re, sys
 
 RAIZ = os.path.dirname(os.path.abspath(__file__)); SRC = os.path.join(RAIZ, "src"); DIST = os.path.join(RAIZ, "dist"); VENDOR = os.path.join(RAIZ, "vendor")
-ORDEN = ["js/config.js", "data/capsulas.js", "data/sectores.js", "data/personas_q.js", "data/sura.js", "js/engine.js", "js/furat.js", "js/main.js"]
+ORDEN = ["js/config.js", "data/capsulas.js", "data/sectores.js", "data/personas_q.js", "data/sura.js", "data/arl_db.js", "js/engine.js", "js/furat.js", "js/main.js"]
 LIBS = ["jspdf.umd.min.js", "jspdf.plugin.autotable.min.js", "xlsx.full.min.js"]
 
 def leer(rel): return open(os.path.join(SRC, rel), encoding="utf-8").read()
@@ -33,6 +33,7 @@ html = re.sub(r'(<script defer src="https://cdnjs\.cloudflare\.com[^>]*></script
 
 html = re.sub(r'(<script src="[^"]+"></script>\n?)+', lambda m: '<script>\n"use strict";\n' + js.strip() + "\n</script>\n", html, count=1)
 html = html.replace('href="assets/icon.png"', 'href="' + data_url("assets/icon.png") + '"').replace('src="assets/logo.png"', 'src="' + data_url("assets/logo.png") + '"')
+html = html.replace("{{VERSION}}", version)
 html = html.replace("<!-- Simulador Cápsulas SST · Rehavid S.A.S. · fuente modular; el archivo único se genera con build.py -->", f"<!-- Simulador Cápsulas SST · Rehavid S.A.S. · {version} · generado por build.py a partir de src/ -->")
 os.makedirs(DIST, exist_ok=True)
 salida = os.path.join(DIST, f"simulador_capsulas_sst_{version}.html")
