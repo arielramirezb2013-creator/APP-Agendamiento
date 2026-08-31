@@ -911,7 +911,7 @@ function buildFuratModal() {
   const checks = [["Sitio de ocurrencia", "sitio", F.ans.sitio], ["Tipo de lesión (marque cuál o cuáles)", "tipoLesion", F.ans.tipoLesion || []], ["Parte del cuerpo aparentemente afectada", "parteCuerpo", F.ans.parteCuerpo], ["Agente del accidente", "agente", F.ans.agente], ["Mecanismo o forma del accidente", "mecanismo", F.ans.mecanismo]]
     .map(c => '<div class="fu-chk"><b>' + esc(c[0]) + '</b><div class="fu-chk-grid">' + marks(c[1], c[2]).map(m => '<span class="' + (m.x ? "on" : "") + '">' + (m.x ? "☒" : "☐") + " " + esc(m.t) + '</span>').join("") + '</div></div>').join("");
   $("mtxBody").innerHTML = '<div class="matriz-meta"><span class="chip">Formato: <b>F 2015 - PR versión 3</b></span><span class="chip">Norma: <b>Res. 156/2005</b></span><span class="chip">Estado: <b>' + (pend ? pend + " pendiente" + (pend === 1 ? "" : "s") : "Completo") + '</b></span><span class="chip">Fecha: <b>' + fechaHoy() + '</b></span></div>' +
-    '<div class="export-row"><button class="exp-btn primary" id="btnFuPdf" type="button">📄 Descargar PDF</button><button class="exp-btn" id="btnFuXlsx" type="button">📗 Excel (.xlsx)</button><button class="exp-btn" id="btnFuJson" type="button">{ } JSON</button><button class="exp-btn" id="btnPrint" type="button">🖨️ Imprimir</button></div>' +
+    '<div class="export-row"><button class="exp-btn primary" id="btnFuXlsx" type="button">📗 FURAT oficial (.xlsx)</button><button class="exp-btn" id="btnFuPdf" type="button">📄 Descargar PDF</button><button class="exp-btn" id="btnFuJson" type="button">{ } JSON</button><button class="exp-btn" id="btnPrint" type="button">🖨️ Imprimir</button></div>' +
     '<div class="fu-doc"><h3 class="fu-title">Informe de accidente de trabajo del empleador o contratante (FURAT)</h3>' + grupos + '<h4 class="fu-sec">Casillas de marcación (sección III)</h4>' + checks + '</div>' +
     '<p class="matriz-foot"><b>Fuente de los datos:</b> respuestas por voz del empleador, transcritas y clasificadas por el asistente; los códigos EPS/ARL/AFP, de actividad económica y de ocupación los diligencia la ARL. <b>Marco:</b> ' + esc(FURAT_META.norma) + '. Documento de práctica generado por ' + esc(CONFIG.autor) + '; el reporte oficial se radica en el formato de la ARL con la firma del responsable.</p>';
   document.querySelector(".mtx-doc-ic").textContent = "🚑";
@@ -955,8 +955,16 @@ function furatPdf() {
   const fn = furatFileBase() + ".pdf", isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   if (isIOS) { let w = null; try { w = window.open(doc.output("bloburl"), "_blank"); } catch (e) { w = null; } if (w) flash("btnFuPdf", "✅ Abierto"); else { doc.save(fn); flash("btnFuPdf", "✅ Descargado"); } } else { doc.save(fn); flash("btnFuPdf", "✅ Descargado"); }
 }
+/* Entrega la plantilla oficial diligenciada; si no está incrustada (modo desarrollo), cae al libro de datos. */
 function furatXlsx() {
-  if (!(window.XLSX && window.XLSX.utils)) { conLibs(() => window.XLSX && window.XLSX.utils, furatXlsx, "btnFuXlsx"); return; }
+  if (typeof furatOficialDisponible === "function" && furatOficialDisponible()) {
+    furatOficialXlsx().then(() => flash("btnFuXlsx", "✅ Descargado")).catch(e => { console.error(e); furatXlsxDatos(); });
+    return;
+  }
+  furatXlsxDatos();
+}
+function furatXlsxDatos() {
+  if (!(window.XLSX && window.XLSX.utils)) { conLibs(() => window.XLSX && window.XLSX.utils, furatXlsxDatos, "btnFuXlsx"); return; }
   const X = window.XLSX, filas = furatFilas();
   const ws = X.utils.aoa_to_sheet([[FURAT_META.formato], [FURAT_META.norma], [], ["Sección", "Campo", "Valor"]].concat(filas.map(r => [FURAT_SEC[r[0]], r[1], r[2]])));
   ws["!cols"] = [{ wch: 34 }, { wch: 48 }, { wch: 80 }];

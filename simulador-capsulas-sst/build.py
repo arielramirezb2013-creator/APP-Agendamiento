@@ -8,8 +8,8 @@ Uso: python3 build.py            → dist/simulador_capsulas_sst_v17.html (versi
 import base64, os, re, sys
 
 RAIZ = os.path.dirname(os.path.abspath(__file__)); SRC = os.path.join(RAIZ, "src"); DIST = os.path.join(RAIZ, "dist"); VENDOR = os.path.join(RAIZ, "vendor")
-ORDEN = ["js/config.js", "data/capsulas.js", "data/sectores.js", "data/personas_q.js", "data/sura.js", "data/arl_db.js", "js/engine.js", "js/furat.js", "js/main.js"]
-LIBS = ["jspdf.umd.min.js", "jspdf.plugin.autotable.min.js", "xlsx.full.min.js"]
+ORDEN = ["js/config.js", "data/capsulas.js", "data/sectores.js", "data/personas_q.js", "data/sura.js", "data/arl_db.js", "js/engine.js", "js/furat.js", "js/furat_oficial.js", "js/main.js"]
+LIBS = ["jspdf.umd.min.js", "jspdf.plugin.autotable.min.js", "xlsx.full.min.js", "jszip.min.js"]
 
 def leer(rel): return open(os.path.join(SRC, rel), encoding="utf-8").read()
 def leer_vendor(rel): return open(os.path.join(VENDOR, rel), encoding="utf-8").read()
@@ -29,6 +29,9 @@ html = re.sub(r'<link href="https://fonts\.googleapis\.com[^>]*>', lambda m: ffa
 
 # Librerías de exporte incrustadas: PDF y Excel funcionan sin conexión y sin CDN.
 libs = "\n".join('<script>\n' + leer_vendor(f).rstrip() + '\n</script>' for f in LIBS)
+# Plantilla oficial del FURAT (F 2015 - PR versión 3) incrustada, generada por tools/construir_plantilla.py.
+tpl64 = base64.b64encode(open(os.path.join(VENDOR, "plantilla_furat.xlsx"), "rb").read()).decode("ascii")
+libs += '\n<script>const FURAT_TPL_B64 = "' + tpl64 + '";</script>'
 html = re.sub(r'(<script defer src="https://cdnjs\.cloudflare\.com[^>]*></script>\n?)+', lambda m: libs + "\n", html, count=1)
 
 html = re.sub(r'(<script src="[^"]+"></script>\n?)+', lambda m: '<script>\n"use strict";\n' + js.strip() + "\n</script>\n", html, count=1)

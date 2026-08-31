@@ -3,10 +3,10 @@ Prueba del módulo FURAT por voz (simulador v17) con un SpeechRecognition simula
 Sirve el HTML en http://localhost (como iniciar_demo.py) para verificar el modo manos libres.
 Uso: python3 test_furat.py simulador_capsulas_sst_v11.html [carpeta_salida]
 """
-import json, os, sys
+import json, os, re, sys, zipfile
 from playwright.sync_api import sync_playwright
 
-HTML = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dist", "simulador_capsulas_sst_v19.html"))
+HTML = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "dist", "simulador_capsulas_sst_v20.html"))
 OUT = os.path.abspath(sys.argv[2] if len(sys.argv) > 2 else "furat_out"); os.makedirs(OUT, exist_ok=True)
 MOCK_SR = """
 window.__srStarts = 0; window.__srActive = null;
@@ -159,6 +159,12 @@ with sync_playwright() as p:
     d.value.save_as(f"{OUT}/furat.pdf"); check("PDF FURAT descargado", os.path.getsize(f"{OUT}/furat.pdf") > 15000, d.value.suggested_filename)
     with page.expect_download(timeout=30000) as d: page.click("#btnFuXlsx")
     d.value.save_as(f"{OUT}/furat.xlsx"); check("XLSX FURAT descargado", os.path.getsize(f"{OUT}/furat.xlsx") > 5000)
+    zf = zipfile.ZipFile(f"{OUT}/furat.xlsx"); s1 = zf.read("xl/worksheets/sheet1.xml").decode("utf-8")
+    check("Plantilla oficial: hoja FORMATO FURAT con el encabezado original intacto", "FORMATO FURAT" in zf.read("xl/workbook.xml").decode("utf-8") and "INFORME ACCIDENTE DE TRABAJO DEL EMPLEADOR O CONTRATANTE" in s1)
+    check("Plantilla oficial: datos en sus celdas y X en las casillas", "Sanitas" in s1 and "Rodríguez" in s1 and "Panadería La Espiga" in s1 and s1.count(">X</t>") >= 15, f"X={s1.count('>X</t>')}")
+    check("Plantilla oficial: fecha de nacimiento dígito a dígito (AD39=1, AE39=5)", bool(re.search(r'r="AD39"[^>]*>\s*<is><t[^>]*>1</t>', s1)) and bool(re.search(r'r="AE39"[^>]*>\s*<is><t[^>]*>5</t>', s1)))
+    check("Plantilla oficial: salario y hora del accidente diligenciados", "1.600.000" in s1 and bool(re.search(r'r="V55"[^>]*>\s*<is><t[^>]*>1</t>', s1)))
+    check("Plantilla oficial: el formato conserva sus 316 combinaciones", s1.count("<mergeCell ") == 316)
     with page.expect_download(timeout=15000) as d: page.click("#btnFuJson")
     d.value.save_as(f"{OUT}/furat.json"); js = json.load(open(f"{OUT}/furat.json", encoding="utf-8"))
     check("JSON con campos, etiquetas y origen (voz/inferido/calculado)", js["campos"]["mecanismo"]["origen"].startswith("inferido") and js["campos"]["descripcion"]["origen"] == "voice" and js["campos"]["diaSemana"]["valor"] == a["d"])

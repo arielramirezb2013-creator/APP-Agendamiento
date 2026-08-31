@@ -14,6 +14,12 @@ incrustadas: cero peticiones de red; solo la voz necesita internet). Idioma del 
    desde la «base» (origen `base ARL (simulada)`), preguntando solo por el centro de trabajo y ofreciendo «corregir».
    La entrevista de voz queda solo para las secciones III y IV. Con «omitir» se diligencia todo por voz como antes.
    Al final, el asesor recuerda la investigación del accidente (Res. 1401/2007, 15 días) y los canales de ARL SURA.
+5. **Entrega en la plantilla oficial** (desde v20): el botón «FURAT oficial (.xlsx)» descarga el formato original
+   (`docs/formato_furat_original.xls`, hoja «FORMATO FURAT») diligenciado: datos en sus celdas, X en las casillas,
+   fechas y horas dígito a dígito, descripción repartida en las líneas del formato. La plantilla se reconstruye como
+   `vendor/plantilla_furat.xlsx` con `tools/construir_plantilla.py` (xlrd + openpyxl, conserva formato y 316
+   combinaciones) y `build.py` la incrusta; `src/js/furat_oficial.js` la rellena en el navegador con JSZip editando
+   solo los valores del XML. En modo desarrollo (sin plantilla incrustada) cae al libro de datos de SheetJS.
 
 ## Estructura
 ```
@@ -24,13 +30,16 @@ src/data/*.js           contenido (cápsulas, sectores/peligros, pregunta de per
                         base ARL simulada arl_db.js: empresas por NIT/cédula y sus trabajadores)
 src/js/engine.js        chat, GTC 45, matriz, exportes, modal accesible
 src/js/furat.js         FURAT: campos, analizadores de voz (es-CO), guiones, capa de voz (Voice), exportes, diagnóstico
+src/js/furat_oficial.js exporte en la plantilla oficial: mapa campo→celda y llenado del XML con JSZip
 src/js/main.js          boot()
-vendor/                 librerías de exporte (jsPDF 2.5.1, autoTable 3.8.2, SheetJS 0.18.5; byte-idénticas a npm)
-                        y la fuente Inter variable (woff2); build.py las incrusta en el archivo único
+tools/construir_plantilla.py  reconstruye vendor/plantilla_furat.xlsx desde docs/formato_furat_original.xls
+vendor/                 librerías de exporte (jsPDF 2.5.1, autoTable 3.8.2, SheetJS 0.18.5, JSZip 3.10.1;
+                        byte-idénticas a npm), la fuente Inter variable (woff2) y plantilla_furat.xlsx;
+                        build.py lo incrusta todo en el archivo único
 build.py                genera dist/simulador_capsulas_sst_<version>.html (inyecta css, js en orden, imágenes,
                         librerías de vendor/ y fuente en base64: el dist no hace ninguna petición de red)
 tests/audit_simulador.py  suite base (26 verificaciones, Playwright headless)
-tests/test_furat.py       suite FURAT (119 verificaciones, con SpeechRecognition simulado)
+tests/test_furat.py       suite FURAT (124 verificaciones, con SpeechRecognition simulado)
 docs/                   informes de auditoría y notas
 iniciar_demo.py/.bat    opcional: sirve dist/ en http://localhost
 ```
@@ -38,8 +47,8 @@ iniciar_demo.py/.bat    opcional: sirve dist/ en http://localhost
 ## Cómo trabajar
 - Edita solo `src/`. Luego `python3 build.py` y prueba **contra `dist/`**:
   `pip install playwright && playwright install chromium`, después
-  `python3 tests/audit_simulador.py dist/simulador_capsulas_sst_v19.html out/` y
-  `python3 tests/test_furat.py dist/simulador_capsulas_sst_v19.html out/`.
+  `python3 tests/audit_simulador.py dist/simulador_capsulas_sst_v20.html out/` y
+  `python3 tests/test_furat.py dist/simulador_capsulas_sst_v20.html out/`.
   Ambas suites deben quedar en 100 % antes de entregar. Para desarrollo rápido puedes abrir `src/index.html` directamente
   (el logo no sale en los PDF en ese modo y las librerías cargan del CDN; en `dist/` todo va incrustado).
 - Al cambiar de versión, actualiza `version` en `src/js/config.js`; `build.py` nombra el archivo con ese valor.
@@ -49,15 +58,15 @@ iniciar_demo.py/.bat    opcional: sirve dist/ en http://localhost
   históricos del CDN); `src/index.html` conserva las etiquetas CDN con SRI solo para el modo de desarrollo. El `dist`
   funciona completo sin conexión (PDF, Excel, CSV y JSON incluidos); únicamente la voz necesita internet.
 
-## Estado actual y prioridad (30/08/2026 · v19)
+## Estado actual y prioridad (31/08/2026 · v20)
 v17 corrige los hallazgos de la auditoría (analizadores de hora/dinero/duración/fecha, «repetir» en guiones, contador
 de reinicios de voz, vigilante y carrera al reiniciar, fecha PENDIENTE, aviso de privacidad, confirmación antes de
 borrar un FURAT en curso) e incrusta librerías y fuente: el archivo único no hace peticiones de red. v19 añade el
 control total del micrófono: una sola activación, pausa por voz («parar», o «parar el micrófono» durante la
 descripción, donde «para» suelto es narración y se acumula al relato), reanudación con un toque que repite el dato
 pendiente, pausa que congela los temporizadores del dictado sin perder lo acumulado, y recuperación del permiso con
-un toque tras un not-allowed (el stream se libera y el siguiente toque re-pide el permiso desde el chat). Suites:
-26 + 119 verificaciones en 100 %.
+un toque tras un not-allowed (el stream se libera y el siguiente toque re-pide el permiso desde el chat). v20 entrega
+el FURAT en su **plantilla oficial** diligenciada (punto 5 de «Qué hace»). Suites: 26 + 124 verificaciones en 100 %.
 
 El **paso pendiente sigue siendo la prueba con micrófono en Chrome real** (los mocks no reproducen a Chrome). Historial
 en `docs/auditoria_voz_furat_v16.md`. Plan: publicar el `dist` en un hosting estático con HTTPS (GitHub Pages, Netlify,
