@@ -1,1139 +1,1360 @@
-<title>Módulo Interoperable Clínico-Laboral</title>
+<title>Mapa Vivo · Ruta de M.P.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
   :root {
-    --bg: #F2F5F9;
-    --surface: #FFFFFF;
-    --surface-2: #EAEEF5;
-    --ink: #1A2438;
-    --ink-soft: #4C5870;
-    --ink-faint: #8791A5;
-    --line: #D9DFE9;
-    --side: #16223D;
-    --side-ink: #E8EDF7;
-    --side-faint: #8FA0BF;
-    --primary: #1F7A6F;
-    --primary-ink: #FFFFFF;
-    --primary-soft: #DDEEEA;
-    --navy: #2E5AA8;
-    --navy-soft: #E2EAF7;
-    --gold: #A87C10;
-    --gold-soft: #F6EDD3;
-    --red: #B3372B;
-    --red-soft: #F7E4E1;
-    --green: #2E7D46;
-    --green-soft: #E0F0E5;
-    --overlay: rgba(22, 34, 61, .5);
-    --shadow: 0 1px 2px rgba(22,34,61,.06), 0 6px 20px rgba(22,34,61,.08);
+    --paper:#F6F8FC; --surface:#FFFFFF; --surface-2:#EDF1F8;
+    --ink:#1B2A52; --ink-soft:#4A5878; --ink-faint:#86909F; --line:#D8DEE9;
+    --navy:#24407E; --navy-ink:#FFFFFF; --band:#24407E; --band-ink:#FFFFFF;
+    --gold:#B98A1B; --gold-soft:#F5EBD2; --teal:#2E7D74; --teal-soft:#DDEEEA;
+    --red:#B3372B; --red-soft:#F7E4E1; --amber:#A87C10; --amber-soft:#F6EDD3;
+    --green:#2E7D46; --green-soft:#E0F0E5; --ctrl:#97A0B4; --node:#FFFFFF; --sello:#24407E;
+    --shadow:0 1px 2px rgba(27,42,82,.06),0 4px 16px rgba(27,42,82,.08);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0E1320;
-      --surface: #161E30;
-      --surface-2: #1E2740;
-      --ink: #E7EBF4;
-      --ink-soft: #ACB6CC;
-      --ink-faint: #6E7992;
-      --line: #2B3650;
-      --side: #0B1120;
-      --side-ink: #E8EDF7;
-      --side-faint: #7484A3;
-      --primary: #4FA89C;
-      --primary-ink: #0B1120;
-      --primary-soft: #14332F;
-      --navy: #7C9BD8;
-      --navy-soft: #1B2A47;
-      --gold: #D9A93E;
-      --gold-soft: #382D10;
-      --red: #E0796D;
-      --red-soft: #3D1E1A;
-      --green: #6CC08A;
-      --green-soft: #16301F;
-      --overlay: rgba(2, 6, 14, .66);
-      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.4);
+      --paper:#101521; --surface:#181F2E; --surface-2:#202940;
+      --ink:#E7EBF4; --ink-soft:#ADB7CC; --ink-faint:#6F7A93; --line:#2C3850;
+      --navy:#8FA8E0; --navy-ink:#101521; --band:#1C2537; --band-ink:#E7EBF4;
+      --gold:#D9A93E; --gold-soft:#3A3115; --teal:#58B0A5; --teal-soft:#14332F;
+      --red:#E0796D; --red-soft:#3D1E1A; --amber:#D9A93E; --amber-soft:#382D10;
+      --green:#6CC08A; --green-soft:#16301F; --ctrl:#5D6981; --node:#1C2537; --sello:#8FA8E0;
+      --shadow:0 1px 2px rgba(0,0,0,.35),0 4px 16px rgba(0,0,0,.35);
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0E1320;
-    --surface: #161E30;
-    --surface-2: #1E2740;
-    --ink: #E7EBF4;
-    --ink-soft: #ACB6CC;
-    --ink-faint: #6E7992;
-    --line: #2B3650;
-    --side: #0B1120;
-    --side-ink: #E8EDF7;
-    --side-faint: #7484A3;
-    --primary: #4FA89C;
-    --primary-ink: #0B1120;
-    --primary-soft: #14332F;
-    --navy: #7C9BD8;
-    --navy-soft: #1B2A47;
-    --gold: #D9A93E;
-    --gold-soft: #382D10;
-    --red: #E0796D;
-    --red-soft: #3D1E1A;
-    --green: #6CC08A;
-    --green-soft: #16301F;
-    --overlay: rgba(2, 6, 14, .66);
-    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.4);
+    --paper:#101521; --surface:#181F2E; --surface-2:#202940;
+    --ink:#E7EBF4; --ink-soft:#ADB7CC; --ink-faint:#6F7A93; --line:#2C3850;
+    --navy:#8FA8E0; --navy-ink:#101521; --band:#1C2537; --band-ink:#E7EBF4;
+    --gold:#D9A93E; --gold-soft:#3A3115; --teal:#58B0A5; --teal-soft:#14332F;
+    --red:#E0796D; --red-soft:#3D1E1A; --amber:#D9A93E; --amber-soft:#382D10;
+    --green:#6CC08A; --green-soft:#16301F; --ctrl:#5D6981; --node:#1C2537; --sello:#8FA8E0;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 4px 16px rgba(0,0,0,.35);
   }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans","Segoe UI",Arial,sans-serif; font-size:15px; line-height:1.55; }
+  h1,h2,h3 { margin:0; font-family:"Source Serif 4",Georgia,"Times New Roman",serif; text-wrap:balance; }
+  button { font:inherit; cursor:pointer; }
+  button:disabled { opacity:.45; cursor:default; }
+  input[type=text], input[type=number], textarea { font:inherit; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:7px 10px; }
+  textarea { width:100%; resize:vertical; min-height:56px; }
+  input:focus-visible, textarea:focus-visible, button:focus-visible, .node:focus-visible { outline:2px solid var(--navy); outline-offset:2px; }
+  .mono { font-family:"IBM Plex Mono",Consolas,monospace; }
+  .wrap { max-width:1260px; margin:0 auto; padding:0 24px 64px; }
 
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
-    font-size: 14.5px; line-height: 1.55;
-  }
-  h1, h2, h3, h4 { margin: 0; font-family: "IBM Plex Sans", Arial, sans-serif; }
-  .serif { font-family: "Source Serif 4", Georgia, serif; }
-  button { font: inherit; cursor: pointer; }
-  button:disabled { opacity: .45; cursor: default; }
-  input, textarea, select { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; }
-  textarea { width: 100%; resize: vertical; }
-  input:focus-visible, textarea:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-  .mono { font-family: "IBM Plex Mono", Consolas, monospace; }
+  /* Banda */
+  .band { background:var(--band); color:var(--band-ink); }
+  .band .wrap { padding:22px 24px 24px; }
+  .eyebrow { font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; opacity:.85; margin-bottom:6px; }
+  .band h1 { font-size:28px; font-weight:700; line-height:1.15; }
+  .band .sub { margin:8px 0 0; max-width:88ch; opacity:.9; font-size:14.5px; }
 
-  /* ---------- Login ---------- */
-  #login { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 30px 20px; }
-  .login-card { max-width: 860px; width: 100%; }
-  .brandmark { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
-  .brandmark .logo { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; font-size: 30px; letter-spacing: .01em; }
-  .brandmark .ver { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--primary); border: 1px solid var(--primary); border-radius: 999px; padding: 2px 10px; }
-  .login-card > p.lead { color: var(--ink-soft); max-width: 72ch; margin: 6px 0 22px; }
-  .entgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
-  .entgrid button {
-    text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px;
-    padding: 14px 16px; color: var(--ink); box-shadow: var(--shadow);
-  }
-  .entgrid button:hover { border-color: var(--primary); }
-  .entgrid .en { font-weight: 700; font-size: 15px; display: block; }
-  .entgrid .eu { font-size: 12.5px; color: var(--ink-soft); display: block; margin-top: 3px; }
-  .entgrid .ef { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--primary); display: block; margin-top: 8px; }
-  .login-note { margin-top: 20px; font-size: 12.5px; color: var(--ink-faint); max-width: 88ch; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); }
+  .pad { padding:16px 20px; }
 
-  /* ---------- Shell ---------- */
-  #app { display: none; min-height: 100vh; }
-  #app.on { display: grid; grid-template-columns: 244px minmax(0, 1fr); }
-  @media (max-width: 900px) { #app.on { grid-template-columns: 1fr; } aside.side { position: static; height: auto; } }
-  aside.side {
-    background: var(--side); color: var(--side-ink); padding: 18px 14px;
-    display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh;
-  }
-  aside.side .logo { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; font-size: 21px; padding: 0 10px 2px; }
-  aside.side .tagline { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--side-faint); padding: 0 10px 14px; }
-  aside.side nav { display: flex; flex-direction: column; gap: 2px; }
-  aside.side nav button {
-    display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; border: 0; background: transparent;
-    color: var(--side-faint); font-weight: 600; font-size: 13.5px; padding: 9px 10px; border-radius: 9px;
-  }
-  aside.side nav button[aria-current="true"] { background: rgba(255,255,255,.09); color: var(--side-ink); }
-  aside.side nav button:hover { color: var(--side-ink); }
-  aside.side nav .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); margin-left: auto; }
-  aside.side .spacer { flex: 1; }
-  .userblock { border-top: 1px solid rgba(255,255,255,.12); padding: 12px 10px 2px; font-size: 12.5px; }
-  .userblock .un { font-weight: 700; color: var(--side-ink); }
-  .userblock .ue { color: var(--side-faint); }
-  .userblock button { margin-top: 8px; width: 100%; border: 1px solid rgba(255,255,255,.25); background: transparent; color: var(--side-ink); border-radius: 8px; padding: 6px 10px; font-size: 12.5px; font-weight: 600; }
+  /* Ficha + guion */
+  .ficha-guion { display:grid; grid-template-columns:minmax(260px,32%) 1fr; gap:0; margin-top:20px; overflow:hidden; }
+  .ficha { padding:16px 20px; border-right:1px solid var(--line); display:flex; gap:12px; }
+  .avatar { width:44px; height:44px; border-radius:50%; background:var(--navy); color:var(--navy-ink); display:grid; place-items:center; font-weight:700; font-family:"Source Serif 4",serif; flex:none; }
+  .ficha .fn { font-weight:600; font-size:15px; }
+  .ficha .fd { font-size:12.5px; color:var(--ink-soft); }
+  .guion { padding:14px 20px 12px; }
+  .seg { display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:3px; background:var(--surface-2); }
+  .seg button { font-weight:600; font-size:13px; border:0; background:transparent; color:var(--ink-soft); padding:5px 14px; border-radius:999px; }
+  .seg button[aria-pressed="true"] { background:var(--navy); color:var(--navy-ink); }
+  .seg button.lock { opacity:.55; }
+  .saltar { font-size:12px; color:var(--ink-faint); background:none; border:0; text-decoration:underline; margin-left:10px; padding:0; }
+  .turnos { display:flex; flex-wrap:wrap; gap:6px 4px; margin-top:12px; align-items:center; }
+  .turno { display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--ink-faint); border:1px solid var(--line); border-radius:999px; padding:4px 11px 4px 6px; background:var(--surface); }
+  .turno .tn { width:20px; height:20px; border-radius:50%; display:grid; place-items:center; font-size:11px; background:var(--surface-2); }
+  .turno.now { color:var(--gold); border-color:var(--gold); }
+  .turno.now .tn { background:var(--gold); color:#fff; animation:blink 2s infinite; }
+  .turno.done { color:var(--green); border-color:var(--green); }
+  .turno.done .tn { background:var(--green); color:#fff; }
+  .turno.skip { text-decoration:line-through; }
+  .turno-sep { color:var(--line); }
+  .ayuda { font-size:12.5px; color:var(--ink-soft); margin-top:8px; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.45} }
+  @media (prefers-reduced-motion: reduce) { .turno.now .tn { animation:none; } }
 
-  main { padding: 0 26px 46px; min-width: 0; }
-  .topbar { display: flex; align-items: center; gap: 14px; padding: 16px 0 14px; flex-wrap: wrap; }
-  .topbar h1 { font-size: 20px; font-weight: 700; }
-  .topbar .grow { flex: 1; }
-  .casepill { font-size: 12.5px; font-weight: 600; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; color: var(--ink-soft); }
-  .bell { position: relative; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 13px; font-weight: 600; font-size: 13px; color: var(--ink-soft); }
-  .bell .n { position: absolute; top: -6px; right: -6px; background: var(--red); color: #fff; font-size: 10.5px; font-weight: 700; border-radius: 999px; min-width: 18px; height: 18px; display: grid; place-items: center; padding: 0 4px; }
+  /* Sticky */
+  .sticky { position:sticky; top:0; z-index:30; background:var(--surface); border-bottom:1px solid var(--line); box-shadow:0 2px 10px rgba(27,42,82,.06); margin-top:16px; border-radius:0 0 12px 12px; }
+  .sticky .in { display:flex; align-items:center; gap:16px; padding:8px 16px; flex-wrap:wrap; }
+  .mini { display:flex; gap:5px; align-items:center; }
+  .mini span { width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:700; background:var(--surface-2); color:var(--ink-faint); }
+  .mini span.now { background:var(--gold); color:#fff; }
+  .mini span.done { background:var(--green); color:#fff; }
+  .mini span.skip { text-decoration:line-through; }
+  .marcador { flex:1; display:grid; grid-template-columns:auto repeat(5, minmax(70px,1fr)); gap:2px 10px; font-family:"IBM Plex Mono",monospace; font-size:12px; font-variant-numeric:tabular-nums; min-width:420px; }
+  .marcador .lbl { font-family:"IBM Plex Sans",sans-serif; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
+  .marcador .row-lbl { font-family:"IBM Plex Sans",sans-serif; font-size:10.5px; font-weight:700; letter-spacing:.08em; border-radius:999px; padding:1px 8px; align-self:center; }
+  .rl-hoy { background:var(--red-soft); color:var(--red); }
+  .rl-mod { background:var(--teal-soft); color:var(--teal); }
+  .marcador .v { font-weight:500; }
+  .marcador .dim { color:var(--ink-faint); }
+  .marcador .best { color:var(--green); } .marcador .worst { color:var(--red); }
+  .btn-reset { font-size:12px; border:1px solid var(--red); color:var(--red); background:transparent; border-radius:8px; padding:4px 10px; }
+  @media (max-width:760px) { .sticky .in { gap:8px 12px; } .marcador { grid-template-columns:auto repeat(3,minmax(0,1fr)); min-width:0; width:100%; font-size:11px; } .marcador .c4,.marcador .c5 { display:none; } .marcador .lbl { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } }
 
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
-  .card-pad { padding: 16px 18px; }
-  .card h2 { font-size: 16px; margin-bottom: 10px; }
-  .grid2 { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); gap: 16px; align-items: start; }
-  @media (max-width: 1100px) { .grid2 { grid-template-columns: 1fr; } }
-  .stack { display: flex; flex-direction: column; gap: 16px; }
+  /* Grid principal */
+  .main { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(380px,1fr); gap:20px; align-items:start; margin-top:18px; }
+  .main > * { min-width:0; }
+  @media (max-width:1020px) { .main { grid-template-columns:1fr; } .panel { position:static !important; } }
+  @media (max-width:760px) { .ficha-guion { grid-template-columns:1fr; } .ficha { border-right:0; border-bottom:1px solid var(--line); } .band h1 { font-size:23px; } }
+  .map-head { display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; justify-content:space-between; padding:14px 20px 0; }
+  .map-head h2 { font-size:18px; }
+  .map-head .mode { font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:600; color:var(--ink-soft); }
+  .map-note { font-size:12.5px; color:var(--ink-soft); padding:2px 20px 0; max-width:82ch; }
+  .map-scroll { overflow-x:auto; padding:4px 8px 0; }
+  .map-scroll svg { display:block; width:100%; min-width:640px; height:auto; }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 14px; padding:8px 20px 12px; font-size:11.5px; color:var(--ink-soft); }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .lg { width:22px; height:0; border-top:2.5px solid; border-radius:2px; }
+  .lg-base{border-color:var(--ctrl);} .lg-pend{border-color:var(--amber);border-top-style:dashed;} .lg-ok{border-color:var(--green);} .lg-den{border-color:var(--red);border-top-style:dotted;border-top-width:3px;} .lg-not{border-color:var(--gold);}
+  .mpve { background:var(--band); color:var(--band-ink); border-radius:0 0 13px 13px; padding:8px 16px; display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center; font-size:12.5px; cursor:pointer; }
+  .mpve .k { font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em; opacity:.8; }
+  .mpve .badge { margin-left:auto; border-radius:999px; padding:2px 10px; font-weight:700; font-size:11.5px; }
+  .bd-red { background:var(--red); color:#fff; } .bd-green { background:var(--green); color:#fff; }
+  .mpve .flash { background:rgba(255,255,255,.18); border-radius:6px; padding:0 6px; transition:background 1s; }
 
-  /* tablas */
-  .twrap { overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
-  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; white-space: nowrap; }
-  tr.rowbtn { cursor: pointer; }
-  tr.rowbtn:hover td { background: var(--surface-2); }
-  td.num { font-variant-numeric: tabular-nums; }
-  tr.mine td { background: var(--primary-soft); }
+  /* SVG */
+  .e-info{stroke:var(--navy);stroke-width:1.3;} .e-dict{stroke:var(--gold);stroke-width:1.5;} .e-ten{stroke:var(--red);stroke-width:1.4;stroke-dasharray:7 5;} .e-ctrl{stroke:var(--ctrl);stroke-width:1.1;stroke-dasharray:2 5;stroke-linecap:round;} .e-teal{stroke:var(--teal);stroke-width:1.5;}
+  .dim { opacity:.3; }
+  .f-pend{stroke:var(--amber);stroke-width:2.6;stroke-dasharray:8 5;fill:none;} .f-ok{stroke:var(--green);stroke-width:2.8;fill:none;} .f-den{stroke:var(--red);stroke-width:2.4;stroke-dasharray:3 4;fill:none;} .f-not{stroke:var(--gold);stroke-width:2.6;fill:none;}
+  .f-old { opacity:.35; }
+  .live { stroke-dasharray:600; stroke-dashoffset:600; animation:draw .6s ease forwards; }
+  .live.f-pend { stroke-dasharray:600; animation:draw .6s ease forwards, todash .01s .6s forwards; }
+  .live.f-den { stroke-dasharray:600; animation:draw .6s ease forwards, todash2 .01s .6s forwards; }
+  @keyframes draw { to { stroke-dashoffset:0; } }
+  @keyframes todash { to { stroke-dasharray:8 5; } }
+  @keyframes todash2 { to { stroke-dasharray:3 4; } }
+  .elabel { font-family:"IBM Plex Sans",sans-serif; font-size:10.5px; fill:var(--ink-soft); paint-order:stroke; stroke:var(--surface); stroke-width:4px; stroke-linejoin:round; }
+  .elabel.ten { fill:var(--red); font-weight:600; }
+  .node { cursor:pointer; transition:transform .7s ease; }
+  @media (prefers-reduced-motion: reduce) { .node { transition:none; } .live { animation:none; stroke-dashoffset:0; } .live.f-pend { stroke-dasharray:8 5; } .live.f-den { stroke-dasharray:3 4; } .live.f-ok, .live.f-not { stroke-dasharray:none; } }
+  .node rect.box { fill:var(--node); stroke:var(--line); stroke-width:1.3; }
+  .node text { font-family:"IBM Plex Sans",sans-serif; pointer-events:none; }
+  .node .nname { font-size:12.5px; font-weight:600; fill:var(--ink); }
+  .node .nrole { font-size:9.5px; fill:var(--ink-faint); }
+  .n-focal rect.box { fill:var(--navy); stroke:var(--navy); } .n-focal .nname { fill:var(--navy-ink); } .n-focal .nrole { fill:var(--navy-ink); opacity:.8; }
+  .n-ancla rect.box { stroke:var(--gold); stroke-width:1.8; }
+  .n-control rect.box { stroke-dasharray:4 3; }
+  .n-mod rect.box { fill:var(--teal-soft); stroke:var(--teal); stroke-width:1.8; }
+  .n-mod .nname { fill:var(--teal); font-size:13px; } .n-mod .nrole { fill:var(--ink-soft); }
+  .n-mod .regc { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--teal); font-weight:500; }
+  .node.off { opacity:.35; }
+  .halo { fill:none; stroke:var(--gold); stroke-width:3; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+  @media (prefers-reduced-motion: reduce) { .halo { animation:none; } }
+  .letoca { font-family:"IBM Plex Sans",sans-serif; font-size:9px; font-weight:700; letter-spacing:.12em; fill:var(--gold); paint-order:stroke; stroke:var(--surface); stroke-width:4px; }
+  .sello rect { fill:var(--surface); stroke:var(--sello); stroke-width:1.2; }
+  .sello text { font-family:"IBM Plex Mono",monospace; font-size:9px; font-weight:500; fill:var(--sello); }
+  .sello.glow rect { stroke:var(--teal); fill:var(--teal-soft); stroke-width:2; } .sello.glow text { fill:var(--teal); }
+  .sello.copia rect { stroke:var(--ctrl); stroke-dasharray:2 2; } .sello.copia text { fill:var(--ink-faint); }
+  .mochila circle { stroke:var(--surface); stroke-width:2; }
+  .mochila text { font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:700; fill:#fff; }
+  .anclabox { fill:none; stroke:var(--gold); stroke-width:1.2; stroke-dasharray:6 5; }
+  .anclatag { font-size:10px; font-weight:600; letter-spacing:.08em; fill:var(--gold); }
 
-  .chip { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .05em; border-radius: 999px; padding: 2.5px 10px; white-space: nowrap; }
-  .ch-etapa { background: var(--navy-soft); color: var(--navy); }
-  .ch-accion { background: var(--gold-soft); color: var(--gold); }
-  .ch-ok { background: var(--green-soft); color: var(--green); }
-  .ch-den { background: var(--red-soft); color: var(--red); }
-  .ch-mute { background: var(--surface-2); color: var(--ink-faint); }
-  .ch-alert { background: var(--red-soft); color: var(--red); }
+  /* Panel */
+  .panel { position:sticky; top:96px; }
+  .phead { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 16px; border-bottom:1px solid var(--line); font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; color:var(--ink-soft); }
+  .pbody { padding:14px 18px 16px; display:flex; flex-direction:column; gap:12px; }
+  .escritorio { border:2px solid var(--gold); }
+  .escritorio.a2 { border-color:var(--teal); }
+  .ahora { border:2px solid var(--gold); border-radius:12px; padding:10px 14px; }
+  .a2 .ahora { border-color:var(--teal); }
+  .chip { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; border-radius:999px; padding:2px 9px; white-space:nowrap; }
+  .ch-turno { background:var(--gold-soft); color:var(--gold); font-family:"IBM Plex Mono",monospace; }
+  .a2 .ch-turno { background:var(--teal-soft); color:var(--teal); }
+  .ch-grey { background:var(--surface-2); color:var(--ink-faint); }
+  .ch-red { background:var(--red-soft); color:var(--red); } .ch-green{ background:var(--green-soft); color:var(--green);} .ch-amber{background:var(--amber-soft);color:var(--amber);} .ch-teal{background:var(--teal-soft);color:var(--teal);} .ch-navy{background:var(--navy);color:var(--navy-ink);}
+  .ahora h2 { font-size:20px; margin:6px 0 2px; }
+  .ahora .persona { font-size:12.5px; color:var(--ink-faint); }
+  .ahora .unica { margin-top:6px; font-size:13.5px; } .ahora .unica b { font-weight:600; }
+  .ahora .desp { font-size:12.5px; color:var(--ink-soft); }
+  .paso { background:var(--surface-2); border-radius:10px; padding:8px 12px; font-size:13px; color:var(--ink-soft); }
+  .paso .hoy { color:var(--red); } .paso .mod { color:var(--teal); }
+  .guia { display:flex; gap:8px; align-items:flex-start; font-size:13.5px; font-weight:600; }
+  .guia .arr { color:var(--gold); } .a2 .guia .arr { color:var(--teal); }
+  .pasos { display:flex; gap:6px; flex-wrap:wrap; }
+  .pasos span { font-size:11px; font-weight:600; border-radius:999px; padding:2px 9px; background:var(--surface-2); color:var(--ink-faint); }
+  .pasos span.on { background:var(--gold); color:#fff; } .a2 .pasos span.on { background:var(--teal); color:#fff; }
+  .pasos span.ok { background:var(--green-soft); color:var(--green); }
+  .contrato { border:1px solid var(--gold); background:var(--gold-soft); border-radius:10px; padding:9px 12px; }
+  .contrato.tachado { border-color:var(--line); background:var(--surface-2); color:var(--ink-faint); text-decoration:line-through; }
+  .contrato .ct { font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:var(--gold); margin-bottom:4px; text-decoration:none; }
+  .contrato .cells { display:grid; grid-template-columns:1fr 1fr; gap:4px 12px; font-size:12.5px; }
+  .contrato .cells b { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; }
+  .contrato.sum { border-color:var(--teal); background:var(--teal-soft); } .contrato.sum .ct { color:var(--teal); }
+  .micro { font-size:11.5px; color:var(--ink-faint); }
+  .sello-ac { display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; border:2px solid var(--teal); color:var(--teal); border-radius:6px; padding:2px 8px; box-shadow:inset 0 0 0 2px var(--surface), inset 0 0 0 3px var(--teal); background:var(--surface); white-space:nowrap; transition:color .4s, border-color .4s; }
+  .sello-ac.pend { border-color:var(--gold); color:var(--gold); box-shadow:inset 0 0 0 2px var(--surface), inset 0 0 0 3px var(--gold); }
+  .sello-ac.sin { border-color:var(--red); color:var(--red); border-style:dashed; box-shadow:none; }
+  .docrow { display:flex; align-items:center; gap:9px; border:1px solid var(--line); border-radius:10px; padding:7px 10px; background:var(--surface-2); flex-wrap:wrap; }
+  .docrow.inactive { opacity:.55; }
+  .docrow .sl { font-family:"IBM Plex Mono",monospace; font-size:10px; border:1.2px solid var(--sello); color:var(--sello); border-radius:4px; padding:0 5px; }
+  .docrow .dn { flex:1; min-width:120px; font-size:13px; } .docrow .dn small { display:block; color:var(--ink-faint); font-size:11px; }
+  .docrow button { font-size:12px; font-weight:600; border-radius:8px; padding:4px 10px; border:1.5px solid var(--navy); background:var(--surface); color:var(--navy); white-space:nowrap; }
+  .a2 .docrow button { border-color:var(--teal); color:var(--teal); }
+  .docrow.fuera { border-style:dashed; }
+  .visor { width:100%; border-top:1px solid var(--line); margin-top:6px; padding-top:6px; }
+  .visor .vh { font-size:12px; color:var(--ink-soft); margin-bottom:4px; }
+  .frow { display:flex; gap:8px; font-size:12.5px; padding:3px 0; border-bottom:1px dashed var(--line); }
+  .frow .fk { width:44%; color:var(--ink-soft); } .frow .fv { flex:1; }
+  .frow.ret .fv { color:var(--ink-faint); } .frow.ret .fv span { background:var(--surface-2); border:1px dashed var(--line); border-radius:5px; padding:0 6px; font-size:11px; }
+  .visor .vf { font-size:11.5px; color:var(--ink-faint); margin-top:5px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .bar { height:8px; border-radius:999px; background:var(--surface-2); overflow:hidden; } .bar div { height:100%; background:var(--green); transition:width .3s; }
+  .opt { display:flex; gap:10px; border:1.5px solid var(--line); border-radius:10px; padding:9px 11px; cursor:pointer; font-size:13px; }
+  .opt.sel { border-color:var(--teal); background:var(--teal-soft); }
+  .opt input { margin-top:3px; accent-color:var(--teal); } .opt .om { color:var(--ink-soft); font-size:12px; }
+  .btn { border-radius:9px; padding:8px 14px; font-weight:600; border:1.5px solid var(--navy); background:var(--navy); color:var(--navy-ink); }
+  .btn.teal { border-color:var(--teal); background:var(--teal); color:#fff; }
+  .btn.sec { background:var(--surface); color:var(--navy); }
+  .btn.gold { border-color:var(--gold); background:var(--gold); color:#fff; }
+  .btn.ghost { background:transparent; color:var(--ink-soft); border-color:var(--line); }
+  .btn.danger { background:var(--surface); color:var(--red); border-color:var(--red); }
+  .btn.wide { width:100%; }
+  .notif { border:1px solid var(--gold); border-radius:10px; padding:8px 12px; font-size:12.5px; display:flex; flex-direction:column; gap:5px; }
+  .cotejo { display:grid; grid-template-columns:1fr 1fr; border-radius:10px; overflow:hidden; border:1px solid var(--line); font-size:12.5px; }
+  .cotejo div { padding:8px 10px; } .cotejo .ch { background:var(--red-soft); color:var(--red); } .cotejo .cm { background:var(--teal-soft); color:var(--teal); }
+  .cotejo b { display:block; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:2px; }
+  .bit ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:5px; max-height:220px; overflow-y:auto; }
+  .bit li { font-size:12px; border-left:3px solid var(--line); padding:2px 9px; color:var(--ink-soft); }
+  .bit .b-acc{border-left-color:var(--navy);} .bit .b-fri{border-left-color:var(--amber);background:var(--amber-soft);border-radius:0 7px 7px 0;} .bit .b-log{border-left-color:var(--teal);font-family:"IBM Plex Mono",monospace;font-size:11px;} .bit .b-den{border-left-color:var(--red);background:var(--red-soft);border-radius:0 7px 7px 0;} .bit .b-hito{border-left-color:var(--green);background:var(--green-soft);border-radius:0 7px 7px 0;color:var(--ink);font-weight:600;}
+  .bit .d { font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--ink-faint); margin-right:5px; }
+  .bit h3 { font-family:"IBM Plex Sans",sans-serif; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:5px; }
+  .req { display:flex; align-items:center; gap:8px; font-size:13px; padding:3px 0; color:var(--ink-soft); }
+  .req .tk { width:18px; height:18px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:700; background:var(--surface-2); color:var(--ink-faint); flex:none; }
+  .req.ok .tk { background:var(--green-soft); color:var(--green); } .req.no .tk { background:var(--red-soft); color:var(--red); }
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px; }
+  .kpi { background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:8px 11px; }
+  .kpi b { display:block; font-size:20px; font-variant-numeric:tabular-nums; } .kpi span { font-size:11.5px; color:var(--ink-soft); }
+  .kpi.bad b { color:var(--red); } .kpi.good b { color:var(--green); }
+  .tbl { width:100%; border-collapse:collapse; font-size:12.5px; } .tbl th,.tbl td { text-align:left; padding:5px 6px; border-bottom:1px solid var(--line); vertical-align:top; } .tbl th { font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
+  .tbl td.den { color:var(--red); }
+  .verif { display:flex; gap:9px; align-items:flex-start; background:var(--green-soft); border-radius:10px; padding:8px 11px; font-size:13px; }
+  .verif .tk { color:var(--green); font-weight:700; }
+  .optrow { display:flex; gap:6px; flex-wrap:wrap; }
+  .optrow button { font-weight:600; font-size:12.5px; border-radius:999px; padding:5px 12px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink-soft); }
+  .optrow button[aria-pressed="true"] { background:var(--navy); color:var(--navy-ink); border-color:var(--navy); }
+  .optrow.sem button[data-v="aceptar"][aria-pressed="true"]{background:var(--green-soft);border-color:var(--green);color:var(--green);} .optrow.sem button[data-v="ajustar"][aria-pressed="true"]{background:var(--amber-soft);border-color:var(--amber);color:var(--amber);} .optrow.sem button[data-v="rechazar"][aria-pressed="true"]{background:var(--red-soft);border-color:var(--red);color:var(--red);}
+  .flabel { font-size:11px; letter-spacing:.1em; text-transform:uppercase; font-weight:600; color:var(--ink-soft); margin-bottom:3px; }
+  .contract { background:var(--teal-soft); border:1px solid var(--teal); border-radius:10px; padding:8px 11px; font-size:13.5px; }
+  .prec { display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:11.5px; background:var(--surface-2); border:1px solid var(--line); border-radius:6px; padding:0 6px; margin:2px 4px 0 0; color:var(--ink-soft); }
+  .fin1 { border:1px solid var(--gold); background:var(--gold-soft); border-radius:12px; padding:10px 14px; font-size:13.5px; margin-top:10px; }
 
-  /* stepper */
-  .stepper { display: flex; gap: 0; flex-wrap: wrap; margin: 4px 0 2px; }
-  .step { flex: 1; min-width: 110px; position: relative; padding: 0 6px 0 0; }
-  .step .bar { height: 5px; border-radius: 999px; background: var(--surface-2); margin-bottom: 7px; }
-  .step.done .bar { background: var(--green); }
-  .step.now .bar { background: var(--gold); }
-  .step .sl { font-size: 11px; font-weight: 600; color: var(--ink-faint); line-height: 1.3; }
-  .step.done .sl { color: var(--green); }
-  .step.now .sl { color: var(--gold); }
-
-  /* checklist / acciones */
-  .req { display: flex; align-items: center; gap: 9px; font-size: 13px; padding: 5px 0; color: var(--ink-soft); }
-  .req .tick { width: 19px; height: 19px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; background: var(--surface-2); color: var(--ink-faint); flex: none; }
-  .req.ok .tick { background: var(--green-soft); color: var(--green); }
-  .btn { border-radius: 9px; padding: 8px 15px; font-weight: 600; border: 1.5px solid var(--primary); background: var(--primary); color: var(--primary-ink); }
-  .btn-sec { background: var(--surface); color: var(--primary); }
-  .btn-ghost { background: var(--surface); color: var(--ink-soft); border-color: var(--line); }
-  .btn-danger { background: var(--surface); color: var(--red); border-color: var(--red); }
-  .btn-sm { padding: 5px 11px; font-size: 12.5px; border-radius: 8px; }
-
-  .docitem { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 11px; padding: 9px 12px; margin-bottom: 8px; background: var(--surface-2); }
-  .docitem .di { flex: 1; min-width: 0; }
-  .docitem .dn { font-weight: 600; font-size: 13.5px; }
-  .docitem .dc { font-size: 11.5px; color: var(--ink-faint); }
-  .lock { color: var(--ink-faint); }
-
-  /* timeline */
-  .tl { list-style: none; margin: 0; padding: 0; }
-  .tl li { position: relative; padding: 0 0 14px 24px; border-left: 2px solid var(--line); margin-left: 8px; }
-  .tl li:last-child { padding-bottom: 2px; }
-  .tl li::before { content: ""; position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
-  .tl li.hito::before { background: var(--primary); }
-  .tl li.alerta::before { background: var(--gold); }
-  .tl .td { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-faint); }
-  .tl .tt { font-size: 13.5px; }
-  .tl .tt b { font-weight: 600; }
-
-  /* notif panel */
-  .notifpanel { position: fixed; top: 64px; right: 22px; width: min(380px, 92vw); max-height: 70vh; overflow-y: auto; z-index: 40; display: none; }
-  .notifpanel.open { display: block; }
-  .notifpanel .nitem { border-bottom: 1px solid var(--line); padding: 10px 14px; font-size: 13px; }
-  .notifpanel .nd { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--ink-faint); }
-
-  /* modal */
-  .modal { position: fixed; inset: 0; background: var(--overlay); display: none; align-items: flex-start; justify-content: center; padding: 42px 18px; overflow-y: auto; z-index: 60; }
-  .modal.open { display: flex; }
-  .modal-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); max-width: 640px; width: 100%; padding: 20px 22px; }
-  .modal-card h3 { font-size: 17px; }
-  .modal-card .sub { color: var(--ink-soft); font-size: 12.5px; margin: 3px 0 12px; }
-  .contractline { background: var(--primary-soft); border: 1px solid var(--primary); border-radius: 10px; padding: 8px 12px; font-size: 12.5px; margin-bottom: 12px; }
-  .fieldrow { display: flex; gap: 10px; border-bottom: 1px solid var(--line); padding: 7px 2px; font-size: 13.5px; }
-  .fieldrow .fk { width: 44%; min-width: 130px; color: var(--ink-soft); font-size: 12.5px; }
-  .fieldrow .fv { flex: 1; }
-  .fieldrow.redacted .fv { color: var(--ink-faint); }
-  .fieldrow.redacted .fv .bar { display: inline-block; background: var(--surface-2); border: 1px dashed var(--line); border-radius: 5px; color: var(--ink-faint); font-size: 11.5px; padding: 1px 8px; }
-  .radioopt { display: flex; gap: 10px; align-items: flex-start; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; }
-  .radioopt input { margin-top: 3px; accent-color: var(--primary); }
-  .radioopt.sel { border-color: var(--primary); background: var(--primary-soft); }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
-
-  /* KPIs */
-  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
-  .kpi { background: var(--surface-2); border: 1px solid var(--line); border-radius: 11px; padding: 10px 13px; }
-  .kpi b { display: block; font-size: 21px; font-variant-numeric: tabular-nums; }
-  .kpi span { font-size: 11.5px; color: var(--ink-soft); }
-  .kpi.warn b { color: var(--gold); }
-  .kpi.badv b { color: var(--red); }
-  .kpi.goodv b { color: var(--green); }
-
-  .emptymsg { color: var(--ink-faint); font-size: 13px; padding: 8px 0; }
-  .footer-note { margin-top: 26px; color: var(--ink-faint); font-size: 12px; max-width: 110ch; border-top: 1px solid var(--line); padding-top: 12px; }
-  .msgflash { font-size: 13px; color: var(--primary); font-weight: 600; }
+  /* Tira, comparativa, validación */
+  .tira { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin-top:16px; }
+  .tira .t { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:9px 12px; box-shadow:var(--shadow); }
+  .tira .tl { font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; }
+  .tira .tv { display:flex; gap:12px; margin-top:4px; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; }
+  .tira .tv div { flex:1; } .tira .tv b { display:block; font-size:19px; font-weight:500; } .tira .tv small { font-size:9.5px; letter-spacing:.08em; }
+  .tira .hoy b { color:var(--red); } .tira .mod b { color:var(--teal); } .tira .mute b { color:var(--ink-faint); }
+  .section { margin-top:22px; }
+  .section h2 { font-size:21px; margin-bottom:4px; }
+  .section .hint { color:var(--ink-soft); font-size:13px; margin:0 0 12px; }
+  .bignums { display:flex; gap:26px; align-items:baseline; flex-wrap:wrap; margin:8px 0 14px; }
+  .bignums b { font-family:"Source Serif 4",serif; font-size:40px; font-weight:700; } .bignums .h { color:var(--red); } .bignums .m { color:var(--teal); }
+  .bignums small { font-size:12px; color:var(--ink-soft); display:block; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:760px) { .cols { grid-template-columns:1fr; } }
+  .col { border-radius:12px; border:1px solid var(--line); padding:10px 12px; }
+  .col.h { border-color:var(--red); } .col.m { border-color:var(--teal); }
+  .col h3 { font-family:"IBM Plex Sans",sans-serif; font-size:12px; letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+  .col.h h3 { color:var(--red); } .col.m h3 { color:var(--teal); }
+  .crono { list-style:none; margin:0; padding:0; font-size:12.5px; display:flex; flex-direction:column; gap:6px; }
+  .crono li { border-bottom:1px dashed var(--line); padding-bottom:5px; } .crono li b { font-weight:600; }
+  .twrap { overflow-x:auto; margin-top:12px; }
+  table.cmp { border-collapse:collapse; width:100%; font-size:13px; font-variant-numeric:tabular-nums; }
+  table.cmp th,table.cmp td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }
+  table.cmp th { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); }
+  table.cmp td.dimh { font-weight:700; color:var(--ink); padding-top:12px; }
+  table.cmp td.n { text-align:right; font-weight:600; } .mejor { color:var(--green); } .peor { color:var(--red); }
+  .grid3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:14px; }
+  ol.rank { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+  ol.rank li { display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:6px 9px; font-size:12.5px; }
+  ol.rank .pos { font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--gold); min-width:18px; text-align:center; }
+  ol.rank .rt { flex:1; } ol.rank .mv button { border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:6px; width:25px; height:25px; line-height:1; }
+  details { border:1px solid var(--line); border-radius:10px; padding:8px 12px; margin-top:12px; }
+  details summary { cursor:pointer; font-weight:600; font-size:13px; }
+  .sup { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; margin-top:8px; font-size:12px; }
+  .sup label { display:flex; flex-direction:column; gap:3px; color:var(--ink-soft); }
+  .sup input { width:100%; }
+  .rolchips { display:flex; flex-wrap:wrap; gap:6px; }
+  .rolchips button { font-size:12px; font-weight:600; border-radius:999px; padding:4px 11px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink-soft); }
+  .rolchips button[aria-pressed="true"] { background:var(--navy); color:var(--navy-ink); border-color:var(--navy); }
+  .gate-crit { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; }
+  .gate-crit label { display:flex; gap:9px; font-size:13px; cursor:pointer; } .gate-crit input { accent-color:var(--teal); }
+  .gate-verdict { margin-top:10px; border-radius:9px; padding:8px 12px; font-weight:600; font-size:13px; }
+  .gate-go { background:var(--green-soft); color:var(--green); } .gate-wait { background:var(--amber-soft); color:var(--amber); }
+  .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; align-items:center; }
+  .msg { font-size:13px; color:var(--teal); font-weight:600; }
+  footer.src { margin-top:28px; border-top:1px solid var(--line); padding-top:12px; color:var(--ink-faint); font-size:12px; max-width:110ch; }
+  .fab { display:none; position:fixed; right:16px; bottom:16px; z-index:35; }
+  @media (max-width:1020px) { .fab { display:block; } }
 </style>
+<header class="band"><div class="wrap">
+  <div class="eyebrow">Prototipo medio 02 &middot; DGIT 6202 &middot; Caso de estudio SURA &middot; Escenario sint&eacute;tico</div>
+  <h1>Mapa vivo: la ruta de M.P. en dos actos</h1>
+  <p class="sub">Recorra la misma ruta de incapacidad dos veces con el mismo caso: primero como ocurre hoy, luego con el m&oacute;dulo federado. En cada turno usted act&uacute;a por el actor iluminado en el mapa.</p>
+</div></header>
 
-<!-- ============ LOGIN ============ -->
-<div id="login">
-  <div class="login-card">
-    <div class="brandmark"><span class="logo">M&oacute;dulo Interoperable Cl&iacute;nico-Laboral</span><span class="ver">Prototipo medio &middot; datos sint&eacute;ticos</span></div>
-    <p class="lead">Intercambio federado de evidencia para la ruta de incapacidad: cada entidad conserva la custodia en origen y consulta solo lo pertinente a su finalidad, con registro auditable de cada acceso y decisi&oacute;n. Seleccione la entidad con la que va a ingresar:</p>
-    <div class="entgrid" id="entgrid"></div>
-    <p class="login-note"><b>Escenarios cargados:</b> CASO-2026-0417 (M.P., lumbago con ci&aacute;tica &middot; controversia de origen) y CASO-2026-0533 (J.R., trastorno depresivo &middot; origen com&uacute;n). Prototipo acad&eacute;mico DGIT 6202 &middot; caso de estudio SURA. No contiene datos personales reales ni se conecta a sistemas de las entidades.</p>
-  </div>
-</div>
-
-<!-- ============ APP ============ -->
-<div id="app">
-  <aside class="side">
-    <div class="logo">MICL</div>
-    <div class="tagline">expediente federado</div>
-    <nav id="nav"></nav>
-    <div class="spacer"></div>
-    <div class="userblock" id="userblock"></div>
-  </aside>
-  <main>
-    <div class="topbar">
-      <h1 id="vtitle"></h1>
-      <span class="casepill" id="casepill" style="display:none"></span>
-      <span class="grow"></span>
-      <span class="msgflash" id="flash" role="status"></span>
-      <button type="button" class="bell" id="bell">Notificaciones<span class="n" id="belln" style="display:none"></span></button>
+<div class="wrap">
+  <section class="card ficha-guion">
+    <div class="ficha">
+      <div class="avatar">M.P.</div>
+      <div>
+        <div class="fn">M.P. &middot; 41 a&ntilde;os &middot; operaria de empaque</div>
+        <div class="fd">Alimentos Andinos S.A.S. (sint&eacute;tica) &middot; afiliada a EPS SURA, ARL SURA y AFP Andina</div>
+        <div class="fd">Lumbago con ci&aacute;tica (M54.4) &middot; d&iacute;a 150 de incapacidad continua &middot; origen sin definir desde el d&iacute;a 120 &middot; cuidadora: L.P. (hermana)</div>
+        <div style="margin-top:6px"><span class="chip ch-red">controversia de origen</span> <span class="prec">T-462/25</span><span class="prec">T-119/26</span></div>
+      </div>
     </div>
-    <div id="main"></div>
-    <p class="footer-note"><b>Acerca de este prototipo (H2):</b> instancia el m&oacute;dulo interoperable de la metodolog&iacute;a — contratos de acceso por finalidad, vistas por rol con m&iacute;nimo necesario a nivel de campo, autenticaci&oacute;n por entidad y trazabilidad auditable — ejecutando escenarios end-to-end sin centralizar historias cl&iacute;nicas. Interfaz y datos son sint&eacute;ticos; no representa una implementaci&oacute;n aprobada. Fuente: Arquitectura Sist&eacute;mica y Prototipo Low-Fi 01 (DGIT 6202, Universidad de los Andes).</p>
-  </main>
+    <div class="guion">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+        <div class="seg" role="group" aria-label="Acto">
+          <button type="button" id="seg-a1" aria-pressed="true">ACTO 1 &middot; HOY</button>
+          <button type="button" id="seg-a2" aria-pressed="false" class="lock">&#128274; ACTO 2 &middot; CON EL M&Oacute;DULO</button>
+        </div>
+        <button type="button" class="saltar" id="btn-saltar">Saltar al Acto 2 (facilitador)</button>
+        <span id="saltar-confirm" style="display:none;font-size:12px;color:var(--ink-soft)">Se reproducir&aacute; el Acto 1 completo en unos segundos &middot; <button type="button" class="saltar" id="btn-saltar-ok">S&iacute;, reproducir</button></span>
+      </div>
+      <div class="turnos" id="turnos"></div>
+      <div class="ayuda" id="ayuda">Haga clic en el actor iluminado del mapa para abrir su escritorio.</div>
+    </div>
+  </section>
+
+  <div class="sticky"><div class="in">
+    <div class="mini" id="mini"></div>
+    <div class="marcador" id="marcador"></div>
+    <button type="button" class="btn-reset" id="btn-reset">Reiniciar sesi&oacute;n</button>
+    <span id="reset-confirm" style="display:none;font-size:12px;color:var(--ink-soft)">Esto borra los dos actos y las validaciones. <button type="button" class="btn-reset" id="btn-reset-ok">S&iacute;, borrar</button></span>
+  </div></div>
+
+  <div class="main">
+    <section class="card" id="mapcard" aria-label="Mapa vivo de actores">
+      <div class="map-head"><h2>Red del proceso</h2><span class="mode" id="map-mode">AS-IS &middot; red fragmentada</span></div>
+      <p class="map-note" id="map-note"></p>
+      <div class="map-scroll"><svg id="mapa" viewBox="0 0 1000 645" role="img" aria-label="Mapa de los 12 actores de la ruta de incapacidad">
+        <g id="g-frame"></g><g id="g-edges"></g><g id="g-flows"></g><g id="g-nodes"></g><g id="g-over"></g>
+      </svg></div>
+      <div class="legend" id="legend"></div>
+      <div class="mpve" id="mpve" role="button" tabindex="0" title="Abrir la vista de estado de M.P."></div>
+    </section>
+    <aside class="panel" id="panel"></aside>
+  </div>
+
+  <div class="tira" id="tira"></div>
+
+  <section class="card pad section" id="comparativa">
+    <h2>Mismo caso, dos rutas</h2>
+    <p class="hint">Hip&oacute;tesis H3: completitud de la evidencia, trazabilidad del acceso y claridad de responsabilidades con el mismo caso y las mismas decisiones.</p>
+    <div id="cmp-body"></div>
+  </section>
+
+  <section class="card pad section" id="validar">
+    <h2>Validar mi actor</h2>
+    <p class="hint">Elija el actor que usted representa: ver&aacute; su tensi&oacute;n observada, el contrato TO-BE de la matriz y cinco preguntas cerradas.</p>
+    <div id="val-body"></div>
+    <details id="gate"><summary>Gate de decisi&oacute;n &middot; solo facilitador</summary>
+      <ul class="gate-crit" style="margin-top:8px">
+        <li><label><input type="checkbox" id="g1"> No falta ning&uacute;n actor cr&iacute;tico en el mapa.</label></li>
+        <li><label><input type="checkbox" id="g2"> Hay acuerdo suficiente sobre los flujos esenciales.</label></li>
+        <li><label><input type="checkbox" id="g3"> Los riesgos altos tienen una mitigaci&oacute;n definida.</label></li>
+        <li><label><input type="checkbox" id="g4"> Las hip&oacute;tesis H1 y H2 siguen siendo plausibles.</label></li>
+      </ul>
+      <div class="gate-verdict" id="gate-verdict"></div>
+    </details>
+    <div class="actions">
+      <button type="button" class="btn" id="btn-copy">Copiar resultados (JSON)</button>
+      <button type="button" class="btn sec" id="btn-download">Descargar JSON</button>
+      <button type="button" class="btn ghost" id="btn-rama">Jugar la otra rama</button>
+      <span class="msg" id="msg" role="status"></span>
+    </div>
+  </section>
+
+  <footer class="src"><b>Caso sint&eacute;tico:</b> M.P., trabajadora con incapacidad temporal prolongada (d&iacute;a 150) y controversia de origen. <b>Fuentes:</b> prototipo low-fi &laquo;Mapa de actores AS-IS &rarr; TO-BE&raquo; (Proyecto 2, DGIT 6202, Universidad de los Andes). El TO-BE es una hip&oacute;tesis de dise&ntilde;o para validaci&oacute;n; no representa una implementaci&oacute;n aprobada. Los d&iacute;as, plazos y precedentes citados son par&aacute;metros ilustrativos del escenario. El Acto 1 representa el flujo actual del sistema, no la conducta de una entidad. Precauciones &eacute;ticas: sin datos cl&iacute;nicos ni laborales identificables.</footer>
 </div>
-
-<div class="notifpanel card" id="notifpanel"></div>
-<div class="modal" id="modal"><div class="modal-card" id="modalcard"></div></div>
-
+<button type="button" class="btn fab" id="fab">Ver escritorio &darr;</button>
 <script>
 (function () {
-  "use strict";
+"use strict";
 
-  /* ================== Catálogos ================== */
-  var ENT = {
-    eps:     { n:"EPS SURA",                        user:"Ana Torres",   cargo:"Analista de calificación" },
-    arl:     { n:"ARL SURA",                        user:"Camilo Rueda", cargo:"Investigador de origen" },
-    afp:     { n:"AFP · Colpensiones",              user:"Diana Prieto", cargo:"Analista de prestaciones" },
-    jr:      { n:"Junta Regional de Calificación",  user:"Dr. Luis Peña", cargo:"Ponente" },
-    jn:      { n:"Junta Nacional de Calificación",  user:"Dra. Marta Gil", cargo:"Sala de decisión" },
-    tra:     { n:"Portal del Trabajador",           user:"Trabajador(a) del caso", cargo:"Actor focal" },
-    mintrab: { n:"MinTrabajo · Supervisión",        user:"Insp. Rojas",  cargo:"Inspección laboral" }
+/* ===================== DATOS ===================== */
+const ACT = [
+  { id:"tra", n:"M.P. / familia", rol:"Actor focal", g:"focal" },
+  { id:"emp", n:"Empleador / SG-SST", rol:"Matriz de exposición", g:"core" },
+  { id:"ips", n:"IPS Clínica del Norte", rol:"Historia clínica", g:"core" },
+  { id:"eps", n:"EPS SURA", rol:"Incapacidades · calificación", g:"ancla" },
+  { id:"arl", n:"ARL SURA", rol:"Prestaciones laborales", g:"ancla" },
+  { id:"afp", n:"AFP Andina", rol:"Historia laboral · pensión", g:"core" },
+  { id:"jr",  n:"Junta Regional", rol:"Primera instancia", g:"core" },
+  { id:"jn",  n:"Junta Nacional", rol:"Segunda instancia", g:"core" },
+  { id:"mintrab", n:"MinTrabajo", rol:"Inspección · supervisión", g:"control" },
+  { id:"minsalud", n:"MinSalud", rol:"Regulación sanitaria", g:"control" },
+  { id:"supersalud", n:"SuperSalud", rol:"Vigilancia EPS / IPS", g:"control" },
+  { id:"jueces", n:"Jueces", rol:"Control constitucional", g:"control" }
+];
+const A = {}; ACT.forEach(a => { A[a.id] = a; });
+
+/* Matriz de actores (slide 4) para «Validar mi actor» */
+const MATRIZ = {
+  tra: { grupo:"Actor focal", tension:"Carga administrativa y mínimo vital.", prec:["T-462/25","T-119/26"], contrato:"Vista de estado, notificaciones y trazabilidad de consultas." },
+  emp: { grupo:"Actor directo", tension:"Reubicación, fuero y culpa patronal.", prec:["SU-111/25","SL287-2024"], contrato:"Contrato de evidencia laboral: responsable, formato, versión y fecha." },
+  ips: { grupo:"Actor directo", tension:"Historia incompleta y tardanza de especialista.", prec:["T-512/25"], contrato:"Resumen clínico estructurado y mínimo necesario por finalidad." },
+  eps: { grupo:"SURA · organización ancla", tension:"Origen, pagos y notificaciones.", prec:["T-009/25","T-512/25"], contrato:"Reglas de suministro/consulta, notificación y logs." },
+  arl: { grupo:"SURA · organización ancla", tension:"Origen, continuidad y quién paga.", prec:["SL1469-2024","T-512/25"], contrato:"Contrato de exposición/prestación y trazabilidad de decisión." },
+  afp: { grupo:"Actor directo", tension:"Historia laboral, semanas y coordinación.", prec:["T-119/26","T-104/24"], contrato:"Historia laboral estructurada y reglas de competencia." },
+  jr:  { grupo:"Actor directo", tension:"Demora, expediente y notificación.", prec:["T-215/24","T-104/24"], contrato:"Checklist de expediente, acuse y trazabilidad de instancia." },
+  jn:  { grupo:"Actor directo", tension:"Reducción de PCL y motivación.", prec:["T-379/25","T-147/25"], contrato:"Paquete de apelación íntegro y motivación trazable." },
+  mintrab: { grupo:"Indirecto / control", tension:"Falta de control y órdenes estructurales.", prec:["SU-313/20","SU-111/25"], contrato:"Vista de supervisión, tiempos, incidencias y escalamiento." },
+  minsalud: { grupo:"Indirecto / control", tension:"Confusión discapacidad / PCL.", prec:["T-147/25"], contrato:"Estándares semánticos y límites de uso clínico-laboral." },
+  supersalud: { grupo:"Indirecto / control", tension:"Competencia limitada.", prec:["T-009/25"], contrato:"Enrutamiento de quejas y vistas según competencia." },
+  jueces: { grupo:"Indirecto / control", tension:"Subsidiariedad y corrección de dictámenes.", prec:["T-119/26","SU-111/25"], contrato:"Paquete auditado: cronología, decisiones y evidencia de acceso." }
+};
+
+const POS = {
+  asis: { tra:[500,300], ips:[320,112], emp:[122,208], eps:[585,95], arl:[812,152], afp:[856,332], jr:[655,458], jn:[380,472], mintrab:[140,588], minsalud:[380,594], supersalud:[620,594], jueces:[860,588], mod:[500,330] },
+  tobe: { mod:[500,330], tra:[500,120], ips:[295,105], emp:[118,228], eps:[705,105], arl:[874,228], afp:[880,402], jr:[726,508], jn:[268,508], mintrab:[118,402], minsalud:[140,592], supersalud:[500,606], jueces:[858,592] }
+};
+const BASE_EDGES = {
+  asis: [
+    ["ips","tra","e-info"],["emp","tra","e-info"],["tra","eps","e-info"],["tra","afp","e-info"],["tra","jr","e-info"],
+    ["eps","tra","e-dict"],["arl","tra","e-dict"],["jr","tra","e-dict"],["afp","tra","e-dict"],["jn","tra","e-dict"],
+    ["eps","arl","e-ten","¿origen?"],["arl","afp","e-ten","¿quién paga?"],["jr","jn","e-ten","apelación"],
+    ["mintrab","emp","e-ctrl"],["mintrab","arl","e-ctrl"],["minsalud","ips","e-ctrl"],["supersalud","eps","e-ctrl"],["jueces","jn","e-ctrl"]
+  ],
+  tobe: [
+    ["tra","mod","e-info"],["ips","mod","e-teal"],["emp","mod","e-teal"],["eps","mod","e-teal"],["arl","mod","e-teal"],
+    ["afp","mod","e-teal"],["jr","mod","e-teal"],["jn","mod","e-teal"],
+    ["mintrab","mod","e-ctrl"],["minsalud","mod","e-ctrl"],["supersalud","mod","e-ctrl"],["jueces","mod","e-ctrl"]
+  ]
+};
+
+/* Piezas de evidencia con custodio, campos y vistas mínimas por actor */
+const PZ = {
+  hc:  { sl:"HC",  n:"Resumen clínico estructurado", cust:"ips", custN:"IPS Clínica del Norte", ver:"v.3 · 2026-04",
+         campos:[["Diagnóstico principal (CIE-10)","M54.4 · Lumbago con ciática"],["Incapacidad continua","150 días · desde 2026-03-30"],["Restricciones funcionales","Sin cargas > 10 kg · sin bipedestación prolongada"],["Concepto de rehabilitación","Favorable · reintegro con restricciones"],["Evolución clínica completa","14 notas de evolución"],["Antecedentes psicosociales","Registro de psicología clínica"]],
+         vistas:{ eps:[0,1,2,3], arl:[0,1,2,4], jr:[0,1,2,3,4], afp:[1,3], jn:[0,1,2,3,4] } },
+  apt: { sl:"APT", n:"Matriz de exposición y APT", cust:"emp", custN:"Empleador · SG-SST (Rocío Vélez)", ver:"v.2 · 2026-03",
+         campos:[["Cargo y tareas","Operaria de empaque · línea 3"],["Cargas manipuladas","12–18 kg · 7,5 h por turno"],["Índice de levantamiento NIOSH","2,1 (alto)"],["Versión · fecha · responsable","v.2 · 2026-03 · Rocío Vélez (SG-SST)"],["Historial disciplinario","Registro de talento humano"]],
+         vistas:{ eps:[0,1,2,3], arl:[0,1,2,3], jr:[0,1,2,3], jn:[0,1,2,3] } },
+  inc: { sl:"INC", n:"Certificados de incapacidad", cust:"eps", custN:"EPS SURA", ver:"corte día 150",
+         campos:[["Días acumulados","150 días continuos"],["Prórrogas","5 prórrogas"],["IBC promedio","$ 1.845.000"],["Fecha de inicio","2026-03-30"]],
+         vistas:{ arl:[0,1,3], jr:[0,1,3], afp:[0,2,3], jn:[0,1,3] } },
+  hl:  { sl:"HL",  n:"Historia laboral y semanas", cust:"afp", custN:"AFP Andina", ver:"corte día 150",
+         campos:[["Semanas cotizadas","612 semanas"],["Densidad de cotización (3 años)","0,91"],["IBC histórico","Serie 2019–2026"],["Historial de empleadores","4 empleadores"]],
+         vistas:{ jr:[0,1] } },
+  dic: { sl:"DIC", n:"Dictamen de primera instancia", cust:"jr", custN:"Junta Regional", ver:"según firma",
+         campos:[["Origen","—"],["Pérdida de capacidad laboral","—"],["Fecha de estructuración","2026-03-30"],["Motivación íntegra","Nexo causal valorado sobre evidencia consultada por finalidad"]],
+         vistas:{ afp:[0,1,2], arl:[0,1,2], jn:[0,1,2,3] } }
+};
+const PZ_IDS = ["hc","apt","inc","hl","dic"];
+
+/* Turnos Acto 1 (HOY) */
+const T1 = [
+  { n:1, actor:"eps", persona:"Ana Torres · analista de calificación", unica:"calificar el origen de la incapacidad de M.P.", despues:"ARL SURA responde a su calificación", tipo:"friccion", piezas:["hc","apt"], propias:["inc"], decision:"Firmar calificación: origen laboral", hito:"calificación emitida y notificada por correo. Nada quedó trazable para los demás actores.", paso:null },
+  { n:2, actor:"arl", persona:"Camilo Rueda · investigador de origen", unica:"responder a la calificación de la EPS: aceptar o controvertir", despues:"la Junta Regional dictamina", tipo:"friccion", piezas:["hc","apt"], propias:[], decision:"Controvertir ante la Junta Regional (como hoy)", hito:"controversia radicada por oficio. La Junta la recibe días después, sin acuse.", paso:"La calificación llegó por correo, sin adjuntos completos. No hay canal con la EPS: la evidencia se pide de nuevo." },
+  { n:3, actor:"jr", persona:"Dra. Luisa Pardo · médica ponente", unica:"emitir el dictamen de primera instancia", despues:"la AFP decide quién paga", tipo:"checklist", piezas:["hl"], propias:[], decision:"Emitir dictamen: origen laboral · PCL 38,5 %", hito:"dictamen emitido y notificado por correo; la apelación de la ARL no consta notificada a M.P.", paso:"El expediente llegó en papel, incompleto: falta la historia laboral (custodio AFP)." },
+  { n:4, actor:"afp", persona:"Diana Prieto · analista de prestaciones", unica:"decidir la continuidad del pago desde el día 181", despues:"M.P. revisa su caso", tipo:"pedir", piezas:["dic"], propias:["hl"], decision:"Decidir continuidad del pago (como hoy)", hito:"decisión tomada; entre el día 181 y hoy M.P. no supo quién pagaba.", paso:"La AFP se enteró del dictamen por M.P., no por la Junta." },
+  { n:5, actor:"tra", persona:"M.P. y su cuidadora", unica:"ver lo que tuvieron que conseguir", despues:"recorrer la misma ruta con el módulo", tipo:"mp" }
+];
+
+/* Turnos Acto 2 (CON EL MÓDULO) */
+const T2 = [
+  { n:1, actor:"eps", persona:"Ana Torres · analista de calificación", unica:"calificar el origen de la incapacidad de M.P.", despues:"ARL SURA responde a su calificación",
+    fin:"Calificación de origen en primera oportunidad", resp:"Ana Torres · EPS SURA", plazo:"10 días hábiles", vence:164,
+    piezas:["hc","apt"], propias:["inc"], fuera:["hl"],
+    opciones:[{ id:"laboral", t:"Origen laboral", m:"Índice NIOSH 2,1 y cargas de 12–18 kg compatibles con M54.4; exposición documentada en la matriz APT v.2.", sug:true },{ id:"comun", t:"Origen común", m:"Sin nexo suficiente entre la exposición documentada y el diagnóstico." }],
+    notif:{ a:["ARL SURA","AFP Andina","M.P."], pend:"arl", plazo:"plazo de respuesta ARL: 10 días hábiles", vence:164 },
+    pasoHoy:null, pasoMod:null },
+  { n:2, actor:"arl", persona:"Camilo Rueda · investigador de origen", unica:"responder a la calificación: controvertir o aceptar", despues:"la Junta Regional dictamina (si hay controversia)",
+    fin:"Investigación de origen y prestaciones", resp:"Camilo Rueda · ARL SURA", plazo:"15 días hábiles", vence:175,
+    piezas:["hc","apt","inc"], propias:[], fuera:["hl"],
+    opciones:[{ id:"controvertir", t:"Controvertir ante la Junta Regional", m:"La magnitud de la exposición no explica por sí sola la severidad del cuadro; se solicita dictamen de primera instancia.", sug:true },{ id:"aceptar", t:"Aceptar la calificación", m:"La evidencia consultada por finalidad respalda la calificación de la EPS; no hay mérito para controversia." }],
+    notif:{ a:["Junta Regional","EPS SURA","M.P."], pend:"jr", plazo:"radicación ante la Junta Regional", vence:164 },
+    pasoHoy:"la calificación llegó por correo el día 204, sin adjuntos completos.", pasoMod:"notificación con acuse recibida; el expediente es consultable por finalidad." },
+  { n:3, actor:"jr", persona:"Dra. Luisa Pardo · médica ponente", unica:"emitir el dictamen de primera instancia", despues:"la AFP decide quién paga",
+    fin:"Dictamen de primera instancia", resp:"Dra. Luisa Pardo · Junta Regional", plazo:"30 días hábiles", vence:190,
+    piezas:["hc","apt","inc","hl"], propias:[], fuera:[],
+    opciones:[{ id:"lab38", t:"Origen laboral · PCL 38,5 %", m:"Nexo causal acreditado por la exposición documentada; pérdida de capacidad laboral parcial según tabla vigente.", sug:true },{ id:"com12", t:"Origen común · PCL 12,0 %", m:"Sin nexo causal ocupacional acreditado." }],
+    notif:{ a:["EPS SURA","ARL SURA","AFP Andina","M.P."], pend:"arl", plazo:"término de apelación: 10 días hábiles", vence:175 },
+    pasoHoy:"el expediente llegó en papel el día 258, incompleto.", pasoMod:"radicación con acuse; checklist verificado por el módulo." },
+  { n:4, actor:"afp", persona:"Diana Prieto · analista de prestaciones", unica:"decidir quién paga desde el día 181", despues:"M.P. revisa su caso",
+    fin:"Estudio de prestaciones y competencia", resp:"Diana Prieto · AFP Andina", plazo:"20 días hábiles", vence:180,
+    piezas:["dic","inc"], propias:["hl"], fuera:["apt"],
+    opciones:[{ id:"subsidio", t:"Asumir subsidio transitorio desde el día 181 hasta la firmeza del dictamen", m:"Continuidad del ingreso mientras se define la firmeza; sin ruptura de pagos.", sug:true },{ id:"remitir", t:"Remitir a ARL SURA", m:"Competencia de la ARL por origen laboral en firme." }],
+    notif:{ a:["M.P.","EPS SURA","ARL SURA"], pend:null, plazo:"decisión sobre el pago desde el día 181", vence:180 },
+    pasoHoy:"se enteró del dictamen el día 302, por M.P.", pasoMod:"notificación con acuse; dictamen y certificados consultables por finalidad." },
+  { n:5, actor:"tra", persona:"M.P. y su cuidadora", unica:"ver quién consultó su evidencia y qué debe llevar", despues:"la Junta Nacional valida el paquete", tipo:"mp" },
+  { n:6, actor:"jn", persona:"Sala de decisión · validación experta", unica:"validar el paquete (no se resuelve la apelación)", despues:"comparar las dos rutas", tipo:"jn" }
+];
+
+const FIN_DIAS_DEF = { oficio:10, reiter:8, fisica:6, devol:30, correo:6 };
+const REGLAS = ["Custodia distribuida","Intercambio por finalidad","Mínimo necesario","Responsabilidad visible","Trazabilidad auditable"];
+const RUPTURAS = [
+  { id:"r1", t:"Historia clínica y laboral incompleta o dispersa" },
+  { id:"r2", t:"Solicitudes manuales, devoluciones y reenvíos" },
+  { id:"r3", t:"Responsabilidades de suministro/consulta ambiguas" },
+  { id:"r4", t:"Notificaciones y términos no trazables" },
+  { id:"r5", t:"Competencias y lenguaje diagnóstico no alineados" }
+];
+const PREGUNTAS = [
+  { id:"q_claridad", t:"Con las reglas TO-BE, ¿qué tan clara queda SU responsabilidad en la ruta?", esc:true },
+  { id:"q_mejora", t:"Frente al Acto 1, ¿cuánto mejora el módulo su función?", esc:true },
+  { id:"q_cubre", t:"¿El contrato TO-BE de su actor cubre lo que su función necesita?", ops:[["si","Sí"],["parcial","Parcial"],["no","No"]] },
+  { id:"q_riesgo", t:"Riesgo dominante desde su rol para adoptar el módulo:", ops:[["privacidad","Privacidad"],["carga","Carga operativa"],["competencia","Competencia jurídica"],["dato","Calidad del dato"],["ninguno","Ninguno"]] },
+  { id:"q_traza", t:"La trazabilidad auditable de sus consultas le genera:", ops:[["confianza","Confianza"],["neutral","Indiferencia"],["carga","Carga o riesgo"]] }
+];
+
+/* ===================== ESTADO ===================== */
+const LS = "medio02_mapa_vivo_v1";
+let S = null;
+function fresh() {
+  return {
+    perfil:"", inicio:false, acto:1,
+    a1:{ turno:1, st:{}, acciones:[], bit:[], dec:{}, done:false },
+    a2:{ turno:1, sub:null, rama:null, regs:[], t:{}, bit:[], notifs:[], dias:150, done:false, iniT:{ 1:150 }, decDia:{}, jn:{ verdict:null, resp:null, nota:"" }, dic:null, mpVisto:false, jnVisto:false, ctrlRegs:{} },
+    sup:Object.assign({}, FIN_DIAS_DEF),
+    val:{ actor:null, verdict:null, coment:"" },
+    rupturas:RUPTURAS.map(r => r.id),
+    gate:{ g1:false, g2:false, g3:false, g4:false },
+    panel:{ tipo:"bienvenida", arg:null },
+    recuperada:false
   };
-  var FIN = {
-    cal: { n:"Calificación de origen en primera oportunidad", plazo:"10 días hábiles" },
-    inv: { n:"Investigación de origen y prestaciones",        plazo:"15 días hábiles" },
-    dic: { n:"Dictamen de primera instancia",                 plazo:"30 días hábiles" },
-    ape: { n:"Resolución de apelación",                       plazo:"30 días hábiles" },
-    pen: { n:"Estudio de prestaciones e invalidez",           plazo:"20 días hábiles" },
-    sup: { n:"Supervisión de tiempos e incidencias",          plazo:"permanente" }
-  };
-  var ROL_FIN = { eps:"cal", arl:"inv", jr:"dic", jn:"ape", afp:"pen", mintrab:"sup" };
-  // Docs permitidos por finalidad (nivel documento)
-  var ACCESO = {
-    cal: ["rc","apt","inc"],
-    inv: ["rc","apt","inc","dic"],
-    dic: ["rc","apt","inc","hl"],
-    ape: ["dic","rc","inc"],
-    pen: ["dic","inc","hl"]
-  };
-  var DOCM = {
-    rc:  { n:"Resumen clínico estructurado",   cust:"IPS Clínica del Norte" },
-    apt: { n:"Matriz de exposición y APT",     cust:"Empleador (SG-SST)" },
-    inc: { n:"Certificados de incapacidad",    cust:"EPS SURA" },
-    hl:  { n:"Historia laboral y semanas",     cust:"AFP · Colpensiones" },
-    dic: { n:"Dictamen de calificación",       cust:"Junta Regional" }
-  };
-  var CUSTODIA = { eps:["inc"], afp:["hl"], jr:["dic"] };
+}
+let playing = false, flash = null, glow = null;
+function load() {
+  try {
+    const raw = localStorage.getItem(LS);
+    if (raw) { const s = JSON.parse(raw); if (s && s.a1 && s.a2) { S = s; S.recuperada = S.inicio; if (S.a2.dic) aplicarDic(S.a2.dic); return; } }
+  } catch (e) { /* sin almacenamiento */ }
+  S = fresh();
+}
+let saveT = null;
+function save() { S.recuperada = false; clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) { /* memoria */ } }, 150); }
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const reduced = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* Campos por documento y caso; fins = finalidades que pueden ver el campo */
-  var DOCDATA = {
-    C1: {
-      rc: [
-        { k:"Diagnóstico principal (CIE-10)", v:"M54.4 · Lumbago con ciática", fins:["cal","inv","dic","ape"] },
-        { k:"Incapacidad continua", v:"Desde 2026-03-30 · 150 días a la fecha", fins:["cal","inv","dic","ape","pen"] },
-        { k:"Restricciones vigentes", v:"Sin cargas > 10 kg · sin bipedestación prolongada", fins:["cal","inv","dic"] },
-        { k:"Concepto de rehabilitación", v:"Favorable con reintegro modificado", fins:["dic","ape","pen"] },
-        { k:"Evolución clínica completa (14 notas)", v:"", fins:[] },
-        { k:"Antecedentes psicosociales y de familia", v:"", fins:[] }
-      ],
-      apt: [
-        { k:"Cargo evaluado", v:"Operaria de producción · línea de empaque", fins:["cal","inv","dic"] },
-        { k:"Exposición documentada", v:"Manipulación manual de cargas 12-18 kg · 7,5 h/turno", fins:["cal","inv","dic"] },
-        { k:"Mediciones higiénicas (2024-2025)", v:"Índice de levantamiento NIOSH 2,1 (alto)", fins:["cal","inv","dic"] },
-        { k:"Nómina y datos salariales del área", v:"", fins:[] }
-      ],
-      inc: [
-        { k:"Certificados emitidos", v:"7 certificados continuos (SIN-2026-0331 a 0812)", fins:["cal","inv","dic","ape","pen"] },
-        { k:"Prórroga vigente", v:"Hasta día 165 · pago al 66,6 % IBC", fins:["cal","inv","pen"] }
-      ],
-      hl: [
-        { k:"Semanas cotizadas", v:"612 semanas · densidad últimos 3 años: 92 %", fins:["dic","pen"] },
-        { k:"IBC promedio 12 meses", v:"$ 1.845.000", fins:["pen"] },
-        { k:"Historial de empleadores", v:"", fins:[] }
-      ],
-      dic: [] // se llena al emitirse
-    },
-    C2: {
-      rc: [
-        { k:"Diagnóstico principal (CIE-10)", v:"F33.1 · Trastorno depresivo recurrente, episodio moderado", fins:["cal","inv","dic","ape"] },
-        { k:"Incapacidad continua", v:"Desde 2026-05-24 · 95 días a la fecha", fins:["cal","inv","dic","ape","pen"] },
-        { k:"Restricciones vigentes", v:"Jornada progresiva · evitar turnos nocturnos", fins:["cal","inv","dic"] },
-        { k:"Concepto de rehabilitación", v:"Favorable · tratamiento en curso", fins:["dic","ape","pen"] },
-        { k:"Notas de psiquiatría (texto completo)", v:"", fins:[] }
-      ],
-      apt: [
-        { k:"Cargo evaluado", v:"Auxiliar administrativo", fins:["cal","inv","dic"] },
-        { k:"Exposición documentada", v:"Sin factores de riesgo psicosocial priorizados (batería 2025: riesgo bajo)", fins:["cal","inv","dic"] },
-        { k:"Nómina y datos salariales del área", v:"", fins:[] }
-      ],
-      inc: [
-        { k:"Certificados emitidos", v:"5 certificados continuos (SIN-2026-0524 a 0818)", fins:["cal","inv","dic","ape","pen"] },
-        { k:"Prórroga vigente", v:"Hasta día 120 · pago al 66,6 % IBC", fins:["cal","inv","pen"] }
-      ],
-      hl: [
-        { k:"Semanas cotizadas", v:"438 semanas · densidad últimos 3 años: 88 %", fins:["dic","pen"] },
-        { k:"IBC promedio 12 meses", v:"$ 2.310.000", fins:["pen"] },
-        { k:"Historial de empleadores", v:"", fins:[] }
-      ],
-      dic: []
-    }
-  };
-
-  var ETAPAS = {
-    cal:      { n:"Calificación de origen",            resp:"eps",  fase:0 },
-    resp_arl: { n:"Término de controversia (ARL)",     resp:"arl",  fase:1 },
-    jr:       { n:"Primera instancia · Junta Regional", resp:"jr",  fase:2 },
-    resp_dic: { n:"Término de apelación",              resp:"arl",  fase:3 },
-    jn:       { n:"Apelación · Junta Nacional",        resp:"jn",   fase:3 },
-    firme:    { n:"Decisión en firme · prestaciones",  resp:null,   fase:4 },
-    cerrado:  { n:"Caso cerrado",                      resp:null,   fase:4 }
-  };
-  var FASES = ["Calificación", "Controversia", "Primera instancia", "Apelación", "Cierre"];
-
-  /* ================== Estado ================== */
-  var LS_KEY = "micl_medio_v1";
-  function casoBase(id, corto, datos) {
-    return {
-      id: id, corto: corto,
-      trabajador: datos.trabajador, cargo: datos.cargo, empresa: datos.empresa, dx: datos.dx,
-      dia: datos.dia, etapa: "cal", etapaDia: datos.dia,
-      origen: null, pcl: null, firmeVia: null,
-      reg: 0, consultado: {}, hitos: [], logs: [], notifs: []
-    };
-  }
-  var state = null;
-  function freshState() {
-    var s = {
-      rol: null, vista: "bandeja", caso: null,
-      casos: {
-        C1: casoBase("CASO-2026-0417", "C1", { trabajador:"M.P. (41 años)", cargo:"Operaria de producción", empresa:"Alimentos Andinos S.A.S.", dx:"Lumbago con ciática (M54.4)", dia:150 }),
-        C2: casoBase("CASO-2026-0533", "C2", { trabajador:"J.R. (36 años)", cargo:"Auxiliar administrativo", empresa:"Logística Sabana S.A.", dx:"Trastorno depresivo (F33.1)", dia:95 })
-      },
-      leidas: {}
-    };
-    hito(s.casos.C1, "hito", "Caso radicado en el módulo por vencimiento de día 120 sin definición de origen.");
-    hito(s.casos.C2, "hito", "Caso radicado en el módulo para calificación de origen en primera oportunidad.");
-    notificar(s.casos.C1, ["eps"], "Nuevo caso asignado: pendiente calificación de origen (término: 10 días).");
-    notificar(s.casos.C2, ["eps"], "Nuevo caso asignado: pendiente calificación de origen (término: 10 días).");
-    return s;
-  }
-  function hito(caso, tipo, txt) { caso.hitos.push({ dia: caso.dia, tipo: tipo, txt: txt }); }
-  function log(caso, rol, accion, docId, finId, resultado, detalle) {
-    caso.reg++;
-    var id = "REG-" + caso.corto + "-" + (caso.reg < 10 ? "00" : caso.reg < 100 ? "0" : "") + caso.reg;
-    caso.logs.push({ id: id, dia: caso.dia, rol: rol, accion: accion, doc: docId || null, fin: finId || null, resultado: resultado, detalle: detalle || "" });
-    return id;
-  }
-  function notificar(caso, roles, txt) {
-    caso.notifs.push({ dia: caso.dia, para: roles.concat(["tra"]).filter(function (v, i, a) { return a.indexOf(v) === i; }), txt: txt, leidaPor: {} });
-  }
-
-  function rebuildDic() {
-    ["C1","C2"].forEach(function (cid) {
-      var c = state.casos[cid];
-      if (c && c.pcl) {
-        DOCDATA[cid].dic = [
-          { k:"Decisión", v:(c.origen === "laboral" ? "Origen laboral" : "Origen común") + " · PCL " + c.pcl, fins:["ape","pen","inv"] },
-          { k:"Fecha de estructuración", v:"2026-03-30", fins:["ape","pen"] },
-          { k:"Motivación íntegra", v:"Nexo causal valorado sobre evidencia consultada por finalidad (ver trazabilidad).", fins:["ape"] },
-          { k:"Salvamentos de voto", v:"", fins:[] }
-        ];
-      }
-    });
-  }
-  function loadState() {
-    try {
-      var raw = localStorage.getItem(LS_KEY);
-      if (raw) { var s = JSON.parse(raw); if (s && s.casos && s.casos.C1) { state = s; rebuildDic(); return; } }
-    } catch (e) { /* sin almacenamiento */ }
-    state = freshState();
-  }
-  var saveT = null;
-  function save() {
-    clearTimeout(saveT);
-    saveT = setTimeout(function () {
-      try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { /* sin persistencia */ }
-    }, 150);
-  }
-  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
-
-  /* ================== Motor ================== */
-  function miFin() { return ROL_FIN[state.rol] || null; }
-  function consultado(caso, rol, docId) { return caso.consultado[rol] && caso.consultado[rol][docId]; }
-
-  function consultar(casoId, docId) {
-    var caso = state.casos[casoId], rol = state.rol, f = miFin();
-    var permitido = f && (ACCESO[f] || []).indexOf(docId) >= 0;
-    var propio = (CUSTODIA[rol] || []).indexOf(docId) >= 0;
-    if (docId === "dic" && !state.casos[casoId].pcl) {
-      abrirModal(`<h3>Documento no disponible</h3><p class="sub">El dictamen aún no ha sido emitido por la Junta Regional.</p>
-        <div class="modal-actions"><button type="button" class="btn" data-close>Entendido</button></div>`);
-      return;
-    }
-    if (!permitido && !propio) {
-      log(caso, rol, "consulta", docId, f, "denegado", "No pertinente para la finalidad declarada (regla 3 · mínimo necesario)");
-      save();
-      abrirModal(`<h3>Acceso denegado</h3>
-        <p class="sub">${esc(DOCM[docId].n)} · custodio: ${esc(DOCM[docId].cust)}</p>
-        <div class="contractline" style="background:var(--red-soft);border-color:var(--red)">
-          <b>Regla 3 · mínimo necesario:</b> este documento no es pertinente para su finalidad declarada
-          (&laquo;${esc(FIN[f].n)}&raquo;). El intento quedó registrado en la trazabilidad del caso y es visible para el trabajador y la supervisión.
-        </div>
-        <div class="modal-actions"><button type="button" class="btn" data-close>Entendido</button></div>`);
-      renderAll();
-      return;
-    }
-    if (!caso.consultado[rol]) caso.consultado[rol] = {};
-    var primera = !caso.consultado[rol][docId];
-    caso.consultado[rol][docId] = true;
-    var regId = log(caso, rol, "consulta", docId, propio ? null : f, "ok", primera ? "Vista mínima entregada" : "Reconsulta de vista mínima");
-    save();
-    abrirVisor(casoId, docId, regId, propio);
-    renderAll();
-  }
-
-  function abrirVisor(casoId, docId, regId, propio) {
-    var caso = state.casos[casoId], f = miFin();
-    var campos = DOCDATA[casoId][docId] || [];
-    var filas = campos.map(function (c) {
-      var visible = propio || (c.fins || []).indexOf(f) >= 0;
-      if (visible) {
-        return `<div class="fieldrow"><div class="fk">${esc(c.k)}</div><div class="fv">${esc(c.v)}</div></div>`;
-      }
-      return `<div class="fieldrow redacted"><div class="fk">${esc(c.k)}</div><div class="fv"><span class="bar">&#128274; retenido en origen &middot; regla 3</span></div></div>`;
-    }).join("");
-    var visibles = campos.filter(function (c) { return propio || (c.fins || []).indexOf(f) >= 0; }).length;
-    abrirModal(`<h3>${esc(DOCM[docId].n)}</h3>
-      <p class="sub">${esc(caso.id)} · custodio: ${esc(DOCM[docId].cust)} · el documento permanece en su repositorio de origen</p>
-      <div class="contractline"><b>Contrato de acceso ${esc(regId)}:</b> ${propio ? "consulta sobre documento bajo su custodia" : "finalidad &laquo;" + esc(FIN[f].n) + "&raquo; · plazo de uso: " + esc(FIN[f].plazo)} · acuse automático registrado · vista mínima: ${visibles} de ${campos.length} campos.</div>
-      ${filas || '<p class="emptymsg">Documento sin campos registrados.</p>'}
-      <div class="modal-actions"><button type="button" class="btn" data-close>Cerrar</button></div>`);
-  }
-
-  /* ---------- Decisiones ---------- */
-  function reqConsultas(caso, rol, docs) {
-    return docs.map(function (d) {
-      var propio = (CUSTODIA[rol] || []).indexOf(d) >= 0;
-      return { doc: d, ok: propio || !!consultado(caso, rol, d), propio: propio };
-    });
-  }
-  function todasOk(reqs) { return reqs.every(function (r) { return r.ok; }); }
-
-  var DECISIONES = {
-    d_cal: {
-      rol:"eps", etapas:["cal"], label:"Emitir calificación de origen", req:["rc","apt","inc"],
-      abrir: function (caso) {
-        var sugerido = caso.corto === "C1" ? "laboral" : "comun";
-        abrirModal(`<h3>Emitir calificación de origen</h3>
-          <p class="sub">${esc(caso.id)} · ${esc(caso.trabajador)} · con base en la evidencia consultada por finalidad</p>
-          <label class="radioopt ${sugerido === "laboral" ? "sel" : ""}"><input type="radio" name="origen" value="laboral" ${sugerido === "laboral" ? "checked" : ""}>
-            <span><b>Origen laboral</b><br><small>La exposición documentada (APT) es compatible con el diagnóstico.</small></span></label>
-          <label class="radioopt ${sugerido === "comun" ? "sel" : ""}"><input type="radio" name="origen" value="comun" ${sugerido === "comun" ? "checked" : ""}>
-            <span><b>Origen común</b><br><small>No se evidencia relación de causalidad con la exposición ocupacional.</small></span></label>
-          <div><div style="font-size:12px;color:var(--ink-soft);margin:6px 0 4px">Motivación (obligatoria, queda en el registro)</div>
-          <textarea id="mot">${caso.corto === "C1"
-            ? "Índice de levantamiento NIOSH 2,1 y exposición a cargas 12-18 kg/turno compatibles con M54.4; concepto de medicina laboral favorable a origen laboral."
-            : "Batería de riesgo psicosocial con riesgo bajo y ausencia de factores ocupacionales priorizados; el cuadro F33.1 se califica de origen común."}</textarea></div>
-          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
-          <button type="button" class="btn" data-decidir="d_cal">Firmar y notificar</button></div>`, caso.corto);
-      },
-      ejecutar: function (caso, datos) {
-        caso.dia += 3; caso.origen = datos.origen;
-        caso.etapa = "resp_arl"; caso.etapaDia = caso.dia;
-        var lbl = datos.origen === "laboral" ? "ORIGEN LABORAL" : "ORIGEN COMÚN";
-        log(caso, "eps", "decisión", null, "cal", "ok", "Calificación emitida: " + lbl);
-        hito(caso, "hito", "EPS emitió calificación de origen: " + lbl + ". Motivación registrada y notificada.");
-        notificar(caso, ["arl","afp"], "EPS calificó el caso como " + lbl + ". Término de controversia para ARL: 10 días con acuse automático.");
-      }
-    },
-    d_resp_arl: {
-      rol:"arl", etapas:["resp_arl"], label:"Responder a la calificación", req:["rc","apt"],
-      abrir: function (caso) {
-        abrirModal(`<h3>Responder a la calificación de la EPS</h3>
-          <p class="sub">${esc(caso.id)} · calificación vigente: ${caso.origen === "laboral" ? "origen laboral" : "origen común"}</p>
-          <label class="radioopt"><input type="radio" name="resp" value="aceptar" ${caso.corto === "C2" ? "checked" : ""}>
-            <span><b>Aceptar la calificación</b><br><small>La evidencia consultada respalda la decisión de la EPS; el caso queda en firme.</small></span></label>
-          <label class="radioopt"><input type="radio" name="resp" value="controvertir" ${caso.corto === "C1" ? "checked" : ""}>
-            <span><b>Controvertir ante la Junta Regional</b><br><small>Existen discrepancias sobre la causalidad; se remite el expediente trazable a primera instancia.</small></span></label>
-          <div><div style="font-size:12px;color:var(--ink-soft);margin:6px 0 4px">Motivación</div>
-          <textarea id="mot">${caso.corto === "C1"
-            ? "La ARL considera que la magnitud de exposición no explica la severidad del cuadro; se solicita dictamen de primera instancia."
-            : "La evidencia consultada por finalidad respalda la calificación de origen común; no hay mérito para controversia."}</textarea></div>
-          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
-          <button type="button" class="btn" data-decidir="d_resp_arl">Firmar y notificar</button></div>`);
-      },
-      ejecutar: function (caso, datos) {
-        caso.dia += 5;
-        if (datos.resp === "controvertir") {
-          caso.etapa = "jr"; caso.etapaDia = caso.dia;
-          log(caso, "arl", "decisión", null, "inv", "ok", "Controversia radicada ante Junta Regional");
-          hito(caso, "hito", "ARL controvirtió la calificación. Expediente remitido íntegro y trazable a la Junta Regional.");
-          notificar(caso, ["eps","jr"], "ARL controvirtió la calificación. La Junta Regional recibe el expediente con checklist completo.");
-        } else {
-          caso.etapa = "firme"; caso.etapaDia = caso.dia;
-          caso.firmeVia = caso.origen;
-          log(caso, "arl", "decisión", null, "inv", "ok", "Calificación aceptada; queda en firme");
-          hito(caso, "hito", "ARL aceptó la calificación de la EPS. La decisión de origen queda en firme sin controversia.");
-          notificar(caso, ["eps","afp"], "ARL aceptó la calificación (" + (caso.origen === "laboral" ? "laboral" : "común") + "). Continúa la etapa de prestaciones.");
-        }
-      }
-    },
-    d_dic: {
-      rol:"jr", etapas:["jr"], label:"Emitir dictamen de primera instancia", req:["rc","apt","inc","hl"],
-      abrir: function (caso) {
-        abrirModal(`<h3>Emitir dictamen de primera instancia</h3>
-          <p class="sub">${esc(caso.id)} · checklist de expediente verificado por el módulo</p>
-          <label class="radioopt sel"><input type="radio" name="dic" value="lab38" checked>
-            <span><b>Origen laboral · PCL 38,5 %</b><br><small>Causalidad acreditada por exposición; pérdida de capacidad laboral parcial.</small></span></label>
-          <label class="radioopt"><input type="radio" name="dic" value="com12">
-            <span><b>Origen común · PCL 12,0 %</b><br><small>Sin nexo causal ocupacional acreditado.</small></span></label>
-          <div><div style="font-size:12px;color:var(--ink-soft);margin:6px 0 4px">Motivación del ponente</div>
-          <textarea id="mot">Valorados el resumen clínico, la matriz de exposición, las incapacidades y la historia laboral consultados por finalidad, la sala acoge el nexo causal ocupacional y fija la PCL con la tabla vigente.</textarea></div>
-          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
-          <button type="button" class="btn" data-decidir="d_dic">Firmar dictamen</button></div>`);
-      },
-      ejecutar: function (caso, datos) {
-        caso.dia += 8;
-        var lab = datos.dic !== "com12";
-        caso.origen = lab ? "laboral" : "comun";
-        caso.pcl = lab ? "38,5 %" : "12,0 %";
-        DOCDATA[caso.corto].dic = [
-          { k:"Decisión", v:(lab ? "Origen laboral" : "Origen común") + " · PCL " + caso.pcl, fins:["ape","pen","inv"] },
-          { k:"Fecha de estructuración", v:"2026-03-30", fins:["ape","pen"] },
-          { k:"Motivación íntegra", v:"Nexo causal valorado sobre evidencia consultada por finalidad (ver trazabilidad).", fins:["ape"] },
-          { k:"Salvamentos de voto", v:"", fins:[] }
-        ];
-        caso.etapa = "resp_dic"; caso.etapaDia = caso.dia;
-        log(caso, "jr", "decisión", "dic", "dic", "ok", "Dictamen: " + (lab ? "laboral" : "común") + " · PCL " + caso.pcl);
-        hito(caso, "hito", "Junta Regional emitió dictamen: " + (lab ? "origen laboral" : "origen común") + " · PCL " + caso.pcl + ". Notificación con acuse a todas las partes.");
-        notificar(caso, ["eps","arl","afp"], "Dictamen de primera instancia: " + (lab ? "origen laboral" : "origen común") + " · PCL " + caso.pcl + ". Término de apelación: 10 días.");
-      }
-    },
-    d_resp_dic: {
-      rol:"arl", etapas:["resp_dic"], label:"Responder al dictamen", req:["dic"],
-      abrir: function (caso) {
-        abrirModal(`<h3>Responder al dictamen de primera instancia</h3>
-          <p class="sub">${esc(caso.id)} · dictamen: ${caso.origen === "laboral" ? "origen laboral" : "origen común"} · PCL ${esc(caso.pcl || "")}</p>
-          <label class="radioopt sel"><input type="radio" name="resp" value="apelar" checked>
-            <span><b>Apelar ante la Junta Nacional</b><br><small>El paquete de apelación viaja íntegro con la motivación y la trazabilidad.</small></span></label>
-          <label class="radioopt"><input type="radio" name="resp" value="aceptar">
-            <span><b>Aceptar el dictamen</b><br><small>La decisión queda en firme y pasa a prestaciones.</small></span></label>
-          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
-          <button type="button" class="btn" data-decidir="d_resp_dic">Firmar y notificar</button></div>`);
-      },
-      ejecutar: function (caso, datos) {
-        caso.dia += 4;
-        if (datos.resp === "apelar") {
-          caso.etapa = "jn"; caso.etapaDia = caso.dia;
-          log(caso, "arl", "decisión", null, "inv", "ok", "Apelación radicada ante Junta Nacional");
-          hito(caso, "hito", "ARL apeló el dictamen. Paquete de apelación íntegro remitido a la Junta Nacional.");
-          notificar(caso, ["jn","eps","afp"], "ARL apeló el dictamen. La Junta Nacional recibe el paquete íntegro y motivado.");
-        } else {
-          caso.etapa = "firme"; caso.etapaDia = caso.dia; caso.firmeVia = caso.origen;
-          log(caso, "arl", "decisión", null, "inv", "ok", "Dictamen aceptado; en firme");
-          hito(caso, "hito", "ARL aceptó el dictamen; la decisión queda en firme.");
-          notificar(caso, ["eps","afp"], "El dictamen quedó en firme. Continúa la etapa de prestaciones.");
-        }
-      }
-    },
-    d_ape: {
-      rol:"jn", etapas:["jn"], label:"Resolver la apelación", req:["dic","rc"],
-      abrir: function (caso) {
-        abrirModal(`<h3>Resolver la apelación</h3>
-          <p class="sub">${esc(caso.id)} · dictamen apelado: ${caso.origen === "laboral" ? "origen laboral" : "origen común"} · PCL ${esc(caso.pcl || "")}</p>
-          <label class="radioopt sel"><input type="radio" name="ape" value="confirmar" checked>
-            <span><b>Confirmar el dictamen</b><br><small>La motivación de primera instancia se ajusta a la evidencia trazable.</small></span></label>
-          <label class="radioopt"><input type="radio" name="ape" value="modificar">
-            <span><b>Modificar: origen común · PCL 12,0 %</b><br><small>La sala se aparta del nexo causal acreditado.</small></span></label>
-          <div><div style="font-size:12px;color:var(--ink-soft);margin:6px 0 4px">Motivación de la sala</div>
-          <textarea id="mot">La sala revisó el paquete íntegro de apelación (dictamen, resumen clínico y trazabilidad de accesos) y resuelve con motivación completa.</textarea></div>
-          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
-          <button type="button" class="btn" data-decidir="d_ape">Firmar resolución</button></div>`);
-      },
-      ejecutar: function (caso, datos) {
-        caso.dia += 10;
-        if (datos.ape === "modificar") { caso.origen = "comun"; caso.pcl = "12,0 %"; }
-        caso.etapa = "firme"; caso.etapaDia = caso.dia; caso.firmeVia = caso.origen;
-        log(caso, "jn", "decisión", "dic", "ape", "ok", (datos.ape === "modificar" ? "Dictamen modificado" : "Dictamen confirmado") + " · en firme");
-        hito(caso, "hito", "Junta Nacional " + (datos.ape === "modificar" ? "modificó" : "confirmó") + " el dictamen (" + (caso.origen === "laboral" ? "laboral" : "común") + " · PCL " + caso.pcl + "). Decisión en firme.");
-        notificar(caso, ["eps","arl","afp"], "La Junta Nacional dejó el dictamen en firme: " + (caso.origen === "laboral" ? "origen laboral" : "origen común") + " · PCL " + caso.pcl + ".");
-      }
-    },
-    d_prest_arl: {
-      rol:"arl", etapas:["firme"], soloSi: function (caso) { return caso.firmeVia === "laboral"; },
-      label:"Reconocer prestaciones económicas", req:["dic"],
-      abrir: function (caso) {
-        abrirModal(`<h3>Reconocer prestaciones económicas</h3>
-          <p class="sub">${esc(caso.id)} · origen laboral en firme · PCL ${esc(caso.pcl || "")}</p>
-          <div class="contractline">Liquidación sugerida por el módulo: indemnización por incapacidad permanente parcial (PCL entre 5 % y 50 %) + subsidio pendiente desde el día 121, con trazabilidad de pagos.</div>
-          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
-          <button type="button" class="btn" data-decidir="d_prest_arl">Reconocer y notificar</button></div>`);
-      },
-      ejecutar: function (caso) {
-        caso.dia += 6;
-        caso.etapa = "cerrado"; caso.etapaDia = caso.dia;
-        log(caso, "arl", "decisión", null, "inv", "ok", "Prestaciones reconocidas y programadas");
-        hito(caso, "hito", "ARL reconoció indemnización y regularizó subsidios. Caso cerrado con expediente auditable completo.");
-        notificar(caso, ["eps","afp"], "ARL reconoció las prestaciones. El caso queda cerrado; el expediente auditable permanece disponible.");
-      }
-    },
-    d_pen_afp: {
-      rol:"afp", etapas:["firme"], soloSi: function (caso) { return caso.firmeVia === "comun"; },
-      label:"Decidir continuidad de la prestación", req:["inc"],
-      abrir: function (caso) {
-        abrirModal(`<h3>Decidir continuidad de la prestación</h3>
-          <p class="sub">${esc(caso.id)} · origen común en firme · concepto de rehabilitación favorable</p>
-          <label class="radioopt sel"><input type="radio" name="pen" value="subsidio" checked>
-            <span><b>Asumir subsidio desde el día 181 con concepto favorable</b><br><small>Continuidad del ingreso mientras avanza la rehabilitación (sin ruptura de pagos).</small></span></label>
-          <label class="radioopt"><input type="radio" name="pen" value="junta">
-            <span><b>Remitir a calificación de PCL</b><br><small>Solo si el concepto fuera desfavorable; inicia trámite pensional.</small></span></label>
-          <div class="modal-actions"><button type="button" class="btn-sec btn" data-close>Cancelar</button>
-          <button type="button" class="btn" data-decidir="d_pen_afp">Firmar y notificar</button></div>`);
-      },
-      ejecutar: function (caso, datos) {
-        caso.dia += 6;
-        caso.etapa = "cerrado"; caso.etapaDia = caso.dia;
-        var sub = datos.pen !== "junta";
-        log(caso, "afp", "decisión", null, "pen", "ok", sub ? "Subsidio asumido desde día 181 (concepto favorable)" : "Remitido a calificación de PCL");
-        hito(caso, "hito", "AFP " + (sub ? "asumió el subsidio de incapacidad desde el día 181, sin ruptura de ingresos." : "remitió el caso a calificación de pérdida de capacidad laboral.") + " Caso cerrado en el módulo.");
-        notificar(caso, ["eps","arl"], "AFP decidió la continuidad de la prestación. El caso queda cerrado con trazabilidad completa.");
-      }
-    }
-  };
-
-  function decisionesDe(caso, rol) {
-    return Object.keys(DECISIONES).map(function (k) {
-      var d = DECISIONES[k];
-      if (d.rol !== rol) return null;
-      if (d.etapas.indexOf(caso.etapa) < 0) return null;
-      if (d.soloSi && !d.soloSi(caso)) return null;
-      return { id: k, d: d, reqs: reqConsultas(caso, rol, d.req) };
-    }).filter(Boolean);
-  }
-
-  /* ================== Modal ================== */
-  var modal = document.getElementById("modal"), modalcard = document.getElementById("modalcard");
-  var modalCaso = null;
-  function abrirModal(html, casoCorto) {
-    modalCaso = casoCorto || (state.caso || null);
-    modalcard.innerHTML = html;
-    modal.classList.add("open");
-    modalcard.querySelectorAll("[data-close]").forEach(function (b) { b.addEventListener("click", cerrarModal); });
-    modalcard.querySelectorAll(".radioopt input").forEach(function (r) {
-      r.addEventListener("change", function () {
-        modalcard.querySelectorAll(".radioopt").forEach(function (o) { o.classList.toggle("sel", o.querySelector("input").checked); });
-      });
-    });
-    modalcard.querySelectorAll("[data-decidir]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        var key = b.getAttribute("data-decidir");
-        var caso = state.casos[state.caso];
-        var datos = {};
-        modalcard.querySelectorAll("input[type=radio]:checked").forEach(function (r) { datos[r.name] = r.value; });
-        var mot = modalcard.querySelector("#mot");
-        if (mot && !mot.value.trim()) { mot.focus(); return; }
-        DECISIONES[key].ejecutar(caso, datos);
-        cerrarModal(); save(); renderAll();
-        flash("Decisión registrada y notificada con acuse.");
-      });
-    });
-  }
-  function cerrarModal() { modal.classList.remove("open"); modalcard.innerHTML = ""; }
-  modal.addEventListener("click", function (ev) { if (ev.target === modal) cerrarModal(); });
-
-  function flash(txt) {
-    var el = document.getElementById("flash");
-    el.textContent = txt;
-    clearTimeout(flash._t);
-    flash._t = setTimeout(function () { el.textContent = ""; }, 3500);
-  }
-
-  /* ================== Vistas ================== */
-  function chipEtapa(caso) {
-    if (caso.etapa === "cerrado") return '<span class="chip ch-ok">Cerrado · día ' + caso.dia + "</span>";
-    return '<span class="chip ch-etapa">' + esc(ETAPAS[caso.etapa].n) + "</span>";
-  }
-  function requiereAccion(caso, rol) {
-    if (rol === "tra" || rol === "mintrab") return false;
-    return decisionesDe(caso, rol).length > 0;
-  }
-
-  function vBandeja() {
-    var rol = state.rol;
-    var rows = ["C1","C2"].map(function (cid) {
-      var c = state.casos[cid];
-      var acc = requiereAccion(c, rol);
-      return `<tr class="rowbtn" data-caso="${cid}">
-        <td class="mono">${esc(c.id)}</td>
-        <td>${esc(c.trabajador)}<br><small style="color:var(--ink-faint)">${esc(c.dx)}</small></td>
-        <td>${esc(c.empresa)}</td>
-        <td>${chipEtapa(c)}</td>
-        <td class="num">${c.dia}</td>
-        <td>${acc ? '<span class="chip ch-accion">Requiere su acción</span>' : '<span class="chip ch-mute">En seguimiento</span>'}</td>
-      </tr>`;
-    }).join("");
-    return `<div class="card"><div class="card-pad" style="padding-bottom:6px"><h2>Bandeja de casos</h2></div>
-      <div class="twrap"><table>
-        <thead><tr><th>Caso</th><th>Trabajador</th><th>Empresa</th><th>Etapa</th><th>Día incap.</th><th>Estado para usted</th></tr></thead>
-        <tbody>${rows}</tbody></table></div></div>`;
-  }
-
-  function stepper(caso) {
-    var fase = ETAPAS[caso.etapa].fase;
-    var cerrado = caso.etapa === "cerrado";
-    return '<div class="stepper">' + FASES.map(function (f, i) {
-      var cls = cerrado || i < fase ? "done" : (i === fase ? "now" : "");
-      return `<div class="step ${cls}"><div class="bar"></div><div class="sl">${f}</div></div>`;
-    }).join("") + "</div>";
-  }
-
-  function vCaso() {
-    var caso = state.casos[state.caso], rol = state.rol, f = miFin();
-    if (!caso) return vBandeja();
-    var decs = decisionesDe(caso, rol);
-
-    // Documentos: permitidos + propios + bloqueados
-    var permitidos = f ? (ACCESO[f] || []) : [];
-    var propios = CUSTODIA[rol] || [];
-    var docsHtml = Object.keys(DOCM).map(function (d) {
-      var propio = propios.indexOf(d) >= 0;
-      var permitido = permitidos.indexOf(d) >= 0;
-      var visto = consultado(caso, rol, d);
-      var estado = visto ? '<span class="chip ch-ok">consultado</span>' :
-        (permitido || propio) ? '<span class="chip ch-mute">disponible</span>' : '<span class="chip ch-den">&#128274; fuera de finalidad</span>';
-      var sub = DOCM[d].cust + (propio ? " · bajo su custodia" : "");
-      if (d === "dic" && !caso.pcl) { estado = '<span class="chip ch-mute">no emitido</span>'; }
-      return `<div class="docitem"><div class="di"><div class="dn">${esc(DOCM[d].n)}</div><div class="dc">${esc(sub)}</div></div>
-        ${estado}
-        <button type="button" class="btn btn-sec btn-sm" data-consultar="${d}">Abrir</button></div>`;
-    }).join("");
-
-    var accionesHtml = decs.length ? decs.map(function (x) {
-      var reqs = x.reqs.map(function (r) {
-        return `<div class="req ${r.ok ? "ok" : ""}"><span class="tick">${r.ok ? "✓" : "•"}</span>${esc(DOCM[r.doc].n)}${r.propio ? " (propio)" : ""}</div>`;
-      }).join("");
-      var listo = todasOk(x.reqs);
-      return `<div style="margin-bottom:14px"><div class="chip ch-accion" style="margin-bottom:8px">Pendiente de ${esc(ENT[rol].n)}</div>
-        <div style="font-weight:700;font-size:15px;margin-bottom:6px">${esc(x.d.label)}</div>
-        ${reqs}
-        <button type="button" class="btn" style="margin-top:8px" data-abrir-dec="${x.id}" ${listo ? "" : "disabled"}>${listo ? x.d.label : "Complete las consultas requeridas"}</button></div>`;
-    }).join("") : `<p class="emptymsg">${caso.etapa === "cerrado" ? "El caso está cerrado; el expediente auditable sigue disponible." :
-        "No hay decisiones pendientes de su entidad en esta etapa. Responsable actual: " + (ETAPAS[caso.etapa].resp ? esc(ENT[ETAPAS[caso.etapa].resp].n) : "—") + "."}</p>`;
-
-    var hitosHtml = caso.hitos.slice().reverse().map(function (h) {
-      return `<li class="${h.tipo}"><div class="td">día ${h.dia}</div><div class="tt">${esc(h.txt)}</div></li>`;
-    }).join("");
-
-    return `<div class="stack">
-      <div class="card card-pad">
-        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between">
-          <div><h2 style="font-size:18px">${esc(caso.trabajador)} · ${esc(caso.dx)}</h2>
-          <div style="font-size:12.5px;color:var(--ink-soft)">${esc(caso.cargo)} · ${esc(caso.empresa)} · día ${caso.dia} de incapacidad</div></div>
-          ${chipEtapa(caso)}
-        </div>
-        ${stepper(caso)}
-      </div>
-      <div class="grid2">
-        <div class="stack">
-          <div class="card card-pad"><h2>Evidencia federada</h2>
-            <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 10px">Su finalidad: <b>${f ? esc(FIN[f].n) : "—"}</b>. Cada apertura entrega la vista mínima y deja registro con acuse.</p>
-            ${docsHtml}</div>
-          <div class="card card-pad"><h2>Línea de tiempo del caso</h2><ul class="tl">${hitosHtml}</ul></div>
-        </div>
-        <div class="stack">
-          <div class="card card-pad"><h2>Acciones de su entidad</h2>${accionesHtml}</div>
-          <div class="card card-pad"><h2>Trazabilidad del caso</h2>${tablaLogs(caso, 8)}
-            <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" data-nav="trazabilidad">Ver registro completo</button></div>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  function tablaLogs(caso, limite, soloRol) {
-    var logs = caso.logs.slice();
-    if (soloRol) logs = logs.filter(function (l) { return l.rol === state.rol; });
-    logs.reverse();
-    if (limite) logs = logs.slice(0, limite);
-    if (!logs.length) return '<p class="emptymsg">Sin registros todavía.</p>';
-    var rows = logs.map(function (l) {
-      return `<tr class="${l.rol === state.rol ? "mine" : ""}">
-        <td class="mono">${esc(l.id)}</td><td class="num">${l.dia}</td>
-        <td>${esc(ENT[l.rol] ? ENT[l.rol].n : l.rol)}</td>
-        <td>${esc(l.accion)}${l.doc ? " · " + esc(DOCM[l.doc].n) : ""}</td>
-        <td>${l.fin ? esc(FIN[l.fin].n) : "—"}</td>
-        <td>${l.resultado === "ok" ? '<span class="chip ch-ok">ok · acuse</span>' : '<span class="chip ch-den">denegado</span>'}</td>
-      </tr>`;
-    }).join("");
-    return `<div class="twrap"><table><thead><tr><th>Registro</th><th>Día</th><th>Entidad</th><th>Acción</th><th>Finalidad</th><th>Resultado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-  }
-
-  function vTrazabilidad() {
-    var html = "";
-    ["C1","C2"].forEach(function (cid) {
-      var c = state.casos[cid];
-      html += `<div class="card card-pad" style="margin-bottom:16px"><h2>${esc(c.id)} · ${esc(c.trabajador)}</h2>${tablaLogs(c)}</div>`;
-    });
-    return html + '<p style="font-size:12px;color:var(--ink-faint)">Sus accesos aparecen resaltados. Regla 5: toda consulta, decisión y denegación deja registro verificable visible para las partes, el trabajador y la supervisión.</p>';
-  }
-
-  function vPortal() {
-    var caso = state.casos[state.caso || "C1"];
-    var consultas = caso.logs.filter(function (l) { return l.accion === "consulta"; });
-    var okC = consultas.filter(function (l) { return l.resultado === "ok"; });
-    var den = consultas.length - okC.length;
-    var notifs = caso.notifs.slice().reverse().slice(0, 8).map(function (n) {
-      return `<li class="hito"><div class="td">día ${n.dia}</div><div class="tt">${esc(n.txt)}</div></li>`;
-    }).join("");
-    var accesos = okC.slice().reverse().slice(0, 10).map(function (l) {
-      return `<tr><td class="num">${l.dia}</td><td>${esc(ENT[l.rol].n)}</td><td>${esc(DOCM[l.doc].n)}</td><td>${l.fin ? esc(FIN[l.fin].n) : "documento propio"}</td></tr>`;
-    }).join("");
-    return `<div class="stack">
-      <div class="card card-pad">
-        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between">
-          <div><h2 style="font-size:18px">Mi caso · ${esc(caso.id)}</h2>
-          <div style="font-size:12.5px;color:var(--ink-soft)">${esc(caso.dx)} · día ${caso.dia} de incapacidad</div></div>
-          ${chipEtapa(caso)}</div>
-        ${stepper(caso)}
-        <div class="kpis" style="margin-top:10px">
-          <div class="kpi goodv"><b>0</b><span>documentos que usted ha tenido que llevar</span></div>
-          <div class="kpi"><b>${okC.length}</b><span>consultas sobre su evidencia, todas con finalidad</span></div>
-          <div class="kpi ${den ? "warn" : ""}"><b>${den}</b><span>intentos denegados por m&iacute;nimo necesario</span></div>
-          <div class="kpi"><b>${caso.logs.filter(function (l) { return l.accion === "decisión"; }).length}</b><span>decisiones motivadas y notificadas</span></div>
-        </div>
-      </div>
-      <div class="grid2">
-        <div class="card card-pad"><h2>&iquest;Qui&eacute;n ha consultado mi evidencia?</h2>
-          ${okC.length ? '<div class="twrap"><table><thead><tr><th>D&iacute;a</th><th>Entidad</th><th>Documento</th><th>Finalidad declarada</th></tr></thead><tbody>' + accesos + "</tbody></table></div>" : '<p class="emptymsg">A&uacute;n nadie ha consultado su evidencia. Cuando las entidades act&uacute;en, cada acceso aparecer&aacute; aqu&iacute; autom&aacute;ticamente.</p>'}
-        </div>
-        <div class="card card-pad"><h2>Notificaciones de mi caso</h2>
-          ${notifs ? '<ul class="tl">' + notifs + "</ul>" : '<p class="emptymsg">Sin notificaciones todav&iacute;a.</p>'}</div>
-      </div>
-    </div>`;
-  }
-
-  function vSupervision() {
-    var totalC = 0, totalD = 0, totalDec = 0;
-    var rows = ["C1","C2"].map(function (cid) {
-      var c = state.casos[cid];
-      var cons = c.logs.filter(function (l) { return l.accion === "consulta" && l.resultado === "ok"; }).length;
-      var den = c.logs.filter(function (l) { return l.resultado === "denegado"; }).length;
-      var dec = c.logs.filter(function (l) { return l.accion === "decisión"; }).length;
-      totalC += cons; totalD += den; totalDec += dec;
-      var enEtapa = c.dia - c.etapaDia;
-      var alerta = c.etapa !== "cerrado" && enEtapa > 15;
-      return `<tr>
-        <td class="mono">${esc(c.id)}</td><td>${chipEtapa(c)}</td>
-        <td>${ETAPAS[c.etapa].resp ? esc(ENT[ETAPAS[c.etapa].resp].n) : "—"}</td>
-        <td class="num">${enEtapa}</td>
-        <td class="num">${cons}</td><td class="num">${den}</td><td class="num">${dec}</td>
-        <td>${alerta ? '<span class="chip ch-alert">SLA vencido</span>' : '<span class="chip ch-ok">en t&eacute;rmino</span>'}</td>
-      </tr>`;
-    }).join("");
-    return `<div class="stack">
-      <div class="card card-pad"><h2>Panel de supervisi&oacute;n</h2>
-        <div class="kpis">
-          <div class="kpi"><b>2</b><span>casos activos en la ruta</span></div>
-          <div class="kpi"><b>${totalC}</b><span>consultas con finalidad y acuse</span></div>
-          <div class="kpi ${totalD ? "warn" : ""}"><b>${totalD}</b><span>denegaciones (regla 3)</span></div>
-          <div class="kpi"><b>${totalDec}</b><span>decisiones motivadas</span></div>
-        </div></div>
-      <div class="card"><div class="card-pad" style="padding-bottom:4px"><h2>Estado por caso</h2></div>
-        <div class="twrap"><table><thead><tr><th>Caso</th><th>Etapa</th><th>Responsable actual</th><th>D&iacute;as en etapa</th><th>Consultas</th><th>Deneg.</th><th>Decisiones</th><th>SLA</th></tr></thead><tbody>${rows}</tbody></table></div></div>
-      <div class="card card-pad"><h2>Registro auditable global</h2>${vTrazaGlobal()}</div>
-    </div>`;
-  }
-  function vTrazaGlobal() {
-    var all = [];
-    ["C1","C2"].forEach(function (cid) {
-      state.casos[cid].logs.forEach(function (l) { all.push({ c: state.casos[cid], l: l }); });
-    });
-    if (!all.length) return '<p class="emptymsg">Sin actividad todavía: las entidades aún no operan los casos.</p>';
-    all.sort(function (a, b) { return a.l.id < b.l.id ? 1 : -1; });
-    var rows = all.slice(0, 14).map(function (x) {
-      return `<tr><td class="mono">${esc(x.l.id)}</td><td class="num">${x.l.dia}</td><td>${esc(ENT[x.l.rol].n)}</td>
-        <td>${esc(x.l.accion)}${x.l.doc ? " · " + esc(DOCM[x.l.doc].n) : ""}</td>
-        <td>${x.l.resultado === "ok" ? '<span class="chip ch-ok">ok</span>' : '<span class="chip ch-den">denegado</span>'}</td></tr>`;
-    }).join("");
-    return `<div class="twrap"><table><thead><tr><th>Registro</th><th>D&iacute;a</th><th>Entidad</th><th>Acci&oacute;n</th><th>Resultado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-  }
-
-  /* ================== Notificaciones ================== */
-  function misNotifs() {
-    var out = [];
-    ["C1","C2"].forEach(function (cid) {
-      state.casos[cid].notifs.forEach(function (n, i) {
-        if (n.para.indexOf(state.rol) >= 0) out.push({ cid: cid, i: i, n: n });
-      });
-    });
-    return out;
-  }
-  function notifsNoLeidas() {
-    return misNotifs().filter(function (x) { return !x.n.leidaPor[state.rol]; }).length;
-  }
-  var notifpanel = document.getElementById("notifpanel");
-  document.getElementById("bell").addEventListener("click", function () {
-    var abierto = notifpanel.classList.toggle("open");
-    if (abierto) {
-      var items = misNotifs().slice().reverse();
-      notifpanel.innerHTML = items.length ? items.map(function (x) {
-        return `<div class="nitem"><div class="nd">${esc(state.casos[x.cid].id)} · día ${x.n.dia}</div>${esc(x.n.txt)}</div>`;
-      }).join("") : '<div class="nitem">Sin notificaciones para su entidad.</div>';
-      misNotifs().forEach(function (x) { x.n.leidaPor[state.rol] = true; });
-      save(); renderTopbar();
-    }
+/* ===================== ACTO 1 · HOY ===================== */
+const PARAM = { oficio:"oficio", reiter:"reiter", fisica:"fisica", devol:"devol", recibir:"reiter", pedir:"fisica", correo:"correo", decision:null };
+function cronoA1() {
+  // Recalcula días a partir de la lista de acciones y los supuestos vigentes
+  let dia = 150; const turnos = {}; let cargas = 0; const dias = [];
+  S.a1.acciones.forEach(ac => {
+    const p = PARAM[ac.tipo]; if (p) dia += S.sup[p];
+    if (!turnos[ac.t]) turnos[ac.t] = { ini: ac.tipo === "correo" ? null : dia, fin: dia, cargas:0 };
+    turnos[ac.t].fin = dia;
+    if (ac.tipo === "decision") turnos[ac.t].dec = dia;
+    if (["fisica","devol","pedir"].indexOf(ac.tipo) >= 0) { cargas++; turnos[ac.t].cargas++; }
+    dias.push(dia);
   });
-  document.addEventListener("click", function (ev) {
-    if (!notifpanel.contains(ev.target) && ev.target.id !== "bell" && !document.getElementById("bell").contains(ev.target)) {
-      notifpanel.classList.remove("open");
-    }
+  // inicio de cada turno = día tras el correo del turno anterior
+  let prev = 150;
+  [1,2,3,4].forEach(t => { if (turnos[t]) { turnos[t].ini = prev; prev = turnos[t].fin; } });
+  return { dia, turnos, cargas, dias };
+}
+function diaA1() { return cronoA1().dia; }
+function cargasA1() { return cronoA1().cargas; }
+function stA1(t, p) { return S.a1.st[t + ":" + p] || 0; }
+function bit1(tipo, txt) { S.a1.bit.push({ t:S.a1.turno, dia:diaA1(), tipo, txt }); }
+function accionA1(tipo, pieza) {
+  const t = S.a1.turno, cfg = T1[t - 1], actor = A[cfg.actor];
+  S.a1.acciones.push({ t, tipo, pieza });
+  const key = t + ":" + pieza, pz = PZ[pieza], d = diaA1();
+  if (tipo === "oficio") { S.a1.st[key] = 1; bit1("acc", `Solicitó «${pz.n}» a ${A[pz.cust].n} por oficio.`); bit1("fri", `Día ${d}: la solicitud fue devuelta o no obtuvo respuesta en término. Sin acuse trazable.`); flash = { a:cfg.actor, b:pz.cust, cls:"f-pend" }; }
+  else if (tipo === "reiter") { S.a1.st[key] = 2; bit1("acc", `Reiteró la solicitud de «${pz.n}».`); bit1("fri", `Día ${d}: llegó una copia incompleta o sin fecha ni responsable.`); flash = { a:cfg.actor, b:pz.cust, cls:"f-pend" }; }
+  else if (tipo === "fisica") { S.a1.st[key] = 3; bit1("acc", `Le pidió a M.P. que consiguiera y aportara «${pz.n}» en físico.`); bit1("hito", `Día ${d}: «${pz.n}» disponible como copia física, sin versión. El costo de coordinación recayó en M.P.`); flash = { a:"tra", b:cfg.actor, cls:"f-ok" }; }
+  else if (tipo === "devol") { S.a1.st[key] = 1; bit1("acc", "Devolvió el expediente a M.P. para completarlo (falta la historia laboral)."); bit1("fri", `Día ${d}: M.P. y su cuidadora fueron a la AFP a pedir el certificado en papel.`); flash = { a:cfg.actor, b:"tra", cls:"f-pend" }; }
+  else if (tipo === "recibir") { S.a1.st[key] = 3; bit1("hito", `Día ${d}: expediente reingresado con la historia laboral en físico, sin versión.`); flash = { a:"tra", b:cfg.actor, cls:"f-ok" }; }
+  else if (tipo === "pedir") { S.a1.st[key] = 3; bit1("acc", "Pidió a M.P. el dictamen y los certificados en físico."); bit1("hito", `Día ${d}: documentos recibidos de M.P. Entre el día 181 y hoy nadie le confirmó quién pagaba.`); flash = { a:"tra", b:cfg.actor, cls:"f-ok" }; }
+  save(); render();
+}
+function listoA1(t) {
+  const cfg = T1[t - 1];
+  if (!cfg.piezas) return true;
+  return cfg.piezas.every(p => stA1(t, p) === 3);
+}
+function decidirA1() {
+  const t = S.a1.turno, cfg = T1[t - 1];
+  if (!listoA1(t) || S.a1.dec[t]) return;
+  S.a1.acciones.push({ t, tipo:"decision" });
+  S.a1.dec[t] = true;
+  bit1("hito", `Día ${diaA1()}: ${cfg.hito}`);
+  flash = { a:cfg.actor, b:"tra", cls:"f-not" };
+  save(); render();
+}
+function siguienteA1() {
+  const t = S.a1.turno;
+  if (!S.a1.dec[t]) return;
+  if (t < 4) S.a1.acciones.push({ t, tipo:"correo" });
+  S.a1.turno = t + 1;
+  S.panel = { tipo:"escritorio", arg:null };
+  save(); render();
+}
+function pendientesA1(t) {
+  const cfg = T1[t - 1], out = [];
+  if (cfg.tipo === "friccion") cfg.piezas.forEach(p => { for (let s = stA1(t, p); s < 3; s++) out.push([["oficio","reiter","fisica"][s], p]); });
+  else if (cfg.tipo === "checklist") { const s = stA1(t, "hl"); if (s < 1) out.push(["devol","hl"]); if (s < 3) out.push(["recibir","hl"]); }
+  else if (cfg.tipo === "pedir") { if (stA1(t, "dic") < 3) out.push(["pedir","dic"]); }
+  if (!S.a1.dec[t]) out.push(["decision", null]);
+  return out;
+}
+function reproducirTurno(cb) {
+  const t = S.a1.turno, lista = pendientesA1(t);
+  if (!lista.length) { if (cb) cb(); return; }
+  playing = true; render();
+  const paso = reduced() ? 0 : 600;
+  let i = 0;
+  (function next() {
+    if (i >= lista.length) { playing = false; save(); render(); if (cb) cb(); return; }
+    const [tipo, p] = lista[i++];
+    if (tipo === "decision") decidirA1(); else accionA1(tipo, p);
+    setTimeout(next, paso);
+  })();
+}
+function saltarActo2() {
+  playing = true; render();
+  const paso = reduced() ? 0 : 250;
+  (function loop() {
+    if (S.a1.turno >= 5) { playing = false; S.panel = { tipo:"escritorio" }; save(); render(); return; }
+    const lista = pendientesA1(S.a1.turno);
+    if (!lista.length) { siguienteA1(); setTimeout(loop, paso); return; }
+    const [tipo, p] = lista[0];
+    if (tipo === "decision") decidirA1(); else accionA1(tipo, p);
+    setTimeout(loop, paso);
+  })();
+}
+function irActo2() {
+  S.a1.done = true; S.acto = 2;
+  S.panel = { tipo:"clic", arg:"eps" };
+  save(); render();
+}
+
+/* ===================== ACTO 2 · CON EL MÓDULO ===================== */
+function tt(t) { if (!S.a2.t[t]) S.a2.t[t] = { contrato:false, docs:{}, den:{}, dec:null, visor:null, req:false, sum:false, chk:false }; return S.a2.t[t]; }
+function cfg2(t) {
+  const c = Object.assign({}, T2[t - 1]);
+  if (t === 4 && S.a2.rama === "B") {
+    c.piezas = ["inc","hc"]; c.fuera = ["apt"];
+    const lab = tt(1).dec === "laboral";
+    c.opciones = lab
+      ? [{ id:"remitir", t:"Remitir a ARL SURA", m:"Origen laboral en firme sin controversia: competencia de la ARL para prestaciones.", sug:true },{ id:"subsidio", t:"Asumir subsidio transitorio desde el día 181", m:"Continuidad del ingreso mientras la ARL asume." }]
+      : [{ id:"subsidio", t:"Asumir subsidio desde el día 181 con concepto de rehabilitación favorable", m:"Origen común en firme; continuidad del ingreso durante la rehabilitación.", sug:true },{ id:"remitir", t:"Remitir a ARL SURA", m:"Solo procede si el origen fuera laboral." }];
+  }
+  return c;
+}
+function reg(actor, acc, pieza, fin, res, det, dia) {
+  const n = S.a2.regs.length + 1;
+  const id = "REG-" + (n < 10 ? "00" : n < 100 ? "0" : "") + n;
+  S.a2.regs.push({ id, dia: dia == null ? S.a2.dias : dia, actor, acc, pieza:pieza || null, fin:fin || null, res, det:det || "" });
+  return id;
+}
+function bit2(tipo, txt) { S.a2.bit.push({ t:S.a2.turno, dia:S.a2.dias, tipo, txt }); }
+function vistaDe(p, actor) { const v = PZ[p].vistas[actor]; return v ? v : []; }
+function activar() {
+  const t = S.a2.turno, c = cfg2(t), x = tt(t);
+  if (x.contrato) return;
+  x.contrato = true;
+  const id = reg(c.actor, "contrato activado", null, c.fin, "ok", `responsable ${c.resp} · vence día ${c.vence}`);
+  bit2("log", `${id} · contrato de acceso activado · finalidad: ${c.fin} · responsable: ${c.resp} · vence día ${c.vence}`);
+  x.acuseContrato = id;
+  flash = { a:c.actor, b:"mod", cls:"f-ok" };
+  save(); render();
+}
+function consultar(p) {
+  const t = S.a2.turno, c = cfg2(t), x = tt(t);
+  if (!x.contrato) return;
+  if (x.visor === p) { x.visor = null; save(); render(); return; }
+  if (!x.docs[p]) {
+    S.a2.dias += 1;
+    const v = vistaDe(p, c.actor);
+    const id = reg(c.actor, "consulta", p, c.fin, "ok", `vista mínima ${v.length} de ${PZ[p].campos.length} · permanece en ${PZ[p].custN}`);
+    x.docs[p] = id;
+    bit2("log", `${id} · consultó «${PZ[p].n}» · vista mínima ${v.length} de ${PZ[p].campos.length} · custodio ${PZ[p].custN} · día ${S.a2.dias}`);
+    flash = { a:"mod", b:PZ[p].cust, cls:"f-ok" }; glow = p;
+  }
+  x.visor = p;
+  save(); render();
+}
+function intentar(p) {
+  const t = S.a2.turno, c = cfg2(t), x = tt(t);
+  if (!x.contrato || x.den[p]) return;
+  const id = reg(c.actor, "consulta", p, c.fin, "denegado", "no pertinente para la finalidad declarada · regla 3");
+  x.den[p] = id;
+  bit2("den", `${id} · DENEGADO: «${PZ[p].n}» no es pertinente para «${c.fin}» (regla 3). El intento queda visible para M.P. y la supervisión.`);
+  flash = { a:"mod", b:PZ[p].cust, cls:"f-den" };
+  save(); render();
+}
+function requerir() {
+  const x = tt(3);
+  if (x.req) return;
+  x.req = true;
+  const id = reg("jr", "requerimiento", "hl", "Dictamen de primera instancia", "ok", "contrato de suministro a AFP Andina · 5 días hábiles · vence día " + (S.a2.dias + 7));
+  bit2("log", `${id} · requerimiento a la AFP por contrato de suministro · responsable Diana Prieto · 5 días hábiles`);
+  S.a2.sub = "3b";
+  flash = { a:"jr", b:"mod", cls:"f-ok" };
+  save(); render();
+}
+function autorizar() {
+  const x = tt(3);
+  if (x.sum) return;
+  S.a2.dias += 2; x.sum = true;
+  const id = reg("afp", "suministro", "hl", "Dictamen de primera instancia", "ok", "vista mínima 2 de 4 · la historia laboral permanece en la AFP");
+  x.docs.hl = id;
+  bit2("hito", `Día ${S.a2.dias}: suministro entregado por contrato · la historia laboral permanece en la AFP · ${id}`);
+  S.a2.sub = null;
+  flash = { a:"afp", b:"mod", cls:"f-ok" }; glow = "hl";
+  save(); render();
+}
+function listoA2(t) {
+  const c = cfg2(t), x = tt(t);
+  return c.piezas.every(p => !!x.docs[p]);
+}
+function aplicarDic(d) {
+  PZ.dic.campos[0][1] = d.lab ? "Origen laboral" : "Origen común";
+  PZ.dic.campos[1][1] = d.lab ? "38,5 %" : "12,0 %";
+}
+function firmar(op) {
+  const t = S.a2.turno, c = cfg2(t), x = tt(t);
+  if (!listoA2(t) || x.dec) return;
+  S.a2.dias += 1; x.dec = op; S.a2.decDia[t] = S.a2.dias;
+  const o = c.opciones.filter(z => z.id === op)[0];
+  const id = reg(c.actor, "decisión", null, c.fin, "ok", `${o.t} · responsable ${c.resp}`);
+  bit2("hito", `Día ${S.a2.dias}: ${o.t}. Motivación registrada con responsable y plazo · ${id}`);
+  if (t === 2) S.a2.rama = op === "aceptar" ? "B" : "A";
+  if (t === 3) { S.a2.dic = { lab: op === "lab38" }; aplicarDic(S.a2.dic); glow = "dic"; }
+  let notif = c.notif;
+  if (t === 2 && op === "aceptar") notif = { a:["AFP Andina","EPS SURA","M.P."], pend:"afp", plazo:"la calificación queda en firme · pasa a prestaciones", vence:c.vence };
+  const nid = reg(c.actor, "notificación", null, c.fin, "ok", `a ${notif.a.join(", ")} · ${notif.plazo}` + (notif.pend ? ` · acuse pendiente de ${A[notif.pend].n}` : ""));
+  S.a2.notifs.push({ t, dia:S.a2.dias, a:notif.a, plazo:notif.plazo, vence:notif.vence, pend:notif.pend, acuse:null, id:nid });
+  bit2("log", `${nid} · notificación a ${notif.a.join(", ")} · ${notif.plazo}`);
+  flash = { a:c.actor, b:"tra", cls:"f-not" };
+  save(); render();
+}
+function siguienteA2() {
+  const t = S.a2.turno, x = tt(t);
+  if (t <= 4 && !x.dec) return;
+  const n = S.a2.notifs.filter(z => z.t === t && z.pend && !z.acuse)[0];
+  if (n) { S.a2.dias += 1; n.acuse = reg(n.pend, "acuse", null, null, "ok", `acuse de ${A[n.pend].n} a la notificación ${n.id}`); n.acuseDia = S.a2.dias; }
+  if (t === 3 && S.a2.rama === "A") {
+    S.a2.dias += 4;
+    const id = reg("arl", "apelación", "dic", "Investigación de origen y prestaciones", "ok", "apelación radicada en término · paquete íntegro");
+    S.a2.bit.push({ t:3, dia:S.a2.dias, tipo:"log", txt:`${id} · ARL SURA apeló en término (día ${S.a2.dias}) · el paquete viaja íntegro a la Junta Nacional` });
+  }
+  let nt = t + 1;
+  if (t === 2 && S.a2.rama === "B") nt = 4;
+  S.a2.turno = nt; S.a2.sub = null; S.a2.iniT[nt] = S.a2.dias;
+  if (nt === 3 && !tt(3).chk) { tt(3).chk = true; reg("jr", "checklist verificado", null, "Dictamen de primera instancia", "ok", "3 de 4 piezas con origen y versión · falta historia laboral (custodio AFP)"); }
+  S.panel = { tipo:"escritorio", arg:null };
+  save(); render();
+}
+function abrirMP2() { if (!S.a2.mpVisto) { S.a2.mpVisto = true; reg("tra", "vista de estado", null, null, "ok", "M.P. abrió su vista de estado"); save(); } }
+function abrirJN() { if (!S.a2.jnVisto) { S.a2.jnVisto = true; S.a2.dias += 4; S.a2.iniT[6] = S.a2.dias; reg("jn", "paquete conformado", null, "Validación experta", "ok", S.a2.rama === "A" ? "paquete de apelación íntegro" : "expediente íntegro sin apelación"); save(); } }
+function validarJN() {
+  if (S.a2.done) return;
+  S.a2.done = true;
+  reg("jn", "validación experta", null, "Validación experta", "ok", `semáforo: ${S.a2.jn.verdict || "sin valorar"} · pregunta: ${S.a2.jn.resp || "sin responder"}`);
+  save(); render();
+  const el = document.getElementById("comparativa"); if (el) el.scrollIntoView({ behavior: reduced() ? "auto" : "smooth" });
+}
+function supervision(actorId) {
+  if (S.acto !== 2 || S.a2.ctrlRegs[actorId]) return;
+  S.a2.ctrlRegs[actorId] = reg(actorId, "acceso de supervisión", null, "Supervisión de tiempos e incidencias", "ok", "vista de supervisión según competencia");
+  flash = { a:actorId, b:"mod", cls:"f-ok" }; save();
+}
+function otraRama() {
+  const nueva = S.a2.rama === "B" ? "A" : "B";
+  S.a2 = fresh().a2; S.a2.ramaSugerida = nueva; S.acto = 2; S.panel = { tipo:"clic", arg:"eps" };
+  PZ.dic.campos[0][1] = "—"; PZ.dic.campos[1][1] = "—";
+  save(); render(); window.scrollTo({ top: document.getElementById("mapcard").offsetTop - 100, behavior: reduced() ? "auto" : "smooth" });
+}
+
+/* ===================== MÉTRICAS ===================== */
+function m1() {
+  const c = cronoA1(); const t4 = c.turnos[4];
+  return { dia:c.dia, ruta:c.dia - 150, cargas:c.cargas, evid:0, regs:0, decs:0, sinCerteza: t4 && t4.dec ? Math.max(0, t4.dec - 181) : null, turnos:c.turnos, fin:S.a1.done, ntot:0 };
+}
+function m2() {
+  const piezas = {}; let decs = 0;
+  Object.keys(S.a2.t).forEach(k => { const x = S.a2.t[k]; Object.keys(x.docs).forEach(p => { piezas[p] = 1; }); if (x.dec && +k <= 4) decs++; });
+  if (S.a2.dic) piezas.dic = 1;
+  const den = S.a2.regs.filter(r => r.res === "denegado").length;
+  const d4 = S.a2.decDia[4];
+  return { dia:S.a2.dias, ruta:S.a2.dias - 150, cargas:0, evid:Object.keys(piezas).length, regs:S.a2.regs.length, decs, den, sinCerteza: d4 ? Math.max(0, d4 - 181) : null, ntot:S.a2.notifs.length, started:S.a1.done };
+}
+
+/* ===================== MAPA VIVO ===================== */
+const NW = 152, NH = 54, MW = 262, MH = 80;
+const svg = document.getElementById("mapa");
+const G = { frame:document.getElementById("g-frame"), edges:document.getElementById("g-edges"), flows:document.getElementById("g-flows"), nodes:document.getElementById("g-nodes"), over:document.getElementById("g-over") };
+function layout() { return S.acto === 1 ? "asis" : "tobe"; }
+function pos(id) { return POS[layout()][id]; }
+function turnActor() {
+  if (S.acto === 1) return T1[S.a1.turno - 1].actor;
+  if (S.a2.sub === "3b") return "afp";
+  return T2[Math.min(S.a2.turno, 6) - 1].actor;
+}
+function turnCfg() { return S.acto === 1 ? T1[S.a1.turno - 1] : cfg2(Math.min(S.a2.turno, 6)); }
+function relevantes() {
+  const set = { tra:1 }; const ta = turnActor(); set[ta] = 1;
+  if (S.acto === 2) set.mod = 1;
+  const c = turnCfg();
+  (c.piezas || []).forEach(p => { set[PZ[p].cust] = 1; });
+  if (S.acto === 2 && S.a2.turno === 3) set.afp = 1;
+  if (S.acto === 2 && S.a2.turno === 6) { set.jr = 1; set.arl = 1; }
+  return set;
+}
+function buildNodes() {
+  const items = ACT.map(a => a).concat([{ id:"mod", n:"Índice + reglas + logs", rol:"", g:"mod" }]);
+  G.nodes.innerHTML = items.map(a => {
+    const w = a.id === "mod" ? MW : NW, h = a.id === "mod" ? MH : NH;
+    let inner = `<rect class="box" x="${-w/2}" y="${-h/2}" width="${w}" height="${h}" rx="${a.id === "mod" ? 12 : 10}"></rect>`;
+    if (a.id === "mod") inner += `<text class="nname" x="0" y="-14" text-anchor="middle">Índice + reglas + logs</text><text class="nrole" x="0" y="3" text-anchor="middle">acceso por finalidad · mínimo necesario · la evidencia permanece en origen</text><text class="regc" id="regc" x="0" y="24" text-anchor="middle">REG 000</text>`;
+    else inner += `<text class="nname" x="0" y="-3" text-anchor="middle">${esc(a.n)}</text><text class="nrole" x="0" y="14" text-anchor="middle">${esc(a.rol)}</text>`;
+    return `<g class="node n-${a.g}" data-id="${a.id}" tabindex="0" role="button" aria-label="${esc(a.n)}">${inner}</g>`;
+  }).join("");
+  G.nodes.querySelectorAll(".node").forEach(g => {
+    const id = g.getAttribute("data-id");
+    g.addEventListener("click", () => abrirActor(id));
+    g.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); abrirActor(id); } });
   });
-
-  /* ================== Shell / render ================== */
-  var VISTAS = {
-    bandeja:      { t:"Bandeja de casos", roles:["eps","arl","afp","jr","jn","tra"] },
-    caso:         { t:"Expediente del caso", roles:["eps","arl","afp","jr","jn"] },
-    portal:       { t:"Mi caso", roles:["tra"] },
-    trazabilidad: { t:"Trazabilidad", roles:["eps","arl","afp","jr","jn"] },
-    supervision:  { t:"Supervisión", roles:["mintrab"] }
-  };
-  function navItems() {
-    var rol = state.rol, items = [];
-    if (rol === "mintrab") { items = ["supervision"]; }
-    else if (rol === "tra") { items = ["bandeja","portal"]; }
-    else { items = ["bandeja","caso","trazabilidad"]; }
-    return items;
-  }
-
-  function renderNav() {
-    var nav = document.getElementById("nav");
-    nav.innerHTML = navItems().map(function (v) {
-      var pend = v === "bandeja" && state.rol !== "tra" &&
-        ["C1","C2"].some(function (cid) { return requiereAccion(state.casos[cid], state.rol); });
-      return `<button type="button" data-nav="${v}" aria-current="${String(state.vista === v)}">${esc(VISTAS[v].t)}${pend ? '<span class="dot"></span>' : ""}</button>`;
-    }).join("");
-    nav.querySelectorAll("button").forEach(function (b) {
-      b.addEventListener("click", function () { irA(b.getAttribute("data-nav")); });
-    });
-    var ub = document.getElementById("userblock");
-    ub.innerHTML = `<div class="un">${esc(ENT[state.rol].user)}</div><div class="ue">${esc(ENT[state.rol].n)}${ENT[state.rol].cargo ? " · " + esc(ENT[state.rol].cargo) : ""}</div>
-      <button type="button" id="btn-salir">Cambiar de entidad</button>
-      <button type="button" id="btn-export" style="margin-top:6px">Exportar sesi&oacute;n (JSON)</button>
-      <button type="button" id="btn-reset" style="margin-top:6px;border-color:rgba(224,121,109,.6);color:#E0796D">Reiniciar escenarios</button>`;
-    ub.querySelector("#btn-salir").addEventListener("click", function () {
-      state.rol = null; save(); render();
-    });
-    ub.querySelector("#btn-export").addEventListener("click", exportar);
-    ub.querySelector("#btn-reset").addEventListener("click", function () {
-      if (!window.confirm("Esto reinicia los dos escenarios (etapas, registros y notificaciones). ¿Continuar?")) return;
-      var rol = state.rol;
-      state = freshState(); state.rol = rol;
-      try { localStorage.removeItem(LS_KEY); } catch (e) { /* sin persistencia */ }
-      save(); render(); flash("Escenarios reiniciados.");
-    });
-  }
-
-  function irA(vista, casoId) {
-    if (casoId) state.caso = casoId;
-    if (vista === "caso" && !state.caso) state.caso = "C1";
-    if (vista === "portal" && !state.caso) state.caso = "C1";
-    state.vista = vista;
-    save(); renderAll();
-  }
-
-  function renderTopbar() {
-    document.getElementById("vtitle").textContent = VISTAS[state.vista] ? VISTAS[state.vista].t : "";
-    var cp = document.getElementById("casepill");
-    if ((state.vista === "caso" || state.vista === "portal") && state.caso) {
-      var c = state.casos[state.caso];
-      cp.style.display = ""; cp.textContent = c.id + " · día " + c.dia;
-    } else cp.style.display = "none";
-    var n = notifsNoLeidas(), bn = document.getElementById("belln");
-    if (n > 0) { bn.style.display = ""; bn.textContent = n; } else bn.style.display = "none";
-  }
-
-  function renderMain() {
-    var main = document.getElementById("main");
-    var v = state.vista;
-    if (v === "bandeja") main.innerHTML = vBandeja();
-    else if (v === "caso") main.innerHTML = vCaso();
-    else if (v === "portal") main.innerHTML = vPortal();
-    else if (v === "trazabilidad") main.innerHTML = vTrazabilidad();
-    else if (v === "supervision") main.innerHTML = vSupervision();
-    else main.innerHTML = vBandeja();
-
-    main.querySelectorAll("tr[data-caso]").forEach(function (tr) {
-      tr.addEventListener("click", function () {
-        irA(state.rol === "tra" ? "portal" : "caso", tr.getAttribute("data-caso"));
+}
+function line(a, b, cls, extra) {
+  const p1 = pos(a), p2 = pos(b);
+  return `<line class="${cls}${extra || ""}" x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}"></line>`;
+}
+function poly(ids, cls, extra) {
+  return `<polyline class="${cls}${extra || ""}" points="${ids.map(i => pos(i).join(",")).join(" ")}"></polyline>`;
+}
+function selloSvg(p, x, y, cls) {
+  return `<g class="sello ${cls || ""}" transform="translate(${x},${y})"><rect x="-17" y="-8" width="34" height="16" rx="3"></rect><text x="0" y="3.5" text-anchor="middle">${PZ[p].sl}</text></g>`;
+}
+function renderMap() {
+  const lay = layout(), rel = relevantes(), ta = turnActor();
+  // nodos: posición y atenuación
+  G.nodes.querySelectorAll(".node").forEach(g => {
+    const id = g.getAttribute("data-id"); const p = pos(id);
+    g.style.transform = `translate(${p[0]}px,${p[1]}px)`;
+    g.style.display = (id === "mod" && lay === "asis") ? "none" : "";
+    g.classList.toggle("off", !rel[id] && id !== "mod");
+    if (id === "mod") g.classList.toggle("off", false);
+  });
+  const rc = document.getElementById("regc");
+  if (rc) { const n = S.a2.regs.length, d = S.a2.regs.filter(r => r.res === "denegado").length; rc.textContent = "REG " + (n < 10 ? "00" : n < 100 ? "0" : "") + n + (d ? ` · ${d} denegado${d > 1 ? "s" : ""}` : ""); }
+  // marco SURA
+  const e = pos("eps"), r = pos("arl");
+  const fx1 = Math.min(e[0], r[0]) - NW/2 - 14, fx2 = Math.max(e[0], r[0]) + NW/2 + 14, fy1 = Math.min(e[1], r[1]) - NH/2 - 26, fy2 = Math.max(e[1], r[1]) + NH/2 + 12;
+  G.frame.innerHTML = `<rect class="anclabox" x="${fx1}" y="${fy1}" width="${fx2-fx1}" height="${fy2-fy1}" rx="14"></rect><text class="anclatag" x="${(fx1+fx2)/2}" y="${fy1+15}" text-anchor="middle">SURA · ORGANIZACIÓN ANCLA</text>`;
+  // aristas base
+  G.edges.innerHTML = BASE_EDGES[lay].map(ed => {
+    const dim = !(rel[ed[0]] && rel[ed[1]]);
+    let h = line(ed[0], ed[1], ed[2], dim ? " dim" : "");
+    if (ed[3] && !dim) { const p1 = pos(ed[0]), p2 = pos(ed[1]); h += `<text class="elabel ten" x="${(p1[0]+p2[0])/2}" y="${(p1[1]+p2[1])/2-4}" text-anchor="middle">${esc(ed[3])}</text>`; }
+    return h;
+  }).join("");
+  // flujos vivos + sellos + halo + mochila
+  let fl = "", ov = "";
+  const copias = [];
+  if (S.acto === 1) {
+    const cur = S.a1.turno;
+    T1.slice(0, 4).forEach(c => {
+      const t = c.n; if (t > cur) return;
+      const old = t < cur ? " f-old" : "";
+      c.piezas.forEach(p => {
+        const s = stA1(t, p); if (!s) return;
+        if (c.tipo === "friccion") { if (s < 3) fl += line(c.actor, PZ[p].cust, "f-pend", old); else { fl += poly([PZ[p].cust, "tra", c.actor], "f-ok", old); copias.push([p, c.actor]); } }
+        else if (c.tipo === "checklist") { if (s < 3) fl += line(c.actor, "tra", "f-pend", old); else { fl += poly(["afp", "tra", c.actor], "f-ok", old); copias.push([p, c.actor]); } }
+        else if (c.tipo === "pedir") { if (s === 3) { fl += poly(["jr", "tra", c.actor], "f-ok", old); copias.push([p, c.actor]); } }
       });
+      if (S.a1.dec[t]) fl += line(c.actor, "tra", "f-not", old);
     });
-    main.querySelectorAll("[data-consultar]").forEach(function (b) {
-      b.addEventListener("click", function () { consultar(state.caso, b.getAttribute("data-consultar")); });
+  } else {
+    const cur = S.a2.turno;
+    Object.keys(S.a2.t).forEach(k => {
+      const t = +k, x = S.a2.t[k], c = cfg2(Math.min(t, 6)); const old = t < cur ? " f-old" : "";
+      if (x.contrato) fl += line(c.actor, "mod", "f-ok", old);
+      Object.keys(x.docs).forEach(p => { fl += line("mod", PZ[p].cust, "f-ok", old); });
+      Object.keys(x.den).forEach(p => { fl += line("mod", PZ[p].cust, "f-den", old); });
+      if (x.dec) fl += line(c.actor, "tra", "f-not", old);
     });
-    main.querySelectorAll("[data-abrir-dec]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        var key = b.getAttribute("data-abrir-dec");
-        DECISIONES[key].abrir(state.casos[state.caso]);
-      });
-    });
-    main.querySelectorAll("[data-nav]").forEach(function (b) {
-      b.addEventListener("click", function () { irA(b.getAttribute("data-nav")); });
-    });
+    Object.keys(S.a2.ctrlRegs).forEach(id => { fl += line(id, "mod", "f-ok", " f-old"); });
   }
-
-  function renderAll() { renderNav(); renderTopbar(); renderMain(); }
-
-  function render() {
-    var login = document.getElementById("login"), app = document.getElementById("app");
-    if (!state.rol) {
-      app.classList.remove("on"); login.style.display = "flex";
-      document.getElementById("entgrid").innerHTML = Object.keys(ENT).map(function (r) {
-        return `<button type="button" data-rol="${r}"><span class="en">${esc(ENT[r].n)}</span><span class="eu">${esc(ENT[r].user)}${ENT[r].cargo ? " · " + esc(ENT[r].cargo) : ""}</span><span class="ef">${ROL_FIN[r] ? esc(FIN[ROL_FIN[r]].n) : "Vista de estado y trazabilidad"}</span></button>`;
-      }).join("");
-      document.getElementById("entgrid").querySelectorAll("button").forEach(function (b) {
-        b.addEventListener("click", function () {
-          state.rol = b.getAttribute("data-rol");
-          state.vista = state.rol === "mintrab" ? "supervision" : "bandeja";
-          save(); render();
-        });
-      });
-      return;
-    }
-    login.style.display = "none"; app.classList.add("on");
-    if (navItems().indexOf(state.vista) < 0) state.vista = navItems()[0];
-    renderAll();
+  if (flash) { fl += (flash.via ? poly(flash.via, flash.cls, " live") : line(flash.a, flash.b, flash.cls, " live")); }
+  G.flows.innerHTML = fl;
+  // sellos de custodia
+  const sellos = [["hc","ips"],["apt","emp"],["inc","eps"],["hl","afp"]];
+  if (S.a2.dic || (S.acto === 1 && S.a1.dec[3])) sellos.push(["dic","jr"]);
+  sellos.forEach(([p, cust]) => { const q = pos(cust); ov += selloSvg(p, q[0] - NW/2 + 24, q[1] + NH/2 + 2, glow === p ? "glow" : ""); });
+  copias.forEach(([p, actor], i) => { const q = pos(actor); ov += selloSvg(p, q[0] + NW/2 - 24 - (i % 2) * 38, q[1] + NH/2 + 2, "copia"); });
+  // halo
+  const hp = pos(ta); const hw = ta === "mod" ? MW : NW, hh = NH;
+  ov += `<rect class="halo" x="${hp[0]-hw/2-6}" y="${hp[1]-hh/2-6}" width="${hw+12}" height="${hh+12}" rx="14"></rect><text class="letoca" x="${hp[0]+hw/2-4}" y="${hp[1]+hh/2+15}" text-anchor="end">LE TOCA</text>`;
+  // mochila de M.P.
+  const tp = pos("tra"); const cg = S.acto === 1 ? cargasA1() : 0;
+  ov += `<g class="mochila" transform="translate(${tp[0]+NW/2-2},${tp[1]-NH/2+2})"><circle r="11" fill="${cg ? "var(--red)" : "var(--green)"}"></circle><text x="0" y="3.5" text-anchor="middle">${cg}</text></g>`;
+  G.over.innerHTML = ov;
+  flash = null; glow = null;
+  // cabecera, nota, leyenda, franja M.P.
+  document.getElementById("map-mode").textContent = S.acto === 1 ? "AS-IS · red fragmentada" : "TO-BE · configuración federada";
+  document.getElementById("map-note").textContent = S.acto === 1
+    ? "Cada evidencia vive con un custodio distinto y se pide por oficio, sin acuse ni término. Las aristas ámbar son gestiones devueltas; las verdes, evidencia que llegó porque M.P. la llevó."
+    : "Cada actor declara una finalidad y consulta solo lo pertinente a través del módulo (índice + reglas + logs). Verde: vista mínima con acuse; rojo punteado: intento denegado por mínimo necesario; dorado: notificación con acuse.";
+  document.getElementById("legend").innerHTML =
+    `<span><i class="lg lg-base"></i>relación estructural</span><span><i class="lg lg-pend"></i>gestión devuelta / sin respuesta</span><span><i class="lg lg-ok"></i>${S.acto === 1 ? "evidencia conseguida por M.P." : "vista mínima / acceso activo"}</span>` +
+    (S.acto === 2 ? `<span><i class="lg lg-den"></i>denegado por mínimo necesario</span>` : "") + `<span><i class="lg lg-not"></i>${S.acto === 1 ? "decisión notificada sin acuse" : "decisión notificada con acuse"}</span>`;
+  renderMPve();
+}
+function renderMPve() {
+  const el = document.getElementById("mpve");
+  if (S.acto === 1) {
+    const cg = cargasA1();
+    el.innerHTML = `<span class="k">M.P. VE</span><span>Sin notificación con acuse</span><span>Sin plazo conocido</span><span>${cg} documento${cg === 1 ? "" : "s"} que tuvo que conseguir</span><span class="badge bd-red">cargas: ${cg}</span>`;
+  } else {
+    const t = Math.min(S.a2.turno, 6), c = cfg2(t);
+    const etapa = t >= 5 ? (t === 5 ? "Vista de estado" : "Validación experta") : `Turno ${t} · ${c.fin}`;
+    const cons = S.a2.regs.filter(r => r.acc === "consulta");
+    const last = cons[cons.length - 1];
+    const ult = last ? (last.res === "ok" ? `Última consulta: ${A[last.actor].n} · ${PZ[last.pieza].n} · ${last.id}` : `<span style="color:var(--gold)">Intento denegado: ${A[last.actor].n} · ${PZ[last.pieza].n} · ${last.id}</span>`) : "Aún nadie ha consultado su evidencia";
+    el.innerHTML = `<span class="k">M.P. VE</span><span>${esc(etapa)}</span><span>Responsable: ${t <= 4 ? esc(A[c.actor].n) + " · vence día " + c.vence : "—"}</span><span class="flash">${ult}</span><span class="badge bd-green">0 documentos que llevar</span>`;
   }
+}
 
-  /* ================== Export ================== */
-  var downloadsNS = null;
-  if (window.claude && typeof window.claude.use === "function") {
-    try { window.claude.use("downloads").then(function (ns) { downloadsNS = ns; }, function () {}); } catch (e) { /* sin runtime */ }
-  }
-  function exportar() {
-    var data = {
-      instrumento: "MICL · prototipo de media fidelidad (DGIT 6202)",
-      fecha: new Date().toISOString(),
-      casos: ["C1","C2"].map(function (cid) {
-        var c = state.casos[cid];
-        return { id: c.id, etapa: ETAPAS[c.etapa].n, dia: c.dia, origen: c.origen, pcl: c.pcl,
-          hitos: c.hitos, registros: c.logs, notificaciones: c.notifs.map(function (n) { return { dia: n.dia, para: n.para, txt: n.txt }; }) };
-      })
-    };
-    var json = JSON.stringify(data, null, 2);
-    if (downloadsNS) {
-      downloadsNS.save({ filename: "micl-sesion.json", data: json }).then(
-        function () { flash("Archivo guardado."); },
-        function (err) {
-          if (err && err.code === "declined") flash("Descarga cancelada.");
-          else flash("No se pudo guardar; se copió al portapapeles.");
-        }
-      );
-    } else {
-      var blob = new Blob([json], { type: "application/json" });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement("a");
-      a.href = url; a.download = "micl-sesion.json";
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).catch(function () {});
-  }
+/* ===================== PANEL DEL ACTOR ===================== */
+const panelEl = document.getElementById("panel");
+function abrirActor(id) {
+  const ta = turnActor();
+  if (id === "mod") { S.panel = { tipo:"modulo" }; }
+  else if (id === ta) { S.panel = { tipo:"escritorio" }; if (!S.inicio) S.inicio = true; }
+  else if (id === "tra") { S.panel = { tipo:"micaso", arg:"volver" }; if (S.acto === 2) abrirMP2(); }
+  else if (A[id].g === "control") { S.panel = { tipo:"control", arg:id }; supervision(id); }
+  else { S.panel = { tipo:"info", arg:id }; }
+  save(); render();
+}
+function turnoDe(actor) {
+  const list = S.acto === 1 ? T1 : T2;
+  const c = list.filter(x => x.actor === actor)[0];
+  return c ? c.n : null;
+}
+function head(txt, volver) {
+  return `<div class="phead"><span>${txt}</span>${volver ? `<button type="button" class="btn ghost" style="padding:3px 9px;font-size:11px;letter-spacing:0;text-transform:none" data-act="volver">Volver al turno</button>` : ""}</div>`;
+}
+function ahora(c, acto, total) {
+  const sub = S.acto === 2 && S.a2.sub === "3b";
+  return `<div class="ahora"><span class="chip ch-turno">TURNO ${sub ? "3b" : c.n} DE ${total} · ACTO ${acto} · ${acto === 1 ? "HOY" : "CON EL MÓDULO"}</span>
+    <h2>Usted actúa por ${esc(sub ? "AFP Andina · custodio" : A[c.actor].n)}</h2>
+    <div class="persona">${esc(sub ? "Diana Prieto · analista de prestaciones" : c.persona)}</div>
+    <div class="unica"><b>Su única decisión:</b> ${punto(sub ? "autorizar el suministro que pide la Junta Regional" : c.unica)}</div>
+    <div class="desp"><b>Después:</b> ${punto(sub ? "la Junta completa el expediente" : c.despues)}</div></div>`;
+}
+function punto(s) { s = esc(s); return /[.!?]$/.test(s) ? s : s + "."; }
+function guia(txt) { return `<div class="guia"><span class="arr">¿Qué hago ahora? →</span><span>${txt}</span></div>`; }
+function pasos(lista, activo) {
+  return `<div class="pasos">${lista.map((p, i) => `<span class="${i < activo ? "ok" : i === activo ? "on" : ""}">${["①","②","③","④"][i]} ${p}</span>`).join("")}</div>`;
+}
+function bitacora(items, titulo) {
+  const ul = items.length ? `<ul>${items.slice(-6).map(b => `<li class="b-${b.tipo}"><span class="d">día ${b.dia}</span>${esc(b.txt)}</li>`).join("")}</ul>` : `<p class="micro">Sin actividad todavía.</p>`;
+  return `<div class="bit"><h3>${titulo}</h3>${ul}</div>`;
+}
+function chipA1(s) { return ["<span class='chip ch-grey'>sin solicitar</span>","<span class='chip ch-amber'>devuelta · sin acuse</span>","<span class='chip ch-amber'>incompleta</span>","<span class='chip ch-green'>disponible (copia física, sin versión)</span>"][s]; }
 
-  /* ================== Inicio ================== */
-  loadState();
-  render();
+/* --- Acto 1 --- */
+function escritorio1() {
+  const t = S.a1.turno, c = T1[t - 1];
+  if (c.tipo === "mp") return micaso(false);
+  const listo = listoA1(t), dec = !!S.a1.dec[t];
+  const crono = cronoA1(); const tur = crono.turnos[t] || { ini:diaA1(), fin:diaA1(), cargas:0 };
+  let filas = "";
+  if (c.tipo === "friccion") {
+    filas = c.piezas.map(p => { const s = stA1(t, p); const lbl = ["Solicitar por oficio","Reiterar","Que la consiga M.P."][s];
+      return `<div class="docrow"><span class="sl">${PZ[p].sl}</span><span class="dn">${esc(PZ[p].n)}<small>custodio: ${esc(PZ[p].custN)}${t === 2 ? " · no hay canal con la EPS: se pide de nuevo" : ""}</small></span>${chipA1(s)}${s < 3 && !dec ? `<button type="button" data-act="a1" data-tipo="${["oficio","reiter","fisica"][s]}" data-p="${p}" ${playing ? "disabled" : ""}>${lbl}</button>` : ""}</div>`; }).join("");
+    filas += c.propias.map(p => `<div class="docrow"><span class="sl">${PZ[p].sl}</span><span class="dn">${esc(PZ[p].n)}<small>bajo su custodia</small></span><span class="chip ch-grey">bajo su custodia</span></div>`).join("");
+  } else if (c.tipo === "checklist") {
+    const s = stA1(3, "hl");
+    filas = ["hc","apt","inc"].map(p => `<div class="req ok"><span class="tk">✓</span>${esc(PZ[p].n)} · copia física recibida con el expediente</div>`).join("") +
+      `<div class="req ${s === 3 ? "ok" : "no"}"><span class="tk">${s === 3 ? "✓" : "!"}</span>${esc(PZ.hl.n)} · ${s === 3 ? "reingresada en físico, sin versión" : "falta · custodio AFP"}</div>` +
+      (s < 3 && !dec ? `<button type="button" class="btn sec wide" data-act="a1" data-tipo="${s === 0 ? "devol" : "recibir"}" data-p="hl" ${playing ? "disabled" : ""}>${s === 0 ? "Devolver el expediente a M.P. para completar" : "Recibir el expediente reingresado"}</button>` : "");
+  } else if (c.tipo === "pedir") {
+    const s = stA1(4, "dic");
+    filas = `<div class="docrow"><span class="sl">DIC</span><span class="dn">Dictamen y certificados<small>la Junta no notificó a la AFP · los tiene M.P.</small></span>${s === 3 ? "<span class='chip ch-green'>recibidos en físico</span>" : "<span class='chip ch-amber'>sin recibir</span>"}${s < 3 && !dec ? `<button type="button" data-act="a1" data-tipo="pedir" data-p="dic" ${playing ? "disabled" : ""}>Pedir a M.P. en físico</button>` : ""}</div>` +
+      `<div class="docrow"><span class="sl">HL</span><span class="dn">${esc(PZ.hl.n)}<small>bajo su custodia</small></span><span class="chip ch-grey">bajo su custodia</span></div>`;
+  }
+  const pend = pendientesA1(t).filter(x => x[0] !== "decision");
+  const g = dec ? "Pase al siguiente turno." : listo ? "Firme la decisión, así ocurre hoy: se notifica por correo, sin acuse." : (c.tipo === "friccion" ? `Consiga la evidencia: pida «${PZ[pend[0][1]].n}» a ${A[PZ[pend[0][1]].cust].n}.` : c.tipo === "checklist" ? "El expediente está incompleto: hoy se devuelve a M.P. para que lo complete." : "Hoy la AFP se entera por M.P.: pídale los documentos en físico.");
+  const n = c.piezas.length, hechas = c.piezas.filter(p => stA1(t, p) === 3).length;
+  return `<div class="card escritorio">${head("Escritorio · Acto 1 · hoy")}<div class="pbody">
+    ${ahora(c, 1, 5)}
+    ${c.paso ? `<div class="paso"><b>Lo que pasó desde el turno anterior</b> · <span class="hoy">${esc(c.paso)}</span></div>` : ""}
+    ${guia(g)}${pasos(["Conseguir la evidencia","Decidir","Siguiente"], dec ? 2 : listo ? 1 : 0)}
+    <div class="contrato tachado"><div class="ct">Contrato de acceso</div>Sin contrato: se pide por oficio, sin término ni acuse. <span class="sello-ac sin" style="text-decoration:none">SIN ACUSE</span></div>
+    <div>${filas}</div>
+    ${pend.length && !dec ? `<button type="button" class="btn sec wide" data-act="repro" ${playing ? "disabled" : ""}>${playing ? "Reproduciendo…" : "Reproducir este turno (4 s)"}</button>` : ""}
+    <div><div class="flabel">Evidencia para decidir: ${hechas} de ${n}</div><div class="bar"><div style="width:${n ? hechas / n * 100 : 100}%"></div></div></div>
+    <button type="button" class="btn wide" data-act="dec1" ${listo && !dec && !playing ? "" : "disabled"}>${dec ? "Decisión firmada · día " + (tur.dec || tur.fin) : c.decision}</button>
+    ${dec ? `<div class="cotejo"><div class="ch"><b>Este turno hoy</b>+${tur.fin - tur.ini} días · ${tur.cargas} carga${tur.cargas === 1 ? "" : "s"} a M.P. · 0 acuses</div><div class="cm"><b>Con el módulo</b>se verá en el Acto 2</div></div>` : ""}
+    ${bitacora(S.a1.bit.filter(b => b.t === t), "Bitácora del turno · sin acuse ni término verificable")}
+    <button type="button" class="btn wide" data-act="sig1" ${dec && !playing ? "" : "disabled"}>Siguiente: ${t < 4 ? "usted actuará por " + esc(A[T1[t].actor].n) : "M.P. revisa su caso"} →</button>
+  </div></div>`;
+}
+
+/* --- Acto 2 --- */
+function visor(p, actor, regId) {
+  const v = vistaDe(p, actor), pz = PZ[p];
+  const filas = pz.campos.map((c, i) => v.indexOf(i) >= 0
+    ? `<div class="frow"><span class="fk">${esc(c[0])}</span><span class="fv">${esc(c[1])}</span></div>`
+    : `<div class="frow ret"><span class="fk">${esc(c[0])}</span><span class="fv"><span>🔒 retenido en origen · regla 3</span></span></div>`).join("");
+  const r = S.a2.regs.filter(x => x.id === regId)[0];
+  return `<div class="visor"><div class="vh"><b>${esc(pz.n)}</b> · custodio ${esc(pz.custN)} · vista para: ${esc(cfg2(Math.min(S.a2.turno, 6)).fin || "")} · <b>${v.length} de ${pz.campos.length} campos</b></div>${filas}
+    <div class="vf">permanece en ${esc(pz.custN)} · versión ${esc(pz.ver)} <span class="sello-ac">ACUSE · ${regId} · DÍA ${r ? r.dia : S.a2.dias}</span> <button type="button" class="btn ghost" style="padding:2px 8px;font-size:11px" data-act="consultar" data-p="${p}">Cerrar ficha</button></div>
+    <div class="micro">Regla 3 · mínimo necesario: cada actor ve solo los campos pertinentes a su finalidad.</div></div>`;
+}
+function escritorio2() {
+  const t = Math.min(S.a2.turno, 6), c = cfg2(t);
+  if (c.tipo === "mp") return micaso(true);
+  if (c.tipo === "jn") return panelJN();
+  if (S.a2.sub === "3b") return sub3b();
+  const x = tt(t), listo = listoA2(t), dec = !!x.dec;
+  const notifPrev = S.a2.notifs.filter(n => n.pend === c.actor && n.t < t).slice(-1)[0];
+  const paso = c.pasoHoy ? `<div class="paso"><b>Lo que pasó desde el turno anterior</b><br><span class="hoy">Hoy: ${esc(c.pasoHoy)}</span><br><span class="mod">Con el módulo: ${esc(c.pasoMod)}</span> ${notifPrev ? (notifPrev.acuse ? `<span class="sello-ac">ACUSE · ${notifPrev.acuse} · DÍA ${notifPrev.acuseDia}</span>` : `<span class="sello-ac pend">ACUSE PENDIENTE</span>`) : ""}</div>` : "";
+  const hl3 = t === 3 && !x.docs.hl;
+  const g = dec ? "Vea el cotejo y pase al siguiente turno." : !x.contrato ? "Declare la finalidad para activar el contrato de acceso." : (hl3 && !x.req) ? "Falta la historia laboral: requiérala a la AFP por contrato de suministro." : !listo ? ("Consulte la evidencia pertinente." + (t === 1 && !x.den.hl ? " Luego intente abrir lo que no le corresponde." : "")) : (t === 4 ? "Fíjese: la AFP ve el IBC que la ARL no vio, y no ve el diagnóstico que la EPS sí vio. Elija y firme con acuse." : "Elija su decisión y firme con acuse.");
+  const act = dec ? 3 : listo ? 2 : x.contrato ? 1 : 0;
+  const contrato = `<div class="contrato"><div class="ct">Contrato de acceso</div><div class="cells"><div><b>Finalidad</b>${esc(c.fin)}</div><div><b>Responsable</b>${esc(c.resp)}</div><div><b>Plazo</b>${esc(c.plazo)} · vence día ${c.vence}</div><div><b>Acuse</b>${x.contrato ? `<span class="sello-ac">ACUSE · ${x.acuseContrato} · DÍA ${S.a2.regs.filter(r => r.id === x.acuseContrato)[0].dia}</span>` : "automático al activar"}</div></div>
+    ${x.contrato ? "" : `<button type="button" class="btn gold wide" style="margin-top:8px" data-act="activar">Declarar finalidad y activar contrato</button>`}
+    <div class="micro" style="margin-top:6px">Regla 2 · nadie consulta sin declarar para qué, quién responde y hasta cuándo · plazo: parámetro ilustrativo del escenario</div></div>`;
+  const filas = c.piezas.map(p => {
+    const id = x.docs[p]; const v = vistaDe(p, c.actor);
+    const chip = id === undefined ? (t === 3 && p === "hl" ? (x.req ? "<span class='chip ch-amber'>requerida a la AFP</span>" : "<span class='chip ch-red'>falta · custodio AFP</span>") : "<span class='chip ch-grey'>sin consultar</span>") : (p === "hl" && x.sum ? `<span class='chip ch-teal'>suministrada por contrato</span>` : `<span class='chip ch-teal'>vista mínima ${v.length} de ${PZ[p].campos.length}</span>`);
+    let btn = "";
+    if (t === 3 && p === "hl" && !x.docs.hl) btn = x.req ? "" : `<button type="button" data-act="requerir" ${x.contrato ? "" : "disabled"}>Requerir a la AFP · 5 días hábiles</button>`;
+    else if (!(p === "dic" && !S.a2.dic)) btn = `<button type="button" data-act="consultar" data-p="${p}" ${x.contrato && !dec ? "" : (id ? "" : "disabled")}>${id ? (x.visor === p ? "Cerrar ficha" : "Ver ficha") : "Consultar vista mínima"}</button>`;
+    else btn = "<span class='chip ch-grey'>no emitido</span>";
+    return `<div class="docrow ${x.contrato ? "" : "inactive"}"><span class="sl">${PZ[p].sl}</span><span class="dn">${esc(PZ[p].n)}<small>custodio: ${esc(PZ[p].custN)} · permanece en origen</small></span>${chip}${btn}${x.visor === p && id ? visor(p, c.actor, id) : ""}</div>`;
+  }).join("") + c.propias.map(p => `<div class="docrow"><span class="sl">${PZ[p].sl}</span><span class="dn">${esc(PZ[p].n)}<small>bajo su custodia</small></span><span class="chip ch-grey">bajo su custodia</span></div>`).join("")
+    + c.fuera.map(p => `<div class="docrow fuera ${x.contrato ? "" : "inactive"}"><span class="sl">${PZ[p].sl}</span><span class="dn">Fuera de su finalidad: ${esc(PZ[p].n)}<small>custodio: ${esc(PZ[p].custN)}</small></span>${x.den[p] ? `<span class="chip ch-red">DENEGADO · regla 3 · ${x.den[p]}</span>` : `<button type="button" data-act="intentar" data-p="${p}" ${x.contrato && !dec ? "" : "disabled"}>Intentar consultar</button>`}</div>`).join("");
+  const sug = S.a2.ramaSugerida && t === 2 ? (S.a2.ramaSugerida === "B" ? "aceptar" : "controvertir") : c.opciones.filter(o => o.sug)[0].id;
+  const hechas = c.piezas.filter(p => x.docs[p]).length;
+  const opciones = c.opciones.map(o => `<label class="opt ${(x.sel || sug) === o.id ? "sel" : ""}"><input type="radio" name="op" value="${o.id}" ${(x.sel || sug) === o.id ? "checked" : ""} ${dec ? "disabled" : ""}><span><b>${esc(o.t)}</b> ${o.sug ? "<span class='chip ch-teal'>sugerida por la evidencia</span>" : ""}<br><span class="om">${esc(o.m)}</span></span></label>`).join("");
+  const notif = S.a2.notifs.filter(n => n.t === t)[0];
+  const ini = S.a2.iniT[t] || 150; const tur1 = cronoA1().turnos[t];
+  return `<div class="card escritorio a2">${head("Escritorio · Acto 2 · con el módulo")}<div class="pbody">
+    ${ahora(c, 2, 6)}${paso}${guia(g)}${pasos(["Contrato","Evidencia","Firmar","Cotejo"], act)}
+    ${contrato}
+    <div style="opacity:${x.contrato ? 1 : .55}">${filas}<div class="micro">Regla 1 · la evidencia no se copia ni se mueve: se consulta en origen y queda acta de consulta.</div></div>
+    <div style="opacity:${listo ? 1 : .55}"><div class="flabel">Evidencia para decidir: ${hechas} de ${c.piezas.length}</div><div class="bar"><div style="width:${hechas / c.piezas.length * 100}%"></div></div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">${opciones}</div>
+      <button type="button" class="btn teal wide" style="margin-top:8px" data-act="firmar" ${listo && !dec ? "" : "disabled"}>${dec ? "Firmado y notificado con acuse · día " + S.a2.decDia[t] : "Firmar y notificar con acuse"}</button>
+      <div class="micro" style="margin-top:4px">Regla 4 · cada suministro, consulta y decisión tiene un responsable con nombre y un plazo con día.</div></div>
+    ${notif ? `<div class="notif"><b>Notificado a ${esc(notif.a.join(", "))}</b><span>${esc(notif.plazo)} · vence día ${notif.vence}</span>${notif.pend ? `<span class="sello-ac ${notif.acuse ? "" : "pend"}">${notif.acuse ? "ACUSE · " + notif.acuse + " · DÍA " + notif.acuseDia : "ACUSE PENDIENTE · " + esc(A[notif.pend].n).toUpperCase() + " · VENCE DÍA " + notif.vence}</span>` : `<span class="sello-ac">ACUSE · ${notif.id} · DÍA ${notif.dia}</span>`}<span class="micro">Regla 5 · cada notificación tiene acuse y término; el pendiente se cierra cuando el siguiente actor entra.</span></div>` : ""}
+    ${dec ? `<div class="cotejo"><div class="ch"><b>Este turno hoy</b>${tur1 ? `+${tur1.fin - tur1.ini} días · ${tur1.cargas} carga${tur1.cargas === 1 ? "" : "s"} a M.P. · 0 acuses` : "sin jugar"}</div><div class="cm"><b>Con el módulo</b>+${S.a2.dias - ini} días · 0 cargas · ${S.a2.regs.filter(r => r.dia >= ini && r.dia <= S.a2.dias && r.res === "ok").length} registros con acuse</div></div>` : ""}
+    ${bitacora(S.a2.bit.filter(b => b.t === t), "Registro auditable del turno")}
+    <button type="button" class="btn wide" data-act="sig2" ${dec ? "" : "disabled"}>Siguiente: ${t === 4 ? "M.P. revisa su caso" : "usted actuará por " + esc(A[t === 2 && x.dec === "aceptar" ? "afp" : T2[t].actor].n)} →</button>
+  </div></div>`;
+}
+function sub3b() {
+  const x = tt(3), c = T2[2];
+  return `<div class="card escritorio a2">${head("Escritorio · Acto 2 · sub-turno de suministro")}<div class="pbody">
+    ${ahora(c, 2, 6)}
+    <div class="paso"><b>Hoy, en espejo</b> · <span class="hoy">la Junta devuelve el expediente y M.P. va con su cuidadora a la AFP a pedir el certificado en papel (+30 días, 1 carga).</span></div>
+    ${guia(x.sum ? "Suministro entregado: vuelva a la Junta Regional." : "Autorice el suministro: solo se entregan los campos pertinentes.")}
+    <div class="contrato sum"><div class="ct">Contrato de suministro</div><div class="cells"><div><b>Solicitante</b>Junta Regional</div><div><b>Finalidad</b>Dictamen de primera instancia</div><div><b>Responsable</b>Diana Prieto · analista de prestaciones</div><div><b>Plazo</b>5 días hábiles · vence día ${S.a2.dias + 7}</div><div><b>Entrega</b>semanas cotizadas (612) · densidad de cotización</div><div><b>Retiene</b>IBC histórico · historial de empleadores</div></div>
+      <div class="micro" style="margin-top:6px">formato: historia laboral estructurada · versión ${esc(PZ.hl.ver)} · la historia laboral permanece en la AFP</div></div>
+    ${x.sum ? `<div class="bit"><ul><li class="b-hito"><span class="d">día ${S.a2.dias}</span>Suministro entregado · la historia laboral permanece en la AFP · <span class="sello-ac">ACUSE · ${x.docs.hl}</span></li></ul></div><button type="button" class="btn teal wide" data-act="volver-jr">Volver a la Junta Regional →</button>` : `<button type="button" class="btn teal wide" data-act="autorizar">Autorizar suministro con vista mínima</button>`}
+  </div></div>`;
+}
+function micaso(acto2) {
+  const volver = S.panel.arg === "volver";
+  if (!acto2 && S.acto === 1) {
+    const cr = cronoA1(); const gest = []; let dia = 150;
+    S.a1.acciones.forEach(ac => { const p = PARAM[ac.tipo]; if (p) dia += S.sup[p]; if (["fisica","devol","pedir"].indexOf(ac.tipo) >= 0) gest.push({ dia, p:ac.pieza, t:ac.t }); });
+    const m = m1();
+    return `<div class="card escritorio">${head("M.P. · mi caso · hoy", volver)}<div class="pbody">
+      <div class="ahora"><span class="chip ch-turno">TURNO 5 DE 5 · ACTO 1 · HOY</span><h2>Lo que M.P. y su cuidadora tuvieron que conseguir</h2><div class="persona">actor focal · no opera, lee</div></div>
+      <div class="kpis"><div class="kpi bad"><b>${m.cargas}</b><span>gestiones a cargo de M.P.</span></div><div class="kpi bad"><b>${m.ruta}</b><span>días de ruta</span></div><div class="kpi bad"><b>0</b><span>notificaciones con acuse</span></div><div class="kpi bad"><b>${m.sinCerteza == null ? "—" : m.sinCerteza}</b><span>días sin certeza de pago desde el día 181</span></div></div>
+      ${gest.length ? `<table class="tbl"><thead><tr><th>Día</th><th>Documento</th><th>Se lo pidió</th></tr></thead><tbody>${gest.map(g => `<tr><td>${g.dia}</td><td>${esc(PZ[g.p].n)}</td><td>${esc(A[T1[g.t - 1].actor].n)}</td></tr>`).join("")}</tbody></table>` : "<p class='micro'>Todavía nadie le ha pedido documentos.</p>"}
+      ${S.a1.turno === 5 ? `<div class="fin1"><b>Acto 1 terminado:</b> ${m.ruta} días · ${m.cargas} cargas a M.P. · 0 acuses · 0 registros. Ahora recorra la misma ruta con el módulo.</div><button type="button" class="btn teal wide" data-act="ir2">Ir al Acto 2 · con el módulo →</button>` : ""}
+    </div></div>`;
+  }
+  const cons = S.a2.regs.filter(r => r.acc === "consulta" || r.acc === "suministro");
+  const filas = cons.slice().reverse().map(r => `<tr><td>${r.dia}</td><td>${esc(A[r.actor].n)}</td><td>${esc(PZ[r.pieza].n)}</td><td>${esc(r.fin || "")}</td><td class="${r.res === "denegado" ? "den" : ""}">${r.res === "denegado" ? "denegado · regla 3" : esc(r.det.split(" · ")[0])}</td><td class="mono">${r.id}</td></tr>`).join("");
+  const notifs = S.a2.notifs.map(n => `<li class="b-log"><span class="d">día ${n.dia}</span>${esc(n.plazo)} · vence día ${n.vence} <span class="sello-ac">ACUSE · ${n.id}</span></li>`).join("");
+  return `<div class="card escritorio a2">${head("M.P. · vista de estado", volver)}<div class="pbody">
+    <div class="ahora"><span class="chip ch-turno">${S.a2.turno === 5 ? "TURNO 5 DE 6 · " : ""}ACTO 2 · CON EL MÓDULO</span><h2>Mi caso · M.P.</h2><div class="persona">actor focal · no opera, lee</div></div>
+    <div class="kpis"><div class="kpi good"><b>0</b><span>documentos que debo llevar yo</span></div><div class="kpi"><b>${cons.filter(r => r.res === "ok").length}</b><span>consultas sobre mi evidencia, todas con finalidad</span></div><div class="kpi ${cons.filter(r => r.res === "denegado").length ? "bad" : ""}"><b>${cons.filter(r => r.res === "denegado").length}</b><span>intentos denegados y registrados</span></div><div class="kpi good"><b>${S.a2.notifs.length}</b><span>notificaciones con plazo y acuse</span></div></div>
+    <div><div class="flabel">Quién consultó mi evidencia</div>${cons.length ? `<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Día</th><th>Entidad</th><th>Pieza</th><th>Finalidad</th><th>Vista</th><th>Registro</th></tr></thead><tbody>${filas}</tbody></table></div>` : "<p class='micro'>Aún nadie ha consultado su evidencia.</p>"}</div>
+    <div><div class="flabel">Notificaciones con plazo</div>${notifs ? `<div class="bit"><ul>${notifs}</ul></div>` : "<p class='micro'>Sin notificaciones todavía.</p>"}</div>
+    <div class="micro">Lo que debo llevar yo: 0 documentos · la evidencia circula por contrato, no con usted.</div>
+    ${S.a2.turno === 5 && !volver ? `<button type="button" class="btn teal wide" data-act="mp-cont">Continuar: validación experta →</button>` : ""}
+  </div></div>`;
+}
+function panelJN() {
+  abrirJN();
+  const ramaA = S.a2.rama !== "B"; const v = S.a2.jn; const m = m2();
+  const decs = Object.keys(S.a2.t).filter(k => S.a2.t[k].dec).length;
+  return `<div class="card escritorio a2">${head("Junta Nacional · validación experta")}<div class="pbody">
+    <div class="ahora"><span class="chip ch-turno">TURNO 6 DE 6 · ACTO 2</span><h2>Junta Nacional · ${ramaA ? "validación experta del paquete" : "validación experta del expediente (sin apelación)"}</h2><div class="persona">no se resuelve la apelación: se valida el paquete</div></div>
+    <div class="flabel">${ramaA ? "Paquete de apelación" : "Expediente"} recibido el día ${S.a2.iniT[6] || S.a2.dias}</div>
+    <div class="verif"><span class="tk">✓</span><span><b>Expediente íntegro:</b> ${m.evid} de 5 piezas con origen y versión.</span></div>
+    <div class="verif"><span class="tk">✓</span><span><b>Motivación trazable:</b> ${decs} decisiones firmadas + ${m.regs} registros de acceso.</span></div>
+    <div class="verif"><span class="tk">✓</span><span><b>Cronología con responsables y plazos:</b> ${Object.keys(S.a2.decDia).length} turnos · 0 términos vencidos.</span></div>
+    <div><div class="flabel">Contrato a validar</div><div class="contract">Paquete de apelación íntegro y motivación trazable.</div>
+      <div class="optrow sem" data-q="jn-verdict" style="margin-top:6px">${[["aceptar","Aceptar"],["ajustar","Ajustar"],["rechazar","Rechazar"]].map(o => `<button type="button" data-v="${o[0]}" aria-pressed="${v.verdict === o[0]}">${o[1]}</button>`).join("")}</div></div>
+    <div><div class="flabel">¿Este paquete permite decidir con motivación trazable?</div><div class="optrow" data-q="jn-resp">${[["si","Sí"],["parcial","Parcial"],["no","No"]].map(o => `<button type="button" data-v="${o[0]}" aria-pressed="${v.resp === o[0]}">${o[1]}</button>`).join("")}</div></div>
+    <div><div class="flabel">Qué le faltaría al paquete (opcional)</div><textarea id="jn-nota" placeholder="Nota corta">${esc(v.nota)}</textarea></div>
+    <button type="button" class="btn teal wide" data-act="jn-val" ${S.a2.done ? "disabled" : ""}>${S.a2.done ? "Validación registrada" : "Cerrar validación e ir a la comparación →"}</button>
+  </div></div>`;
+}
+function panelControl(id) {
+  const a = A[id]; const obj = { mintrab:["emp","arl"], minsalud:["eps","ips"], supersalud:["eps","ips"], jueces:["jr","jn"] }[id];
+  let body;
+  if (S.acto === 1) body = `<p style="font-size:13px">Hoy ${esc(a.n)} solo puede requerir informes por oficio, sin término ni acuse verificable.</p>${obj.map(o => `<div class="docrow"><span class="dn">Informe de ${esc(A[o].n)}</span><span class="chip ch-amber">sin respuesta en término</span></div>`).join("")}`;
+  else {
+    const filas = [1,2,3,4].filter(t => S.a2.iniT[t]).map(t => `<tr><td>${t} · ${esc(A[T2[t - 1].actor].n)}</td><td>${S.a2.iniT[t]}</td><td>${S.a2.decDia[t] || "en curso"}</td><td>${S.a2.decDia[t] ? S.a2.decDia[t] - S.a2.iniT[t] : "—"}</td></tr>`).join("");
+    body = `<div class="kpis"><div class="kpi"><b>${S.a2.regs.length}</b><span>registros auditables</span></div><div class="kpi"><b>${S.a2.regs.filter(r => r.res === "denegado").length}</b><span>denegaciones (regla 3)</span></div><div class="kpi good"><b>0</b><span>términos vencidos</span></div></div>
+      <div class="flabel" style="margin-top:8px">Tiempos por turno · alcance: ${obj.map(o => esc(A[o].n)).join(", ")}</div><table class="tbl"><thead><tr><th>Turno</th><th>Inicio</th><th>Decisión</th><th>Días</th></tr></thead><tbody>${filas || "<tr><td colspan='4'>Sin turnos iniciados.</td></tr>"}</tbody></table>
+      <div class="micro">El acceso de supervisión también deja registro: ${S.a2.ctrlRegs[id] || "—"}.</div>`;
+  }
+  return `<div class="card">${head(`${esc(a.n)} · indirecto / control · sin turno`, true)}<div class="pbody">${body}</div></div>`;
+}
+function panelModulo() {
+  let retenidos = 0, contratos = 0;
+  Object.keys(S.a2.t).forEach(k => { const x = S.a2.t[k]; if (x.contrato) contratos++; const actor = cfg2(Math.min(+k, 6)).actor; Object.keys(x.docs).forEach(p => { retenidos += PZ[p].campos.length - vistaDe(p, actor).length; }); });
+  const den = S.a2.regs.filter(r => r.res === "denegado").length, decs = Object.keys(S.a2.decDia).length;
+  const regs = S.a2.regs.slice().reverse().slice(0, 12).map(r => `<li class="b-${r.res === "denegado" ? "den" : "log"}"><span class="d">día ${r.dia}</span>${r.id} · ${esc(A[r.actor].n)} · ${esc(r.acc)}${r.pieza ? " · " + esc(PZ[r.pieza].n) : ""} · ${r.res}</li>`).join("");
+  return `<div class="card">${head("Módulo interoperable · índice + reglas + logs", true)}<div class="pbody">
+    ${[`Custodia distribuida: 0 documentos movidos de origen`, `Intercambio por finalidad: ${contratos} contratos activos`, `Mínimo necesario: ${retenidos} campos retenidos · ${den} denegaciones`, `Responsabilidad visible: ${decs} decisiones con responsable y plazo`, `Trazabilidad auditable: ${S.a2.regs.length} registros con acuse`].map((r, i) => `<div class="req ok"><span class="tk">${i + 1}</span>${r}</div>`).join("")}
+    <div class="micro">La evidencia sigue en sus repositorios; aquí solo hay índice, reglas y logs.</div>
+    <div class="bit"><h3>Registro auditable</h3>${regs ? `<ul>${regs}</ul>` : "<p class='micro'>Sin registros todavía.</p>"}</div></div></div>`;
+}
+function panelInfo(id) {
+  const tn = turnoDe(id), ta = turnActor();
+  return `<div class="card">${head(esc(A[id].n), true)}<div class="pbody"><p style="font-size:13.5px">Ahora le toca a <b>${esc(A[ta].n)}</b>. ${tn ? `${esc(A[id].n)} actuará en el turno ${tn}.` : `${esc(A[id].n)} no tiene turno en este acto: ${id === "ips" || id === "emp" ? "actúa como custodio de evidencia" : "participa en la validación"}.`}</p><p class="micro">Tensión observada: ${esc(MATRIZ[id].tension)} ${MATRIZ[id].prec.map(p => `<span class="prec">${p}</span>`).join("")}</p></div></div>`;
+}
+function panelBienvenida() {
+  return `<div class="card">${head("Antes de empezar")}<div class="pbody">
+    <div class="req"><span class="tk">1</span>Va a recorrer la ruta de M.P. dos veces con el mismo caso.</div>
+    <div class="req"><span class="tk">2</span>Acto 1: como ocurre hoy. Acto 2: con el módulo federado.</div>
+    <div class="req"><span class="tk">3</span>En cada turno, haga clic en el actor iluminado y siga la línea «¿Qué hago ahora?».</div>
+    ${S.recuperada ? `<div class="paso"><b>Sesión recuperada</b> · Acto ${S.acto} · turno ${S.acto === 1 ? S.a1.turno : S.a2.turno}</div>` : ""}
+    <div><div class="flabel">Su nombre o perfil (para el registro de la sesión)</div><input type="text" id="perfil" style="width:100%" placeholder="p. ej. Referente jurídico · ARL" value="${esc(S.perfil)}"></div>
+    <button type="button" class="btn wide" data-act="empezar">${S.recuperada ? "Continuar" : "Empezar por la EPS"}</button>
+    <div class="micro">El TO-BE es una hipótesis de diseño en validación; los plazos y días son parámetros ilustrativos del escenario.</div></div></div>`;
+}
+function panelClic(id) {
+  return `<div class="card">${head("Su turno")}<div class="pbody"><div class="guia"><span class="arr">→</span><span>Haga clic en <b>${esc(A[id].n)}</b> en el mapa (el nodo iluminado con «LE TOCA»).</span></div>
+    ${S.acto === 2 && S.a2.turno === 1 && !tt(1).contrato ? `<div class="fin1"><b>Acto 1 terminado:</b> ${m1().ruta} días · ${m1().cargas} cargas a M.P. · 0 acuses · 0 registros. Ahora recorra la misma ruta con el módulo: los nodos se reorganizaron alrededor del índice federado y los sellos de custodia se quedaron en su origen.</div>` : ""}
+    <button type="button" class="btn sec wide" data-act="abrir-turno">Abrir el escritorio de ${esc(A[id].n)}</button></div></div>`;
+}
+function renderPanel() {
+  const p = S.panel; let h;
+  if (p.tipo === "bienvenida") h = panelBienvenida();
+  else if (p.tipo === "clic") h = panelClic(turnActor());
+  else if (p.tipo === "escritorio") h = S.acto === 1 ? escritorio1() : escritorio2();
+  else if (p.tipo === "micaso") h = micaso(S.acto === 2);
+  else if (p.tipo === "control") h = panelControl(p.arg);
+  else if (p.tipo === "modulo") h = panelModulo();
+  else if (p.tipo === "info") h = panelInfo(p.arg);
+  else h = panelBienvenida();
+  panelEl.innerHTML = h;
+  const perfil = panelEl.querySelector("#perfil"); if (perfil) perfil.addEventListener("input", () => { S.perfil = perfil.value; save(); });
+  const nota = panelEl.querySelector("#jn-nota"); if (nota) nota.addEventListener("input", () => { S.a2.jn.nota = nota.value; save(); });
+  panelEl.querySelectorAll("input[name=op]").forEach(r => r.addEventListener("change", () => { tt(S.a2.turno).sel = r.value; panelEl.querySelectorAll(".opt").forEach(o => o.classList.toggle("sel", o.querySelector("input").checked)); save(); }));
+  panelEl.querySelectorAll(".optrow[data-q] button").forEach(b => b.addEventListener("click", () => {
+    const q = b.closest(".optrow").getAttribute("data-q"), v = b.getAttribute("data-v");
+    if (q === "jn-verdict") S.a2.jn.verdict = S.a2.jn.verdict === v ? null : v;
+    if (q === "jn-resp") S.a2.jn.resp = S.a2.jn.resp === v ? null : v;
+    save(); renderPanel();
+  }));
+}
+panelEl.addEventListener("click", ev => {
+  const b = ev.target.closest("[data-act]"); if (!b || b.disabled) return;
+  const act = b.getAttribute("data-act"), p = b.getAttribute("data-p");
+  if (act === "empezar") { S.inicio = true; S.recuperada = false; S.panel = { tipo:"clic" }; save(); render(); }
+  else if (act === "abrir-turno") { S.panel = { tipo:"escritorio" }; save(); render(); }
+  else if (act === "a1") accionA1(b.getAttribute("data-tipo"), p);
+  else if (act === "dec1") decidirA1();
+  else if (act === "sig1") siguienteA1();
+  else if (act === "repro") reproducirTurno();
+  else if (act === "ir2") irActo2();
+  else if (act === "activar") activar();
+  else if (act === "consultar") consultar(p);
+  else if (act === "intentar") intentar(p);
+  else if (act === "requerir") requerir();
+  else if (act === "autorizar") autorizar();
+  else if (act === "volver-jr") { S.a2.sub = null; save(); render(); }
+  else if (act === "firmar") { const r = panelEl.querySelector("input[name=op]:checked"); if (r) firmar(r.value); }
+  else if (act === "sig2") siguienteA2();
+  else if (act === "mp-cont") { S.a2.turno = 6; S.panel = { tipo:"escritorio" }; save(); render(); }
+  else if (act === "jn-val") validarJN();
+  else if (act === "volver") { S.panel = { tipo:"escritorio" }; save(); render(); }
+});
+
+/* ===================== GUION, STICKY, TIRA ===================== */
+const TLBL = { 1:"EPS SURA califica el origen", 2:"ARL SURA responde", 3:"Junta Regional dicta", 4:"AFP decide el pago", 5:"M.P. revisa su caso", 6:"Junta Nacional valida el paquete" };
+function estadoTurno(n) {
+  if (S.acto === 1) return n < S.a1.turno || S.a1.done ? "done" : n === S.a1.turno ? "now" : "";
+  if (n === 3 && S.a2.rama === "B") return "skip";
+  if (S.a2.done) return "done";
+  return n < S.a2.turno ? "done" : n === S.a2.turno ? "now" : "";
+}
+function renderGuion() {
+  const total = S.acto === 1 ? 5 : 6;
+  document.getElementById("turnos").innerHTML = Array.from({ length: total }, (_, i) => i + 1).map(n => {
+    const st = estadoTurno(n);
+    return `<span class="turno ${st}" data-t="${n}"><span class="tn">${st === "done" ? "✓" : n}</span>${esc(TLBL[n])}${st === "skip" ? " · omitido: no hubo controversia" : ""}</span>`;
+  }).join('<span class="turno-sep">—</span>');
+  document.getElementById("mini").innerHTML = Array.from({ length: total }, (_, i) => i + 1).map(n => `<span class="${estadoTurno(n)}">${n}</span>`).join("");
+  document.getElementById("seg-a1").setAttribute("aria-pressed", String(S.acto === 1));
+  const s2 = document.getElementById("seg-a2"); s2.setAttribute("aria-pressed", String(S.acto === 2)); s2.classList.toggle("lock", !S.a1.done); s2.innerHTML = (S.a1.done ? "" : "&#128274; ") + "ACTO 2 &middot; CON EL M&Oacute;DULO";
+  document.getElementById("btn-saltar").style.display = S.acto === 1 && !S.a1.done && S.inicio ? "" : "none";
+  const ta = turnActor();
+  document.getElementById("ayuda").innerHTML = (S.recuperada && S.inicio ? `<span class="chip ch-teal">Sesión recuperada · Acto ${S.acto} · turno ${S.acto === 1 ? S.a1.turno : S.a2.turno}</span> ` : "") + (S.inicio ? `Haga clic en ${esc(A[ta].n)} (iluminado con «LE TOCA») para abrir su escritorio.` : "Pulse «Empezar por la EPS» en el panel de la derecha.");
+}
+function cell(v, cls) { return `<span class="v ${cls || ""}">${v}</span>`; }
+function renderMarcador() {
+  const a = m1(), b = m2();
+  const hoy = [a.dia, a.cargas, `${a.evid} de 5`, a.regs, `${a.decs} de 4`];
+  const mod = b.started ? [b.dia, b.cargas, `${b.evid} de 5`, b.regs, `${b.decs} de 4`] : ["—","—","—","—","—"];
+  const better = (i, x, y) => { if (!b.started) return ["",""]; const nx = parseFloat(x), ny = parseFloat(y); if (isNaN(nx) || isNaN(ny) || nx === ny) return ["",""]; const lowerBetter = i <= 1; const hb = lowerBetter ? nx < ny : nx > ny; return hb ? ["best","worst"] : ["worst","best"]; };
+  const lbls = ["Día", "Cargas a M.P.", "Evidencia completa", "Registros con acuse", "Responsable y plazo"];
+  let h = `<span></span>${lbls.map((l, i) => `<span class="lbl c${i + 1}">${l}</span>`).join("")}`;
+  h += `<span class="row-lbl rl-hoy">HOY</span>${hoy.map((v, i) => `<span class="c${i + 1} ${S.acto === 2 ? "dim" : ""}">${cell(v, better(i, hoy[i], mod[i])[0])}</span>`).join("")}`;
+  h += `<span class="row-lbl rl-mod">MÓDULO</span>${mod.map((v, i) => `<span class="c${i + 1} ${S.acto === 1 ? "dim" : ""}">${cell(v, better(i, hoy[i], mod[i])[1])}</span>`).join("")}`;
+  document.getElementById("marcador").innerHTML = h;
+}
+function renderTira() {
+  const a = m1(), b = m2();
+  const items = [["Días transcurridos", a.dia, b.started ? b.dia : "—"], ["Cargas a M.P.", a.cargas, b.started ? 0 : "—"], ["Evidencia completa · piezas con origen y versión", `${a.evid} de 5`, b.started ? `${b.evid} de 5` : "—"], ["Registros con acuse", a.regs, b.started ? b.regs : "—"], ["Decisiones con responsable y plazo", `${a.decs} de 4`, b.started ? `${b.decs} de 4` : "—"]];
+  document.getElementById("tira").innerHTML = items.map(it => `<div class="t"><div class="tl">${it[0]}</div><div class="tv"><div class="hoy"><b>${it[1]}</b><small>HOY</small></div><div class="${b.started ? "mod" : "mute"}"><b>${it[2]}</b><small>MÓDULO</small></div></div></div>`).join("");
+}
+
+/* ===================== COMPARATIVA ===================== */
+function mrow(nombre, x, y, lowerBetter, listo) {
+  const nx = parseFloat(x), ny = parseFloat(y);
+  let c1 = "", c2 = "";
+  if (listo && !isNaN(nx) && !isNaN(ny) && nx !== ny) { const hb = lowerBetter ? nx < ny : nx > ny; c1 = hb ? "mejor" : "peor"; c2 = hb ? "peor" : "mejor"; }
+  return `<tr><td>${nombre}</td><td class="n ${c1}">${x}</td><td class="n ${listo ? c2 : ""}">${listo ? y : "—"}</td></tr>`;
+}
+function renderComparativa() {
+  const a = m1(), b = m2(), listo = S.a2.done, cr = cronoA1();
+  const el = document.getElementById("cmp-body");
+  const cronoH = [1,2,3,4].map(t => { const tr = cr.turnos[t]; if (!tr) return `<li><b>${t} · ${esc(TLBL[t])}</b> · sin jugar</li>`; return `<li><b>${t} · ${esc(TLBL[t])}</b> · decisión día ${tr.dec || tr.fin} · +${tr.fin - tr.ini} días · ${tr.cargas} carga${tr.cargas === 1 ? "" : "s"} a M.P. · responsable y plazo: — · <span class="sello-ac sin">SIN ACUSE</span></li>`; }).join("");
+  const cronoM = [1,2,3,4].map(t => { const x = S.a2.t[t]; const c = cfg2(t); if (!x || !x.dec) return `<li><b>${t} · ${esc(TLBL[t])}</b> · ${t === 3 && S.a2.rama === "B" ? "omitido: no hubo controversia" : "pendiente"}</li>`; const ini = S.a2.iniT[t] || 150; const n = S.a2.notifs.filter(z => z.t === t)[0]; return `<li><b>${t} · ${esc(TLBL[t])}</b> · decisión día ${S.a2.decDia[t]} · +${S.a2.decDia[t] - ini} días · 0 cargas · ${Object.keys(x.docs).length} vistas mínimas por contrato · ${esc(c.resp)} · vence día ${c.vence} · <span class="sello-ac">ACUSE · ${n ? n.id : "—"}</span></li>`; }).join("");
+  const reglasCnt = (() => { let ret = 0, contr = 0; Object.keys(S.a2.t).forEach(k => { const x = S.a2.t[k]; if (x.contrato) contr++; const actor = cfg2(Math.min(+k, 6)).actor; Object.keys(x.docs).forEach(p => { ret += PZ[p].campos.length - vistaDe(p, actor).length; }); }); return [`0 documentos movidos de origen`, `${contr} contratos activados`, `${ret} campos retenidos · ${b.den} denegaciones`, `${b.decs} decisiones con responsable y plazo`, `${b.regs} registros con acuse`]; })();
+  const rupOk = { r1: b.evid >= 4, r2: S.a1.done && b.regs > 0, r3: b.decs >= 3, r4: b.ntot >= 3, r5: false };
+  el.innerHTML = `
+    <div class="bignums"><div><b class="h">día ${a.dia}</b><small>HOY · ${a.ruta} días de ruta · ${a.cargas} cargas a M.P.</small></div><div><b class="m">${listo ? "día " + b.dia : "—"}</b><small>CON EL MÓDULO · ${listo ? b.ruta + " días de ruta · 0 cargas" : "complete el Acto 2 para comparar"}</small></div></div>
+    <div class="cols"><div class="col h"><h3>Hoy · flujo actual del sistema</h3><ul class="crono">${cronoH}</ul></div><div class="col m"><h3>Con el módulo · configuración federada</h3><ul class="crono">${cronoM}</ul></div></div>
+    <div class="twrap"><table class="cmp"><thead><tr><th>Métrica</th><th>Hoy</th><th>Con el módulo</th></tr></thead><tbody>
+      <tr><td class="dimh" colspan="3">Completitud de evidencia</td></tr>
+      ${mrow("Piezas con origen y versión (de 5)", a.evid, b.evid, false, listo)}
+      ${mrow("Decisiones con expediente completo (de 4)", 0, b.decs, false, listo)}
+      <tr><td class="dimh" colspan="3">Trazabilidad de acceso</td></tr>
+      ${mrow("Registros con acuse", 0, b.regs, false, listo)}
+      ${mrow("Notificaciones con acuse", 0, b.ntot, false, listo)}
+      ${mrow("Denegaciones registradas (regla 3)", 0, b.den, false, listo)}
+      <tr><td class="dimh" colspan="3">Claridad de responsabilidades</td></tr>
+      ${mrow("Decisiones con responsable y plazo (de 4)", 0, b.decs, false, listo)}
+      <tr><td>Términos vencidos</td><td class="n peor">no verificable</td><td class="n ${listo ? "mejor" : ""}">${listo ? 0 : "—"}</td></tr>
+      <tr><td class="dimh" colspan="3">Tiempo y carga</td></tr>
+      ${mrow("Días de ruta", a.ruta, b.ruta, true, listo)}
+      ${mrow("Cargas trasladadas a M.P.", a.cargas, 0, true, listo)}
+      ${mrow("Días sin certeza de pago desde el día 181", a.sinCerteza == null ? "—" : a.sinCerteza, b.sinCerteza == null ? "—" : b.sinCerteza, true, listo)}
+    </tbody></table></div>
+    <div class="grid3">
+      <div><div class="flabel">Reglas del blueprint · activaciones</div>${REGLAS.map((r, i) => `<div class="req ${b.started ? "ok" : ""}"><span class="tk">${i + 1}</span>${r}: ${reglasCnt[i]}</div>`).join("")}</div>
+      <div><div class="flabel">Rupturas del documento · ranking (1 = más crítica)</div><ol class="rank" id="rank">${S.rupturas.map((rid, i) => { const r = RUPTURAS.filter(z => z.id === rid)[0]; return `<li><span class="pos">${i + 1}</span><span class="rt">${esc(r.t)} <span class="chip ${rupOk[rid] ? "ch-green" : "ch-grey"}">${rupOk[rid] ? "abordada" : "parcial"}</span></span><span class="mv"><button type="button" data-i="${i}" data-d="-1" aria-label="Subir" ${i === 0 ? "disabled" : ""}>↑</button> <button type="button" data-i="${i}" data-d="1" aria-label="Bajar" ${i === 4 ? "disabled" : ""}>↓</button></span></li>`; }).join("")}</ol></div>
+    </div>
+    <details><summary>Supuestos del cotejo (parámetros ilustrativos del escenario)</summary><div class="sup">
+      ${[["oficio","Oficio devuelto / sin respuesta (días)"],["reiter","Reiteración (días)"],["fisica","Entrega física a cargo de M.P. (días)"],["devol","Devolución de expediente (días)"],["correo","Notificación por correo (días)"]].map(s => `<label>${s[1]}<input type="number" min="0" max="120" data-sup="${s[0]}" value="${S.sup[s[0]]}"></label>`).join("")}
+    </div><div class="micro" id="sup-msg" style="margin-top:6px">Al cambiar un valor se recalculan los días del Acto 1 a partir de las acciones registradas. En el TO-BE cada consulta suma 1 día y cada firma cierra el mismo día.</div></details>`;
+  el.querySelectorAll("ol.rank button").forEach(btn => btn.addEventListener("click", () => {
+    const i = +btn.getAttribute("data-i"), j = i + +btn.getAttribute("data-d"); if (j < 0 || j > 4) return;
+    const tmp = S.rupturas[i]; S.rupturas[i] = S.rupturas[j]; S.rupturas[j] = tmp; save(); renderComparativa();
+  }));
+  el.querySelectorAll("input[data-sup]").forEach(inp => inp.addEventListener("change", () => {
+    const v = parseInt(inp.value, 10); if (isNaN(v) || v < 0) return;
+    S.sup[inp.getAttribute("data-sup")] = v; save(); render();
+    const m = document.getElementById("sup-msg"); if (m) m.textContent = "Recalculado con sus supuestos: HOY termina el día " + m1().dia + ".";
+    document.getElementById("comparativa").querySelector("details").open = true;
+  }));
+}
+
+/* ===================== VALIDAR MI ACTOR + GATE ===================== */
+function renderValidar() {
+  const el = document.getElementById("val-body"); const v = S.val;
+  const directos = ["tra","emp","ips","eps","arl","afp","jr","jn"], control = ["mintrab","minsalud","supersalud","jueces"];
+  const chips = grp => grp.map(id => `<button type="button" data-actor="${id}" aria-pressed="${v.actor === id}">${esc(A[id].n)}</button>`).join("");
+  let h = `<div class="rolchips">${chips(directos)}</div><details style="margin-top:8px"><summary>Otro (indirecto / control)</summary><div class="rolchips" style="margin-top:8px">${chips(control)}</div></details>`;
+  if (v.actor) {
+    const m = MATRIZ[v.actor];
+    h += `<div style="margin-top:14px"><span class="chip ch-navy">${esc(m.grupo)}</span><h3 style="font-size:19px;margin:6px 0 2px">${esc(A[v.actor].n)}</h3>
+      <div class="flabel" style="margin-top:8px">Tensión observada + precedente</div><div style="font-size:13.5px">${esc(m.tension)} ${m.prec.map(p => `<span class="prec">${p}</span>`).join("")}</div>
+      <div class="flabel" style="margin-top:10px">Contrato TO-BE a validar</div><div class="contract">${esc(m.contrato)}</div>
+      <div class="optrow sem" data-q="verdict" style="margin-top:8px">${[["aceptar","Aceptar"],["ajustar","Ajustar"],["rechazar","Rechazar"]].map(o => `<button type="button" data-v="${o[0]}" aria-pressed="${v.verdict === o[0]}">${o[1]}</button>`).join("")}</div>
+      ${PREGUNTAS.map(q => `<div style="margin-top:10px"><div class="flabel" style="text-transform:none;letter-spacing:0;font-size:13px">${esc(q.t)}${q.esc ? ' <span style="color:var(--ink-faint)">(1 = nada · 5 = totalmente)</span>' : ""}</div><div class="optrow" data-q="${q.id}">${(q.esc ? [["1","1"],["2","2"],["3","3"],["4","4"],["5","5"]] : q.ops).map(o => `<button type="button" data-v="${o[0]}" aria-pressed="${v[q.id] === o[0]}">${o[1]}</button>`).join("")}</div></div>`).join("")}
+      <div style="margin-top:10px"><div class="flabel">Ajuste propuesto (opcional)</div><textarea id="val-coment" placeholder="Solo si marcó Ajustar/Rechazar o quiere precisar algo">${esc(v.coment || "")}</textarea></div></div>`;
+  }
+  el.innerHTML = h;
+  el.querySelectorAll("[data-actor]").forEach(b => b.addEventListener("click", () => { S.val.actor = S.val.actor === b.getAttribute("data-actor") ? null : b.getAttribute("data-actor"); save(); renderValidar(); }));
+  el.querySelectorAll(".optrow[data-q] button").forEach(b => b.addEventListener("click", () => { const q = b.closest(".optrow").getAttribute("data-q"), val = b.getAttribute("data-v"); S.val[q] = S.val[q] === val ? null : val; save(); renderValidar(); renderGate(); }));
+  const ta = el.querySelector("#val-coment"); if (ta) ta.addEventListener("input", () => { S.val.coment = ta.value; save(); });
+  renderGate();
+}
+function renderGate() {
+  const g = S.gate, all = g.g1 && g.g2 && g.g3 && g.g4, el = document.getElementById("gate-verdict");
+  if (!S.a2.done) { el.className = "gate-verdict gate-wait"; el.textContent = "En curso: complete los dos actos y la validación experta."; }
+  else if (S.val.verdict === "rechazar" || S.a2.jn.verdict === "rechazar") { el.className = "gate-verdict gate-wait"; el.textContent = "Aún no: hay un contrato rechazado que requiere rediseño."; }
+  else if (!all) { el.className = "gate-verdict gate-wait"; el.textContent = "Recorrido completo. Falta confirmar los criterios del gate."; }
+  else { el.className = "gate-verdict gate-go"; el.textContent = "Gate superado: los contratos «por ajustar» entran como backlog de la siguiente iteración."; }
+}
+
+/* ===================== EXPORTAR / RESET / RAMA ===================== */
+function flashMsg(t) { const el = document.getElementById("msg"); el.textContent = t; clearTimeout(flashMsg._t); flashMsg._t = setTimeout(() => { el.textContent = ""; }, 3200); }
+function buildExport() {
+  const a = m1(), b = m2(), cr = cronoA1();
+  return { instrumento:"Prototipo medio 02 · Mapa vivo · la ruta de M.P. en dos actos (DGIT 6202)", participante:S.perfil, fecha:new Date().toISOString(), rama:S.a2.rama,
+    acto1:{ dia_final:a.dia, dias_ruta:a.ruta, cargas:a.cargas, dias_sin_certeza_pago:a.sinCerteza, turnos:cr.turnos, acciones:S.a1.acciones },
+    acto2:{ dia_final:b.dia, dias_ruta:b.ruta, evidencia_completa:b.evid, registros:b.regs, decisiones:b.decs, denegaciones:b.den, dias_sin_certeza_pago:b.sinCerteza, decisiones_por_turno:Object.keys(S.a2.t).reduce((o, k) => { o[k] = S.a2.t[k].dec; return o; }, {}), registro_auditable:S.a2.regs, notificaciones:S.a2.notifs },
+    supuestos:S.sup, validacion_jn:S.a2.jn, validacion_actor:S.val,
+    ranking_rupturas:S.rupturas.map((id, i) => ({ prioridad:i + 1, ruptura:RUPTURAS.filter(r => r.id === id)[0].t })), gate:S.gate };
+}
+let downloadsNS = null;
+if (window.claude && typeof window.claude.use === "function") { try { window.claude.use("downloads").then(ns => { downloadsNS = ns; }, () => {}); } catch (e) { /* sin runtime */ } }
+document.getElementById("btn-copy").addEventListener("click", () => {
+  const json = JSON.stringify(buildExport(), null, 2);
+  const fb = () => { const ta = document.createElement("textarea"); ta.value = json; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) { ok = false; } document.body.removeChild(ta); flashMsg(ok ? "Resultados copiados." : "No se pudo copiar: use Descargar JSON."); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).then(() => flashMsg("Resultados copiados."), fb); else fb();
+});
+document.getElementById("btn-download").addEventListener("click", () => {
+  const json = JSON.stringify(buildExport(), null, 2);
+  if (downloadsNS) { downloadsNS.save({ filename:"mapa-vivo-sesion.json", data:json }).then(() => flashMsg("Archivo guardado."), err => flashMsg(err && err.code === "declined" ? "Descarga cancelada." : "No se pudo guardar: use Copiar JSON.")); return; }
+  const url = URL.createObjectURL(new Blob([json], { type:"application/json" })); const a = document.createElement("a"); a.href = url; a.download = "mapa-vivo-sesion.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(() => URL.revokeObjectURL(url), 4000); flashMsg("Si la descarga no inicia, use Copiar JSON.");
+});
+document.getElementById("btn-rama").addEventListener("click", () => { if (!S.a1.done) { flashMsg("Termine primero el Acto 1."); return; } otraRama(); flashMsg("Acto 2 reiniciado con la otra rama; el Acto 1 se conserva."); });
+document.getElementById("btn-reset").addEventListener("click", () => { document.getElementById("reset-confirm").style.display = ""; });
+document.getElementById("btn-reset-ok").addEventListener("click", () => {
+  try { localStorage.removeItem(LS); } catch (e) { /* memoria */ }
+  S = fresh(); PZ.dic.campos[0][1] = "—"; PZ.dic.campos[1][1] = "—"; document.getElementById("reset-confirm").style.display = "none";
+  ["g1","g2","g3","g4"].forEach(k => { document.getElementById(k).checked = false; }); render(); window.scrollTo({ top:0 });
+});
+document.getElementById("btn-saltar").addEventListener("click", () => { document.getElementById("saltar-confirm").style.display = ""; });
+document.getElementById("btn-saltar-ok").addEventListener("click", () => { document.getElementById("saltar-confirm").style.display = "none"; S.inicio = true; S.panel = { tipo:"escritorio" }; saltarActo2(); });
+document.getElementById("seg-a2").addEventListener("click", () => { if (S.a1.done && S.acto === 1) { S.acto = 2; S.panel = { tipo:"clic" }; save(); render(); } });
+document.getElementById("mpve").addEventListener("click", () => { S.panel = { tipo:"micaso", arg:"volver" }; if (S.acto === 2) abrirMP2(); save(); render(); });
+document.getElementById("mpve").addEventListener("keydown", ev => { if (ev.key === "Enter") document.getElementById("mpve").click(); });
+document.getElementById("turnos").addEventListener("click", ev => { const t = ev.target.closest("[data-t]"); if (!t) return; if (t.classList.contains("done")) { flashMsg("Turno " + t.getAttribute("data-t") + " ya jugado: vea su detalle en la comparativa."); document.getElementById("comparativa").scrollIntoView({ behavior:"smooth" }); } });
+["g1","g2","g3","g4"].forEach(k => document.getElementById(k).addEventListener("change", ev => { S.gate[k] = ev.target.checked; save(); renderGate(); }));
+document.getElementById("fab").addEventListener("click", () => { const p = document.getElementById("panel"), r = p.getBoundingClientRect(); if (r.top > window.innerHeight * 0.6) p.scrollIntoView({ behavior:"smooth" }); else document.getElementById("mapcard").scrollIntoView({ behavior:"smooth" }); });
+
+/* ===================== RENDER GENERAL / INICIO ===================== */
+function render() { renderGuion(); renderMarcador(); renderMap(); renderPanel(); renderTira(); renderComparativa(); renderGate(); }
+load();
+buildNodes();
+["g1","g2","g3","g4"].forEach(k => { document.getElementById(k).checked = !!S.gate[k]; });
+if (!S.inicio) S.panel = { tipo:"bienvenida" };
+render();
+renderValidar();
 })();
 </script>
