@@ -6,7 +6,7 @@
     --paper:#F6F8FC; --surface:#FFFFFF; --surface-2:#EDF1F8;
     --ink:#1B2A52; --ink-soft:#4A5878; --ink-faint:#86909F; --line:#D8DEE9;
     --navy:#24407E; --navy-ink:#FFFFFF; --band:#24407E; --band-ink:#FFFFFF;
-    --gold:#B98A1B; --gold-soft:#F5EBD2; --teal:#2E7D74; --teal-soft:#DDEEEA;
+    --gold:#B98A1B; --gold-soft:#F5EBD2; --gold-ink:#8A6510; --on-gold:#FFFFFF; --gold-band:#F0C75E; --teal:#2E7D74; --teal-soft:#DDEEEA;
     --red:#B3372B; --red-soft:#F7E4E1; --amber:#A87C10; --amber-soft:#F6EDD3;
     --green:#2E7D46; --green-soft:#E0F0E5; --ctrl:#97A0B4; --node:#FFFFFF; --sello:#24407E;
     --shadow:0 1px 2px rgba(27,42,82,.06),0 4px 16px rgba(27,42,82,.08);
@@ -16,7 +16,7 @@
       --paper:#101521; --surface:#181F2E; --surface-2:#202940;
       --ink:#E7EBF4; --ink-soft:#ADB7CC; --ink-faint:#6F7A93; --line:#2C3850;
       --navy:#8FA8E0; --navy-ink:#101521; --band:#1C2537; --band-ink:#E7EBF4;
-      --gold:#D9A93E; --gold-soft:#3A3115; --teal:#58B0A5; --teal-soft:#14332F;
+      --gold:#D9A93E; --gold-soft:#3A3115; --gold-ink:#E2B65A; --on-gold:#101521; --gold-band:#F0C75E; --teal:#58B0A5; --teal-soft:#14332F;
       --red:#E0796D; --red-soft:#3D1E1A; --amber:#D9A93E; --amber-soft:#382D10;
       --green:#6CC08A; --green-soft:#16301F; --ctrl:#5D6981; --node:#1C2537; --sello:#8FA8E0;
       --shadow:0 1px 2px rgba(0,0,0,.35),0 4px 16px rgba(0,0,0,.35);
@@ -26,7 +26,7 @@
     --paper:#101521; --surface:#181F2E; --surface-2:#202940;
     --ink:#E7EBF4; --ink-soft:#ADB7CC; --ink-faint:#6F7A93; --line:#2C3850;
     --navy:#8FA8E0; --navy-ink:#101521; --band:#1C2537; --band-ink:#E7EBF4;
-    --gold:#D9A93E; --gold-soft:#3A3115; --teal:#58B0A5; --teal-soft:#14332F;
+    --gold:#D9A93E; --gold-soft:#3A3115; --gold-ink:#E2B65A; --on-gold:#101521; --gold-band:#F0C75E; --teal:#58B0A5; --teal-soft:#14332F;
     --red:#E0796D; --red-soft:#3D1E1A; --amber:#D9A93E; --amber-soft:#382D10;
     --green:#6CC08A; --green-soft:#16301F; --ctrl:#5D6981; --node:#1C2537; --sello:#8FA8E0;
     --shadow:0 1px 2px rgba(0,0,0,.35),0 4px 16px rgba(0,0,0,.35);
@@ -44,31 +44,31 @@
 
   /* Banda */
   .band { background:var(--band); color:var(--band-ink); }
-  .band .wrap { padding:22px 24px 24px; }
-  .eyebrow { font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; opacity:.85; margin-bottom:6px; }
-  .band h1 { font-size:28px; font-weight:700; line-height:1.15; }
-  .band .sub { margin:8px 0 0; max-width:88ch; opacity:.9; font-size:14.5px; }
+  .band .wrap { padding:13px 24px 15px; }
+  .eyebrow { font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; opacity:.85; margin-bottom:3px; }
+  .band h1 { font-size:24px; font-weight:700; line-height:1.15; }
+  .band .sub { margin:5px 0 0; max-width:100ch; opacity:.9; font-size:13.5px; }
 
   .card { background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); }
   .pad { padding:16px 20px; }
 
   /* Ficha + guion */
-  .ficha-guion { display:grid; grid-template-columns:minmax(260px,32%) 1fr; gap:0; margin-top:20px; overflow:hidden; }
-  .ficha { padding:16px 20px; border-right:1px solid var(--line); display:flex; gap:12px; }
+  .ficha-guion { display:grid; grid-template-columns:minmax(260px,32%) 1fr; gap:0; margin-top:14px; overflow:hidden; }
+  .ficha { padding:12px 18px; border-right:1px solid var(--line); display:flex; gap:12px; }
   .avatar { width:44px; height:44px; border-radius:50%; background:var(--navy); color:var(--navy-ink); display:grid; place-items:center; font-weight:700; font-family:"Source Serif 4",serif; flex:none; }
   .ficha .fn { font-weight:600; font-size:15px; }
   .ficha .fd { font-size:12.5px; color:var(--ink-soft); }
-  .guion { padding:14px 20px 12px; }
+  .guion { padding:11px 18px 10px; }
   .seg { display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:3px; background:var(--surface-2); }
   .seg button { font-weight:600; font-size:13px; border:0; background:transparent; color:var(--ink-soft); padding:5px 14px; border-radius:999px; }
   .seg button[aria-pressed="true"] { background:var(--navy); color:var(--navy-ink); }
   .seg button.lock { opacity:.55; }
   .saltar { font-size:12px; color:var(--ink-faint); background:none; border:0; text-decoration:underline; margin-left:10px; padding:0; }
-  .turnos { display:flex; flex-wrap:wrap; gap:6px 4px; margin-top:12px; align-items:center; }
+  .turnos { display:flex; flex-wrap:wrap; gap:6px 8px; margin-top:10px; align-items:center; }
   .turno { display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--ink-faint); border:1px solid var(--line); border-radius:999px; padding:4px 11px 4px 6px; background:var(--surface); }
   .turno .tn { width:20px; height:20px; border-radius:50%; display:grid; place-items:center; font-size:11px; background:var(--surface-2); }
-  .turno.now { color:var(--gold); border-color:var(--gold); }
-  .turno.now .tn { background:var(--gold); color:#fff; animation:blink 2s infinite; }
+  .turno.now { color:var(--gold-ink); border-color:var(--gold); }
+  .turno.now .tn { background:var(--gold-ink); color:var(--on-gold); animation:blink 2s infinite; }
   .turno.done { color:var(--green); border-color:var(--green); }
   .turno.done .tn { background:var(--green); color:#fff; }
   .turno.skip { text-decoration:line-through; }
@@ -79,10 +79,10 @@
 
   /* Sticky */
   .sticky { position:sticky; top:0; z-index:30; background:var(--surface); border-bottom:1px solid var(--line); box-shadow:0 2px 10px rgba(27,42,82,.06); margin-top:16px; border-radius:0 0 12px 12px; }
-  .sticky .in { display:flex; align-items:center; gap:16px; padding:8px 16px; flex-wrap:wrap; }
+  .sticky .in { display:flex; align-items:center; gap:16px; padding:6px 16px; flex-wrap:wrap; }
   .mini { display:flex; gap:5px; align-items:center; }
   .mini span { width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:700; background:var(--surface-2); color:var(--ink-faint); }
-  .mini span.now { background:var(--gold); color:#fff; }
+  .mini span.now { background:var(--gold-ink); color:var(--on-gold); }
   .mini span.done { background:var(--green); color:#fff; }
   .mini span.skip { text-decoration:line-through; }
   .marcador { flex:1; display:grid; grid-template-columns:auto repeat(5, minmax(70px,1fr)); gap:2px 10px; font-family:"IBM Plex Mono",monospace; font-size:12px; font-variant-numeric:tabular-nums; min-width:420px; }
@@ -94,19 +94,28 @@
   .marcador .dim { color:var(--ink-faint); }
   .marcador .best { color:var(--green); } .marcador .worst { color:var(--red); }
   .btn-reset { font-size:12px; border:1px solid var(--red); color:var(--red); background:transparent; border-radius:8px; padding:4px 10px; }
-  @media (max-width:760px) { .sticky .in { gap:8px 12px; } .marcador { grid-template-columns:auto repeat(3,minmax(0,1fr)); min-width:0; width:100%; font-size:11px; } .marcador .c4,.marcador .c5 { display:none; } .marcador .lbl { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } }
+  @media (max-width:760px) { .sticky .in { display:grid; grid-template-columns:1fr auto; gap:6px 10px; } .mini { grid-column:1; } .btn-reset { grid-column:2; justify-self:end; } #reset-confirm { grid-column:1 / -1; } .marcador { grid-column:1 / -1; grid-template-columns:auto repeat(3,minmax(0,1fr)); min-width:0; width:100%; font-size:11px; } .marcador .c4,.marcador .c5 { display:none; } .marcador .lbl { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } }
 
   /* Grid principal */
-  .main { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(380px,1fr); gap:20px; align-items:start; margin-top:18px; }
+  .main { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(380px,1fr); gap:20px; align-items:start; margin-top:16px; }
   .main > * { min-width:0; }
-  @media (max-width:1020px) { .main { grid-template-columns:1fr; } .panel { position:static !important; } }
+  .map-toggle { display:none; font-size:12px; border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:8px; padding:3px 9px; }
+  @media (max-width:1260px) { .main { grid-template-columns:minmax(0,1.25fr) minmax(360px,1fr); } }
+  @media (max-width:1100px) {
+    .main { grid-template-columns:1fr; }
+    .panel { position:static !important; max-height:none !important; overflow:visible !important; }
+    #mapcard { position:sticky; top:78px; z-index:20; }
+    .map-scroll { max-height:38vh; min-height:250px; overflow:auto; }
+    #mapcard.collapsed .map-scroll, #mapcard.collapsed .legend, #mapcard.collapsed .map-note { display:none; }
+    .map-toggle { display:inline-block; }
+  }
   @media (max-width:760px) { .ficha-guion { grid-template-columns:1fr; } .ficha { border-right:0; border-bottom:1px solid var(--line); } .band h1 { font-size:23px; } }
-  .map-head { display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; justify-content:space-between; padding:14px 20px 0; }
+  .map-head { display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; justify-content:space-between; padding:11px 20px 0; }
   .map-head h2 { font-size:18px; }
   .map-head .mode { font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:600; color:var(--ink-soft); }
-  .map-note { font-size:12.5px; color:var(--ink-soft); padding:2px 20px 0; max-width:82ch; }
-  .map-scroll { overflow-x:auto; padding:4px 8px 0; }
-  .map-scroll svg { display:block; width:100%; min-width:640px; height:auto; }
+  .map-note { font-size:12px; color:var(--ink-soft); padding:2px 20px 0; max-width:90ch; }
+  .map-scroll { overflow-x:auto; padding:2px 8px 0; }
+  .map-scroll svg { display:block; width:100%; min-width:560px; height:auto; }
   .legend { display:flex; flex-wrap:wrap; gap:6px 14px; padding:8px 20px 12px; font-size:11.5px; color:var(--ink-soft); }
   .legend span { display:inline-flex; align-items:center; gap:6px; }
   .lg { width:22px; height:0; border-top:2.5px solid; border-radius:2px; }
@@ -134,30 +143,31 @@
   @media (prefers-reduced-motion: reduce) { .node { transition:none; } .live { animation:none; stroke-dashoffset:0; } .live.f-pend { stroke-dasharray:8 5; } .live.f-den { stroke-dasharray:3 4; } .live.f-ok, .live.f-not { stroke-dasharray:none; } }
   .node rect.box { fill:var(--node); stroke:var(--line); stroke-width:1.3; }
   .node text { font-family:"IBM Plex Sans",sans-serif; pointer-events:none; }
-  .node .nname { font-size:12.5px; font-weight:600; fill:var(--ink); }
-  .node .nrole { font-size:9.5px; fill:var(--ink-faint); }
+  .node .nname { font-size:13.5px; font-weight:600; fill:var(--ink); }
+  .node .nrole { font-size:10.5px; fill:var(--ink-faint); }
   .n-focal rect.box { fill:var(--navy); stroke:var(--navy); } .n-focal .nname { fill:var(--navy-ink); } .n-focal .nrole { fill:var(--navy-ink); opacity:.8; }
   .n-ancla rect.box { stroke:var(--gold); stroke-width:1.8; }
   .n-control rect.box { stroke-dasharray:4 3; }
   .n-mod rect.box { fill:var(--teal-soft); stroke:var(--teal); stroke-width:1.8; }
-  .n-mod .nname { fill:var(--teal); font-size:13px; } .n-mod .nrole { fill:var(--ink-soft); }
-  .n-mod .regc { font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--teal); font-weight:500; }
-  .node.off { opacity:.35; }
+  .n-mod .nname { fill:var(--teal); font-size:14.5px; } .n-mod .nrole { fill:var(--ink-soft); font-size:10px; }
+  .n-mod .regc { font-family:"IBM Plex Mono",monospace; font-size:11.5px; fill:var(--teal); font-weight:500; }
+  .node.off rect.box, .node.off .nrole { opacity:.35; } .node.off .nname { opacity:.7; }
   .halo { fill:none; stroke:var(--gold); stroke-width:3; animation:pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
   @media (prefers-reduced-motion: reduce) { .halo { animation:none; } }
-  .letoca { font-family:"IBM Plex Sans",sans-serif; font-size:9px; font-weight:700; letter-spacing:.12em; fill:var(--gold); paint-order:stroke; stroke:var(--surface); stroke-width:4px; }
+  .letoca { font-family:"IBM Plex Sans",sans-serif; font-size:10px; font-weight:700; letter-spacing:.12em; fill:var(--gold-ink); paint-order:stroke; stroke:var(--surface); stroke-width:4px; }
   .sello rect { fill:var(--surface); stroke:var(--sello); stroke-width:1.2; }
-  .sello text { font-family:"IBM Plex Mono",monospace; font-size:9px; font-weight:500; fill:var(--sello); }
+  .sello text { font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:500; fill:var(--sello); }
   .sello.glow rect { stroke:var(--teal); fill:var(--teal-soft); stroke-width:2; } .sello.glow text { fill:var(--teal); }
   .sello.copia rect { stroke:var(--ctrl); stroke-dasharray:2 2; } .sello.copia text { fill:var(--ink-faint); }
   .mochila circle { stroke:var(--surface); stroke-width:2; }
   .mochila text { font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:700; fill:#fff; }
   .anclabox { fill:none; stroke:var(--gold); stroke-width:1.2; stroke-dasharray:6 5; }
-  .anclatag { font-size:10px; font-weight:600; letter-spacing:.08em; fill:var(--gold); }
+  .anclatag { font-size:10.5px; font-weight:600; letter-spacing:.08em; fill:var(--gold-ink); }
+  .elabel { font-size:11px; }
 
   /* Panel */
-  .panel { position:sticky; top:96px; }
+  .panel { position:sticky; top:86px; max-height:calc(100vh - 96px); overflow-y:auto; overscroll-behavior:contain; border-radius:14px; }
   .phead { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 16px; border-bottom:1px solid var(--line); font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; color:var(--ink-soft); }
   .pbody { padding:14px 18px 16px; display:flex; flex-direction:column; gap:12px; }
   .escritorio { border:2px solid var(--gold); }
@@ -165,31 +175,31 @@
   .ahora { border:2px solid var(--gold); border-radius:12px; padding:10px 14px; }
   .a2 .ahora { border-color:var(--teal); }
   .chip { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; border-radius:999px; padding:2px 9px; white-space:nowrap; }
-  .ch-turno { background:var(--gold-soft); color:var(--gold); font-family:"IBM Plex Mono",monospace; }
+  .ch-turno { background:var(--gold-soft); color:var(--gold-ink); font-family:"IBM Plex Mono",monospace; }
   .a2 .ch-turno { background:var(--teal-soft); color:var(--teal); }
   .ch-grey { background:var(--surface-2); color:var(--ink-faint); }
-  .ch-red { background:var(--red-soft); color:var(--red); } .ch-green{ background:var(--green-soft); color:var(--green);} .ch-amber{background:var(--amber-soft);color:var(--amber);} .ch-teal{background:var(--teal-soft);color:var(--teal);} .ch-navy{background:var(--navy);color:var(--navy-ink);}
+  .ch-red { background:var(--red-soft); color:var(--red); } .ch-green{ background:var(--green-soft); color:var(--green);} .ch-amber{background:var(--amber-soft);color:var(--gold-ink);} .ch-teal{background:var(--teal-soft);color:var(--teal);} .ch-navy{background:var(--navy);color:var(--navy-ink);}
   .ahora h2 { font-size:20px; margin:6px 0 2px; }
   .ahora .persona { font-size:12.5px; color:var(--ink-faint); }
   .ahora .unica { margin-top:6px; font-size:13.5px; } .ahora .unica b { font-weight:600; }
   .ahora .desp { font-size:12.5px; color:var(--ink-soft); }
   .paso { background:var(--surface-2); border-radius:10px; padding:8px 12px; font-size:13px; color:var(--ink-soft); }
   .paso .hoy { color:var(--red); } .paso .mod { color:var(--teal); }
-  .guia { display:flex; gap:8px; align-items:flex-start; font-size:13.5px; font-weight:600; }
-  .guia .arr { color:var(--gold); } .a2 .guia .arr { color:var(--teal); }
+  .guia { display:block; font-size:13.5px; font-weight:600; border-left:3px solid var(--gold); padding-left:10px; }
+  .guia .arr { display:block; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-ink); margin-bottom:2px; } .a2 .guia { border-left-color:var(--teal); } .a2 .guia .arr { color:var(--teal); }
   .pasos { display:flex; gap:6px; flex-wrap:wrap; }
   .pasos span { font-size:11px; font-weight:600; border-radius:999px; padding:2px 9px; background:var(--surface-2); color:var(--ink-faint); }
-  .pasos span.on { background:var(--gold); color:#fff; } .a2 .pasos span.on { background:var(--teal); color:#fff; }
+  .pasos span.on { background:var(--gold-ink); color:var(--on-gold); } .a2 .pasos span.on { background:var(--teal); color:#fff; }
   .pasos span.ok { background:var(--green-soft); color:var(--green); }
   .contrato { border:1px solid var(--gold); background:var(--gold-soft); border-radius:10px; padding:9px 12px; }
   .contrato.tachado { border-color:var(--line); background:var(--surface-2); color:var(--ink-faint); text-decoration:line-through; }
-  .contrato .ct { font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:var(--gold); margin-bottom:4px; text-decoration:none; }
+  .contrato .ct { font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:var(--gold-ink); margin-bottom:4px; text-decoration:none; }
   .contrato .cells { display:grid; grid-template-columns:1fr 1fr; gap:4px 12px; font-size:12.5px; }
   .contrato .cells b { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; }
   .contrato.sum { border-color:var(--teal); background:var(--teal-soft); } .contrato.sum .ct { color:var(--teal); }
   .micro { font-size:11.5px; color:var(--ink-faint); }
   .sello-ac { display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; border:2px solid var(--teal); color:var(--teal); border-radius:6px; padding:2px 8px; box-shadow:inset 0 0 0 2px var(--surface), inset 0 0 0 3px var(--teal); background:var(--surface); white-space:nowrap; transition:color .4s, border-color .4s; }
-  .sello-ac.pend { border-color:var(--gold); color:var(--gold); box-shadow:inset 0 0 0 2px var(--surface), inset 0 0 0 3px var(--gold); }
+  .sello-ac.pend { border-color:var(--gold-ink); color:var(--gold-ink); box-shadow:inset 0 0 0 2px var(--surface), inset 0 0 0 3px var(--gold-ink); }
   .sello-ac.sin { border-color:var(--red); color:var(--red); border-style:dashed; box-shadow:none; }
   .docrow { display:flex; align-items:center; gap:9px; border:1px solid var(--line); border-radius:10px; padding:7px 10px; background:var(--surface-2); flex-wrap:wrap; }
   .docrow.inactive { opacity:.55; }
@@ -211,7 +221,7 @@
   .btn { border-radius:9px; padding:8px 14px; font-weight:600; border:1.5px solid var(--navy); background:var(--navy); color:var(--navy-ink); }
   .btn.teal { border-color:var(--teal); background:var(--teal); color:#fff; }
   .btn.sec { background:var(--surface); color:var(--navy); }
-  .btn.gold { border-color:var(--gold); background:var(--gold); color:#fff; }
+  .btn.gold { border-color:var(--gold-ink); background:var(--gold-ink); color:var(--on-gold); }
   .btn.ghost { background:transparent; color:var(--ink-soft); border-color:var(--line); }
   .btn.danger { background:var(--surface); color:var(--red); border-color:var(--red); }
   .btn.wide { width:100%; }
@@ -227,14 +237,15 @@
   .req { display:flex; align-items:center; gap:8px; font-size:13px; padding:3px 0; color:var(--ink-soft); }
   .req .tk { width:18px; height:18px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:700; background:var(--surface-2); color:var(--ink-faint); flex:none; }
   .req.ok .tk { background:var(--green-soft); color:var(--green); } .req.no .tk { background:var(--red-soft); color:var(--red); }
-  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px; }
+  .kpis { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
   .kpi { background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:8px 11px; }
-  .kpi b { display:block; font-size:20px; font-variant-numeric:tabular-nums; } .kpi span { font-size:11.5px; color:var(--ink-soft); }
+  .kpi b { display:block; font-size:22px; font-family:"Source Serif 4",Georgia,serif; font-variant-numeric:tabular-nums; } .kpi span { font-size:11.5px; color:var(--ink-soft); }
   .kpi.bad b { color:var(--red); } .kpi.good b { color:var(--green); }
   .tbl { width:100%; border-collapse:collapse; font-size:12.5px; } .tbl th,.tbl td { text-align:left; padding:5px 6px; border-bottom:1px solid var(--line); vertical-align:top; } .tbl th { font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
   .tbl td.den { color:var(--red); }
   .verif { display:flex; gap:9px; align-items:flex-start; background:var(--green-soft); border-radius:10px; padding:8px 11px; font-size:13px; }
   .verif .tk { color:var(--green); font-weight:700; }
+  .verif.warn { background:var(--amber-soft); } .verif.warn .tk { color:var(--gold-ink); }
   .optrow { display:flex; gap:6px; flex-wrap:wrap; }
   .optrow button { font-weight:600; font-size:12.5px; border-radius:999px; padding:5px 12px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink-soft); }
   .optrow button[aria-pressed="true"] { background:var(--navy); color:var(--navy-ink); border-color:var(--navy); }
@@ -274,7 +285,7 @@
   .grid3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin-top:14px; }
   ol.rank { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
   ol.rank li { display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:6px 9px; font-size:12.5px; }
-  ol.rank .pos { font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--gold); min-width:18px; text-align:center; }
+  ol.rank .pos { font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--gold-ink); min-width:18px; text-align:center; }
   ol.rank .rt { flex:1; } ol.rank .mv button { border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:6px; width:25px; height:25px; line-height:1; }
   details { border:1px solid var(--line); border-radius:10px; padding:8px 12px; margin-top:12px; }
   details summary { cursor:pointer; font-weight:600; font-size:13px; }
@@ -287,12 +298,11 @@
   .gate-crit { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; }
   .gate-crit label { display:flex; gap:9px; font-size:13px; cursor:pointer; } .gate-crit input { accent-color:var(--teal); }
   .gate-verdict { margin-top:10px; border-radius:9px; padding:8px 12px; font-weight:600; font-size:13px; }
-  .gate-go { background:var(--green-soft); color:var(--green); } .gate-wait { background:var(--amber-soft); color:var(--amber); }
+  .gate-go { background:var(--green-soft); color:var(--green); } .gate-wait { background:var(--amber-soft); color:var(--gold-ink); }
   .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; align-items:center; }
   .msg { font-size:13px; color:var(--teal); font-weight:600; }
   footer.src { margin-top:28px; border-top:1px solid var(--line); padding-top:12px; color:var(--ink-faint); font-size:12px; max-width:110ch; }
-  .fab { display:none; position:fixed; right:16px; bottom:16px; z-index:35; }
-  @media (max-width:1020px) { .fab { display:block; } }
+  .fab { display:none; }
 </style>
 <header class="band"><div class="wrap">
   <div class="eyebrow">Prototipo medio 02 &middot; DGIT 6202 &middot; Caso de estudio SURA &middot; Escenario sint&eacute;tico</div>
@@ -334,7 +344,7 @@
 
   <div class="main">
     <section class="card" id="mapcard" aria-label="Mapa vivo de actores">
-      <div class="map-head"><h2>Red del proceso</h2><span class="mode" id="map-mode">AS-IS &middot; red fragmentada</span></div>
+      <div class="map-head"><h2>Red del proceso</h2><span><span class="mode" id="map-mode">AS-IS &middot; red fragmentada</span> <button type="button" class="map-toggle" id="map-toggle">Ocultar mapa</button></span></div>
       <p class="map-note" id="map-note"></p>
       <div class="map-scroll"><svg id="mapa" viewBox="0 0 1000 645" role="img" aria-label="Mapa de los 12 actores de la ruta de incapacidad">
         <g id="g-frame"></g><g id="g-edges"></g><g id="g-flows"></g><g id="g-nodes"></g><g id="g-over"></g>
@@ -370,6 +380,7 @@
       <button type="button" class="btn" id="btn-copy">Copiar resultados (JSON)</button>
       <button type="button" class="btn sec" id="btn-download">Descargar JSON</button>
       <button type="button" class="btn ghost" id="btn-rama">Jugar la otra rama</button>
+      <span id="rama-confirm" style="display:none;font-size:12.5px;color:var(--ink-soft)">Se reinicia solo el Acto 2 (el Acto 1 y las validaciones se conservan). <button type="button" class="btn ghost" style="padding:4px 10px" id="btn-rama-ok">S&iacute;, jugar la otra rama</button></span>
       <span class="msg" id="msg" role="status"></span>
     </div>
   </section>
@@ -464,25 +475,25 @@ const T1 = [
 /* Turnos Acto 2 (CON EL MÓDULO) */
 const T2 = [
   { n:1, actor:"eps", persona:"Ana Torres · analista de calificación", unica:"calificar el origen de la incapacidad de M.P.", despues:"ARL SURA responde a su calificación",
-    fin:"Calificación de origen en primera oportunidad", resp:"Ana Torres · EPS SURA", plazo:"10 días hábiles", vence:164,
+    fin:"Calificación de origen en primera oportunidad", resp:"Ana Torres · EPS SURA", plazo:"10 días hábiles (≈ 14 calendario)", plazoCal:14,
     piezas:["hc","apt"], propias:["inc"], fuera:["hl"],
     opciones:[{ id:"laboral", t:"Origen laboral", m:"Índice NIOSH 2,1 y cargas de 12–18 kg compatibles con M54.4; exposición documentada en la matriz APT v.2.", sug:true },{ id:"comun", t:"Origen común", m:"Sin nexo suficiente entre la exposición documentada y el diagnóstico." }],
     notif:{ a:["ARL SURA","AFP Andina","M.P."], pend:"arl", plazo:"plazo de respuesta ARL: 10 días hábiles", vence:164 },
     pasoHoy:null, pasoMod:null },
   { n:2, actor:"arl", persona:"Camilo Rueda · investigador de origen", unica:"responder a la calificación: controvertir o aceptar", despues:"la Junta Regional dictamina (si hay controversia)",
-    fin:"Investigación de origen y prestaciones", resp:"Camilo Rueda · ARL SURA", plazo:"15 días hábiles", vence:175,
+    fin:"Investigación de origen y prestaciones", resp:"Camilo Rueda · ARL SURA", plazo:"15 días hábiles (≈ 21 calendario)", plazoCal:21,
     piezas:["hc","apt","inc"], propias:[], fuera:["hl"],
-    opciones:[{ id:"controvertir", t:"Controvertir ante la Junta Regional", m:"La magnitud de la exposición no explica por sí sola la severidad del cuadro; se solicita dictamen de primera instancia.", sug:true },{ id:"aceptar", t:"Aceptar la calificación", m:"La evidencia consultada por finalidad respalda la calificación de la EPS; no hay mérito para controversia." }],
+    opciones:[{ id:"controvertir", t:"Controvertir ante la Junta Regional", m:"La ARL no comparte la lectura del nexo causal: la evolución clínica sugiere un componente degenerativo previo. Pide dictamen de primera instancia.", sug:true, chip:"preseleccionada · rama de controversia" },{ id:"aceptar", t:"Aceptar la calificación", m:"La evidencia consultada por finalidad respalda la calificación de la EPS; no hay mérito para controversia.", chip:"rama de aceptación" }],
     notif:{ a:["Junta Regional","EPS SURA","M.P."], pend:"jr", plazo:"radicación ante la Junta Regional", vence:164 },
     pasoHoy:"la calificación llegó por correo el día 204, sin adjuntos completos.", pasoMod:"notificación con acuse recibida; el expediente es consultable por finalidad." },
   { n:3, actor:"jr", persona:"Dra. Luisa Pardo · médica ponente", unica:"emitir el dictamen de primera instancia", despues:"la AFP decide quién paga",
-    fin:"Dictamen de primera instancia", resp:"Dra. Luisa Pardo · Junta Regional", plazo:"30 días hábiles", vence:190,
+    fin:"Dictamen de primera instancia", resp:"Dra. Luisa Pardo · Junta Regional", plazo:"22 días hábiles (≈ 32 calendario)", plazoCal:32,
     piezas:["hc","apt","inc","hl"], propias:[], fuera:[],
     opciones:[{ id:"lab38", t:"Origen laboral · PCL 38,5 %", m:"Nexo causal acreditado por la exposición documentada; pérdida de capacidad laboral parcial según tabla vigente.", sug:true },{ id:"com12", t:"Origen común · PCL 12,0 %", m:"Sin nexo causal ocupacional acreditado." }],
     notif:{ a:["EPS SURA","ARL SURA","AFP Andina","M.P."], pend:"arl", plazo:"término de apelación: 10 días hábiles", vence:175 },
     pasoHoy:"el expediente llegó en papel el día 258, incompleto.", pasoMod:"radicación con acuse; checklist verificado por el módulo." },
   { n:4, actor:"afp", persona:"Diana Prieto · analista de prestaciones", unica:"decidir quién paga desde el día 181", despues:"M.P. revisa su caso",
-    fin:"Estudio de prestaciones y competencia", resp:"Diana Prieto · AFP Andina", plazo:"20 días hábiles", vence:180,
+    fin:"Estudio de prestaciones y competencia", resp:"Diana Prieto · AFP Andina", plazo:"10 días hábiles (≈ 14 calendario)", plazoCal:14,
     piezas:["dic","inc"], propias:["hl"], fuera:["apt"],
     opciones:[{ id:"subsidio", t:"Asumir subsidio transitorio desde el día 181 hasta la firmeza del dictamen", m:"Continuidad del ingreso mientras se define la firmeza; sin ruptura de pagos.", sug:true },{ id:"remitir", t:"Remitir a ARL SURA", m:"Competencia de la ARL por origen laboral en firme." }],
     notif:{ a:["M.P.","EPS SURA","ARL SURA"], pend:null, plazo:"decisión sobre el pago desde el día 181", vence:180 },
@@ -541,34 +552,35 @@ const reduced = () => window.matchMedia && window.matchMedia("(prefers-reduced-m
 const PARAM = { oficio:"oficio", reiter:"reiter", fisica:"fisica", devol:"devol", recibir:"reiter", pedir:"fisica", correo:"correo", decision:null };
 function cronoA1() {
   // Recalcula días a partir de la lista de acciones y los supuestos vigentes
-  let dia = 150; const turnos = {}; let cargas = 0; const dias = [];
+  // Cada turno va desde la decisión del turno anterior hasta su propia decisión (el correo de transición cuenta para el turno que espera)
+  let dia = 150, ini = 150; const turnos = {}; let cargas = 0; const dias = [];
   S.a1.acciones.forEach(ac => {
     const p = PARAM[ac.tipo]; if (p) dia += S.sup[p];
-    if (!turnos[ac.t]) turnos[ac.t] = { ini: ac.tipo === "correo" ? null : dia, fin: dia, cargas:0 };
+    if (ac.tipo === "correo") { dias.push(dia); return; }
+    if (!turnos[ac.t]) turnos[ac.t] = { ini, fin: dia, cargas:0 };
     turnos[ac.t].fin = dia;
-    if (ac.tipo === "decision") turnos[ac.t].dec = dia;
+    if (ac.tipo === "decision") { turnos[ac.t].dec = dia; ini = dia; }
     if (["fisica","devol","pedir"].indexOf(ac.tipo) >= 0) { cargas++; turnos[ac.t].cargas++; }
     dias.push(dia);
   });
-  // inicio de cada turno = día tras el correo del turno anterior
-  let prev = 150;
-  [1,2,3,4].forEach(t => { if (turnos[t]) { turnos[t].ini = prev; prev = turnos[t].fin; } });
   return { dia, turnos, cargas, dias };
 }
 function diaA1() { return cronoA1().dia; }
 function cargasA1() { return cronoA1().cargas; }
 function stA1(t, p) { return S.a1.st[t + ":" + p] || 0; }
-function bit1(tipo, txt) { S.a1.bit.push({ t:S.a1.turno, dia:diaA1(), tipo, txt }); }
+function bit1(tipo, txt) { S.a1.bit.push({ t:S.a1.turno, i:S.a1.acciones.length - 1, tipo, txt }); }
 function accionA1(tipo, pieza) {
-  const t = S.a1.turno, cfg = T1[t - 1], actor = A[cfg.actor];
+  const t = S.a1.turno, cfg = T1[t - 1];
+  const key = t + ":" + pieza, pz = PZ[pieza];
+  const esperado = { oficio:0, reiter:1, fisica:2, devol:0, recibir:1, pedir:0 }[tipo];
+  if (esperado == null || (S.a1.st[key] || 0) !== esperado || S.a1.dec[t]) return;
   S.a1.acciones.push({ t, tipo, pieza });
-  const key = t + ":" + pieza, pz = PZ[pieza], d = diaA1();
-  if (tipo === "oficio") { S.a1.st[key] = 1; bit1("acc", `Solicitó «${pz.n}» a ${A[pz.cust].n} por oficio.`); bit1("fri", `Día ${d}: la solicitud fue devuelta o no obtuvo respuesta en término. Sin acuse trazable.`); flash = { a:cfg.actor, b:pz.cust, cls:"f-pend" }; }
-  else if (tipo === "reiter") { S.a1.st[key] = 2; bit1("acc", `Reiteró la solicitud de «${pz.n}».`); bit1("fri", `Día ${d}: llegó una copia incompleta o sin fecha ni responsable.`); flash = { a:cfg.actor, b:pz.cust, cls:"f-pend" }; }
-  else if (tipo === "fisica") { S.a1.st[key] = 3; bit1("acc", `Le pidió a M.P. que consiguiera y aportara «${pz.n}» en físico.`); bit1("hito", `Día ${d}: «${pz.n}» disponible como copia física, sin versión. El costo de coordinación recayó en M.P.`); flash = { a:"tra", b:cfg.actor, cls:"f-ok" }; }
-  else if (tipo === "devol") { S.a1.st[key] = 1; bit1("acc", "Devolvió el expediente a M.P. para completarlo (falta la historia laboral)."); bit1("fri", `Día ${d}: M.P. y su cuidadora fueron a la AFP a pedir el certificado en papel.`); flash = { a:cfg.actor, b:"tra", cls:"f-pend" }; }
-  else if (tipo === "recibir") { S.a1.st[key] = 3; bit1("hito", `Día ${d}: expediente reingresado con la historia laboral en físico, sin versión.`); flash = { a:"tra", b:cfg.actor, cls:"f-ok" }; }
-  else if (tipo === "pedir") { S.a1.st[key] = 3; bit1("acc", "Pidió a M.P. el dictamen y los certificados en físico."); bit1("hito", `Día ${d}: documentos recibidos de M.P. Entre el día 181 y hoy nadie le confirmó quién pagaba.`); flash = { a:"tra", b:cfg.actor, cls:"f-ok" }; }
+  if (tipo === "oficio") { S.a1.st[key] = 1; bit1("acc", `Solicitó «${pz.n}» a ${A[pz.cust].n} por oficio.`); bit1("fri", `La solicitud fue devuelta o no obtuvo respuesta en término. Sin acuse trazable.`); flash = { a:cfg.actor, b:pz.cust, cls:"f-pend" }; }
+  else if (tipo === "reiter") { S.a1.st[key] = 2; bit1("acc", `Reiteró la solicitud de «${pz.n}».`); bit1("fri", `Llegó una copia incompleta o sin fecha ni responsable.`); flash = { a:cfg.actor, b:pz.cust, cls:"f-pend" }; }
+  else if (tipo === "fisica") { S.a1.st[key] = 3; bit1("acc", `Le pidió a M.P. que consiguiera y aportara «${pz.n}» en físico.`); bit1("hito", `«${pz.n}» disponible como copia física, sin versión. El costo de coordinación recayó en M.P.`); flash = { a:"tra", b:cfg.actor, cls:"f-ok" }; }
+  else if (tipo === "devol") { S.a1.st[key] = 1; bit1("acc", "Devolvió el expediente a M.P. para completarlo (falta la historia laboral)."); bit1("fri", `M.P. y su cuidadora fueron a la AFP a pedir el certificado en papel.`); flash = { a:cfg.actor, b:"tra", cls:"f-pend" }; }
+  else if (tipo === "recibir") { S.a1.st[key] = 3; bit1("hito", `Expediente reingresado con la historia laboral en físico, sin versión.`); flash = { a:"tra", b:cfg.actor, cls:"f-ok" }; }
+  else if (tipo === "pedir") { S.a1.st[key] = 3; bit1("acc", "Pidió a M.P. el dictamen y los certificados en físico."); bit1("hito", `Documentos recibidos de M.P. Entre el día 181 y hoy nadie le confirmó quién pagaba.`); flash = { a:"tra", b:cfg.actor, cls:"f-ok" }; }
   save(); render();
 }
 function listoA1(t) {
@@ -581,7 +593,7 @@ function decidirA1() {
   if (!listoA1(t) || S.a1.dec[t]) return;
   S.a1.acciones.push({ t, tipo:"decision" });
   S.a1.dec[t] = true;
-  bit1("hito", `Día ${diaA1()}: ${cfg.hito}`);
+  bit1("hito", cfg.hito.charAt(0).toUpperCase() + cfg.hito.slice(1));
   flash = { a:cfg.actor, b:"tra", cls:"f-not" };
   save(); render();
 }
@@ -602,19 +614,21 @@ function pendientesA1(t) {
   return out;
 }
 function reproducirTurno(cb) {
-  const t = S.a1.turno, lista = pendientesA1(t);
-  if (!lista.length) { if (cb) cb(); return; }
+  if (playing || S.acto !== 1) return;
+  const t = S.a1.turno;
+  if (!pendientesA1(t).length) { if (cb) cb(); return; }
   playing = true; render();
   const paso = reduced() ? 0 : 600;
-  let i = 0;
   (function next() {
-    if (i >= lista.length) { playing = false; save(); render(); if (cb) cb(); return; }
-    const [tipo, p] = lista[i++];
+    const lista = pendientesA1(t);
+    if (S.a1.turno !== t || !lista.length) { playing = false; save(); render(); if (cb) cb(); return; }
+    const [tipo, p] = lista[0];
     if (tipo === "decision") decidirA1(); else accionA1(tipo, p);
     setTimeout(next, paso);
   })();
 }
 function saltarActo2() {
+  if (playing || S.acto !== 1) return;
   playing = true; render();
   const paso = reduced() ? 0 : 250;
   (function loop() {
@@ -633,11 +647,14 @@ function irActo2() {
 }
 
 /* ===================== ACTO 2 · CON EL MÓDULO ===================== */
+function venceDe(t) { const c = T2[t - 1]; return (S.a2.iniT[t] || 150) + (c && c.plazoCal ? c.plazoCal : 14); }
 function tt(t) { if (!S.a2.t[t]) S.a2.t[t] = { contrato:false, docs:{}, den:{}, dec:null, visor:null, req:false, sum:false, chk:false }; return S.a2.t[t]; }
 function cfg2(t) {
   const c = Object.assign({}, T2[t - 1]);
   if (t === 4 && S.a2.rama === "B") {
     c.piezas = ["inc","hc"]; c.fuera = ["apt"];
+    c.pasoHoy = "la calificación quedó en firme sin controversia; la AFP se enteró por M.P., no por la EPS, el día 302.";
+    c.pasoMod = "notificación con acuse; certificados y resumen clínico consultables por finalidad.";
     const lab = tt(1).dec === "laboral";
     c.opciones = lab
       ? [{ id:"remitir", t:"Remitir a ARL SURA", m:"Origen laboral en firme sin controversia: competencia de la ARL para prestaciones.", sug:true },{ id:"subsidio", t:"Asumir subsidio transitorio desde el día 181", m:"Continuidad del ingreso mientras la ARL asume." }]
@@ -657,8 +674,8 @@ function activar() {
   const t = S.a2.turno, c = cfg2(t), x = tt(t);
   if (x.contrato) return;
   x.contrato = true;
-  const id = reg(c.actor, "contrato activado", null, c.fin, "ok", `responsable ${c.resp} · vence día ${c.vence}`);
-  bit2("log", `${id} · contrato de acceso activado · finalidad: ${c.fin} · responsable: ${c.resp} · vence día ${c.vence}`);
+  const id = reg(c.actor, "contrato activado", null, c.fin, "ok", `responsable ${c.resp} · vence día ${venceDe(t)}`);
+  bit2("log", `${id} · contrato de acceso activado · finalidad: ${c.fin} · responsable: ${c.resp} · vence día ${venceDe(t)}`);
   x.acuseContrato = id;
   flash = { a:c.actor, b:"mod", cls:"f-ok" };
   save(); render();
@@ -726,9 +743,9 @@ function firmar(op) {
   if (t === 2) S.a2.rama = op === "aceptar" ? "B" : "A";
   if (t === 3) { S.a2.dic = { lab: op === "lab38" }; aplicarDic(S.a2.dic); glow = "dic"; }
   let notif = c.notif;
-  if (t === 2 && op === "aceptar") notif = { a:["AFP Andina","EPS SURA","M.P."], pend:"afp", plazo:"la calificación queda en firme · pasa a prestaciones", vence:c.vence };
+  if (t === 2 && op === "aceptar") notif = { a:["AFP Andina","EPS SURA","M.P."], pend:"afp", plazo:"la calificación queda en firme · pasa a prestaciones", vence:venceDe(t) };
   const nid = reg(c.actor, "notificación", null, c.fin, "ok", `a ${notif.a.join(", ")} · ${notif.plazo}` + (notif.pend ? ` · acuse pendiente de ${A[notif.pend].n}` : ""));
-  S.a2.notifs.push({ t, dia:S.a2.dias, a:notif.a, plazo:notif.plazo, vence:notif.vence, pend:notif.pend, acuse:null, id:nid });
+  S.a2.notifs.push({ t, dia:S.a2.dias, a:notif.a, plazo:notif.plazo, vence:S.a2.dias + 14, pend:notif.pend, acuse:null, id:nid });
   bit2("log", `${nid} · notificación a ${notif.a.join(", ")} · ${notif.plazo}`);
   flash = { a:c.actor, b:"tra", cls:"f-not" };
   save(); render();
@@ -786,7 +803,7 @@ function m2() {
 }
 
 /* ===================== MAPA VIVO ===================== */
-const NW = 152, NH = 54, MW = 262, MH = 80;
+const NW = 160, NH = 54, MW = 262, MH = 80;
 const svg = document.getElementById("mapa");
 const G = { frame:document.getElementById("g-frame"), edges:document.getElementById("g-edges"), flows:document.getElementById("g-flows"), nodes:document.getElementById("g-nodes"), over:document.getElementById("g-over") };
 function layout() { return S.acto === 1 ? "asis" : "tobe"; }
@@ -829,7 +846,7 @@ function poly(ids, cls, extra) {
   return `<polyline class="${cls}${extra || ""}" points="${ids.map(i => pos(i).join(",")).join(" ")}"></polyline>`;
 }
 function selloSvg(p, x, y, cls) {
-  return `<g class="sello ${cls || ""}" transform="translate(${x},${y})"><rect x="-17" y="-8" width="34" height="16" rx="3"></rect><text x="0" y="3.5" text-anchor="middle">${PZ[p].sl}</text></g>`;
+  return `<g class="sello ${cls || ""}" transform="translate(${x},${y})"><rect x="-19" y="-8.5" width="38" height="17" rx="3"></rect><text x="0" y="4" text-anchor="middle">${PZ[p].sl}</text></g>`;
 }
 function renderMap() {
   const lay = layout(), rel = relevantes(), ta = turnActor();
@@ -845,7 +862,7 @@ function renderMap() {
   if (rc) { const n = S.a2.regs.length, d = S.a2.regs.filter(r => r.res === "denegado").length; rc.textContent = "REG " + (n < 10 ? "00" : n < 100 ? "0" : "") + n + (d ? ` · ${d} denegado${d > 1 ? "s" : ""}` : ""); }
   // marco SURA
   const e = pos("eps"), r = pos("arl");
-  const fx1 = Math.min(e[0], r[0]) - NW/2 - 14, fx2 = Math.max(e[0], r[0]) + NW/2 + 14, fy1 = Math.min(e[1], r[1]) - NH/2 - 26, fy2 = Math.max(e[1], r[1]) + NH/2 + 12;
+  const fx1 = Math.min(e[0], r[0]) - NW/2 - 14, fx2 = Math.max(e[0], r[0]) + NW/2 + 14, fy1 = Math.min(e[1], r[1]) - NH/2 - 26, fy2 = Math.max(e[1], r[1]) + NH/2 + 30;
   G.frame.innerHTML = `<rect class="anclabox" x="${fx1}" y="${fy1}" width="${fx2-fx1}" height="${fy2-fy1}" rx="14"></rect><text class="anclatag" x="${(fx1+fx2)/2}" y="${fy1+15}" text-anchor="middle">SURA · ORGANIZACIÓN ANCLA</text>`;
   // aristas base
   G.edges.innerHTML = BASE_EDGES[lay].map(ed => {
@@ -887,7 +904,8 @@ function renderMap() {
   const sellos = [["hc","ips"],["apt","emp"],["inc","eps"],["hl","afp"]];
   if (S.a2.dic || (S.acto === 1 && S.a1.dec[3])) sellos.push(["dic","jr"]);
   sellos.forEach(([p, cust]) => { const q = pos(cust); ov += selloSvg(p, q[0] - NW/2 + 24, q[1] + NH/2 + 2, glow === p ? "glow" : ""); });
-  copias.forEach(([p, actor], i) => { const q = pos(actor); ov += selloSvg(p, q[0] + NW/2 - 24 - (i % 2) * 38, q[1] + NH/2 + 2, "copia"); });
+  const porActor = {}; copias.forEach(([p, a]) => { (porActor[a] = porActor[a] || []).push(p); });
+  Object.keys(porActor).forEach(a => { const q = pos(a); porActor[a].forEach((p, i) => { ov += selloSvg(p, q[0] + NW/2 - 22 - i * 42, q[1] + NH/2 + 2, "copia"); }); });
   // halo
   const hp = pos(ta); const hw = ta === "mod" ? MW : NW, hh = NH;
   ov += `<rect class="halo" x="${hp[0]-hw/2-6}" y="${hp[1]-hh/2-6}" width="${hw+12}" height="${hh+12}" rx="14"></rect><text class="letoca" x="${hp[0]+hw/2-4}" y="${hp[1]+hh/2+15}" text-anchor="end">LE TOCA</text>`;
@@ -916,8 +934,8 @@ function renderMPve() {
     const etapa = t >= 5 ? (t === 5 ? "Vista de estado" : "Validación experta") : `Turno ${t} · ${c.fin}`;
     const cons = S.a2.regs.filter(r => r.acc === "consulta");
     const last = cons[cons.length - 1];
-    const ult = last ? (last.res === "ok" ? `Última consulta: ${A[last.actor].n} · ${PZ[last.pieza].n} · ${last.id}` : `<span style="color:var(--gold)">Intento denegado: ${A[last.actor].n} · ${PZ[last.pieza].n} · ${last.id}</span>`) : "Aún nadie ha consultado su evidencia";
-    el.innerHTML = `<span class="k">M.P. VE</span><span>${esc(etapa)}</span><span>Responsable: ${t <= 4 ? esc(A[c.actor].n) + " · vence día " + c.vence : "—"}</span><span class="flash">${ult}</span><span class="badge bd-green">0 documentos que llevar</span>`;
+    const ult = last ? (last.res === "ok" ? `Última consulta: ${A[last.actor].n} · ${PZ[last.pieza].n} · ${last.id}` : `<span style="color:var(--gold-band)">Intento denegado: ${A[last.actor].n} · ${PZ[last.pieza].n} · ${last.id}</span>`) : "Aún nadie ha consultado su evidencia";
+    el.innerHTML = `<span class="k">M.P. VE</span><span>${esc(etapa)}</span><span>Responsable: ${t <= 4 ? esc(A[c.actor].n) + " · vence día " + venceDe(t) : "—"}</span><span class="flash">${ult}</span><span class="badge bd-green">0 documentos que llevar</span>`;
   }
 }
 
@@ -926,7 +944,7 @@ const panelEl = document.getElementById("panel");
 function abrirActor(id) {
   const ta = turnActor();
   if (id === "mod") { S.panel = { tipo:"modulo" }; }
-  else if (id === ta) { S.panel = { tipo:"escritorio" }; if (!S.inicio) S.inicio = true; }
+  else if (id === ta) { S.panel = { tipo:"escritorio" }; if (!S.inicio) S.inicio = true; if (S.acto === 2 && S.a2.turno === 6) abrirJN(); }
   else if (id === "tra") { S.panel = { tipo:"micaso", arg:"volver" }; if (S.acto === 2) abrirMP2(); }
   else if (A[id].g === "control") { S.panel = { tipo:"control", arg:id }; supervision(id); }
   else { S.panel = { tipo:"info", arg:id }; }
@@ -954,7 +972,9 @@ function pasos(lista, activo) {
   return `<div class="pasos">${lista.map((p, i) => `<span class="${i < activo ? "ok" : i === activo ? "on" : ""}">${["①","②","③","④"][i]} ${p}</span>`).join("")}</div>`;
 }
 function bitacora(items, titulo) {
-  const ul = items.length ? `<ul>${items.slice(-6).map(b => `<li class="b-${b.tipo}"><span class="d">día ${b.dia}</span>${esc(b.txt)}</li>`).join("")}</ul>` : `<p class="micro">Sin actividad todavía.</p>`;
+  const dias = S.acto === 1 ? cronoA1().dias : null;
+  const diaDe = b => (b.i != null && dias && dias[b.i] != null) ? dias[b.i] : b.dia;
+  const ul = items.length ? `<ul>${items.slice(-6).map(b => `<li class="b-${b.tipo}"><span class="d">día ${diaDe(b)}</span>${esc(b.txt)}</li>`).join("")}</ul>` : `<p class="micro">Sin actividad todavía.</p>`;
   return `<div class="bit"><h3>${titulo}</h3>${ul}</div>`;
 }
 function chipA1(s) { return ["<span class='chip ch-grey'>sin solicitar</span>","<span class='chip ch-amber'>devuelta · sin acuse</span>","<span class='chip ch-amber'>incompleta</span>","<span class='chip ch-green'>disponible (copia física, sin versión)</span>"][s]; }
@@ -1006,7 +1026,7 @@ function visor(p, actor, regId) {
     : `<div class="frow ret"><span class="fk">${esc(c[0])}</span><span class="fv"><span>🔒 retenido en origen · regla 3</span></span></div>`).join("");
   const r = S.a2.regs.filter(x => x.id === regId)[0];
   return `<div class="visor"><div class="vh"><b>${esc(pz.n)}</b> · custodio ${esc(pz.custN)} · vista para: ${esc(cfg2(Math.min(S.a2.turno, 6)).fin || "")} · <b>${v.length} de ${pz.campos.length} campos</b></div>${filas}
-    <div class="vf">permanece en ${esc(pz.custN)} · versión ${esc(pz.ver)} <span class="sello-ac">ACUSE · ${regId} · DÍA ${r ? r.dia : S.a2.dias}</span> <button type="button" class="btn ghost" style="padding:2px 8px;font-size:11px" data-act="consultar" data-p="${p}">Cerrar ficha</button></div>
+    <div class="vf">permanece en ${esc(pz.custN)} · versión ${esc(pz.ver)} <span class="sello-ac">CONSTANCIA · ${regId} · DÍA ${r ? r.dia : S.a2.dias}</span> <button type="button" class="btn ghost" style="padding:2px 8px;font-size:11px" data-act="consultar" data-p="${p}">Cerrar ficha</button></div>
     <div class="micro">Regla 3 · mínimo necesario: cada actor ve solo los campos pertinentes a su finalidad.</div></div>`;
 }
 function escritorio2() {
@@ -1018,11 +1038,13 @@ function escritorio2() {
   const notifPrev = S.a2.notifs.filter(n => n.pend === c.actor && n.t < t).slice(-1)[0];
   const paso = c.pasoHoy ? `<div class="paso"><b>Lo que pasó desde el turno anterior</b><br><span class="hoy">Hoy: ${esc(c.pasoHoy)}</span><br><span class="mod">Con el módulo: ${esc(c.pasoMod)}</span> ${notifPrev ? (notifPrev.acuse ? `<span class="sello-ac">ACUSE · ${notifPrev.acuse} · DÍA ${notifPrev.acuseDia}</span>` : `<span class="sello-ac pend">ACUSE PENDIENTE</span>`) : ""}</div>` : "";
   const hl3 = t === 3 && !x.docs.hl;
-  const g = dec ? "Vea el cotejo y pase al siguiente turno." : !x.contrato ? "Declare la finalidad para activar el contrato de acceso." : (hl3 && !x.req) ? "Falta la historia laboral: requiérala a la AFP por contrato de suministro." : !listo ? ("Consulte la evidencia pertinente." + (t === 1 && !x.den.hl ? " Luego intente abrir lo que no le corresponde." : "")) : (t === 4 ? "Fíjese: la AFP ve el IBC que la ARL no vio, y no ve el diagnóstico que la EPS sí vio. Elija y firme con acuse." : "Elija su decisión y firme con acuse.");
+  const fijese = "Fíjese: la AFP ve el IBC que la ARL no vio, y no ve el diagnóstico que la EPS sí vio.";
+  const g = dec ? "Vea el cotejo y pase al siguiente turno." : !x.contrato ? "Declare la finalidad para activar el contrato de acceso." : (hl3 && !x.req) ? "Falta la historia laboral: requiérala a la AFP por contrato de suministro." : !listo ? ((t === 4 && x.docs.inc) ? fijese + " Ahora consulte el dictamen." : "Consulte la evidencia pertinente." + (t === 1 && !x.den.hl ? " Luego intente abrir lo que no le corresponde." : "")) : (t === 4 ? fijese + " Elija y firme con acuse." : "Elija su decisión y firme con acuse.");
   const act = dec ? 3 : listo ? 2 : x.contrato ? 1 : 0;
-  const contrato = `<div class="contrato"><div class="ct">Contrato de acceso</div><div class="cells"><div><b>Finalidad</b>${esc(c.fin)}</div><div><b>Responsable</b>${esc(c.resp)}</div><div><b>Plazo</b>${esc(c.plazo)} · vence día ${c.vence}</div><div><b>Acuse</b>${x.contrato ? `<span class="sello-ac">ACUSE · ${x.acuseContrato} · DÍA ${S.a2.regs.filter(r => r.id === x.acuseContrato)[0].dia}</span>` : "automático al activar"}</div></div>
+  const contrato = `<div class="contrato"><div class="ct">Contrato de acceso</div><div class="cells"><div><b>Finalidad</b>${esc(c.fin)}</div><div><b>Responsable</b>${esc(c.resp)}</div><div><b>Plazo</b>${esc(c.plazo)} · vence día ${venceDe(t)}</div><div><b>Constancia</b>${x.contrato ? `<span class="sello-ac">CONSTANCIA · ${x.acuseContrato} · DÍA ${S.a2.regs.filter(r => r.id === x.acuseContrato)[0].dia}</span>` : "se registra al activar"}</div></div>
     ${x.contrato ? "" : `<button type="button" class="btn gold wide" style="margin-top:8px" data-act="activar">Declarar finalidad y activar contrato</button>`}
-    <div class="micro" style="margin-top:6px">Regla 2 · nadie consulta sin declarar para qué, quién responde y hasta cuándo · plazo: parámetro ilustrativo del escenario</div></div>`;
+    <div class="micro" style="margin-top:6px">Regla 2 · nadie consulta sin declarar para qué, quién responde y hasta cuándo. REG = registro auditable del módulo · constancia = registro de un acto propio · acuse = confirmación de recibo de una notificación, con día. Plazos: parámetros ilustrativos del escenario.</div></div>`;
+  const chk = t === 3 ? `<div class="flabel">Checklist de expediente (verificado por el módulo) · ${3 + (x.docs.hl ? 1 : 0)} de 4</div>` + ["hc","apt","inc"].map(p => `<div class="req ok"><span class="tk">✓</span>${esc(PZ[p].n)} · en el expediente · ${esc(PZ[p].ver)}</div>`).join("") + `<div class="req ${x.docs.hl ? "ok" : "no"}"><span class="tk">${x.docs.hl ? "✓" : "!"}</span>${esc(PZ.hl.n)} · ${x.docs.hl ? "suministrada por contrato" : "falta · custodio AFP"}</div>` : "";
   const filas = c.piezas.map(p => {
     const id = x.docs[p]; const v = vistaDe(p, c.actor);
     const chip = id === undefined ? (t === 3 && p === "hl" ? (x.req ? "<span class='chip ch-amber'>requerida a la AFP</span>" : "<span class='chip ch-red'>falta · custodio AFP</span>") : "<span class='chip ch-grey'>sin consultar</span>") : (p === "hl" && x.sum ? `<span class='chip ch-teal'>suministrada por contrato</span>` : `<span class='chip ch-teal'>vista mínima ${v.length} de ${PZ[p].campos.length}</span>`);
@@ -1035,13 +1057,13 @@ function escritorio2() {
     + c.fuera.map(p => `<div class="docrow fuera ${x.contrato ? "" : "inactive"}"><span class="sl">${PZ[p].sl}</span><span class="dn">Fuera de su finalidad: ${esc(PZ[p].n)}<small>custodio: ${esc(PZ[p].custN)}</small></span>${x.den[p] ? `<span class="chip ch-red">DENEGADO · regla 3 · ${x.den[p]}</span>` : `<button type="button" data-act="intentar" data-p="${p}" ${x.contrato && !dec ? "" : "disabled"}>Intentar consultar</button>`}</div>`).join("");
   const sug = S.a2.ramaSugerida && t === 2 ? (S.a2.ramaSugerida === "B" ? "aceptar" : "controvertir") : c.opciones.filter(o => o.sug)[0].id;
   const hechas = c.piezas.filter(p => x.docs[p]).length;
-  const opciones = c.opciones.map(o => `<label class="opt ${(x.sel || sug) === o.id ? "sel" : ""}"><input type="radio" name="op" value="${o.id}" ${(x.sel || sug) === o.id ? "checked" : ""} ${dec ? "disabled" : ""}><span><b>${esc(o.t)}</b> ${o.sug ? "<span class='chip ch-teal'>sugerida por la evidencia</span>" : ""}<br><span class="om">${esc(o.m)}</span></span></label>`).join("");
+  const opciones = c.opciones.map(o => `<label class="opt ${(x.sel || sug) === o.id ? "sel" : ""}"><input type="radio" name="op" value="${o.id}" ${(x.sel || sug) === o.id ? "checked" : ""} ${dec ? "disabled" : ""}><span><b>${esc(o.t)}</b> ${o.id === sug ? `<span class='chip ch-teal'>${esc(S.a2.ramaSugerida && t === 2 ? "preseleccionada para esta rama" : (o.chip || "sugerida por la evidencia"))}</span>` : (o.chip ? `<span class='chip ch-grey'>${esc(o.chip)}</span>` : "")}<br><span class="om">${esc(o.m)}</span></span></label>`).join("");
   const notif = S.a2.notifs.filter(n => n.t === t)[0];
   const ini = S.a2.iniT[t] || 150; const tur1 = cronoA1().turnos[t];
   return `<div class="card escritorio a2">${head("Escritorio · Acto 2 · con el módulo")}<div class="pbody">
     ${ahora(c, 2, 6)}${paso}${guia(g)}${pasos(["Contrato","Evidencia","Firmar","Cotejo"], act)}
     ${contrato}
-    <div style="opacity:${x.contrato ? 1 : .55}">${filas}<div class="micro">Regla 1 · la evidencia no se copia ni se mueve: se consulta en origen y queda acta de consulta.</div></div>
+    <div style="opacity:${x.contrato ? 1 : .55}">${chk}${filas}<div class="micro">Regla 1 · la evidencia no se copia ni se mueve: se consulta en origen y queda acta de consulta.</div></div>
     <div style="opacity:${listo ? 1 : .55}"><div class="flabel">Evidencia para decidir: ${hechas} de ${c.piezas.length}</div><div class="bar"><div style="width:${hechas / c.piezas.length * 100}%"></div></div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">${opciones}</div>
       <button type="button" class="btn teal wide" style="margin-top:8px" data-act="firmar" ${listo && !dec ? "" : "disabled"}>${dec ? "Firmado y notificado con acuse · día " + S.a2.decDia[t] : "Firmar y notificar con acuse"}</button>
@@ -1060,7 +1082,7 @@ function sub3b() {
     ${guia(x.sum ? "Suministro entregado: vuelva a la Junta Regional." : "Autorice el suministro: solo se entregan los campos pertinentes.")}
     <div class="contrato sum"><div class="ct">Contrato de suministro</div><div class="cells"><div><b>Solicitante</b>Junta Regional</div><div><b>Finalidad</b>Dictamen de primera instancia</div><div><b>Responsable</b>Diana Prieto · analista de prestaciones</div><div><b>Plazo</b>5 días hábiles · vence día ${S.a2.dias + 7}</div><div><b>Entrega</b>semanas cotizadas (612) · densidad de cotización</div><div><b>Retiene</b>IBC histórico · historial de empleadores</div></div>
       <div class="micro" style="margin-top:6px">formato: historia laboral estructurada · versión ${esc(PZ.hl.ver)} · la historia laboral permanece en la AFP</div></div>
-    ${x.sum ? `<div class="bit"><ul><li class="b-hito"><span class="d">día ${S.a2.dias}</span>Suministro entregado · la historia laboral permanece en la AFP · <span class="sello-ac">ACUSE · ${x.docs.hl}</span></li></ul></div><button type="button" class="btn teal wide" data-act="volver-jr">Volver a la Junta Regional →</button>` : `<button type="button" class="btn teal wide" data-act="autorizar">Autorizar suministro con vista mínima</button>`}
+    ${x.sum ? `<div class="bit"><ul><li class="b-hito"><span class="d">día ${S.a2.dias}</span>Suministro entregado · la historia laboral permanece en la AFP · <span class="sello-ac">CONSTANCIA · ${x.docs.hl}</span></li></ul></div><button type="button" class="btn teal wide" data-act="volver-jr">Volver a la Junta Regional →</button>` : `<button type="button" class="btn teal wide" data-act="autorizar">Autorizar suministro con vista mínima</button>`}
   </div></div>`;
 }
 function micaso(acto2) {
@@ -1089,16 +1111,22 @@ function micaso(acto2) {
   </div></div>`;
 }
 function panelJN() {
-  abrirJN();
   const ramaA = S.a2.rama !== "B"; const v = S.a2.jn; const m = m2();
   const decs = Object.keys(S.a2.t).filter(k => S.a2.t[k].dec).length;
+  const req = ramaA ? 5 : 3, reqDec = ramaA ? 4 : 3;
+  const ap = S.a2.regs.filter(r => r.acc === "apelación")[0], dicReg = S.a2.regs.filter(r => r.acc === "decisión" && r.actor === "jr")[0];
+  const origenLine = ramaA && ap && dicReg
+    ? `<div class="paso"><b>Apelante:</b> ARL SURA · apelación radicada el día ${ap.dia}, en término · contra el dictamen de la Junta Regional del día ${dicReg.dia} (${esc(dicReg.det.split(" · ")[0])}) · ${ap.id}</div>`
+    : `<div class="paso"><b>Sin apelación:</b> la calificación de la EPS quedó en firme al aceptarla la ARL${S.a2.decDia[2] ? " el día " + S.a2.decDia[2] : ""}. Se valida el expediente completo.</div>`;
+  const vf = (ok, txt) => `<div class="verif ${ok ? "" : "warn"}"><span class="tk">${ok ? "✓" : "!"}</span><span>${txt}</span></div>`;
   return `<div class="card escritorio a2">${head("Junta Nacional · validación experta")}<div class="pbody">
-    <div class="ahora"><span class="chip ch-turno">TURNO 6 DE 6 · ACTO 2</span><h2>Junta Nacional · ${ramaA ? "validación experta del paquete" : "validación experta del expediente (sin apelación)"}</h2><div class="persona">no se resuelve la apelación: se valida el paquete</div></div>
+    <div class="ahora"><span class="chip ch-turno">TURNO 6 DE 6 · ACTO 2</span><h2>Junta Nacional · ${ramaA ? "validación experta del paquete" : "validación experta del expediente (sin apelación)"}</h2><div class="persona">${ramaA ? "no se resuelve la apelación: se valida el paquete" : "no hay apelación: se valida el expediente"}</div></div>
     <div class="flabel">${ramaA ? "Paquete de apelación" : "Expediente"} recibido el día ${S.a2.iniT[6] || S.a2.dias}</div>
-    <div class="verif"><span class="tk">✓</span><span><b>Expediente íntegro:</b> ${m.evid} de 5 piezas con origen y versión.</span></div>
-    <div class="verif"><span class="tk">✓</span><span><b>Motivación trazable:</b> ${decs} decisiones firmadas + ${m.regs} registros de acceso.</span></div>
-    <div class="verif"><span class="tk">✓</span><span><b>Cronología con responsables y plazos:</b> ${Object.keys(S.a2.decDia).length} turnos · 0 términos vencidos.</span></div>
-    <div><div class="flabel">Contrato a validar</div><div class="contract">Paquete de apelación íntegro y motivación trazable.</div>
+    ${origenLine}
+    ${vf(m.evid >= req, `<b>Expediente íntegro:</b> ${m.evid} de ${req} piezas requeridas, con origen y versión.`)}
+    ${vf(decs >= reqDec, `<b>Motivación trazable:</b> ${decs} de ${reqDec} decisiones firmadas + ${m.regs} registros de acceso.`)}
+    ${vf(true, `<b>Cronología con responsables y plazos:</b> ${Object.keys(S.a2.decDia).length} turnos · 0 términos vencidos.`)}
+    <div><div class="flabel">Contrato a validar</div><div class="contract">${ramaA ? "Paquete de apelación íntegro y motivación trazable." : "Expediente íntegro y motivación trazable (validación sin apelación)."}</div>
       <div class="optrow sem" data-q="jn-verdict" style="margin-top:6px">${[["aceptar","Aceptar"],["ajustar","Ajustar"],["rechazar","Rechazar"]].map(o => `<button type="button" data-v="${o[0]}" aria-pressed="${v.verdict === o[0]}">${o[1]}</button>`).join("")}</div></div>
     <div><div class="flabel">¿Este paquete permite decidir con motivación trazable?</div><div class="optrow" data-q="jn-resp">${[["si","Sí"],["parcial","Parcial"],["no","No"]].map(o => `<button type="button" data-v="${o[0]}" aria-pressed="${v.resp === o[0]}">${o[1]}</button>`).join("")}</div></div>
     <div><div class="flabel">Qué le faltaría al paquete (opcional)</div><textarea id="jn-nota" placeholder="Nota corta">${esc(v.nota)}</textarea></div>
@@ -1128,17 +1156,19 @@ function panelModulo() {
     <div class="bit"><h3>Registro auditable</h3>${regs ? `<ul>${regs}</ul>` : "<p class='micro'>Sin registros todavía.</p>"}</div></div></div>`;
 }
 function panelInfo(id) {
-  const tn = turnoDe(id), ta = turnActor();
-  return `<div class="card">${head(esc(A[id].n), true)}<div class="pbody"><p style="font-size:13.5px">Ahora le toca a <b>${esc(A[ta].n)}</b>. ${tn ? `${esc(A[id].n)} actuará en el turno ${tn}.` : `${esc(A[id].n)} no tiene turno en este acto: ${id === "ips" || id === "emp" ? "actúa como custodio de evidencia" : "participa en la validación"}.`}</p><p class="micro">Tensión observada: ${esc(MATRIZ[id].tension)} ${MATRIZ[id].prec.map(p => `<span class="prec">${p}</span>`).join("")}</p></div></div>`;
+  const tn = turnoDe(id), ta = turnActor(), cur = S.acto === 1 ? S.a1.turno : S.a2.turno;
+  const frase = tn ? (tn < cur ? `${esc(A[id].n)} ya actuó en el turno ${tn}.` : `${esc(A[id].n)} actuará en el turno ${tn}.`) : `${esc(A[id].n)} no tiene turno en este acto: ${id === "ips" || id === "emp" ? "actúa como custodio de evidencia" : "participa en la validación"}.`;
+  return `<div class="card">${head(esc(A[id].n), true)}<div class="pbody"><p style="font-size:13.5px">Ahora le toca a <b>${esc(A[ta].n)}</b>. ${frase}</p><p class="micro">Tensión observada: ${esc(MATRIZ[id].tension)} ${MATRIZ[id].prec.map(p => `<span class="prec">${p}</span>`).join("")}</p></div></div>`;
 }
 function panelBienvenida() {
   return `<div class="card">${head("Antes de empezar")}<div class="pbody">
     <div class="req"><span class="tk">1</span>Va a recorrer la ruta de M.P. dos veces con el mismo caso.</div>
     <div class="req"><span class="tk">2</span>Acto 1: como ocurre hoy. Acto 2: con el módulo federado.</div>
     <div class="req"><span class="tk">3</span>En cada turno, haga clic en el actor iluminado y siga la línea «¿Qué hago ahora?».</div>
+    <div class="req"><span class="tk">4</span>Al final, valide el contrato TO-BE de su propio actor (semáforo y cinco preguntas, dos minutos).</div>
     ${S.recuperada ? `<div class="paso"><b>Sesión recuperada</b> · Acto ${S.acto} · turno ${S.acto === 1 ? S.a1.turno : S.a2.turno}</div>` : ""}
-    <div><div class="flabel">Su nombre o perfil (para el registro de la sesión)</div><input type="text" id="perfil" style="width:100%" placeholder="p. ej. Referente jurídico · ARL" value="${esc(S.perfil)}"></div>
     <button type="button" class="btn wide" data-act="empezar">${S.recuperada ? "Continuar" : "Empezar por la EPS"}</button>
+    <div><div class="flabel">Su nombre o perfil (opcional, para el registro de la sesión)</div><input type="text" id="perfil" style="width:100%" placeholder="p. ej. Referente jurídico · ARL" value="${esc(S.perfil)}"></div>
     <div class="micro">El TO-BE es una hipótesis de diseño en validación; los plazos y días son parámetros ilustrativos del escenario.</div></div></div>`;
 }
 function panelClic(id) {
@@ -1170,7 +1200,7 @@ function renderPanel() {
 panelEl.addEventListener("click", ev => {
   const b = ev.target.closest("[data-act]"); if (!b || b.disabled) return;
   const act = b.getAttribute("data-act"), p = b.getAttribute("data-p");
-  if (act === "empezar") { S.inicio = true; S.recuperada = false; S.panel = { tipo:"clic" }; save(); render(); }
+  if (act === "empezar") { S.inicio = true; S.recuperada = false; S.panel = { tipo:"clic" }; preselActor(); save(); render(); renderValidar(); }
   else if (act === "abrir-turno") { S.panel = { tipo:"escritorio" }; save(); render(); }
   else if (act === "a1") accionA1(b.getAttribute("data-tipo"), p);
   else if (act === "dec1") decidirA1();
@@ -1185,7 +1215,7 @@ panelEl.addEventListener("click", ev => {
   else if (act === "volver-jr") { S.a2.sub = null; save(); render(); }
   else if (act === "firmar") { const r = panelEl.querySelector("input[name=op]:checked"); if (r) firmar(r.value); }
   else if (act === "sig2") siguienteA2();
-  else if (act === "mp-cont") { S.a2.turno = 6; S.panel = { tipo:"escritorio" }; save(); render(); }
+  else if (act === "mp-cont") { S.a2.turno = 6; abrirJN(); S.panel = { tipo:"escritorio" }; save(); render(); }
   else if (act === "jn-val") validarJN();
   else if (act === "volver") { S.panel = { tipo:"escritorio" }; save(); render(); }
 });
@@ -1203,11 +1233,11 @@ function renderGuion() {
   document.getElementById("turnos").innerHTML = Array.from({ length: total }, (_, i) => i + 1).map(n => {
     const st = estadoTurno(n);
     return `<span class="turno ${st}" data-t="${n}"><span class="tn">${st === "done" ? "✓" : n}</span>${esc(TLBL[n])}${st === "skip" ? " · omitido: no hubo controversia" : ""}</span>`;
-  }).join('<span class="turno-sep">—</span>');
+  }).join("");
   document.getElementById("mini").innerHTML = Array.from({ length: total }, (_, i) => i + 1).map(n => `<span class="${estadoTurno(n)}">${n}</span>`).join("");
   document.getElementById("seg-a1").setAttribute("aria-pressed", String(S.acto === 1));
   const s2 = document.getElementById("seg-a2"); s2.setAttribute("aria-pressed", String(S.acto === 2)); s2.classList.toggle("lock", !S.a1.done); s2.innerHTML = (S.a1.done ? "" : "&#128274; ") + "ACTO 2 &middot; CON EL M&Oacute;DULO";
-  document.getElementById("btn-saltar").style.display = S.acto === 1 && !S.a1.done && S.inicio ? "" : "none";
+  document.getElementById("btn-saltar").style.display = S.acto === 1 && !S.a1.done ? "" : "none";
   const ta = turnActor();
   document.getElementById("ayuda").innerHTML = (S.recuperada && S.inicio ? `<span class="chip ch-teal">Sesión recuperada · Acto ${S.acto} · turno ${S.acto === 1 ? S.a1.turno : S.a2.turno}</span> ` : "") + (S.inicio ? `Haga clic en ${esc(A[ta].n)} (iluminado con «LE TOCA») para abrir su escritorio.` : "Pulse «Empezar por la EPS» en el panel de la derecha.");
 }
@@ -1219,7 +1249,8 @@ function renderMarcador() {
   const better = (i, x, y) => { if (!b.started) return ["",""]; const nx = parseFloat(x), ny = parseFloat(y); if (isNaN(nx) || isNaN(ny) || nx === ny) return ["",""]; const lowerBetter = i <= 1; const hb = lowerBetter ? nx < ny : nx > ny; return hb ? ["best","worst"] : ["worst","best"]; };
   const lbls = ["Día", "Cargas a M.P.", "Evidencia completa", "Registros con acuse", "Responsable y plazo"];
   let h = `<span></span>${lbls.map((l, i) => `<span class="lbl c${i + 1}">${l}</span>`).join("")}`;
-  h += `<span class="row-lbl rl-hoy">HOY</span>${hoy.map((v, i) => `<span class="c${i + 1} ${S.acto === 2 ? "dim" : ""}">${cell(v, better(i, hoy[i], mod[i])[0])}</span>`).join("")}`;
+  const hoyDim = S.acto === 2 || S.a1.done || S.a1.turno === 5;
+  h += `<span class="row-lbl rl-hoy">HOY</span>${hoy.map((v, i) => `<span class="c${i + 1} ${hoyDim ? "dim" : ""}">${cell(v, better(i, hoy[i], mod[i])[0])}</span>`).join("")}`;
   h += `<span class="row-lbl rl-mod">MÓDULO</span>${mod.map((v, i) => `<span class="c${i + 1} ${S.acto === 1 ? "dim" : ""}">${cell(v, better(i, hoy[i], mod[i])[1])}</span>`).join("")}`;
   document.getElementById("marcador").innerHTML = h;
 }
@@ -1240,7 +1271,7 @@ function renderComparativa() {
   const a = m1(), b = m2(), listo = S.a2.done, cr = cronoA1();
   const el = document.getElementById("cmp-body");
   const cronoH = [1,2,3,4].map(t => { const tr = cr.turnos[t]; if (!tr) return `<li><b>${t} · ${esc(TLBL[t])}</b> · sin jugar</li>`; return `<li><b>${t} · ${esc(TLBL[t])}</b> · decisión día ${tr.dec || tr.fin} · +${tr.fin - tr.ini} días · ${tr.cargas} carga${tr.cargas === 1 ? "" : "s"} a M.P. · responsable y plazo: — · <span class="sello-ac sin">SIN ACUSE</span></li>`; }).join("");
-  const cronoM = [1,2,3,4].map(t => { const x = S.a2.t[t]; const c = cfg2(t); if (!x || !x.dec) return `<li><b>${t} · ${esc(TLBL[t])}</b> · ${t === 3 && S.a2.rama === "B" ? "omitido: no hubo controversia" : "pendiente"}</li>`; const ini = S.a2.iniT[t] || 150; const n = S.a2.notifs.filter(z => z.t === t)[0]; return `<li><b>${t} · ${esc(TLBL[t])}</b> · decisión día ${S.a2.decDia[t]} · +${S.a2.decDia[t] - ini} días · 0 cargas · ${Object.keys(x.docs).length} vistas mínimas por contrato · ${esc(c.resp)} · vence día ${c.vence} · <span class="sello-ac">ACUSE · ${n ? n.id : "—"}</span></li>`; }).join("");
+  const cronoM = [1,2,3,4].map(t => { const x = S.a2.t[t]; const c = cfg2(t); if (!x || !x.dec) return `<li><b>${t} · ${esc(TLBL[t])}</b> · ${t === 3 && S.a2.rama === "B" ? "omitido: no hubo controversia" : "pendiente"}</li>`; const ini = S.a2.iniT[t] || 150; const n = S.a2.notifs.filter(z => z.t === t)[0]; return `<li><b>${t} · ${esc(TLBL[t])}</b> · decisión día ${S.a2.decDia[t]} · +${S.a2.decDia[t] - ini} días · 0 cargas · ${Object.keys(x.docs).length} vistas mínimas por contrato · ${esc(c.resp)} · vence día ${venceDe(t)} · <span class="sello-ac">ACUSE · ${n ? n.id : "—"}</span></li>`; }).join("");
   const reglasCnt = (() => { let ret = 0, contr = 0; Object.keys(S.a2.t).forEach(k => { const x = S.a2.t[k]; if (x.contrato) contr++; const actor = cfg2(Math.min(+k, 6)).actor; Object.keys(x.docs).forEach(p => { ret += PZ[p].campos.length - vistaDe(p, actor).length; }); }); return [`0 documentos movidos de origen`, `${contr} contratos activados`, `${ret} campos retenidos · ${b.den} denegaciones`, `${b.decs} decisiones con responsable y plazo`, `${b.regs} registros con acuse`]; })();
   const rupOk = { r1: b.evid >= 4, r2: S.a1.done && b.regs > 0, r3: b.decs >= 3, r4: b.ntot >= 3, r5: false };
   el.innerHTML = `
@@ -1332,25 +1363,38 @@ document.getElementById("btn-download").addEventListener("click", () => {
   if (downloadsNS) { downloadsNS.save({ filename:"mapa-vivo-sesion.json", data:json }).then(() => flashMsg("Archivo guardado."), err => flashMsg(err && err.code === "declined" ? "Descarga cancelada." : "No se pudo guardar: use Copiar JSON.")); return; }
   const url = URL.createObjectURL(new Blob([json], { type:"application/json" })); const a = document.createElement("a"); a.href = url; a.download = "mapa-vivo-sesion.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(() => URL.revokeObjectURL(url), 4000); flashMsg("Si la descarga no inicia, use Copiar JSON.");
 });
-document.getElementById("btn-rama").addEventListener("click", () => { if (!S.a1.done) { flashMsg("Termine primero el Acto 1."); return; } otraRama(); flashMsg("Acto 2 reiniciado con la otra rama; el Acto 1 se conserva."); });
+document.getElementById("btn-rama").addEventListener("click", () => { if (!S.a1.done) { flashMsg("Termine primero el Acto 1."); return; } document.getElementById("rama-confirm").style.display = ""; });
+document.getElementById("btn-rama-ok").addEventListener("click", () => { document.getElementById("rama-confirm").style.display = "none"; otraRama(); flashMsg("Acto 2 reiniciado con la otra rama; el Acto 1 y las validaciones se conservan."); });
 document.getElementById("btn-reset").addEventListener("click", () => { document.getElementById("reset-confirm").style.display = ""; });
 document.getElementById("btn-reset-ok").addEventListener("click", () => {
   try { localStorage.removeItem(LS); } catch (e) { /* memoria */ }
-  S = fresh(); PZ.dic.campos[0][1] = "—"; PZ.dic.campos[1][1] = "—"; document.getElementById("reset-confirm").style.display = "none";
+  S = fresh(); PZ.dic.campos[0][1] = "—"; PZ.dic.campos[1][1] = "—"; document.getElementById("reset-confirm").style.display = "none"; document.getElementById("saltar-confirm").style.display = "none";
   ["g1","g2","g3","g4"].forEach(k => { document.getElementById(k).checked = false; }); render(); window.scrollTo({ top:0 });
 });
 document.getElementById("btn-saltar").addEventListener("click", () => { document.getElementById("saltar-confirm").style.display = ""; });
 document.getElementById("btn-saltar-ok").addEventListener("click", () => { document.getElementById("saltar-confirm").style.display = "none"; S.inicio = true; S.panel = { tipo:"escritorio" }; saltarActo2(); });
 document.getElementById("seg-a2").addEventListener("click", () => { if (S.a1.done && S.acto === 1) { S.acto = 2; S.panel = { tipo:"clic" }; save(); render(); } });
 document.getElementById("mpve").addEventListener("click", () => { S.panel = { tipo:"micaso", arg:"volver" }; if (S.acto === 2) abrirMP2(); save(); render(); });
-document.getElementById("mpve").addEventListener("keydown", ev => { if (ev.key === "Enter") document.getElementById("mpve").click(); });
+document.getElementById("mpve").addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); document.getElementById("mpve").click(); } });
 document.getElementById("turnos").addEventListener("click", ev => { const t = ev.target.closest("[data-t]"); if (!t) return; if (t.classList.contains("done")) { flashMsg("Turno " + t.getAttribute("data-t") + " ya jugado: vea su detalle en la comparativa."); document.getElementById("comparativa").scrollIntoView({ behavior:"smooth" }); } });
 ["g1","g2","g3","g4"].forEach(k => document.getElementById(k).addEventListener("change", ev => { S.gate[k] = ev.target.checked; save(); renderGate(); }));
 document.getElementById("fab").addEventListener("click", () => { const p = document.getElementById("panel"), r = p.getBoundingClientRect(); if (r.top > window.innerHeight * 0.6) p.scrollIntoView({ behavior:"smooth" }); else document.getElementById("mapcard").scrollIntoView({ behavior:"smooth" }); });
 
 /* ===================== RENDER GENERAL / INICIO ===================== */
-function render() { renderGuion(); renderMarcador(); renderMap(); renderPanel(); renderTira(); renderComparativa(); renderGate(); }
+function preselActor() {
+  if (S.val.actor || !S.perfil) return;
+  const p = S.perfil.toLowerCase();
+  const map = [["arl","arl"],["eps","eps"],["afp","afp"],["colpensiones","afp"],["junta nacional","jn"],["junta regional","jr"],["ips","ips"],["médic","ips"],["medic","ips"],["emplead","emp"],["sg-sst","emp"],["trabajad","tra"],["famil","tra"]];
+  const hit = map.filter(m => p.indexOf(m[0]) >= 0)[0];
+  if (hit) S.val.actor = hit[1];
+}
+document.getElementById("map-toggle").addEventListener("click", () => {
+  const c = document.getElementById("mapcard"); c.classList.toggle("collapsed");
+  document.getElementById("map-toggle").textContent = c.classList.contains("collapsed") ? "Ver mapa" : "Ocultar mapa";
+});
+function render() { renderGuion(); renderMarcador(); renderMap(); renderPanel(); renderTira(); renderComparativa(); renderValidar(); renderGate(); }
 load();
+preselActor();
 buildNodes();
 ["g1","g2","g3","g4"].forEach(k => { document.getElementById(k).checked = !!S.gate[k]; });
 if (!S.inicio) S.panel = { tipo:"bienvenida" };
