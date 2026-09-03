@@ -6,9 +6,9 @@
     --paper:#F6F8FC; --surface:#FFFFFF; --surface-2:#EDF1F8;
     --ink:#1B2A52; --ink-soft:#4A5878; --ink-faint:#86909F; --line:#D8DEE9;
     --navy:#24407E; --navy-ink:#FFFFFF; --band:#24407E; --band-ink:#FFFFFF;
-    --gold:#B98A1B; --gold-soft:#F5EBD2; --gold-ink:#8A6510; --on-gold:#FFFFFF; --gold-band:#F0C75E; --teal:#2E7D74; --teal-soft:#DDEEEA;
+    --gold:#B98A1B; --gold-soft:#F5EBD2; --gold-ink:#8A6510; --on-gold:#FFFFFF; --gold-band:#F0C75E; --on-accent:#FFFFFF; --teal:#276B63; --teal-soft:#DDEEEA;
     --red:#B3372B; --red-soft:#F7E4E1; --amber:#A87C10; --amber-soft:#F6EDD3;
-    --green:#2E7D46; --green-soft:#E0F0E5; --ctrl:#97A0B4; --node:#FFFFFF; --sello:#24407E;
+    --green:#276B3C; --green-soft:#E0F0E5; --ctrl:#97A0B4; --node:#FFFFFF; --sello:#24407E;
     --shadow:0 1px 2px rgba(27,42,82,.06),0 4px 16px rgba(27,42,82,.08);
   }
   @media (prefers-color-scheme: dark) {
@@ -16,7 +16,7 @@
       --paper:#101521; --surface:#181F2E; --surface-2:#202940;
       --ink:#E7EBF4; --ink-soft:#ADB7CC; --ink-faint:#6F7A93; --line:#2C3850;
       --navy:#8FA8E0; --navy-ink:#101521; --band:#1C2537; --band-ink:#E7EBF4;
-      --gold:#D9A93E; --gold-soft:#3A3115; --gold-ink:#E2B65A; --on-gold:#101521; --gold-band:#F0C75E; --teal:#58B0A5; --teal-soft:#14332F;
+      --gold:#D9A93E; --gold-soft:#3A3115; --gold-ink:#E2B65A; --on-gold:#101521; --gold-band:#F0C75E; --on-accent:#101521; --teal:#58B0A5; --teal-soft:#14332F;
       --red:#E0796D; --red-soft:#3D1E1A; --amber:#D9A93E; --amber-soft:#382D10;
       --green:#6CC08A; --green-soft:#16301F; --ctrl:#5D6981; --node:#1C2537; --sello:#8FA8E0;
       --shadow:0 1px 2px rgba(0,0,0,.35),0 4px 16px rgba(0,0,0,.35);
@@ -26,7 +26,7 @@
     --paper:#101521; --surface:#181F2E; --surface-2:#202940;
     --ink:#E7EBF4; --ink-soft:#ADB7CC; --ink-faint:#6F7A93; --line:#2C3850;
     --navy:#8FA8E0; --navy-ink:#101521; --band:#1C2537; --band-ink:#E7EBF4;
-    --gold:#D9A93E; --gold-soft:#3A3115; --gold-ink:#E2B65A; --on-gold:#101521; --gold-band:#F0C75E; --teal:#58B0A5; --teal-soft:#14332F;
+    --gold:#D9A93E; --gold-soft:#3A3115; --gold-ink:#E2B65A; --on-gold:#101521; --gold-band:#F0C75E; --on-accent:#101521; --teal:#58B0A5; --teal-soft:#14332F;
     --red:#E0796D; --red-soft:#3D1E1A; --amber:#D9A93E; --amber-soft:#382D10;
     --green:#6CC08A; --green-soft:#16301F; --ctrl:#5D6981; --node:#1C2537; --sello:#8FA8E0;
     --shadow:0 1px 2px rgba(0,0,0,.35),0 4px 16px rgba(0,0,0,.35);
@@ -70,7 +70,7 @@
   .turno.now { color:var(--gold-ink); border-color:var(--gold); }
   .turno.now .tn { background:var(--gold-ink); color:var(--on-gold); animation:blink 2s infinite; }
   .turno.done { color:var(--green); border-color:var(--green); }
-  .turno.done .tn { background:var(--green); color:#fff; }
+  .turno.done .tn { background:var(--green); color:var(--on-accent); }
   .turno.skip { text-decoration:line-through; }
   .turno-sep { color:var(--line); }
   .ayuda { font-size:12.5px; color:var(--ink-soft); margin-top:8px; }
@@ -83,7 +83,7 @@
   .mini { display:flex; gap:5px; align-items:center; }
   .mini span { width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:700; background:var(--surface-2); color:var(--ink-faint); }
   .mini span.now { background:var(--gold-ink); color:var(--on-gold); }
-  .mini span.done { background:var(--green); color:#fff; }
+  .mini span.done { background:var(--green); color:var(--on-accent); }
   .mini span.skip { text-decoration:line-through; }
   .marcador { flex:1; display:grid; grid-template-columns:auto repeat(5, minmax(70px,1fr)); gap:2px 10px; font-family:"IBM Plex Mono",monospace; font-size:12px; font-variant-numeric:tabular-nums; min-width:420px; }
   .marcador .lbl { font-family:"IBM Plex Sans",sans-serif; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
@@ -99,16 +99,19 @@
   /* Grid principal */
   .main { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(380px,1fr); gap:20px; align-items:start; margin-top:16px; }
   .main > * { min-width:0; }
-  .map-toggle { display:none; font-size:12px; border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); border-radius:8px; padding:3px 9px; }
+  .fab { display:none; }
   @media (max-width:1260px) { .main { grid-template-columns:minmax(0,1.25fr) minmax(360px,1fr); } }
   @media (max-width:1100px) {
     .main { grid-template-columns:1fr; }
-    .panel { position:static !important; max-height:none !important; overflow:visible !important; }
-    #mapcard { position:sticky; top:78px; z-index:20; }
-    .map-scroll { max-height:38vh; min-height:250px; overflow:auto; }
-    #mapcard.collapsed .map-scroll, #mapcard.collapsed .legend, #mapcard.collapsed .map-note { display:none; }
-    .map-toggle { display:inline-block; }
+    .panel { position:fixed !important; top:auto !important; left:0; right:0; bottom:0; height:62vh; max-height:none !important; overflow-y:auto !important; z-index:40; border-radius:16px 16px 0 0; box-shadow:0 -6px 24px rgba(0,0,0,.2); background:var(--surface); transform:translateY(calc(100% - 46px)); transition:transform .3s ease; }
+    .panel.open { transform:none; }
+    .panel::before { content:"Escritorio del actor · toque para abrir"; display:block; text-align:center; font-size:11px; letter-spacing:.1em; text-transform:uppercase; font-weight:600; color:var(--ink-soft); padding:14px 0 10px; border-bottom:1px solid var(--line); cursor:pointer; }
+    .panel.open::before { content:"▼ Escritorio del actor · toque aquí para ver el mapa"; position:sticky; top:0; background:var(--surface); z-index:2; }
+    .fab { display:block; position:fixed; right:14px; bottom:14px; z-index:45; box-shadow:var(--shadow); }
+    .map-scroll { max-height:56vh; overflow:auto; }
+    body { padding-bottom:64px; }
   }
+  @media (prefers-reduced-motion: reduce) { .panel { transition:none; } }
   @media (max-width:760px) { .ficha-guion { grid-template-columns:1fr; } .ficha { border-right:0; border-bottom:1px solid var(--line); } .band h1 { font-size:23px; } }
   .map-head { display:flex; flex-wrap:wrap; gap:8px; align-items:baseline; justify-content:space-between; padding:11px 20px 0; }
   .map-head h2 { font-size:18px; }
@@ -123,7 +126,8 @@
   .mpve { background:var(--band); color:var(--band-ink); border-radius:0 0 13px 13px; padding:8px 16px; display:flex; flex-wrap:wrap; gap:4px 18px; align-items:center; font-size:12.5px; cursor:pointer; }
   .mpve .k { font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.1em; opacity:.8; }
   .mpve .badge { margin-left:auto; border-radius:999px; padding:2px 10px; font-weight:700; font-size:11.5px; }
-  .bd-red { background:var(--red); color:#fff; } .bd-green { background:var(--green); color:#fff; }
+  .bd-red { background:var(--red); color:var(--on-accent); } .bd-green { background:var(--green); color:var(--on-accent); }
+  .mpve .den { background:var(--red); color:var(--on-accent); border-radius:6px; padding:0 7px; }
   .mpve .flash { background:rgba(255,255,255,.18); border-radius:6px; padding:0 6px; transition:background 1s; }
 
   /* SVG */
@@ -161,7 +165,7 @@
   .sello.glow rect { stroke:var(--teal); fill:var(--teal-soft); stroke-width:2; } .sello.glow text { fill:var(--teal); }
   .sello.copia rect { stroke:var(--ctrl); stroke-dasharray:2 2; } .sello.copia text { fill:var(--ink-faint); }
   .mochila circle { stroke:var(--surface); stroke-width:2; }
-  .mochila text { font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:700; fill:#fff; }
+  .mochila text { font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:700; fill:var(--on-accent); }
   .anclabox { fill:none; stroke:var(--gold); stroke-width:1.2; stroke-dasharray:6 5; }
   .anclatag { font-size:10.5px; font-weight:600; letter-spacing:.08em; fill:var(--gold-ink); }
   .elabel { font-size:11px; }
@@ -189,7 +193,7 @@
   .guia .arr { display:block; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-ink); margin-bottom:2px; } .a2 .guia { border-left-color:var(--teal); } .a2 .guia .arr { color:var(--teal); }
   .pasos { display:flex; gap:6px; flex-wrap:wrap; }
   .pasos span { font-size:11px; font-weight:600; border-radius:999px; padding:2px 9px; background:var(--surface-2); color:var(--ink-faint); }
-  .pasos span.on { background:var(--gold-ink); color:var(--on-gold); } .a2 .pasos span.on { background:var(--teal); color:#fff; }
+  .pasos span.on { background:var(--gold-ink); color:var(--on-gold); } .a2 .pasos span.on { background:var(--teal); color:var(--on-accent); }
   .pasos span.ok { background:var(--green-soft); color:var(--green); }
   .contrato { border:1px solid var(--gold); background:var(--gold-soft); border-radius:10px; padding:9px 12px; }
   .contrato.tachado { border-color:var(--line); background:var(--surface-2); color:var(--ink-faint); text-decoration:line-through; }
@@ -219,7 +223,7 @@
   .opt.sel { border-color:var(--teal); background:var(--teal-soft); }
   .opt input { margin-top:3px; accent-color:var(--teal); } .opt .om { color:var(--ink-soft); font-size:12px; }
   .btn { border-radius:9px; padding:8px 14px; font-weight:600; border:1.5px solid var(--navy); background:var(--navy); color:var(--navy-ink); }
-  .btn.teal { border-color:var(--teal); background:var(--teal); color:#fff; }
+  .btn.teal { border-color:var(--teal); background:var(--teal); color:var(--on-accent); }
   .btn.sec { background:var(--surface); color:var(--navy); }
   .btn.gold { border-color:var(--gold-ink); background:var(--gold-ink); color:var(--on-gold); }
   .btn.ghost { background:transparent; color:var(--ink-soft); border-color:var(--line); }
@@ -302,7 +306,6 @@
   .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; align-items:center; }
   .msg { font-size:13px; color:var(--teal); font-weight:600; }
   footer.src { margin-top:28px; border-top:1px solid var(--line); padding-top:12px; color:var(--ink-faint); font-size:12px; max-width:110ch; }
-  .fab { display:none; }
 </style>
 <header class="band"><div class="wrap">
   <div class="eyebrow">Prototipo medio 02 &middot; DGIT 6202 &middot; Caso de estudio SURA &middot; Escenario sint&eacute;tico</div>
@@ -344,7 +347,7 @@
 
   <div class="main">
     <section class="card" id="mapcard" aria-label="Mapa vivo de actores">
-      <div class="map-head"><h2>Red del proceso</h2><span><span class="mode" id="map-mode">AS-IS &middot; red fragmentada</span> <button type="button" class="map-toggle" id="map-toggle">Ocultar mapa</button></span></div>
+      <div class="map-head"><h2>Red del proceso</h2><span class="mode" id="map-mode">AS-IS &middot; red fragmentada</span></div>
       <p class="map-note" id="map-note"></p>
       <div class="map-scroll"><svg id="mapa" viewBox="0 0 1000 645" role="img" aria-label="Mapa de los 12 actores de la ruta de incapacidad">
         <g id="g-frame"></g><g id="g-edges"></g><g id="g-flows"></g><g id="g-nodes"></g><g id="g-over"></g>
@@ -914,6 +917,9 @@ function renderMap() {
   ov += `<g class="mochila" transform="translate(${tp[0]+NW/2-2},${tp[1]-NH/2+2})"><circle r="11" fill="${cg ? "var(--red)" : "var(--green)"}"></circle><text x="0" y="3.5" text-anchor="middle">${cg}</text></g>`;
   G.over.innerHTML = ov;
   flash = null; glow = null;
+  // en pantallas estrechas, centrar el mapa sobre el actor del turno
+  const ms = document.querySelector(".map-scroll");
+  if (ms && ms.scrollWidth > ms.clientWidth + 4) { const sw = svg.getBoundingClientRect().width || ms.scrollWidth; ms.scrollLeft = Math.max(0, pos(ta)[0] / 1000 * sw - ms.clientWidth / 2); }
   // cabecera, nota, leyenda, franja M.P.
   document.getElementById("map-mode").textContent = S.acto === 1 ? "AS-IS · red fragmentada" : "TO-BE · configuración federada";
   document.getElementById("map-note").textContent = S.acto === 1
@@ -934,7 +940,7 @@ function renderMPve() {
     const etapa = t >= 5 ? (t === 5 ? "Vista de estado" : "Validación experta") : `Turno ${t} · ${c.fin}`;
     const cons = S.a2.regs.filter(r => r.acc === "consulta");
     const last = cons[cons.length - 1];
-    const ult = last ? (last.res === "ok" ? `Última consulta: ${A[last.actor].n} · ${PZ[last.pieza].n} · ${last.id}` : `<span style="color:var(--gold-band)">Intento denegado: ${A[last.actor].n} · ${PZ[last.pieza].n} · ${last.id}</span>`) : "Aún nadie ha consultado su evidencia";
+    const ult = last ? (last.res === "ok" ? `Última consulta: ${A[last.actor].n} · ${PZ[last.pieza].n} · ${last.id}` : `<span class="den">Intento denegado: ${A[last.actor].n} · ${PZ[last.pieza].n} · ${last.id}</span>`) : "Aún nadie ha consultado su evidencia";
     el.innerHTML = `<span class="k">M.P. VE</span><span>${esc(etapa)}</span><span>Responsable: ${t <= 4 ? esc(A[c.actor].n) + " · vence día " + venceDe(t) : "—"}</span><span class="flash">${ult}</span><span class="badge bd-green">0 documentos que llevar</span>`;
   }
 }
@@ -949,6 +955,7 @@ function abrirActor(id) {
   else if (A[id].g === "control") { S.panel = { tipo:"control", arg:id }; supervision(id); }
   else { S.panel = { tipo:"info", arg:id }; }
   save(); render();
+  if (typeof hoja === "function" && movil()) hoja(true);
 }
 function turnoDe(actor) {
   const list = S.acto === 1 ? T1 : T2;
@@ -1036,7 +1043,10 @@ function escritorio2() {
   if (S.a2.sub === "3b") return sub3b();
   const x = tt(t), listo = listoA2(t), dec = !!x.dec;
   const notifPrev = S.a2.notifs.filter(n => n.pend === c.actor && n.t < t).slice(-1)[0];
-  const paso = c.pasoHoy ? `<div class="paso"><b>Lo que pasó desde el turno anterior</b><br><span class="hoy">Hoy: ${esc(c.pasoHoy)}</span><br><span class="mod">Con el módulo: ${esc(c.pasoMod)}</span> ${notifPrev ? (notifPrev.acuse ? `<span class="sello-ac">ACUSE · ${notifPrev.acuse} · DÍA ${notifPrev.acuseDia}</span>` : `<span class="sello-ac pend">ACUSE PENDIENTE</span>`) : ""}</div>` : "";
+  const crA1 = cronoA1().turnos, prevT = (t === 4 && S.a2.rama === "B") ? 2 : t - 1;
+  const llegada = crA1[prevT] && crA1[prevT].dec ? crA1[prevT].dec + S.sup.correo : null;
+  const pasoHoyTxt = c.pasoHoy && llegada ? c.pasoHoy.replace(/día \d+/, "día " + llegada) : c.pasoHoy;
+  const paso = c.pasoHoy ? `<div class="paso"><b>Lo que pasó desde el turno anterior</b><br><span class="hoy">Hoy: ${esc(pasoHoyTxt)}</span><br><span class="mod">Con el módulo: ${esc(c.pasoMod)}</span> ${notifPrev ? (notifPrev.acuse ? `<span class="sello-ac">ACUSE · ${notifPrev.acuse} · DÍA ${notifPrev.acuseDia}</span>` : `<span class="sello-ac pend">ACUSE PENDIENTE</span>`) : ""}</div>` : "";
   const hl3 = t === 3 && !x.docs.hl;
   const fijese = "Fíjese: la AFP ve el IBC que la ARL no vio, y no ve el diagnóstico que la EPS sí vio.";
   const g = dec ? "Vea el cotejo y pase al siguiente turno." : !x.contrato ? "Declare la finalidad para activar el contrato de acceso." : (hl3 && !x.req) ? "Falta la historia laboral: requiérala a la AFP por contrato de suministro." : !listo ? ((t === 4 && x.docs.inc) ? fijese + " Ahora consulte el dictamen." : "Consulte la evidencia pertinente." + (t === 1 && !x.den.hl ? " Luego intente abrir lo que no le corresponde." : "")) : (t === 4 ? fijese + " Elija y firme con acuse." : "Elija su decisión y firme con acuse.");
@@ -1069,7 +1079,7 @@ function escritorio2() {
       <button type="button" class="btn teal wide" style="margin-top:8px" data-act="firmar" ${listo && !dec ? "" : "disabled"}>${dec ? "Firmado y notificado con acuse · día " + S.a2.decDia[t] : "Firmar y notificar con acuse"}</button>
       <div class="micro" style="margin-top:4px">Regla 4 · cada suministro, consulta y decisión tiene un responsable con nombre y un plazo con día.</div></div>
     ${notif ? `<div class="notif"><b>Notificado a ${esc(notif.a.join(", "))}</b><span>${esc(notif.plazo)} · vence día ${notif.vence}</span>${notif.pend ? `<span class="sello-ac ${notif.acuse ? "" : "pend"}">${notif.acuse ? "ACUSE · " + notif.acuse + " · DÍA " + notif.acuseDia : "ACUSE PENDIENTE · " + esc(A[notif.pend].n).toUpperCase() + " · VENCE DÍA " + notif.vence}</span>` : `<span class="sello-ac">ACUSE · ${notif.id} · DÍA ${notif.dia}</span>`}<span class="micro">Regla 5 · cada notificación tiene acuse y término; el pendiente se cierra cuando el siguiente actor entra.</span></div>` : ""}
-    ${dec ? `<div class="cotejo"><div class="ch"><b>Este turno hoy</b>${tur1 ? `+${tur1.fin - tur1.ini} días · ${tur1.cargas} carga${tur1.cargas === 1 ? "" : "s"} a M.P. · 0 acuses` : "sin jugar"}</div><div class="cm"><b>Con el módulo</b>+${S.a2.dias - ini} días · 0 cargas · ${S.a2.regs.filter(r => r.dia >= ini && r.dia <= S.a2.dias && r.res === "ok").length} registros con acuse</div></div>` : ""}
+    ${dec ? `<div class="cotejo"><div class="ch"><b>Este turno hoy</b>${tur1 ? `+${tur1.fin - tur1.ini} días · ${tur1.cargas} carga${tur1.cargas === 1 ? "" : "s"} a M.P. · 0 acuses` : "sin jugar"}</div><div class="cm"><b>Con el módulo</b>+${S.a2.dias - ini} días · 0 cargas · ${S.a2.regs.filter(r => r.dia >= ini && r.dia <= S.a2.dias).length} registros auditables</div></div>` : ""}
     ${bitacora(S.a2.bit.filter(b => b.t === t), "Registro auditable del turno")}
     <button type="button" class="btn wide" data-act="sig2" ${dec ? "" : "disabled"}>Siguiente: ${t === 4 ? "M.P. revisa su caso" : "usted actuará por " + esc(A[t === 2 && x.dec === "aceptar" ? "afp" : T2[t].actor].n)} →</button>
   </div></div>`;
@@ -1200,7 +1210,7 @@ function renderPanel() {
 panelEl.addEventListener("click", ev => {
   const b = ev.target.closest("[data-act]"); if (!b || b.disabled) return;
   const act = b.getAttribute("data-act"), p = b.getAttribute("data-p");
-  if (act === "empezar") { S.inicio = true; S.recuperada = false; S.panel = { tipo:"clic" }; preselActor(); save(); render(); renderValidar(); }
+  if (act === "empezar") { S.inicio = true; S.recuperada = false; S.panel = { tipo:"clic" }; preselActor(); save(); render(); renderValidar(); if (movil()) { hoja(false); document.getElementById("mapcard").scrollIntoView({ behavior: reduced() ? "auto" : "smooth" }); } }
   else if (act === "abrir-turno") { S.panel = { tipo:"escritorio" }; save(); render(); }
   else if (act === "a1") accionA1(b.getAttribute("data-tipo"), p);
   else if (act === "dec1") decidirA1();
@@ -1378,7 +1388,6 @@ document.getElementById("mpve").addEventListener("click", () => { S.panel = { ti
 document.getElementById("mpve").addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); document.getElementById("mpve").click(); } });
 document.getElementById("turnos").addEventListener("click", ev => { const t = ev.target.closest("[data-t]"); if (!t) return; if (t.classList.contains("done")) { flashMsg("Turno " + t.getAttribute("data-t") + " ya jugado: vea su detalle en la comparativa."); document.getElementById("comparativa").scrollIntoView({ behavior:"smooth" }); } });
 ["g1","g2","g3","g4"].forEach(k => document.getElementById(k).addEventListener("change", ev => { S.gate[k] = ev.target.checked; save(); renderGate(); }));
-document.getElementById("fab").addEventListener("click", () => { const p = document.getElementById("panel"), r = p.getBoundingClientRect(); if (r.top > window.innerHeight * 0.6) p.scrollIntoView({ behavior:"smooth" }); else document.getElementById("mapcard").scrollIntoView({ behavior:"smooth" }); });
 
 /* ===================== RENDER GENERAL / INICIO ===================== */
 function preselActor() {
@@ -1388,10 +1397,13 @@ function preselActor() {
   const hit = map.filter(m => p.indexOf(m[0]) >= 0)[0];
   if (hit) S.val.actor = hit[1];
 }
-document.getElementById("map-toggle").addEventListener("click", () => {
-  const c = document.getElementById("mapcard"); c.classList.toggle("collapsed");
-  document.getElementById("map-toggle").textContent = c.classList.contains("collapsed") ? "Ver mapa" : "Ocultar mapa";
-});
+/* Hoja inferior (≤1100 px): el escritorio se abre sobre el mapa y se puede bajar para ver la ruta */
+const fabEl = document.getElementById("fab");
+function movil() { return window.innerWidth <= 1100; }
+function hoja(abrir) { const o = !!abrir; panelEl.classList.toggle("open", o); fabEl.textContent = "Ver escritorio ↑"; fabEl.style.display = o && movil() ? "none" : ""; }
+fabEl.addEventListener("click", () => hoja(true));
+panelEl.addEventListener("click", ev => { if (movil() && ev.target === panelEl) hoja(!panelEl.classList.contains("open")); });
+window.addEventListener("resize", () => { if (!movil()) { panelEl.classList.remove("open"); fabEl.style.display = ""; } });
 function render() { renderGuion(); renderMarcador(); renderMap(); renderPanel(); renderTira(); renderComparativa(); renderValidar(); renderGate(); }
 load();
 preselActor();
@@ -1400,5 +1412,6 @@ buildNodes();
 if (!S.inicio) S.panel = { tipo:"bienvenida" };
 render();
 renderValidar();
+hoja(S.panel.tipo === "bienvenida" || S.panel.tipo === "escritorio");
 })();
 </script>
