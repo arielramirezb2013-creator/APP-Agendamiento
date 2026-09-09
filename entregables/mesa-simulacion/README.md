@@ -1,6 +1,6 @@
 # Mesa de simulación · ruta de incapacidad (M.P.)
 
-Un solo archivo (`index.html`). Cada persona representa un actor desde su propio computador; la facilitadora asigna los perfiles, sigue la mesa en tiempo real y genera el informe del blueprint.
+Dos archivos: `index.html` (versión publicada como artefacto) y `mesa-simulacion-completa.html` (versión descargable, con doctype, que además incluye el blueprint 03 de referencia y esta guía con la auditoría en pestañas). Cada persona representa un actor desde su propio computador; la facilitadora asigna los perfiles, sigue la mesa en tiempo real y genera el informe del blueprint.
 
 ## Cómo funciona
 
