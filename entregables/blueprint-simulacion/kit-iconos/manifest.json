@@ -1,0 +1,3537 @@
+{
+  "coleccion": "Iconos Service Blueprint · Proyecto 2",
+  "total": 154,
+  "sistema": {
+    "viewBox": "0 0 24 24",
+    "trazo": 1.65,
+    "color": "currentColor",
+    "color_png": "#23364D",
+    "originales": true,
+    "uso": "Interfaz; no sustituye etiquetas ni líneas reales del blueprint"
+  },
+  "iconos": [
+    {
+      "id": "navegacion-inicio",
+      "categoria": "Navegación",
+      "etiqueta": "Inicio",
+      "svg": "svg/01_navegacion/inicio.svg",
+      "png": "png_96/01_navegacion/inicio.png",
+      "forma": "grid",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "tablero",
+          "etiqueta_original": "Tablero de la facilitadora",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "vista",
+          "etiqueta_original": "Cambiar entre tablero e informe",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "navegacion-blueprint",
+      "categoria": "Navegación",
+      "etiqueta": "Service Blueprint",
+      "svg": "svg/01_navegacion/blueprint.svg",
+      "png": "png_96/01_navegacion/blueprint.png",
+      "forma": "blueprint",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "navigation",
+          "id": "sb",
+          "etiqueta_original": "Service blueprint",
+          "estado": "real"
+        },
+        {
+          "grupo": "sections",
+          "id": "sb-grid",
+          "etiqueta_original": "Recorrido del servicio",
+          "estado": "real"
+        },
+        {
+          "grupo": "phases",
+          "id": "todas",
+          "etiqueta_original": "Todas las fases",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "admin-etapa",
+          "etiqueta_original": "Etapa actual",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "sb-anot-paso",
+          "etiqueta_original": "Paso de la observación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "navegacion-simulacion",
+      "categoria": "Navegación",
+      "etiqueta": "Simulación",
+      "svg": "svg/01_navegacion/simulacion.svg",
+      "png": "png_96/01_navegacion/simulacion.png",
+      "forma": "play",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "navigation",
+          "id": "mesa",
+          "etiqueta_original": "Mesa de simulación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "navegacion-resultados",
+      "categoria": "Navegación",
+      "etiqueta": "Resultados e informe",
+      "svg": "svg/01_navegacion/resultados.svg",
+      "png": "png_96/01_navegacion/resultados.png",
+      "forma": "filechart",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "navegacion-guia",
+      "categoria": "Navegación",
+      "etiqueta": "Guía de uso",
+      "svg": "svg/01_navegacion/guia.svg",
+      "png": "png_96/01_navegacion/guia.png",
+      "forma": "book",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "navigation",
+          "id": "guia",
+          "etiqueta_original": "Guía de uso",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "navegacion-mapa-actores",
+      "categoria": "Navegación",
+      "etiqueta": "Mapa de actores",
+      "svg": "svg/01_navegacion/mapa-actores.svg",
+      "png": "png_96/01_navegacion/mapa-actores.png",
+      "forma": "network",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "sb-mapa",
+          "etiqueta_original": "Mapa de actores",
+          "estado": "real"
+        },
+        {
+          "grupo": "sections",
+          "id": "mapa-vivo",
+          "etiqueta_original": "Mapa vivo",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "sb-desde-nodo",
+          "etiqueta_original": "Ver desde este actor",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "sb-desde",
+          "etiqueta_original": "Perspectiva del actor",
+          "estado": "real"
+        },
+        {
+          "grupo": "observation_types",
+          "id": "actor",
+          "etiqueta_original": "Falta un actor o relación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "navegacion-escenario",
+      "categoria": "Navegación",
+      "etiqueta": "Caso y escenario",
+      "svg": "svg/01_navegacion/escenario.svg",
+      "png": "png_96/01_navegacion/escenario.png",
+      "forma": "folder",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "retos",
+          "etiqueta_original": "Sus retos",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "reto-q",
+          "etiqueta_original": "Responder pregunta del reto",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "navegacion-sesiones",
+      "categoria": "Navegación",
+      "etiqueta": "Sesiones",
+      "svg": "svg/01_navegacion/sesiones.svg",
+      "png": "png_96/01_navegacion/sesiones.png",
+      "forma": "dashboard",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_fields",
+          "id": "nuevo-nombre",
+          "etiqueta_original": "Nombre de mesa",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "navegacion-configuracion",
+      "categoria": "Navegación",
+      "etiqueta": "Configuración",
+      "svg": "svg/01_navegacion/configuracion.svg",
+      "png": "png_96/01_navegacion/configuracion.png",
+      "forma": "settings",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "states",
+          "id": "config",
+          "etiqueta_original": "En configuración",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "navegacion-archivo-sesiones",
+      "categoria": "Navegación",
+      "etiqueta": "Sesiones archivadas",
+      "svg": "svg/01_navegacion/archivo-sesiones.svg",
+      "png": "png_96/01_navegacion/archivo-sesiones.png",
+      "forma": "archive",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "navegacion-validacion",
+      "categoria": "Navegación",
+      "etiqueta": "Validación",
+      "svg": "svg/01_navegacion/validacion.svg",
+      "png": "png_96/01_navegacion/validacion.png",
+      "forma": "clipboard",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "sb-gate",
+          "etiqueta_original": "Riesgos éticos y decisión de avance",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "sb-val",
+          "etiqueta_original": "Valorar contrato",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "val",
+          "etiqueta_original": "Valorar contrato",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "gate",
+          "etiqueta_original": "Criterio de cierre",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "sb-gate",
+          "etiqueta_original": "Criterio de cierre del blueprint",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "navegacion-comparacion",
+      "categoria": "Navegación",
+      "etiqueta": "Comparación de rondas",
+      "svg": "svg/01_navegacion/comparacion.svg",
+      "png": "png_96/01_navegacion/comparacion.png",
+      "forma": "compare",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "fases-antes",
+      "categoria": "Fases y modos",
+      "etiqueta": "Antes · A1–A3",
+      "svg": "svg/02_fases/antes.svg",
+      "png": "png_96/02_fases/antes.png",
+      "forma": "before",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "phases",
+          "id": "antes",
+          "etiqueta_original": "Antes",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "fases-durante",
+      "categoria": "Fases y modos",
+      "etiqueta": "Durante · E1–E5",
+      "svg": "svg/02_fases/durante.svg",
+      "png": "png_96/02_fases/durante.png",
+      "forma": "during",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "phases",
+          "id": "durante",
+          "etiqueta_original": "Durante",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "fases-despues",
+      "categoria": "Fases y modos",
+      "etiqueta": "Después · D1–D3",
+      "svg": "svg/02_fases/despues.svg",
+      "png": "png_96/02_fases/despues.png",
+      "forma": "after",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "phases",
+          "id": "despues",
+          "etiqueta_original": "Después",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "fases-flujo-actual",
+      "categoria": "Fases y modos",
+      "etiqueta": "Flujo actual · AS-IS",
+      "svg": "svg/02_fases/flujo-actual.svg",
+      "png": "png_96/02_fases/flujo-actual.png",
+      "forma": "fragmented",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "modes",
+          "id": "hoy",
+          "etiqueta_original": "HOY · red fragmentada",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "fases-flujo-propuesto",
+      "categoria": "Fases y modos",
+      "etiqueta": "Flujo propuesto · TO-BE",
+      "svg": "svg/02_fases/flujo-propuesto.svg",
+      "png": "png_96/02_fases/flujo-propuesto.png",
+      "forma": "connected",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "modes",
+          "id": "mod",
+          "etiqueta_original": "CON EL MÓDULO · blueprint federado",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-trabajador",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Trabajador · M.P.",
+      "svg": "svg/03_actores/trabajador.svg",
+      "png": "png_96/03_actores/trabajador.png",
+      "forma": "worker",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "tra",
+          "etiqueta_original": "M.P. y su familia",
+          "estado": "real"
+        },
+        {
+          "grupo": "risks",
+          "id": "carga",
+          "etiqueta_original": "Carga sobre el trabajador",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-familia",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Familia o representante",
+      "svg": "svg/03_actores/familia.svg",
+      "png": "png_96/03_actores/familia.png",
+      "forma": "family",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "actores-eps",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "EPS",
+      "svg": "svg/03_actores/eps.svg",
+      "png": "png_96/03_actores/eps.png",
+      "forma": "eps",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "eps",
+          "etiqueta_original": "EPS SURA",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-arl",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "ARL",
+      "svg": "svg/03_actores/arl.svg",
+      "png": "png_96/03_actores/arl.png",
+      "forma": "arl",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "arl",
+          "etiqueta_original": "ARL SURA",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-afp",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "AFP",
+      "svg": "svg/03_actores/afp.svg",
+      "png": "png_96/03_actores/afp.png",
+      "forma": "pension",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "afp",
+          "etiqueta_original": "AFP / Colpensiones",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-ips",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "IPS y equipo tratante",
+      "svg": "svg/03_actores/ips.svg",
+      "png": "png_96/03_actores/ips.png",
+      "forma": "clinic",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "ips",
+          "etiqueta_original": "IPS / médicos",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-empleador",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Empleador · SG-SST",
+      "svg": "svg/03_actores/empleador.svg",
+      "png": "png_96/03_actores/empleador.png",
+      "forma": "factory",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "emp",
+          "etiqueta_original": "Empleador / SG-SST",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-junta-regional",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Junta Regional",
+      "svg": "svg/03_actores/junta-regional.svg",
+      "png": "png_96/03_actores/junta-regional.png",
+      "forma": "regional",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "jr",
+          "etiqueta_original": "Junta Regional",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-junta-nacional",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Junta Nacional",
+      "svg": "svg/03_actores/junta-nacional.svg",
+      "png": "png_96/03_actores/junta-nacional.png",
+      "forma": "national",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "jn",
+          "etiqueta_original": "Junta Nacional",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-minsalud",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Ministerio de Salud",
+      "svg": "svg/03_actores/minsalud.svg",
+      "png": "png_96/03_actores/minsalud.png",
+      "forma": "healthgov",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "minsalud",
+          "etiqueta_original": "MinSalud",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "minsalud",
+          "etiqueta_original": "Vocabulario del resumen clínico (CIE-10)",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-mintrabajo",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Ministerio del Trabajo",
+      "svg": "svg/03_actores/mintrabajo.svg",
+      "png": "png_96/03_actores/mintrabajo.png",
+      "forma": "laborgov",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "mintrabajo",
+          "etiqueta_original": "MinTrabajo",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-supersalud",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Superintendencia de Salud",
+      "svg": "svg/03_actores/supersalud.svg",
+      "png": "png_96/03_actores/supersalud.png",
+      "forma": "supervise",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "supersalud",
+          "etiqueta_original": "SuperSalud",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "supersalud",
+          "etiqueta_original": "Queja de M.P. por demora en la calificación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-jueces",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Jueces",
+      "svg": "svg/03_actores/jueces.svg",
+      "png": "png_96/03_actores/jueces.png",
+      "forma": "justice",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "jueces",
+          "etiqueta_original": "Jueces",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "jueces",
+          "etiqueta_original": "Tutela por demora del dictamen y falta de notificación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-modulo",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Módulo interoperable",
+      "svg": "svg/03_actores/modulo.svg",
+      "png": "png_96/03_actores/modulo.png",
+      "forma": "module",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "actors",
+          "id": "modulo",
+          "etiqueta_original": "Módulo interoperable",
+          "estado": "real"
+        },
+        {
+          "grupo": "barriers",
+          "id": "tecnologia",
+          "etiqueta_original": "Falta de tecnología",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "automatica",
+          "etiqueta_original": "Respuesta automática",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-facilitador",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Facilitador",
+      "svg": "svg/03_actores/facilitador.svg",
+      "png": "png_96/03_actores/facilitador.png",
+      "forma": "facilitator",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "roles",
+          "id": "facilitadora",
+          "etiqueta_original": "Facilitadora",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-participante",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Participante",
+      "svg": "svg/03_actores/participante.svg",
+      "png": "png_96/03_actores/participante.png",
+      "forma": "person",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "perfiles",
+          "etiqueta_original": "Perfiles",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "ser",
+          "etiqueta_original": "Elegir actor",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "form-a",
+          "etiqueta_original": "Destinatario",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "perfil-nombre",
+          "etiqueta_original": "Nombre del participante",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "perfil-tipo",
+          "etiqueta_original": "Tipo de participación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "actores-observador",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Observador",
+      "svg": "svg/03_actores/observador.svg",
+      "png": "png_96/03_actores/observador.png",
+      "forma": "eye",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "actores-referente-juridico",
+      "categoria": "Actores y perfiles",
+      "etiqueta": "Referente jurídico",
+      "svg": "svg/03_actores/referente-juridico.svg",
+      "png": "png_96/03_actores/referente-juridico.png",
+      "forma": "justice",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "roles",
+          "id": "juridico",
+          "etiqueta_original": "Referente jurídico",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "carriles-acciones-usuario",
+      "categoria": "Carriles y líneas",
+      "etiqueta": "Acciones del usuario",
+      "svg": "svg/04_carriles/acciones-usuario.svg",
+      "png": "png_96/04_carriles/acciones-usuario.png",
+      "forma": "person",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "lanes",
+          "id": "mp",
+          "etiqueta_original": "Acciones de M.P.",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "tra_e1",
+          "etiqueta_original": "Día 120: la EPS debe calificar el origen",
+          "estado": "real"
+        },
+        {
+          "grupo": "proposed",
+          "id": "debo_hacer",
+          "etiqueta_original": "Qué debo hacer",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "carriles-puntos-contacto",
+      "categoria": "Carriles y líneas",
+      "etiqueta": "Puntos de contacto",
+      "svg": "svg/04_carriles/puntos-contacto.svg",
+      "png": "png_96/04_carriles/puntos-contacto.png",
+      "forma": "touchpoint",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "lanes",
+          "id": "contacto",
+          "etiqueta_original": "Puntos de contacto y evidencia física",
+          "estado": "real"
+        },
+        {
+          "grupo": "observation_types",
+          "id": "contacto",
+          "etiqueta_original": "Falta un punto de contacto",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "carriles-frontstage",
+      "categoria": "Carriles y líneas",
+      "etiqueta": "Interacción visible · frontstage",
+      "svg": "svg/04_carriles/frontstage.svg",
+      "png": "png_96/04_carriles/frontstage.png",
+      "forma": "frontstage",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "lanes",
+          "id": "front",
+          "etiqueta_original": "Front · actor visible",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "carriles-backstage",
+      "categoria": "Carriles y líneas",
+      "etiqueta": "Procesos internos · backstage",
+      "svg": "svg/04_carriles/backstage.svg",
+      "png": "png_96/04_carriles/backstage.png",
+      "forma": "backstage",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "lanes",
+          "id": "back",
+          "etiqueta_original": "Back · custodia y trámite interno",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "carriles-soporte",
+      "categoria": "Carriles y líneas",
+      "etiqueta": "Procesos de soporte",
+      "svg": "svg/04_carriles/soporte.svg",
+      "png": "png_96/04_carriles/soporte.png",
+      "forma": "support",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "lanes",
+          "id": "soporte",
+          "etiqueta_original": "Procesos de soporte",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "carriles-linea-interaccion",
+      "categoria": "Carriles y líneas",
+      "etiqueta": "Línea de interacción",
+      "svg": "svg/04_carriles/linea-interaccion.svg",
+      "png": "png_96/04_carriles/linea-interaccion.png",
+      "forma": "lineinteraction",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "service_lines",
+          "id": "contacto",
+          "etiqueta_original": "Línea de interacción",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "carriles-linea-visibilidad",
+      "categoria": "Carriles y líneas",
+      "etiqueta": "Línea de visibilidad",
+      "svg": "svg/04_carriles/linea-visibilidad.svg",
+      "png": "png_96/04_carriles/linea-visibilidad.png",
+      "forma": "linevisibility",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "service_lines",
+          "id": "back",
+          "etiqueta_original": "Línea de visibilidad",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "carriles-linea-interna",
+      "categoria": "Carriles y líneas",
+      "etiqueta": "Línea de interacción interna",
+      "svg": "svg/04_carriles/linea-interna.svg",
+      "png": "png_96/04_carriles/linea-interna.png",
+      "forma": "lineinternal",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "service_lines",
+          "id": "soporte",
+          "etiqueta_original": "Línea de interacción interna",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-a1-inicio-incapacidad",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "A1 · Inicio de la incapacidad",
+      "svg": "svg/05_pasos/a1-inicio-incapacidad.svg",
+      "png": "png_96/05_pasos/a1-inicio-incapacidad.png",
+      "forma": "filehealth",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "A1",
+          "etiqueta_original": "Inicio de la incapacidad",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-a2-certificados-prorrogas",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "A2 · Certificados y prórrogas",
+      "svg": "svg/05_pasos/a2-certificados-prorrogas.svg",
+      "png": "png_96/05_pasos/a2-certificados-prorrogas.png",
+      "forma": "calendar",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "A2",
+          "etiqueta_original": "Certificados y prórrogas",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-a3-evidencia-laboral",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "A3 · Evidencia laboral (APT)",
+      "svg": "svg/05_pasos/a3-evidencia-laboral.svg",
+      "png": "png_96/05_pasos/a3-evidencia-laboral.png",
+      "forma": "workplace",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "A3",
+          "etiqueta_original": "Evidencia laboral (APT)",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-e1-calificacion-origen",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "E1 · Calificación inicial del origen",
+      "svg": "svg/05_pasos/e1-calificacion-origen.svg",
+      "png": "png_96/05_pasos/e1-calificacion-origen.png",
+      "forma": "origin",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "E1",
+          "etiqueta_original": "Calificación de origen",
+          "estado": "real"
+        },
+        {
+          "grupo": "tensions",
+          "id": "origen",
+          "etiqueta_original": "Origen (¿común o laboral?)",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "eps_e1",
+          "etiqueta_original": "Calificar el origen en primera oportunidad",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-e2-controversia",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "E2 · Controversia",
+      "svg": "svg/05_pasos/e2-controversia.svg",
+      "png": "png_96/05_pasos/e2-controversia.png",
+      "forma": "conflict",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "E2",
+          "etiqueta_original": "Respuesta o controversia",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "arl_e2",
+          "etiqueta_original": "Responder la calificación: aceptar o controvertir",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-e3-dictamen",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "E3 · Expediente y dictamen",
+      "svg": "svg/05_pasos/e3-dictamen.svg",
+      "png": "png_96/05_pasos/e3-dictamen.png",
+      "forma": "decision",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "E3",
+          "etiqueta_original": "Dictamen de primera instancia",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "jr_e3",
+          "etiqueta_original": "Dictaminar en primera instancia",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-e4-apelacion",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "E4 · Apelación",
+      "svg": "svg/05_pasos/e4-apelacion.svg",
+      "png": "png_96/05_pasos/e4-apelacion.png",
+      "forma": "appeal",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "E4",
+          "etiqueta_original": "Apelación · validación experta",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "jn_e4",
+          "etiqueta_original": "Validación experta del paquete de apelación (no resuelve)",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-e5-pago",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "E5 · Pago",
+      "svg": "svg/05_pasos/e5-pago.svg",
+      "png": "png_96/05_pasos/e5-pago.png",
+      "forma": "payment",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "E5",
+          "etiqueta_original": "Pago desde el día 181 y competencia",
+          "estado": "real"
+        },
+        {
+          "grupo": "tensions",
+          "id": "quien_paga",
+          "etiqueta_original": "¿Quién paga?",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "afp_e5",
+          "etiqueta_original": "Pago desde el día 181 y competencia",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "tra_e5",
+          "etiqueta_original": "¿Sabe quién le paga desde el día 181?",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-d1-reintegro",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "D1 · Reintegro o reubicación",
+      "svg": "svg/05_pasos/d1-reintegro.svg",
+      "png": "png_96/05_pasos/d1-reintegro.png",
+      "forma": "returnwork",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "D1",
+          "etiqueta_original": "Reintegro o reubicación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-d2-prestacion",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "D2 · Prestación en firme",
+      "svg": "svg/05_pasos/d2-prestacion.svg",
+      "png": "png_96/05_pasos/d2-prestacion.png",
+      "forma": "seal",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "D2",
+          "etiqueta_original": "Prestación en firme o pensión",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "arl_e5",
+          "etiqueta_original": "Si el origen es laboral, asumir la prestación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "pasos-d3-seguimiento",
+      "categoria": "Pasos del servicio",
+      "etiqueta": "D3 · Seguimiento y control",
+      "svg": "svg/05_pasos/d3-seguimiento.svg",
+      "png": "png_96/05_pasos/d3-seguimiento.png",
+      "forma": "followup",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "steps",
+          "id": "D3",
+          "etiqueta_original": "Seguimiento, queja o tutela",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "gobernanza-custodia",
+      "categoria": "Gobernanza y reglas",
+      "etiqueta": "Custodia distribuida",
+      "svg": "svg/06_gobernanza/custodia.svg",
+      "png": "png_96/06_gobernanza/custodia.png",
+      "forma": "custody",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "rules",
+          "id": "1",
+          "etiqueta_original": "Custodia distribuida",
+          "estado": "real"
+        },
+        {
+          "grupo": "concepts",
+          "id": "custodio",
+          "etiqueta_original": "quien conserva la evidencia en su repositorio de origen.",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "gobernanza-finalidad",
+      "categoria": "Gobernanza y reglas",
+      "etiqueta": "Acceso por finalidad",
+      "svg": "svg/06_gobernanza/finalidad.svg",
+      "png": "png_96/06_gobernanza/finalidad.png",
+      "forma": "purpose",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "rules",
+          "id": "2",
+          "etiqueta_original": "Intercambio por finalidad",
+          "estado": "real"
+        },
+        {
+          "grupo": "concepts",
+          "id": "finalidad",
+          "etiqueta_original": "para qué se consulta; cada acceso la declara y se ampara en un contrato.",
+          "estado": "real"
+        },
+        {
+          "grupo": "risks",
+          "id": "fuera_finalidad",
+          "etiqueta_original": "Uso fuera de finalidad",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "form-finalidad",
+          "etiqueta_original": "Finalidad declarada",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "gobernanza-minimo-necesario",
+      "categoria": "Gobernanza y reglas",
+      "etiqueta": "Mínimo necesario",
+      "svg": "svg/06_gobernanza/minimo-necesario.svg",
+      "png": "png_96/06_gobernanza/minimo-necesario.png",
+      "forma": "minimum",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "rules",
+          "id": "3",
+          "etiqueta_original": "Mínimo necesario",
+          "estado": "real"
+        },
+        {
+          "grupo": "concepts",
+          "id": "vista mínima",
+          "etiqueta_original": "los campos que esa finalidad puede ver («n de N»); el resto se retiene en origen.",
+          "estado": "real"
+        },
+        {
+          "grupo": "risks",
+          "id": "retencion",
+          "etiqueta_original": "Retención excesiva de campos",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "form-campo",
+          "etiqueta_original": "Campo de evidencia",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "gobernanza-responsable-plazo",
+      "categoria": "Gobernanza y reglas",
+      "etiqueta": "Responsable y plazo",
+      "svg": "svg/06_gobernanza/responsable-plazo.svg",
+      "png": "png_96/06_gobernanza/responsable-plazo.png",
+      "forma": "deadline",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "rules",
+          "id": "4",
+          "etiqueta_original": "Responsabilidad visible",
+          "estado": "real"
+        },
+        {
+          "grupo": "concepts",
+          "id": "responsable y plazo",
+          "etiqueta_original": "cargo que responde por un suministro, consulta o decisión, y hasta cuándo.",
+          "estado": "real"
+        },
+        {
+          "grupo": "tensions",
+          "id": "plazo",
+          "etiqueta_original": "Plazo o notificación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "gobernanza-trazabilidad",
+      "categoria": "Gobernanza y reglas",
+      "etiqueta": "Trazabilidad",
+      "svg": "svg/06_gobernanza/trazabilidad.svg",
+      "png": "png_96/06_gobernanza/trazabilidad.png",
+      "forma": "trace",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "rules",
+          "id": "5",
+          "etiqueta_original": "Trazabilidad auditable",
+          "estado": "real"
+        },
+        {
+          "grupo": "concepts",
+          "id": "traza",
+          "etiqueta_original": "registro de quién vio o entregó qué, para qué, cuándo y con qué resultado.",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "gobernanza-etica",
+      "categoria": "Gobernanza y reglas",
+      "etiqueta": "Consideraciones éticas",
+      "svg": "svg/06_gobernanza/etica.svg",
+      "png": "png_96/06_gobernanza/etica.png",
+      "forma": "ethics",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "risks",
+          "id": "sesgo",
+          "etiqueta_original": "Sesgo en la decisión de origen",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "sb-mit",
+          "etiqueta_original": "Definir mitigación",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "sb-riesgo-aplica",
+          "etiqueta_original": "Riesgo aplicable",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "gobernanza-autenticacion",
+      "categoria": "Gobernanza y reglas",
+      "etiqueta": "Identificación y acceso",
+      "svg": "svg/06_gobernanza/autenticacion.svg",
+      "png": "png_96/06_gobernanza/autenticacion.png",
+      "forma": "lock",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "risks",
+          "id": "reidentificacion",
+          "etiqueta_original": "Reidentificación de M.P.",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "entrar-admin",
+          "etiqueta_original": "Entrar como facilitadora",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "entrar-pin",
+          "etiqueta_original": "PIN de facilitadora",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "nuevo-pin",
+          "etiqueta_original": "PIN de administración",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "gobernanza-autorizacion",
+      "categoria": "Gobernanza y reglas",
+      "etiqueta": "Autorización",
+      "svg": "svg/06_gobernanza/autorizacion.svg",
+      "png": "png_96/06_gobernanza/autorizacion.png",
+      "forma": "unlock",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "tensions",
+          "id": "reserva",
+          "etiqueta_original": "Reserva o privacidad del dato",
+          "estado": "real"
+        },
+        {
+          "grupo": "barriers",
+          "id": "permisos",
+          "etiqueta_original": "Gestión de permisos y finalidades",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "gobernanza-contrato-datos",
+      "categoria": "Gobernanza y reglas",
+      "etiqueta": "Contrato de datos",
+      "svg": "svg/06_gobernanza/contrato-datos.svg",
+      "png": "png_96/06_gobernanza/contrato-datos.png",
+      "forma": "contract",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "sb-ficha",
+          "etiqueta_original": "Ficha del actor y contrato",
+          "estado": "real"
+        },
+        {
+          "grupo": "sections",
+          "id": "contrato",
+          "etiqueta_original": "Validación final del contrato",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "documentos-expediente",
+      "categoria": "Documentos y evidencias",
+      "etiqueta": "Expediente lógico",
+      "svg": "svg/07_documentos/expediente.svg",
+      "png": "png_96/07_documentos/expediente.png",
+      "forma": "folder",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "challenges",
+          "id": "tra_e3",
+          "etiqueta_original": "Radicar y seguir el expediente",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "documentos-historia-clinica",
+      "categoria": "Documentos y evidencias",
+      "etiqueta": "Historia o resumen clínico",
+      "svg": "svg/07_documentos/historia-clinica.svg",
+      "png": "png_96/07_documentos/historia-clinica.png",
+      "forma": "filehealth",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "evidence",
+          "id": "hc",
+          "etiqueta_original": "Resumen clínico estructurado",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "ips_e1",
+          "etiqueta_original": "Solicitud de historia clínica",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "documentos-incapacidad",
+      "categoria": "Documentos y evidencias",
+      "etiqueta": "Certificado de incapacidad",
+      "svg": "svg/07_documentos/incapacidad.svg",
+      "png": "png_96/07_documentos/incapacidad.png",
+      "forma": "certificate",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "evidence",
+          "id": "inc",
+          "etiqueta_original": "Certificados de incapacidad",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "eps_e2",
+          "etiqueta_original": "Suministrar los certificados de incapacidad (INC)",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "documentos-apt",
+      "categoria": "Documentos y evidencias",
+      "etiqueta": "Análisis de puesto de trabajo · APT",
+      "svg": "svg/07_documentos/apt.svg",
+      "png": "png_96/07_documentos/apt.png",
+      "forma": "workplace",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "evidence",
+          "id": "apt",
+          "etiqueta_original": "Matriz de exposición / análisis de puesto",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "emp_e1",
+          "etiqueta_original": "Matriz de exposición (APT) con versión y fecha",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "documentos-dictamen",
+      "categoria": "Documentos y evidencias",
+      "etiqueta": "Dictamen",
+      "svg": "svg/07_documentos/dictamen.svg",
+      "png": "png_96/07_documentos/dictamen.png",
+      "forma": "decision",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "evidence",
+          "id": "dic",
+          "etiqueta_original": "Dictamen de primera instancia",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "documentos-notificacion",
+      "categoria": "Documentos y evidencias",
+      "etiqueta": "Notificación con acuse",
+      "svg": "svg/07_documentos/notificacion.svg",
+      "png": "png_96/07_documentos/notificacion.png",
+      "forma": "mailcheck",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "documentos-datos-sinteticos",
+      "categoria": "Documentos y evidencias",
+      "etiqueta": "Datos sintéticos",
+      "svg": "svg/07_documentos/datos-sinteticos.svg",
+      "png": "png_96/07_documentos/datos-sinteticos.png",
+      "forma": "synthetic",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "documentos-documento-version",
+      "categoria": "Documentos y evidencias",
+      "etiqueta": "Documento y versión",
+      "svg": "svg/07_documentos/documento-version.svg",
+      "png": "png_96/07_documentos/documento-version.png",
+      "forma": "version",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "documentos-evidencia",
+      "categoria": "Documentos y evidencias",
+      "etiqueta": "Evidencia de la sesión",
+      "svg": "svg/07_documentos/evidencia.svg",
+      "png": "png_96/07_documentos/evidencia.png",
+      "forma": "evidence",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "registros",
+          "etiqueta_original": "Mis registros",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "form-pieza",
+          "etiqueta_original": "Pieza de evidencia",
+          "estado": "real"
+        },
+        {
+          "grupo": "proposed",
+          "id": "ocurrio",
+          "etiqueta_original": "Qué ocurrió",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "documentos-historial-laboral",
+      "categoria": "Documentos y evidencias",
+      "etiqueta": "Historial laboral · HL",
+      "svg": "svg/07_documentos/historial-laboral.svg",
+      "png": "png_96/07_documentos/historial-laboral.png",
+      "forma": "file",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "evidence",
+          "id": "hl",
+          "etiqueta_original": "Historia laboral y semanas",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "afp_e3",
+          "etiqueta_original": "Entregar la historia laboral a la Junta",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-crear",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Crear o añadir",
+      "svg": "svg/08_acciones/crear.svg",
+      "png": "png_96/08_acciones/crear.png",
+      "forma": "add",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "crear",
+          "etiqueta_original": "Crear mesa",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-editar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Editar",
+      "svg": "svg/08_acciones/editar.svg",
+      "png": "png_96/08_acciones/editar.png",
+      "forma": "edit",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "acciones-guardar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Guardar",
+      "svg": "svg/08_acciones/guardar.svg",
+      "png": "png_96/08_acciones/guardar.png",
+      "forma": "save",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "registrar",
+          "etiqueta_original": "Registrar gestión",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "reto-guardar",
+          "etiqueta_original": "Registrar respuestas del reto",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-consultar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Consultar",
+      "svg": "svg/08_acciones/consultar.svg",
+      "png": "png_96/08_acciones/consultar.png",
+      "forma": "search",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "simulation_actions",
+          "id": "consultar",
+          "etiqueta_original": "Consultar evidencia por finalidad (módulo)",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-solicitar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Solicitar información",
+      "svg": "svg/08_acciones/solicitar.svg",
+      "png": "png_96/08_acciones/solicitar.png",
+      "forma": "request",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "bandeja",
+          "etiqueta_original": "Bandeja",
+          "estado": "real"
+        },
+        {
+          "grupo": "simulation_actions",
+          "id": "solicitar",
+          "etiqueta_original": "Solicitar evidencia a quien la custodia",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-entregar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Entregar información",
+      "svg": "svg/08_acciones/entregar.svg",
+      "png": "png_96/08_acciones/entregar.png",
+      "forma": "deliver",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "responder",
+          "etiqueta_original": "Responder solicitud",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "resp-campo",
+          "etiqueta_original": "Campo entregado",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "entregada",
+          "etiqueta_original": "Entregada",
+          "estado": "real"
+        },
+        {
+          "grupo": "proposed",
+          "id": "recibi",
+          "etiqueta_original": "Qué recibí",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "acciones-decidir",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Registrar decisión",
+      "svg": "svg/08_acciones/decidir.svg",
+      "png": "png_96/08_acciones/decidir.png",
+      "forma": "decision",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "gestion",
+          "etiqueta_original": "Registrar gestión",
+          "estado": "real"
+        },
+        {
+          "grupo": "simulation_actions",
+          "id": "decidir",
+          "etiqueta_original": "Decidir (calificar, dictaminar, apelar, pagar)",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "form-decision",
+          "etiqueta_original": "Decisión y motivación",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "form-tipo",
+          "etiqueta_original": "Tipo de gestión",
+          "estado": "real"
+        },
+        {
+          "grupo": "proposed",
+          "id": "puedo_decidir",
+          "etiqueta_original": "Qué puedo decidir",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "acciones-notificar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Notificar",
+      "svg": "svg/08_acciones/notificar.svg",
+      "png": "png_96/08_acciones/notificar.png",
+      "forma": "bell",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "simulation_actions",
+          "id": "notificar",
+          "etiqueta_original": "Notificar",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "form-notifica",
+          "etiqueta_original": "Destinatarios de notificación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-confirmar-recepcion",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Confirmar recepción",
+      "svg": "svg/08_acciones/confirmar-recepcion.svg",
+      "png": "png_96/08_acciones/confirmar-recepcion.png",
+      "forma": "mailcheck",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "concepts",
+          "id": "acuse",
+          "etiqueta_original": "confirmación de recibo de una notificación.",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "form-acuse",
+          "etiqueta_original": "Acuse de recibo",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "resp-acuse",
+          "etiqueta_original": "Respuesta con acuse",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-controvertir",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Controvertir o apelar",
+      "svg": "svg/08_acciones/controvertir.svg",
+      "png": "png_96/08_acciones/controvertir.png",
+      "forma": "appeal",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "simulation_actions",
+          "id": "controvertir",
+          "etiqueta_original": "Controvertir o apelar",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "arl_e4",
+          "etiqueta_original": "¿Apelar el dictamen?",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-vigilar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Supervisar o requerir",
+      "svg": "svg/08_acciones/vigilar.svg",
+      "png": "png_96/08_acciones/vigilar.png",
+      "forma": "supervise",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "simulation_actions",
+          "id": "vigilar",
+          "etiqueta_original": "Vigilar, requerir u ordenar",
+          "estado": "real"
+        },
+        {
+          "grupo": "challenges",
+          "id": "mintrabajo",
+          "etiqueta_original": "Inspección al empleador (APT) y a la ARL (controversia con acuse)",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-observar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Registrar observación",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png",
+      "forma": "message",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "sb-anot",
+          "etiqueta_original": "Observaciones del blueprint",
+          "estado": "real"
+        },
+        {
+          "grupo": "simulation_actions",
+          "id": "otra",
+          "etiqueta_original": "Otra gestión",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "sb-anot-add",
+          "etiqueta_original": "Añadir observación",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "resp-motivo",
+          "etiqueta_original": "Motivo o nota",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "sb-anot-texto",
+          "etiqueta_original": "Texto de la observación",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "sb-anot-tipo",
+          "etiqueta_original": "Tipo de observación",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "sb-riesgo-nota",
+          "etiqueta_original": "Mitigación descrita",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "sb-val-cual",
+          "etiqueta_original": "Justificación de valoración",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "turno-nota",
+          "etiqueta_original": "Nota de entrega del turno",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "val-cual",
+          "etiqueta_original": "Justificación de valoración",
+          "estado": "real"
+        },
+        {
+          "grupo": "observation_types",
+          "id": "otra",
+          "etiqueta_original": "Otra observación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-pasar-turno",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Pasar turno",
+      "svg": "svg/08_acciones/pasar-turno.svg",
+      "png": "png_96/08_acciones/pasar-turno.png",
+      "forma": "handoff",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "turno",
+          "etiqueta_original": "Pasar el turno",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "pasar",
+          "etiqueta_original": "Pasar turno",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "admin-turno",
+          "etiqueta_original": "Actor con turno",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "turno-a",
+          "etiqueta_original": "Destinatario del turno",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "turno",
+          "etiqueta_original": "Es su turno",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-iniciar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Iniciar o reanudar",
+      "svg": "svg/08_acciones/iniciar.svg",
+      "png": "png_96/08_acciones/iniciar.png",
+      "forma": "play",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "iniciar",
+          "etiqueta_original": "Iniciar mesa",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "reabrir",
+          "etiqueta_original": "Reabrir mesa",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "libre",
+          "etiqueta_original": "Puede actuar ahora",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-pausar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Pausar",
+      "svg": "svg/08_acciones/pausar.svg",
+      "png": "png_96/08_acciones/pausar.png",
+      "forma": "pause",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "proposed",
+          "id": "pausar",
+          "etiqueta_original": "Pausar sesión",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "acciones-detener",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Detener",
+      "svg": "svg/08_acciones/detener.svg",
+      "png": "png_96/08_acciones/detener.png",
+      "forma": "stop",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "acciones-siguiente",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Siguiente paso",
+      "svg": "svg/08_acciones/siguiente.svg",
+      "png": "png_96/08_acciones/siguiente.png",
+      "forma": "next",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "acciones-anterior",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Paso anterior",
+      "svg": "svg/08_acciones/anterior.svg",
+      "png": "png_96/08_acciones/anterior.png",
+      "forma": "back",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "states",
+          "id": "pasado",
+          "etiqueta_original": "Etapa pasada",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-aceptar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Aceptar",
+      "svg": "svg/08_acciones/aceptar.svg",
+      "png": "png_96/08_acciones/aceptar.png",
+      "forma": "check",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "tensions",
+          "id": "ninguna",
+          "etiqueta_original": "Ninguna",
+          "estado": "real"
+        },
+        {
+          "grupo": "barriers",
+          "id": "ninguno",
+          "etiqueta_original": "Ninguna",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "aceptar",
+          "etiqueta_original": "Aceptar",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-ajustar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Solicitar ajustes",
+      "svg": "svg/08_acciones/ajustar.svg",
+      "png": "png_96/08_acciones/ajustar.png",
+      "forma": "adjust",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_fields",
+          "id": "reto-cambio",
+          "etiqueta_original": "Cambio propuesto",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-rechazar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Rechazar",
+      "svg": "svg/08_acciones/rechazar.svg",
+      "png": "png_96/08_acciones/rechazar.png",
+      "forma": "reject",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_fields",
+          "id": "resp-denegar",
+          "etiqueta_original": "Denegar por finalidad",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "rechazar",
+          "etiqueta_original": "Rechazar",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "denegada",
+          "etiqueta_original": "Denegada",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-cerrar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Cerrar panel",
+      "svg": "svg/08_acciones/cerrar.svg",
+      "png": "png_96/08_acciones/cerrar.png",
+      "forma": "close",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "borrar-no",
+          "etiqueta_original": "Cancelar borrado",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "sb-reset-no",
+          "etiqueta_original": "Cancelar reinicio",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-cerrar-sesion",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Cerrar sesión con decisión",
+      "svg": "svg/08_acciones/cerrar-sesion.svg",
+      "png": "png_96/08_acciones/cerrar-sesion.png",
+      "forma": "seal",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "cerrar",
+          "etiqueta_original": "Cerrar mesa",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-reiniciar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Reiniciar",
+      "svg": "svg/08_acciones/reiniciar.svg",
+      "png": "png_96/08_acciones/reiniciar.png",
+      "forma": "reset",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "sb-reset",
+          "etiqueta_original": "Reiniciar validación",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "sb-reset-ok",
+          "etiqueta_original": "Confirmar reinicio",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-copiar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Copiar",
+      "svg": "svg/08_acciones/copiar.svg",
+      "png": "png_96/08_acciones/copiar.png",
+      "forma": "copy",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "copy-json",
+          "etiqueta_original": "Copiar JSON",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "sb-copy",
+          "etiqueta_original": "Copiar JSON del blueprint",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-compartir-enlace",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Copiar enlace de acceso",
+      "svg": "svg/08_acciones/compartir-enlace.svg",
+      "png": "png_96/08_acciones/compartir-enlace.png",
+      "forma": "link",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "copiar-admin",
+          "etiqueta_original": "Copiar enlace de facilitación",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "copiar-enlace",
+          "etiqueta_original": "Copiar enlace del actor",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "copiar-general",
+          "etiqueta_original": "Copiar enlace general",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "url-base",
+          "etiqueta_original": "Dirección de la página",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-importar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Importar",
+      "svg": "svg/08_acciones/importar.svg",
+      "png": "png_96/08_acciones/importar.png",
+      "forma": "import",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "proposed",
+          "id": "importar",
+          "etiqueta_original": "Importar sesión",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "acciones-exportar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Exportar",
+      "svg": "svg/08_acciones/exportar.svg",
+      "png": "png_96/08_acciones/exportar.png",
+      "forma": "export",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "dl-html",
+          "etiqueta_original": "Descargar informe HTML",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "dl-json",
+          "etiqueta_original": "Descargar JSON",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "sb-dl",
+          "etiqueta_original": "Descargar JSON del blueprint",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-imprimir",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Imprimir",
+      "svg": "svg/08_acciones/imprimir.svg",
+      "png": "png_96/08_acciones/imprimir.png",
+      "forma": "print",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "acciones-eliminar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Eliminar",
+      "svg": "svg/08_acciones/eliminar.svg",
+      "png": "png_96/08_acciones/eliminar.png",
+      "forma": "delete",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "borrar",
+          "etiqueta_original": "Borrar mesa",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "borrar-ok",
+          "etiqueta_original": "Confirmar borrado",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "sb-anot-del",
+          "etiqueta_original": "Quitar observación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-expandir",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Ver completo",
+      "svg": "svg/08_acciones/expandir.svg",
+      "png": "png_96/08_acciones/expandir.png",
+      "forma": "expand",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "acciones-filtrar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Filtrar",
+      "svg": "svg/08_acciones/filtrar.svg",
+      "png": "png_96/08_acciones/filtrar.png",
+      "forma": "filter",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "sb-fase",
+          "etiqueta_original": "Seleccionar fase",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-entrar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Entrar",
+      "svg": "svg/08_acciones/entrar.svg",
+      "png": "png_96/08_acciones/entrar.png",
+      "forma": "signin",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "entrar",
+          "etiqueta_original": "Entrar a la mesa",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "entrar-code",
+          "etiqueta_original": "Código de mesa",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-salir",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Salir",
+      "svg": "svg/08_acciones/salir.svg",
+      "png": "png_96/08_acciones/salir.png",
+      "forma": "signout",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "salir",
+          "etiqueta_original": "Salir / Volver",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-archivar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Archivar",
+      "svg": "svg/08_acciones/archivar.svg",
+      "png": "png_96/08_acciones/archivar.png",
+      "forma": "archive",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "proposed",
+          "id": "archivar",
+          "etiqueta_original": "Archivar sesión",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "acciones-comparar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Comparar",
+      "svg": "svg/08_acciones/comparar.svg",
+      "png": "png_96/08_acciones/comparar.png",
+      "forma": "compare",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "comparar",
+          "etiqueta_original": "Comparar mesas",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "nuevo-modo",
+          "etiqueta_original": "Elegir modo de nueva ronda",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_actions",
+          "id": "sb-modo",
+          "etiqueta_original": "Seleccionar modo",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "comparar",
+          "etiqueta_original": "Código de mesa para comparación",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "acciones-sincronizar",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Sincronizar",
+      "svg": "svg/08_acciones/sincronizar.svg",
+      "png": "png_96/08_acciones/sincronizar.png",
+      "forma": "sync",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "acciones-ver-detalle",
+      "categoria": "Acciones de la interfaz",
+      "etiqueta": "Ver detalle",
+      "svg": "svg/08_acciones/ver-detalle.svg",
+      "png": "png_96/08_acciones/ver-detalle.png",
+      "forma": "eye",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "admin-ver",
+          "etiqueta_original": "Ver detalle del actor / cerrar detalle",
+          "estado": "real"
+        },
+        {
+          "grupo": "proposed",
+          "id": "detalle",
+          "etiqueta_original": "Ver detalle",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "estados-pendiente",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Pendiente de evidencia",
+      "svg": "svg/09_estados/pendiente.svg",
+      "png": "png_96/09_estados/pendiente.png",
+      "forma": "pending",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "states",
+          "id": "pendiente",
+          "etiqueta_original": "Pendiente",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "espera",
+          "etiqueta_original": "Esperando el turno",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "estados-en-curso",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "En curso",
+      "svg": "svg/09_estados/en-curso.svg",
+      "png": "png_96/09_estados/en-curso.png",
+      "forma": "running",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "actividad",
+          "etiqueta_original": "Qué está pasando",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "en_curso",
+          "etiqueta_original": "En curso",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "estados-bloqueado",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Bloqueado",
+      "svg": "svg/09_estados/bloqueado.svg",
+      "png": "png_96/09_estados/bloqueado.png",
+      "forma": "lock",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "states",
+          "id": "no_avanza",
+          "etiqueta_original": "No avanza",
+          "estado": "real"
+        },
+        {
+          "grupo": "proposed",
+          "id": "bloqueado",
+          "etiqueta_original": "Paso bloqueado",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "estados-completado",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Completado",
+      "svg": "svg/09_estados/completado.svg",
+      "png": "png_96/09_estados/completado.png",
+      "forma": "check",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "states",
+          "id": "hecho",
+          "etiqueta_original": "Respondido",
+          "estado": "real"
+        },
+        {
+          "grupo": "proposed",
+          "id": "completado",
+          "etiqueta_original": "Paso completado",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "estados-requiere-ajustes",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Requiere ajustes",
+      "svg": "svg/09_estados/requiere-ajustes.svg",
+      "png": "png_96/09_estados/requiere-ajustes.png",
+      "forma": "adjust",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "states",
+          "id": "ajustar",
+          "etiqueta_original": "Ajustar",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "parcial",
+          "etiqueta_original": "Entrega parcial",
+          "estado": "real"
+        },
+        {
+          "grupo": "states",
+          "id": "avanza_ajustes",
+          "etiqueta_original": "Avanza con ajustes",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "estados-conflicto-abierto",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Conflicto abierto",
+      "svg": "svg/09_estados/conflicto-abierto.svg",
+      "png": "png_96/09_estados/conflicto-abierto.png",
+      "forma": "conflict",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "observation_types",
+          "id": "conflicto",
+          "etiqueta_original": "Conflicto de rol",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "estados-advertencia",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Atención requerida",
+      "svg": "svg/09_estados/advertencia.svg",
+      "png": "png_96/09_estados/advertencia.png",
+      "forma": "warning",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "alertas",
+          "etiqueta_original": "Alertas de reglas y plazos",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "estados-sin-conexion",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Sin conexión compartida",
+      "svg": "svg/09_estados/sin-conexion.svg",
+      "png": "png_96/09_estados/sin-conexion.png",
+      "forma": "offline",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "estados-conectado",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Conectado",
+      "svg": "svg/09_estados/conectado.svg",
+      "png": "png_96/09_estados/conectado.png",
+      "forma": "online",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "states",
+          "id": "en_linea",
+          "etiqueta_original": "En línea",
+          "estado": "real"
+        },
+        {
+          "grupo": "proposed",
+          "id": "conexion_compartida",
+          "etiqueta_original": "Conexión compartida verificada",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "estados-modo-local",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Sesión local",
+      "svg": "svg/09_estados/modo-local.svg",
+      "png": "png_96/09_estados/modo-local.png",
+      "forma": "local",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "states",
+          "id": "local",
+          "etiqueta_original": "Modo local",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "estados-guardado",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Guardado",
+      "svg": "svg/09_estados/guardado.svg",
+      "png": "png_96/09_estados/guardado.png",
+      "forma": "save",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "proposed",
+          "id": "guardar",
+          "etiqueta_original": "Guardado confirmado",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "estados-listo-revision",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Listo para revisión",
+      "svg": "svg/09_estados/listo-revision.svg",
+      "png": "png_96/09_estados/listo-revision.png",
+      "forma": "clipboard",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "states",
+          "id": "avanza",
+          "etiqueta_original": "Avanza",
+          "estado": "real"
+        },
+        {
+          "grupo": "proposed",
+          "id": "listo_revision",
+          "etiqueta_original": "Listo para revisión del facilitador",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "estados-cerrado",
+      "categoria": "Estados de trabajo",
+      "etiqueta": "Cerrado con decisión",
+      "svg": "svg/09_estados/cerrado.svg",
+      "png": "png_96/09_estados/cerrado.png",
+      "forma": "seal",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "states",
+          "id": "cerrada",
+          "etiqueta_original": "Cerrada",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "investigacion-completitud",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Completitud de evidencia",
+      "svg": "svg/10_investigacion/completitud.svg",
+      "png": "png_96/10_investigacion/completitud.png",
+      "forma": "complete",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "breakdowns",
+          "id": "r1",
+          "etiqueta_original": "Historia clínica y laboral incompleta o dispersa",
+          "estado": "real"
+        },
+        {
+          "grupo": "evaluation",
+          "id": "completitud",
+          "etiqueta_original": "Completitud de evidencia",
+          "estado": "real"
+        },
+        {
+          "grupo": "barriers",
+          "id": "dato",
+          "etiqueta_original": "Calidad del dato",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "reto-falto",
+          "etiqueta_original": "Evidencia faltante",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "investigacion-trazabilidad-accesos",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Trazabilidad de accesos",
+      "svg": "svg/10_investigacion/trazabilidad-accesos.svg",
+      "png": "png_96/10_investigacion/trazabilidad-accesos.png",
+      "forma": "trace",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "breakdowns",
+          "id": "r4",
+          "etiqueta_original": "Notificaciones y términos no trazables",
+          "estado": "real"
+        },
+        {
+          "grupo": "evaluation",
+          "id": "trazabilidad",
+          "etiqueta_original": "Trazabilidad de acceso",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "investigacion-claridad-roles",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Claridad de responsabilidades",
+      "svg": "svg/10_investigacion/claridad-roles.svg",
+      "png": "png_96/10_investigacion/claridad-roles.png",
+      "forma": "roles",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "breakdowns",
+          "id": "r3",
+          "etiqueta_original": "Responsabilidades de suministro/consulta ambiguas",
+          "estado": "real"
+        },
+        {
+          "grupo": "tensions",
+          "id": "competencia",
+          "etiqueta_original": "Competencia (¿a quién le toca?)",
+          "estado": "real"
+        },
+        {
+          "grupo": "evaluation",
+          "id": "claridad",
+          "etiqueta_original": "Claridad de responsabilidades",
+          "estado": "real"
+        },
+        {
+          "grupo": "barriers",
+          "id": "alineacion",
+          "etiqueta_original": "Alineación entre entidades",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "investigacion-barreras",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Barreras identificadas",
+      "svg": "svg/10_investigacion/barreras.svg",
+      "png": "png_96/10_investigacion/barreras.png",
+      "forma": "barrier",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "breakdowns",
+          "id": "r5",
+          "etiqueta_original": "Competencias y lenguaje diagnóstico no alineados",
+          "estado": "real"
+        },
+        {
+          "grupo": "tensions",
+          "id": "lenguaje",
+          "etiqueta_original": "Lenguaje diagnóstico no alineado",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "investigacion-reprocesos",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Reprocesos",
+      "svg": "svg/10_investigacion/reprocesos.svg",
+      "png": "png_96/10_investigacion/reprocesos.png",
+      "forma": "rework",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "breakdowns",
+          "id": "r2",
+          "etiqueta_original": "Solicitudes manuales, devoluciones y reenvíos",
+          "estado": "real"
+        },
+        {
+          "grupo": "tensions",
+          "id": "carga",
+          "etiqueta_original": "Carga operativa",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "investigacion-tiempo",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Tiempo observado",
+      "svg": "svg/10_investigacion/tiempo.svg",
+      "png": "png_96/10_investigacion/tiempo.png",
+      "forma": "time",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_fields",
+          "id": "admin-dia",
+          "etiqueta_original": "Día virtual",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "form-dias",
+          "etiqueta_original": "Días declarados",
+          "estado": "real"
+        },
+        {
+          "grupo": "interface_fields",
+          "id": "resp-dias",
+          "etiqueta_original": "Días de respuesta",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "investigacion-linea-base",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Línea base",
+      "svg": "svg/10_investigacion/linea-base.svg",
+      "png": "png_96/10_investigacion/linea-base.png",
+      "forma": "baseline",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "investigacion-cambio-observado",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Cambio observado",
+      "svg": "svg/10_investigacion/cambio-observado.svg",
+      "png": "png_96/10_investigacion/cambio-observado.png",
+      "forma": "improvement",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "interface_actions",
+          "id": "sb-mejora",
+          "etiqueta_original": "Valorar mejora",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "investigacion-pregunta-investigacion",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Pregunta de investigación",
+      "svg": "svg/10_investigacion/pregunta-investigacion.svg",
+      "png": "png_96/10_investigacion/pregunta-investigacion.png",
+      "forma": "question",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "investigacion-hipotesis",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Hipótesis doctoral",
+      "svg": "svg/10_investigacion/hipotesis.svg",
+      "png": "png_96/10_investigacion/hipotesis.png",
+      "forma": "hypothesis",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "investigacion-requisitos",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Requisitos del siguiente prototipo",
+      "svg": "svg/10_investigacion/requisitos.svg",
+      "png": "png_96/10_investigacion/requisitos.png",
+      "forma": "requirements",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "investigacion-sp1-caracterizacion",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "SP1 · Caracterización",
+      "svg": "svg/10_investigacion/sp1-caracterizacion.svg",
+      "png": "png_96/10_investigacion/sp1-caracterizacion.png",
+      "forma": "search",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "investigacion-sp2-diseno",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "SP2 · Diseño de la metodología",
+      "svg": "svg/10_investigacion/sp2-diseno.svg",
+      "png": "png_96/10_investigacion/sp2-diseno.png",
+      "forma": "design",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "investigacion-sp3-evaluacion",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "SP3 · Aplicación y evaluación",
+      "svg": "svg/10_investigacion/sp3-evaluacion.svg",
+      "png": "png_96/10_investigacion/sp3-evaluacion.png",
+      "forma": "evaluation",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "investigacion-informe",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Informe de resultados",
+      "svg": "svg/10_investigacion/informe.svg",
+      "png": "png_96/10_investigacion/informe.png",
+      "forma": "filechart",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "sections",
+          "id": "informe",
+          "etiqueta_original": "Informe de la mesa",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "investigacion-archivo-csv",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Exportación CSV",
+      "svg": "svg/10_investigacion/archivo-csv.svg",
+      "png": "png_96/10_investigacion/archivo-csv.png",
+      "forma": "filecsv",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "proposed",
+          "id": "csv",
+          "etiqueta_original": "Exportar tablas CSV",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "investigacion-archivo-json",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Exportación JSON",
+      "svg": "svg/10_investigacion/archivo-json.svg",
+      "png": "png_96/10_investigacion/archivo-json.png",
+      "forma": "filejson",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "investigacion-archivo-pdf",
+      "categoria": "Investigación y resultados",
+      "etiqueta": "Informe PDF",
+      "svg": "svg/10_investigacion/archivo-pdf.svg",
+      "png": "png_96/10_investigacion/archivo-pdf.png",
+      "forma": "filepdf",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": []
+    },
+    {
+      "id": "capitulos-indicadores",
+      "categoria": "Capítulos del informe",
+      "etiqueta": "1 · Indicadores del blueprint",
+      "svg": "svg/11_capitulos/indicadores.svg",
+      "png": "png_96/11_capitulos/indicadores.png",
+      "forma": "filechart",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "report_chapters",
+          "id": "1",
+          "etiqueta_original": "Indicadores del blueprint",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "capitulos-linea-tiempo",
+      "categoria": "Capítulos del informe",
+      "etiqueta": "2 · Línea de tiempo",
+      "svg": "svg/11_capitulos/linea-tiempo.svg",
+      "png": "png_96/11_capitulos/linea-tiempo.png",
+      "forma": "time",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "report_chapters",
+          "id": "2",
+          "etiqueta_original": "Línea de tiempo",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "capitulos-gestion-actores",
+      "categoria": "Capítulos del informe",
+      "etiqueta": "3 · Gestión por actor",
+      "svg": "svg/11_capitulos/gestion-actores.svg",
+      "png": "png_96/11_capitulos/gestion-actores.png",
+      "forma": "roles",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "report_chapters",
+          "id": "3",
+          "etiqueta_original": "Gestión por actor",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "capitulos-evidencia-circulo",
+      "categoria": "Capítulos del informe",
+      "etiqueta": "4 · Evidencia que circuló",
+      "svg": "svg/11_capitulos/evidencia-circulo.svg",
+      "png": "png_96/11_capitulos/evidencia-circulo.png",
+      "forma": "evidence",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "report_chapters",
+          "id": "4",
+          "etiqueta_original": "Evidencia que circuló",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "capitulos-tensiones-rupturas",
+      "categoria": "Capítulos del informe",
+      "etiqueta": "5 · Tensiones y rupturas",
+      "svg": "svg/11_capitulos/tensiones-rupturas.svg",
+      "png": "png_96/11_capitulos/tensiones-rupturas.png",
+      "forma": "conflict",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "report_chapters",
+          "id": "5",
+          "etiqueta_original": "Tensiones y rupturas observadas",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "capitulos-hipotesis",
+      "categoria": "Capítulos del informe",
+      "etiqueta": "6 · Hipótesis",
+      "svg": "svg/11_capitulos/hipotesis.svg",
+      "png": "png_96/11_capitulos/hipotesis.png",
+      "forma": "hypothesis",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "report_chapters",
+          "id": "6",
+          "etiqueta_original": "Hipótesis",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "capitulos-validacion-contratos",
+      "categoria": "Capítulos del informe",
+      "etiqueta": "7 · Validación de contratos",
+      "svg": "svg/11_capitulos/validacion-contratos.svg",
+      "png": "png_96/11_capitulos/validacion-contratos.png",
+      "forma": "contract",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "report_chapters",
+          "id": "7",
+          "etiqueta_original": "Validación de contratos",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "capitulos-decision-avance",
+      "categoria": "Capítulos del informe",
+      "etiqueta": "8 · Decisión de avance",
+      "svg": "svg/11_capitulos/decision-avance.svg",
+      "png": "png_96/11_capitulos/decision-avance.png",
+      "forma": "clipboard",
+      "fuente": "HTML adjunto",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "report_chapters",
+          "id": "8",
+          "etiqueta_original": "Gate",
+          "estado": "real"
+        }
+      ]
+    },
+    {
+      "id": "administracion-preparar",
+      "categoria": "Administración propuesta",
+      "etiqueta": "Preparar sesión",
+      "svg": "svg/12_administracion/preparar.svg",
+      "png": "png_96/12_administracion/preparar.png",
+      "forma": "settings",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "proposed",
+          "id": "preparar",
+          "etiqueta_original": "Preparar sesión",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "administracion-ejecutar",
+      "categoria": "Administración propuesta",
+      "etiqueta": "Ejecutar sesión",
+      "svg": "svg/12_administracion/ejecutar.svg",
+      "png": "png_96/12_administracion/ejecutar.png",
+      "forma": "play",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "proposed",
+          "id": "ejecutar",
+          "etiqueta_original": "Ejecutar sesión",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "administracion-revisar",
+      "categoria": "Administración propuesta",
+      "etiqueta": "Revisar incidencias",
+      "svg": "svg/12_administracion/revisar.svg",
+      "png": "png_96/12_administracion/revisar.png",
+      "forma": "evaluation",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "proposed",
+          "id": "revisar",
+          "etiqueta_original": "Revisar incidencias",
+          "estado": "suggested"
+        }
+      ]
+    },
+    {
+      "id": "administracion-cerrar",
+      "categoria": "Administración propuesta",
+      "etiqueta": "Cerrar y documentar",
+      "svg": "svg/12_administracion/cerrar.svg",
+      "png": "png_96/12_administracion/cerrar.png",
+      "forma": "seal",
+      "fuente": "Propuesta de interfaz o reserva semántica",
+      "ancho": 24,
+      "alto": 24,
+      "usos": [
+        {
+          "grupo": "proposed",
+          "id": "cerrado_documentado",
+          "etiqueta_original": "Cerrado con decisión documentada",
+          "estado": "suggested"
+        }
+      ]
+    }
+  ],
+  "fuente_archivo": "mesasimulacioncompleta (4).html",
+  "fuente_sha256": "0731871829564342a2d88bf27ffa5b3772867deb235a0e0d970a3de714c43f92",
+  "correspondencias": 257
+}

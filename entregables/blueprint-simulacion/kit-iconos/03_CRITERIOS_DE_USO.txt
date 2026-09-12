@@ -1,0 +1,7 @@
+PROCEDENCIA Y ALCANCE
+Iconos vectoriales dibujados para este paquete mediante geometría SVG. No se importaron bibliotecas de iconos, fuentes de pictogramas, logos ni imágenes externas. Las formas comunes pueden coincidir con convenciones visuales de interfaz.
+La correspondencia funcional se extrajo de mesasimulacioncompleta (4).html y de la propuesta de simplificación formulada en esta conversación. El mapeo distingue ambos orígenes.
+Estos son pictogramas de orientación. No representan marcas institucionales oficiales ni acreditan funciones legales, autorización clínica, cumplimiento normativo o validación doctoral.
+Las fases y pasos proceden del escenario adjunto. No son una determinación normativa de plazos o competencias.
+Los iconos de capítulos conservan referencias de ubicación; la iconografía no confirma los enunciados de hipótesis presentes en el HTML.
+El paquete puede usarse, adaptarse y redistribuirse como parte de la herramienta del usuario. No contiene materiales de una biblioteca externa que requieran adjuntar su licencia. No se afirma exclusividad registral sobre formas gráficas comunes.

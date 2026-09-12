@@ -10,6 +10,8 @@ Herramienta de un solo archivo HTML para recorrer el service blueprint multiacto
 | `index.html` | Misma herramienta preparada para publicarse como artefacto con conexión compartida. |
 | `README.md` | Esta guía, dirigida al facilitador. |
 
+El kit de iconos original (SVG, PNG, catálogo y mapeo) se conserva aparte; la herramienta ya lleva incrustado lo que necesita.
+
 Ningún archivo contiene datos de personas reales. El escenario es sintético.
 
 ## Modalidades
@@ -51,6 +53,24 @@ Si el navegador se recarga, la sesión se recupera. El facilitador conserva su a
 Cada registro identifica sesión, escenario, ronda, modo, participante, actor, paso y momento, y su origen (participante, facilitador o sistema). Una rectificación crea una versión nueva y conserva la anterior. Nada sobrescribe lo que otro participante registró.
 
 El informe presenta qué se examinó y con quiénes, qué ocurrió por ronda, información faltante y reprocesos, responsabilidades con desacuerdo, barreras con sustento, cambios acordados y el requisito para el siguiente prototipo con su forma de comprobación. Las rondas se comparan solo si corresponden al mismo escenario. Los indicadores subjetivos (percepción) se separan de los observados (comportamiento y resultado técnico) y cada uno muestra su fórmula. Las exportaciones nunca incluyen el PIN.
+
+## Iconografía
+
+La herramienta incorpora el kit de iconos del proyecto (154 pictogramas SVG de una misma familia: trazo 1.65, terminales redondeados, sin rellenos, color heredado del texto). Los iconos acompañan a las etiquetas y nunca las sustituyen: la pantalla se entiende sin interpretar los dibujos. Van incrustados en el propio archivo HTML (hoja de estilo y ayudante `BPIcons` del kit), sin rutas locales ni conexión.
+
+Dónde aparecen:
+
+- Navegación del facilitador: un icono antes de cada momento (Preparar, Ejecutar, Revisar, Cerrar) y de Resultados.
+- Títulos de tarjetas y capítulos del informe: un icono junto al encabezado, sin repetirlo en el cuerpo.
+- Actores: junto al nombre en la cabecera del participante, en las tablas de participantes, actividades y desacuerdos, y en las casillas del recorrido. EPS y ARL tienen pictogramas distintos y conservan su sigla.
+- Fases y pasos: icono de fase en la cabecera del recorrido y de paso en cada columna, en la tarjeta del paso y en el título de Ejecutar; los códigos A1 a D3 se conservan.
+- Carriles y líneas del blueprint: icono en la cabecera de cada carril y junto a la etiqueta de cada línea (interacción, visibilidad, interacción interna), que sigue dibujada.
+- Acciones: icono antes del verbo en Guardar, Rectificar, Avanzar, Pausar, Reanudar, Iniciar, Cerrar la ronda, Cerrar la sesión, Añadir, Quitar, Registrar, Exportar y Archivar. El texto se mantiene.
+- Estados: siempre icono más texto (pendiente, en curso, bloqueada, completada, omitida, pausada, en valoración, en revisión, cerrada, archivada y los cuatro estados de cierre). El color nunca es la única señal.
+- Formularios: icono en el título de cada grupo de preguntas, no en cada casilla. Los `select` nativos no llevan icono.
+- Informe exportado en HTML: conserva los iconos en los encabezados; las tablas CSV y el JSON no contienen marcado.
+
+Los pictogramas son apoyos de orientación. No representan logos institucionales ni acreditan cumplimiento normativo, validez clínica ni validación doctoral.
 
 ## Correspondencia doctoral
 

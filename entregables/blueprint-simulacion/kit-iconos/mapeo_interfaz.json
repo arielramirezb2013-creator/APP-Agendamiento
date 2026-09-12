@@ -1,0 +1,3454 @@
+{
+  "archivo_referencia": "mesasimulacioncompleta (4).html",
+  "total": 257,
+  "regla": "Selectores de referencia; insertar en el renderer indicado, no aplicar automáticamente al contenedor. suggested indica concepto propuesto sin función necesariamente existente.",
+  "correspondencias": [
+    {
+      "source_group": "navigation",
+      "source_id": "sb",
+      "label": "Service blueprint",
+      "status": "real",
+      "icon_id": "navegacion-blueprint",
+      "selectors": [
+        "[data-tab=\"sb\"]",
+        "#tab-sb"
+      ],
+      "context": "Navegación principal. Guía debe omitir auditorías históricas.",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/01_navegacion/blueprint.svg",
+      "png": "png_96/01_navegacion/blueprint.png"
+    },
+    {
+      "source_group": "navigation",
+      "source_id": "mesa",
+      "label": "Mesa de simulación",
+      "status": "real",
+      "icon_id": "navegacion-simulacion",
+      "selectors": [
+        "[data-tab=\"mesa\"]",
+        "#tab-mesa"
+      ],
+      "context": "Navegación principal. Guía debe omitir auditorías históricas.",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/01_navegacion/simulacion.svg",
+      "png": "png_96/01_navegacion/simulacion.png"
+    },
+    {
+      "source_group": "navigation",
+      "source_id": "guia",
+      "label": "Guía de uso",
+      "status": "real",
+      "icon_id": "navegacion-guia",
+      "selectors": [
+        "[data-tab=\"guia\"]",
+        "#tab-guia"
+      ],
+      "context": "Navegación principal. Guía debe omitir auditorías históricas.",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/01_navegacion/guia.svg",
+      "png": "png_96/01_navegacion/guia.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "sb-grid",
+      "label": "Recorrido del servicio",
+      "status": "real",
+      "icon_id": "navegacion-blueprint",
+      "selectors": [
+        "#sb-grid"
+      ],
+      "context": "SB.carriles / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/01_navegacion/blueprint.svg",
+      "png": "png_96/01_navegacion/blueprint.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "sb-mapa",
+      "label": "Mapa de actores",
+      "status": "real",
+      "icon_id": "navegacion-mapa-actores",
+      "selectors": [
+        "#sb-mapa"
+      ],
+      "context": "BP.actores",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/01_navegacion/mapa-actores.svg",
+      "png": "png_96/01_navegacion/mapa-actores.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "sb-ficha",
+      "label": "Ficha del actor y contrato",
+      "status": "real",
+      "icon_id": "gobernanza-contrato-datos",
+      "selectors": [
+        "#sb-ficha"
+      ],
+      "context": "renderFicha",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/06_gobernanza/contrato-datos.svg",
+      "png": "png_96/06_gobernanza/contrato-datos.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "sb-anot",
+      "label": "Observaciones del blueprint",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "#sb-anot"
+      ],
+      "context": "renderAnot",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "sb-gate",
+      "label": "Riesgos éticos y decisión de avance",
+      "status": "real",
+      "icon_id": "navegacion-validacion",
+      "selectors": [
+        "#sb-gate"
+      ],
+      "context": "renderGate",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/01_navegacion/validacion.svg",
+      "png": "png_96/01_navegacion/validacion.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "informe",
+      "label": "Informe de la mesa",
+      "status": "real",
+      "icon_id": "investigacion-informe",
+      "selectors": [
+        "#informe"
+      ],
+      "context": "renderInforme",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/10_investigacion/informe.svg",
+      "png": "png_96/10_investigacion/informe.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "tablero",
+      "label": "Tablero de la facilitadora",
+      "status": "real",
+      "icon_id": "navegacion-inicio",
+      "selectors": [
+        "[data-act=\"vista\"][data-arg=\"tablero\"]"
+      ],
+      "context": "renderAdmin",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/01_navegacion/inicio.svg",
+      "png": "png_96/01_navegacion/inicio.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "perfiles",
+      "label": "Perfiles",
+      "status": "real",
+      "icon_id": "actores-participante",
+      "selectors": [
+        ".perfiles"
+      ],
+      "context": "renderAdmin",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/03_actores/participante.svg",
+      "png": "png_96/03_actores/participante.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "mapa-vivo",
+      "label": "Mapa vivo",
+      "status": "real",
+      "icon_id": "navegacion-mapa-actores",
+      "selectors": [
+        ".mapa-card"
+      ],
+      "context": "renderAdmin",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/01_navegacion/mapa-actores.svg",
+      "png": "png_96/01_navegacion/mapa-actores.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "actividad",
+      "label": "Qué está pasando",
+      "status": "real",
+      "icon_id": "estados-en-curso",
+      "selectors": [
+        ".feed"
+      ],
+      "context": "renderAdmin",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/09_estados/en-curso.svg",
+      "png": "png_96/09_estados/en-curso.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "alertas",
+      "label": "Alertas de reglas y plazos",
+      "status": "real",
+      "icon_id": "estados-advertencia",
+      "selectors": [
+        ".alertas"
+      ],
+      "context": "renderAdmin",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/09_estados/advertencia.svg",
+      "png": "png_96/09_estados/advertencia.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "retos",
+      "label": "Sus retos",
+      "status": "real",
+      "icon_id": "navegacion-escenario",
+      "selectors": [],
+      "context": "renderPart / retoHtml",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/01_navegacion/escenario.svg",
+      "png": "png_96/01_navegacion/escenario.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "bandeja",
+      "label": "Bandeja",
+      "status": "real",
+      "icon_id": "acciones-solicitar",
+      "selectors": [],
+      "context": "renderPart / bandejaHtml",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/08_acciones/solicitar.svg",
+      "png": "png_96/08_acciones/solicitar.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "gestion",
+      "label": "Registrar gestión",
+      "status": "real",
+      "icon_id": "acciones-decidir",
+      "selectors": [
+        "[data-form=\"gestion\"]"
+      ],
+      "context": "renderPart",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/08_acciones/decidir.svg",
+      "png": "png_96/08_acciones/decidir.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "turno",
+      "label": "Pasar el turno",
+      "status": "real",
+      "icon_id": "acciones-pasar-turno",
+      "selectors": [
+        "[data-form=\"turno\"]"
+      ],
+      "context": "renderPart",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/08_acciones/pasar-turno.svg",
+      "png": "png_96/08_acciones/pasar-turno.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "registros",
+      "label": "Mis registros",
+      "status": "real",
+      "icon_id": "documentos-evidencia",
+      "selectors": [],
+      "context": "renderPart",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/07_documentos/evidencia.svg",
+      "png": "png_96/07_documentos/evidencia.png"
+    },
+    {
+      "source_group": "sections",
+      "source_id": "contrato",
+      "label": "Validación final del contrato",
+      "status": "real",
+      "icon_id": "gobernanza-contrato-datos",
+      "selectors": [
+        "[data-form=\"val\"]"
+      ],
+      "context": "renderPart",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar junto al título de la sección; el selector puede identificar el contenedor, no el punto de inserción.",
+      "svg": "svg/06_gobernanza/contrato-datos.svg",
+      "png": "png_96/06_gobernanza/contrato-datos.png"
+    },
+    {
+      "source_group": "report_chapters",
+      "source_id": "1",
+      "label": "Indicadores del blueprint",
+      "status": "real",
+      "icon_id": "capitulos-indicadores",
+      "selectors": [
+        "#informe"
+      ],
+      "context": "renderInforme: encabezado h2; sin ID exclusivo por capítulo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar en el h2 de este capítulo de renderInforme, no al final de #informe.",
+      "svg": "svg/11_capitulos/indicadores.svg",
+      "png": "png_96/11_capitulos/indicadores.png"
+    },
+    {
+      "source_group": "report_chapters",
+      "source_id": "2",
+      "label": "Línea de tiempo",
+      "status": "real",
+      "icon_id": "capitulos-linea-tiempo",
+      "selectors": [
+        "#informe"
+      ],
+      "context": "renderInforme: encabezado h2; sin ID exclusivo por capítulo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar en el h2 de este capítulo de renderInforme, no al final de #informe.",
+      "svg": "svg/11_capitulos/linea-tiempo.svg",
+      "png": "png_96/11_capitulos/linea-tiempo.png"
+    },
+    {
+      "source_group": "report_chapters",
+      "source_id": "3",
+      "label": "Gestión por actor",
+      "status": "real",
+      "icon_id": "capitulos-gestion-actores",
+      "selectors": [
+        "#informe"
+      ],
+      "context": "renderInforme: encabezado h2; sin ID exclusivo por capítulo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar en el h2 de este capítulo de renderInforme, no al final de #informe.",
+      "svg": "svg/11_capitulos/gestion-actores.svg",
+      "png": "png_96/11_capitulos/gestion-actores.png"
+    },
+    {
+      "source_group": "report_chapters",
+      "source_id": "4",
+      "label": "Evidencia que circuló",
+      "status": "real",
+      "icon_id": "capitulos-evidencia-circulo",
+      "selectors": [
+        "#informe"
+      ],
+      "context": "renderInforme: encabezado h2; sin ID exclusivo por capítulo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar en el h2 de este capítulo de renderInforme, no al final de #informe.",
+      "svg": "svg/11_capitulos/evidencia-circulo.svg",
+      "png": "png_96/11_capitulos/evidencia-circulo.png"
+    },
+    {
+      "source_group": "report_chapters",
+      "source_id": "5",
+      "label": "Tensiones y rupturas observadas",
+      "status": "real",
+      "icon_id": "capitulos-tensiones-rupturas",
+      "selectors": [
+        "#informe"
+      ],
+      "context": "renderInforme: encabezado h2; sin ID exclusivo por capítulo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar en el h2 de este capítulo de renderInforme, no al final de #informe.",
+      "svg": "svg/11_capitulos/tensiones-rupturas.svg",
+      "png": "png_96/11_capitulos/tensiones-rupturas.png"
+    },
+    {
+      "source_group": "report_chapters",
+      "source_id": "6",
+      "label": "Hipótesis",
+      "status": "real",
+      "icon_id": "capitulos-hipotesis",
+      "selectors": [
+        "#informe"
+      ],
+      "context": "renderInforme: encabezado h2; sin ID exclusivo por capítulo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar en el h2 de este capítulo de renderInforme, no al final de #informe. Símbolo neutro de hipótesis; no confirma las equivalencias erróneas H1=completitud/H2=trazabilidad del archivo. No cambiar contenido doctoral durante esta integración visual.",
+      "svg": "svg/11_capitulos/hipotesis.svg",
+      "png": "png_96/11_capitulos/hipotesis.png"
+    },
+    {
+      "source_group": "report_chapters",
+      "source_id": "7",
+      "label": "Validación de contratos",
+      "status": "real",
+      "icon_id": "capitulos-validacion-contratos",
+      "selectors": [
+        "#informe"
+      ],
+      "context": "renderInforme: encabezado h2; sin ID exclusivo por capítulo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar en el h2 de este capítulo de renderInforme, no al final de #informe.",
+      "svg": "svg/11_capitulos/validacion-contratos.svg",
+      "png": "png_96/11_capitulos/validacion-contratos.png"
+    },
+    {
+      "source_group": "report_chapters",
+      "source_id": "8",
+      "label": "Gate",
+      "status": "real",
+      "icon_id": "capitulos-decision-avance",
+      "selectors": [
+        "#informe"
+      ],
+      "context": "renderInforme: encabezado h2; sin ID exclusivo por capítulo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Insertar en el h2 de este capítulo de renderInforme, no al final de #informe.",
+      "svg": "svg/11_capitulos/decision-avance.svg",
+      "png": "png_96/11_capitulos/decision-avance.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "tra",
+      "label": "M.P. y su familia",
+      "status": "real",
+      "icon_id": "actores-trabajador",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"tra\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"tra\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"tra\"]"
+      ],
+      "context": "BP.actores; Actor focal",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional. Mantener M.P. y su familia en el texto. actores-familia puede utilizarse como complemento cuando se muestre representación familiar explícita.",
+      "svg": "svg/03_actores/trabajador.svg",
+      "png": "png_96/03_actores/trabajador.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "emp",
+      "label": "Empleador / SG-SST",
+      "status": "real",
+      "icon_id": "actores-empleador",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"emp\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"emp\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"emp\"]"
+      ],
+      "context": "BP.actores; Directo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/empleador.svg",
+      "png": "png_96/03_actores/empleador.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "ips",
+      "label": "IPS / médicos",
+      "status": "real",
+      "icon_id": "actores-ips",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"ips\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"ips\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"ips\"]"
+      ],
+      "context": "BP.actores; Directo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/ips.svg",
+      "png": "png_96/03_actores/ips.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "eps",
+      "label": "EPS SURA",
+      "status": "real",
+      "icon_id": "actores-eps",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"eps\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"eps\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"eps\"]"
+      ],
+      "context": "BP.actores; SURA · organización ancla",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/eps.svg",
+      "png": "png_96/03_actores/eps.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "arl",
+      "label": "ARL SURA",
+      "status": "real",
+      "icon_id": "actores-arl",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"arl\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"arl\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"arl\"]"
+      ],
+      "context": "BP.actores; SURA · organización ancla",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/arl.svg",
+      "png": "png_96/03_actores/arl.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "afp",
+      "label": "AFP / Colpensiones",
+      "status": "real",
+      "icon_id": "actores-afp",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"afp\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"afp\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"afp\"]"
+      ],
+      "context": "BP.actores; Directo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/afp.svg",
+      "png": "png_96/03_actores/afp.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "jr",
+      "label": "Junta Regional",
+      "status": "real",
+      "icon_id": "actores-junta-regional",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"jr\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"jr\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"jr\"]"
+      ],
+      "context": "BP.actores; Directo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/junta-regional.svg",
+      "png": "png_96/03_actores/junta-regional.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "jn",
+      "label": "Junta Nacional",
+      "status": "real",
+      "icon_id": "actores-junta-nacional",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"jn\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"jn\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"jn\"]"
+      ],
+      "context": "BP.actores; Directo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/junta-nacional.svg",
+      "png": "png_96/03_actores/junta-nacional.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "mintrabajo",
+      "label": "MinTrabajo",
+      "status": "real",
+      "icon_id": "actores-mintrabajo",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"mintrabajo\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"mintrabajo\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"mintrabajo\"]"
+      ],
+      "context": "BP.actores; Control",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/mintrabajo.svg",
+      "png": "png_96/03_actores/mintrabajo.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "minsalud",
+      "label": "MinSalud",
+      "status": "real",
+      "icon_id": "actores-minsalud",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"minsalud\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"minsalud\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"minsalud\"]"
+      ],
+      "context": "BP.actores; Control",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/minsalud.svg",
+      "png": "png_96/03_actores/minsalud.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "supersalud",
+      "label": "SuperSalud",
+      "status": "real",
+      "icon_id": "actores-supersalud",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"supersalud\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"supersalud\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"supersalud\"]"
+      ],
+      "context": "BP.actores; Control",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/supersalud.svg",
+      "png": "png_96/03_actores/supersalud.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "jueces",
+      "label": "Jueces",
+      "status": "real",
+      "icon_id": "actores-jueces",
+      "selectors": [
+        "[data-act=\"ser\"][data-arg=\"jueces\"]",
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"jueces\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"jueces\"]"
+      ],
+      "context": "BP.actores; Control",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/jueces.svg",
+      "png": "png_96/03_actores/jueces.png"
+    },
+    {
+      "source_group": "actors",
+      "source_id": "modulo",
+      "label": "Módulo interoperable",
+      "status": "real",
+      "icon_id": "actores-modulo",
+      "selectors": [
+        "[data-act=\"sb-desde-nodo\"][data-arg=\"modulo\"]",
+        "[data-act=\"admin-ver\"][data-arg=\"modulo\"]"
+      ],
+      "context": "BP.pos / renderMapa; soporte técnico, no entidad sanitaria",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Para nodos SVG usar symbol/use o geometría SVG, conservar texto, hit area, eventos y acceso por teclado. No sustituye un logo institucional.",
+      "svg": "svg/03_actores/modulo.svg",
+      "png": "png_96/03_actores/modulo.png"
+    },
+    {
+      "source_group": "roles",
+      "source_id": "juridico",
+      "label": "Referente jurídico",
+      "status": "real",
+      "icon_id": "actores-referente-juridico",
+      "selectors": [],
+      "context": "BP.extras; rol adicional, no necesariamente botón renderizado",
+      "note": "Pictograma de orientación jurídica; conservar la etiqueta Referente jurídico.",
+      "svg": "svg/03_actores/referente-juridico.svg",
+      "png": "png_96/03_actores/referente-juridico.png"
+    },
+    {
+      "source_group": "roles",
+      "source_id": "facilitadora",
+      "label": "Facilitadora",
+      "status": "real",
+      "icon_id": "actores-facilitador",
+      "selectors": [],
+      "context": "BP.extras; rol adicional, no necesariamente botón renderizado",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/03_actores/facilitador.svg",
+      "png": "png_96/03_actores/facilitador.png"
+    },
+    {
+      "source_group": "phases",
+      "source_id": "antes",
+      "label": "Antes",
+      "status": "real",
+      "icon_id": "fases-antes",
+      "selectors": [
+        "[data-act=\"sb-fase\"][data-arg=\"antes\"]"
+      ],
+      "context": "SB.fases",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/02_fases/antes.svg",
+      "png": "png_96/02_fases/antes.png"
+    },
+    {
+      "source_group": "phases",
+      "source_id": "durante",
+      "label": "Durante",
+      "status": "real",
+      "icon_id": "fases-durante",
+      "selectors": [
+        "[data-act=\"sb-fase\"][data-arg=\"durante\"]"
+      ],
+      "context": "SB.fases",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/02_fases/durante.svg",
+      "png": "png_96/02_fases/durante.png"
+    },
+    {
+      "source_group": "phases",
+      "source_id": "despues",
+      "label": "Después",
+      "status": "real",
+      "icon_id": "fases-despues",
+      "selectors": [
+        "[data-act=\"sb-fase\"][data-arg=\"despues\"]"
+      ],
+      "context": "SB.fases",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/02_fases/despues.svg",
+      "png": "png_96/02_fases/despues.png"
+    },
+    {
+      "source_group": "phases",
+      "source_id": "todas",
+      "label": "Todas las fases",
+      "status": "real",
+      "icon_id": "navegacion-blueprint",
+      "selectors": [
+        "[data-act=\"sb-fase\"][data-arg=\"todas\"]"
+      ],
+      "context": "renderTop",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/01_navegacion/blueprint.svg",
+      "png": "png_96/01_navegacion/blueprint.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "A1",
+      "label": "Inicio de la incapacidad",
+      "status": "real",
+      "icon_id": "pasos-a1-inicio-incapacidad",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/a1-inicio-incapacidad.svg",
+      "png": "png_96/05_pasos/a1-inicio-incapacidad.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "A2",
+      "label": "Certificados y prórrogas",
+      "status": "real",
+      "icon_id": "pasos-a2-certificados-prorrogas",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/a2-certificados-prorrogas.svg",
+      "png": "png_96/05_pasos/a2-certificados-prorrogas.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "A3",
+      "label": "Evidencia laboral (APT)",
+      "status": "real",
+      "icon_id": "pasos-a3-evidencia-laboral",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/a3-evidencia-laboral.svg",
+      "png": "png_96/05_pasos/a3-evidencia-laboral.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "E1",
+      "label": "Calificación de origen",
+      "status": "real",
+      "icon_id": "pasos-e1-calificacion-origen",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/e1-calificacion-origen.svg",
+      "png": "png_96/05_pasos/e1-calificacion-origen.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "E2",
+      "label": "Respuesta o controversia",
+      "status": "real",
+      "icon_id": "pasos-e2-controversia",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/e2-controversia.svg",
+      "png": "png_96/05_pasos/e2-controversia.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "E3",
+      "label": "Dictamen de primera instancia",
+      "status": "real",
+      "icon_id": "pasos-e3-dictamen",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/e3-dictamen.svg",
+      "png": "png_96/05_pasos/e3-dictamen.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "E4",
+      "label": "Apelación · validación experta",
+      "status": "real",
+      "icon_id": "pasos-e4-apelacion",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/e4-apelacion.svg",
+      "png": "png_96/05_pasos/e4-apelacion.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "E5",
+      "label": "Pago desde el día 181 y competencia",
+      "status": "real",
+      "icon_id": "pasos-e5-pago",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/e5-pago.svg",
+      "png": "png_96/05_pasos/e5-pago.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "D1",
+      "label": "Reintegro o reubicación",
+      "status": "real",
+      "icon_id": "pasos-d1-reintegro",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/d1-reintegro.svg",
+      "png": "png_96/05_pasos/d1-reintegro.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "D2",
+      "label": "Prestación en firme o pensión",
+      "status": "real",
+      "icon_id": "pasos-d2-prestacion",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/d2-prestacion.svg",
+      "png": "png_96/05_pasos/d2-prestacion.png"
+    },
+    {
+      "source_group": "steps",
+      "source_id": "D3",
+      "label": "Seguimiento, queja o tutela",
+      "status": "real",
+      "icon_id": "pasos-d3-seguimiento",
+      "selectors": [],
+      "context": "SB.pasos / BP.etapas / PASOS",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar el código del paso o nombre de fase visible; el icono no transmite por sí solo la secuencia.",
+      "svg": "svg/05_pasos/d3-seguimiento.svg",
+      "png": "png_96/05_pasos/d3-seguimiento.png"
+    },
+    {
+      "source_group": "lanes",
+      "source_id": "mp",
+      "label": "Acciones de M.P.",
+      "status": "real",
+      "icon_id": "carriles-acciones-usuario",
+      "selectors": [],
+      "context": "SB.carriles; lo que hace la trabajadora y su familia",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/04_carriles/acciones-usuario.svg",
+      "png": "png_96/04_carriles/acciones-usuario.png"
+    },
+    {
+      "source_group": "lanes",
+      "source_id": "contacto",
+      "label": "Puntos de contacto y evidencia física",
+      "status": "real",
+      "icon_id": "carriles-puntos-contacto",
+      "selectors": [],
+      "context": "SB.carriles; canal, documento, acuse",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/04_carriles/puntos-contacto.svg",
+      "png": "png_96/04_carriles/puntos-contacto.png"
+    },
+    {
+      "source_group": "lanes",
+      "source_id": "front",
+      "label": "Front · actor visible",
+      "status": "real",
+      "icon_id": "carriles-frontstage",
+      "selectors": [],
+      "context": "SB.carriles; quien atiende o decide de cara a M.P.",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/04_carriles/frontstage.svg",
+      "png": "png_96/04_carriles/frontstage.png"
+    },
+    {
+      "source_group": "lanes",
+      "source_id": "back",
+      "label": "Back · custodia y trámite interno",
+      "status": "real",
+      "icon_id": "carriles-backstage",
+      "selectors": [],
+      "context": "SB.carriles; quien guarda y prepara la evidencia",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/04_carriles/backstage.svg",
+      "png": "png_96/04_carriles/backstage.png"
+    },
+    {
+      "source_group": "lanes",
+      "source_id": "soporte",
+      "label": "Procesos de soporte",
+      "status": "real",
+      "icon_id": "carriles-soporte",
+      "selectors": [],
+      "context": "SB.carriles; módulo, estándares, vigilancia y control",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/04_carriles/soporte.svg",
+      "png": "png_96/04_carriles/soporte.png"
+    },
+    {
+      "source_group": "service_lines",
+      "source_id": "contacto",
+      "label": "Línea de interacción",
+      "status": "real",
+      "icon_id": "carriles-linea-interaccion",
+      "selectors": [],
+      "context": "SB.lineas; mantiene línea física además del icono",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar la línea física y el rótulo; el icono solo acompaña el rótulo.",
+      "svg": "svg/04_carriles/linea-interaccion.svg",
+      "png": "png_96/04_carriles/linea-interaccion.png"
+    },
+    {
+      "source_group": "service_lines",
+      "source_id": "back",
+      "label": "Línea de visibilidad",
+      "status": "real",
+      "icon_id": "carriles-linea-visibilidad",
+      "selectors": [],
+      "context": "SB.lineas; mantiene línea física además del icono",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar la línea física y el rótulo; el icono solo acompaña el rótulo.",
+      "svg": "svg/04_carriles/linea-visibilidad.svg",
+      "png": "png_96/04_carriles/linea-visibilidad.png"
+    },
+    {
+      "source_group": "service_lines",
+      "source_id": "soporte",
+      "label": "Línea de interacción interna",
+      "status": "real",
+      "icon_id": "carriles-linea-interna",
+      "selectors": [],
+      "context": "SB.lineas; mantiene línea física además del icono",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Conservar la línea física y el rótulo; el icono solo acompaña el rótulo.",
+      "svg": "svg/04_carriles/linea-interna.svg",
+      "png": "png_96/04_carriles/linea-interna.png"
+    },
+    {
+      "source_group": "modes",
+      "source_id": "hoy",
+      "label": "HOY · red fragmentada",
+      "status": "real",
+      "icon_id": "fases-flujo-actual",
+      "selectors": [
+        "[data-act=\"sb-modo\"][data-arg=\"hoy\"]",
+        "[data-act=\"nuevo-modo\"][data-v=\"hoy\"]"
+      ],
+      "context": "S.modo / S.mesa.modo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/02_fases/flujo-actual.svg",
+      "png": "png_96/02_fases/flujo-actual.png"
+    },
+    {
+      "source_group": "modes",
+      "source_id": "mod",
+      "label": "CON EL MÓDULO · blueprint federado",
+      "status": "real",
+      "icon_id": "fases-flujo-propuesto",
+      "selectors": [
+        "[data-act=\"sb-modo\"][data-arg=\"mod\"]",
+        "[data-act=\"nuevo-modo\"][data-v=\"mod\"]"
+      ],
+      "context": "S.modo / S.mesa.modo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/02_fases/flujo-propuesto.svg",
+      "png": "png_96/02_fases/flujo-propuesto.png"
+    },
+    {
+      "source_group": "rules",
+      "source_id": "1",
+      "label": "Custodia distribuida",
+      "status": "real",
+      "icon_id": "gobernanza-custodia",
+      "selectors": [],
+      "context": "BP.reglas",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/custodia.svg",
+      "png": "png_96/06_gobernanza/custodia.png"
+    },
+    {
+      "source_group": "rules",
+      "source_id": "2",
+      "label": "Intercambio por finalidad",
+      "status": "real",
+      "icon_id": "gobernanza-finalidad",
+      "selectors": [],
+      "context": "BP.reglas",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/finalidad.svg",
+      "png": "png_96/06_gobernanza/finalidad.png"
+    },
+    {
+      "source_group": "rules",
+      "source_id": "3",
+      "label": "Mínimo necesario",
+      "status": "real",
+      "icon_id": "gobernanza-minimo-necesario",
+      "selectors": [],
+      "context": "BP.reglas",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/minimo-necesario.svg",
+      "png": "png_96/06_gobernanza/minimo-necesario.png"
+    },
+    {
+      "source_group": "rules",
+      "source_id": "4",
+      "label": "Responsabilidad visible",
+      "status": "real",
+      "icon_id": "gobernanza-responsable-plazo",
+      "selectors": [],
+      "context": "BP.reglas",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/responsable-plazo.svg",
+      "png": "png_96/06_gobernanza/responsable-plazo.png"
+    },
+    {
+      "source_group": "rules",
+      "source_id": "5",
+      "label": "Trazabilidad auditable",
+      "status": "real",
+      "icon_id": "gobernanza-trazabilidad",
+      "selectors": [],
+      "context": "BP.reglas",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/trazabilidad.svg",
+      "png": "png_96/06_gobernanza/trazabilidad.png"
+    },
+    {
+      "source_group": "evidence",
+      "source_id": "hc",
+      "label": "Resumen clínico estructurado",
+      "status": "real",
+      "icon_id": "documentos-historia-clinica",
+      "selectors": [],
+      "context": "BP.evidencia; mantener sigla textual",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/07_documentos/historia-clinica.svg",
+      "png": "png_96/07_documentos/historia-clinica.png"
+    },
+    {
+      "source_group": "evidence",
+      "source_id": "apt",
+      "label": "Matriz de exposición / análisis de puesto",
+      "status": "real",
+      "icon_id": "documentos-apt",
+      "selectors": [],
+      "context": "BP.evidencia; mantener sigla textual",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/07_documentos/apt.svg",
+      "png": "png_96/07_documentos/apt.png"
+    },
+    {
+      "source_group": "evidence",
+      "source_id": "inc",
+      "label": "Certificados de incapacidad",
+      "status": "real",
+      "icon_id": "documentos-incapacidad",
+      "selectors": [],
+      "context": "BP.evidencia; mantener sigla textual",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/07_documentos/incapacidad.svg",
+      "png": "png_96/07_documentos/incapacidad.png"
+    },
+    {
+      "source_group": "evidence",
+      "source_id": "hl",
+      "label": "Historia laboral y semanas",
+      "status": "real",
+      "icon_id": "documentos-historial-laboral",
+      "selectors": [],
+      "context": "BP.evidencia; mantener sigla textual",
+      "note": "Historia laboral y semanas. Mantener nombre, sigla HL y contexto del escenario.",
+      "svg": "svg/07_documentos/historial-laboral.svg",
+      "png": "png_96/07_documentos/historial-laboral.png"
+    },
+    {
+      "source_group": "evidence",
+      "source_id": "dic",
+      "label": "Dictamen de primera instancia",
+      "status": "real",
+      "icon_id": "documentos-dictamen",
+      "selectors": [],
+      "context": "BP.evidencia; mantener sigla textual",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/07_documentos/dictamen.svg",
+      "png": "png_96/07_documentos/dictamen.png"
+    },
+    {
+      "source_group": "concepts",
+      "source_id": "custodio",
+      "label": "quien conserva la evidencia en su repositorio de origen.",
+      "status": "real",
+      "icon_id": "gobernanza-custodia",
+      "selectors": [],
+      "context": "BP.terminos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/custodia.svg",
+      "png": "png_96/06_gobernanza/custodia.png"
+    },
+    {
+      "source_group": "concepts",
+      "source_id": "finalidad",
+      "label": "para qué se consulta; cada acceso la declara y se ampara en un contrato.",
+      "status": "real",
+      "icon_id": "gobernanza-finalidad",
+      "selectors": [],
+      "context": "BP.terminos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/finalidad.svg",
+      "png": "png_96/06_gobernanza/finalidad.png"
+    },
+    {
+      "source_group": "concepts",
+      "source_id": "vista mínima",
+      "label": "los campos que esa finalidad puede ver («n de N»); el resto se retiene en origen.",
+      "status": "real",
+      "icon_id": "gobernanza-minimo-necesario",
+      "selectors": [],
+      "context": "BP.terminos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/minimo-necesario.svg",
+      "png": "png_96/06_gobernanza/minimo-necesario.png"
+    },
+    {
+      "source_group": "concepts",
+      "source_id": "responsable y plazo",
+      "label": "cargo que responde por un suministro, consulta o decisión, y hasta cuándo.",
+      "status": "real",
+      "icon_id": "gobernanza-responsable-plazo",
+      "selectors": [],
+      "context": "BP.terminos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/responsable-plazo.svg",
+      "png": "png_96/06_gobernanza/responsable-plazo.png"
+    },
+    {
+      "source_group": "concepts",
+      "source_id": "acuse",
+      "label": "confirmación de recibo de una notificación.",
+      "status": "real",
+      "icon_id": "acciones-confirmar-recepcion",
+      "selectors": [],
+      "context": "BP.terminos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/08_acciones/confirmar-recepcion.svg",
+      "png": "png_96/08_acciones/confirmar-recepcion.png"
+    },
+    {
+      "source_group": "concepts",
+      "source_id": "traza",
+      "label": "registro de quién vio o entregó qué, para qué, cuándo y con qué resultado.",
+      "status": "real",
+      "icon_id": "gobernanza-trazabilidad",
+      "selectors": [],
+      "context": "BP.terminos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/trazabilidad.svg",
+      "png": "png_96/06_gobernanza/trazabilidad.png"
+    },
+    {
+      "source_group": "breakdowns",
+      "source_id": "r1",
+      "label": "Historia clínica y laboral incompleta o dispersa",
+      "status": "real",
+      "icon_id": "investigacion-completitud",
+      "selectors": [],
+      "context": "BP.rupturas",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. El icono representa la dimensión afectada; conservar texto que indique faltante, ruptura o problema, evitando apariencia de logro.",
+      "svg": "svg/10_investigacion/completitud.svg",
+      "png": "png_96/10_investigacion/completitud.png"
+    },
+    {
+      "source_group": "breakdowns",
+      "source_id": "r2",
+      "label": "Solicitudes manuales, devoluciones y reenvíos",
+      "status": "real",
+      "icon_id": "investigacion-reprocesos",
+      "selectors": [],
+      "context": "BP.rupturas",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. El icono representa la dimensión afectada; conservar texto que indique faltante, ruptura o problema, evitando apariencia de logro.",
+      "svg": "svg/10_investigacion/reprocesos.svg",
+      "png": "png_96/10_investigacion/reprocesos.png"
+    },
+    {
+      "source_group": "breakdowns",
+      "source_id": "r3",
+      "label": "Responsabilidades de suministro/consulta ambiguas",
+      "status": "real",
+      "icon_id": "investigacion-claridad-roles",
+      "selectors": [],
+      "context": "BP.rupturas",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. El icono representa la dimensión afectada; conservar texto que indique faltante, ruptura o problema, evitando apariencia de logro.",
+      "svg": "svg/10_investigacion/claridad-roles.svg",
+      "png": "png_96/10_investigacion/claridad-roles.png"
+    },
+    {
+      "source_group": "breakdowns",
+      "source_id": "r4",
+      "label": "Notificaciones y términos no trazables",
+      "status": "real",
+      "icon_id": "investigacion-trazabilidad-accesos",
+      "selectors": [],
+      "context": "BP.rupturas",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. El icono representa la dimensión afectada; conservar texto que indique faltante, ruptura o problema, evitando apariencia de logro.",
+      "svg": "svg/10_investigacion/trazabilidad-accesos.svg",
+      "png": "png_96/10_investigacion/trazabilidad-accesos.png"
+    },
+    {
+      "source_group": "breakdowns",
+      "source_id": "r5",
+      "label": "Competencias y lenguaje diagnóstico no alineados",
+      "status": "real",
+      "icon_id": "investigacion-barreras",
+      "selectors": [],
+      "context": "BP.rupturas",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. El icono representa la dimensión afectada; conservar texto que indique faltante, ruptura o problema, evitando apariencia de logro.",
+      "svg": "svg/10_investigacion/barreras.svg",
+      "png": "png_96/10_investigacion/barreras.png"
+    },
+    {
+      "source_group": "risks",
+      "source_id": "reidentificacion",
+      "label": "Reidentificación de M.P.",
+      "status": "real",
+      "icon_id": "gobernanza-autenticacion",
+      "selectors": [
+        "[data-in=\"sb-riesgo-aplica\"][data-arg=\"reidentificacion\"]"
+      ],
+      "context": "BP.riesgos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. El icono identifica el tema del riesgo; no representa aprobación, mitigación completada ni resultado verificado.",
+      "svg": "svg/06_gobernanza/autenticacion.svg",
+      "png": "png_96/06_gobernanza/autenticacion.png"
+    },
+    {
+      "source_group": "risks",
+      "source_id": "fuera_finalidad",
+      "label": "Uso fuera de finalidad",
+      "status": "real",
+      "icon_id": "gobernanza-finalidad",
+      "selectors": [
+        "[data-in=\"sb-riesgo-aplica\"][data-arg=\"fuera_finalidad\"]"
+      ],
+      "context": "BP.riesgos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. El icono identifica el tema del riesgo; no representa aprobación, mitigación completada ni resultado verificado.",
+      "svg": "svg/06_gobernanza/finalidad.svg",
+      "png": "png_96/06_gobernanza/finalidad.png"
+    },
+    {
+      "source_group": "risks",
+      "source_id": "retencion",
+      "label": "Retención excesiva de campos",
+      "status": "real",
+      "icon_id": "gobernanza-minimo-necesario",
+      "selectors": [
+        "[data-in=\"sb-riesgo-aplica\"][data-arg=\"retencion\"]"
+      ],
+      "context": "BP.riesgos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. El icono identifica el tema del riesgo; no representa aprobación, mitigación completada ni resultado verificado.",
+      "svg": "svg/06_gobernanza/minimo-necesario.svg",
+      "png": "png_96/06_gobernanza/minimo-necesario.png"
+    },
+    {
+      "source_group": "risks",
+      "source_id": "sesgo",
+      "label": "Sesgo en la decisión de origen",
+      "status": "real",
+      "icon_id": "gobernanza-etica",
+      "selectors": [
+        "[data-in=\"sb-riesgo-aplica\"][data-arg=\"sesgo\"]"
+      ],
+      "context": "BP.riesgos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. El icono identifica el tema del riesgo; no representa aprobación, mitigación completada ni resultado verificado.",
+      "svg": "svg/06_gobernanza/etica.svg",
+      "png": "png_96/06_gobernanza/etica.png"
+    },
+    {
+      "source_group": "risks",
+      "source_id": "carga",
+      "label": "Carga sobre el trabajador",
+      "status": "real",
+      "icon_id": "actores-trabajador",
+      "selectors": [
+        "[data-in=\"sb-riesgo-aplica\"][data-arg=\"carga\"]"
+      ],
+      "context": "BP.riesgos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. El icono identifica el tema del riesgo; no representa aprobación, mitigación completada ni resultado verificado.",
+      "svg": "svg/03_actores/trabajador.svg",
+      "png": "png_96/03_actores/trabajador.png"
+    },
+    {
+      "source_group": "tensions",
+      "source_id": "origen",
+      "label": "Origen (¿común o laboral?)",
+      "status": "real",
+      "icon_id": "pasos-e1-calificacion-origen",
+      "selectors": [],
+      "context": "SIM.tensiones / reto-q",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/05_pasos/e1-calificacion-origen.svg",
+      "png": "png_96/05_pasos/e1-calificacion-origen.png"
+    },
+    {
+      "source_group": "tensions",
+      "source_id": "quien_paga",
+      "label": "¿Quién paga?",
+      "status": "real",
+      "icon_id": "pasos-e5-pago",
+      "selectors": [],
+      "context": "SIM.tensiones / reto-q",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/05_pasos/e5-pago.svg",
+      "png": "png_96/05_pasos/e5-pago.png"
+    },
+    {
+      "source_group": "tensions",
+      "source_id": "competencia",
+      "label": "Competencia (¿a quién le toca?)",
+      "status": "real",
+      "icon_id": "investigacion-claridad-roles",
+      "selectors": [],
+      "context": "SIM.tensiones / reto-q",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/10_investigacion/claridad-roles.svg",
+      "png": "png_96/10_investigacion/claridad-roles.png"
+    },
+    {
+      "source_group": "tensions",
+      "source_id": "reserva",
+      "label": "Reserva o privacidad del dato",
+      "status": "real",
+      "icon_id": "gobernanza-autorizacion",
+      "selectors": [],
+      "context": "SIM.tensiones / reto-q",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/autorizacion.svg",
+      "png": "png_96/06_gobernanza/autorizacion.png"
+    },
+    {
+      "source_group": "tensions",
+      "source_id": "carga",
+      "label": "Carga operativa",
+      "status": "real",
+      "icon_id": "investigacion-reprocesos",
+      "selectors": [],
+      "context": "SIM.tensiones / reto-q",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/10_investigacion/reprocesos.svg",
+      "png": "png_96/10_investigacion/reprocesos.png"
+    },
+    {
+      "source_group": "tensions",
+      "source_id": "lenguaje",
+      "label": "Lenguaje diagnóstico no alineado",
+      "status": "real",
+      "icon_id": "investigacion-barreras",
+      "selectors": [],
+      "context": "SIM.tensiones / reto-q",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/10_investigacion/barreras.svg",
+      "png": "png_96/10_investigacion/barreras.png"
+    },
+    {
+      "source_group": "tensions",
+      "source_id": "plazo",
+      "label": "Plazo o notificación",
+      "status": "real",
+      "icon_id": "gobernanza-responsable-plazo",
+      "selectors": [],
+      "context": "SIM.tensiones / reto-q",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/06_gobernanza/responsable-plazo.svg",
+      "png": "png_96/06_gobernanza/responsable-plazo.png"
+    },
+    {
+      "source_group": "tensions",
+      "source_id": "ninguna",
+      "label": "Ninguna",
+      "status": "real",
+      "icon_id": "acciones-aceptar",
+      "selectors": [],
+      "context": "SIM.tensiones / reto-q",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/08_acciones/aceptar.svg",
+      "png": "png_96/08_acciones/aceptar.png"
+    },
+    {
+      "source_group": "simulation_actions",
+      "source_id": "consultar",
+      "label": "Consultar evidencia por finalidad (módulo)",
+      "status": "real",
+      "icon_id": "acciones-consultar",
+      "selectors": [
+        "[data-in=\"form-tipo\"]"
+      ],
+      "context": "SIM.acciones; opción de selección, no botón exclusivo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/consultar.svg",
+      "png": "png_96/08_acciones/consultar.png"
+    },
+    {
+      "source_group": "simulation_actions",
+      "source_id": "solicitar",
+      "label": "Solicitar evidencia a quien la custodia",
+      "status": "real",
+      "icon_id": "acciones-solicitar",
+      "selectors": [
+        "[data-in=\"form-tipo\"]"
+      ],
+      "context": "SIM.acciones; opción de selección, no botón exclusivo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/solicitar.svg",
+      "png": "png_96/08_acciones/solicitar.png"
+    },
+    {
+      "source_group": "simulation_actions",
+      "source_id": "decidir",
+      "label": "Decidir (calificar, dictaminar, apelar, pagar)",
+      "status": "real",
+      "icon_id": "acciones-decidir",
+      "selectors": [
+        "[data-in=\"form-tipo\"]"
+      ],
+      "context": "SIM.acciones; opción de selección, no botón exclusivo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/decidir.svg",
+      "png": "png_96/08_acciones/decidir.png"
+    },
+    {
+      "source_group": "simulation_actions",
+      "source_id": "notificar",
+      "label": "Notificar",
+      "status": "real",
+      "icon_id": "acciones-notificar",
+      "selectors": [
+        "[data-in=\"form-tipo\"]"
+      ],
+      "context": "SIM.acciones; opción de selección, no botón exclusivo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/notificar.svg",
+      "png": "png_96/08_acciones/notificar.png"
+    },
+    {
+      "source_group": "simulation_actions",
+      "source_id": "controvertir",
+      "label": "Controvertir o apelar",
+      "status": "real",
+      "icon_id": "acciones-controvertir",
+      "selectors": [
+        "[data-in=\"form-tipo\"]"
+      ],
+      "context": "SIM.acciones; opción de selección, no botón exclusivo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/controvertir.svg",
+      "png": "png_96/08_acciones/controvertir.png"
+    },
+    {
+      "source_group": "simulation_actions",
+      "source_id": "vigilar",
+      "label": "Vigilar, requerir u ordenar",
+      "status": "real",
+      "icon_id": "acciones-vigilar",
+      "selectors": [
+        "[data-in=\"form-tipo\"]"
+      ],
+      "context": "SIM.acciones; opción de selección, no botón exclusivo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/vigilar.svg",
+      "png": "png_96/08_acciones/vigilar.png"
+    },
+    {
+      "source_group": "simulation_actions",
+      "source_id": "otra",
+      "label": "Otra gestión",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "[data-in=\"form-tipo\"]"
+      ],
+      "context": "SIM.acciones; opción de selección, no botón exclusivo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "tra_e1",
+      "label": "Día 120: la EPS debe calificar el origen",
+      "status": "real",
+      "icon_id": "carriles-acciones-usuario",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"tra_e1\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/04_carriles/acciones-usuario.svg",
+      "png": "png_96/04_carriles/acciones-usuario.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "ips_e1",
+      "label": "Solicitud de historia clínica",
+      "status": "real",
+      "icon_id": "documentos-historia-clinica",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"ips_e1\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/07_documentos/historia-clinica.svg",
+      "png": "png_96/07_documentos/historia-clinica.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "emp_e1",
+      "label": "Matriz de exposición (APT) con versión y fecha",
+      "status": "real",
+      "icon_id": "documentos-apt",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"emp_e1\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/07_documentos/apt.svg",
+      "png": "png_96/07_documentos/apt.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "eps_e1",
+      "label": "Calificar el origen en primera oportunidad",
+      "status": "real",
+      "icon_id": "pasos-e1-calificacion-origen",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"eps_e1\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/05_pasos/e1-calificacion-origen.svg",
+      "png": "png_96/05_pasos/e1-calificacion-origen.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "arl_e2",
+      "label": "Responder la calificación: aceptar o controvertir",
+      "status": "real",
+      "icon_id": "pasos-e2-controversia",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"arl_e2\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/05_pasos/e2-controversia.svg",
+      "png": "png_96/05_pasos/e2-controversia.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "eps_e2",
+      "label": "Suministrar los certificados de incapacidad (INC)",
+      "status": "real",
+      "icon_id": "documentos-incapacidad",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"eps_e2\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/07_documentos/incapacidad.svg",
+      "png": "png_96/07_documentos/incapacidad.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "jr_e3",
+      "label": "Dictaminar en primera instancia",
+      "status": "real",
+      "icon_id": "pasos-e3-dictamen",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"jr_e3\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/05_pasos/e3-dictamen.svg",
+      "png": "png_96/05_pasos/e3-dictamen.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "afp_e3",
+      "label": "Entregar la historia laboral a la Junta",
+      "status": "real",
+      "icon_id": "documentos-historial-laboral",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"afp_e3\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Historia laboral y semanas. Mantener nombre, sigla HL y contexto del escenario.",
+      "svg": "svg/07_documentos/historial-laboral.svg",
+      "png": "png_96/07_documentos/historial-laboral.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "tra_e3",
+      "label": "Radicar y seguir el expediente",
+      "status": "real",
+      "icon_id": "documentos-expediente",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"tra_e3\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/07_documentos/expediente.svg",
+      "png": "png_96/07_documentos/expediente.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "arl_e4",
+      "label": "¿Apelar el dictamen?",
+      "status": "real",
+      "icon_id": "acciones-controvertir",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"arl_e4\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/controvertir.svg",
+      "png": "png_96/08_acciones/controvertir.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "jn_e4",
+      "label": "Validación experta del paquete de apelación (no resuelve)",
+      "status": "real",
+      "icon_id": "pasos-e4-apelacion",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"jn_e4\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/05_pasos/e4-apelacion.svg",
+      "png": "png_96/05_pasos/e4-apelacion.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "afp_e5",
+      "label": "Pago desde el día 181 y competencia",
+      "status": "real",
+      "icon_id": "pasos-e5-pago",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"afp_e5\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/05_pasos/e5-pago.svg",
+      "png": "png_96/05_pasos/e5-pago.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "arl_e5",
+      "label": "Si el origen es laboral, asumir la prestación",
+      "status": "real",
+      "icon_id": "pasos-d2-prestacion",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"arl_e5\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/05_pasos/d2-prestacion.svg",
+      "png": "png_96/05_pasos/d2-prestacion.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "tra_e5",
+      "label": "¿Sabe quién le paga desde el día 181?",
+      "status": "real",
+      "icon_id": "pasos-e5-pago",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"tra_e5\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/05_pasos/e5-pago.svg",
+      "png": "png_96/05_pasos/e5-pago.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "supersalud",
+      "label": "Queja de M.P. por demora en la calificación",
+      "status": "real",
+      "icon_id": "actores-supersalud",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"supersalud\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/03_actores/supersalud.svg",
+      "png": "png_96/03_actores/supersalud.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "mintrabajo",
+      "label": "Inspección al empleador (APT) y a la ARL (controversia con acuse)",
+      "status": "real",
+      "icon_id": "acciones-vigilar",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"mintrabajo\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/vigilar.svg",
+      "png": "png_96/08_acciones/vigilar.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "minsalud",
+      "label": "Vocabulario del resumen clínico (CIE-10)",
+      "status": "real",
+      "icon_id": "actores-minsalud",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"minsalud\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/03_actores/minsalud.svg",
+      "png": "png_96/03_actores/minsalud.png"
+    },
+    {
+      "source_group": "challenges",
+      "source_id": "jueces",
+      "label": "Tutela por demora del dictamen y falta de notificación",
+      "status": "real",
+      "icon_id": "actores-jueces",
+      "selectors": [
+        "[data-act=\"reto-guardar\"][data-arg=\"jueces\"]"
+      ],
+      "context": "SIM.retos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/03_actores/jueces.svg",
+      "png": "png_96/03_actores/jueces.png"
+    },
+    {
+      "source_group": "evaluation",
+      "source_id": "completitud",
+      "label": "Completitud de evidencia",
+      "status": "real",
+      "icon_id": "investigacion-completitud",
+      "selectors": [
+        "[data-act=\"sb-mejora\"][data-arg=\"completitud\"]",
+        "[data-act=\"val\"][data-arg=\"mejora_completitud\"]"
+      ],
+      "context": "BP.preguntas.mejora / SIM.validacion.mejora",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/10_investigacion/completitud.svg",
+      "png": "png_96/10_investigacion/completitud.png"
+    },
+    {
+      "source_group": "evaluation",
+      "source_id": "trazabilidad",
+      "label": "Trazabilidad de acceso",
+      "status": "real",
+      "icon_id": "investigacion-trazabilidad-accesos",
+      "selectors": [
+        "[data-act=\"sb-mejora\"][data-arg=\"trazabilidad\"]",
+        "[data-act=\"val\"][data-arg=\"mejora_trazabilidad\"]"
+      ],
+      "context": "BP.preguntas.mejora / SIM.validacion.mejora",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/10_investigacion/trazabilidad-accesos.svg",
+      "png": "png_96/10_investigacion/trazabilidad-accesos.png"
+    },
+    {
+      "source_group": "evaluation",
+      "source_id": "claridad",
+      "label": "Claridad de responsabilidades",
+      "status": "real",
+      "icon_id": "investigacion-claridad-roles",
+      "selectors": [
+        "[data-act=\"sb-mejora\"][data-arg=\"claridad\"]",
+        "[data-act=\"val\"][data-arg=\"mejora_claridad\"]"
+      ],
+      "context": "BP.preguntas.mejora / SIM.validacion.mejora",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/10_investigacion/claridad-roles.svg",
+      "png": "png_96/10_investigacion/claridad-roles.png"
+    },
+    {
+      "source_group": "barriers",
+      "source_id": "alineacion",
+      "label": "Alineación entre entidades",
+      "status": "real",
+      "icon_id": "investigacion-claridad-roles",
+      "selectors": [
+        "[data-act=\"val\"][data-arg=\"barrera\"][data-v=\"alineacion\"]"
+      ],
+      "context": "SIM.validacion.barrera",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/10_investigacion/claridad-roles.svg",
+      "png": "png_96/10_investigacion/claridad-roles.png"
+    },
+    {
+      "source_group": "barriers",
+      "source_id": "dato",
+      "label": "Calidad del dato",
+      "status": "real",
+      "icon_id": "investigacion-completitud",
+      "selectors": [
+        "[data-act=\"val\"][data-arg=\"barrera\"][data-v=\"dato\"]"
+      ],
+      "context": "SIM.validacion.barrera",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/10_investigacion/completitud.svg",
+      "png": "png_96/10_investigacion/completitud.png"
+    },
+    {
+      "source_group": "barriers",
+      "source_id": "permisos",
+      "label": "Gestión de permisos y finalidades",
+      "status": "real",
+      "icon_id": "gobernanza-autorizacion",
+      "selectors": [
+        "[data-act=\"val\"][data-arg=\"barrera\"][data-v=\"permisos\"]"
+      ],
+      "context": "SIM.validacion.barrera",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/06_gobernanza/autorizacion.svg",
+      "png": "png_96/06_gobernanza/autorizacion.png"
+    },
+    {
+      "source_group": "barriers",
+      "source_id": "tecnologia",
+      "label": "Falta de tecnología",
+      "status": "real",
+      "icon_id": "actores-modulo",
+      "selectors": [
+        "[data-act=\"val\"][data-arg=\"barrera\"][data-v=\"tecnologia\"]"
+      ],
+      "context": "SIM.validacion.barrera",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/03_actores/modulo.svg",
+      "png": "png_96/03_actores/modulo.png"
+    },
+    {
+      "source_group": "barriers",
+      "source_id": "ninguno",
+      "label": "Ninguna",
+      "status": "real",
+      "icon_id": "acciones-aceptar",
+      "selectors": [
+        "[data-act=\"val\"][data-arg=\"barrera\"][data-v=\"ninguno\"]"
+      ],
+      "context": "SIM.validacion.barrera",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/aceptar.svg",
+      "png": "png_96/08_acciones/aceptar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "admin-ver",
+      "label": "Ver detalle del actor / cerrar detalle",
+      "status": "real",
+      "icon_id": "acciones-ver-detalle",
+      "selectors": [
+        "[data-act=\"admin-ver\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. data-arg vacío: usar acciones-cerrar; data-arg con actor: usar acciones-ver-detalle o el icono del actor.",
+      "svg": "svg/08_acciones/ver-detalle.svg",
+      "png": "png_96/08_acciones/ver-detalle.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "borrar",
+      "label": "Borrar mesa",
+      "status": "real",
+      "icon_id": "acciones-eliminar",
+      "selectors": [
+        "[data-act=\"borrar\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Acción destructiva: conservar texto explícito, confirmación y alcance de borrado; no sustituir por cerrar panel.",
+      "svg": "svg/08_acciones/eliminar.svg",
+      "png": "png_96/08_acciones/eliminar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "borrar-no",
+      "label": "Cancelar borrado",
+      "status": "real",
+      "icon_id": "acciones-cerrar",
+      "selectors": [
+        "[data-act=\"borrar-no\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Cancela la confirmación: no elimina, reinicia ni cierra la sesión.",
+      "svg": "svg/08_acciones/cerrar.svg",
+      "png": "png_96/08_acciones/cerrar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "borrar-ok",
+      "label": "Confirmar borrado",
+      "status": "real",
+      "icon_id": "acciones-eliminar",
+      "selectors": [
+        "[data-act=\"borrar-ok\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Acción destructiva: conservar texto explícito, confirmación y alcance de borrado; no sustituir por cerrar panel.",
+      "svg": "svg/08_acciones/eliminar.svg",
+      "png": "png_96/08_acciones/eliminar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "cerrar",
+      "label": "Cerrar mesa",
+      "status": "real",
+      "icon_id": "acciones-cerrar-sesion",
+      "selectors": [
+        "[data-act=\"cerrar\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Cierra la mesa y conserva resultados; no equivale a borrar ni salir. No cambiar las reglas existentes al poner el icono.",
+      "svg": "svg/08_acciones/cerrar-sesion.svg",
+      "png": "png_96/08_acciones/cerrar-sesion.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "comparar",
+      "label": "Comparar mesas",
+      "status": "real",
+      "icon_id": "acciones-comparar",
+      "selectors": [
+        "[data-act=\"comparar\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/comparar.svg",
+      "png": "png_96/08_acciones/comparar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "copiar-admin",
+      "label": "Copiar enlace de facilitación",
+      "status": "real",
+      "icon_id": "acciones-compartir-enlace",
+      "selectors": [
+        "[data-act=\"copiar-admin\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/compartir-enlace.svg",
+      "png": "png_96/08_acciones/compartir-enlace.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "copiar-enlace",
+      "label": "Copiar enlace del actor",
+      "status": "real",
+      "icon_id": "acciones-compartir-enlace",
+      "selectors": [
+        "[data-act=\"copiar-enlace\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/compartir-enlace.svg",
+      "png": "png_96/08_acciones/compartir-enlace.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "copiar-general",
+      "label": "Copiar enlace general",
+      "status": "real",
+      "icon_id": "acciones-compartir-enlace",
+      "selectors": [
+        "[data-act=\"copiar-general\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/compartir-enlace.svg",
+      "png": "png_96/08_acciones/compartir-enlace.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "copy-json",
+      "label": "Copiar JSON",
+      "status": "real",
+      "icon_id": "acciones-copiar",
+      "selectors": [
+        "[data-act=\"copy-json\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/copiar.svg",
+      "png": "png_96/08_acciones/copiar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "crear",
+      "label": "Crear mesa",
+      "status": "real",
+      "icon_id": "acciones-crear",
+      "selectors": [
+        "[data-act=\"crear\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/crear.svg",
+      "png": "png_96/08_acciones/crear.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "dl-html",
+      "label": "Descargar informe HTML",
+      "status": "real",
+      "icon_id": "acciones-exportar",
+      "selectors": [
+        "[data-act=\"dl-html\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Descarga HTML existente; no rotular PDF ni prometer conversión inexistente.",
+      "svg": "svg/08_acciones/exportar.svg",
+      "png": "png_96/08_acciones/exportar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "dl-json",
+      "label": "Descargar JSON",
+      "status": "real",
+      "icon_id": "acciones-exportar",
+      "selectors": [
+        "[data-act=\"dl-json\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Acción de descarga JSON: puede acompañarse investigacion-archivo-json en el nombre de formato; no crear dos botones.",
+      "svg": "svg/08_acciones/exportar.svg",
+      "png": "png_96/08_acciones/exportar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "entrar",
+      "label": "Entrar a la mesa",
+      "status": "real",
+      "icon_id": "acciones-entrar",
+      "selectors": [
+        "[data-act=\"entrar\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/entrar.svg",
+      "png": "png_96/08_acciones/entrar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "entrar-admin",
+      "label": "Entrar como facilitadora",
+      "status": "real",
+      "icon_id": "gobernanza-autenticacion",
+      "selectors": [
+        "[data-act=\"entrar-admin\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/06_gobernanza/autenticacion.svg",
+      "png": "png_96/06_gobernanza/autenticacion.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "iniciar",
+      "label": "Iniciar mesa",
+      "status": "real",
+      "icon_id": "acciones-iniciar",
+      "selectors": [
+        "[data-act=\"iniciar\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/iniciar.svg",
+      "png": "png_96/08_acciones/iniciar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "nuevo-modo",
+      "label": "Elegir modo de nueva ronda",
+      "status": "real",
+      "icon_id": "acciones-comparar",
+      "selectors": [
+        "[data-act=\"nuevo-modo\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. hoy → fases-flujo-actual; mod → fases-flujo-propuesto. sb-modo usa data-arg; nuevo-modo usa data-v.",
+      "svg": "svg/08_acciones/comparar.svg",
+      "png": "png_96/08_acciones/comparar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "pasar",
+      "label": "Pasar turno",
+      "status": "real",
+      "icon_id": "acciones-pasar-turno",
+      "selectors": [
+        "[data-act=\"pasar\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/pasar-turno.svg",
+      "png": "png_96/08_acciones/pasar-turno.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "reabrir",
+      "label": "Reabrir mesa",
+      "status": "real",
+      "icon_id": "acciones-iniciar",
+      "selectors": [
+        "[data-act=\"reabrir\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/iniciar.svg",
+      "png": "png_96/08_acciones/iniciar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "registrar",
+      "label": "Registrar gestión",
+      "status": "real",
+      "icon_id": "acciones-guardar",
+      "selectors": [
+        "[data-act=\"registrar\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/guardar.svg",
+      "png": "png_96/08_acciones/guardar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "responder",
+      "label": "Responder solicitud",
+      "status": "real",
+      "icon_id": "acciones-entregar",
+      "selectors": [
+        "[data-act=\"responder\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/entregar.svg",
+      "png": "png_96/08_acciones/entregar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "reto-guardar",
+      "label": "Registrar respuestas del reto",
+      "status": "real",
+      "icon_id": "acciones-guardar",
+      "selectors": [
+        "[data-act=\"reto-guardar\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/guardar.svg",
+      "png": "png_96/08_acciones/guardar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "reto-q",
+      "label": "Responder pregunta del reto",
+      "status": "real",
+      "icon_id": "navegacion-escenario",
+      "selectors": [
+        "[data-act=\"reto-q\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. data-arg contiene ID_RETO|ID_PREGUNTA. Icono en pregunta/cabecera; reutilizar icono de dimensión según evidencia, claridad, tensión, regla o ruptura.",
+      "svg": "svg/01_navegacion/escenario.svg",
+      "png": "png_96/01_navegacion/escenario.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "salir",
+      "label": "Salir / Volver",
+      "status": "real",
+      "icon_id": "acciones-salir",
+      "selectors": [
+        "[data-act=\"salir\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. En la entrada de error el texto Volver permite usar acciones-anterior; en sesión activa Salir usa acciones-salir y no borra datos.",
+      "svg": "svg/08_acciones/salir.svg",
+      "png": "png_96/08_acciones/salir.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-anot-add",
+      "label": "Añadir observación",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "[data-act=\"sb-anot-add\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-anot-del",
+      "label": "Quitar observación",
+      "status": "real",
+      "icon_id": "acciones-eliminar",
+      "selectors": [
+        "[data-act=\"sb-anot-del\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Acción destructiva: conservar texto explícito, confirmación y alcance de borrado; no sustituir por cerrar panel.",
+      "svg": "svg/08_acciones/eliminar.svg",
+      "png": "png_96/08_acciones/eliminar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-copy",
+      "label": "Copiar JSON del blueprint",
+      "status": "real",
+      "icon_id": "acciones-copiar",
+      "selectors": [
+        "[data-act=\"sb-copy\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/copiar.svg",
+      "png": "png_96/08_acciones/copiar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-desde-nodo",
+      "label": "Ver desde este actor",
+      "status": "real",
+      "icon_id": "navegacion-mapa-actores",
+      "selectors": [
+        "[data-act=\"sb-desde-nodo\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Usar el icono específico según data-arg del actor, con la tabla actors; icono genérico solo como cabecera de selector.",
+      "svg": "svg/01_navegacion/mapa-actores.svg",
+      "png": "png_96/01_navegacion/mapa-actores.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-dl",
+      "label": "Descargar JSON del blueprint",
+      "status": "real",
+      "icon_id": "acciones-exportar",
+      "selectors": [
+        "[data-act=\"sb-dl\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Acción de descarga JSON: puede acompañarse investigacion-archivo-json en el nombre de formato; no crear dos botones.",
+      "svg": "svg/08_acciones/exportar.svg",
+      "png": "png_96/08_acciones/exportar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-fase",
+      "label": "Seleccionar fase",
+      "status": "real",
+      "icon_id": "acciones-filtrar",
+      "selectors": [
+        "[data-act=\"sb-fase\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. data-arg antes/durante/despues → icono de fase; todas → navegacion-blueprint.",
+      "svg": "svg/08_acciones/filtrar.svg",
+      "png": "png_96/08_acciones/filtrar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-mejora",
+      "label": "Valorar mejora",
+      "status": "real",
+      "icon_id": "investigacion-cambio-observado",
+      "selectors": [
+        "[data-act=\"sb-mejora\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. data-arg completitud/trazabilidad/claridad → tabla evaluation; icono en etiqueta de dimensión, sin convertir Sí/Parcial/No en resultados científicos.",
+      "svg": "svg/10_investigacion/cambio-observado.svg",
+      "png": "png_96/10_investigacion/cambio-observado.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-mit",
+      "label": "Definir mitigación",
+      "status": "real",
+      "icon_id": "gobernanza-etica",
+      "selectors": [
+        "[data-act=\"sb-mit\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. data-arg contiene ID de riesgo. Utilizar icono de riesgo en cabecera; Sí/No conserva texto.",
+      "svg": "svg/06_gobernanza/etica.svg",
+      "png": "png_96/06_gobernanza/etica.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-modo",
+      "label": "Seleccionar modo",
+      "status": "real",
+      "icon_id": "acciones-comparar",
+      "selectors": [
+        "[data-act=\"sb-modo\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. hoy → fases-flujo-actual; mod → fases-flujo-propuesto. sb-modo usa data-arg; nuevo-modo usa data-v.",
+      "svg": "svg/08_acciones/comparar.svg",
+      "png": "png_96/08_acciones/comparar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-reset",
+      "label": "Reiniciar validación",
+      "status": "real",
+      "icon_id": "acciones-reiniciar",
+      "selectors": [
+        "[data-act=\"sb-reset\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Reinicia/borrará validaciones según código actual. Conservar confirmación; no confundir con recargar sin pérdida.",
+      "svg": "svg/08_acciones/reiniciar.svg",
+      "png": "png_96/08_acciones/reiniciar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-reset-no",
+      "label": "Cancelar reinicio",
+      "status": "real",
+      "icon_id": "acciones-cerrar",
+      "selectors": [
+        "[data-act=\"sb-reset-no\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Cancela la confirmación: no elimina, reinicia ni cierra la sesión.",
+      "svg": "svg/08_acciones/cerrar.svg",
+      "png": "png_96/08_acciones/cerrar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-reset-ok",
+      "label": "Confirmar reinicio",
+      "status": "real",
+      "icon_id": "acciones-reiniciar",
+      "selectors": [
+        "[data-act=\"sb-reset-ok\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Reinicia/borrará validaciones según código actual. Conservar confirmación; no confundir con recargar sin pérdida.",
+      "svg": "svg/08_acciones/reiniciar.svg",
+      "png": "png_96/08_acciones/reiniciar.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "sb-val",
+      "label": "Valorar contrato",
+      "status": "real",
+      "icon_id": "navegacion-validacion",
+      "selectors": [
+        "[data-act=\"sb-val\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. data-arg=semaforo: data-v=aceptar → acciones-aceptar; ajustar → acciones-ajustar; rechazar → acciones-rechazar. Para campos/plazo/barrera utilizar icono semántico del campo, no repetir icono en cada Sí/No.",
+      "svg": "svg/01_navegacion/validacion.svg",
+      "png": "png_96/01_navegacion/validacion.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "ser",
+      "label": "Elegir actor",
+      "status": "real",
+      "icon_id": "actores-participante",
+      "selectors": [
+        "[data-act=\"ser\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Usar el icono específico según data-arg del actor, con la tabla actors; icono genérico solo como cabecera de selector.",
+      "svg": "svg/03_actores/participante.svg",
+      "png": "png_96/03_actores/participante.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "val",
+      "label": "Valorar contrato",
+      "status": "real",
+      "icon_id": "navegacion-validacion",
+      "selectors": [
+        "[data-act=\"val\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. data-arg=semaforo: data-v=aceptar → acciones-aceptar; ajustar → acciones-ajustar; rechazar → acciones-rechazar. Para campos/plazo/barrera utilizar icono semántico del campo, no repetir icono en cada Sí/No.",
+      "svg": "svg/01_navegacion/validacion.svg",
+      "png": "png_96/01_navegacion/validacion.png"
+    },
+    {
+      "source_group": "interface_actions",
+      "source_id": "vista",
+      "label": "Cambiar entre tablero e informe",
+      "status": "real",
+      "icon_id": "navegacion-inicio",
+      "selectors": [
+        "[data-act=\"vista\"]"
+      ],
+      "context": "Atributo real data-act literal o generado por opt()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. data-arg=tablero: navegacion-inicio; data-arg=informe: investigacion-informe.",
+      "svg": "svg/01_navegacion/inicio.svg",
+      "png": "png_96/01_navegacion/inicio.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "admin-dia",
+      "label": "Día virtual",
+      "status": "real",
+      "icon_id": "investigacion-tiempo",
+      "selectors": [
+        "[data-in=\"admin-dia\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/10_investigacion/tiempo.svg",
+      "png": "png_96/10_investigacion/tiempo.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "admin-etapa",
+      "label": "Etapa actual",
+      "status": "real",
+      "icon_id": "navegacion-blueprint",
+      "selectors": [
+        "[data-in=\"admin-etapa\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/01_navegacion/blueprint.svg",
+      "png": "png_96/01_navegacion/blueprint.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "admin-turno",
+      "label": "Actor con turno",
+      "status": "real",
+      "icon_id": "acciones-pasar-turno",
+      "selectors": [
+        "[data-in=\"admin-turno\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/pasar-turno.svg",
+      "png": "png_96/08_acciones/pasar-turno.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "comparar",
+      "label": "Código de mesa para comparación",
+      "status": "real",
+      "icon_id": "acciones-comparar",
+      "selectors": [
+        "[data-in=\"comparar\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/comparar.svg",
+      "png": "png_96/08_acciones/comparar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "entrar-code",
+      "label": "Código de mesa",
+      "status": "real",
+      "icon_id": "acciones-entrar",
+      "selectors": [
+        "[data-in=\"entrar-code\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/entrar.svg",
+      "png": "png_96/08_acciones/entrar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "entrar-pin",
+      "label": "PIN de facilitadora",
+      "status": "real",
+      "icon_id": "gobernanza-autenticacion",
+      "selectors": [
+        "[data-in=\"entrar-pin\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/06_gobernanza/autenticacion.svg",
+      "png": "png_96/06_gobernanza/autenticacion.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "form-a",
+      "label": "Destinatario",
+      "status": "real",
+      "icon_id": "actores-participante",
+      "selectors": [
+        "[data-in=\"form-a\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/03_actores/participante.svg",
+      "png": "png_96/03_actores/participante.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "form-acuse",
+      "label": "Acuse de recibo",
+      "status": "real",
+      "icon_id": "acciones-confirmar-recepcion",
+      "selectors": [
+        "[data-in=\"form-acuse\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/confirmar-recepcion.svg",
+      "png": "png_96/08_acciones/confirmar-recepcion.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "form-campo",
+      "label": "Campo de evidencia",
+      "status": "real",
+      "icon_id": "gobernanza-minimo-necesario",
+      "selectors": [
+        "[data-in=\"form-campo\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/06_gobernanza/minimo-necesario.svg",
+      "png": "png_96/06_gobernanza/minimo-necesario.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "form-decision",
+      "label": "Decisión y motivación",
+      "status": "real",
+      "icon_id": "acciones-decidir",
+      "selectors": [
+        "[data-in=\"form-decision\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/decidir.svg",
+      "png": "png_96/08_acciones/decidir.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "form-dias",
+      "label": "Días declarados",
+      "status": "real",
+      "icon_id": "investigacion-tiempo",
+      "selectors": [
+        "[data-in=\"form-dias\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/10_investigacion/tiempo.svg",
+      "png": "png_96/10_investigacion/tiempo.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "form-finalidad",
+      "label": "Finalidad declarada",
+      "status": "real",
+      "icon_id": "gobernanza-finalidad",
+      "selectors": [
+        "[data-in=\"form-finalidad\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/06_gobernanza/finalidad.svg",
+      "png": "png_96/06_gobernanza/finalidad.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "form-notifica",
+      "label": "Destinatarios de notificación",
+      "status": "real",
+      "icon_id": "acciones-notificar",
+      "selectors": [
+        "[data-in=\"form-notifica\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/notificar.svg",
+      "png": "png_96/08_acciones/notificar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "form-pieza",
+      "label": "Pieza de evidencia",
+      "status": "real",
+      "icon_id": "documentos-evidencia",
+      "selectors": [
+        "[data-in=\"form-pieza\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/07_documentos/evidencia.svg",
+      "png": "png_96/07_documentos/evidencia.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "form-tipo",
+      "label": "Tipo de gestión",
+      "status": "real",
+      "icon_id": "acciones-decidir",
+      "selectors": [
+        "[data-in=\"form-tipo\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/decidir.svg",
+      "png": "png_96/08_acciones/decidir.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "gate",
+      "label": "Criterio de cierre",
+      "status": "real",
+      "icon_id": "navegacion-validacion",
+      "selectors": [
+        "[data-in=\"gate\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/01_navegacion/validacion.svg",
+      "png": "png_96/01_navegacion/validacion.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "nuevo-nombre",
+      "label": "Nombre de mesa",
+      "status": "real",
+      "icon_id": "navegacion-sesiones",
+      "selectors": [
+        "[data-in=\"nuevo-nombre\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/01_navegacion/sesiones.svg",
+      "png": "png_96/01_navegacion/sesiones.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "nuevo-pin",
+      "label": "PIN de administración",
+      "status": "real",
+      "icon_id": "gobernanza-autenticacion",
+      "selectors": [
+        "[data-in=\"nuevo-pin\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/06_gobernanza/autenticacion.svg",
+      "png": "png_96/06_gobernanza/autenticacion.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "perfil-nombre",
+      "label": "Nombre del participante",
+      "status": "real",
+      "icon_id": "actores-participante",
+      "selectors": [
+        "[data-in=\"perfil-nombre\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/03_actores/participante.svg",
+      "png": "png_96/03_actores/participante.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "perfil-tipo",
+      "label": "Tipo de participación",
+      "status": "real",
+      "icon_id": "actores-participante",
+      "selectors": [
+        "[data-in=\"perfil-tipo\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/03_actores/participante.svg",
+      "png": "png_96/03_actores/participante.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "resp-acuse",
+      "label": "Respuesta con acuse",
+      "status": "real",
+      "icon_id": "acciones-confirmar-recepcion",
+      "selectors": [
+        "[data-in=\"resp-acuse\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/confirmar-recepcion.svg",
+      "png": "png_96/08_acciones/confirmar-recepcion.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "resp-campo",
+      "label": "Campo entregado",
+      "status": "real",
+      "icon_id": "acciones-entregar",
+      "selectors": [
+        "[data-in=\"resp-campo\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/entregar.svg",
+      "png": "png_96/08_acciones/entregar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "resp-denegar",
+      "label": "Denegar por finalidad",
+      "status": "real",
+      "icon_id": "acciones-rechazar",
+      "selectors": [
+        "[data-in=\"resp-denegar\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/rechazar.svg",
+      "png": "png_96/08_acciones/rechazar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "resp-dias",
+      "label": "Días de respuesta",
+      "status": "real",
+      "icon_id": "investigacion-tiempo",
+      "selectors": [
+        "[data-in=\"resp-dias\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/10_investigacion/tiempo.svg",
+      "png": "png_96/10_investigacion/tiempo.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "resp-motivo",
+      "label": "Motivo o nota",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "[data-in=\"resp-motivo\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "reto-cambio",
+      "label": "Cambio propuesto",
+      "status": "real",
+      "icon_id": "acciones-ajustar",
+      "selectors": [
+        "[data-in=\"reto-cambio\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/ajustar.svg",
+      "png": "png_96/08_acciones/ajustar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "reto-falto",
+      "label": "Evidencia faltante",
+      "status": "real",
+      "icon_id": "investigacion-completitud",
+      "selectors": [
+        "[data-in=\"reto-falto\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/10_investigacion/completitud.svg",
+      "png": "png_96/10_investigacion/completitud.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "sb-anot-paso",
+      "label": "Paso de la observación",
+      "status": "real",
+      "icon_id": "navegacion-blueprint",
+      "selectors": [
+        "[data-in=\"sb-anot-paso\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/01_navegacion/blueprint.svg",
+      "png": "png_96/01_navegacion/blueprint.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "sb-anot-texto",
+      "label": "Texto de la observación",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "[data-in=\"sb-anot-texto\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "sb-anot-tipo",
+      "label": "Tipo de observación",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "[data-in=\"sb-anot-tipo\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "sb-desde",
+      "label": "Perspectiva del actor",
+      "status": "real",
+      "icon_id": "navegacion-mapa-actores",
+      "selectors": [
+        "[data-in=\"sb-desde\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/01_navegacion/mapa-actores.svg",
+      "png": "png_96/01_navegacion/mapa-actores.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "sb-gate",
+      "label": "Criterio de cierre del blueprint",
+      "status": "real",
+      "icon_id": "navegacion-validacion",
+      "selectors": [
+        "[data-in=\"sb-gate\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/01_navegacion/validacion.svg",
+      "png": "png_96/01_navegacion/validacion.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "sb-riesgo-aplica",
+      "label": "Riesgo aplicable",
+      "status": "real",
+      "icon_id": "gobernanza-etica",
+      "selectors": [
+        "[data-in=\"sb-riesgo-aplica\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/06_gobernanza/etica.svg",
+      "png": "png_96/06_gobernanza/etica.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "sb-riesgo-nota",
+      "label": "Mitigación descrita",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "[data-in=\"sb-riesgo-nota\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "sb-val-cual",
+      "label": "Justificación de valoración",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "[data-in=\"sb-val-cual\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "turno-a",
+      "label": "Destinatario del turno",
+      "status": "real",
+      "icon_id": "acciones-pasar-turno",
+      "selectors": [
+        "[data-in=\"turno-a\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/pasar-turno.svg",
+      "png": "png_96/08_acciones/pasar-turno.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "turno-nota",
+      "label": "Nota de entrega del turno",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "[data-in=\"turno-nota\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "url-base",
+      "label": "Dirección de la página",
+      "status": "real",
+      "icon_id": "acciones-compartir-enlace",
+      "selectors": [
+        "[data-in=\"url-base\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/compartir-enlace.svg",
+      "png": "png_96/08_acciones/compartir-enlace.png"
+    },
+    {
+      "source_group": "interface_fields",
+      "source_id": "val-cual",
+      "label": "Justificación de valoración",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "[data-in=\"val-cual\"]"
+      ],
+      "context": "Atributo real data-in literal o generado por selActores()",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. Colocar junto a la etiqueta del campo o en su cabecera. No insertar SVG dentro de input, textarea, select ni option, ni sustituir el control nativo.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "aceptar",
+      "label": "Aceptar",
+      "status": "real",
+      "icon_id": "acciones-aceptar",
+      "selectors": [],
+      "context": "semaforo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/08_acciones/aceptar.svg",
+      "png": "png_96/08_acciones/aceptar.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "ajustar",
+      "label": "Ajustar",
+      "status": "real",
+      "icon_id": "estados-requiere-ajustes",
+      "selectors": [],
+      "context": "semaforo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/09_estados/requiere-ajustes.svg",
+      "png": "png_96/09_estados/requiere-ajustes.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "rechazar",
+      "label": "Rechazar",
+      "status": "real",
+      "icon_id": "acciones-rechazar",
+      "selectors": [],
+      "context": "semaforo",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/08_acciones/rechazar.svg",
+      "png": "png_96/08_acciones/rechazar.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "pendiente",
+      "label": "Pendiente",
+      "status": "real",
+      "icon_id": "estados-pendiente",
+      "selectors": [],
+      "context": "solicitudes y gate",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/09_estados/pendiente.svg",
+      "png": "png_96/09_estados/pendiente.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "denegada",
+      "label": "Denegada",
+      "status": "real",
+      "icon_id": "acciones-rechazar",
+      "selectors": [],
+      "context": "solicitudes",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/08_acciones/rechazar.svg",
+      "png": "png_96/08_acciones/rechazar.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "entregada",
+      "label": "Entregada",
+      "status": "real",
+      "icon_id": "acciones-entregar",
+      "selectors": [],
+      "context": "solicitudes",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/08_acciones/entregar.svg",
+      "png": "png_96/08_acciones/entregar.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "parcial",
+      "label": "Entrega parcial",
+      "status": "real",
+      "icon_id": "estados-requiere-ajustes",
+      "selectors": [],
+      "context": "solicitudes",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/09_estados/requiere-ajustes.svg",
+      "png": "png_96/09_estados/requiere-ajustes.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "automatica",
+      "label": "Respuesta automática",
+      "status": "real",
+      "icon_id": "actores-modulo",
+      "selectors": [],
+      "context": "solicitudes",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Indicar automática/simulada mediante texto; no usar apariencia de verificación humana.",
+      "svg": "svg/03_actores/modulo.svg",
+      "png": "png_96/03_actores/modulo.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "config",
+      "label": "En configuración",
+      "status": "real",
+      "icon_id": "navegacion-configuracion",
+      "selectors": [],
+      "context": "mesa.estado",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/01_navegacion/configuracion.svg",
+      "png": "png_96/01_navegacion/configuracion.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "en_curso",
+      "label": "En curso",
+      "status": "real",
+      "icon_id": "estados-en-curso",
+      "selectors": [],
+      "context": "mesa.estado",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/09_estados/en-curso.svg",
+      "png": "png_96/09_estados/en-curso.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "cerrada",
+      "label": "Cerrada",
+      "status": "real",
+      "icon_id": "estados-cerrado",
+      "selectors": [],
+      "context": "mesa.estado",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/09_estados/cerrado.svg",
+      "png": "png_96/09_estados/cerrado.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "turno",
+      "label": "Es su turno",
+      "status": "real",
+      "icon_id": "acciones-pasar-turno",
+      "selectors": [],
+      "context": "reto.estado",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/08_acciones/pasar-turno.svg",
+      "png": "png_96/08_acciones/pasar-turno.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "libre",
+      "label": "Puede actuar ahora",
+      "status": "real",
+      "icon_id": "acciones-iniciar",
+      "selectors": [],
+      "context": "reto.estado",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/08_acciones/iniciar.svg",
+      "png": "png_96/08_acciones/iniciar.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "hecho",
+      "label": "Respondido",
+      "status": "real",
+      "icon_id": "estados-completado",
+      "selectors": [],
+      "context": "reto.estado",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/09_estados/completado.svg",
+      "png": "png_96/09_estados/completado.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "espera",
+      "label": "Esperando el turno",
+      "status": "real",
+      "icon_id": "estados-pendiente",
+      "selectors": [],
+      "context": "reto.estado",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/09_estados/pendiente.svg",
+      "png": "png_96/09_estados/pendiente.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "pasado",
+      "label": "Etapa pasada",
+      "status": "real",
+      "icon_id": "acciones-anterior",
+      "selectors": [],
+      "context": "reto.estado",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/08_acciones/anterior.svg",
+      "png": "png_96/08_acciones/anterior.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "avanza",
+      "label": "Avanza",
+      "status": "real",
+      "icon_id": "estados-listo-revision",
+      "selectors": [],
+      "context": "gateEv/veredicto; texto, no ID literal",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Clave semántica del texto calculado, no selector ni valor literal del modelo. El icono no corrige ni acredita la validez del cálculo del gate.",
+      "svg": "svg/09_estados/listo-revision.svg",
+      "png": "png_96/09_estados/listo-revision.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "avanza_ajustes",
+      "label": "Avanza con ajustes",
+      "status": "real",
+      "icon_id": "estados-requiere-ajustes",
+      "selectors": [],
+      "context": "gateEv/veredicto; texto, no ID literal",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Clave semántica del texto calculado, no selector ni valor literal del modelo. El icono no corrige ni acredita la validez del cálculo del gate.",
+      "svg": "svg/09_estados/requiere-ajustes.svg",
+      "png": "png_96/09_estados/requiere-ajustes.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "no_avanza",
+      "label": "No avanza",
+      "status": "real",
+      "icon_id": "estados-bloqueado",
+      "selectors": [],
+      "context": "gateEv/veredicto; texto, no ID literal",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Clave semántica del texto calculado, no selector ni valor literal del modelo. El icono no corrige ni acredita la validez del cálculo del gate.",
+      "svg": "svg/09_estados/bloqueado.svg",
+      "png": "png_96/09_estados/bloqueado.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "local",
+      "label": "Modo local",
+      "status": "real",
+      "icon_id": "estados-modo-local",
+      "selectors": [],
+      "context": "ALM",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/09_estados/modo-local.svg",
+      "png": "png_96/09_estados/modo-local.png"
+    },
+    {
+      "source_group": "states",
+      "source_id": "en_linea",
+      "label": "En línea",
+      "status": "real",
+      "icon_id": "estados-conectado",
+      "selectors": [],
+      "context": "enLinea; texto, no ID literal",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes.",
+      "svg": "svg/09_estados/conectado.svg",
+      "png": "png_96/09_estados/conectado.png"
+    },
+    {
+      "source_group": "observation_types",
+      "source_id": "contacto",
+      "label": "Falta un punto de contacto",
+      "status": "real",
+      "icon_id": "carriles-puntos-contacto",
+      "selectors": [
+        "[data-in=\"sb-anot-tipo\"]"
+      ],
+      "context": "renderAnot tipos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/04_carriles/puntos-contacto.svg",
+      "png": "png_96/04_carriles/puntos-contacto.png"
+    },
+    {
+      "source_group": "observation_types",
+      "source_id": "actor",
+      "label": "Falta un actor o relación",
+      "status": "real",
+      "icon_id": "navegacion-mapa-actores",
+      "selectors": [
+        "[data-in=\"sb-anot-tipo\"]"
+      ],
+      "context": "renderAnot tipos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/01_navegacion/mapa-actores.svg",
+      "png": "png_96/01_navegacion/mapa-actores.png"
+    },
+    {
+      "source_group": "observation_types",
+      "source_id": "conflicto",
+      "label": "Conflicto de rol",
+      "status": "real",
+      "icon_id": "estados-conflicto-abierto",
+      "selectors": [
+        "[data-in=\"sb-anot-tipo\"]"
+      ],
+      "context": "renderAnot tipos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/09_estados/conflicto-abierto.svg",
+      "png": "png_96/09_estados/conflicto-abierto.png"
+    },
+    {
+      "source_group": "observation_types",
+      "source_id": "otra",
+      "label": "Otra observación",
+      "status": "real",
+      "icon_id": "acciones-observar",
+      "selectors": [
+        "[data-in=\"sb-anot-tipo\"]"
+      ],
+      "context": "renderAnot tipos",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes.",
+      "svg": "svg/08_acciones/observar.svg",
+      "png": "png_96/08_acciones/observar.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "preparar",
+      "label": "Preparar sesión",
+      "status": "suggested",
+      "icon_id": "administracion-preparar",
+      "selectors": [],
+      "context": "Administración simplificada",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/12_administracion/preparar.svg",
+      "png": "png_96/12_administracion/preparar.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "ejecutar",
+      "label": "Ejecutar sesión",
+      "status": "suggested",
+      "icon_id": "administracion-ejecutar",
+      "selectors": [],
+      "context": "Administración simplificada",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/12_administracion/ejecutar.svg",
+      "png": "png_96/12_administracion/ejecutar.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "revisar",
+      "label": "Revisar incidencias",
+      "status": "suggested",
+      "icon_id": "administracion-revisar",
+      "selectors": [],
+      "context": "Administración simplificada",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/12_administracion/revisar.svg",
+      "png": "png_96/12_administracion/revisar.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "archivar",
+      "label": "Archivar sesión",
+      "status": "suggested",
+      "icon_id": "acciones-archivar",
+      "selectors": [],
+      "context": "Nueva función sugerida; no data-act existente",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/08_acciones/archivar.svg",
+      "png": "png_96/08_acciones/archivar.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "pausar",
+      "label": "Pausar sesión",
+      "status": "suggested",
+      "icon_id": "acciones-pausar",
+      "selectors": [],
+      "context": "Nueva función sugerida; no data-act existente",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/08_acciones/pausar.svg",
+      "png": "png_96/08_acciones/pausar.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "guardar",
+      "label": "Guardado confirmado",
+      "status": "suggested",
+      "icon_id": "estados-guardado",
+      "selectors": [],
+      "context": "Confirmación sugerida",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/09_estados/guardado.svg",
+      "png": "png_96/09_estados/guardado.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "importar",
+      "label": "Importar sesión",
+      "status": "suggested",
+      "icon_id": "acciones-importar",
+      "selectors": [],
+      "context": "Nueva función sugerida; no data-act existente",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/08_acciones/importar.svg",
+      "png": "png_96/08_acciones/importar.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "recibi",
+      "label": "Qué recibí",
+      "status": "suggested",
+      "icon_id": "acciones-entregar",
+      "selectors": [],
+      "context": "Actividad guiada sugerida",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/08_acciones/entregar.svg",
+      "png": "png_96/08_acciones/entregar.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "debo_hacer",
+      "label": "Qué debo hacer",
+      "status": "suggested",
+      "icon_id": "carriles-acciones-usuario",
+      "selectors": [],
+      "context": "Actividad guiada sugerida",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/04_carriles/acciones-usuario.svg",
+      "png": "png_96/04_carriles/acciones-usuario.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "puedo_decidir",
+      "label": "Qué puedo decidir",
+      "status": "suggested",
+      "icon_id": "acciones-decidir",
+      "selectors": [],
+      "context": "Actividad guiada sugerida",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/08_acciones/decidir.svg",
+      "png": "png_96/08_acciones/decidir.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "ocurrio",
+      "label": "Qué ocurrió",
+      "status": "suggested",
+      "icon_id": "documentos-evidencia",
+      "selectors": [],
+      "context": "Actividad guiada sugerida",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/07_documentos/evidencia.svg",
+      "png": "png_96/07_documentos/evidencia.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "detalle",
+      "label": "Ver detalle",
+      "status": "suggested",
+      "icon_id": "acciones-ver-detalle",
+      "selectors": [],
+      "context": "Información bajo demanda sugerida",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/08_acciones/ver-detalle.svg",
+      "png": "png_96/08_acciones/ver-detalle.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "csv",
+      "label": "Exportar tablas CSV",
+      "status": "suggested",
+      "icon_id": "investigacion-archivo-csv",
+      "selectors": [],
+      "context": "Formato sugerido",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/10_investigacion/archivo-csv.svg",
+      "png": "png_96/10_investigacion/archivo-csv.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "cerrado_documentado",
+      "label": "Cerrado con decisión documentada",
+      "status": "suggested",
+      "icon_id": "administracion-cerrar",
+      "selectors": [],
+      "context": "Estado de cierre sugerido",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/12_administracion/cerrar.svg",
+      "png": "png_96/12_administracion/cerrar.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "listo_revision",
+      "label": "Listo para revisión del facilitador",
+      "status": "suggested",
+      "icon_id": "estados-listo-revision",
+      "selectors": [],
+      "context": "Estado de cierre sugerido",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/09_estados/listo-revision.svg",
+      "png": "png_96/09_estados/listo-revision.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "bloqueado",
+      "label": "Paso bloqueado",
+      "status": "suggested",
+      "icon_id": "estados-bloqueado",
+      "selectors": [],
+      "context": "Estado de paso sugerido",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/09_estados/bloqueado.svg",
+      "png": "png_96/09_estados/bloqueado.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "completado",
+      "label": "Paso completado",
+      "status": "suggested",
+      "icon_id": "estados-completado",
+      "selectors": [],
+      "context": "Estado de paso sugerido",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/09_estados/completado.svg",
+      "png": "png_96/09_estados/completado.png"
+    },
+    {
+      "source_group": "proposed",
+      "source_id": "conexion_compartida",
+      "label": "Conexión compartida verificada",
+      "status": "suggested",
+      "icon_id": "estados-conectado",
+      "selectors": [],
+      "context": "Confirmación sugerida",
+      "note": "Selectores de referencia para localizar el uso; insertar en el renderer correspondiente. No añadir automáticamente al contenedor ni a todos sus descendientes. No tiene selector DOM estable comprobado; localizar mediante el objeto o función de context y conservar los identificadores existentes. Función propuesta: incluir solo si ya está implementada o se implementa por solicitud independiente. Este paquete visual no crea ni activa la función.",
+      "svg": "svg/09_estados/conectado.svg",
+      "png": "png_96/09_estados/conectado.png"
+    }
+  ]
+}

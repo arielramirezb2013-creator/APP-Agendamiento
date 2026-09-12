@@ -1,0 +1,21 @@
+KIT DE ICONOS · SERVICE BLUEPRINT · PROYECTO 2
+
+PARA USARLO
+1. Descomprime el ZIP.
+2. Abre catalogo.html para ver los 154 iconos y buscar por nombre.
+3. Entrega a Claude el ZIP y el texto 01_INSTRUCCION_PARA_CLAUDE.txt. Si su entorno no extrae ZIP, descomprímelo y adjunta la carpeta o los archivos necesarios.
+4. Indícale que use mapeo_interfaz.json para ubicar cada icono y manifest.json para encontrar el archivo.
+
+CONTENIDO
+svg/: 154 SVG editables organizados en 12 carpetas.
+png_96/: copias transparentes de 96 × 96 px en azul oscuro.
+sprite.svg: símbolos con identificadores únicos.
+iconos.js: ayudante BPIcons.svg(id, etiquetaOpcional), sin dependencias.
+iconos.css: tamaños y alineación de iconos.
+manifest.json: índice de archivos y etiquetas.
+mapeo_interfaz.json / .csv: referencias al HTML de origen.
+catalogo.html: catálogo que funciona localmente, con buscador y copia de nombres.
+02_EJEMPLOS.html: ejemplos de botones, encabezados, actores y estados.
+03_CRITERIOS_DE_USO.txt: alcance y procedencia.
+
+Los dibujos se reutilizan cuando representan el mismo concepto. Hay un archivo por uso semántico; no todos los archivos necesitan una forma distinta. No es necesario mostrar toda la colección a la vez.

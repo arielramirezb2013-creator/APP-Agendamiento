@@ -1,0 +1,5 @@
+/* Load after application styles; scope is limited to icon assets. */
+.bp-icon{width:20px;height:20px;display:inline-block;flex-shrink:0;vertical-align:middle;color:inherit;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.bp-icon--sm{width:16px;height:16px}.bp-icon--lg{width:24px;height:24px}.bp-icon--xl{width:32px;height:32px}
+.bp-icon-label{display:inline-flex;align-items:center;gap:8px}
+@media(forced-colors:active){.bp-icon{color:ButtonText}}
