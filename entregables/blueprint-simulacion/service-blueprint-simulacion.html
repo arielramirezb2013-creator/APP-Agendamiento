@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Service Blueprint con Simulación Guiada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* ===== Tokens de interfaz (semánticos) y de dominio ===== */
+  :root { --ui-canvas:#FFFFFF; --ui-surface:#FFFFFF; --ui-surface-subtle:#F8F8F8; --ui-hover:#F0F1F2; --ui-pressed:#DDDEE1; --ui-text:#292A2E; --ui-text-secondary:#505258; --ui-text-muted:#6B6E76; --ui-border:#D7D9DD; --ui-border-strong:#B3B6BD; --ui-primary:#1868DB; --ui-primary-hover:#1558BC; --ui-on-primary:#FFFFFF; --ui-selected:#E9F2FE; --ui-selected-text:#0F4FA8; --ui-focus:#1868DB; --ui-shadow:0 8px 24px rgba(9,30,66,.18), 0 0 1px rgba(9,30,66,.31);
+    --paper:var(--ui-canvas); --card:var(--ui-surface); --card-2:var(--ui-surface-subtle); --ink:var(--ui-text); --ink-2:var(--ui-text-secondary); --line:var(--ui-border); --focus:var(--ui-focus);
+    --navy:#1B2A52; --navy-2:#24386B; --on-navy:#FFFFFF;
+    --gold:#B98A1B; --gold-ink:#6F5010; --on-gold:#1A1A1A; --gold-soft:#F6ECD2; --teal:#1F6B62; --teal-soft:#DDEFEC; --on-teal:#FFFFFF; --red:#B3261E; --on-red:#FFFFFF; --red-soft:#F9E3E0; --grey:#5F6470; --grey-soft:#EEEFF2;
+    --d-ui-canvas:#161A1D; --d-ui-surface:#1D2125; --d-ui-surface-subtle:#22272B; --d-ui-hover:#2C333A; --d-ui-pressed:#38414A; --d-ui-text:#DCE4EE; --d-ui-text-secondary:#B6C2CF; --d-ui-text-muted:#9FADBC; --d-ui-border:#3B444E; --d-ui-border-strong:#596773; --d-ui-primary:#579DFF; --d-ui-primary-hover:#85B8FF; --d-ui-on-primary:#10182B; --d-ui-selected:#1C2B41; --d-ui-selected-text:#85B8FF;
+    --d-navy:#8FA8E0; --d-on-navy:#10182B; --d-gold-ink:#E2B65A; --d-on-gold:#10182B; --d-gold-soft:#3A3120; --d-teal:#6CC5B8; --d-teal-soft:#173A36; --d-on-teal:#10182B; --d-red:#F4978E; --d-on-red:#10182B; --d-gold:#D9A93E; --d-red-soft:#4A2320; --d-grey:#A6B0C0; --d-grey-soft:#2C333A; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ui-canvas:var(--d-ui-canvas); --ui-surface:var(--d-ui-surface); --ui-surface-subtle:var(--d-ui-surface-subtle); --ui-hover:var(--d-ui-hover); --ui-pressed:var(--d-ui-pressed); --ui-text:var(--d-ui-text); --ui-text-secondary:var(--d-ui-text-secondary); --ui-text-muted:var(--d-ui-text-muted); --ui-border:var(--d-ui-border); --ui-border-strong:var(--d-ui-border-strong); --ui-primary:var(--d-ui-primary); --ui-primary-hover:var(--d-ui-primary-hover); --ui-on-primary:var(--d-ui-on-primary); --ui-selected:var(--d-ui-selected); --ui-selected-text:var(--d-ui-selected-text); --ui-focus:var(--d-ui-primary); --ui-shadow:0 8px 24px rgba(0,0,0,.5), 0 0 1px rgba(0,0,0,.6); --navy:var(--d-navy); --navy-2:#1C2537; --on-navy:var(--d-on-navy); --gold-ink:var(--d-gold-ink); --gold:var(--d-gold); --on-red:var(--d-on-red); --on-gold:var(--d-on-gold); --gold-soft:var(--d-gold-soft); --teal:var(--d-teal); --teal-soft:var(--d-teal-soft); --on-teal:var(--d-on-teal); --red:var(--d-red); --red-soft:var(--d-red-soft); --grey:var(--d-grey); --grey-soft:var(--d-grey-soft); } }
+  :root[data-theme="dark"] { --ui-canvas:var(--d-ui-canvas); --ui-surface:var(--d-ui-surface); --ui-surface-subtle:var(--d-ui-surface-subtle); --ui-hover:var(--d-ui-hover); --ui-pressed:var(--d-ui-pressed); --ui-text:var(--d-ui-text); --ui-text-secondary:var(--d-ui-text-secondary); --ui-text-muted:var(--d-ui-text-muted); --ui-border:var(--d-ui-border); --ui-border-strong:var(--d-ui-border-strong); --ui-primary:var(--d-ui-primary); --ui-primary-hover:var(--d-ui-primary-hover); --ui-on-primary:var(--d-ui-on-primary); --ui-selected:var(--d-ui-selected); --ui-selected-text:var(--d-ui-selected-text); --ui-focus:var(--d-ui-primary); --ui-shadow:0 8px 24px rgba(0,0,0,.5), 0 0 1px rgba(0,0,0,.6); --navy:var(--d-navy); --navy-2:#1C2537; --on-navy:var(--d-on-navy); --gold-ink:var(--d-gold-ink); --gold:var(--d-gold); --on-red:var(--d-on-red); --on-gold:var(--d-on-gold); --gold-soft:var(--d-gold-soft); --teal:var(--d-teal); --teal-soft:var(--d-teal-soft); --on-teal:var(--d-on-teal); --red:var(--d-red); --red-soft:var(--d-red-soft); --grey:var(--d-grey); --grey-soft:var(--d-grey-soft); }
+
+  /* ===== Base ===== */
+  * { box-sizing:border-box; } html { color-scheme:light dark; } body { margin:0; background:var(--ui-canvas); color:var(--ui-text); font:14px/20px "IBM Plex Sans","Segoe UI",Arial,sans-serif; }
+  h1,h2,h3,h4 { margin:0; font-family:inherit; font-weight:600; text-wrap:balance; } h1 { font-size:22px; line-height:28px; } h2 { font-size:16px; line-height:22px; } h3 { font-size:14px; line-height:20px; }
+  p { margin:0 0 8px; } button { font:inherit; cursor:pointer; } button:disabled { cursor:default; }
+  input,select,textarea { font:inherit; color:var(--ui-text); background:var(--ui-surface); border:1px solid var(--ui-border-strong); border-radius:6px; padding:5px 8px; min-height:32px; line-height:20px; }
+  input[type="checkbox"], input[type="radio"] { min-height:0; width:16px; height:16px; margin:0 4px 0 0; vertical-align:-3px; accent-color:var(--ui-primary); }
+  input:hover, select:hover, textarea:hover { background:var(--ui-surface-subtle); } input:disabled, select:disabled, textarea:disabled { color:var(--ui-text-muted); background:var(--ui-surface-subtle); border-color:var(--ui-border); }
+  textarea { width:100%; min-height:64px; resize:vertical; }
+  :is(button,input,select,textarea,a,[tabindex]):focus-visible { outline:2px solid var(--ui-focus); outline-offset:2px; }
+  a { color:var(--ui-primary); } a:hover { color:var(--ui-primary-hover); }
+  .mono { font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; }
+  .wrap { max-width:none; margin:0; padding:0 24px 32px; } @media (max-width:900px) { .wrap { padding:0 16px 24px; } } @media (max-width:600px) { .wrap { padding:0 12px 20px; } }
+  .hide { display:none !important; }
+
+  /* ===== Barra superior, navegación de secciones y encabezado contextual ===== */
+  .appbar { display:flex; align-items:center; gap:12px; height:44px; padding:0 24px; background:var(--ui-surface); border-bottom:1px solid var(--ui-border); }
+  .appbar .app-name { font-weight:600; font-size:14px; color:var(--ui-text); white-space:nowrap; } .appbar .app-name svg { width:16px; height:16px; vertical-align:-3px; margin-right:6px; color:var(--ui-primary); }
+  .appbar .app-meta { font-size:12px; line-height:16px; color:var(--ui-text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tabs { display:flex; gap:0; padding:0 24px; height:40px; background:var(--ui-surface); border-bottom:1px solid var(--ui-border); overflow-x:auto; flex-wrap:nowrap; scrollbar-width:none; } .tabs::-webkit-scrollbar { display:none; }
+  .tabs button { flex:none; border:0; border-bottom:2px solid transparent; background:transparent; color:var(--ui-text-secondary); padding:0 4px; margin-right:24px; height:40px; font-weight:500; font-size:14px; white-space:nowrap; border-radius:0; }
+  .tabs button:hover { color:var(--ui-text); background:transparent; } .tabs button[aria-pressed="true"] { color:var(--ui-primary); border-bottom-color:var(--ui-primary); font-weight:600; } .tabs button:focus-visible { outline-offset:-2px; border-radius:4px; }
+  @media (max-width:900px) { .appbar, .tabs { padding-left:16px; padding-right:16px; } } @media (max-width:600px) { .appbar, .tabs { padding-left:12px; padding-right:12px; } .appbar .app-meta { display:none; } .tabs button { margin-right:16px; } }
+  .band { background:var(--ui-surface); color:var(--ui-text); border-bottom:1px solid var(--ui-border); } .band .wrap { padding:12px 24px 12px; } @media (max-width:900px) { .band .wrap { padding:10px 16px; } } @media (max-width:600px) { .band .wrap { padding:10px 12px; } }
+  .eyebrow { font-size:12px; line-height:16px; color:var(--ui-text-muted); font-weight:500; margin-bottom:2px; letter-spacing:0; text-transform:none; }
+  .band h1 { font-size:22px; line-height:28px; font-weight:600; } .band .sub { margin:2px 0 0; font-size:13px; line-height:18px; color:var(--ui-text-secondary); max-width:110ch; }
+
+  /* ===== Toolbar contextual ===== */
+  .top { position:sticky; top:0; z-index:20; background:var(--ui-surface); border-bottom:1px solid var(--ui-border); min-height:44px; padding:6px 24px; margin:0 -24px; display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; font-size:13px; line-height:18px; color:var(--ui-text-secondary); }
+  .top b { font-weight:600; color:var(--ui-text); } .top .sp { flex:1; } .top .msg { font-weight:500; }
+  .top .btn.sm { height:28px; padding:0 10px; } .top .btn.sm:disabled { background:var(--ui-selected); color:var(--ui-selected-text); border-color:transparent; opacity:1; }
+  @media (max-width:900px) { .top { padding:6px 16px; margin:0 -16px; } } @media (max-width:600px) { .top { padding:6px 12px; margin:0 -12px; gap:4px 10px; } .top .hm { display:none; } }
+  .badge { font-family:"IBM Plex Mono",Consolas,monospace; font-size:12px; line-height:16px; background:var(--ui-surface-subtle); border:1px solid var(--ui-border); border-radius:4px; padding:2px 6px; color:var(--ui-text); overflow-wrap:anywhere; }
+
+  /* ===== Lozenges (chips) y puntos de estado ===== */
+  .chip { display:inline-block; font-size:11px; line-height:16px; font-weight:600; letter-spacing:.02em; text-transform:uppercase; border-radius:4px; padding:1px 6px; white-space:nowrap; border:1px solid transparent; vertical-align:middle; }
+  .ch-red { background:var(--red-soft); color:var(--red); } .ch-teal { background:var(--teal-soft); color:var(--teal); } .ch-gold { background:var(--gold-soft); color:var(--gold-ink); } .ch-grey { background:var(--grey-soft); color:var(--grey); } .ch-navy { background:var(--ui-selected); color:var(--ui-selected-text); }
+  .prec { display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:12px; background:var(--ui-surface-subtle); border:1px solid var(--ui-border); border-radius:4px; padding:0 5px; margin-right:4px; color:var(--ui-text-secondary); }
+  .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--grey); margin-right:6px; vertical-align:middle; } .dot.on { background:var(--teal); } .dot.turno { background:var(--gold); box-shadow:0 0 0 3px var(--gold-soft); }
+  .lbl { font-size:12px; line-height:16px; letter-spacing:.02em; text-transform:uppercase; font-weight:600; color:var(--ui-text-muted); }
+  .mini { font-size:12px; line-height:16px; color:var(--ui-text-muted); } .msg { font-size:13px; color:var(--teal); font-weight:600; } .err, .msg.err { color:var(--red); }
+  .instr { font-size:13px; line-height:18px; font-weight:500; margin:8px 0 10px; padding:8px 12px; background:var(--ui-selected); color:var(--ui-text); border-left:3px solid var(--ui-primary); border-radius:4px; }
+  .caso { display:grid; gap:2px; padding:8px 0 4px; font-size:13px; line-height:18px; color:var(--ui-text-secondary); } .caso b { color:var(--ui-text-muted); font-weight:600; letter-spacing:.02em; font-size:11px; text-transform:uppercase; margin-right:6px; }
+
+  /* ===== Superficies ===== */
+  .card { background:var(--ui-surface); border:1px solid var(--ui-border); border-radius:8px; padding:12px 16px; margin-top:12px; } .card h2 { font-size:16px; line-height:22px; margin-bottom:6px; } .card h3 { font-size:14px; line-height:20px; margin:10px 0 4px; }
+  .card > .row:first-child { padding-bottom:8px; border-bottom:1px solid var(--ui-border); margin-bottom:8px; } .card > .row:first-child h2 { margin-bottom:0; }
+  .hero { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:12px; } @media (max-width:800px) { .hero { grid-template-columns:1fr; } } .hero .card { margin-top:0; }
+  .grid2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; } .grid3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; } @media (max-width:900px) { .grid2, .grid3 { grid-template-columns:1fr; } }
+  .grid2 > .card { margin-top:12px; } .grid2:has(> .mapa-card) { grid-template-columns:minmax(0,3fr) minmax(0,2fr); } @media (max-width:1100px) { .grid2:has(> .mapa-card) { grid-template-columns:1fr; } }
+  .row { display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; } .row > label { display:flex; flex-direction:column; gap:2px; font-size:12px; line-height:16px; color:var(--ui-text-secondary); font-weight:500; } .row input, .row select { min-width:140px; }
+  .row > label.mini { font-size:12px; }
+  .kv { display:grid; grid-template-columns:auto 1fr; gap:2px 12px; font-size:13px; line-height:18px; } .kv b { font-weight:600; color:var(--ui-text-muted); font-size:11px; text-transform:uppercase; letter-spacing:.02em; align-self:start; padding-top:1px; }
+  .doc dt { font-size:11px; line-height:16px; letter-spacing:.02em; text-transform:uppercase; font-weight:600; color:var(--ui-text-muted); margin-top:8px; } .doc dd { margin:1px 0 0; font-size:13px; line-height:18px; }
+  details > summary { cursor:pointer; font-weight:500; font-size:13px; color:var(--ui-primary); list-style:none; padding:4px 0; } details > summary::-webkit-details-marker { display:none; } details > summary::before { content:"▸"; display:inline-block; width:14px; color:var(--ui-text-muted); } details[open] > summary::before { content:"▾"; }
+  .contrato { background:var(--gold-soft); border:1px solid var(--gold); border-radius:6px; padding:8px 12px; } .contrato .cells { display:grid; grid-template-columns:1fr 1fr; gap:6px 14px; font-size:13px; line-height:18px; color:var(--ui-text); } .contrato b { display:block; font-size:11px; letter-spacing:.02em; text-transform:uppercase; color:var(--gold-ink); } @media (max-width:700px) { .contrato .cells { grid-template-columns:1fr; } }
+  footer { margin-top:24px; padding-top:12px; border-top:1px solid var(--ui-border); font-size:12px; line-height:16px; color:var(--ui-text-muted); max-width:120ch; }
+
+  /* ===== Botones y opciones ===== */
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; height:32px; padding:0 12px; border:1px solid var(--ui-primary); background:var(--ui-primary); color:var(--ui-on-primary); border-radius:6px; font-weight:500; font-size:14px; line-height:20px; white-space:nowrap; }
+  .btn:hover { background:var(--ui-primary-hover); border-color:var(--ui-primary-hover); } .btn:active { filter:brightness(.92); }
+  .btn.sec { background:var(--ui-surface-subtle); color:var(--ui-text); border-color:var(--ui-surface-subtle); } .btn.sec:hover { background:var(--ui-hover); border-color:var(--ui-hover); } .btn.sec:active { background:var(--ui-pressed); }
+  .btn.danger { background:var(--ui-surface); color:var(--red); border-color:var(--red); } .btn.danger:hover { background:var(--red-soft); }
+  .btn.gold { background:var(--gold); color:var(--on-gold); border-color:var(--gold); } .btn.gold:hover { filter:brightness(1.06); }
+  .btn.sm { height:28px; padding:0 10px; font-size:13px; }
+  .btn:disabled, .btn:disabled:hover { background:var(--ui-surface-subtle); color:var(--ui-text-muted); border-color:var(--ui-border); filter:none; opacity:1; }
+  .optrow { display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 8px; }
+  .optrow button { height:30px; border:1px solid var(--ui-border-strong); background:var(--ui-surface); color:var(--ui-text); border-radius:6px; padding:0 10px; font-size:13px; font-weight:500; }
+  .optrow button:hover { background:var(--ui-hover); } .optrow button:active { background:var(--ui-pressed); }
+  .optrow button[aria-pressed="true"] { background:var(--ui-selected); color:var(--ui-selected-text); border-color:var(--ui-primary); box-shadow:inset 0 0 0 1px var(--ui-primary); font-weight:600; }
+  .optrow.teal button[aria-pressed="true"] { background:var(--teal-soft); color:var(--teal); border-color:var(--teal); box-shadow:inset 0 0 0 1px var(--teal); }
+  .sem button[data-v="aceptar"][aria-pressed="true"] { background:var(--teal); color:var(--on-teal); border-color:var(--teal); box-shadow:none; } .sem button[data-v="ajustar"][aria-pressed="true"] { background:var(--gold); color:var(--on-gold); border-color:var(--gold); box-shadow:none; } .sem button[data-v="rechazar"][aria-pressed="true"] { background:var(--red); color:var(--on-red); border-color:var(--red); box-shadow:none; }
+  .optrow button:disabled, .optrow button:disabled:hover { background:var(--ui-surface-subtle); color:var(--ui-text-muted); border-color:var(--ui-border); }
+  fieldset { border:0; padding:0; margin:8px 0 0; min-width:0; } legend { font-weight:600; font-size:13px; line-height:18px; padding:0; margin-bottom:2px; color:var(--ui-text); }
+  .campos label { display:inline-flex; gap:4px; align-items:center; font-size:13px; line-height:18px; margin:2px 12px 2px 0; } .campos .ret { color:var(--ui-text-muted); text-decoration:line-through; } .campos .neg { color:var(--red); }
+
+  /* ===== Tablas, actividad, alertas ===== */
+  .twrap { overflow-x:auto; border:1px solid var(--ui-border); border-radius:6px; }
+  table.t { width:100%; border-collapse:collapse; font-size:13px; line-height:18px; } table.t th, table.t td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--ui-border); vertical-align:top; } table.t tbody tr:last-child td { border-bottom:0; }
+  table.t th { font-size:11px; line-height:16px; letter-spacing:.02em; text-transform:uppercase; color:var(--ui-text-muted); background:var(--ui-surface-subtle); font-weight:600; white-space:nowrap; } table.t tbody tr:hover { background:var(--ui-surface-subtle); }
+  table.perfiles td { min-height:44px; } .perfiles td input, .perfiles td select { width:100%; min-width:130px; min-height:32px; }
+  .feed { list-style:none; margin:0; padding:0; max-height:420px; overflow:auto; } .feed li { padding:6px 0; border-bottom:1px solid var(--ui-border); font-size:13px; line-height:18px; display:grid; grid-template-columns:auto 1fr; gap:10px; } .feed li:last-child { border-bottom:0; } .feed .when { color:var(--ui-text-muted); font-family:"IBM Plex Mono",monospace; font-size:12px; line-height:18px; white-space:nowrap; }
+  ul.alertas { margin:0; padding:0; list-style:none; } ul.alertas li { display:grid; grid-template-columns:auto 1fr; gap:8px; padding:6px 0; border-bottom:1px solid var(--ui-border); font-size:13px; line-height:18px; } ul.alertas li:last-child { border-bottom:0; }
+  .bandeja ul { padding:0; margin:0; list-style:none; } .bandeja li { border:1px solid var(--ui-border); border-radius:6px; padding:8px 10px; margin-top:8px; font-size:13px; line-height:18px; } .bandeja li.pend { border-color:var(--gold); background:var(--gold-soft); }
+  .regla-ok { color:var(--teal); font-weight:600; } .regla-no { color:var(--red); font-weight:600; }
+
+  /* ===== Retos ===== */
+  .reto { border:1px solid var(--ui-border); border-left:3px solid var(--gold); border-radius:6px; padding:10px 12px; margin-top:8px; } .reto.libre { border-left-color:var(--teal); } .reto.hecho { border-left-color:var(--grey); background:var(--ui-surface-subtle); } .reto.hecho h3 { color:var(--ui-text-secondary); font-weight:500; }
+  .reto h3 { font-size:14px; margin:0; } .reto .sit { font-size:13px; line-height:18px; margin:6px 0; } .reto ul { margin:2px 0; padding-left:18px; font-size:13px; line-height:18px; } .base { font-size:12px; line-height:16px; color:var(--ui-text-secondary); } .base li { margin:2px 0; }
+  .aviso { margin:4px 0 8px; font-size:12px; line-height:16px; color:var(--gold-ink); }
+
+  /* ===== Mapa vivo ===== */
+  .mapa-card { overflow-x:auto; } .mapa-card svg { display:block; width:100%; height:auto; max-height:560px; margin:0 auto; } @media (max-width:700px) { .mapa-card svg { min-width:640px; max-height:none; } }
+  .node .box { fill:var(--ui-surface); stroke:var(--ui-border-strong); stroke-width:1.2; } .node .nn { font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:16px; fill:var(--ui-text); } .node .nr { font-size:12px; fill:var(--ui-text-secondary); }
+  .node.n-tra .box { fill:var(--navy); stroke:var(--navy); } .node.n-tra .nn, .node.n-tra .nr { fill:var(--on-navy); } .node.n-mod .box { fill:var(--teal-soft); stroke:var(--teal); stroke-width:1.5; } .node.n-mod .nn { fill:var(--teal); } .node.n-ctrl .box { stroke-dasharray:4 3; } .node.n-ctrl .nn { fill:var(--ui-text-secondary); }
+  .node.turno .box { stroke:var(--gold); stroke-width:3; } .node.online .nn { text-decoration:underline; }
+  .e-info { stroke:var(--navy); stroke-width:1.2; fill:none; } .e-dict { stroke:var(--gold); stroke-width:1.6; fill:none; } .e-ten { stroke:var(--red); stroke-width:1.6; stroke-dasharray:7 5; fill:none; } .e-ctrl { stroke:var(--grey); stroke-width:1; stroke-dasharray:2 4; fill:none; } .e-mod { stroke:var(--teal); stroke-width:1.6; fill:none; } .e-sol { stroke:var(--red); stroke-width:2.5; stroke-dasharray:6 4; fill:none; } .e-ent { stroke:var(--navy); stroke-width:2.5; fill:none; } .e-auto { stroke:var(--teal); stroke-width:2.5; fill:none; }
+  .e-info.dim, .e-dict.dim, .e-ten.dim, .e-ctrl.dim, .e-mod.dim { opacity:.45; }
+  .elabel { font-size:12px; fill:var(--ui-text-secondary); paint-order:stroke; stroke:var(--ui-surface); stroke-width:4px; stroke-linejoin:round; }
+  .anclabox { fill:none; stroke:var(--gold-ink); stroke-dasharray:6 4; stroke-width:1.2; } .anclatag { font-size:11px; letter-spacing:.06em; fill:var(--gold-ink); font-weight:600; }
+
+  /* ===== Drawer de detalle de actor ===== */
+  .card.drawer { position:fixed; top:0; right:0; bottom:0; width:min(420px, 100%); margin:0; border-radius:0; border:0; border-left:1px solid var(--ui-border); box-shadow:var(--ui-shadow); z-index:40; overflow:auto; padding:0 16px 16px; animation:drawer-in .18s ease-out; }
+  .card.drawer > .row:first-child { position:sticky; top:0; background:var(--ui-surface); padding:12px 0 8px; margin:0 0 8px; z-index:1; }
+  @keyframes drawer-in { from { transform:translateX(24px); opacity:0; } to { transform:none; opacity:1; } } @media (prefers-reduced-motion:reduce) { .card.drawer { animation:none; } }
+
+  /* ===== Informe ===== */
+  .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:8px; margin:8px 0 4px; } .stat { display:block; margin:0; min-width:0; border:1px solid var(--ui-border); border-radius:6px; padding:8px 12px; background:var(--ui-surface-subtle); } .stat b { display:block; font-size:22px; line-height:28px; font-weight:600; font-variant-numeric:tabular-nums; } .stat span { font-size:12px; line-height:16px; color:var(--ui-text-muted); }
+  .informe h2 { margin-top:20px; padding-bottom:6px; border-bottom:1px solid var(--ui-border); } .informe table.t { margin-top:6px; } .informe .twrap { margin-top:6px; }
+  ul.gate { list-style:none; padding:0; margin:0; border:1px solid var(--ui-border); border-radius:6px; } ul.gate li { display:grid; grid-template-columns:auto 1fr; gap:6px 10px; padding:8px 12px; border-bottom:1px solid var(--ui-border); align-items:start; font-size:13px; line-height:18px; } ul.gate li:last-child { border-bottom:0; } ul.gate .ev { grid-column:2; font-size:12px; line-height:16px; color:var(--ui-text-muted); } ul.gate input { margin-top:2px; }
+  .veredicto { font-size:18px; line-height:24px; font-weight:600; padding:10px 14px; border-radius:6px; margin-top:12px; display:inline-block; border:1px solid transparent; border-left-width:4px; } .v-wait { background:var(--grey-soft); color:var(--ui-text-secondary); border-color:var(--grey); } .v-go { background:var(--teal-soft); color:var(--teal); border-color:var(--teal); } .v-adj { background:var(--gold-soft); color:var(--gold-ink); border-color:var(--gold); } .v-stop { background:var(--red-soft); color:var(--red); border-color:var(--red); }
+
+  /* ===== Blueprint embebido y guía ===== */
+  .guia { max-width:860px; margin:0 auto; padding:16px 24px 48px; font-size:15px; line-height:24px; } @media (max-width:600px) { .guia { padding:12px 12px 32px; } }
+  .guia h1 { font-size:22px; line-height:28px; margin:24px 0 8px; padding-bottom:6px; border-bottom:1px solid var(--ui-border); } .guia h2 { font-size:18px; line-height:24px; margin:20px 0 6px; } .guia h3 { font-size:15px; line-height:22px; margin:14px 0 4px; } .guia p, .guia li { font-size:15px; line-height:24px; } .guia ul { padding-left:22px; } .guia hr { border:0; border-top:1px solid var(--ui-border); margin:28px 0; } .guia code { font-family:"IBM Plex Mono",monospace; font-size:13px; background:var(--ui-surface-subtle); border:1px solid var(--ui-border); padding:0 4px; border-radius:4px; }
+  .guia .toc { border:1px solid var(--ui-border); border-radius:6px; padding:10px 14px; margin:12px 0 16px; background:var(--ui-surface-subtle); } .guia .toc b { display:block; font-size:12px; text-transform:uppercase; letter-spacing:.02em; color:var(--ui-text-muted); margin-bottom:4px; } .guia .toc ol { margin:0; padding-left:20px; font-size:14px; line-height:22px; } .guia .toc a { text-decoration:none; } .guia .toc a:hover { text-decoration:underline; }
+
+  /* ===== Responsive ===== */
+  @media (max-width:600px) { .row input, .row select, .row textarea { min-width:0 !important; max-width:100%; width:100%; } .row > label { flex:1 1 100%; } .btn, .optrow button { min-height:40px; } .optrow button { padding:0 12px; } .card { padding:10px 12px; } .stats { grid-template-columns:repeat(2, minmax(0,1fr)); } .feed { max-height:320px; } }
+  @media (max-width:390px) { .stats { grid-template-columns:1fr 1fr; } }
+
+  /* ===== Service blueprint ===== */
+  .seg { display:inline-flex; border:1px solid var(--ui-border-strong); border-radius:6px; overflow:hidden; background:var(--ui-surface); } .seg button { height:30px; border:0; border-right:1px solid var(--ui-border); background:transparent; color:var(--ui-text); padding:0 12px; font-size:13px; font-weight:500; white-space:nowrap; } .seg button:last-child { border-right:0; } .seg button:hover { background:var(--ui-hover); } .seg button[aria-pressed="true"] { background:var(--ui-selected); color:var(--ui-selected-text); font-weight:600; box-shadow:inset 0 -2px 0 var(--ui-primary); }
+  .sb-desde { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--ui-text-secondary); } .sb-desde select { min-height:30px; padding:3px 8px; }
+  .sb-wrap { margin-top:12px; } table.sb { border-collapse:separate; border-spacing:0; font-size:13px; line-height:18px; width:max-content; min-width:100%; }
+  table.sb th, table.sb td { border-bottom:1px solid var(--ui-border); border-right:1px solid var(--ui-border); vertical-align:top; text-align:left; padding:8px 10px; min-width:236px; max-width:300px; background:var(--ui-surface); }
+  table.sb th.sb-lane { position:sticky; left:0; z-index:2; min-width:190px; max-width:190px; background:var(--ui-surface-subtle); font-weight:600; } table.sb th.sb-lane .mini { display:block; font-weight:400; }
+  table.sb thead th { position:sticky; top:0; z-index:3; background:var(--ui-surface-subtle); } table.sb thead th.sb-corner, table.sb thead th.sb-corner2 { z-index:4; left:0; } table.sb thead tr:nth-child(2) th { top:37px; }
+  table.sb th.sb-fase { text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:.02em; color:var(--ui-text-secondary); padding:6px 10px; border-top:3px solid var(--grey); } table.sb th.sb-fase.sb-antes { border-top-color:var(--grey); } table.sb th.sb-fase.sb-durante { border-top-color:var(--ui-primary); } table.sb th.sb-fase.sb-despues { border-top-color:var(--teal); } table.sb th.sb-fase .mini { text-transform:none; letter-spacing:0; }
+  table.sb th.sb-paso { font-weight:600; } table.sb th.sb-paso .mini { display:block; font-weight:400; } table.sb th.sb-paso .chip { margin-right:3px; }
+  table.sb tr.sb-line td { padding:2px 10px; background:var(--ui-canvas); border-right:0; } table.sb tr.sb-line span { display:block; font-size:11px; letter-spacing:.02em; text-transform:uppercase; color:var(--ui-text-muted); border-top:2px dashed var(--ui-border-strong); padding-top:2px; }
+  table.sb tr.sb-row-mp th.sb-lane { border-left:3px solid var(--navy); } table.sb tr.sb-row-front th.sb-lane { border-left:3px solid var(--ui-primary); } table.sb tr.sb-row-back th.sb-lane { border-left:3px solid var(--gold); } table.sb tr.sb-row-soporte th.sb-lane { border-left:3px solid var(--teal); } table.sb tr.sb-row-contacto th.sb-lane { border-left:3px solid var(--grey); } table.sb tr.sb-row-chips th.sb-lane { border-left:3px solid var(--ui-border); }
+  .sb-cell { } .sb-cell .chip { margin-right:4px; } .sb-cell.es-actor { background:var(--ui-selected); border-radius:4px; padding:4px 6px; margin:-4px -6px 0; } .sb-sub { margin-top:6px; } table.sb td.dim, .sb-cell.dim { color:var(--ui-text-muted); } table.sb td.dim { background:var(--ui-surface-subtle); }
+  .sb-chips { display:flex; flex-wrap:wrap; gap:4px; } .sb-chips .chip { white-space:normal; text-transform:none; letter-spacing:0; }
+  .sb-list { margin:2px 0; padding-left:18px; font-size:13px; line-height:18px; } .sb-anots { list-style:none; margin:8px 0 0; padding:0; } .sb-anots li { padding:6px 0; border-bottom:1px solid var(--ui-border); font-size:13px; } .sb-anots li:last-child { border-bottom:0; }
+  .sb-riesgos { list-style:none; margin:0; padding:0; } .sb-riesgos li { padding:6px 0; border-bottom:1px solid var(--ui-border); font-size:13px; } .sb-riesgos li:last-child { border-bottom:0; }
+  .sb-mapa svg { display:block; width:100%; height:auto; max-height:520px; } .sb-mapa { overflow-x:auto; } @media (max-width:700px) { .sb-mapa svg { min-width:640px; max-height:none; } }
+  .node.off .box { opacity:.45; } .node.off .nn, .node.off .nr { opacity:.55; }
+  @media (max-width:600px) { .seg button { height:36px; padding:0 10px; font-size:12.5px; } table.sb th, table.sb td { min-width:200px; padding:6px 8px; } table.sb th.sb-lane { min-width:130px; max-width:130px; } }
+
+  /* ===== Simulación guiada ===== */
+  .subtabs { display:flex; gap:0; border-bottom:1px solid var(--ui-border); margin:12px 0 0; overflow-x:auto; } .subtabs button { flex:none; border:0; border-bottom:2px solid transparent; background:transparent; color:var(--ui-text-secondary); height:36px; padding:0 4px; margin-right:20px; font-size:14px; font-weight:500; white-space:nowrap; } .subtabs button[aria-pressed="true"] { color:var(--ui-primary); border-bottom-color:var(--ui-primary); font-weight:600; }
+  .actividad fieldset { border:1px solid var(--ui-border); border-radius:6px; padding:8px 12px; margin-top:8px; } .actividad legend { padding:0 4px; }
+  .paso-card { border:1px solid var(--ui-border); border-radius:6px; padding:8px 12px; margin-top:6px; } .paso-fila { display:grid; grid-template-columns:90px 1fr; gap:8px; padding:4px 0; border-bottom:1px solid var(--ui-border); font-size:13px; line-height:18px; } .paso-fila:last-child { border-bottom:0; } .paso-fila b { color:var(--ui-text-muted); font-size:11px; text-transform:uppercase; letter-spacing:.02em; padding-top:2px; }
+  .lista { margin:4px 0; padding-left:18px; font-size:13px; line-height:18px; } .obs { padding:8px 0; border-bottom:1px solid var(--ui-border); font-size:13px; } .obs:last-child { border-bottom:0; }
+  .estado-cierre { display:inline-block; padding:8px 14px; border-radius:6px; border:1px solid var(--ui-border); border-left-width:4px; font-size:15px; } .estado-cierre.wait { border-left-color:var(--grey); background:var(--grey-soft); } .estado-cierre.adj { border-left-color:var(--gold); background:var(--gold-soft); } .estado-cierre.ready { border-left-color:var(--ui-primary); background:var(--ui-selected); } .estado-cierre.ok { border-left-color:var(--teal); background:var(--teal-soft); }
+  .sb-regs { margin-top:6px; display:flex; flex-wrap:wrap; gap:4px; } .sb-regs .chip { white-space:normal; text-transform:none; letter-spacing:0; } table.sb th.actual, table.sb td.actual { background:var(--ui-selected); } table.sb th.sb-paso .chip { display:inline-block; margin-top:2px; }
+  .hero .card h2 { margin-bottom:4px; }
+
+  #vista * { scroll-margin-top:130px; }
+</style>
+</head><body>
+<header class="appbar"><span class="app-name"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="13" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 8h7M8 4.5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Service blueprint · ruta de incapacidad</span><span class="app-meta">Simulación guiada multiactor · caso sintético M.P. · Proyecto 2 · caso de estudio SURA</span></header>
+<div class="band"><div class="wrap"><div class="eyebrow">Service blueprint con simulación guiada</div><h1 id="titulo">Ruta de incapacidad: recorrer, coordinar y registrar</h1><p class="sub">Los participantes recorren el servicio paso a paso desde su actor; el facilitador conduce la sesión en cuatro momentos; los resultados recogen evidencias, desacuerdos, barreras y requisitos para el siguiente prototipo.</p></div></div>
+<div class="wrap">
+  <div class="top" id="top"></div>
+  <div id="vista"></div>
+  <footer>Escenario sintético; ninguna persona identificable. Los plazos son supuestos de simulación. Los acuses y consultas «simulados» los genera el sistema para representar el módulo propuesto, no una integración real.</footer>
+</div>
+<script>
+/* ============ BLUEPRINT: único objeto de contenido (nada de texto dentro de funciones) ============ */
+const BP = {
+caso: {
+  ficha: "M.P. · trabajadora · día 150 de incapacidad continua · origen sin definir desde el día 120 · controversia EPS–ARL · afiliada a EPS SURA, ARL SURA y una AFP · datos sintéticos, sin persona identificable",
+  alcance: "Una ruta · un escenario · SURA (EPS + ARL) como organización ancla · 1 AFP · 1 Junta Regional · Junta Nacional como validación experta (no resuelve la apelación)",
+  instr: "Compare HOY y CON EL MÓDULO. Luego toque el actor que usted representa y valide su contrato.",
+  instrSel: "Valide su contrato en la ficha de abajo.",
+  plazoNota: "plazo ilustrativo del escenario; no es un término legal",
+  cifra: "Documentos que hoy lleva M.P. en la ruta: 6 · con el módulo: 0 (ejemplo del escenario)"
+},
+terminos: [["custodio","quien conserva la evidencia en su repositorio de origen."],["finalidad","para qué se consulta; cada acceso la declara y se ampara en un contrato."],["vista mínima","los campos que esa finalidad puede ver («n de N»); el resto se retiene en origen."],["responsable y plazo","cargo que responde por un suministro, consulta o decisión, y hasta cuándo."],["acuse","confirmación de recibo de una notificación."],["traza","registro de quién vio o entregó qué, para qué, cuándo y con qué resultado."]],
+reglas: [
+  { n:1, nombre:"Custodia distribuida", enun:"Cada actor conserva su evidencia en origen; el módulo solo guarda índice, reglas y registros.", hoy:"M.P. lleva copias en papel a cada ventanilla; cada entidad guarda una versión distinta del mismo expediente.", con:"Cinco piezas indexadas con custodio y versión; M.P. lleva 0 documentos." },
+  { n:2, nombre:"Intercambio por finalidad", enun:"Nadie consulta sin declarar para qué; cada acceso se ampara en un contrato.", hoy:"La ARL pide por oficio «toda la historia clínica»; la EPS la devuelve incompleta; termina en «que la consiga el trabajador».", con:"La ARL declara «investigación de origen y prestaciones» y consulta HC, APT e INC; abrir la HL queda fuera de finalidad." },
+  { n:3, nombre:"Mínimo necesario", enun:"Cada finalidad ve solo los campos que necesita; el resto se retiene en origen.", hoy:"A la Junta llegan notas de evolución y antecedentes que nadie necesitaba, y falta la historia laboral que sí necesitaba.", con:"La Junta ve HC 5 de 6 y HL 2 de 4; antecedentes psicosociales e IBC histórico quedan en origen." },
+  { n:4, nombre:"Responsabilidad visible", enun:"Cada suministro, consulta y escalamiento tiene un responsable (cargo) y un plazo.", hoy:"La AFP se enteró del dictamen por M.P.; desde el día 181 nadie sabía quién pagaba.", con:"Cinco etapas con cargo y plazo; la AFP decide el pago en 10 d.h. y lo notifica con acuse." },
+  { n:5, nombre:"Trazabilidad auditable", enun:"Todo suministro, consulta, denegación y notificación deja registro; toda notificación tiene acuse.", hoy:"La calificación salió por correo sin acuse; la apelación no consta notificada a M.P.", con:"Cada acceso registra quién, qué, para qué, cuándo y resultado; M.P. ve quién consultó su evidencia." }
+],
+etapas: [
+  { id:"E1", n:"Calificación de origen", resp:"EPS", plazo:"10 d.h." },
+  { id:"E2", n:"Respuesta o controversia", resp:"ARL", plazo:"15 d.h." },
+  { id:"E3", n:"Dictamen de primera instancia", resp:"Junta Regional", plazo:"22 d.h.", nota:"la AFP suministra la historia laboral en 5 d.h." },
+  { id:"E4", n:"Apelación · validación experta", resp:"Junta Nacional", plazo:"término reglamentario", nota:"no resuelve en este prototipo" },
+  { id:"E5", n:"Pago desde el día 181 y competencia", resp:"AFP / ARL", plazo:"10 d.h." }
+],
+filas: [
+  { id:"F1", n:"M.P. y su familia", sub:"actor focal", cls:"f1" },
+  { id:"F2", n:"Quien decide", sub:"EPS · ARL · Junta Regional · Junta Nacional · AFP", cls:"f2" },
+  { id:"F3", n:"Quien custodia la evidencia", sub:"IPS · Empleador · EPS · AFP · Junta Regional", cls:"f3" },
+  { id:"F4", n:"Módulo", sub:"índice + reglas + logs", cls:"f4" },
+  { id:"F5", n:"Quien vigila", sub:"MinTrabajo · MinSalud · SuperSalud · Jueces", cls:"f5", plegada:true }
+],
+celdas: {
+  E1F1:{ a:"tra", hoy:{ h:"Lleva copias de la historia clínica y la matriz de exposición a la EPS; espera la calificación.", ev:"HC y APT en papel, llevadas por M.P.", r:"responde —", ch:["r1","r2"], tz:"sin acuse" }, mod:{ h:"No lleva nada. Ve «EPS calificando · vence día 164» y quién consultó su historia clínica.", ev:"vista de estado", r:"responde EPS · 10 d.h.", ch:[4,5], tz:"consultas listadas para M.P." } },
+  E1F2:{ a:"eps", hoy:{ h:"EPS califica con lo que M.P. trajo: historia parcial, APT sin versión; notifica por correo.", ev:"HC parcial · APT sin versión", r:"responde — · plazo no verificable", ch:["r1","r3","r4"], tz:"correo sin acuse" }, mod:{ h:"EPS declara «calificación de origen», consulta la vista mínima, firma y notifica con acuse a ARL, AFP y M.P.", ev:"HC 4 de 6 · APT 4 de 5", r:"responde analista de calificación · 10 d.h.", ch:[2,3,4,5], tz:"2 consultas con finalidad · 1 decisión firmada · 3 acuses" } },
+  E1F3:{ a:"ips", t:["emp"], hoy:{ h:"IPS imprime la historia (incompleta, sin especialista); el empleador entrega la APT sin versión ni fecha.", ev:"HC impresa · APT sin versión", r:"responde —", ch:["r1"], tz:"sin registro" }, mod:{ h:"IPS expone el resumen clínico v.3 y el empleador la APT v.2 con responsable y fecha; ambos permanecen en origen.", ev:"HC v.3 (IPS) · APT v.2 (Empleador)", r:"responde médico tratante · responsable SG-SST · 5 d.h.", ch:[1,4], tz:"constancia de suministro con versión" } },
+  E1F4:{ a:"modulo", hoy:{ h:"No existe. Canal: correo, oficio, papel.", ev:"—", r:"responde —", ch:["r2","r4"], tz:"ninguna" }, mod:{ h:"Verifica la finalidad de la EPS; retiene evolución completa, antecedentes psicosociales e historial disciplinario; registra consultas y acuses.", ev:"retiene 3 campos", r:"responde automático", ch:[2,3,5], tz:"quién · qué · para qué · cuándo · resultado" } },
+  E1F5:{ a:"supersalud", t:["minsalud"], hoy:{ h:"SuperSalud recibe la queja si la EPS no responde; no ve el expediente ni los términos.", ev:"queja por escrito", r:"responde —", ch:["r4"], tz:"sin trazabilidad de términos" }, mod:{ h:"SuperSalud enruta la queja con vista de fecha y estado de la calificación; MinSalud fija el vocabulario CIE-10 del resumen clínico.", ev:"estado y fechas, sin campos clínicos", r:"responde SuperSalud · según competencia", ch:[2,3,5], tz:"acceso de supervisión registrado" } },
+  E2F1:{ a:"tra", hoy:{ h:"Se entera tarde de la controversia; vuelve a pedir la historia clínica para la ARL.", ev:"HC de nuevo, por M.P.", r:"responde —", ch:["r2","r4"], tz:"sin acuse" }, mod:{ h:"Recibe con acuse «ARL controvirtió · Junta Regional recibe»; no vuelve a aportar nada.", ev:"notificación con acuse", r:"responde ARL · 15 d.h.", ch:[4,5], tz:"acuse de M.P." } },
+  E2F2:{ a:"arl", hoy:{ h:"ARL recibe la calificación sin adjuntos; pide la evidencia otra vez a la EPS y a M.P.; controvierte por oficio.", ev:"oficio «toda la historia clínica»", r:"responde — · sin término verificable", ch:["r2","r3","r4"], tz:"oficio sin acuse" }, mod:{ h:"ARL declara «investigación de origen y prestaciones», consulta la vista mínima, acepta o controvierte y radica ante la Junta con acuse.", ev:"HC 4 de 6 · APT 4 de 5 · INC 3 de 4", r:"responde investigador de origen · 15 d.h.", ch:[2,3,4,5], tz:"3 consultas · decisión motivada · acuse de radicación" } },
+  E2F3:{ a:"eps", t:["ips","emp"], hoy:{ h:"EPS reenvía certificados por correo; la IPS vuelve a expedir copias.", ev:"INC por correo · HC reimpresa", r:"responde —", ch:["r2"], tz:"sin registro" }, mod:{ h:"EPS expone los certificados (corte día 150) en origen; IPS y empleador no reenvían nada: misma versión ya publicada.", ev:"INC corte día 150 (EPS)", r:"responde EPS · inmediato", ch:[1], tz:"constancia de suministro" } },
+  E2F4:{ a:"modulo", hoy:{ h:"No existe.", ev:"—", r:"responde —", ch:["r2","r4"], tz:"ninguna" }, mod:{ h:"Deniega a la ARL abrir la historia laboral: fuera de finalidad; registra la denegación.", ev:"HL denegada", r:"responde automático", ch:[3,5], tz:"denegación registrada" } },
+  E2F5:{ a:"mintrabajo", hoy:{ h:"MinTrabajo no ve los tiempos entre EPS y ARL.", ev:"informes por oficio", r:"responde —", ch:["r4"], tz:"sin registro" }, mod:{ h:"MinTrabajo ve el término de respuesta de la ARL (en plazo / vencido) sin datos clínicos.", ev:"etapa · responsable · plazo", r:"responde inspector · según competencia", ch:[2,3,5], tz:"acceso de supervisión registrado" } },
+  E3F1:{ a:"tra", hoy:{ h:"Radica el expediente en papel; se lo devuelven por faltar la historia laboral; la consigue en la AFP.", ev:"HC, APT, INC, HL en papel", r:"responde —", ch:["r1","r2"], tz:"sin acuse de radicación" }, mod:{ h:"Ve «expediente 4 de 4 · Junta dictamina · vence día 191».", ev:"vista de estado", r:"responde Junta Regional · 22 d.h.", ch:[4], tz:"acuse de radicación visible" } },
+  E3F2:{ a:"jr", hoy:{ h:"Junta recibe expediente incompleto, suspende hasta que llegue la historia laboral, dictamina y notifica por correo.", ev:"expediente en papel, sin HL", r:"responde — · sin término verificable", ch:["r1","r4"], tz:"correo sin acuse" }, mod:{ h:"Verifica el checklist HC·APT·INC·HL, pide la HL a la AFP, dictamina origen y PCL y notifica con acuse a los cuatro.", ev:"HC 5 de 6 · APT 4 de 5 · INC 3 de 4 · HL 2 de 4", r:"responde médico ponente · 22 d.h.", ch:[2,3,4,5], tz:"4 consultas · dictamen firmado · 4 acuses · término de apelación abierto" } },
+  E3F3:{ a:"afp", hoy:{ h:"AFP entrega la historia laboral a M.P. en ventanilla cuando ella la pide.", ev:"HL impresa, por M.P.", r:"responde —", ch:["r2","r3"], tz:"sin registro" }, mod:{ h:"AFP suministra la HL por contrato: entrega semanas y densidad; retiene IBC histórico e historial de empleadores.", ev:"HL 2 de 4 (AFP)", r:"responde AFP · 5 d.h.", ch:[1,3,4], tz:"constancia de suministro" } },
+  E3F4:{ a:"modulo", hoy:{ h:"No existe.", ev:"—", r:"responde —", ch:["r1","r2"], tz:"ninguna" }, mod:{ h:"Verifica el checklist antes de radicar, registra el suministro AFP → Junta con acuse e indexa el dictamen en origen.", ev:"DIC v.1 indexado", r:"responde automático", ch:[1,5], tz:"checklist verificado · suministro registrado" } },
+  E3F5:{ a:"jueces", hoy:{ h:"Jueces: tutela por demora del dictamen; nadie tiene la cronología.", ev:"lo que aporta M.P.", r:"responde —", ch:["r4"], tz:"sin cronología" }, mod:{ h:"Jueces: paquete auditado (cronología, decisiones, acuses) disponible si hay tutela.", ev:"cronología y registro de accesos", r:"responde por orden judicial", ch:[4,5], tz:"orden judicial registrada" } },
+  E4F1:{ a:"tra", hoy:{ h:"No consta notificada de la apelación de la ARL; se entera por la AFP.", ev:"—", r:"responde —", ch:["r4"], tz:"sin acuse" }, mod:{ h:"Recibe con acuse «ARL apeló · paquete enviado a Junta Nacional».", ev:"notificación con acuse", r:"responde ARL (apelante) · 10 d.h. desde el dictamen", ch:[4,5], tz:"acuse de M.P." } },
+  E4F2:{ a:"jn", hoy:{ h:"Junta Nacional recibe un paquete incompleto (sin la evolución que usó la Regional); motivación no trazable.", ev:"expediente físico incompleto", r:"responde —", ch:["r1","r5"], tz:"sin cronología" }, mod:{ h:"Recibe el paquete íntegro con la traza de la Regional y verifica que la motivación sea trazable. No resuelve: validación experta.", ev:"DIC 4 de 4 · HC 5 de 6 · APT 4 de 5 · INC 3 de 4", r:"responde sala de decisión · término reglamentario", ch:[1,3,5], tz:"acceso registrado · paquete verificado" } },
+  E4F3:{ a:"jr", hoy:{ h:"Junta Regional remite el expediente físico.", ev:"DIC en papel", r:"responde —", ch:["r2"], tz:"sin registro" }, mod:{ h:"Junta Regional expone el dictamen (origen, PCL, fecha de estructuración, motivación) en origen.", ev:"DIC v.1 (Junta Regional)", r:"responde secretaría de la Junta · 5 d.h.", ch:[1], tz:"constancia de suministro" } },
+  E4F4:{ a:"modulo", hoy:{ h:"No existe.", ev:"—", r:"responde —", ch:["r2","r5"], tz:"ninguna" }, mod:{ h:"Compone el paquete de apelación como índice (no copia) y registra el acceso de la Junta Nacional.", ev:"índice del paquete", r:"responde automático", ch:[1,5], tz:"acceso registrado" } },
+  E4F5:{ a:"minsalud", hoy:{ h:"MinSalud: confusión discapacidad / PCL en el lenguaje del dictamen.", ev:"—", r:"responde —", ch:["r5"], tz:"—" }, mod:{ h:"MinSalud: estándar semántico (CIE-10, tabla de PCL) y límites de uso clínico-laboral aplicados a la vista del dictamen.", ev:"catálogo de estándares", r:"responde dirección de regulación · por versión", ch:[3], tz:"versión del estándar registrada" } },
+  E5F1:{ a:"tra", hoy:{ h:"Desde el día 181 no sabe quién paga; lleva el dictamen a la AFP.", ev:"DIC en papel, por M.P.", r:"responde —", ch:["r2","r3"], tz:"sin acuse" }, mod:{ h:"Ve «AFP decide el pago · vence día 184» y recibe la decisión con acuse.", ev:"vista de estado", r:"responde AFP · 10 d.h.", ch:[4,5], tz:"acuse de M.P." } },
+  E5F2:{ a:"afp", t:["arl"], hoy:{ h:"AFP se entera del dictamen por M.P.; ARL y AFP discuten «¿quién paga?»; decisión sin responsable ni plazo.", ev:"DIC llevado por M.P.", r:"responde —", ch:["r3","r4"], tz:"sin registro" }, mod:{ h:"AFP consulta DIC e INC bajo su finalidad y decide subsidio o remisión a la ARL; notifica con acuse. Si el origen es laboral, la ARL asume.", ev:"DIC 3 de 4 · INC 4 de 4", r:"responde analista de prestaciones · 10 d.h.", ch:[2,3,4,5], tz:"2 consultas · decisión firmada · 3 acuses" } },
+  E5F3:{ a:"eps", t:["jr"], hoy:{ h:"Junta Regional entrega copia del dictamen a M.P. para que lo lleve.", ev:"DIC en papel", r:"responde —", ch:["r2"], tz:"sin registro" }, mod:{ h:"EPS expone INC y la Junta expone DIC; nada viaja en papel.", ev:"INC (EPS) · DIC (Junta Regional)", r:"responde custodios · inmediato", ch:[1], tz:"constancia de suministro" } },
+  E5F4:{ a:"modulo", hoy:{ h:"No existe.", ev:"—", r:"responde —", ch:["r3"], tz:"ninguna" }, mod:{ h:"Deniega a la AFP el acceso a la APT (fuera de finalidad); registra la decisión con responsable y plazo.", ev:"APT denegada", r:"responde automático", ch:[3,4,5], tz:"denegación y decisión registradas" } },
+  E5F5:{ a:"mintrabajo", hoy:{ h:"MinTrabajo sin datos sobre incidencias de pago.", ev:"—", r:"responde —", ch:["r4"], tz:"—" }, mod:{ h:"MinTrabajo ve tiempos e incidencias de pago; escalamiento con plazo si el término vence.", ev:"etapa · plazo · vencido sí/no", r:"responde inspector · escalamiento con plazo", ch:[2,4,5], tz:"escalamiento registrado" } }
+},
+evidencia: {
+  hc: { sl:"HC", n:"Resumen clínico estructurado", cust:"ips", ver:"v.3", campos:["diagnóstico CIE-10","incapacidad continua","restricciones funcionales","concepto de rehabilitación","evolución clínica completa","antecedentes psicosociales"] },
+  apt:{ sl:"APT", n:"Matriz de exposición / análisis de puesto", cust:"emp", ver:"v.2", campos:["cargo y tareas","cargas manipuladas","índice de levantamiento","versión · fecha · responsable","historial disciplinario"] },
+  inc:{ sl:"INC", n:"Certificados de incapacidad", cust:"eps", ver:"corte día 150", campos:["días acumulados","prórrogas","fecha de inicio","IBC"] },
+  hl: { sl:"HL", n:"Historia laboral y semanas", cust:"afp", ver:"corte día 150", campos:["semanas cotizadas","densidad de cotización","IBC histórico","historial de empleadores"] },
+  dic:{ sl:"DIC", n:"Dictamen de primera instancia", cust:"jr", ver:"v.1 según firma", campos:["origen","PCL","fecha de estructuración","motivación"] }
+},
+actores: [
+  { id:"tra", n:"M.P. y su familia", corto:"M.P.", grupo:"Actor focal", fila:"F1", funcion:"Impulsa, recurre y aporta prueba.", tension:"Carga administrativa y mínimo vital.", prec:["T-462/25","T-119/26"], contrato:"Vista de estado, notificaciones y trazabilidad de consultas", fin:"seguir mi caso", consulta:[], consultaTxt:"Estado de la ruta (etapa, responsable, plazo vigente) y lista de quién consultó su evidencia.", entregaTxt:"Nada obligatorio (hoy lleva 6 documentos).", resp:"el responsable de cada etapa le notifica", plazo:"el de cada etapa", notifica:"—", traza:"acuses recibidos · consultas listadas", reglas:[4,5], hoy:"Carga, reenvía y se entera preguntando.", rup:["r2","r4"], mapa:"vista de estado" },
+  { id:"emp", n:"Empleador / SG-SST", corto:"Empleador", grupo:"Directo", fila:"F3", funcion:"Previene, reporta y documenta exposición.", tension:"Reubicación, fuero y culpa patronal.", prec:["SU-111/25","SL287-2024"], contrato:"Contrato de evidencia laboral: responsable, formato, versión y fecha", fin:"reubicación laboral", consulta:[["inc",[0,2]]], entrega:{ p:"apt", ent:[0,1,2,3], ret:[4] }, resp:"responsable SG-SST", plazo:"5 d.h. desde la solicitud con finalidad", notifica:"constancia al módulo", traza:"constancia de suministro con versión", reglas:[1,3,4], hoy:"APT pedida por oficio; llega sin versión ni fecha.", rup:["r1","r3"], mapa:"evidencia laboral" },
+  { id:"ips", n:"IPS / médicos", corto:"IPS", grupo:"Directo", fila:"F3", funcion:"Diagnóstico e historia clínica.", tension:"Historia incompleta y tardanza de especialista.", prec:["T-512/25"], contrato:"Resumen clínico estructurado y mínimo necesario por finalidad", fin:"plan de rehabilitación", consulta:[["inc",[0]]], entrega:{ p:"hc", ent:[0,1,2,3], ret:[5], nota:"la evolución completa solo a Juntas y ARL" }, resp:"médico tratante / oficina de historia clínica", plazo:"5 d.h.", notifica:"constancia al módulo", traza:"constancia de suministro por finalidad", reglas:[1,2,3,4], hoy:"La historia completa impresa la pide y la lleva M.P.", rup:["r1","r5"], mapa:"resumen clínico" },
+  { id:"eps", n:"EPS SURA", corto:"EPS", grupo:"SURA · organización ancla", fila:"F2", funcion:"Atención, incapacidades y primera calificación.", tension:"Origen, pagos y notificaciones.", prec:["T-009/25","T-512/25"], contrato:"Reglas de suministro/consulta, notificación y logs", fin:"calificación de origen en primera oportunidad", consulta:[["hc",[0,1,2,3]],["apt",[0,1,2,3]]], fuera:["hl"], entrega:{ p:"inc", ent:[0,1,2], ret:[3], nota:"el IBC solo a la AFP" }, resp:"analista de calificación", plazo:"10 d.h.", notifica:"ARL, AFP, M.P.", traza:"2 consultas con finalidad · 1 decisión firmada · 3 acuses", reglas:[1,2,3,4,5], hoy:"Pide HC y APT por oficio sin acuse y notifica por correo.", rup:["r2","r4"], mapa:"calificación" },
+  { id:"arl", n:"ARL SURA", corto:"ARL", grupo:"SURA · organización ancla", fila:"F2", funcion:"Prevención y prestaciones laborales.", tension:"Origen, continuidad y quién paga.", prec:["SL1469-2024","T-512/25"], contrato:"Contrato de exposición/prestación y trazabilidad de decisión", fin:"investigación de origen y prestaciones", consulta:[["hc",[0,1,2,4]],["apt",[0,1,2,3]],["inc",[0,1,2]]], fuera:["hl"], entregaTxt:"Postura de origen; si el origen es laboral, la prestación con decisión motivada.", resp:"investigador de origen", plazo:"15 d.h. desde el acuse de la calificación", notifica:"Junta Regional, EPS, M.P. · si apela: M.P. y Junta Regional", traza:"3 consultas · decisión motivada · acuse de radicación", reglas:[2,3,4,5], hoy:"Controversia por oficio; la Junta la recibe sin acuse; «¿origen?».", rup:["r3","r4"], mapa:"prestación" },
+  { id:"afp", n:"AFP / Colpensiones", corto:"AFP", grupo:"Directo", fila:"F2", funcion:"Tramo común y pensión.", tension:"Historia laboral, semanas y coordinación.", prec:["T-119/26","T-104/24"], contrato:"Historia laboral estructurada y reglas de competencia", fin:"estudio de prestaciones y competencia", consulta:[["dic",[0,1,2]],["inc",[0,1,2,3]],["hc",[0,1]]], fuera:["apt"], entrega:{ p:"hl", ent:[0,1], ret:[2,3] }, resp:"analista de prestaciones", plazo:"suministro 5 d.h. · decisión de pago desde el día 181 en 10 d.h.", notifica:"M.P., EPS, ARL", traza:"constancia de suministro · 3 consultas · decisión firmada · 3 acuses", reglas:[1,2,3,4,5], hoy:"Se entera del dictamen por M.P.; «¿quién paga?».", rup:["r3"], mapa:"historia laboral" },
+  { id:"jr", n:"Junta Regional", corto:"Junta Regional", grupo:"Directo", fila:"F2", funcion:"Primera instancia de controversia.", tension:"Demora, expediente y notificación.", prec:["T-215/24","T-104/24"], contrato:"Checklist de expediente, acuse y trazabilidad de instancia", fin:"dictamen de primera instancia", consulta:[["hc",[0,1,2,3,4]],["apt",[0,1,2,3]],["inc",[0,1,2]],["hl",[0,1]]], consultaNota:"el módulo verifica el checklist antes de radicar", entrega:{ p:"dic", ent:[0,1,2,3], ret:[] }, resp:"médico ponente", plazo:"22 d.h. desde el acuse de radicación · término de apelación 10 d.h.", notifica:"EPS, ARL, AFP, M.P.", traza:"acuse de radicación · 4 consultas · dictamen firmado · 4 acuses", reglas:[1,2,3,4,5], hoy:"Expediente en papel, incompleto (sin HL) y devuelto.", rup:["r1","r2","r4"], mapa:"checklist" },
+  { id:"jn", n:"Junta Nacional", corto:"Junta Nacional", grupo:"Directo", fila:"F2", funcion:"Segunda instancia.", tension:"Reducción de PCL y motivación.", prec:["T-379/25","T-147/25"], contrato:"Paquete de apelación íntegro y motivación trazable", fin:"resolución de la apelación", consulta:[["dic",[0,1,2,3]],["hc",[0,1,2,3,4]],["apt",[0,1,2,3]],["inc",[0,1,2]]], consultaNota:"más la traza de lo consultado en primera instancia", entregaTxt:"En este prototipo NO resuelve: valida que el paquete permita decidir con motivación trazable (validación experta).", resp:"sala de decisión", plazo:"término reglamentario desde el acuse del paquete", notifica:"— (validación experta)", traza:"acceso registrado · verificación del paquete", reglas:[1,3,5], hoy:"Paquete incompleto y sin cronología.", rup:["r1","r5"], mapa:"paquete" },
+  { id:"mintrabajo", n:"MinTrabajo", corto:"MinTrabajo", grupo:"Control", fila:"F5", funcion:"Inspección y supervisión.", tension:"No definida en la matriz del documento.", prec:[], contrato:"Vista de supervisión, tiempos, incidencias y escalamiento", fin:"inspección", consulta:[], consultaTxt:"Solo metadatos (etapa, responsable, plazo, vencido sí/no, incidencias), sin campos clínicos.", entregaTxt:"Requerimiento de escalamiento con plazo.", resp:"inspector", plazo:"según competencia", notifica:"—", traza:"acceso de supervisión y escalamiento registrados", reglas:[2,3,4,5], hoy:"Informes por oficio a empleador y ARL.", rup:["r4"], propuesta:true, mapa:"supervisión" },
+  { id:"minsalud", n:"MinSalud", corto:"MinSalud", grupo:"Control", fila:"F5", funcion:"Regulación sanitaria.", tension:"No definida en la matriz del documento.", prec:[], contrato:"Estándares semánticos y límites de uso clínico-laboral", fin:"regulación", consulta:[], consultaTxt:"No consulta casos; gobierna el vocabulario (CIE-10, campos del resumen clínico, tabla de PCL) y los límites de uso.", entregaTxt:"Catálogo de estándares que define las vistas mínimas.", resp:"dirección de regulación", plazo:"por versión del estándar", notifica:"—", traza:"versión del estándar aplicada a cada vista", reglas:[3,5], hoy:"Lenguaje diagnóstico no alineado entre IPS y Juntas.", rup:["r5"], propuesta:true, mapa:"supervisión" },
+  { id:"supersalud", n:"SuperSalud", corto:"SuperSalud", grupo:"Control", fila:"F5", funcion:"Vigila EPS e IPS.", tension:"No definida en la matriz del documento.", prec:[], contrato:"Enrutamiento de quejas y vistas según competencia", fin:"queja", consulta:[], consultaTxt:"Registro de accesos y notificaciones de EPS e IPS del caso quejado; sin historia clínica.", entregaTxt:"Enrutamiento de la queja con responsable y plazo.", resp:"delegada de protección al usuario", plazo:"según competencia", notifica:"—", traza:"acceso y enrutamiento registrados", reglas:[2,3,5], hoy:"Queja sin trazabilidad de términos.", rup:["r4"], propuesta:true, mapa:"supervisión" },
+  { id:"jueces", n:"Jueces", corto:"Jueces", grupo:"Control", fila:"F5", funcion:"Control constitucional y laboral.", tension:"No definida en la matriz del documento.", prec:[], contrato:"Paquete auditado: cronología, decisiones y evidencia de acceso", fin:"control judicial", consulta:[], consultaTxt:"Cronología completa (etapas, responsables, plazos, acuses), decisiones motivadas y registro de accesos.", entregaTxt:"Orden judicial, que queda registrada.", resp:"despacho", plazo:"por orden judicial", notifica:"—", traza:"orden y acceso registrados", reglas:[4,5], hoy:"Reconstruye la cronología con lo que aporta M.P.", rup:["r2","r4"], propuesta:true, mapa:"supervisión" }
+],
+extras: [{ id:"juridico", n:"Referente jurídico" },{ id:"facilitadora", n:"Facilitadora" }],
+esenciales: ["tra","emp","ips","eps","arl","afp","jr","jn"],
+pos: { hoy:{ tra:[500,300], ips:[320,112], emp:[122,208], eps:[585,95], arl:[812,152], afp:[856,332], jr:[655,458], jn:[380,472], mintrabajo:[140,588], minsalud:[380,594], supersalud:[620,594], jueces:[860,588], modulo:[500,330] },
+       mod:{ modulo:[500,330], tra:[500,120], ips:[295,105], emp:[118,228], eps:[705,105], arl:[874,228], afp:[880,402], jr:[745,508], jn:[255,508], mintrabajo:[118,402], minsalud:[300,612], supersalud:[500,606], jueces:[700,612] } },
+edges: { hoy:[["ips","tra","e-info"],["emp","tra","e-info"],["tra","eps","e-info"],["tra","arl","e-info"],["tra","afp","e-info"],["tra","jr","e-info"],["jr","eps","e-dict"],["jr","arl","e-dict"],["jr","afp","e-dict"],["afp","tra","e-dict"],["eps","arl","e-ten","¿origen?"],["arl","afp","e-ten","¿quién paga?"],["jr","jn","e-ten","apelación"],["mintrabajo","emp","e-ctrl"],["mintrabajo","arl","e-ctrl"],["minsalud","ips","e-ctrl"],["supersalud","eps","e-ctrl"],["supersalud","ips","e-ctrl"],["minsalud","eps","e-ctrl"],["jueces","jn","e-ctrl"],["jueces","afp","e-ctrl"],["jueces","eps","e-ctrl"],["jueces","arl","e-ctrl"],["jueces","jr","e-ctrl"]],
+         mod:["tra","emp","ips","eps","arl","afp","jr","jn","mintrabajo","minsalud","supersalud","jueces"] },
+sellos: [["hc","ips"],["apt","emp"],["inc","eps"],["hl","afp"],["dic","jr"]],
+rupturas: [{ id:"r1", t:"Historia clínica y laboral incompleta o dispersa", regla:"reglas 1 y 3", est:"abordada" },{ id:"r2", t:"Solicitudes manuales, devoluciones y reenvíos", regla:"regla 2", est:"abordada" },{ id:"r3", t:"Responsabilidades de suministro/consulta ambiguas", regla:"regla 4", est:"abordada" },{ id:"r4", t:"Notificaciones y términos no trazables", regla:"regla 5", est:"abordada" },{ id:"r5", t:"Competencias y lenguaje diagnóstico no alineados", regla:"regla 3 vía MinSalud", est:"parcial" }],
+riesgos: [{ id:"reidentificacion", t:"Reidentificación de M.P." },{ id:"fuera_finalidad", t:"Uso fuera de finalidad" },{ id:"retencion", t:"Retención excesiva de campos" },{ id:"sesgo", t:"Sesgo en la decisión de origen" },{ id:"carga", t:"Carga sobre el trabajador" }],
+preguntas: {
+  campos: { t:"Lo que este actor ve y entrega, ¿es lo necesario y nada de más?", ops:[["si","Sí"],["falta","Le falta un campo"],["sobra","Le sobra un campo"]], cual:["falta","sobra"] },
+  plazo:  { t:"¿El responsable y el plazo son asumibles?", ops:[["si","Sí"],["otro","Con otro plazo"],["no","No"]], cual:["otro"] },
+  mejora: { t:"Frente a hoy, ¿mejora?", dims:[["completitud","Completitud de evidencia"],["trazabilidad","Trazabilidad de acceso"],["claridad","Claridad de responsabilidades"]], ops:[["si","Sí"],["parcial","Parcial"],["no","No"]] },
+  voz: [{ id:"claridad", t:"Con este blueprint, ¿qué tan clara queda SU responsabilidad en la ruta?", ops:[["1","1"],["2","2"],["3","3"],["4","4"],["5","5"]] },{ id:"barrera", t:"Barrera dominante para adoptar el módulo (H4)", ops:[["alineacion","Alineación entre entidades"],["dato","Calidad del dato"],["permisos","Gestión de permisos y finalidades"],["tecnologia","Falta de tecnología"],["ninguno","Ninguna"]] },{ id:"traza", t:"Que sus consultas queden registradas con acuse le genera", ops:[["confianza","Confianza"],["indiferencia","Indiferencia"],["carga","Carga o riesgo"]] }],
+  modulo: "¿Acepta las cinco reglas como base?"
+},
+gate: [{ id:"c1", t:"No falta ningún actor crítico en el mapa" },{ id:"c2", t:"Hay acuerdo suficiente sobre los flujos esenciales" },{ id:"c3", t:"Los riesgos altos tienen una mitigación definida" },{ id:"c4", t:"Las hipótesis H1 y H2 siguen siendo plausibles" }]
+};
+/* ============ Datos de la simulación ============ */
+const SIM = {
+normas: {
+  L100_41: "Ley 100/1993, art. 41 (mod. Decreto-Ley 019/2012, art. 142): calificación en primera oportunidad por EPS, ARL o AFP; controversia ante la Junta Regional y apelación ante la Junta Nacional.",
+  D1072: "Decreto 1072/2015 (compila el Decreto 1352/2013): organización, funciones y términos de las Juntas de Calificación de Invalidez.",
+  D1507: "Decreto 1507/2014: Manual único para la calificación de la pérdida de capacidad laboral y ocupacional (origen, PCL, fecha de estructuración).",
+  L1562: "Ley 1562/2012: sistema general de riesgos laborales; enfermedad y accidente de origen laboral a cargo de la ARL.",
+  L776: "Ley 776/2002: prestaciones asistenciales y económicas por accidente de trabajo y enfermedad laboral.",
+  D1333: "Decreto 1333/2018: incapacidades prolongadas; subsidio a cargo del fondo de pensiones desde el día 181 según concepto de rehabilitación.",
+  L1581: "Ley 1581/2012, Ley 23/1981 (art. 34) y Resolución 1995/1999: dato sensible de salud, reserva de la historia clínica y uso limitado a la finalidad.",
+  L1751: "Ley 1751/2015: derecho fundamental a la salud; continuidad, integralidad y no imposición de cargas administrativas al usuario.",
+  D2591: "Decreto 2591/1991: acción de tutela; órdenes por demora y falta de notificación.",
+  IVC: "Ley 1610/2013 y Decreto 1072/2015: inspección, vigilancia y control del Ministerio del Trabajo sobre empleadores y ARL.",
+  SNS: "Ley 1122/2007 y Decreto 780/2016: funciones de inspección, vigilancia y control de la Superintendencia Nacional de Salud sobre EPS e IPS.",
+  MSPS: "Decreto 780/2016 y estándares de información en salud (CIE-10, RIPS): competencia del Ministerio de Salud para fijar vocabularios y contenidos mínimos."
+},
+tensiones: [["origen","Origen (¿común o laboral?)"],["quien_paga","¿Quién paga?"],["competencia","Competencia (¿a quién le toca?)"],["reserva","Reserva o privacidad del dato"],["carga","Carga operativa"],["lenguaje","Lenguaje diagnóstico no alineado"],["plazo","Plazo o notificación"],["ninguna","Ninguna"]],
+acciones: [["consultar","Consultar evidencia por finalidad (módulo)"],["solicitar","Solicitar evidencia a quien la custodia"],["decidir","Decidir (calificar, dictaminar, apelar, pagar)"],["notificar","Notificar"],["controvertir","Controvertir o apelar"],["vigilar","Vigilar, requerir u ordenar"],["otra","Otra gestión"]],
+preguntas: [
+  { id:"evidencia", t:"¿Tuvo la evidencia necesaria para actuar?", ops:[["si","Sí"],["parcial","Parcial"],["no","No"]] },
+  { id:"claridad", t:"¿Estaba claro quién debía entregarla o decidir, y en qué plazo?", ops:[["1","1"],["2","2"],["3","3"],["4","4"],["5","5"]] },
+  { id:"tension", t:"Tensión que enfrentó en este reto", ops:"tensiones" },
+  { id:"regla", t:"Con el módulo, ¿qué regla le sirvió más?", ops:[["1","① Custodia"],["2","② Finalidad"],["3","③ Mínimo necesario"],["4","④ Responsable y plazo"],["5","⑤ Trazabilidad"],["0","Ninguna"]], solo:"mod" },
+  { id:"ruptura", t:"Hoy, ¿qué ruptura vivió en este reto?", ops:[["r1","r1 Historia incompleta"],["r2","r2 Solicitudes manuales"],["r3","r3 Responsabilidad ambigua"],["r4","r4 Sin trazabilidad"],["r5","r5 Lenguaje no alineado"],["r0","Ninguna"]], solo:"hoy" }
+],
+retos: [
+  { id:"tra_e1", etapa:"E1", actor:"tra", turno:true, titulo:"Día 120: la EPS debe calificar el origen",
+    hoy:"Le piden llevar copia de la historia clínica y la matriz de exposición. Consiga la historia en la IPS y la APT en el empleador y entréguelas a la EPS; espere la calificación.",
+    mod:"Vea el estado de su caso: la EPS puede consultar su evidencia bajo la finalidad «calificación de origen». Revise quién consultó su historia y espere la notificación con acuse.",
+    base:["L100_41","L1581","L1751"], esperaHoy:["Solicitar la historia clínica a la IPS","Solicitar la APT al empleador","Entregar copias a la EPS"], esperaMod:["Revisar la vista de estado (etapa, responsable, plazo vigente)","Verificar la lista de quién consultó su evidencia"], siguienteHoy:"ips", siguienteMod:"eps" },
+  { id:"ips_e1", etapa:"E1", actor:"ips", turno:false, titulo:"Solicitud de historia clínica",
+    hoy:"M.P. (o la EPS por oficio) pide copia de la historia clínica. Decida qué entrega, en qué formato y cuánto tarda; hoy suele salir impresa e incompleta.",
+    mod:"El módulo sirve el resumen clínico v.3 por finalidad: quien consulta ve 4 de 6 campos; la evolución completa y los antecedentes psicosociales quedan retenidos. Responda solo lo que el módulo no resuelva.",
+    base:["L1581","L1751"], esperaHoy:["Responder la solicitud de historia clínica (entregar o retener campos)","Declarar cuántos días le toma"], esperaMod:["Revisar las consultas automáticas sobre su evidencia","Confirmar qué campos quedan retenidos en origen"] },
+  { id:"emp_e1", etapa:"E1", actor:"emp", turno:false, titulo:"Matriz de exposición (APT) con versión y fecha",
+    hoy:"Le piden la matriz de exposición por oficio. Hoy llega sin versión ni fecha y a veces con el historial disciplinario.",
+    mod:"Exponga la APT v.2 con responsable y fecha; el historial disciplinario queda retenido (fuera de finalidad). La evidencia permanece en el SG-SST.",
+    base:["L1562","IVC"], esperaHoy:["Responder la solicitud de APT","Indicar versión, fecha y responsable"], esperaMod:["Confirmar la versión expuesta y los campos retenidos"] },
+  { id:"eps_e1", etapa:"E1", actor:"eps", turno:true, titulo:"Calificar el origen en primera oportunidad",
+    hoy:"Tiene 10 d.h. (plazo ilustrativo). La historia llegó incompleta y la APT sin versión. Decida con lo que tiene o pida más; motive la decisión; notifique a ARL, AFP y M.P. por el medio disponible.",
+    mod:"Consulte HC (4 de 6 campos) y APT (4 de 5) bajo la finalidad «calificación de origen»; la historia laboral está fuera de su finalidad. Decida, firme y notifique con acuse a ARL, AFP y M.P. en 10 d.h.",
+    base:["L100_41","D1507","L1581"], esperaHoy:["Solicitar o recibir HC y APT","Decidir el origen (común o laboral) con motivación","Notificar a ARL, AFP y M.P."], esperaMod:["Consultar HC y APT por finalidad","Decidir el origen con motivación","Notificar con acuse a ARL, AFP y M.P."], siguienteHoy:"arl", siguienteMod:"arl", cierra:true },
+  { id:"arl_e2", etapa:"E2", actor:"arl", turno:true, titulo:"Responder la calificación: aceptar o controvertir",
+    hoy:"Recibió la calificación por correo, sin adjuntos. Tiene 15 d.h. Pida la evidencia otra vez a la EPS y a M.P., o controvierta ante la Junta Regional por oficio.",
+    mod:"Consulte HC, APT e INC bajo «investigación de origen y prestaciones»; la historia laboral se le deniega (regla 3). Decida aceptar o controvertir; radique ante la Junta Regional con acuse en 15 d.h.",
+    base:["L100_41","L1562","D1072"], esperaHoy:["Solicitar HC, APT e INC","Decidir: aceptar o controvertir","Notificar a Junta Regional, EPS y M.P."], esperaMod:["Consultar HC, APT e INC por finalidad","Decidir: aceptar o controvertir","Notificar con acuse a Junta Regional, EPS y M.P."], siguienteHoy:"jr", siguienteMod:"jr", cierra:true },
+  { id:"eps_e2", etapa:"E2", actor:"eps", turno:false, titulo:"Suministrar los certificados de incapacidad (INC)",
+    hoy:"La ARL pide los certificados por oficio; hoy salen por correo sin acuse.",
+    mod:"El módulo entrega 3 de 4 campos del INC (corte día 150); el IBC queda retenido y solo lo ve la AFP.",
+    base:["L100_41","L1581"], esperaHoy:["Responder la solicitud de INC"], esperaMod:["Revisar las consultas automáticas sobre los certificados"] },
+  { id:"jr_e3", etapa:"E3", actor:"jr", turno:true, titulo:"Dictaminar en primera instancia",
+    hoy:"El expediente llega incompleto (sin historia laboral). Suspenda y pídala a la AFP, o dictamine con lo que hay. Notifique por correo.",
+    mod:"El módulo verificó el checklist HC·APT·INC·HL antes de radicar. Pida la historia laboral a la AFP por contrato (5 d.h.), dictamine origen y PCL y notifique con acuse a EPS, ARL, AFP y M.P. en 22 d.h.",
+    base:["L100_41","D1072","D1507"], esperaHoy:["Solicitar la historia laboral a la AFP","Decidir el dictamen (origen, PCL, fecha de estructuración) con motivación","Notificar a EPS, ARL, AFP y M.P."], esperaMod:["Verificar el checklist","Solicitar la HL a la AFP por contrato","Dictaminar con motivación y notificar con acuse a los cuatro"], siguienteHoy:"arl", siguienteMod:"arl", cierra:true },
+  { id:"afp_e3", etapa:"E3", actor:"afp", turno:false, titulo:"Entregar la historia laboral a la Junta",
+    hoy:"La Junta la pide por oficio; hoy la consigue M.P. y la lleva en papel. Entregue semanas y densidad de cotización.",
+    mod:"Suministro por contrato en 5 d.h.: entregue semanas y densidad; retenga el IBC histórico y el historial de empleadores.",
+    base:["L100_41","D1072"], esperaHoy:["Responder la solicitud de historia laboral","Declarar cuántos días le toma"], esperaMod:["Responder la solicitud de HL dentro de los 5 d.h.","Confirmar los campos retenidos"] },
+  { id:"tra_e3", etapa:"E3", actor:"tra", turno:false, titulo:"Radicar y seguir el expediente",
+    hoy:"Radica el expediente en papel; se lo devuelven por faltar la historia laboral y la consigue usted en la AFP.",
+    mod:"Ve «expediente 4 de 4 · Junta Regional dictamina · vence día 191». No tiene que aportar nada.",
+    base:["L1751","L100_41"], esperaHoy:["Solicitar la HL a la AFP si se la exigen","Registrar cuántas veces tuvo que volver"], esperaMod:["Confirmar que ve el estado y el plazo vigente"] },
+  { id:"arl_e4", etapa:"E4", actor:"arl", turno:true, titulo:"¿Apelar el dictamen?",
+    hoy:"Puede apelar por oficio dentro del término; hoy M.P. no consta notificada de la apelación.",
+    mod:"Si apela, el paquete íntegro con la traza de lo consultado va a la Junta Nacional, y M.P. y la Junta Regional reciben acuse (10 d.h. desde el dictamen).",
+    base:["L100_41","D1072"], esperaHoy:["Decidir apelar o no","Notificar a M.P. y a la Junta Regional"], esperaMod:["Decidir apelar o no con motivación","Notificar con acuse a M.P. y a la Junta Regional"], siguienteHoy:"jn", siguienteMod:"jn", cierra:true },
+  { id:"jn_e4", etapa:"E4", actor:"jn", turno:true, titulo:"Validación experta del paquete de apelación (no resuelve)",
+    hoy:"Recibe un paquete incompleto, sin la evolución que usó la Regional y sin cronología. Registre qué falta para poder decidir con motivación trazable.",
+    mod:"Verifique que el paquete permita decidir con motivación trazable: DIC 4 de 4, HC 5 de 6, APT 4 de 5, INC 3 de 4 y la traza de lo que consultó la Regional. Registre qué falta. En este prototipo no resuelve la apelación.",
+    base:["L100_41","D1072"], esperaHoy:["Verificar el paquete y registrar faltantes"], esperaMod:["Verificar el paquete y la traza; registrar faltantes"], siguienteHoy:"afp", siguienteMod:"afp", cierra:true },
+  { id:"afp_e5", etapa:"E5", actor:"afp", turno:true, titulo:"Pago desde el día 181 y competencia",
+    hoy:"Se entera del dictamen por M.P.; ARL y AFP discuten «¿quién paga?». Decida sin responsable ni plazo claros.",
+    mod:"Consulte DIC (3 de 4) e INC (4 de 4) bajo «estudio de prestaciones y competencia»; decida subsidio desde el día 181 o remisión a la ARL; notifique con acuse a M.P., EPS y ARL en 10 d.h.",
+    base:["D1333","L100_41","L776"], esperaHoy:["Solicitar el dictamen y los certificados","Decidir subsidio o remisión","Notificar a M.P., EPS y ARL"], esperaMod:["Consultar DIC e INC por finalidad","Decidir subsidio o remisión con motivación","Notificar con acuse a M.P., EPS y ARL"], siguienteHoy:"arl", siguienteMod:"arl", cierra:true },
+  { id:"arl_e5", etapa:"E5", actor:"arl", turno:false, titulo:"Si el origen es laboral, asumir la prestación",
+    hoy:"Reciba la remisión y decida si asume; hoy la discusión con la AFP no deja registro.",
+    mod:"Reciba la remisión con acuse y asuma la prestación con decisión motivada; notifique a M.P. y a la AFP.",
+    base:["L776","L1562"], esperaHoy:["Decidir si asume la prestación","Notificar a M.P. y a la AFP"], esperaMod:["Decidir con motivación y notificar con acuse"] },
+  { id:"tra_e5", etapa:"E5", actor:"tra", turno:false, titulo:"¿Sabe quién le paga desde el día 181?",
+    hoy:"Desde el día 181 no sabe quién paga; lleva el dictamen a la AFP.",
+    mod:"Ve «AFP decide el pago · vence día 184» y recibe la decisión con acuse.",
+    base:["D1333","L1751"], esperaHoy:["Registrar si supo quién paga y cómo se enteró"], esperaMod:["Confirmar la notificación con acuse"] },
+  { id:"supersalud", etapa:"*", actor:"supersalud", turno:false, titulo:"Queja de M.P. por demora en la calificación",
+    hoy:"Pida a la EPS el estado por oficio; hoy no hay trazabilidad de términos.",
+    mod:"Consulte solo estado y fechas de la calificación (sin campos clínicos) y enrute la queja con responsable y plazo.",
+    base:["SNS","L1751"], esperaHoy:["Requerir a la EPS el estado de la calificación"], esperaMod:["Consultar el estado (metadatos) y enrutar la queja con plazo"] },
+  { id:"mintrabajo", etapa:"*", actor:"mintrabajo", turno:false, titulo:"Inspección al empleador (APT) y a la ARL (controversia con acuse)",
+    hoy:"Pida informes por oficio al empleador y a la ARL.",
+    mod:"Vea supervisión (etapa, responsable, plazo, vencido sí/no, incidencias), sin campos clínicos, y emita el requerimiento con plazo.",
+    base:["IVC","L1562"], esperaHoy:["Requerir informes al empleador y a la ARL"], esperaMod:["Consultar la vista de supervisión y requerir con plazo"] },
+  { id:"minsalud", etapa:"*", actor:"minsalud", turno:false, titulo:"Vocabulario del resumen clínico (CIE-10)",
+    hoy:"La IPS y la Junta no hablan el mismo lenguaje diagnóstico; registre la observación.",
+    mod:"Fije el estándar de campos y CIE-10 que define las vistas mínimas del resumen clínico (regla 3 vía MinSalud).",
+    base:["MSPS"], esperaHoy:["Registrar la observación sobre el lenguaje diagnóstico"], esperaMod:["Registrar la versión del estándar que aplica a las vistas"] },
+  { id:"jueces", etapa:"*", actor:"jueces", turno:false, titulo:"Tutela por demora del dictamen y falta de notificación",
+    hoy:"Reconstruya la cronología con lo que aporta M.P. y ordene lo que corresponda.",
+    mod:"Consulte la cronología completa (etapas, responsables, plazos, acuses) y el registro de accesos; ordene lo que corresponda con plazo.",
+    base:["D2591","L1751"], esperaHoy:["Reconstruir la cronología","Ordenar con plazo"], esperaMod:["Consultar la cronología auditada","Ordenar con plazo"] }
+],
+validacion: {
+  campos: { t:"Lo que su actor ve y entrega, ¿es lo necesario y nada de más?", ops:[["si","Sí"],["falta","Le falta un campo"],["sobra","Le sobra un campo"]] },
+  plazo: { t:"¿El responsable y el plazo del contrato son asumibles?", ops:[["si","Sí"],["otro","Con otro plazo"],["no","No"]] },
+  mejora: { t:"Frente a hoy, ¿el módulo mejora?", dims:[["completitud","Completitud de evidencia"],["trazabilidad","Trazabilidad de acceso"],["claridad","Claridad de responsabilidades"]], ops:[["si","Sí"],["parcial","Parcial"],["no","No"]] },
+  barrera: { t:"Barrera dominante para adoptar el módulo (H4)", ops:[["alineacion","Alineación entre entidades"],["dato","Calidad del dato"],["permisos","Gestión de permisos y finalidades"],["tecnologia","Falta de tecnología"],["ninguno","Ninguna"]] },
+  traza: { t:"Que sus consultas queden registradas con acuse le genera", ops:[["confianza","Confianza"],["indiferencia","Indiferencia"],["carga","Carga o riesgo"]] }
+},
+gate: [
+  { id:"c1", t:"No falta ningún actor crítico ni vínculo esencial" },
+  { id:"c2", t:"Hay acuerdo sobre los flujos esenciales (custodia, finalidad, notificación)" },
+  { id:"c3", t:"Los riesgos éticos identificados tienen mitigación definida" },
+  { id:"c4", t:"Las hipótesis H1 y H2 siguen siendo plausibles" }
+]
+};
+
+/* ============ Service blueprint: datos ============ */
+const SB = {
+fases: [{ id:"antes", n:"Antes", sub:"días 1–120 · incapacidad, certificados y evidencia laboral" },{ id:"durante", n:"Durante", sub:"días 120–181 · calificación, controversia, dictamen, apelación y pago" },{ id:"despues", n:"Después", sub:"tras el día 181 · reintegro, prestación en firme, seguimiento y control" }],
+carriles: [
+  { id:"mp", n:"Acciones de M.P.", sub:"lo que hace la trabajadora y su familia" },
+  { id:"contacto", n:"Puntos de contacto y evidencia física", sub:"canal, documento, acuse" },
+  { id:"front", n:"Front · actor visible", sub:"quien atiende o decide de cara a M.P." },
+  { id:"back", n:"Back · custodia y trámite interno", sub:"quien guarda y prepara la evidencia" },
+  { id:"soporte", n:"Procesos de soporte", sub:"módulo, estándares, vigilancia y control" }
+],
+lineas: { contacto:"Línea de interacción", back:"Línea de visibilidad", soporte:"Línea de interacción interna" },
+contactos: {
+  E1:{ hoy:"Copias en papel llevadas por M.P. · calificación por correo, sin acuse", mod:"Vista de estado · consulta por finalidad · notificación con acuse" },
+  E2:{ hoy:"Oficio a la EPS y a M.P. · controversia radicada sin acuse", mod:"Consulta por finalidad · radicación ante la Junta con acuse" },
+  E3:{ hoy:"Expediente en papel · devolución a M.P. · dictamen por correo", mod:"Checklist verificado · suministro por contrato · dictamen con acuse" },
+  E4:{ hoy:"Apelación por oficio · M.P. no consta notificada", mod:"Paquete íntegro con traza · acuses a M.P. y a la Junta Regional" },
+  E5:{ hoy:"Dictamen llevado por M.P. · discusión ARL–AFP sin registro", mod:"Consulta de DIC e INC · decisión con acuse · remisión registrada" }
+},
+pasos: [
+  { id:"A1", fase:"antes", n:"Inicio de la incapacidad", dia:"día 1",
+    hoy:{ mp:"Consulta en la IPS, recibe el certificado impreso y lo lleva a la EPS y al empleador.", contacto:"Consulta presencial · certificado en papel · copias que lleva M.P.", front:{ a:"ips", t:"El médico tratante diagnostica (CIE-10) y expide la incapacidad." }, back:{ a:"ips", t:"La historia clínica queda en la IPS, sin resumen estructurado ni versión." }, soporte:{ a:null, t:"Sin proceso de soporte: nadie indexa la evidencia." }, ch:["r1","r2"] },
+    mod:{ mp:"Consulta en la IPS; el certificado queda registrado y visible en su vista de estado.", contacto:"Consulta presencial · certificado indexado · acuse automático", front:{ a:"ips", t:"Diagnostica, expide y expone el resumen clínico v.1 por finalidad." }, back:{ a:"ips", t:"La historia permanece en la IPS; el módulo solo indexa el resumen." }, soporte:{ a:"modulo", t:"Índice + reglas + logs registra HC v.1 e INC del día 1." }, ch:[1,5] } },
+  { id:"A2", fase:"antes", n:"Certificados y prórrogas", dia:"días 1–120",
+    hoy:{ mp:"Renueva la prórroga cada 30 días y lleva los certificados a la EPS y al empleador.", contacto:"Ventanilla de la EPS · correo al empleador · sin acuse", front:{ a:"eps", t:"Reconoce y paga el subsidio por incapacidad hasta el día 180." }, back:{ a:"eps", t:"Certificados (INC) en la EPS; el empleador tramita la nómina con copias." }, soporte:{ a:null, t:"—" }, otros:{ emp:"Recibe copias por correo y tramita la nómina." }, ch:["r2","r4"] },
+    mod:{ mp:"No lleva nada: ve «prórroga registrada · subsidio en curso» en su vista de estado.", contacto:"Vista de estado · notificación con acuse", front:{ a:"eps", t:"Reconoce el subsidio y registra cada prórroga con responsable." }, back:{ a:"eps", t:"INC custodiado por la EPS; el empleador consulta días acumulados y fecha de inicio." }, soporte:{ a:"modulo", t:"Registra prórrogas y consultas; avisa al llegar al día 120." }, otros:{ emp:"Consulta por finalidad «reubicación laboral»: 2 de 4 campos del INC." }, ch:[2,3,5] } },
+  { id:"A3", fase:"antes", n:"Evidencia laboral (APT)", dia:"antes del día 120",
+    hoy:{ mp:"Pide al empleador la matriz de exposición cuando la EPS se la exige.", contacto:"Oficio · formato del SG-SST sin versión ni fecha", front:{ a:"emp", t:"El responsable SG-SST entrega la APT por oficio, a veces con el historial disciplinario." }, back:{ a:"emp", t:"Matriz de exposición y evaluaciones de puesto en el SG-SST." }, soporte:{ a:"mintrabajo", t:"Inspección por oficio, sin término verificable." }, ch:["r1","r3"] },
+    mod:{ mp:"Nada que pedir: la APT v.2 está expuesta por contrato.", contacto:"Constancia de suministro con versión, fecha y responsable", front:{ a:"emp", t:"Expone la APT v.2 con responsable y fecha; retiene el historial disciplinario." }, back:{ a:"emp", t:"La matriz permanece en el SG-SST." }, soporte:{ a:"mintrabajo", t:"Vista de supervisión: etapa, responsable, plazo y vencido sí/no." }, ch:[1,3,4] } },
+  { id:"D1", fase:"despues", n:"Reintegro o reubicación", dia:"tras el dictamen",
+    hoy:{ mp:"Vuelve al trabajo con restricciones; consigue el concepto de rehabilitación y lo lleva al empleador.", contacto:"Carta de reintegro · concepto en papel · sin registro", front:{ a:"emp", t:"Reubica según lo que M.P. aporte." }, back:{ a:"ips", t:"Concepto de rehabilitación en la historia clínica; restricciones sin formato común." }, soporte:{ a:"mintrabajo", t:"Vigilancia solo por queja o inspección ocasional." }, ch:["r1","r5"] },
+    mod:{ mp:"Ve «reintegro con restricciones · responsable SG-SST · plazo» y recibe acuse.", contacto:"Notificación con acuse · vista de restricciones funcionales", front:{ a:"emp", t:"Reubica con las restricciones (vista mínima) y registra el reintegro." }, back:{ a:"ips", t:"Concepto y restricciones en origen, con versión." }, soporte:{ a:"modulo", t:"Registra el suministro por finalidad «reubicación laboral»." }, ch:[2,3,4] } },
+  { id:"D2", fase:"despues", n:"Prestación en firme o pensión", dia:"dictamen en firme",
+    hoy:{ mp:"Lleva el dictamen en firme a la AFP o a la ARL; espera meses sin conocer el estado.", contacto:"Radicación en papel · resolución por correo", front:{ a:"afp", t:"AFP o ARL resuelve la prestación según el origen y la PCL." }, back:{ a:"afp", t:"Historia laboral y dictamen en archivos separados." }, soporte:{ a:"minsalud", t:"Tabla de PCL y estándares sin versión común." }, otros:{ arl:"Asume la prestación si el origen es laboral." }, ch:["r3","r5"] },
+    mod:{ mp:"Ve «prestación en estudio · responsable · vence día n» y recibe la decisión con acuse.", contacto:"Notificación con acuse · decisión motivada consultable", front:{ a:"afp", t:"Decide con DIC (3 de 4) y HL en origen; notifica con acuse." }, back:{ a:"afp", t:"HL y DIC permanecen en sus custodios." }, soporte:{ a:"minsalud", t:"Versión del estándar de PCL aplicada a cada vista." }, otros:{ arl:"Asume con decisión motivada y acuse si el origen es laboral." }, ch:[1,4,5] } },
+  { id:"D3", fase:"despues", n:"Seguimiento, queja o tutela", dia:"en cualquier momento",
+    hoy:{ mp:"Reconstruye su cronología con copias para quejarse ante SuperSalud o pedir tutela.", contacto:"Queja escrita · tutela · expediente en papel", front:{ a:"supersalud", t:"Recibe la queja y pide informes por oficio a la EPS." }, back:{ a:"eps", t:"Cada entidad responde con su propio archivo; sin cronología común." }, soporte:{ a:"jueces", t:"El juez reconstruye la cronología con lo que aporta M.P." }, ch:["r2","r4"] },
+    mod:{ mp:"Su vista de estado ya es la cronología: la adjunta a la queja o a la tutela.", contacto:"Cronología auditada · registro de accesos", front:{ a:"supersalud", t:"Enruta la queja con responsable y plazo; consulta estado y fechas, sin campos clínicos." }, back:{ a:"eps", t:"Registros de acceso y notificaciones del caso." }, soporte:{ a:"jueces", t:"Consulta la cronología completa y ordena con plazo." }, ch:[4,5] } }
+]
+};
+
+
+/* ============ Escenario predeterminado y reglas por paso ============ */
+const ESC = {
+  id:"mp_sura", n:"Caso M.P. · controversia de origen · SURA como organización ancla", dia0:120,
+  nota:"Escenario sintético; ninguna persona identificable. Los plazos en días son supuestos de simulación tomados de la matriz de contratos del documento del proyecto; no son términos legales.",
+  rondas:[{ id:"R1", modo:"actual", n:"Ronda 1 · funcionamiento actual" },{ id:"R2", modo:"propuesto", n:"Ronda 2 · funcionamiento propuesto con el módulo" }],
+  requeridos:["tra","eps","arl","jr","afp"],
+  finalidades:[
+    { id:"seguir_caso", n:"Seguir mi caso", actores:["tra"] },
+    { id:"reubicacion", n:"Reubicación laboral", actores:["emp"] },
+    { id:"rehabilitacion", n:"Plan de rehabilitación", actores:["ips"] },
+    { id:"calificacion", n:"Calificación de origen en primera oportunidad", actores:["eps"] },
+    { id:"investigacion", n:"Investigación de origen y prestaciones", actores:["arl"] },
+    { id:"prestaciones", n:"Estudio de prestaciones y competencia", actores:["afp"] },
+    { id:"dictamen", n:"Dictamen de primera instancia", actores:["jr"] },
+    { id:"apelacion", n:"Resolución de la apelación", actores:["jn"] },
+    { id:"inspeccion", n:"Inspección", actores:["mintrabajo"] },
+    { id:"regulacion", n:"Regulación", actores:["minsalud"] },
+    { id:"queja", n:"Queja", actores:["supersalud"] },
+    { id:"control_judicial", n:"Control judicial", actores:["jueces"] },
+    { id:"antecedentes", n:"Verificación de antecedentes disciplinarios", actores:[] },
+    { id:"estadistica", n:"Estudio estadístico interno", actores:[] },
+    { id:"comercial", n:"Oferta de servicios", actores:[] }
+  ],
+  decisiones:{
+    A1:{ a:"ips", ops:[["expedir","Expedir la incapacidad y entregar el certificado"],["remitir","Remitir a especialista antes de expedir"]] },
+    A2:{ a:"eps", ops:[["reconocer","Reconocer la prórroga y pagar el subsidio"],["pedir","Pedir soportes adicionales antes de pagar"]] },
+    A3:{ a:"emp", ops:[["entregar","Entregar la matriz de exposición con versión y fecha"],["entregar_sin","Entregar una copia sin versión ni fecha"],["negar","No entregar hasta una orden expresa"]] },
+    E1:{ a:"eps", ops:[["comun","Calificar origen común"],["laboral","Calificar origen laboral"],["mas_info","Pedir más información antes de calificar"]] },
+    E2:{ a:"arl", ops:[["aceptar","Aceptar la calificación"],["controvertir","Controvertir ante la Junta Regional"],["mas_info","Pedir evidencia adicional"]] },
+    E3:{ a:"jr", ops:[["dictaminar","Dictaminar origen y pérdida de capacidad laboral"],["suspender","Suspender hasta completar el expediente"],["devolver","Devolver el expediente a M.P."]] },
+    E4:{ a:"jn", ops:[["valida","El paquete permite decidir con motivación trazable"],["incompleto","El paquete está incompleto"]], extra:{ a:"arl", ops:[["apelar","Apelar el dictamen"],["no_apelar","No apelar"]] } },
+    E5:{ a:"afp", ops:[["subsidio","Asumir el subsidio desde el día 181"],["remitir","Remitir a la ARL por origen laboral"],["esperar","Esperar la firmeza antes de decidir"]] },
+    D1:{ a:"emp", ops:[["reintegrar","Reintegrar con restricciones"],["reubicar","Reubicar en otro cargo"],["esperar","Esperar el concepto de rehabilitación"]] },
+    D2:{ a:"afp", ops:[["resolver","Resolver la prestación"],["pedir","Pedir historia laboral actualizada"],["remitir","Remitir a la ARL"]] },
+    D3:{ a:"supersalud", ops:[["enrutar","Enrutar la queja con responsable y plazo"],["pedir","Pedir informes a la EPS"],["archivar","Archivar por falta de competencia"]] }
+  },
+  entradas:{ A1:[], A2:["inc"], A3:[], E1:["hc","apt"], E2:["hc","apt","inc"], E3:["hc","apt","inc","hl"], E4:["dic","hc","apt","inc"], E5:["dic","inc"], D1:["hc"], D2:["dic","hl"], D3:[] },
+  salidas:{ A1:["Certificado de incapacidad"], A2:["Prórroga registrada · subsidio"], A3:["Matriz de exposición (APT) disponible"], E1:["Calificación de origen notificada"], E2:["Aceptación o controversia radicada"], E3:["Dictamen de primera instancia"], E4:["Validación del paquete de apelación"], E5:["Decisión de pago desde el día 181"], D1:["Reintegro o reubicación registrada"], D2:["Prestación resuelta"], D3:["Queja enrutada u orden con plazo"] },
+  excepciones:"El facilitador puede avanzar sin que todas las actividades requeridas estén completas; la excepción exige una justificación y queda registrada como intervención del facilitador.",
+  respCustodia:[["completa","Entregar todos los campos solicitados"],["parcial","Entregar solo los campos pertinentes a la finalidad"],["denegar","Denegar: finalidad no autorizada"]],
+  focal:{ sabe:[["si","Sé qué pasa y quién me responde"],["parcial","Sé que algo pasa, no quién responde"],["no","No sé nada"]], hizo:[["llevar","Llevar documentos"],["ventanilla","Ir a una ventanilla"],["llamar","Llamar o escribir"],["nada","Nada"]] },
+  soporte:{ ve:[["si","Veo etapa, responsable y plazo"],["parcial","Veo algo, sin plazos"],["no","No veo nada del caso"]], accion:[["ninguna","Ninguna"],["requerir","Requerir información"],["ordenar","Ordenar con plazo"]] },
+  suficiencia:[["suficiente","Suficiente para actuar"],["parcial","Parcial: actúo con vacíos"],["insuficiente","Insuficiente: no puedo actuar"]],
+  preguntas:[
+    { id:"P1", t:"¿Están representados los actores, contactos y documentos necesarios?", ops:[["si","Sí, todos"],["parcial","Faltan algunos"],["no","Faltan varios"]], cual:"¿Cuáles faltan?", sub:"caracterizacion" },
+    { id:"P2", t:"¿Se comprenden las responsabilidades y los intercambios de este actor?", ops:[["si","Sí"],["parcial","En parte"],["no","No"]], cual:"¿Qué no queda claro?", sub:"diseno" },
+    { id:"P3", t:"¿Qué dificultades aparecieron al recorrer el escenario?", tipo:"multi", ops:[["informacion","Información incompleta o tardía"],["responsable","No estaba claro quién responde"],["plazo","No estaba claro el plazo"],["permiso","Dudas sobre qué podía consultar"],["coordinacion","Coordinación entre entidades"],["datos","Calidad de los datos"],["tecnologia","Falta de tecnología"],["ninguna","Ninguna"]], cual:"Describa la principal", sub:"caracterizacion" },
+    { id:"P4", t:"¿Qué requisitos deben trasladarse al siguiente prototipo?", tipo:"texto", sub:"diseno" }
+  ],
+  valoracion:{ semaforo:[["aceptar","Aceptar el contrato"],["ajustar","Aceptar con ajustes"],["rechazar","Rechazar"]], mejora:[["mejor","Mejor que hoy"],["igual","Igual"],["peor","Peor"]] },
+  subpreguntas:{ caracterizacion:"Caracterización: qué actores, contactos, documentos y dificultades definen la ruta.", diseno:"Diseño: qué responsabilidades, intercambios y requisitos debe cumplir el módulo.", evaluacion:"Evaluación: qué se observa al recorrer el escenario y qué queda por probar con el módulo." },
+  hipotesis:[["H1","Formulación aprobada pendiente de confirmar con el investigador (metodología definible con casos de uso, contratos de datos, vistas por rol y reglas de acceso, según la presentación)."],["H2","Formulación aprobada pendiente de confirmar (instanciación técnico-funcional del módulo, según la presentación)."],["H3","Formulación aprobada pendiente de confirmar (mejora observable en SURA frente al flujo fragmentado, según la presentación)."],["H4","Formulación aprobada pendiente de confirmar (barreras dominantes, según la presentación)."]],
+  riesgos:[{ id:"reidentificacion", t:"Reidentificación de M.P." },{ id:"fuera_finalidad", t:"Uso fuera de finalidad" },{ id:"retencion", t:"Retención excesiva de campos" },{ id:"sesgo", t:"Sesgo en la decisión de origen" },{ id:"carga", t:"Carga sobre el trabajador" }]
+};
+
+(function () {
+"use strict";
+/* ============ Utilidades ============ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const A = {}; BP.actores.forEach(a => { A[a.id] = a; });
+const EV = BP.evidencia, CIRC = ["", "①", "②", "③", "④", "⑤"];
+const nom = id => id === "modulo" ? "Módulo" : id === "sistema" ? "Sistema" : A[id] ? A[id].corto : (id || "—");
+const nomL = id => id === "modulo" ? "Índice + reglas + logs" : A[id] ? A[id].n : nom(id);
+const ahora = () => Date.now();
+const hora = t => t ? new Date(t).toLocaleTimeString("es-CO", { hour:"2-digit", minute:"2-digit" }) : "";
+const fecha = t => t ? new Date(t).toLocaleString("es-CO", { dateStyle:"medium", timeStyle:"short" }) : "";
+const uid = () => Math.random().toString(36).slice(2, 8) + ahora().toString(36).slice(-4);
+const ALFA = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; const nuevoCodigo = () => Array.from({ length:4 }, () => ALFA[Math.floor(Math.random() * ALFA.length)]).join("");
+const clone = o => JSON.parse(JSON.stringify(o)); const num = v => { const n = parseFloat(v); return isFinite(n) && n >= 0 ? n : 0; };
+const hash = s => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return "h" + (h >>> 0).toString(36); };
+const FIN = {}; ESC.finalidades.forEach(f => { FIN[f.id] = f; });
+
+/* ============ LocalDB: misma API mínima que db, en este navegador ============ */
+function LocalDB() {
+  const KEY = "sbsim_db_v1"; let cache = null; const subs = [];
+  const leer = () => { if (cache) return cache; try { cache = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { cache = {}; } return cache; };
+  const escribir = () => { try { localStorage.setItem(KEY, JSON.stringify(cache)); } catch (e) {} avisar(); try { bc && bc.postMessage("cambio"); } catch (e) {} };
+  let bc = null; try { bc = new BroadcastChannel("sbsim_db_v1"); bc.onmessage = () => { cache = null; avisar(); }; } catch (e) {}
+  window.addEventListener("storage", ev => { if (ev.key === KEY) { cache = null; avisar(); } });
+  setInterval(() => { const antes = JSON.stringify(cache || {}); cache = null; if (JSON.stringify(leer()) !== antes) avisar(); }, 3000);
+  const meta = { fromCache:false, hasPendingWrites:false };
+  const snapDoc = (path) => { const d = leer()[path]; return { id:path.split("/").pop(), exists:!!d, data:() => d ? clone(d) : undefined, metadata:meta }; };
+  const enCol = (colPath) => Object.keys(leer()).filter(p => p.startsWith(colPath + "/") && p.slice(colPath.length + 1).indexOf("/") < 0).sort();
+  const cmp = (op, a, b) => op === "==" ? a === b : op === "!=" ? a !== b : op === "<" ? a < b : op === "<=" ? a <= b : op === ">" ? a > b : op === ">=" ? a >= b : op === "in" ? (b || []).indexOf(a) >= 0 : false;
+  const snapCol = (q) => { let docs = enCol(q.path).map(snapDoc).filter(s => q.filters.every(f => cmp(f[1], (s.data() || {})[f[0]], f[2]))); if (q.order) docs.sort((x, y) => { const a = (x.data() || {})[q.order[0]], b = (y.data() || {})[q.order[0]]; const r = a == null ? 1 : b == null ? -1 : a < b ? -1 : a > b ? 1 : 0; return q.order[1] === "desc" ? -r : r; }); if (q.lim) docs = docs.slice(0, q.lim); return { docs, size:docs.length, empty:!docs.length, docChanges:() => [], metadata:meta }; };
+  function avisar() { subs.slice().forEach(s => { try { s.cb(s.kind === "doc" ? snapDoc(s.path) : snapCol(s.q)); } catch (e) {} }); }
+  const suscribir = (s) => { subs.push(s); setTimeout(() => { if (subs.indexOf(s) >= 0) s.cb(s.kind === "doc" ? snapDoc(s.path) : snapCol(s.q)); }, 0); return () => { const i = subs.indexOf(s); if (i >= 0) subs.splice(i, 1); }; };
+  const doc = (path) => ({ id:path.split("/").pop(), path, get:async () => snapDoc(path), set:async (data) => { leer()[path] = clone(data); escribir(); },
+    update:async (data) => { const d = leer()[path]; if (!d) throw { code:"invalid_argument", message:"no existe" }; const merge = (t, s) => { Object.keys(s).forEach(k => { if (s[k] && typeof s[k] === "object" && !Array.isArray(s[k]) && t[k] && typeof t[k] === "object" && !Array.isArray(t[k])) merge(t[k], s[k]); else t[k] = clone(s[k]); }); }; merge(d, data); escribir(); },
+    delete:async () => { delete leer()[path]; escribir(); }, onSnapshot:(cb) => suscribir({ kind:"doc", path, cb }), collection:(sub) => col(path + "/" + sub) });
+  const query = (path, filters, order, lim) => ({ path, filters, order, lim, where:(f, op, v) => query(path, filters.concat([[f, op, v]]), order, lim), orderBy:(f, dir) => query(path, filters, [f, dir || "asc"], lim), limit:(n) => query(path, filters, order, n), get:async function () { return snapCol(this); }, onSnapshot:function (cb) { return suscribir({ kind:"col", q:this, cb }); } });
+  const col = (path) => Object.assign(query(path, [], null, null), { doc:(id) => doc(path + "/" + (id || uid())), add:async (data) => { const d = doc(path + "/" + uid()); await d.set(data); return d; } });
+  return { doc, collection:col, local:true };
+}
+let DB = null, ROOM = null, DL = null, MODALIDAD = "presencial";
+async function initAlmacen() {
+  const usar = async (n) => { try { if (window.claude && typeof window.claude.use === "function") return await window.claude.use(n); } catch (e) {} return null; };
+  const [db, room, dl] = await Promise.all([usar("db"), usar("room"), usar("downloads")]);
+  if (db) { DB = db; MODALIDAD = "compartida"; } else { DB = LocalDB(); MODALIDAD = "presencial"; } ROOM = room; DL = dl;
+}
+const refSes = c => DB.doc("sesiones/" + c), colPart = c => DB.collection("sesiones/" + c + "/participantes"), colReg = c => DB.collection("sesiones/" + c + "/registros");
+
+/* ============ Pasos del blueprint (fases, carriles) + reglas ============ */
+function pasoDurante(e) {
+  const c = k => BP.celdas[e.id + k]; const out = { id:e.id, fase:"durante", n:e.n, dia:e.resp + " · " + e.plazo + (e.nota ? " · " + e.nota : "") };
+  ["hoy", "mod"].forEach(v => { const f1 = c("F1")[v], f2 = c("F2"), f3 = c("F3"), f4 = c("F4"), f5 = c("F5"); const o = { mp:f1.h, contacto:SB.contactos[e.id][v], front:{ a:f2.a, t:f2[v].h }, back:{ a:f3.a, t:f3[v].h }, soporte:v === "mod" ? { a:"modulo", t:f4[v].h } : { a:f5.a, t:f5[v].h }, otros:{}, ch:[] };
+    if (v === "mod") o.otros[f5.a] = f5[v].h; (f2.t || []).forEach(x => { o.otros[x] = o.otros[x] || f2[v].h; }); (f3.t || []).forEach(x => { o.otros[x] = o.otros[x] || f3[v].h; });
+    const set = {}; [f1, f2[v], f3[v], f4[v], f5[v]].forEach(x => (x.ch || []).forEach(k => { set[k] = 1; })); o.ch = Object.keys(set).sort().map(k => v === "mod" ? +k : k); out[v] = o; });
+  return out;
+}
+const PASOS = SB.pasos.filter(p => p.fase === "antes").concat(BP.etapas.map(pasoDurante), SB.pasos.filter(p => p.fase === "despues"));
+const PIDX = {}; PASOS.forEach((p, i) => { PIDX[p.id] = i; });
+const vModo = m => m === "propuesto" ? "mod" : "hoy";
+function actoresDe(p, modo) { const o = p[vModo(modo)], m = {}; m.tra = o.mp; [o.front, o.back, o.soporte].forEach(x => { if (x && x.a && !m[x.a]) m[x.a] = x.t; }); Object.keys(o.otros || {}).forEach(k => { if (!m[k]) m[k] = o.otros[k]; }); return m; }
+function reglasDe(p, modo) {
+  const o = p[vModo(modo)]; const dec = ESC.decisiones[p.id]; const front = dec ? dec.a : o.front.a; const custodios = []; [o.back].forEach(x => { if (x && x.a && A[x.a] && x.a !== front) custodios.push(x.a); }); const sop = o.soporte && o.soporte.a && A[o.soporte.a] ? o.soporte.a : null;
+  const extras = dec && dec.extra ? [dec.extra.a] : []; const otros = Object.keys(o.otros || {}).filter(x => A[x] && x !== front && custodios.indexOf(x) < 0 && x !== sop);
+  return { front, custodios, soporte:sop, extras, otros, requeridos:["tra", front], entradas:ESC.entradas[p.id] || [], salidas:ESC.salidas[p.id] || [], acciones:{ [front]:["decidir"], tra:["experiencia"] } };
+}
+function actividadDe(p, actor, modo) {
+  const r = reglasDe(p, modo), dec = ESC.decisiones[p.id]; if (!actor) return null;
+  if (actor === "tra") return { tipo:"focal", titulo:"Cómo vive M.P. este paso", instr:"Responda desde la experiencia de la trabajadora en este paso. No hay respuestas correctas: se estudia qué sabe y qué le toca hacer.", ejemplo:"Ejemplo: «Sé que algo pasa, no quién responde» y «Llevar documentos»." };
+  if (actor === r.front) return { tipo:"decide", titulo:"Decidir en este paso", instr:"Revise la información disponible, declare con qué finalidad la consulta, decida y diga quién responde y en cuántos días. Si falta información, indique cuál.", ejemplo:"Ejemplo: suficiencia «parcial», falta HL; finalidad «" + (FIN[(ESC.finalidades.filter(f => f.actores.indexOf(actor) >= 0)[0] || {}).id] || { n:"la de su contrato" }).n + "»; decisión; responde usted en 10 días.", ops:dec ? dec.ops : [["actuar","Actuar según el contrato"],["esperar","Esperar más información"]] };
+  if (dec && dec.extra && dec.extra.a === actor) return { tipo:"decide", titulo:"Decidir en este paso", instr:"Decida como " + nomL(actor) + " y diga con qué finalidad consulta, quién responde y en cuántos días.", ejemplo:"Ejemplo: «Apelar el dictamen» · responde usted · 10 días.", ops:dec.extra.ops };
+  const haySolicitud = S && S.ses && regsDe({ ronda:S.ses.rondaActual, paso:p.id, tipo:"solicitud" }).some(x => x.payload && x.payload.a === actor);
+  if (r.custodios.indexOf(actor) >= 0 || haySolicitud) return { tipo:"custodia", titulo:"Responder una solicitud de evidencia", instr:"Alguien pidió evidencia que usted custodia. Decida qué entrega y cuánto tarda. Con el módulo, revise lo que el módulo ya entregó por finalidad.", ejemplo:"Ejemplo: «Entregar solo los campos pertinentes a la finalidad» · 3 días." };
+  if (actor === r.soporte || r.otros.indexOf(actor) >= 0) return { tipo:"soporte", titulo:"Vigilar o apoyar este paso", instr:"Diga qué alcanza a ver de este caso desde su entidad y qué acción tomaría.", ejemplo:"Ejemplo: «Veo algo, sin plazos» · «Requerir información»." };
+  return { tipo:"observador", titulo:"Este paso no le corresponde", instr:"Puede dejar una observación sobre lo que ve y esperar al siguiente paso.", ejemplo:"" };
+}
+
+/* ============ Estado de la vista y sesión ============ */
+let S = { rol:"entrada", code:null, ses:null, parts:{}, regs:[], yo:null, fac:false, sub:"actividad", fsub:"preparar", cargando:false, error:"", msg:"", msgErr:false, form:{}, val:{}, entrada:{ code:"", nombre:"", actor:"", pin:"" }, nuevo:{ nombre:"Sesión 1", pin:"" }, verTodo:false, pendingRender:false };
+let unsubs = [];
+function leerHash() { const h = {}; location.hash.replace(/^#/, "").split("&").forEach(p => { const [k, v] = p.split("="); if (k) h[decodeURIComponent(k)] = decodeURIComponent(v || ""); }); return h; }
+function ponerHash(o) { const s = Object.keys(o).filter(k => o[k] != null && o[k] !== "").map(k => k + "=" + encodeURIComponent(o[k])).join("&"); if (("#" + s) !== location.hash) history.replaceState(null, "", s ? "#" + s : location.pathname + location.search); }
+function cerrarSuscripciones() { unsubs.forEach(u => { try { u(); } catch (e) {} }); unsubs = []; }
+const memKey = c => "sbsim_yo_" + c;
+function abrirSesion(code, rol) {
+  cerrarSuscripciones(); S.code = code; S.rol = rol; S.ses = null; S.parts = {}; S.regs = []; S.cargando = true; S.error = "";
+  unsubs.push(refSes(code).onSnapshot(snap => { S.cargando = false; if (!snap.exists) { S.error = "No existe una sesión con el código " + code + "."; S.ses = null; } else { S.ses = snap.data(); S.error = ""; } render(); }, e => { S.error = "No se pudo leer la sesión (" + e.code + ")."; S.cargando = false; render(); }));
+  unsubs.push(colPart(code).onSnapshot(snap => { const o = {}; snap.docs.forEach(d => { if (d.exists) o[d.id] = d.data(); }); S.parts = o; render(); }, () => {}));
+  unsubs.push(colReg(code).onSnapshot(snap => { S.regs = snap.docs.filter(d => d.exists).map(d => d.data()).sort((a, b) => (a.t || 0) - (b.t || 0)); render(); }, () => {}));
+  ponerHash({ s:code });
+}
+function recordarYo() { try { sessionStorage.setItem(memKey(S.code), JSON.stringify(S.yo)); } catch (e) {} }
+function recuperarYo(code) { try { return JSON.parse(sessionStorage.getItem(memKey(code)) || "null"); } catch (e) { return null; } }
+function facAuth(code) { try { return sessionStorage.getItem("sbsim_fac_" + code) === "1"; } catch (e) { return false; } }
+function setFacAuth(code, ok) { try { if (ok) sessionStorage.setItem("sbsim_fac_" + code, "1"); else sessionStorage.removeItem("sbsim_fac_" + code); } catch (e) {} }
+
+/* ============ Escrituras ============ */
+async function crearSesion() {
+  const n = S.nuevo; if (!(n.pin || "").trim() || n.pin.trim().length < 4) return aviso("Escriba un PIN de facilitación de al menos 4 caracteres.", true);
+  const code = nuevoCodigo(); const rondas = {}; ESC.rondas.forEach(r => { rondas[r.id] = { estado:"pendiente", pasos:{} }; });
+  await refSes(code).set({ codigo:code, nombre:(n.nombre || "Sesión").trim(), escenario:ESC.id, estado:"preparacion", modalidad:MODALIDAD, creada:ahora(), pinHash:hash(n.pin.trim()), rondaActual:"R1", pasoActual:PASOS[0].id, rondas, revision:{ observaciones:{}, riesgos:{} }, decision:null, seq:0 });
+  setFacAuth(code, true); S.fac = true; abrirSesion(code, "facilitador"); S.fsub = "preparar"; aviso("Sesión " + code + " creada. Modalidad: " + (MODALIDAD === "compartida" ? "compartida (conexión verificada)" : "presencial, en este computador") + ".");
+}
+async function actualizarSes(patch) { if (!S.code) return; try { await refSes(S.code).update(patch); } catch (e) { aviso("No se pudo guardar (" + (e.code || e.message) + "). Revise la conexión e intente de nuevo.", true); throw e; } }
+async function unirse(nombre, actor) {
+  const id = uid(); const p = { id, nombre:nombre.trim(), actor, rol:"participante", creado:ahora(), ultimo:ahora() };
+  try { await colPart(S.code).doc(id).set(p); } catch (e) { return aviso("No se pudo registrar su participación (" + (e.code || e.message) + ").", true); }
+  S.yo = { id, nombre:p.nombre, actor }; recordarYo(); S.rol = "participante"; S.sub = "actividad"; latido(); render();
+}
+let latidoT = null; function latido() { clearInterval(latidoT); const tick = () => { if (S.rol === "participante" && S.yo) colPart(S.code).doc(S.yo.id).update({ ultimo:ahora() }).catch(() => {}); }; tick(); latidoT = setInterval(tick, 30000); }
+function contexto() { const s = S.ses || {}; return { sesion:S.code, escenario:s.escenario || ESC.id, ronda:s.rondaActual, modo:(ESC.rondas.filter(r => r.id === s.rondaActual)[0] || {}).modo || "actual", paso:s.pasoActual }; }
+async function registrar(tipo, payload, extra) {
+  const c = contexto(); const id = uid(); const reg = Object.assign({ id, t:ahora(), sesion:c.sesion, escenario:c.escenario, ronda:c.ronda, modo:c.modo, paso:c.paso, dia:diaVirtual(c.ronda), origen:"participante", participanteId:S.yo ? S.yo.id : null, participanteNombre:S.yo ? S.yo.nombre : null, actor:S.yo ? S.yo.actor : null, tipo, payload:payload || {}, reemplaza:null, version:1 }, extra || {});
+  try { await colReg(S.code).doc(id).set(reg); } catch (e) { aviso("No se pudo guardar el registro (" + (e.code || e.message) + "). Su respuesta sigue en pantalla: intente de nuevo.", true); throw e; }
+  return reg;
+}
+async function registrarSistema(tipo, payload, extra) { return registrar(tipo, payload, Object.assign({ origen:"sistema", participanteId:null, participanteNombre:null, actor:null }, extra || {})); }
+async function registrarFacilitador(tipo, payload, extra) { return registrar(tipo, payload, Object.assign({ origen:"facilitador", participanteId:null, participanteNombre:"Facilitador", actor:null }, extra || {})); }
+
+/* ============ Derivaciones ============ */
+function vigentes(regs) { const reemplazados = {}; (regs || S.regs).forEach(r => { if (r.reemplaza) reemplazados[r.reemplaza] = 1; }); return (regs || S.regs).filter(r => !reemplazados[r.id]); }
+function regsDe(f) { return vigentes().filter(r => Object.keys(f).every(k => f[k] == null || r[k] === f[k])); }
+function diaVirtual(ronda) { let d = ESC.dia0; vigentes().forEach(r => { if (r.ronda === ronda && r.tipo === "actividad" && r.payload) d += num(r.payload.dias); }); return d; }
+function rondaDef(id) { return ESC.rondas.filter(r => r.id === id)[0]; }
+function pasoActual() { return PASOS[PIDX[(S.ses || {}).pasoActual] || 0]; }
+function estadoActividad(pid, actor, partId, ronda) {
+  const s = S.ses || {}; ronda = ronda || s.rondaActual; const rd = (s.rondas || {})[ronda] || {}; const ps = (rd.pasos || {})[pid] || {}; const idx = PIDX[pid], cur = PIDX[s.pasoActual];
+  const p = PASOS[idx], modo = (rondaDef(ronda) || {}).modo || "actual"; const act = actividadDe(p, actor, modo);
+  const hecho = regsDe({ ronda, paso:pid, tipo:"actividad", participanteId:partId }).length > 0;
+  if (hecho) return "completada";
+  if (ps.estado === "completado" || idx < cur) return "omitida";
+  if (idx > cur || rd.estado !== "en_curso") return "pendiente";
+  if (s.estado === "pausada") return "bloqueada";
+  if (act && act.tipo === "custodia" && modo === "actual" && !regsDe({ ronda, paso:pid, tipo:"solicitud" }).some(r => r.payload && r.payload.a === actor)) return "bloqueada";
+  return "en_curso";
+}
+function participantesDe(actor) { return Object.values(S.parts).filter(p => p.actor === actor); }
+function condicionesAvance(ronda, pid) {
+  const p = PASOS[PIDX[pid]], modo = (rondaDef(ronda) || {}).modo || "actual", r = reglasDe(p, modo);
+  return r.requeridos.map(a => { const ps = participantesDe(a); const hechos = ps.filter(x => regsDe({ ronda, paso:pid, tipo:"actividad", participanteId:x.id }).length); return { actor:a, participantes:ps.length, completadas:hechos.length, ok:ps.length > 0 && hechos.length > 0, motivo:ps.length === 0 ? "sin participante que represente a " + nomL(a) : hechos.length === 0 ? "actividad de " + nomL(a) + " sin completar" : "" }; });
+}
+function puedeAvanzar(ronda, pid) { return condicionesAvance(ronda, pid).every(c => c.ok); }
+function comprobarFinalidad(actor, finId, piezas) { const f = FIN[finId]; const aut = !!(f && f.actores.indexOf(actor) >= 0); const ac = A[actor] || {}; const perm = {}, den = []; (piezas || []).forEach(pz => { const c = (ac.consulta || []).filter(x => x[0] === pz)[0]; if (!aut || !c || (ac.fuera || []).indexOf(pz) >= 0) den.push(pz); else perm[pz] = c[1]; }); return { finalidadAutorizada:aut, piezasPermitidas:perm, piezasDenegadas:den }; }
+function desacuerdos(ronda) {
+  const out = []; BP.actores.forEach(a => { const ps = participantesDe(a.id); if (ps.length < 2) return;
+    PASOS.forEach(p => { const rs = ps.map(x => regsDe({ ronda, paso:p.id, tipo:"actividad", participanteId:x.id })[0]).filter(Boolean); if (rs.length >= 2) { const vals = rs.map(r => r.payload.decision || r.payload.sabe || r.payload.respuesta || r.payload.ve || ""); if (vals.some(v => v !== vals[0])) out.push({ tipo:"actividad", actor:a.id, paso:p.id, ronda, detalle:rs.map(r => r.participanteNombre + ": " + (vals[rs.indexOf(r)] || "—")).join(" · ") }); } });
+    const vs = ps.map(x => regsDe({ ronda, tipo:"valoracion", participanteId:x.id })[0]).filter(Boolean); if (vs.length >= 2) { const sem = vs.map(v => v.payload.semaforo); if (sem.some(v => v !== sem[0])) out.push({ tipo:"valoracion", actor:a.id, paso:"—", ronda, detalle:vs.map(v => v.participanteNombre + ": " + v.payload.semaforo).join(" · ") }); } });
+  return out;
+}
+function estadoCierre() {
+  const s = S.ses || {}; const rondasCerradas = ESC.rondas.filter(r => ((s.rondas || {})[r.id] || {}).estado === "cerrada"); const faltas = [], ajustes = [];
+  if (!rondasCerradas.length) faltas.push("Ninguna ronda está cerrada.");
+  rondasCerradas.forEach(r => { ESC.requeridos.forEach(a => { const ps = participantesDe(a); if (!ps.length) { faltas.push(r.id + ": ningún participante representó a " + nomL(a) + "."); return; } if (!ps.some(x => regsDe({ ronda:r.id, tipo:"valoracion", participanteId:x.id }).length)) faltas.push(r.id + ": falta la valoración final de " + nomL(a) + "."); }); if (!regsDe({ ronda:r.id, tipo:"preguntas" }).length) faltas.push(r.id + ": nadie respondió las preguntas P1 a P4."); });
+  const rev = s.revision || { observaciones:{}, riesgos:{} };
+  vigentes().filter(r => r.tipo === "observacion" && r.payload.tipo === "conflicto").forEach(r => { const o = rev.observaciones[r.id] || {}; if (!o.comprobado) ajustes.push("Conflicto de rol abierto (" + nom(r.actor) + ", " + r.paso + "): " + r.payload.texto.slice(0, 60)); });
+  ESC.riesgos.forEach(k => { const x = rev.riesgos[k.id] || {}; if (x.aplica && !(x.mitigacion || "").trim()) ajustes.push("Riesgo «" + k.t + "» marcado sin descripción de mitigación."); });
+  vigentes().filter(r => r.tipo === "valoracion" && r.payload.semaforo === "rechazar" && !(r.payload.ajuste || "").trim()).forEach(r => ajustes.push("Rechazo de " + nom(r.actor) + " (" + r.participanteNombre + ") sin propuesta de solución."));
+  const d = s.decision; const decisionOk = !!(d && (d.quien || "").trim() && (d.condiciones || "").trim() && (d.requisitos || []).some(q => (q.texto || "").trim() && (q.comprobacion || "").trim()));
+  let estado, cls; if (s.estado === "cerrada" && decisionOk) { estado = "Cerrado con decisión documentada"; cls = "ok"; } else if (faltas.length) { estado = "Pendiente de evidencia"; cls = "wait"; } else if (ajustes.length) { estado = "Requiere ajustes"; cls = "adj"; } else { estado = "Listo para revisión del facilitador"; cls = "ready"; }
+  return { estado, cls, faltas, ajustes, decisionOk, rondasCerradas:rondasCerradas.map(r => r.id) };
+}
+function indicadores(ronda) {
+  const rs = vigentes().filter(r => r.ronda === ronda); const act = rs.filter(r => r.tipo === "actividad"); const dec = act.filter(r => r.payload.tipo === "decide");
+  const suf = k => dec.filter(r => r.payload.suficiencia === k).length; const finNo = dec.filter(r => r.payload.comprobacion && !r.payload.comprobacion.finalidadAutorizada).length; const denegadas = dec.reduce((n, r) => n + ((r.payload.comprobacion || {}).piezasDenegadas || []).length, 0);
+  const solic = rs.filter(r => r.tipo === "solicitud").length, resp = rs.filter(r => r.tipo === "respuesta").length, acuses = rs.filter(r => r.tipo === "acuse").length, sinAcuse = rs.filter(r => r.tipo === "notificacion" && !r.payload.acuse).length;
+  const s = S.ses || {}; const rd = (s.rondas || {})[ronda] || {}; const pasos = Object.keys(rd.pasos || {}); const exc = pasos.filter(k => rd.pasos[k].excepcion).length; const reproc = dec.filter(r => r.payload.suficiencia !== "suficiente" && (r.payload.falta || []).length).length;
+  const focal = act.filter(r => r.payload.tipo === "focal"); const mpSabe = focal.filter(r => r.payload.sabe === "si").length; const mpHizo = focal.reduce((n, r) => n + (r.payload.hizo || []).filter(x => x !== "nada").length, 0);
+  return { registros:rs.length, actividades:act.length, decisiones:dec.length, suficiente:suf("suficiente"), parcial:suf("parcial"), insuficiente:suf("insuficiente"), finalidadesNoAutorizadas:finNo, piezasDenegadas:denegadas, solicitudes:solic, respuestas:resp, reprocesos:reproc, acusesSimulados:acuses, notificacionesSinAcuse:sinAcuse, pasosCompletados:pasos.filter(k => rd.pasos[k].estado === "completado").length, excepciones:exc, diaFinal:diaVirtual(ronda), diasVirtuales:diaVirtual(ronda) - ESC.dia0, mpSabe, mpFocal:focal.length, mpGestiones:mpHizo, desacuerdos:desacuerdos(ronda).length };
+}
+const FORMULAS = { suficiente:"decisiones con suficiencia «suficiente» ÷ decisiones registradas", finalidadesNoAutorizadas:"decisiones cuya finalidad declarada no está autorizada para el actor en el escenario", piezasDenegadas:"piezas solicitadas que el actor no puede consultar según su contrato", reprocesos:"decisiones con suficiencia parcial o insuficiente que señalan una pieza faltante", acusesSimulados:"acuses generados por el sistema (comportamiento simulado del módulo)", notificacionesSinAcuse:"notificaciones registradas sin acuse (funcionamiento actual)", excepciones:"pasos avanzados por el facilitador sin cumplir las condiciones", diasVirtuales:"suma de los días declarados en las actividades de la ronda", mpSabe:"actividades de M.P. donde declara saber qué pasa y quién responde ÷ actividades de M.P.", mpGestiones:"gestiones que M.P. declara haber hecho (llevar, ventanilla, llamar)", desacuerdos:"pares de representantes del mismo actor con decisiones o valoraciones distintas" };
+let avisoT = null; function aviso(t, err) { S.msg = t; S.msgErr = !!err; render(); clearTimeout(avisoT); avisoT = setTimeout(() => { S.msg = ""; render(); }, 4500); }
+
+/* ============ Render: comunes ============ */
+function opt(act, arg, ops, cur, multi) { return `<div class="optrow">${ops.map(o => { const on = multi ? (cur || []).indexOf(o[0]) >= 0 : String(cur) === String(o[0]); return `<button type="button" data-act="${act}" data-arg="${esc(arg)}" data-v="${esc(o[0])}" aria-pressed="${on}">${esc(o[1])}</button>`; }).join("")}</div>`; }
+function lozenge(estado) { const m = { pendiente:["ch-grey","Pendiente"], en_curso:["ch-navy","En curso"], bloqueada:["ch-gold","Bloqueada"], completada:["ch-teal","Completada"], omitida:["ch-grey","Omitida"], preparacion:["ch-grey","En preparación"], pausada:["ch-gold","Pausada"], revision:["ch-navy","En revisión"], cerrada:["ch-teal","Cerrada"], archivada:["ch-grey","Archivada"], completado:["ch-teal","Completado"] }; const x = m[estado] || ["ch-grey", estado]; return `<span class="chip ${x[0]}">${esc(x[1])}</span>`; }
+function renderTop() {
+  const s = S.ses; const alm = `<span class="badge" title="${MODALIDAD === "compartida" ? "Conexión verificada: la sesión se comparte entre navegadores" : "Sin conexión compartida: la sesión vive en este computador"}">${MODALIDAD === "compartida" ? "modalidad compartida" : "modalidad presencial"}</span>`;
+  if (!s || S.rol === "entrada") { $("top").innerHTML = `<b>Service blueprint con simulación guiada</b>${alm}<span class="sp"></span><span class="msg ${S.msgErr ? "err" : ""}" role="status">${esc(S.msg)}</span>`; return; }
+  const r = rondaDef(s.rondaActual) || {}; const p = pasoActual();
+  $("top").innerHTML = `<b>${esc(s.nombre)}</b><span class="badge">código ${esc(s.codigo)}</span>${lozenge(s.estado === "en_curso" ? "en_curso" : s.estado)}<span>${esc(r.n || "")}</span><span>Paso <b>${esc(p.id)}</b> · ${esc(p.n)}</span><span>Día virtual <b>${esc(diaVirtual(s.rondaActual))}</b></span><span class="hm">Hora real <b>${esc(hora(ahora()))}</b></span>${S.rol === "participante" && S.yo ? `<span class="chip ch-navy hm">${esc(S.yo.nombre)} · ${esc(nom(S.yo.actor))}</span>` : S.rol === "facilitador" ? `<span class="chip ch-navy hm">Facilitador</span>` : ""}${alm}<span class="sp"></span><span class="msg ${S.msgErr ? "err" : ""}" role="status">${esc(S.msg)}</span><button type="button" class="btn sm sec" data-act="salir">Salir</button>`;
+}
+function renderEntrada() {
+  const e = S.entrada, n = S.nuevo;
+  $("vista").innerHTML = `<div class="hero">
+    <div class="card"><h2>Participar en una sesión</h2><p class="mini">Escriba el código que le dio el facilitador, su nombre y el actor que representa. Varias personas pueden representar al mismo actor.</p>
+      <div class="row"><label>Código de la sesión<input type="text" data-in="e-code" value="${esc(e.code)}" maxlength="4" style="text-transform:uppercase;width:110px"></label><label>Su nombre<input type="text" data-in="e-nombre" value="${esc(e.nombre)}" placeholder="Nombre o iniciales"></label><label>Actor que representa<select data-in="e-actor"><option value="">Elija…</option>${BP.actores.map(a => `<option value="${a.id}" ${e.actor === a.id ? "selected" : ""}>${esc(a.n)}</option>`).join("")}</select></label><label>&nbsp;<button type="button" class="btn" data-act="entrar-part">Entrar como participante</button></label></div>
+      ${S.error ? `<p class="msg err">${esc(S.error)}</p>` : ""}</div>
+    <div class="card"><h2>Facilitar</h2><p class="mini">Cree una sesión con el escenario predeterminado o entre a una existente con su PIN. La configuración avanzada es opcional.</p>
+      <div class="row"><label>Nombre de la sesión<input type="text" data-in="n-nombre" value="${esc(n.nombre)}"></label><label>PIN de facilitación<input type="password" data-in="n-pin" value="${esc(n.pin)}" maxlength="12" autocomplete="off"></label><label>&nbsp;<button type="button" class="btn" data-act="crear">Crear sesión</button></label></div>
+      <p class="mini" style="margin-top:8px">Escenario predeterminado: <b>${esc(ESC.n)}</b>, dos rondas (funcionamiento actual y propuesto), once pasos.</p>
+      <div class="row" style="margin-top:8px"><label>Código<input type="text" data-in="e-code2" value="${esc(e.code)}" maxlength="4" style="text-transform:uppercase;width:110px"></label><label>PIN<input type="password" data-in="e-pin" value="${esc(e.pin)}" maxlength="12" autocomplete="off" style="width:130px"></label><label>&nbsp;<button type="button" class="btn sec" data-act="entrar-fac">Entrar como facilitador</button></label><label>&nbsp;<button type="button" class="btn sec" data-act="entrar-res">Ver resultados</button></label></div></div>
+  </div>
+  <div class="card"><h2>Qué hace esta herramienta</h2><p>Recorre el service blueprint de la ruta de incapacidad del caso sintético M.P. con actores reales: cada participante resuelve una actividad por paso, el facilitador conduce la sesión en cuatro momentos (preparar, ejecutar, revisar, cerrar) y los resultados alimentan el informe con evidencias, desacuerdos, comparación entre rondas y requisitos para el siguiente prototipo.</p><p class="mini">Modalidad activa: <b>${MODALIDAD === "compartida" ? "compartida (conexión verificada, sesión sincronizada entre navegadores)" : "presencial (la sesión vive en este computador; los participantes se turnan en él o abren pestañas)"}</b>.</p></div>`;
+}
+function renderElegir() { $("vista").innerHTML = `<div class="card"><h2>${esc(S.ses.nombre)} · ¿quién es usted?</h2><p class="mini">Escriba su nombre y elija el actor que representa.</p><div class="row"><label>Su nombre<input type="text" data-in="e-nombre" value="${esc(S.entrada.nombre)}"></label><label>Actor<select data-in="e-actor"><option value="">Elija…</option>${BP.actores.map(a => `<option value="${a.id}" ${S.entrada.actor === a.id ? "selected" : ""}>${esc(a.n)}</option>`).join("")}</select></label><label>&nbsp;<button type="button" class="btn" data-act="unirse">Entrar</button></label></div></div>`; }
+
+/* ============ Participante ============ */
+function infoDisponible(p, actor, modo) {
+  const piezas = ESC.entradas[p.id] || []; const ac = A[actor] || {}; if (!piezas.length) return `<p class="mini">Este paso no requiere consultar piezas de evidencia.</p>`;
+  return `<table class="t"><thead><tr><th>Pieza</th><th>Custodio</th><th>${modo === "actual" ? "Cómo llega hoy" : "Qué puede ver por finalidad (vista mínima)"}</th></tr></thead><tbody>${piezas.map(pz => { const c = (ac.consulta || []).filter(x => x[0] === pz)[0]; const fuera = (ac.fuera || []).indexOf(pz) >= 0; const txt = modo === "actual" ? (p.hoy && p.hoy.contacto ? "Por oficio o en papel, según llegue: " + EV[pz].campos.join(", ") : EV[pz].campos.join(", ")) : (fuera ? "Fuera de su finalidad: se deniega y queda registrado" : c ? c[1].map(i => EV[pz].campos[i]).join(", ") + ` (${c[1].length} de ${EV[pz].campos.length})` : "No está en su contrato de consulta"); return `<tr><td><b>${esc(EV[pz].sl)}</b> ${esc(EV[pz].n)}</td><td>${esc(nom(EV[pz].cust))}</td><td class="${modo !== "actual" && (fuera || !c) ? "regla-no" : ""}">${esc(txt)}</td></tr>`; }).join("")}</tbody></table>`;
+}
+function formActividad(p, act, modo) {
+  const f = S.form; const piezas = ESC.entradas[p.id] || []; const fins = ESC.finalidades;
+  let h = "";
+  if (act.tipo === "decide") {
+    h += `<fieldset><legend>1. ¿La información disponible es suficiente para actuar?</legend>${opt("f", "suficiencia", ESC.suficiencia, f.suficiencia)}${f.suficiencia && f.suficiencia !== "suficiente" ? `<div class="campos" style="margin-top:4px"><span class="mini">¿Qué falta?</span> ${Object.keys(EV).map(k => `<label><input type="checkbox" data-in="f-falta" data-arg="${k}" ${(f.falta || []).indexOf(k) >= 0 ? "checked" : ""}> ${esc(EV[k].sl)} · ${esc(EV[k].n)}</label>`).join("")}</div>` : ""}</fieldset>`;
+    h += `<fieldset><legend>2. ¿Con qué finalidad consulta la evidencia?</legend><select data-in="f-finalidad"><option value="">Elija una finalidad…</option>${fins.map(x => `<option value="${x.id}" ${f.finalidad === x.id ? "selected" : ""}>${esc(x.n)}</option>`).join("")}</select><p class="mini">Elija la que usaría en la práctica. El sistema comprobará después si está autorizada para su actor.</p></fieldset>`;
+    h += `<fieldset><legend>3. Decisión</legend>${opt("f", "decision", act.ops, f.decision)}</fieldset>`;
+    h += `<fieldset><legend>4. ¿Quién responde y en cuántos días?</legend><div class="row"><label>Responde<select data-in="f-responde"><option value="">Elija…</option><option value="yo" ${f.responde === "yo" ? "selected" : ""}>Yo (${esc(nom(S.yo.actor))})</option>${BP.actores.filter(a => a.id !== S.yo.actor).map(a => `<option value="${a.id}" ${f.responde === a.id ? "selected" : ""}>${esc(a.n)}</option>`).join("")}<option value="nadie" ${f.responde === "nadie" ? "selected" : ""}>Nadie claramente</option></select></label><label>Días<input type="number" min="0" data-in="f-dias" value="${esc(f.dias == null ? "" : f.dias)}" style="width:90px"></label>${modo === "propuesto" ? `<label class="mini" style="align-self:end">Notifica a<div class="campos">${BP.actores.filter(a => a.id !== S.yo.actor).slice(0, 12).map(a => `<label><input type="checkbox" data-in="f-notifica" data-arg="${a.id}" ${(f.notifica || []).indexOf(a.id) >= 0 ? "checked" : ""}> ${esc(a.corto)}</label>`).join("")}</div></label>` : ""}</div></fieldset>`;
+  } else if (act.tipo === "custodia") {
+    const sol = regsDe({ ronda:(S.ses || {}).rondaActual, paso:p.id, tipo:"solicitud" }).filter(r => r.payload.a === S.yo.actor); const auto = regsDe({ ronda:(S.ses || {}).rondaActual, paso:p.id, tipo:"consulta" }).filter(r => r.payload.a === S.yo.actor);
+    h += sol.length ? `<div class="lbl">Solicitudes recibidas</div><ul class="lista">${sol.map(r => `<li><b>${esc(nom(r.payload.de))}</b> pide <b>${esc((r.payload.piezas || []).map(k => EV[k].sl).join(", "))}</b> con finalidad «${esc((FIN[r.payload.finalidad] || { n:r.payload.finalidad || "sin declarar" }).n)}» · día ${esc(r.dia)}</li>`).join("")}</ul>` : "";
+    h += auto.length ? `<div class="lbl">Consultas del módulo sobre su evidencia (simuladas)</div><ul class="lista">${auto.map(r => `<li><b>${esc(nom(r.payload.de))}</b> consultó <b>${esc(EV[r.payload.pieza].sl)}</b> · ${r.payload.denegada ? "denegado: " + esc(r.payload.motivo) : "vio " + r.payload.campos.length + " de " + EV[r.payload.pieza].campos.length + " campos"}</li>`).join("")}</ul>` : "";
+    h += `<fieldset><legend>1. ¿Qué responde?</legend>${opt("f", "respuesta", ESC.respCustodia, f.respuesta)}</fieldset><fieldset><legend>2. ¿Cuántos días le toma?</legend><input type="number" min="0" data-in="f-dias" value="${esc(f.dias == null ? "" : f.dias)}" style="width:90px"></fieldset>`;
+  } else if (act.tipo === "focal") {
+    h += `<fieldset><legend>1. En este paso, ¿sabe qué pasa con su caso?</legend>${opt("f", "sabe", ESC.focal.sabe, f.sabe)}</fieldset><fieldset><legend>2. ¿Quién le responde y en cuántos días?</legend><div class="row"><label>Responde<select data-in="f-responde"><option value="">Elija…</option>${BP.actores.filter(a => a.id !== "tra").map(a => `<option value="${a.id}" ${f.responde === a.id ? "selected" : ""}>${esc(a.n)}</option>`).join("")}<option value="nadie" ${f.responde === "nadie" ? "selected" : ""}>No sé</option></select></label><label>Días<input type="number" min="0" data-in="f-dias" value="${esc(f.dias == null ? "" : f.dias)}" style="width:90px"></label></div></fieldset><fieldset><legend>3. ¿Qué tuvo que hacer usted?</legend>${opt("fm", "hizo", ESC.focal.hizo, f.hizo, true)}</fieldset>`;
+  } else if (act.tipo === "soporte") {
+    h += `<fieldset><legend>1. ¿Qué alcanza a ver del caso?</legend>${opt("f", "ve", ESC.soporte.ve, f.ve)}</fieldset><fieldset><legend>2. ¿Qué acción toma?</legend>${opt("f", "accion", ESC.soporte.accion, f.accion)}</fieldset>`;
+  }
+  h += `<fieldset><legend>${act.tipo === "observador" ? "Observación" : "Observación (opcional)"}</legend><input type="text" data-in="f-obs" value="${esc(f.obs || "")}" style="width:100%;max-width:640px" placeholder="Qué le llamó la atención, qué faltó o qué chocó"></fieldset>`;
+  return h;
+}
+function validarForm(act) {
+  const f = S.form; const falta = [];
+  if (act.tipo === "decide") { if (!f.suficiencia) falta.push("suficiencia"); if (!f.finalidad) falta.push("finalidad"); if (!f.decision) falta.push("decisión"); if (!f.responde) falta.push("quién responde"); if (f.dias == null || f.dias === "") falta.push("días"); }
+  if (act.tipo === "custodia") { if (!f.respuesta) falta.push("respuesta"); if (f.dias == null || f.dias === "") falta.push("días"); }
+  if (act.tipo === "focal") { if (!f.sabe) falta.push("qué sabe"); if (!f.responde) falta.push("quién responde"); if (!(f.hizo || []).length) falta.push("qué tuvo que hacer"); }
+  if (act.tipo === "soporte") { if (!f.ve) falta.push("qué ve"); if (!f.accion) falta.push("acción"); }
+  if (act.tipo === "observador" && !(f.obs || "").trim()) falta.push("observación");
+  return falta;
+}
+function recorridoHtml(resaltar, ronda) {
+  const s = S.ses || {}; const modo = (rondaDef(ronda || s.rondaActual) || {}).modo || "actual", v = vModo(modo); const cur = s.pasoActual; const r0 = ronda || s.rondaActual;
+  const fases = SB.fases; const nreg = pid => regsDe({ ronda:r0, paso:pid }).filter(r => r.tipo === "actividad" || r.tipo === "observacion").length;
+  let h = `<div class="twrap sb-wrap"><table class="sb"><thead><tr><th class="sb-lane sb-corner">Carril ↓ · paso →</th>${fases.map(f => `<th class="sb-fase sb-${f.id}" colspan="${PASOS.filter(p => p.fase === f.id).length}"><b>${esc(f.n)}</b> <span class="mini">${esc(f.sub)}</span></th>`).join("")}</tr><tr><th class="sb-lane sb-corner2"></th>${PASOS.map(p => `<th class="sb-paso ${p.id === cur ? "actual" : ""}"><b>${esc(p.id)}</b> · ${esc(p.n)}<span class="mini">${esc(p.dia)}</span>${p.id === cur ? `<span class="chip ch-navy">paso actual</span>` : ""}${nreg(p.id) ? `<span class="chip ch-teal">${nreg(p.id)} registro(s)</span>` : ""}</th>`).join("")}</tr></thead><tbody>`;
+  SB.carriles.forEach(c => { if (SB.lineas[c.id]) h += `<tr class="sb-line"><td colspan="${PASOS.length + 1}"><span>${esc(SB.lineas[c.id])}</span></td></tr>`;
+    h += `<tr class="sb-row-${c.id}"><th class="sb-lane"><b>${esc(c.n)}</b><span class="mini">${esc(c.sub)}</span></th>`;
+    PASOS.forEach(p => { const o = p[v]; let cell = ""; if (c.id === "mp") cell = `<div class="sb-cell ${resaltar === "tra" ? "es-actor" : ""}">${esc(o.mp)}</div>`; else if (c.id === "contacto") cell = `<div class="sb-cell">${esc(o.contacto)}</div>`; else { const x = o[c.id]; cell = x ? `<div class="sb-cell ${x.a && x.a === resaltar ? "es-actor" : ""}">${x.a ? `<span class="chip ${x.a === "modulo" ? "ch-teal" : "ch-navy"}">${esc(nom(x.a))}</span> ` : ""}${esc(x.t)}</div>` : "—"; const extra = c.id === "front" ? Object.keys(o.otros || {}).filter(k => k === resaltar).map(k => `<div class="sb-cell es-actor"><span class="chip ch-navy">${esc(nom(k))}</span> ${esc(o.otros[k])}</div>`).join("") : ""; cell += extra; }
+      const regs = regsDe({ ronda:r0, paso:p.id, tipo:"actividad" }).filter(r => (c.id === "mp" ? r.actor === "tra" : (o[c.id] && r.actor === o[c.id].a) || (c.id === "front" && (o.otros || {})[r.actor]))); if (regs.length) cell += `<div class="sb-regs">${regs.map(r => `<span class="chip ch-teal" title="${esc(r.participanteNombre)}">${esc(nom(r.actor))}: ${esc(r.payload.decision || r.payload.respuesta || r.payload.sabe || r.payload.accion || "registro")}</span>`).join(" ")}</div>`;
+      h += `<td class="${p.id === cur ? "actual" : ""}">${cell}</td>`; });
+    h += `</tr>`; });
+  h += `<tr class="sb-row-chips"><th class="sb-lane"><b>${v === "hoy" ? "Rupturas del documento" : "Reglas del módulo"}</b></th>${PASOS.map(p => `<td><div class="sb-chips">${p[v].ch.map(k => typeof k === "number" ? `<span class="chip ch-teal">${CIRC[k]} ${esc(BP.reglas[k - 1].nombre)}</span>` : `<span class="chip ch-red">${esc(k)}</span>`).join(" ")}</div></td>`).join("")}</tr></tbody></table></div>`;
+  return h;
+}
+function pasoTarjeta(p, modo, actor) { const o = p[vModo(modo)]; const fila = (n, x) => `<div class="paso-fila"><b>${esc(n)}</b><span>${x && x.a ? `<span class="chip ${x.a === "modulo" ? "ch-teal" : x.a === actor ? "ch-navy" : "ch-grey"}">${esc(nom(x.a))}</span> ` : ""}${esc(typeof x === "string" ? x : (x ? x.t : "—"))}</span></div>`; return `<div class="paso-card"><div class="lbl">${esc(SB.fases.filter(f => f.id === p.fase)[0].n)} · paso ${esc(p.id)} · ${esc(p.dia)}</div>${fila("M.P.", o.mp)}${fila("Contacto", o.contacto)}${fila("Front", o.front)}${fila("Back", o.back)}${fila("Soporte", o.soporte)}</div>`; }
+function renderPart() {
+  const s = S.ses, yo = S.yo, p = pasoActual(), r = rondaDef(s.rondaActual) || {}, modo = r.modo || "actual"; const act = actividadDe(p, yo.actor, modo); const est = estadoActividad(p.id, yo.actor, yo.id, s.rondaActual); const rd = (s.rondas || {})[s.rondaActual] || {};
+  const mio = regsDe({ ronda:s.rondaActual, paso:p.id, tipo:"actividad", participanteId:yo.id })[0]; const valorado = regsDe({ ronda:s.rondaActual, tipo:"valoracion", participanteId:yo.id })[0]; const pregHechas = regsDe({ ronda:s.rondaActual, tipo:"preguntas", participanteId:yo.id })[0];
+  const cab = `<div class="card"><div class="row"><h2 style="margin-right:auto">${esc(yo.nombre)} · ${esc(nomL(yo.actor))}</h2>${lozenge(est)}</div><div class="kv"><b>Escenario</b><span>${esc(ESC.n)}</span><b>Ronda</b><span>${esc(r.n)}</span><b>Paso actual</b><span>${esc(p.id)} · ${esc(p.n)} <span class="mini">(${esc(p.dia)})</span></span><b>Acción esperada</b><span>${act ? esc(act.titulo) : "—"}</span><b>Tiempo</b><span>día virtual ${esc(diaVirtual(s.rondaActual))} del caso · hora real ${esc(hora(ahora()))}</span></div><p class="mini" style="margin-top:6px">Su contrato: ${esc(A[yo.actor].contrato)} · finalidad autorizada: «${esc(A[yo.actor].fin)}» · ${esc(ESC.nota)}</p></div>`;
+  let cuerpo = "";
+  if (s.estado === "preparacion") cuerpo = `<div class="card"><h2>En preparación</h2><p>El facilitador todavía no inició la sesión. Cuando inicie, aquí aparecerá su primera actividad.</p></div>`;
+  else if (rd.estado === "valoracion" || s.estado === "revision" || s.estado === "cerrada" || s.estado === "archivada") cuerpo = renderValoracion(valorado, pregHechas);
+  else if (rd.estado !== "en_curso") cuerpo = `<div class="card"><h2>Esperando</h2><p>La ronda ${esc(r.n)} no está en curso. Espere al facilitador.</p></div>`;
+  else if (s.estado === "pausada") cuerpo = `<div class="card"><h2>Sesión en pausa</h2><p>El facilitador pausó la sesión. Sus registros están guardados.</p></div>`;
+  else if (mio && !S.form.rectificando) cuerpo = `<div class="card"><h2>Actividad completada</h2><p>Registro guardado a las ${esc(hora(mio.t))} (día virtual ${esc(mio.dia)}). Espere a que el facilitador avance al siguiente paso.</p><div class="kv">${Object.keys(mio.payload).filter(k => ["tipo","comprobacion"].indexOf(k) < 0 && mio.payload[k] != null && mio.payload[k] !== "").map(k => `<b>${esc(k)}</b><span>${esc(Array.isArray(mio.payload[k]) ? mio.payload[k].join(", ") : mio.payload[k])}</span>`).join("")}</div>${mio.payload.comprobacion ? `<p class="mini" style="margin-top:6px">Comprobación del sistema: finalidad ${mio.payload.comprobacion.finalidadAutorizada ? "autorizada" : "<span class='regla-no'>no autorizada para su actor</span>"}${mio.payload.comprobacion.piezasDenegadas.length ? " · piezas fuera de su contrato: " + esc(mio.payload.comprobacion.piezasDenegadas.map(k => EV[k].sl).join(", ")) : ""}.</p>` : ""}<div class="row" style="margin-top:8px"><button type="button" class="btn sec" data-act="rectificar">Rectificar esta respuesta</button><span class="mini">La respuesta anterior se conserva en el historial.</span></div></div>`;
+  else if (est === "bloqueada") cuerpo = `<div class="card"><h2>${esc(act.titulo)}</h2><p>${act.tipo === "custodia" ? "Todavía nadie le ha solicitado evidencia en este paso. Cuando alguien la pida, aparecerá aquí." : "La actividad está bloqueada en este momento."}</p><fieldset><legend>Observación (opcional)</legend><input type="text" data-in="f-obs" value="${esc(S.form.obs || "")}" style="width:100%;max-width:640px"></fieldset><button type="button" class="btn sec" data-act="guardar-obs">Guardar observación</button></div>`;
+  else cuerpo = `<div class="card actividad"><h2>${esc(act.titulo)}</h2><p>${esc(act.instr)}</p>${act.ejemplo ? `<p class="mini">${esc(act.ejemplo)}</p>` : ""}<details ${act.tipo === "decide" ? "open" : ""}><summary>Información disponible en este paso</summary>${infoDisponible(p, yo.actor, modo)}</details>${formActividad(p, act, modo)}<div class="row" style="margin-top:8px"><button type="button" class="btn" data-act="guardar">Guardar mi respuesta</button>${S.form.rectificando ? `<button type="button" class="btn sec" data-act="cancelar-rect">Cancelar</button>` : ""}<span class="mini">Se guarda con su nombre, actor, paso, ronda y hora.</span></div></div>`;
+  const rec = `<div class="card"><div class="row"><h2 style="margin-right:auto">Recorrido del servicio</h2><button type="button" class="btn sm sec" data-act="ver-todo">${S.verTodo ? "Ver solo el paso actual" : "Ver el recorrido completo"}</button></div>${S.verTodo ? recorridoHtml(yo.actor) : pasoTarjeta(p, modo, yo.actor)}<p class="mini">El carril de M.P. siempre es la referencia de la experiencia; sus intervenciones aparecen resaltadas. ${esc(ESC.nota)}</p></div>`;
+  $("vista").innerHTML = cab + cuerpo + rec;
+}
+function renderValoracion(valorado, pregHechas) {
+  const v = S.val, yo = S.yo, s = S.ses, r = rondaDef(s.rondaActual) || {};
+  if (valorado && pregHechas) return `<div class="card"><h2>Ronda ${esc(r.n)} cerrada para usted</h2><p>Su valoración del contrato y sus respuestas a las preguntas P1 a P4 quedaron guardadas (${esc(hora(pregHechas.t))}). ${s.estado === "cerrada" ? "La sesión está cerrada con decisión documentada." : "Espere al facilitador."}</p></div>`;
+  return `<div class="card actividad"><h2>Cierre de la ronda: valore su contrato y responda cuatro preguntas</h2><p>Valore el contrato de ${esc(nomL(yo.actor))} tal como lo recorrió en esta ronda (${esc(r.modo === "actual" ? "funcionamiento actual" : "funcionamiento propuesto")}).</p>
+    <fieldset><legend>Contrato: «${esc(A[yo.actor].contrato)}»</legend>${opt("v", "semaforo", ESC.valoracion.semaforo, v.semaforo)}${v.semaforo === "ajustar" || v.semaforo === "rechazar" ? `<input type="text" data-in="v-ajuste" value="${esc(v.ajuste || "")}" style="width:100%;max-width:640px" placeholder="Qué cambiaría y por qué (obligatorio si rechaza)">` : ""}</fieldset>
+    <fieldset><legend>Percepción: frente a hoy, esta forma de trabajar es…</legend>${opt("v", "mejora", ESC.valoracion.mejora, v.mejora)}</fieldset>
+    ${ESC.preguntas.map(q => `<fieldset><legend>${esc(q.id)}. ${esc(q.t)}</legend>${q.tipo === "texto" ? `<input type="text" data-in="v-p" data-arg="${q.id}" value="${esc(v[q.id] || "")}" style="width:100%;max-width:640px" placeholder="Un requisito concreto">` : opt(q.tipo === "multi" ? "vm" : "v", q.id, q.ops, v[q.id], q.tipo === "multi")}${q.cual && (q.tipo === "multi" ? (v[q.id] || []).length && (v[q.id] || []).indexOf("ninguna") < 0 : v[q.id] && v[q.id] !== "si") ? `<input type="text" data-in="v-p" data-arg="${q.id}cual" value="${esc(v[q.id + "cual"] || "")}" style="width:100%;max-width:640px" placeholder="${esc(q.cual)}">` : ""}</fieldset>`).join("")}
+    <div class="row" style="margin-top:8px"><button type="button" class="btn" data-act="guardar-val">Guardar valoración y preguntas</button><span class="mini">Se guarda con su nombre, actor y ronda.</span></div></div>`;
+}
+
+/* ============ Facilitador ============ */
+function tabsFac() { const t = [["preparar","1 · Preparar"],["ejecutar","2 · Ejecutar"],["revisar","3 · Revisar"],["cerrar","4 · Cerrar"],["resultados","Resultados"]]; return `<div class="subtabs" role="tablist">${t.map(x => `<button type="button" role="tab" data-act="fsub" data-arg="${x[0]}" aria-pressed="${S.fsub === x[0]}">${esc(x[1])}</button>`).join("")}</div>`; }
+function renderFac() { const s = S.ses; let h = tabsFac(); if (S.fsub === "preparar") h += facPreparar(); else if (S.fsub === "ejecutar") h += facEjecutar(); else if (S.fsub === "revisar") h += facRevisar(); else if (S.fsub === "cerrar") h += facCerrar(); else h += renderResultados(); $("vista").innerHTML = h; }
+function facPreparar() {
+  const s = S.ses, ps = Object.values(S.parts).sort((a, b) => (a.creado || 0) - (b.creado || 0)); const f = S.form;
+  return `<div class="card"><h2>Preparar</h2><div class="kv"><b>Caso</b><span>${esc(ESC.n)} · ${esc(BP.caso.ficha)}</span><b>Rondas</b><span>${ESC.rondas.map(r => `${esc(r.n)} ${lozenge(((s.rondas || {})[r.id] || {}).estado || "pendiente")}`).join(" · ")}</span><b>Modalidad</b><span>${MODALIDAD === "compartida" ? "Compartida: conexión verificada, cada participante entra desde su navegador con el código <b>" + esc(s.codigo) + "</b>." : "Presencial: la sesión vive en este computador; los participantes se turnan aquí o abren una pestaña con el código <b>" + esc(s.codigo) + "</b>."}</span><b>Cierre</b><span>Actores con valoración obligatoria: ${ESC.requeridos.map(nomL).join(", ")}.</span></div>
+    <p class="mini" style="margin-top:6px">${esc(ESC.nota)}</p></div>
+  <div class="card"><h2>Participantes y roles</h2><p class="mini">Registre a las personas o deje que entren con el código. Varias personas pueden representar al mismo actor; sus respuestas se conservan por separado.</p>
+    <div class="row"><label>Nombre<input type="text" data-in="p-nombre" value="${esc(f.pNombre || "")}"></label><label>Actor<select data-in="p-actor"><option value="">Elija…</option>${BP.actores.map(a => `<option value="${a.id}" ${f.pActor === a.id ? "selected" : ""}>${esc(a.n)}</option>`).join("")}</select></label><label>&nbsp;<button type="button" class="btn sec" data-act="p-add">Añadir participante</button></label></div>
+    ${ps.length ? `<div class="twrap" style="margin-top:8px"><table class="t"><thead><tr><th>Nombre</th><th>Actor</th><th>Conectado</th><th>Registros</th><th></th></tr></thead><tbody>${ps.map(p => `<tr><td>${esc(p.nombre)}</td><td>${esc(nomL(p.actor))}</td><td>${ahora() - (p.ultimo || 0) < 90000 ? '<span class="dot on"></span>ahora' : '<span class="dot"></span>' + esc(hora(p.ultimo))}</td><td>${regsDe({ participanteId:p.id }).length}</td><td><button type="button" class="btn sm sec" data-act="p-del" data-arg="${p.id}">Quitar</button></td></tr>`).join("")}</tbody></table></div>` : `<p class="mini">Todavía no hay participantes.</p>`}
+    <p class="mini" style="margin-top:8px">Actores sin representante: ${BP.actores.filter(a => !participantesDe(a.id).length).map(a => a.corto).join(", ") || "ninguno"}. Los requeridos sin representante bloquearán el avance salvo excepción justificada.</p></div>
+  <details class="card"><summary>Configuración avanzada (opcional)</summary><div class="row" style="margin-top:8px"><label>Nombre de la sesión<input type="text" data-in="s-nombre" value="${esc(s.nombre)}"></label><label>Nuevo PIN<input type="password" data-in="s-pin" value="" autocomplete="off" style="width:130px"></label><label>&nbsp;<button type="button" class="btn sec sm" data-act="s-guardar">Guardar</button></label></div><p class="mini">El escenario, los pasos y las reglas son fijos en esta versión. Ronda inicial: ${esc(ESC.rondas[0].n)}.</p></details>
+  <div class="card"><div class="row">${s.estado === "preparacion" ? `<button type="button" class="btn" data-act="iniciar">Iniciar la sesión (ronda 1, paso ${esc(PASOS[0].id)})</button>` : `<span class="mini">La sesión ya fue iniciada: vaya a «Ejecutar».</span>`}</div></div>`;
+}
+function facEjecutar() {
+  const s = S.ses, r = rondaDef(s.rondaActual) || {}, p = pasoActual(), modo = r.modo || "actual", rd = (s.rondas || {})[s.rondaActual] || {}; const reglas = reglasDe(p, modo); const f = S.form;
+  if (s.estado === "preparacion") return `<div class="card"><h2>Ejecutar</h2><p>Inicie la sesión desde «Preparar».</p></div>`;
+  const involucrados = [reglas.front, "tra"].concat(reglas.extras, reglas.custodios, reglas.soporte ? [reglas.soporte] : [], reglas.otros).filter((x, i, a) => x && a.indexOf(x) === i);
+  const filas = involucrados.map(a => { const ps = participantesDe(a); const req = reglas.requeridos.indexOf(a) >= 0; return ps.length ? ps.map(x => `<tr><td>${esc(nomL(a))}${req ? ' <span class="chip ch-navy">requerido</span>' : ""}</td><td>${esc(x.nombre)}</td><td>${esc((actividadDe(p, a, modo) || {}).titulo)}</td><td>${lozenge(estadoActividad(p.id, a, x.id))}</td></tr>`).join("") : `<tr><td>${esc(nomL(a))}${req ? ' <span class="chip ch-navy">requerido</span>' : ""}</td><td class="mini">sin representante</td><td>${esc((actividadDe(p, a, modo) || {}).titulo)}</td><td>${req ? '<span class="chip ch-gold">bloquea el avance</span>' : lozenge("pendiente")}</td></tr>`; }).join("");
+  const cond = condicionesAvance(s.rondaActual, p.id); const ok = cond.every(c => c.ok); const ultimo = PIDX[p.id] === PASOS.length - 1;
+  let controles = "";
+  if (rd.estado === "valoracion") controles = `<p>Los pasos de esta ronda terminaron. Los participantes están valorando su contrato y respondiendo P1 a P4.</p><p class="mini">Valoraciones recibidas: ${regsDe({ ronda:s.rondaActual, tipo:"valoracion" }).length} · preguntas: ${regsDe({ ronda:s.rondaActual, tipo:"preguntas" }).length}. Actores requeridos sin valoración: ${ESC.requeridos.filter(a => !participantesDe(a).some(x => regsDe({ ronda:s.rondaActual, tipo:"valoracion", participanteId:x.id }).length)).map(nomL).join(", ") || "ninguno"}.</p><div class="row"><button type="button" class="btn" data-act="cerrar-ronda">Cerrar la ronda ${esc(s.rondaActual)}</button></div>`;
+  else if (rd.estado === "cerrada") { const sig = ESC.rondas[ESC.rondas.map(x => x.id).indexOf(s.rondaActual) + 1]; controles = sig ? `<p>Ronda ${esc(s.rondaActual)} cerrada.</p><div class="row"><button type="button" class="btn" data-act="iniciar-ronda" data-arg="${sig.id}">Iniciar ${esc(sig.n)}</button></div>` : `<p>Todas las rondas están cerradas. Continúe en «Revisar» y «Cerrar».</p>`; }
+  else controles = `<div class="row">${s.estado === "pausada" ? `<button type="button" class="btn" data-act="reanudar">Reanudar</button>` : `<button type="button" class="btn sec" data-act="pausar">Pausar</button>`}${ok ? `<button type="button" class="btn" data-act="avanzar">${ultimo ? "Terminar los pasos y abrir la valoración" : "Avanzar al paso " + esc(PASOS[PIDX[p.id] + 1].id)}</button>` : `<span class="mini">Condiciones sin cumplir: ${cond.filter(c => !c.ok).map(c => esc(c.motivo)).join("; ")}.</span>`}</div>${ok ? "" : `<div class="row" style="margin-top:8px"><label style="flex:1;min-width:260px">Justificación de la excepción<input type="text" data-in="f-just" value="${esc(f.just || "")}" placeholder="Por qué se avanza sin cumplir las condiciones"></label><label>&nbsp;<button type="button" class="btn sec" data-act="avanzar-exc">${ultimo ? "Terminar con excepción" : "Avanzar con excepción"}</button></label></div>`}`;
+  const feed = vigentes().filter(r2 => r2.ronda === s.rondaActual).slice(-12).reverse().map(r2 => `<li><span class="when">${esc(hora(r2.t))} · d.${esc(r2.dia)}</span><span><span class="chip ${r2.origen === "sistema" ? "ch-teal" : r2.origen === "facilitador" ? "ch-gold" : "ch-navy"}">${esc(r2.origen)}</span> <b>${esc(r2.participanteNombre || nom(r2.actor) || "")}</b> ${esc(r2.tipo)} · ${esc(r2.paso)} ${r2.payload && r2.payload.decision ? "· " + esc(r2.payload.decision) : ""}${r2.payload && r2.payload.simulado ? ' <span class="chip ch-grey">simulado</span>' : ""}</span></li>`).join("");
+  return `<div class="card"><div class="row"><h2 style="margin-right:auto">Ejecutar · ${esc(r.n)} · paso ${esc(p.id)}</h2>${lozenge(s.estado)}</div>${pasoTarjeta(p, modo, null)}<div class="kv" style="margin-top:8px"><b>Entradas</b><span>${(reglas.entradas.map(k => EV[k].sl).join(", ")) || "ninguna"}</span><b>Actores</b><span>requeridos: ${reglas.requeridos.map(nomL).join(", ")} · custodios: ${reglas.custodios.map(nomL).join(", ") || "—"} · soporte: ${reglas.soporte ? nomL(reglas.soporte) : "—"}</span><b>Salidas</b><span>${esc(reglas.salidas.join(" · "))}</span><b>Avance</b><span>actividad completada por al menos un representante de cada actor requerido; si no, excepción justificada.</span></div></div>
+  <div class="card"><h2>Actividades del paso</h2><div class="twrap"><table class="t"><thead><tr><th>Actor</th><th>Participante</th><th>Actividad</th><th>Estado</th></tr></thead><tbody>${filas}</tbody></table></div><div style="margin-top:10px">${controles}</div></div>
+  <div class="grid2"><div class="card"><h2>Registros recientes</h2>${feed ? `<ul class="feed">${feed}</ul>` : `<p class="mini">Sin registros en esta ronda.</p>`}</div><div class="card"><h2>Incidencias</h2><p class="mini">Anote lo que interrumpe o altera la sesión (una persona sin conexión, una duda repetida, un cambio de reglas).</p><div class="row"><label style="flex:1;min-width:220px">Incidencia<input type="text" data-in="f-inc" value="${esc(f.inc || "")}"></label><label>&nbsp;<button type="button" class="btn sec" data-act="incidencia">Registrar</button></label></div>${vigentes().filter(x => x.tipo === "incidencia").length ? `<ul class="lista">${vigentes().filter(x => x.tipo === "incidencia").slice(-6).reverse().map(x => `<li><span class="mini">${esc(hora(x.t))} · ${esc(x.ronda)} · ${esc(x.paso)}</span> ${esc(x.payload.texto)}</li>`).join("")}</ul>` : ""}</div></div>`;
+}
+function facRevisar() {
+  const s = S.ses, rev = s.revision || { observaciones:{}, riesgos:{} };
+  const faltantes = vigentes().filter(r => r.tipo === "solicitud").map(r => ({ r, resp:vigentes().filter(x => x.tipo === "respuesta" && x.payload.solicitud === r.id)[0] }));
+  const obs = vigentes().filter(r => r.tipo === "observacion"); const des = ESC.rondas.flatMap(r => desacuerdos(r.id));
+  const tipos = [["faltante","Faltante"],["conflicto","Conflicto de rol"],["otra","Otra"]];
+  return `<div class="card"><h2>Revisar · faltantes</h2><p class="mini">Solicitudes de evidencia generadas por decisiones con información insuficiente, y su respuesta.</p>${faltantes.length ? `<div class="twrap"><table class="t"><thead><tr><th>Ronda · paso</th><th>Pide</th><th>A</th><th>Piezas</th><th>Finalidad</th><th>Respuesta</th></tr></thead><tbody>${faltantes.map(x => `<tr><td>${esc(x.r.ronda)} · ${esc(x.r.paso)}</td><td>${esc(nom(x.r.payload.de))}</td><td>${esc(nom(x.r.payload.a))}</td><td>${esc((x.r.payload.piezas || []).map(k => EV[k].sl).join(", "))}</td><td>${esc((FIN[x.r.payload.finalidad] || { n:"—" }).n)}${x.r.payload.autorizada === false ? ' <span class="chip ch-red">no autorizada</span>' : ""}</td><td>${x.resp ? esc(x.resp.payload.respuesta) + " · " + esc(x.resp.payload.dias) + " d." : '<span class="chip ch-gold">sin respuesta</span>'}</td></tr>`).join("")}</tbody></table></div>` : `<p class="mini">Sin solicitudes registradas.</p>`}</div>
+  <div class="card"><h2>Observaciones y conflictos</h2><p class="mini">Clasifique cada observación, proponga una solución y marque «comprobado» solo cuando haya verificado que el problema quedó resuelto. Proponer no es comprobar.</p>${obs.length ? obs.map(r => { const o = rev.observaciones[r.id] || {}; return `<div class="obs"><div><span class="chip ch-navy">${esc(r.ronda)} · ${esc(r.paso)}</span> <b>${esc(r.participanteNombre || "Facilitador")}</b> (${esc(nom(r.actor))}): ${esc(r.payload.texto)}</div><div class="row" style="margin-top:4px"><label>Tipo<select data-in="rev-tipo" data-arg="${r.id}"><option value="">—</option>${tipos.map(t => `<option value="${t[0]}" ${o.tipo === t[0] ? "selected" : ""}>${esc(t[1])}</option>`).join("")}</select></label><label style="flex:1;min-width:220px">Solución propuesta<input type="text" data-in="rev-prop" data-arg="${r.id}" value="${esc(o.propuesta || "")}"></label><label><input type="checkbox" data-in="rev-comp" data-arg="${r.id}" ${o.comprobado ? "checked" : ""}> Comprobado resuelto</label></div>${o.comprobado ? `<div class="row"><label style="flex:1;min-width:220px">Cómo se comprobó<input type="text" data-in="rev-como" data-arg="${r.id}" value="${esc(o.como || "")}"></label></div>` : ""}</div>`; }).join("") : `<p class="mini">Sin observaciones.</p>`}</div>
+  <div class="card"><h2>Desacuerdos entre representantes del mismo actor</h2>${des.length ? `<div class="twrap"><table class="t"><thead><tr><th>Ronda</th><th>Actor</th><th>Paso</th><th>Tipo</th><th>Detalle</th></tr></thead><tbody>${des.map(d => `<tr><td>${esc(d.ronda)}</td><td>${esc(nomL(d.actor))}</td><td>${esc(d.paso)}</td><td>${esc(d.tipo)}</td><td>${esc(d.detalle)}</td></tr>`).join("")}</tbody></table></div>` : `<p class="mini">Sin desacuerdos detectados (se comparan decisiones y valoraciones entre representantes del mismo actor).</p>`}</div>
+  <div class="card"><h2>Riesgos éticos</h2><p class="mini">Marque los que aplican y describa la mitigación. Un riesgo marcado sin descripción impide el cierre favorable.</p><ul class="sb-riesgos">${ESC.riesgos.map(k => { const x = rev.riesgos[k.id] || {}; return `<li><label><input type="checkbox" data-in="riesgo-aplica" data-arg="${k.id}" ${x.aplica ? "checked" : ""}> ${esc(k.t)}</label>${x.aplica ? `<input type="text" data-in="riesgo-mit" data-arg="${k.id}" value="${esc(x.mitigacion || "")}" placeholder="Mitigación (obligatoria)" style="width:100%;max-width:640px;margin-top:4px">` : ""}</li>`; }).join("")}</ul></div>`;
+}
+function facCerrar() {
+  const s = S.ses, c = estadoCierre(), d = s.decision || { quien:"", evidencia:"", condiciones:"", requisitos:[] }; const f = S.form;
+  const reqs = (f.reqs || d.requisitos || []).length ? (f.reqs || d.requisitos) : [{ texto:"", comprobacion:"" }];
+  return `<div class="card"><h2>Cerrar</h2><div class="estado-cierre ${c.cls}"><b>${esc(c.estado)}</b></div>${c.faltas.length ? `<div class="lbl" style="margin-top:8px">Evidencia pendiente</div><ul class="lista">${c.faltas.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}${c.ajustes.length ? `<div class="lbl" style="margin-top:8px">Ajustes requeridos</div><ul class="lista">${c.ajustes.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}<p class="mini" style="margin-top:8px">El cierre favorable exige: rondas cerradas, valoración de los actores requeridos, preguntas P1 a P4 respondidas, conflictos comprobados, riesgos con mitigación descrita y rechazos con propuesta.</p></div>
+  <div class="card"><h2>Decisión final</h2><p class="mini">Registre quién decide, con qué evidencia, qué condiciones fija y qué requisito pasa al siguiente prototipo con su forma de comprobación.</p>
+    <div class="row"><label>Quién toma la decisión<input type="text" data-in="d-quien" value="${esc(f.dQuien != null ? f.dQuien : d.quien)}" placeholder="Nombre y rol"></label></div>
+    <label class="lbl" style="display:block;margin-top:8px">Evidencia considerada</label><textarea data-in="d-evidencia" placeholder="Resumen de la evidencia (se sugiere abajo)">${esc(f.dEvid != null ? f.dEvid : d.evidencia)}</textarea><p class="mini">Sugerencia: ${esc(evidenciaResumen())}</p>
+    <label class="lbl" style="display:block;margin-top:8px">Decisión y condiciones para el siguiente prototipo</label><textarea data-in="d-cond" placeholder="Por ejemplo: avanzar al prototipo del módulo con las condiciones…">${esc(f.dCond != null ? f.dCond : d.condiciones)}</textarea>
+    <div class="lbl" style="margin-top:8px">Requisitos para el siguiente prototipo y cómo se comprobarán</div>${reqs.map((q, i) => `<div class="row" style="margin-top:4px"><label style="flex:1;min-width:200px">Requisito ${i + 1}<input type="text" data-in="d-req" data-arg="${i}" value="${esc(q.texto)}"></label><label style="flex:1;min-width:200px">Cómo se comprobará<input type="text" data-in="d-comp" data-arg="${i}" value="${esc(q.comprobacion)}"></label></div>`).join("")}<div class="row" style="margin-top:6px"><button type="button" class="btn sec sm" data-act="d-req-add">Añadir requisito</button></div>
+    <div class="row" style="margin-top:10px"><button type="button" class="btn" data-act="d-guardar">Guardar decisión</button>${c.cls === "ready" && c.decisionOk ? `<button type="button" class="btn" data-act="cerrar-sesion">Cerrar la sesión con decisión documentada</button>` : `<span class="mini">Cerrar la sesión requiere el estado «Listo para revisión» y una decisión completa (quién, condiciones y al menos un requisito con comprobación).</span>`}</div></div>
+  <div class="card"><h2>Exportar y archivar</h2><div class="row"><button type="button" class="btn sec" data-act="exp-informe">Descargar informe (HTML)</button><button type="button" class="btn sec" data-act="exp-csv-todo">Descargar tablas (CSV)</button></div><details style="margin-top:8px"><summary>Opciones avanzadas</summary><div class="row" style="margin-top:6px"><button type="button" class="btn sec sm" data-act="exp-json">Descargar JSON completo (sin credenciales)</button><button type="button" class="btn sec sm" data-act="copy-json">Copiar JSON</button>${s.estado !== "archivada" ? `<button type="button" class="btn danger sm" data-act="archivar">Archivar la sesión (conserva la evidencia)</button>` : `<span class="chip ch-grey">archivada</span>`}</div></details></div>`;
+}
+function evidenciaResumen() { const rs = ESC.rondas.map(r => ({ r, i:indicadores(r.id) })); return rs.map(x => `${x.r.id}: ${x.i.registros} registros, ${x.i.actividades} actividades, ${x.i.reprocesos} reprocesos, ${x.i.excepciones} excepciones, ${x.i.desacuerdos} desacuerdos`).join(" · ") + ` · valoraciones: ${vigentes().filter(r => r.tipo === "valoracion").length} · observaciones: ${vigentes().filter(r => r.tipo === "observacion").length}`; }
+
+/* ============ Resultados ============ */
+function tabla(id, cols, rows) { return `<div class="row" style="margin-top:6px"><span class="sp"></span><button type="button" class="btn sm sec" data-act="csv" data-arg="${esc(id)}">Exportar CSV</button></div><div class="twrap"><table class="t" data-tabla="${esc(id)}"><thead><tr>${cols.map(c => `<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${rows.length ? rows.map(r => `<tr>${r.map(v => `<td>${esc(v == null ? "" : v)}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${cols.length}" class="mini">Sin datos.</td></tr>`}</tbody></table></div>`; }
+const TABLAS = {};
+function renderResultados() {
+  const s = S.ses, c = estadoCierre(); const parts = Object.values(S.parts); const ind = {}; ESC.rondas.forEach(r => { ind[r.id] = indicadores(r.id); });
+  TABLAS.participantes = { cols:["Nombre","Actor","Registros"], rows:parts.map(p => [p.nombre, nomL(p.actor), regsDe({ participanteId:p.id }).length]) };
+  const rondasH = ESC.rondas.map(r => { const rd = (s.rondas || {})[r.id] || {}; const pasos = PASOS.map(p => { const ps = (rd.pasos || {})[p.id] || {}; const acts = regsDe({ ronda:r.id, paso:p.id, tipo:"actividad" }); return [p.id + " · " + p.n, ps.estado === "completado" ? "completado" : (s.rondaActual === r.id && s.pasoActual === p.id ? "actual" : "pendiente"), acts.length, acts.map(a => nom(a.actor) + " " + (a.payload.decision || a.payload.respuesta || a.payload.sabe || a.payload.accion || "")).join("; "), ps.excepcion ? ps.excepcion.texto : ""]; }); TABLAS["ronda_" + r.id] = { cols:["Paso","Estado","Actividades","Decisiones registradas","Excepción del facilitador"], rows:pasos }; return `<h3>${esc(r.n)} ${lozenge(rd.estado || "pendiente")} · día virtual final ${esc(ind[r.id].diaFinal)}</h3>${tabla("ronda_" + r.id, TABLAS["ronda_" + r.id].cols, pasos)}`; }).join("");
+  const falt = vigentes().filter(r => r.tipo === "solicitud").map(r => { const resp = vigentes().filter(x => x.tipo === "respuesta" && x.payload.solicitud === r.id)[0]; return [r.ronda, r.paso, nom(r.payload.de), nom(r.payload.a), (r.payload.piezas || []).map(k => EV[k].sl).join(", "), resp ? resp.payload.respuesta + " · " + resp.payload.dias + " d." : "sin respuesta"]; });
+  const reproc = vigentes().filter(r => r.tipo === "actividad" && r.payload.tipo === "decide" && r.payload.suficiencia !== "suficiente").map(r => [r.ronda, r.paso, nom(r.actor), r.participanteNombre, r.payload.suficiencia, (r.payload.falta || []).map(k => EV[k].sl).join(", ")]);
+  TABLAS.faltantes = { cols:["Ronda","Paso","Pide","A","Piezas","Respuesta"], rows:falt }; TABLAS.reprocesos = { cols:["Ronda","Paso","Actor","Participante","Suficiencia","Faltó"], rows:reproc };
+  const des = ESC.rondas.flatMap(r => desacuerdos(r.id)).map(d => [d.ronda, nomL(d.actor), d.paso, d.tipo, d.detalle]); TABLAS.desacuerdos = { cols:["Ronda","Actor","Paso","Tipo","Detalle"], rows:des };
+  const preg = vigentes().filter(r => r.tipo === "preguntas"); const barreras = {}; preg.forEach(r => (r.payload.P3 || []).forEach(k => { if (k !== "ninguna") { barreras[k] = barreras[k] || { n:0, quien:[] }; barreras[k].n++; barreras[k].quien.push(nom(r.actor) + " (" + r.ronda + ")"); } }));
+  const P3 = ESC.preguntas.filter(q => q.id === "P3")[0]; const barrRows = Object.keys(barreras).sort((a, b) => barreras[b].n - barreras[a].n).map(k => [(P3.ops.filter(o => o[0] === k)[0] || [k, k])[1], barreras[k].n, barreras[k].quien.join(", "), preg.filter(r => (r.payload.P3 || []).indexOf(k) >= 0 && r.payload.P3cual).map(r => r.payload.P3cual).join(" / ")]); TABLAS.barreras = { cols:["Barrera (P3)","Menciones","Quién la señaló","Descripción"], rows:barrRows };
+  const rev = s.revision || { observaciones:{}, riesgos:{} }; const cambios = vigentes().filter(r => r.tipo === "observacion").map(r => { const o = rev.observaciones[r.id] || {}; return [r.ronda + " · " + r.paso, nom(r.actor), r.payload.texto, o.tipo || "", o.propuesta || "", o.comprobado ? "comprobado: " + (o.como || "") : "propuesto, sin comprobar"]; }); TABLAS.cambios = { cols:["Ronda · paso","Actor","Observación","Tipo","Solución propuesta","Comprobación"], rows:cambios };
+  const d = s.decision || {}; const reqs = (d.requisitos || []).filter(q => (q.texto || "").trim()).map(q => [q.texto, q.comprobacion]); TABLAS.requisitos = { cols:["Requisito","Cómo se comprobará"], rows:reqs };
+  const vals = vigentes().filter(r => r.tipo === "valoracion").map(r => [r.ronda, nomL(r.actor), r.participanteNombre, r.payload.semaforo, r.payload.mejora, r.payload.ajuste || ""]); TABLAS.valoraciones = { cols:["Ronda","Actor","Participante","Contrato","Percepción frente a hoy","Ajuste propuesto"], rows:vals };
+  const pregRows = preg.map(r => [r.ronda, nomL(r.actor), r.participanteNombre, r.payload.P1 + (r.payload.P1cual ? " (" + r.payload.P1cual + ")" : ""), r.payload.P2 + (r.payload.P2cual ? " (" + r.payload.P2cual + ")" : ""), (r.payload.P3 || []).join(", ") + (r.payload.P3cual ? " (" + r.payload.P3cual + ")" : ""), r.payload.P4 || ""]); TABLAS.preguntas = { cols:["Ronda","Actor","Participante","P1 representación","P2 comprensión","P3 dificultades","P4 requisitos"], rows:pregRows };
+  const keys = ["actividades","suficiente","parcial","insuficiente","finalidadesNoAutorizadas","piezasDenegadas","reprocesos","solicitudes","respuestas","acusesSimulados","notificacionesSinAcuse","excepciones","diasVirtuales","mpSabe","mpGestiones","desacuerdos"]; const indRows = keys.map(k => [k].concat(ESC.rondas.map(r => ind[r.id][k])).concat([FORMULAS[k] || "conteo directo de registros"])); TABLAS.indicadores = { cols:["Indicador"].concat(ESC.rondas.map(r => r.id + " (" + r.modo + ")")).concat(["Cómo se calcula"]), rows:indRows };
+  const comparable = ESC.rondas.every(r => (s.escenario || ESC.id) === ESC.id); const timeline = vigentes().map(r => [hora(r.t), r.ronda, r.paso, r.dia, r.origen, r.participanteNombre || "", nom(r.actor), r.tipo, JSON.stringify(r.payload).slice(0, 160)]); TABLAS.registros = { cols:["Hora","Ronda","Paso","Día virtual","Origen","Participante","Actor","Tipo","Contenido"], rows:timeline };
+  return `<div class="card informe" id="informe"><h2 style="margin-top:0">Informe de la sesión «${esc(s.nombre)}»</h2><p class="mini">Código ${esc(s.codigo)} · ${esc(ESC.n)} · creada ${esc(fecha(s.creada))} · modalidad ${esc(s.modalidad)} · estado de cierre: <b>${esc(c.estado)}</b></p>
+    <h2>1. Qué se examinó y quiénes participaron</h2><p>Recorrido del service blueprint de la ruta de incapacidad (${PASOS.length} pasos en tres fases) en ${ESC.rondas.length} rondas: ${ESC.rondas.map(r => r.n).join(" y ")}. ${parts.length} participante(s). ${esc(ESC.nota)}</p>${tabla("participantes", TABLAS.participantes.cols, TABLAS.participantes.rows)}
+    <h2>2. Qué ocurrió en cada ronda</h2>${rondasH}
+    <h2>3. Información que faltó y reprocesos</h2><p class="mini">Reproceso: decisión tomada con información parcial o insuficiente que señala una pieza faltante.</p>${tabla("reprocesos", TABLAS.reprocesos.cols, reproc)}${tabla("faltantes", TABLAS.faltantes.cols, falt)}
+    <h2>4. Responsabilidades que generaron desacuerdo</h2>${tabla("desacuerdos", TABLAS.desacuerdos.cols, des)}
+    <h2>5. Barreras identificadas y sustento</h2><p class="mini">Sustento: número de participantes que señalaron la dificultad en P3 y sus descripciones.</p>${tabla("barreras", TABLAS.barreras.cols, barrRows)}
+    <h2>6. Cambios acordados</h2>${tabla("cambios", TABLAS.cambios.cols, cambios)}
+    <h2>7. Requisitos para el siguiente prototipo</h2>${d.quien ? `<p><b>Decisión</b> de ${esc(d.quien)}${d.t ? " (" + esc(fecha(d.t)) + ")" : ""}: ${esc(d.condiciones || "")}</p><p class="mini">Evidencia considerada: ${esc(d.evidencia || "")}</p>` : `<p class="mini">Decisión final no documentada todavía.</p>`}${tabla("requisitos", TABLAS.requisitos.cols, reqs)}
+    <h2>8. Valoraciones subjetivas</h2><p class="mini">Percepción de los participantes; no es comportamiento observado.</p>${tabla("valoraciones", TABLAS.valoraciones.cols, vals)}${tabla("preguntas", TABLAS.preguntas.cols, pregRows)}
+    <h2>9. Indicadores observados en la simulación</h2><p class="mini">${comparable ? "Las rondas corresponden al mismo escenario y son comparables." : "Las rondas no corresponden a escenarios equivalentes: no se comparan."}</p>${tabla("indicadores", TABLAS.indicadores.cols, indRows)}
+    <h2>10. Correspondencia con el proyecto doctoral</h2><ul class="lista"><li><b>P1 y P3</b> → ${esc(ESC.subpreguntas.caracterizacion)}</li><li><b>P2 y P4</b> → ${esc(ESC.subpreguntas.diseno)}</li><li><b>Indicadores observados</b> → ${esc(ESC.subpreguntas.evaluacion)}</li></ul><p class="mini">Este blueprint aporta evidencia sobre comprensión, coherencia y requisitos (percepción y comportamiento en simulación). El resultado técnico ejecutado del módulo y la comparación operativa posterior requieren sus propios instrumentos.</p><ul class="lista">${ESC.hipotesis.map(h => `<li><b>${esc(h[0])}</b>: ${esc(h[1])}</li>`).join("")}</ul>
+    <h2>11. Registro completo</h2>${tabla("registros", TABLAS.registros.cols, timeline)}
+    <div class="row" style="margin-top:12px"><button type="button" class="btn sec" data-act="exp-informe">Descargar informe (HTML)</button><button type="button" class="btn sec" data-act="exp-csv-todo">Descargar todas las tablas (CSV)</button></div></div>`;
+}
+function csvDe(id) { const t = TABLAS[id]; if (!t) return ""; const q = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; return [t.cols.map(q).join(";")].concat(t.rows.map(r => r.map(q).join(";"))).join("\r\n"); }
+function exportarJSON() { const s = clone(S.ses || {}); delete s.pinHash; return { instrumento:"service_blueprint_simulacion", version:1, fecha:new Date().toISOString(), sesion:s, participantes:Object.values(S.parts), registros:S.regs, cierre:estadoCierre(), indicadores:ESC.rondas.map(r => Object.assign({ ronda:r.id, modo:r.modo }, indicadores(r.id))), formulas:FORMULAS }; }
+async function descargar(nombre, datos, mime) { if (DL) { try { await DL.save({ filename:nombre, data:datos }); aviso("Archivo entregado."); return; } catch (e) { if (e && e.code === "cancelled") return; } } try { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([datos], { type:mime })); a.download = nombre; document.body.appendChild(a); a.click(); a.remove(); aviso("Descarga iniciada."); } catch (e) { aviso("No se pudo descargar; use «Copiar JSON».", true); } }
+function informeHtml() { const css = document.querySelector("style").textContent; const el = $("informe"); return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Informe · ${esc(S.ses.nombre)}</title><style>${css}</style></head><body><div class="wrap">${el ? el.outerHTML.replace(/<button[^>]*>.*?<\/button>/g, "") : ""}</div></body></html>`; }
+
+/* ============ Render principal ============ */
+function render() {
+  const ae = document.activeElement; if (ae && /INPUT|TEXTAREA|SELECT/.test(ae.tagName) && ae.closest("#vista") && ae.type !== "checkbox" && !/^(e-|n-)/.test(ae.getAttribute("data-in") || "")) { S.pendingRender = true; return; }
+  S.pendingRender = false; renderTop();
+  if (S.rol === "entrada" || !S.code) return renderEntrada();
+  if (S.cargando && !S.ses) { $("vista").innerHTML = `<div class="card"><p>Cargando la sesión ${esc(S.code)}…</p></div>`; return; }
+  if (!S.ses) { $("vista").innerHTML = `<div class="card"><p class="msg err">${esc(S.error || "Sesión no encontrada.")}</p><button type="button" class="btn sec" data-act="salir">Volver</button></div>`; return; }
+  if (S.rol === "facilitador") return renderFac();
+  if (S.rol === "resultados") { $("vista").innerHTML = renderResultados(); return; }
+  if (S.rol === "participante" && S.yo) return renderPart();
+  return renderElegir();
+}
+document.addEventListener("focusout", () => { if (S.pendingRender) setTimeout(() => { if (S.pendingRender && !(document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))) render(); }, 150); });
+setInterval(() => { if (S.rol === "facilitador" && !S.pendingRender) render(); }, 30000);
+
+/* ============ Acciones del participante ============ */
+async function guardarActividad() {
+  const s = S.ses, p = pasoActual(), modo = (rondaDef(s.rondaActual) || {}).modo || "actual", act = actividadDe(p, S.yo.actor, modo), f = S.form;
+  const falta = validarForm(act); if (falta.length) return aviso("Falta completar: " + falta.join(", ") + ".", true);
+  const payload = { tipo:act.tipo, obs:(f.obs || "").trim() || null };
+  if (act.tipo === "decide") { Object.assign(payload, { suficiencia:f.suficiencia, falta:f.falta || [], finalidad:f.finalidad, decision:f.decision, responde:f.responde, dias:num(f.dias), notifica:f.notifica || [] }); payload.comprobacion = comprobarFinalidad(S.yo.actor, f.finalidad, ESC.entradas[p.id] || []); }
+  if (act.tipo === "custodia") Object.assign(payload, { respuesta:f.respuesta, dias:num(f.dias) });
+  if (act.tipo === "focal") Object.assign(payload, { sabe:f.sabe, responde:f.responde, dias:num(f.dias), hizo:f.hizo || [] });
+  if (act.tipo === "soporte") Object.assign(payload, { ve:f.ve, accion:f.accion });
+  const previo = f.rectificando ? regsDe({ ronda:s.rondaActual, paso:p.id, tipo:"actividad", participanteId:S.yo.id })[0] : null;
+  const reg = await registrar("actividad", payload, previo ? { reemplaza:previo.id, version:(previo.version || 1) + 1 } : {});
+  // Efectos simulados del sistema, identificados como tales
+  if (act.tipo === "decide") {
+    if (modo === "actual" && payload.suficiencia !== "suficiente" && payload.falta.length) { const porCust = {}; payload.falta.forEach(k => { const c = EV[k].cust; (porCust[c] = porCust[c] || []).push(k); }); for (const c of Object.keys(porCust)) await registrarSistema("solicitud", { de:S.yo.actor, a:c, piezas:porCust[c], finalidad:payload.finalidad, autorizada:payload.comprobacion.finalidadAutorizada, origenActividad:reg.id, simulado:true }); }
+    if (modo === "propuesto") { for (const k of ESC.entradas[p.id] || []) { const perm = payload.comprobacion.piezasPermitidas[k]; await registrarSistema("consulta", { de:S.yo.actor, a:EV[k].cust, pieza:k, campos:perm || [], denegada:!perm, motivo:perm ? "" : (payload.comprobacion.finalidadAutorizada ? "pieza fuera de su contrato" : "finalidad no autorizada"), simulado:true }); }
+      if (payload.notifica.length) { await registrarSistema("notificacion", { de:S.yo.actor, a:payload.notifica, acuse:true, simulado:true }); for (const a of payload.notifica) await registrarSistema("acuse", { de:a, a:S.yo.actor, simulado:true, nota:"acuse generado por el módulo simulado" }); } }
+    if (modo === "actual" && payload.responde) await registrarSistema("notificacion", { de:S.yo.actor, a:[], acuse:false, simulado:true, nota:"funcionamiento actual: notificación sin acuse" });
+  }
+  if (act.tipo === "custodia") { const sol = regsDe({ ronda:s.rondaActual, paso:p.id, tipo:"solicitud" }).filter(r => r.payload.a === S.yo.actor); for (const r of sol) await registrarSistema("respuesta", { solicitud:r.id, de:S.yo.actor, a:r.payload.de, respuesta:payload.respuesta, dias:payload.dias, origenActividad:reg.id }); }
+  if (payload.obs) await registrar("observacion", { texto:payload.obs, origenActividad:reg.id });
+  S.form = {}; aviso("Guardado: registro " + reg.id + " a las " + hora(reg.t) + (previo ? " (rectificación; la anterior queda en el historial)" : "") + ".");
+}
+async function guardarValoracion() {
+  const v = S.val, s = S.ses; if (!v.semaforo) return aviso("Falta la valoración del contrato.", true); if (v.semaforo === "rechazar" && !(v.ajuste || "").trim()) return aviso("Si rechaza el contrato, escriba qué cambiaría.", true); if (!v.mejora) return aviso("Falta la percepción frente a hoy.", true);
+  const faltaP = ESC.preguntas.filter(q => q.tipo === "texto" ? !(v[q.id] || "").trim() : q.tipo === "multi" ? !(v[q.id] || []).length : !v[q.id]).map(q => q.id); if (faltaP.length) return aviso("Falta responder " + faltaP.join(", ") + ".", true);
+  const prevV = regsDe({ ronda:s.rondaActual, tipo:"valoracion", participanteId:S.yo.id })[0], prevP = regsDe({ ronda:s.rondaActual, tipo:"preguntas", participanteId:S.yo.id })[0];
+  await registrar("valoracion", { semaforo:v.semaforo, ajuste:(v.ajuste || "").trim(), mejora:v.mejora }, Object.assign({ paso:"—" }, prevV ? { reemplaza:prevV.id, version:(prevV.version || 1) + 1 } : {}));
+  const pp = {}; ESC.preguntas.forEach(q => { pp[q.id] = v[q.id] || (q.tipo === "multi" ? [] : ""); if (v[q.id + "cual"]) pp[q.id + "cual"] = v[q.id + "cual"]; });
+  await registrar("preguntas", pp, Object.assign({ paso:"—" }, prevP ? { reemplaza:prevP.id, version:(prevP.version || 1) + 1 } : {}));
+  S.val = {}; aviso("Valoración y preguntas guardadas.");
+}
+/* ============ Acciones del facilitador ============ */
+async function avanzar(justificacion) {
+  const s = S.ses, pid = s.pasoActual, i = PIDX[pid], r = s.rondaActual; const patch = { rondas:{} }; patch.rondas[r] = { pasos:{} }; patch.rondas[r].pasos[pid] = { estado:"completado", completado:ahora(), excepcion:justificacion ? { texto:justificacion, quien:"Facilitador", t:ahora() } : null };
+  const ultimo = i === PASOS.length - 1; if (ultimo) patch.rondas[r].estado = "valoracion"; else { patch.pasoActual = PASOS[i + 1].id; patch.rondas[r].pasos[PASOS[i + 1].id] = { estado:"en_curso", iniciado:ahora() }; }
+  await actualizarSes(patch); await registrarFacilitador("avance", { de:pid, a:ultimo ? "valoracion" : PASOS[i + 1].id, excepcion:justificacion || null, condiciones:condicionesAvance(r, pid) }, { paso:pid });
+  aviso(ultimo ? "Pasos terminados: los participantes pasan a la valoración." : "Paso " + PASOS[i + 1].id + " en curso." + (justificacion ? " Excepción registrada." : ""));
+}
+async function iniciarRonda(id) { const patch = { rondaActual:id, pasoActual:PASOS[0].id, estado:"en_curso", rondas:{} }; patch.rondas[id] = { estado:"en_curso", iniciada:ahora(), pasos:{} }; patch.rondas[id].pasos[PASOS[0].id] = { estado:"en_curso", iniciado:ahora() }; await actualizarSes(patch); await registrarFacilitador("inicio_ronda", { ronda:id }, { ronda:id, paso:PASOS[0].id }); S.fsub = "ejecutar"; aviso((rondaDef(id) || {}).n + " iniciada."); }
+
+/* ============ Eventos ============ */
+document.addEventListener("click", async ev => {
+  const b = ev.target.closest("[data-act]"); if (!b) return; const act = b.getAttribute("data-act"), arg = b.getAttribute("data-arg") || "", v = b.getAttribute("data-v") || "";
+  try {
+    if (act === "crear") { await crearSesion(); }
+    else if (act === "entrar-part") { const e = S.entrada; const c = (e.code || "").trim().toUpperCase(); if (c.length !== 4) return aviso("El código tiene 4 caracteres.", true); if (!(e.nombre || "").trim()) return aviso("Escriba su nombre.", true); if (!e.actor) return aviso("Elija el actor que representa.", true); abrirSesion(c, "elegir"); const esperar = setInterval(() => { if (S.ses) { clearInterval(esperar); unirse(e.nombre, e.actor); } else if (S.error) clearInterval(esperar); }, 150); }
+    else if (act === "unirse") { const e = S.entrada; if (!(e.nombre || "").trim() || !e.actor) return aviso("Escriba su nombre y elija el actor.", true); await unirse(e.nombre, e.actor); }
+    else if (act === "entrar-fac") { const c = (S.entrada.code || "").trim().toUpperCase(); if (c.length !== 4) return aviso("Escriba el código de la sesión.", true); if (!(S.entrada.pin || "").trim()) return aviso("Escriba el PIN.", true); const snap = await refSes(c).get(); if (!snap.exists) return aviso("No existe la sesión " + c + ".", true); if (snap.data().pinHash !== hash(S.entrada.pin.trim())) return aviso("El PIN no coincide.", true); setFacAuth(c, true); S.fac = true; S.entrada.pin = ""; abrirSesion(c, "facilitador"); S.fsub = snap.data().estado === "preparacion" ? "preparar" : snap.data().estado === "en_curso" || snap.data().estado === "pausada" ? "ejecutar" : "cerrar"; }
+    else if (act === "entrar-res") { const c = (S.entrada.code || "").trim().toUpperCase(); if (c.length !== 4) return aviso("Escriba el código de la sesión.", true); const snap = await refSes(c).get(); if (!snap.exists) return aviso("No existe la sesión " + c + ".", true); const d = snap.data(); if (!(d.estado === "cerrada" || d.estado === "archivada" || facAuth(c) || (S.entrada.pin && d.pinHash === hash(S.entrada.pin.trim())))) return aviso("Los resultados se abren cuando la sesión está cerrada, o con el PIN de facilitación.", true); abrirSesion(c, "resultados"); }
+    else if (act === "salir") { cerrarSuscripciones(); clearInterval(latidoT); S.rol = "entrada"; S.code = null; S.ses = null; S.yo = null; S.fac = false; S.form = {}; S.val = {}; ponerHash({}); render(); }
+    else if (act === "fsub") { S.fsub = arg; S.form = {}; render(); }
+    else if (act === "ver-todo") { S.verTodo = !S.verTodo; render(); }
+    else if (act === "f") { S.form[arg] = S.form[arg] === v ? null : v; render(); }
+    else if (act === "fm") { S.form[arg] = S.form[arg] || []; const i = S.form[arg].indexOf(v); if (i >= 0) S.form[arg].splice(i, 1); else S.form[arg].push(v); render(); }
+    else if (act === "v") { S.val[arg] = S.val[arg] === v ? null : v; render(); }
+    else if (act === "vm") { S.val[arg] = S.val[arg] || []; const i = S.val[arg].indexOf(v); if (i >= 0) S.val[arg].splice(i, 1); else S.val[arg].push(v); render(); }
+    else if (act === "guardar") { await guardarActividad(); }
+    else if (act === "guardar-obs") { if (!(S.form.obs || "").trim()) return aviso("Escriba la observación.", true); const r = await registrar("observacion", { texto:S.form.obs.trim() }); S.form = {}; aviso("Observación guardada (" + r.id + ")."); }
+    else if (act === "rectificar") { S.form = { rectificando:true }; render(); } else if (act === "cancelar-rect") { S.form = {}; render(); }
+    else if (act === "guardar-val") { await guardarValoracion(); }
+    else if (act === "p-add") { const f = S.form; if (!(f.pNombre || "").trim() || !f.pActor) return aviso("Nombre y actor son obligatorios.", true); const id = uid(); await colPart(S.code).doc(id).set({ id, nombre:f.pNombre.trim(), actor:f.pActor, rol:"participante", creado:ahora(), ultimo:0, registradoPor:"facilitador" }); S.form.pNombre = ""; aviso("Participante añadido."); }
+    else if (act === "p-del") { if (regsDe({ participanteId:arg }).length) return aviso("Este participante ya tiene registros; no se elimina para conservar la evidencia.", true); await colPart(S.code).doc(arg).delete(); aviso("Participante quitado."); }
+    else if (act === "s-guardar") { const patch = {}; if ((S.form.sNombre || "").trim()) patch.nombre = S.form.sNombre.trim(); if ((S.form.sPin || "").trim().length >= 4) patch.pinHash = hash(S.form.sPin.trim()); if (!Object.keys(patch).length) return aviso("Nada que guardar (el PIN necesita 4 caracteres).", true); await actualizarSes(patch); S.form.sPin = ""; aviso("Configuración guardada."); }
+    else if (act === "iniciar") { if (!Object.keys(S.parts).length) return aviso("Registre al menos un participante antes de iniciar.", true); await iniciarRonda(ESC.rondas[0].id); }
+    else if (act === "iniciar-ronda") { await iniciarRonda(arg); }
+    else if (act === "pausar") { await actualizarSes({ estado:"pausada" }); await registrarFacilitador("pausa", {}); } else if (act === "reanudar") { await actualizarSes({ estado:"en_curso" }); await registrarFacilitador("reanudacion", {}); }
+    else if (act === "avanzar") { if (!puedeAvanzar(S.ses.rondaActual, S.ses.pasoActual)) return aviso("Las condiciones de avance no se cumplen; use la excepción justificada.", true); await avanzar(null); }
+    else if (act === "avanzar-exc") { if (!(S.form.just || "").trim()) return aviso("Escriba la justificación de la excepción.", true); await avanzar(S.form.just.trim()); S.form.just = ""; }
+    else if (act === "cerrar-ronda") { const r = S.ses.rondaActual; const patch = { rondas:{} }; patch.rondas[r] = { estado:"cerrada", cerrada:ahora() }; const sig = ESC.rondas[ESC.rondas.map(x => x.id).indexOf(r) + 1]; if (!sig) patch.estado = "revision"; await actualizarSes(patch); await registrarFacilitador("cierre_ronda", { ronda:r, valoraciones:regsDe({ ronda:r, tipo:"valoracion" }).length }, { paso:"—" }); aviso("Ronda " + r + " cerrada." + (sig ? "" : " La sesión pasa a revisión.")); if (!sig) S.fsub = "revisar"; }
+    else if (act === "incidencia") { if (!(S.form.inc || "").trim()) return aviso("Escriba la incidencia.", true); await registrarFacilitador("incidencia", { texto:S.form.inc.trim() }); S.form.inc = ""; aviso("Incidencia registrada."); }
+    else if (act === "d-req-add") { const d = S.ses.decision || {}; S.form.reqs = (S.form.reqs || clone(d.requisitos || [])).concat([{ texto:"", comprobacion:"" }]); render(); }
+    else if (act === "d-guardar") { const d = S.ses.decision || {}; const f = S.form; const dec = { quien:(f.dQuien != null ? f.dQuien : d.quien || "").trim(), evidencia:(f.dEvid != null ? f.dEvid : d.evidencia || "").trim(), condiciones:(f.dCond != null ? f.dCond : d.condiciones || "").trim(), requisitos:(f.reqs || d.requisitos || []).filter(q => (q.texto || "").trim() || (q.comprobacion || "").trim()), t:ahora() }; await actualizarSes({ decision:dec }); aviso("Decisión guardada."); }
+    else if (act === "cerrar-sesion") { const c = estadoCierre(); if (!(c.cls === "ready" && c.decisionOk)) return aviso("No se puede cerrar: " + (c.faltas.concat(c.ajustes)[0] || "la decisión está incompleta"), true); await actualizarSes({ estado:"cerrada", cerrada:ahora() }); await registrarFacilitador("decision_final", { decision:S.ses.decision, evidencia:evidenciaResumen() }, { paso:"—" }); aviso("Sesión cerrada con decisión documentada."); }
+    else if (act === "archivar") { await actualizarSes({ estado:"archivada", archivada:ahora() }); await registrarFacilitador("archivo", {}, { paso:"—" }); aviso("Sesión archivada; la evidencia se conserva."); }
+    else if (act === "csv") { if (!TABLAS[arg]) renderResultados(); await descargar("sesion-" + S.code + "-" + arg + ".csv", "﻿" + csvDe(arg), "text/csv"); }
+    else if (act === "exp-csv-todo") { renderResultados(); const partes = Object.keys(TABLAS).map(k => "### " + k + "\r\n" + csvDe(k)).join("\r\n\r\n"); await descargar("sesion-" + S.code + "-tablas.csv", "﻿" + partes, "text/csv"); }
+    else if (act === "exp-informe") { if (!$("informe")) { const prev = S.fsub; S.fsub = "resultados"; render(); S.fsub = prev; } const html = informeHtml(); render(); await descargar("informe-sesion-" + S.code + ".html", html, "text/html"); }
+    else if (act === "exp-json") { await descargar("sesion-" + S.code + ".json", JSON.stringify(exportarJSON(), null, 2), "application/json"); }
+    else if (act === "copy-json") { try { await navigator.clipboard.writeText(JSON.stringify(exportarJSON(), null, 2)); aviso("JSON copiado."); } catch (e) { aviso("No se pudo copiar.", true); } }
+  } catch (e) { if (!S.msg) aviso("Error: " + (e && (e.message || e.code) || e), true); }
+});
+document.addEventListener("input", ev => {
+  const i = ev.target.closest("[data-in]"); if (!i) return; const k = i.getAttribute("data-in"), arg = i.getAttribute("data-arg") || "";
+  const map = { "e-code":["entrada","code"], "e-code2":["entrada","code"], "e-nombre":["entrada","nombre"], "e-pin":["entrada","pin"], "n-nombre":["nuevo","nombre"], "n-pin":["nuevo","pin"], "f-dias":["form","dias"], "f-obs":["form","obs"], "f-just":["form","just"], "f-inc":["form","inc"], "p-nombre":["form","pNombre"], "s-nombre":["form","sNombre"], "s-pin":["form","sPin"], "v-ajuste":["val","ajuste"], "d-quien":["form","dQuien"], "d-evidencia":["form","dEvid"], "d-cond":["form","dCond"] };
+  if (map[k]) { S[map[k][0]][map[k][1]] = i.value; return; }
+  if (k === "v-p") { S.val[arg] = i.value; return; }
+  if (k === "d-req" || k === "d-comp") { const d = S.ses.decision || {}; S.form.reqs = S.form.reqs || clone(d.requisitos || [{ texto:"", comprobacion:"" }]); S.form.reqs[+arg] = S.form.reqs[+arg] || { texto:"", comprobacion:"" }; S.form.reqs[+arg][k === "d-req" ? "texto" : "comprobacion"] = i.value; return; }
+  if (k === "rev-prop" || k === "rev-como" || k === "riesgo-mit") { clearTimeout(revT[k + arg]); revT[k + arg] = setTimeout(() => { const patch = { revision:{} }; if (k === "riesgo-mit") { patch.revision.riesgos = {}; patch.revision.riesgos[arg] = { mitigacion:i.value.trim() }; } else { patch.revision.observaciones = {}; patch.revision.observaciones[arg] = {}; patch.revision.observaciones[arg][k === "rev-prop" ? "propuesta" : "como"] = i.value.trim(); patch.revision.observaciones[arg].quien = "Facilitador"; patch.revision.observaciones[arg].t = ahora(); } actualizarSes(patch).catch(() => {}); }, 600); }
+});
+const revT = {};
+document.addEventListener("change", async ev => {
+  const i = ev.target.closest("[data-in]"); if (!i) return; const k = i.getAttribute("data-in"), arg = i.getAttribute("data-arg") || "";
+  if (k === "e-actor") { S.entrada.actor = i.value; return; } if (k === "p-actor") { S.form.pActor = i.value; return; }
+  if (k === "f-finalidad" || k === "f-responde") { S.form[k.slice(2)] = i.value; return; }
+  if (k === "f-falta" || k === "f-notifica") { const key = k.slice(2); S.form[key] = S.form[key] || []; const j = S.form[key].indexOf(arg); if (i.checked && j < 0) S.form[key].push(arg); if (!i.checked && j >= 0) S.form[key].splice(j, 1); return; }
+  if (k === "rev-tipo") { const patch = { revision:{ observaciones:{} } }; patch.revision.observaciones[arg] = { tipo:i.value, quien:"Facilitador", t:ahora() }; await actualizarSes(patch); }
+  if (k === "rev-comp") { const patch = { revision:{ observaciones:{} } }; patch.revision.observaciones[arg] = { comprobado:i.checked, quien:"Facilitador", t:ahora() }; await actualizarSes(patch); }
+  if (k === "riesgo-aplica") { const patch = { revision:{ riesgos:{} } }; patch.revision.riesgos[arg] = { aplica:i.checked }; await actualizarSes(patch); }
+});
+document.addEventListener("submit", ev => ev.preventDefault());
+window.addEventListener("hashchange", () => { const h = leerHash(); if (h.s && h.s.toUpperCase() !== S.code) entrarPorHash(h); });
+function entrarPorHash(h) { const c = (h.s || "").toUpperCase(); if (!c) return; const yo = recuperarYo(c); if (yo && yo.id) { S.yo = yo; abrirSesion(c, "participante"); latido(); } else if (facAuth(c)) { S.fac = true; abrirSesion(c, "facilitador"); S.fsub = "ejecutar"; } else if (h.r === "1") { abrirSesion(c, "resultados"); } else { S.entrada.code = c; abrirSesion(c, "elegir"); } }
+(async function init() { render(); await initAlmacen(); render(); const h = leerHash(); if (h.s) entrarPorHash(h); render(); })();
+})();
+
+</script>
+
+</body></html>
