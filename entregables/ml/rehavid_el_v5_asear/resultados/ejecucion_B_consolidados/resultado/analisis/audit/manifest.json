@@ -1,0 +1,36 @@
+{
+  "software": "5.0.0",
+  "python": "3.11.15",
+  "packages": {
+    "pandas": "2.2.3",
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "scikit-survival": "0.27.0",
+    "joblib": "1.5.3",
+    "matplotlib": "3.10.8"
+  },
+  "run_utc": "2026-09-16T21:20:47.508305+00:00",
+  "company": "ASEAR S.A.S. E.S.P.",
+  "config_sha256": "44e34d1933ecac623f6090eb4332cfd367552c7f1e9b7f0cad38fa6028b401ee",
+  "code_sha256": {
+    "__init__.py": "4af318b63459cf22c943e76d9b51df7a97ebe8a6d022a9395c97d3bfd22920ad",
+    "cohort.py": "8e498e2492a6fd674532bff08efb603ac3752ef10619d75d5fcd41c96d573c19",
+    "config.py": "6395b812cdb790be84cc2c1f984ed2085c4e1d416f4012a04333e6612ab2cdb5",
+    "configurator.py": "8d02605ca18dab095ba9c8a7a959505dce689910814bef3bf6430aa7fda7274a",
+    "data.py": "e72d3665e225588fb799c1b9d29507763dd8b76fa2bb17a24ba29de253f35028",
+    "discovery.py": "d4328d6d1e52f9c15e0fe051101ff5d3b509f2f6e71fb8f5e15825a2076a95c2",
+    "evidence.py": "9d546d6d25cf3b65fba84249895c7395a76a5eb0a8882a52f548410aa7d57ae2",
+    "ingest.py": "53bc4f9e836861e193fc63eb8a4369a73cc1fecf6d1eb9acb768693462ab35b8",
+    "mapping.py": "d78869e82a72156d1bd6b7ad6db8a74d33234f52a133e9c304c95dc72bcb6155",
+    "models.py": "f3f3f44b6e2a2814e6359fd6b3bcb42217668d50c145b895e6dda5e7b9fa2e23",
+    "portable.py": "f304807196ce5653643fc06b848c2ac51e204e33fd93ed7157bb86c0572bad71",
+    "preparation.py": "3c420b3fd71bc30ae54f6399f323e01f0b616e7417ecaa7765fb9e6bb8a16881",
+    "project.py": "34295efd1b0a074a3039e3ad67b0d7f80add379f31c6c4236b698c121ce2c2b1",
+    "reports.py": "de389d5296d4cf5cdc792048ee5890702f384c3cb8dc6da2a7e66713178b0e49",
+    "stages.py": "c915a530b7aa49f1d04428aa20de28a8728f51461f1dfe7ba4dcfe2bf9ec39b1",
+    "workflow.py": "1184d9c5359597ad3d5ff424e1d462aadb3f332b085469829376ec52684ee9a3"
+  },
+  "identity": "HMAC-SHA256; clave fuera de artefactos; no son datos anónimos",
+  "intended_use": "Modelo predictivo de primer evento EL verificado: evaluación de probabilidades por horizonte"
+}

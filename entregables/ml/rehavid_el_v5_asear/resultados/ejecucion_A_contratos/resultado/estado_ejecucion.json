@@ -1,0 +1,37 @@
+{
+  "software": "5.0.0",
+  "status": "INSUFFICIENT_TRAINING_EVENTS",
+  "phase": "completed",
+  "exit_code": 3,
+  "training_completed": false,
+  "selected_model": null,
+  "selection_completed": false,
+  "predicted_horizons_months": [],
+  "findings": [
+    "Cohorte de entrenamiento inferior al mínimo informático de eventos.",
+    "Verifique desenlace, enlaces y fechas. Si el recuento es correcto, hace falta una muestra con más eventos; la guarda informática no es un cálculo de tamaño muestral."
+  ],
+  "cohorts": {
+    "train": {
+      "people": 260,
+      "events": 1
+    },
+    "validation": {
+      "people": 85,
+      "events": 0
+    },
+    "test": {
+      "people": 92,
+      "events": 0
+    },
+    "score": {
+      "people": 3420,
+      "events": null
+    }
+  },
+  "clinical_validation": "not_established",
+  "company": "ASEAR S.A.S. E.S.P.",
+  "candidate_status": [],
+  "validation_scope": "internal_independent_person_holdout",
+  "horizon_status": []
+}

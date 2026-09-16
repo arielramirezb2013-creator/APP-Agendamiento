@@ -1,0 +1,10 @@
+stage,horizon_months,n_people,n_events_total,events_by_horizon,known_event_free,early_censored,max_followup_days,horizon_days,screen_status,reason
+train,12,260,5,0,200,60,1917.0,365.0,insufficient_support,pocos eventos observados al horizonte
+train,36,260,5,2,158,100,1917.0,1096.0,potentially_evaluable,
+train,60,260,5,5,140,115,1917.0,1826.0,potentially_evaluable,
+validation,12,85,1,0,70,15,1917.0,365.0,insufficient_support,pocos eventos observados al horizonte
+validation,36,85,1,0,51,34,1917.0,1096.0,insufficient_support,pocos eventos observados al horizonte
+validation,60,85,1,1,48,36,1917.0,1826.0,insufficient_support,pocos eventos observados al horizonte
+test,12,92,0,0,71,21,1917.0,365.0,insufficient_support,pocos eventos observados al horizonte
+test,36,92,0,0,62,30,1917.0,1096.0,insufficient_support,pocos eventos observados al horizonte
+test,60,92,0,0,55,37,1917.0,1826.0,insufficient_support,pocos eventos observados al horizonte

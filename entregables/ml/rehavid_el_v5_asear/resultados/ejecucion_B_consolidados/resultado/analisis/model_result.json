@@ -1,0 +1,96 @@
+{
+  "status": "not_trained",
+  "selected_model": null,
+  "model_path": null,
+  "metrics": [],
+  "horizon_status": [
+    {
+      "stage": "validation",
+      "horizon_months": 12,
+      "status": "not_estimable",
+      "reason": "pocos eventos observados al horizonte para evaluar discriminación; pocos eventos de entrenamiento al horizonte para estimar probabilidades",
+      "horizon_days": 365.0,
+      "n_people": 85,
+      "events_by_horizon": 0,
+      "at_risk_horizon": 70,
+      "training_at_risk_horizon": 200,
+      "training_events_by_horizon": 0,
+      "censoring_survival_train": 0.7692307692307694
+    },
+    {
+      "stage": "validation",
+      "horizon_months": 36,
+      "status": "not_estimable",
+      "reason": "pocos eventos observados al horizonte para evaluar discriminación",
+      "horizon_days": 1096.0,
+      "n_people": 85,
+      "events_by_horizon": 0,
+      "at_risk_horizon": 51,
+      "training_at_risk_horizon": 158,
+      "training_events_by_horizon": 2,
+      "censoring_survival_train": 0.6139253754775239
+    },
+    {
+      "stage": "validation",
+      "horizon_months": 60,
+      "status": "not_estimable",
+      "reason": "pocos eventos observados al horizonte para evaluar discriminación",
+      "horizon_days": 1826.0,
+      "n_people": 85,
+      "events_by_horizon": 1,
+      "at_risk_horizon": 48,
+      "training_at_risk_horizon": 140,
+      "training_events_by_horizon": 5,
+      "censoring_survival_train": 0.5549972375822626
+    }
+  ],
+  "validation_metrics": [],
+  "paths": {
+    "candidate_validation": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T211951Z_consolidados/resultado/analisis/tables/candidate_validation.csv",
+    "candidate_status": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T211951Z_consolidados/resultado/analisis/tables/candidate_status.csv",
+    "test_metrics": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T211951Z_consolidados/resultado/analisis/tables/test_metrics.csv",
+    "calibration": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T211951Z_consolidados/resultado/analisis/tables/calibration.csv",
+    "decision_curve": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T211951Z_consolidados/resultado/analisis/tables/decision_curve.csv",
+    "horizon_status": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T211951Z_consolidados/resultado/analisis/tables/horizon_status.csv",
+    "predictions": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T211951Z_consolidados/resultado/analisis/tables/predictions.csv",
+    "group_predictions": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T211951Z_consolidados/resultado/analisis/tables/group_predictions.csv",
+    "metadata": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T211951Z_consolidados/resultado/analisis/models/model_metadata.json"
+  },
+  "limitations": [
+    "Probabilidades de investigación; no constituyen diagnóstico ni calificación de origen laboral.",
+    "No hay certificación automática de utilidad clínica ni autorización automática para decisiones individuales.",
+    "Los mínimos de personas/eventos son guardas de cálculo, no un cálculo de tamaño muestral.",
+    "IPCW y Kaplan–Meier suponen censura no informativa; el método no corrige su incumplimiento.",
+    "La distribución de censura del entrenamiento debe ser apropiada para evaluar periodos posteriores; revisar cambios de seguimiento.",
+    "No se implementan riesgos competitivos: si muerte, retiro u otro evento impiden el desenlace, revisar el estimando antes de interpretar estas probabilidades como incidencia acumulada.",
+    "La selección de Cox no verifica automáticamente su supuesto de riesgos proporcionales; no se incluyen diagnósticos de Schoenfeld.",
+    "No se implementa recalibración posterior; los gráficos evalúan la calibración del modelo congelado.",
+    "Los intervalos bootstrap del rendimiento son condicionales al modelo ajustado; no incluyen incertidumbre de entrenamiento.",
+    "No se producen intervalos individuales ni intervalos para la suma de probabilidades.",
+    "No se extrapola a horizontes sin seguimiento, soporte de entrenamiento y evaluación estimable en el diseño declarado.",
+    "Una empresa se analiza por separado; este ajuste no demuestra transporte a otras empresas.",
+    "No se estima el efecto causal de una intervención ni el riesgo biológico fuera de la vigilancia definida.",
+    "Validación interna con personas independientes; no es validación temporal ni externa. No demuestra desempeño en fechas posteriores a la cohorte histórica."
+  ],
+  "warnings": [],
+  "release_status": "research_only_requires_independent_review",
+  "validation_design": "person_holdout",
+  "validation_scope": "internal_independent_person_holdout",
+  "reason": "Ningún horizonte tiene soporte en la validación reservada; no se elige el mejor por entrenamiento.",
+  "candidate_status": [],
+  "fit_completed": false,
+  "selection_completed": false,
+  "decision_analysis": {
+    "configured_thresholds": [],
+    "status": "not_evaluated"
+  },
+  "environment": {
+    "python": "3.11.15",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "scikit-survival": "0.27.0",
+    "joblib": "1.5.3"
+  }
+}

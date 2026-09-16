@@ -1,0 +1,72 @@
+{
+  "company": "ASEAR S.A.S. E.S.P.",
+  "outcome_name": "Primer evento de enfermedad laboral calificada como tal por la ARL (Calificacion DESC = SI ATEP, Causa Siniestro DESC = ENFERMEDAD LABORAL, Origen Siniestro DESC = PROPIO DEL TRABAJO) en trabajadores con vinculo laboral vigente en ASEAR S.A.S. E.S.P. en la fecha indice. Fecha del evento y de disponibilidad = fecha de calificacion (final_decision). Incluye todos los diagnosticos calificados (osteomusculares y COVID-19 U071/U072).",
+  "outcome_date_basis": "final_decision",
+  "outcome_group": null,
+  "as_of": "2026-06-30",
+  "landmarks": {
+    "train": "2021-03-31",
+    "validation": "2021-03-31",
+    "test": "2021-03-31",
+    "score": "2026-06-30"
+  },
+  "validation_design": "person_holdout",
+  "employment_features": [
+    "tenure_years"
+  ],
+  "exposure_features": {},
+  "contract_availability": {
+    "mode": "documented_contract_start",
+    "reviewed": true,
+    "evidence_ref": "Base_Rotacion_Historica_LIMPIA.xlsx, hoja 'Rotacion Limpia', columna 'Fecha Inicio Contrato' (inicio documentado de cada contrato de trabajo en el sistema de nomina de ASEAR).",
+    "rationale": "El inicio del vinculo laboral es un hecho administrativo conocido desde la fecha de inicio del contrato. Solo se utiliza tenure_years (antiguedad del vinculo vigente); no se usan cargo, area ni sede historicos, por lo que no se retrofecha ningun atributo. Ratificado por ejecucion autonoma de Claude por instruccion del operador Ariel Ramirez (Rehavid); ratificacion humana solicitada el 2026-09-16."
+  },
+  "followup_derivation": {
+    "mode": "employment_intersect_registry",
+    "reviewed": true,
+    "employment_implies_registry_observation": true,
+    "evidence_ref": "Caracterizacion_ASEAR_LIMPIA.xlsx: extraccion del registro de siniestros de la ARL para el contrato 094103330 de ASEAR S.A.S. E.S.P. (Ind Afiliada = EMPRESA), procesada el 2026-08-11 (hoja Bitacora). Marco legal: afiliacion obligatoria de todos los trabajadores dependientes a la ARL del empleador (Ley 1562 de 2012, art. 2; Decreto 1295 de 1994) y calificacion de origen en primera oportunidad por la ARL (Ley 1562 de 2012, art. 4; Decreto 1477 de 2014).",
+    "rationale": "Durante la vigencia de un contrato de trabajo con ASEAR el trabajador esta afiliado a la ARL de la empresa, y toda enfermedad laboral calificada a un afiliado del contrato 094103330 queda registrada en el sistema de siniestros de la ARL del que proviene esta extraccion. Por eso el vinculo laboral vigente implica observacion del desenlace por el registro. Cobertura declarada: 2020-01-01 a 2026-06-30, periodo en el que ademas existen las bases de nomina y ausentismo de la empresa. Ratificado por ejecucion autonoma de Claude por instruccion del operador Ariel Ramirez (Rehavid); ratificacion humana solicitada el 2026-09-16.",
+    "coverage": [
+      {
+        "start": "2020-01-01",
+        "end": "2026-06-30",
+        "verified_at": "2026-06-30"
+      }
+    ]
+  },
+  "label_maturation_days": 0,
+  "originals_directory": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T211951Z_consolidados/fuentes_motor",
+  "mapping_reviewed": true,
+  "source_metadata": {
+    "employment": {
+      "coverage_start": "2019-01-01",
+      "coverage_end": "2026-06-30",
+      "available_through": "2026-07-06"
+    },
+    "outcomes": {
+      "coverage_start": "2014-06-15",
+      "coverage_end": "2026-06-30",
+      "available_through": "2026-06-30"
+    },
+    "followup": {
+      "coverage_start": null,
+      "coverage_end": null,
+      "available_through": null
+    },
+    "health_events": {
+      "coverage_start": "2020-01-01",
+      "coverage_end": "2026-06-30",
+      "available_through": "2026-06-30",
+      "covered_kinds": [
+        "ausentismo_comun",
+        "ausentismo_laboral"
+      ]
+    },
+    "exposures": {
+      "coverage_start": null,
+      "coverage_end": null,
+      "available_through": null
+    }
+  }
+}

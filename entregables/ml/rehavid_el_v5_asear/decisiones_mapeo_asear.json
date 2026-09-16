@@ -1,0 +1,517 @@
+{
+  "_descripcion": "Decisiones de mapeo y protocolo para ejecutar el motor Rehavid V5 con las bases ajustadas de ASEAR (carpeta SharePoint BASES PARA BI/ASEAR/Bases ajustadas). Este archivo NO contiene registros individuales. Lo lee ejecutar_asear.py para diligenciar los formularios del motor (plan_fuentes.csv, plan_columnas.csv, plan_estados.csv, protocolo.json).",
+  "empresa": "ASEAR S.A.S. E.S.P.",
+  "archivos_esperados": {
+    "caracterizacion": {
+      "archivo": "Caracterizacion_ASEAR_LIMPIA.xlsx",
+      "hoja_datos": "Datos",
+      "filas_esperadas": 56,
+      "encabezados": [
+        "Oficina Afiliado Momento Siniestro DESC",
+        "UEN DESC",
+        "Expediente ID",
+        "Empleado DNI",
+        "Empleado Nombre Completo",
+        "Edad ID",
+        "Sexo ID",
+        "Diagnostico Principal Codigo Diagnosito DESC",
+        "Diagnostico Principal Codigo Diagnosito Codigo_Op",
+        "Fecha Siniestro Fecha",
+        "Fecha Siniestro Ano",
+        "Fecha Siniestro Mes",
+        "Fecha Apertura Siniestro Fecha",
+        "Fecha Calificacion Siniestro Fecha",
+        "Calificación DESC",
+        "Causa Siniestro DESC",
+        "Tipo Atencion Principal Arl DESC",
+        "Origen Siniestro DESC",
+        "Tipo Riesgo Siniestro DESC",
+        "Situacion Siniestro DESC",
+        "Derecho Afiliado DESC",
+        "RAT S/N ID",
+        "Departamento Ocurrencia DESC",
+        "Municipio Ocurrencia DESC",
+        "Mortal S/N DESC",
+        "Grupo Economico DESC",
+        "Contrato DESC",
+        "Nombre Empresa Nombre Comercial",
+        "Actividad Economica (768) DESC",
+        "Sector Economico DESC",
+        "Segmentacion DESC",
+        "Centro de Trabajo Codigo_Op",
+        "Centro de Trabajo DESC",
+        "Ind Afiliada DESC",
+        "Fecha Notificacion Siniestro ID",
+        "Días IT"
+      ],
+      "control_bitacora": {
+        "suma_dias_it": 561,
+        "registros": 56
+      }
+    },
+    "rotacion": {
+      "archivo": "Base_Rotacion_Historica_LIMPIA.xlsx",
+      "hoja_datos": "Rotacion Limpia",
+      "filas_esperadas": 11293,
+      "encabezados": [
+        "Empresa",
+        "Nro Contrato",
+        "Tipo identificacion",
+        "Identificacion",
+        "Nombres",
+        "Apellidos",
+        "Ciudad",
+        "Direccion",
+        "Telefono",
+        "Movil",
+        "Email",
+        "Lugar Nac",
+        "Fecha Nac",
+        "Genero",
+        "Estrato",
+        "Estado civil",
+        "Grupo de Nomina",
+        "Cargo",
+        "Salario",
+        "Seccion",
+        "Fecha Inicio Contrato",
+        "Fecha Fin Contrato",
+        "Tipo de Contrato",
+        "Eps",
+        "Fondo Pension",
+        "Supervisor",
+        "Nro Personas a cargo",
+        "Contacto en caso de emergencia",
+        "Telefono Contacto",
+        "Nivel Educativo",
+        "Numero de hijos",
+        "Talla Camisa",
+        "Talla Zapatos",
+        "Edad",
+        "Fecha Paso al Fondo",
+        "Observacion Paso al Fondo",
+        "Orientación sexual",
+        "Tipo de religión",
+        "Tipo de etnia",
+        "Madre o padre cabeza de hogar",
+        "Tipo de vivienda",
+        "Tipo Contrato",
+        "Columna sin encabezado",
+        "ANTIGUEDAD_RETIRO_ANIOS",
+        "ESTADO_CIVIL_NORM",
+        "NIVEL_EDUCATIVO_NORM",
+        "TALLA_CAMISA_NORM",
+        "N_VECES_CONTRATADO",
+        "ID_REINGRESO",
+        "DEMOGRAFICOS_DESALINEADOS"
+      ],
+      "nota_bitacora": "Hoja origen del cliente: 'Informe INACTIVOS (personal retirado)', procesada 2026-07-31; 11.293 contratos, 3.668 personas; contiene todos los vinculos de Base_Datos_Personal_LIMPIA.xlsx (3.590 personas activas a 2026-07) y solo 78 personas adicionales: es la historia contractual de la plantilla vigente, no un censo de retirados."
+    },
+    "personal": {
+      "archivo": "Base_Datos_Personal_LIMPIA.xlsx",
+      "hoja_datos": "Personal Limpio",
+      "filas_esperadas": 3640,
+      "encabezados": [
+        "Empresa",
+        "Nro Contrato",
+        "Tipo identificacion",
+        "Identificacion",
+        "Fecha expedicion",
+        "Lugar expedicion",
+        "Nombres",
+        "Apellidos",
+        "Ciudad",
+        "Direccion",
+        "Telefono",
+        "Movil",
+        "Email",
+        "Lugar Nac",
+        "Fecha Nac",
+        "Genero",
+        "Estrato",
+        "Estado civil",
+        "Grupo de Nomina",
+        "Cargo",
+        "Salario",
+        "Seccion",
+        "Fecha Inicio Contrato",
+        "Fecha Fin Contrato",
+        "Tipo de Contrato",
+        "Eps",
+        "Fondo Pension",
+        "Supervisor",
+        "Nro Personas a cargo",
+        "Contacto en caso de emergencia",
+        "Telefono Contacto",
+        "Registrado en unidad de victimas?",
+        "Nivel Educativo",
+        "Numero de hijos",
+        "Talla Pantalon",
+        "Talla Camisa",
+        "Talla Zapatos",
+        "Edad",
+        "Fecha Paso al Fondo",
+        "Observacion paso al Fondo",
+        "Orientación sexual",
+        "Tipo de religión",
+        "Tipo de etnia",
+        "Madre o padre cabeza de hogar",
+        "Tipo de vivienda",
+        "ESTADO_CIVIL_NORM",
+        "NIVEL_EDUCATIVO_NORM",
+        "TALLA_CAMISA_NORM",
+        "TALLA_PANTALON_NORM",
+        "ID_DUPLICADO"
+      ]
+    },
+    "ausentismo": {
+      "archivo": "Ausentismo_Consolidado_2020-2026.xlsx",
+      "hoja_datos": "Ausentismo",
+      "filas_esperadas": 33495,
+      "encabezados": [
+        "ANIO",
+        "MES DEL EVENTO",
+        "NOMBRE TRABAJADOR",
+        "CEDULA TRABAJADOR",
+        "CARGO",
+        "CENTRO DE TRABAJO",
+        "SUPERVISOR DEL CENTRO",
+        "TIPO DE EVENTO",
+        "TIPO INCAPACIDAD",
+        "FECHA INICIAL",
+        "FECHA FINAL",
+        "DIAS DE INCAPACIDAD",
+        "PRORROGA",
+        "TOTAL DIAS DE INCAPACIDAD",
+        "DIAS CARGADOS",
+        "DIAS INCAP O CARGADOS",
+        "CODIGO DIAGNOSTICO",
+        "DESCRIPCION CONDICION SALUD",
+        "EPS",
+        "RADICADO",
+        "OBSERVACIONES",
+        "ARCHIVO ORIGEN"
+      ]
+    },
+    "accidentalidad": {
+      "archivo": "Accidentalidad_Consolidado_2020-2026.xlsx",
+      "hoja_datos": "Accidentalidad",
+      "filas_esperadas": 2476,
+      "encabezados": [
+        "ANIO",
+        "MES DEL ACCIDENTE",
+        "FECHA DEL ACCIDENTE",
+        "N DOCUMENTO",
+        "NOMBRE TRABAJADOR",
+        "TIPO DE CONTRATO",
+        "CARGO DEL ACCIDENTADO",
+        "TIPO DE EVENTO",
+        "CENTRO DE TRABAJO",
+        "DESCRIPCION",
+        "DIAS PERDIDOS",
+        "MECANISMO / TIPO DE ACCIDENTE",
+        "TIPO DE LESION",
+        "AGENTE DEL ACCIDENTE",
+        "PARTE DEL CUERPO AFECTADA",
+        "ARCHIVO ORIGEN"
+      ]
+    },
+    "recomendaciones": {
+      "archivo": "Personal_Recomendaciones_Restricciones_LIMPIA.xlsx",
+      "hoja_datos": "Recomendaciones Limpia",
+      "filas_esperadas": 152,
+      "encabezados": [
+        "TIPO DE DOCUMENTO",
+        "N° DE DOCUMENTO",
+        "NOMBRES",
+        "APELLIDOS",
+        "FECHA DE NACIMIENTO",
+        "CARGO CON EL QUE INGRESO A LA EMPRESA (1 ER VEZ)",
+        "LUGAR A DONDE INGRESO 1 ER VEZ",
+        "DIAGNOSTICO",
+        "RESTRICCIONES O RECOMENDACIONES",
+        "FECHA DE REINCORPORACION",
+        "CENTRO DE TRABAJO DONDE SE REUBICO",
+        "CARGO EN EL QUE SE REUBICO",
+        "EDAD",
+        "CODIGO_CIE",
+        "TIENE_DIAGNOSTICO",
+        "N_REGISTROS_PERSONA",
+        "DOC_REPETIDO"
+      ]
+    }
+  },
+  "derivaciones": {
+    "_nota": "Transformaciones reversibles y documentadas sobre copias; los originales no se modifican. Cada CSV derivado conserva todas las columnas del original, añade ID_EVENTO_DERIVADO (archivo:fila_original) y registra en manifest_derivacion.json el SHA-256 del original, la regla aplicada y los conteos.",
+    "rotacion_vinculos": {
+      "origen": "rotacion",
+      "salida": "derivados/Base_Rotacion_Historica__vinculos.csv",
+      "clave_unica": [
+        "Identificacion",
+        "Fecha Inicio Contrato"
+      ],
+      "conservar_por": "Fecha Fin Contrato",
+      "eliminar_duplicados_exactos": true,
+      "_regla": "Un mismo (persona, fecha de inicio) es un solo vinculo para el motor (spell_id derivado). Si el original trae dos filas con fines distintos se conserva la de fin mas tardio (vacio = abierto) y se cuenta en el manifest; sin esta regla el motor detiene la limpieza por 'versiones contradictorias'."
+    },
+    "ausentismo_comun": {
+      "origen": "ausentismo",
+      "salida": "derivados/Ausentismo_Consolidado__ausentismo_comun.csv",
+      "columna_filtro": "TIPO DE EVENTO",
+      "valores_incluidos": [
+        "A.C. - E.G.",
+        "A.C - E.G",
+        "A.C-E.G",
+        "E.G",
+        "E.G.",
+        "EG"
+      ],
+      "reglas_validez": {
+        "fechas_obligatorias": [
+          "FECHA INICIAL",
+          "FECHA FINAL"
+        ],
+        "fecha_fin_no_anterior_a": [
+          "FECHA FINAL",
+          "FECHA INICIAL"
+        ],
+        "numerico_no_negativo": [
+          "DIAS DE INCAPACIDAD"
+        ],
+        "_nota": "Filas sin fecha inicial/final, con fecha final anterior a la inicial o con dias negativos son errores de captura que el contrato de datos del motor rechaza; se excluyen y se cuentan en el manifest."
+      },
+      "eliminar_duplicados_exactos": true
+    },
+    "ausentismo_laboral": {
+      "origen": "ausentismo",
+      "salida": "derivados/Ausentismo_Consolidado__ausentismo_laboral.csv",
+      "columna_filtro": "TIPO DE EVENTO",
+      "valores_incluidos": [
+        "A.T.",
+        "A.T",
+        "AT",
+        "E.L.",
+        "E.L"
+      ],
+      "reglas_validez": {
+        "fechas_obligatorias": [
+          "FECHA INICIAL",
+          "FECHA FINAL"
+        ],
+        "fecha_fin_no_anterior_a": [
+          "FECHA FINAL",
+          "FECHA INICIAL"
+        ],
+        "numerico_no_negativo": [
+          "DIAS DE INCAPACIDAD"
+        ],
+        "_nota": "Filas sin fecha inicial/final, con fecha final anterior a la inicial o con dias negativos son errores de captura que el contrato de datos del motor rechaza; se excluyen y se cuentan en el manifest."
+      },
+      "eliminar_duplicados_exactos": true
+    },
+    "_valores_excluidos_documentados": {
+      "SOAT (7 filas)": "accidente de transito cubierto por SOAT, sin origen laboral declarado",
+      "A.TRANSITO (2)": "accidente de transito sin clasificacion laboral",
+      "A (1)": "valor incompleto",
+      "vacio (1)": "sin tipo de evento"
+    },
+    "rotacion_vinculos_consolidados": {
+      "origen": "rotacion",
+      "salida": "derivados/Base_Rotacion_Historica__vinculos_consolidados.csv",
+      "consolidar_vinculos": {
+        "persona": "Identificacion",
+        "inicio": "Fecha Inicio Contrato",
+        "fin": "Fecha Fin Contrato",
+        "tolerancia_dias": 7
+      },
+      "activa_con_opcion": "consolidados",
+      "_regla": "Diseno B. Contratos consecutivos de la misma persona (siguiente inicio <= fin anterior + 7 dias, o solapados) se unen en un solo vinculo continuo: inicio = primer inicio, fin = ultimo fin (vacio si algun contrato sigue abierto). Motivo: el motor corta el seguimiento al fin del contrato vigente en la fecha indice y mide tenure_years desde su inicio; en ASEAR cada renovacion o cambio de cliente es una fila nueva (obra o labor), por lo que el 'contrato' no equivale al vinculo laboral continuo con el empleador. Las demas columnas se toman del primer contrato del tramo; se agregan N_CONTRATOS_TRAMO y FECHA_FIN_ULTIMO_CONTRATO."
+    }
+  },
+  "fuentes_motor": [
+    {
+      "fuente": "outcomes",
+      "archivo": "Caracterizacion_ASEAR_LIMPIA.xlsx",
+      "hoja": "Datos",
+      "columnas": {
+        "company": "Nombre Empresa Nombre Comercial",
+        "person_id": "Empleado DNI",
+        "event_id": "Expediente ID",
+        "status": "Calificación DESC",
+        "event_date": "Fecha Calificacion Siniestro Fecha",
+        "available_at": "Fecha Calificacion Siniestro Fecha"
+      },
+      "constantes": {},
+      "formatos_fecha": {
+        "event_date": "ISO8601",
+        "available_at": "ISO8601"
+      },
+      "prefijo_id_a_retirar": "C",
+      "evidencia_normalizacion_id": "Caracterizacion_ASEAR_LIMPIA.xlsx, columna 'Empleado DNI': 56/56 valores con el patron letra 'C' + 7 a 10 digitos (C = cedula de ciudadania en la codificacion de la ARL); las bases de nomina (Base_Rotacion_Historica_LIMPIA.xlsx 'Identificacion' con 'Tipo identificacion' = CEDULA DE CIUDADANIA / CEDULA DE EXTRANJERIA) registran el documento solo con digitos. El motor comprueba colisiones al retirar el prefijo; verificar_bases.py reporta la tasa de cruce entre ambas bases.",
+      "evidencia_mapeo": "Registro de siniestros de la ARL para el contrato 094103330 (ASEAR S.A.S. E.S.P.), 56 registros, todos con 'Causa Siniestro DESC' = ENFERMEDAD LABORAL y 'Origen Siniestro DESC' = PROPIO DEL TRABAJO y 'Calificación DESC' = SI ATEP (calificacion de origen laboral). event_date y available_at = 'Fecha Calificacion Siniestro Fecha' (base final_decision). 'Fecha Siniestro Fecha' (fecha del diagnostico/siniestro) se conserva para el analisis de sensibilidad con base verified_diagnosis."
+    },
+    {
+      "fuente": "employment",
+      "archivo": "derivados/Base_Rotacion_Historica__vinculos.csv",
+      "hoja": "",
+      "columnas": {
+        "person_id": "Identificacion",
+        "start_date": "Fecha Inicio Contrato",
+        "end_date": "Fecha Fin Contrato"
+      },
+      "constantes": {
+        "company": "ASEAR S.A.S. E.S.P."
+      },
+      "formatos_fecha": {
+        "start_date": "ISO8601",
+        "end_date": "ISO8601"
+      },
+      "campos_clave_contrato": "person_id;start_date",
+      "evidencia_mapeo": "Historial de vinculos laborales del sistema de nomina de ASEAR (Base_Rotacion_Historica_LIMPIA.xlsx, hoja 'Rotacion Limpia', via derivados/Base_Rotacion_Historica__vinculos.csv que solo resuelve duplicados de (persona, inicio)) (una fila por contrato; una persona aparece tantas veces como contratos, ver N_VECES_CONTRATADO). 'Fecha Fin Contrato' vacia = vinculo abierto. La columna 'Empresa' identifica el cliente donde se presta el servicio, no al empleador: todos los registros son trabajadores de ASEAR, por eso company es constante. No hay columna de fecha de registro (recorded_at): se usa la regla documented_contract_start con tenure_years como unico predictor laboral. spell_id se deriva de (person_id, start_date)."
+    },
+    {
+      "fuente": "health_events",
+      "archivo": "derivados/Ausentismo_Consolidado__ausentismo_comun.csv",
+      "hoja": "",
+      "columnas": {
+        "person_id": "CEDULA TRABAJADOR",
+        "event_id": "ID_EVENTO_DERIVADO",
+        "event_date": "FECHA INICIAL",
+        "available_at": "FECHA FINAL",
+        "days": "DIAS DE INCAPACIDAD"
+      },
+      "constantes": {
+        "company": "ASEAR S.A.S. E.S.P.",
+        "source_kind": "ausentismo_comun"
+      },
+      "formatos_fecha": {
+        "event_date": "ISO8601",
+        "available_at": "ISO8601"
+      },
+      "evidencia_mapeo": "Incapacidades de origen comun (TIPO DE EVENTO = 'A.C. - E.G.'). Cada fila es un tramo de incapacidad (inicial o prorroga); days = DIAS DE INCAPACIDAD del tramo (no se usa TOTAL DIAS ni PRORROGA porque acumulan tramos previos). available_at = FECHA FINAL: el tramo y sus dias son conocidos por la empresa a mas tardar al terminar la incapacidad; no existe columna de radicacion (RADICADO vacio)."
+    },
+    {
+      "fuente": "health_events",
+      "archivo": "derivados/Ausentismo_Consolidado__ausentismo_laboral.csv",
+      "hoja": "",
+      "columnas": {
+        "person_id": "CEDULA TRABAJADOR",
+        "event_id": "ID_EVENTO_DERIVADO",
+        "event_date": "FECHA INICIAL",
+        "available_at": "FECHA FINAL",
+        "days": "DIAS DE INCAPACIDAD"
+      },
+      "constantes": {
+        "company": "ASEAR S.A.S. E.S.P.",
+        "source_kind": "ausentismo_laboral"
+      },
+      "formatos_fecha": {
+        "event_date": "ISO8601",
+        "available_at": "ISO8601"
+      },
+      "evidencia_mapeo": "Incapacidades de origen laboral (TIPO DE EVENTO = 'A.T.' y, si existieran, 'E.L.'). Misma estructura que la fuente anterior."
+    }
+  ],
+  "fuentes_no_usadas_por_el_motor": {
+    "Base_Datos_Personal_LIMPIA.xlsx": "Foto del personal vigente (2026) con fechas de fin planificadas (vencimientos), no retiros efectivos. Se usa solo para el cruce de verificacion contra la base de rotacion; incluirla como segunda entrada de employment produciria versiones contradictorias del mismo vinculo.",
+    "Accidentalidad_Consolidado_2020-2026.xlsx": "Las 173 filas de 2020 no tienen N DOCUMENTO y 2021 en adelante no tienen DIAS PERDIDOS. Incluirla obligaria a declarar coverage_start=2021-01-01 para toda la fuente health_events, lo que anula las ventanas retrospectivas en la fecha indice. Las incapacidades por AT ya entran por Ausentismo (ausentismo_laboral). Queda como analisis de sensibilidad opcional.",
+    "Personal_Recomendaciones_Restricciones_LIMPIA.xlsx": "Recomendaciones/restricciones medicas sin origen (EL/AT/EG), sin estado ni fecha de calificacion: no es desenlace ni antecedente canonico del motor. Contexto para la lectura de resultados."
+  },
+  "estados": [
+    {
+      "estado_original": "SI ATEP",
+      "estado_destino": "confirmed",
+      "evidencia": "Calificacion de origen de la ARL: el siniestro fue calificado como accidente de trabajo o enfermedad laboral (ATEP). La fuente esta restringida a Causa Siniestro = ENFERMEDAD LABORAL (verificado por verificar_bases.py; la ejecucion se detiene si aparece otro origen)."
+    }
+  ],
+  "protocolo": {
+    "company": "ASEAR S.A.S. E.S.P.",
+    "outcome_name": "Primer evento de enfermedad laboral calificada como tal por la ARL (Calificacion DESC = SI ATEP, Causa Siniestro DESC = ENFERMEDAD LABORAL, Origen Siniestro DESC = PROPIO DEL TRABAJO) en trabajadores con vinculo laboral vigente en ASEAR S.A.S. E.S.P. en la fecha indice. Fecha del evento y de disponibilidad = fecha de calificacion (final_decision). Incluye todos los diagnosticos calificados (osteomusculares y COVID-19 U071/U072).",
+    "outcome_date_basis": "final_decision",
+    "outcome_group": null,
+    "as_of": "2026-06-30",
+    "landmarks": {
+      "train": "2021-03-31",
+      "validation": "2021-03-31",
+      "test": "2021-03-31",
+      "score": "2026-06-30"
+    },
+    "validation_design": "person_holdout",
+    "employment_features": [
+      "tenure_years"
+    ],
+    "exposure_features": {},
+    "label_maturation_days": 0,
+    "contract_availability": {
+      "mode": "documented_contract_start",
+      "reviewed": false,
+      "evidence_ref": "Base_Rotacion_Historica_LIMPIA.xlsx, hoja 'Rotacion Limpia', columna 'Fecha Inicio Contrato' (inicio documentado de cada contrato de trabajo en el sistema de nomina de ASEAR).",
+      "rationale": "El inicio del vinculo laboral es un hecho administrativo conocido desde la fecha de inicio del contrato. Solo se utiliza tenure_years (antiguedad del vinculo vigente); no se usan cargo, area ni sede historicos, por lo que no se retrofecha ningun atributo."
+    },
+    "followup_derivation": {
+      "mode": "employment_intersect_registry",
+      "reviewed": false,
+      "employment_implies_registry_observation": false,
+      "evidence_ref": "Caracterizacion_ASEAR_LIMPIA.xlsx: extraccion del registro de siniestros de la ARL para el contrato 094103330 de ASEAR S.A.S. E.S.P. (Ind Afiliada = EMPRESA), procesada el 2026-08-11 (hoja Bitacora). Marco legal: afiliacion obligatoria de todos los trabajadores dependientes a la ARL del empleador (Ley 1562 de 2012, art. 2; Decreto 1295 de 1994) y calificacion de origen en primera oportunidad por la ARL (Ley 1562 de 2012, art. 4; Decreto 1477 de 2014).",
+      "rationale": "Durante la vigencia de un contrato de trabajo con ASEAR el trabajador esta afiliado a la ARL de la empresa, y toda enfermedad laboral calificada a un afiliado del contrato 094103330 queda registrada en el sistema de siniestros de la ARL del que proviene esta extraccion. Por eso el vinculo laboral vigente implica observacion del desenlace por el registro. Cobertura declarada: 2020-01-01 a 2026-06-30, periodo en el que ademas existen las bases de nomina y ausentismo de la empresa.",
+      "coverage": [
+        {
+          "start": "2020-01-01",
+          "end": "2026-06-30",
+          "verified_at": "2026-06-30"
+        }
+      ]
+    },
+    "source_metadata": {
+      "employment": {
+        "coverage_start": "2019-01-01",
+        "coverage_end": "2026-06-30",
+        "available_through": "2026-07-06"
+      },
+      "outcomes": {
+        "coverage_start": "2014-06-15",
+        "coverage_end": "2026-06-30",
+        "available_through": "2026-06-30"
+      },
+      "followup": {
+        "coverage_start": null,
+        "coverage_end": null,
+        "available_through": null
+      },
+      "health_events": {
+        "coverage_start": "2020-01-01",
+        "coverage_end": "2026-06-30",
+        "available_through": "2026-06-30",
+        "covered_kinds": [
+          "ausentismo_comun",
+          "ausentismo_laboral"
+        ]
+      },
+      "exposures": {
+        "coverage_start": null,
+        "coverage_end": null,
+        "available_through": null
+      }
+    }
+  },
+  "regla_predeclarada_fechas": "as_of = 2026-06-30 (ultimo cierre de mes cubierto por las tres fuentes: registro ARL con calificaciones hasta junio de 2026, nomina con contratos iniciados hasta julio de 2026 y ausentismo consolidado 2020-2026). Fecha indice comun (person_holdout) = ultimo cierre de trimestre que deja mas de 60 meses de seguimiento hasta as_of con margen de un mes (el motor exige seguimiento posterior al horizonte): 2021-03-31. Las ventanas retrospectivas de antecedentes (3/6/12 meses) quedan dentro de la cobertura de ausentismo (desde 2020-01-01). Estas fechas se fijan por disponibilidad de datos antes de mirar resultados y no se ajustan segun el desempeno.",
+  "declaraciones_que_ratifica_el_operador": [
+    "D1. contract_availability.documented_contract_start: la fecha de inicio de contrato de la base de rotacion puede usarse como fecha de disponibilidad del vinculo (solo tenure_years).",
+    "D2. followup_derivation.employment_intersect_registry: el registro de siniestros de la ARL observa a toda la poblacion con contrato vigente en ASEAR durante 2020-01-01 a 2026-06-30, y la extraccion entregada refleja el estado del registro al 2026-06-30 (ajustar coverage.end/verified_at/as_of si la extraccion tiene otra fecha de corte).",
+    "D3. Definicion del desenlace: primer evento EL calificado por la ARL, fecha = fecha de calificacion, incluyendo COVID-19 calificado como EL. La alternativa (fecha de diagnostico, verified_diagnosis) se corre como sensibilidad."
+  ],
+  "sensibilidades_opcionales": {
+    "verified_diagnosis": {
+      "outcome_date_basis": "verified_diagnosis",
+      "columnas_outcomes": {
+        "event_date": "Fecha Siniestro Fecha",
+        "available_at": "Fecha Calificacion Siniestro Fecha"
+      }
+    }
+  },
+  "variantes_vinculos": {
+    "contratos": "derivados/Base_Rotacion_Historica__vinculos.csv",
+    "consolidados": "derivados/Base_Rotacion_Historica__vinculos_consolidados.csv",
+    "_nota": "Opcion --vinculos de ejecutar_asear.py. 'contratos' (diseno A, principal): cada fila del original es un vinculo. 'consolidados' (diseno B): contratos consecutivos unidos."
+  }
+}

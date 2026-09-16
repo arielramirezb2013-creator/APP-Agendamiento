@@ -1,0 +1,16 @@
+COMANDO: /tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/venv/bin/python /home/user/APP-Agendamiento/entregables/ml/rehavid_el_v5_asear/Rehavid_EL_V5_Codigo_Legible.py check-env
+CODIGO: 0
+
+--- STDOUT ---
+{
+  "python": "3.11.15",
+  "software": "5.0.0",
+  "packages": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.8.0",
+    "scikit-survival": "0.27.0"
+  }
+}
+
+--- STDERR ---

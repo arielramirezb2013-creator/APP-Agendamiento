@@ -1,0 +1,44 @@
+[
+  {
+    "severity": "warning",
+    "code": "outcomes_unlinked_people",
+    "count": 35,
+    "public_message": "Hay personas sin enlace con el historial laboral. Verifique ex empleados y equivalencias de identificadores antes de interpretar ausencia de eventos."
+  },
+  {
+    "severity": "warning",
+    "code": "health_events_unlinked_people",
+    "count": 6639,
+    "public_message": "Hay personas sin enlace con el historial laboral. Verifique ex empleados y equivalencias de identificadores antes de interpretar ausencia de eventos."
+  },
+  {
+    "severity": "warning",
+    "code": "score_overlapping_spells_excluded",
+    "count": 50,
+    "message": "Vínculos simultáneos requieren regla explícita; personas excluidas."
+  },
+  {
+    "severity": "limitation",
+    "code": "observed_endpoint_and_censoring",
+    "count": 1,
+    "message": "Riesgo de evento registrado bajo vigilancia. La censura por salida o sospecha puede ser informativa: requiere revisión y análisis de sensibilidad."
+  },
+  {
+    "severity": "limitation",
+    "code": "historical_negative_status",
+    "count": 1,
+    "message": "La ausencia de EL previa sólo es defendible dentro de la historia verificada disponible; documente el período retrospectivo y la posible enfermedad no registrada."
+  },
+  {
+    "severity": "limitation",
+    "code": "late_baseline_adjudication",
+    "count": 1,
+    "message": "Los estados inciertos conocidos en la fecha índice se excluyen aunque se resuelvan después. Los eventos anteriores descubiertos al cierre se excluyen y contabilizan aparte; revise sesgo de detección y disponibilidad del diagnóstico al desplegar."
+  },
+  {
+    "severity": "limitation",
+    "code": "internal_person_holdout_not_temporal",
+    "count": 1,
+    "message": "Validación interna con personas independientes en una misma fecha índice. No demuestra funcionamiento en períodos posteriores ni en otras empresas. La partición no se elige por sus resultados."
+  }
+]

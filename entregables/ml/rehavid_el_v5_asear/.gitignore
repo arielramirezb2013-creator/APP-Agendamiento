@@ -1,0 +1,7 @@
+# Carpeta de trabajo: originales, derivados, formularios y resultados contienen
+# datos personales de trabajadores. Nunca se versionan.
+trabajo/
+# Motor extraído por el script autónomo (se regenera; el código ya está en el .py)
+rehavid_motor_v5_legible_*/
+venv/
+__pycache__/
