@@ -1,0 +1,6 @@
+{
+  "meaning": "Cribado de soporte de datos; no demuestra suficiencia muestral ni rendimiento predictivo.",
+  "validation_design": "person_holdout",
+  "training_completed": false,
+  "clinical_validation": "not_established_by_this_screen"
+}

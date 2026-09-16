@@ -1,0 +1,5 @@
+source,file,status,rows,columns,sha256
+employment,employment.csv,schema_read,,9,253ce0c316d86f29995da5fda8d6f86d60e02c6bf55506e18f6a607faa6ebf91
+outcomes,outcomes.csv,schema_read,,10,328a28558df8d98d684197b4f39825f590600a379d1545d62cf0c7c4ff50f2f0
+followup,followup.csv,schema_read,,11,bcd5d7ef6467679fadfaa0744adb90ff90b5dbf54e4b13223565a7af75287cb8
+health_events,health_events.csv,schema_read,,11,9391afc972aeb572e055cb3efe630143252a2f24a02843312a5e42d63d4ce0b2

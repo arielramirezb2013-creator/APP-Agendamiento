@@ -1,0 +1,51 @@
+{
+  "purpose": "Predecir primer evento EL verificado a partir de información previa a la fecha índice",
+  "endpoint": "Primer evento de enfermedad laboral calificada como tal por la ARL (Calificacion DESC = SI ATEP, Causa Siniestro DESC = ENFERMEDAD LABORAL, Origen Siniestro DESC = PROPIO DEL TRABAJO) en trabajadores con vinculo laboral vigente en ASEAR S.A.S. E.S.P. en la fecha indice. Fecha del evento y de disponibilidad = fecha de calificacion (final_decision); la apertura del siniestro se representa como estado pendiente. Incluye todos los diagnosticos calificados (osteomusculares y COVID-19 U071/U072); la sensibilidad no_covid restringe a NO_COVID. [Sensibilidad no_covid: Restringe el desenlace a EL no COVID (CIE-10 distinto de U07); los casos COVID no cuentan como evento ni como prevalentes.]",
+  "event_date_basis": "final_decision",
+  "company": "ASEAR S.A.S. E.S.P.",
+  "validation_scope": "internal_independent_person_holdout",
+  "model_status": "not_trained",
+  "horizons": [
+    {
+      "stage": "validation",
+      "horizon_months": 12,
+      "status": "not_estimable",
+      "reason": "pocos eventos observados al horizonte para evaluar discriminación; pocos eventos de entrenamiento al horizonte para estimar probabilidades",
+      "horizon_days": 365.0,
+      "n_people": 85,
+      "events_by_horizon": 0,
+      "at_risk_horizon": 70,
+      "training_at_risk_horizon": 200,
+      "training_events_by_horizon": 0,
+      "censoring_survival_train": 0.7692307692307694
+    },
+    {
+      "stage": "validation",
+      "horizon_months": 36,
+      "status": "not_estimable",
+      "reason": "pocos eventos observados al horizonte para evaluar discriminación",
+      "horizon_days": 1096.0,
+      "n_people": 85,
+      "events_by_horizon": 0,
+      "at_risk_horizon": 51,
+      "training_at_risk_horizon": 158,
+      "training_events_by_horizon": 2,
+      "censoring_survival_train": 0.6139253754775239
+    },
+    {
+      "stage": "validation",
+      "horizon_months": 60,
+      "status": "not_estimable",
+      "reason": "pocos eventos observados al horizonte para evaluar discriminación",
+      "horizon_days": 1826.0,
+      "n_people": 85,
+      "events_by_horizon": 1,
+      "at_risk_horizon": 48,
+      "training_at_risk_horizon": 140,
+      "training_events_by_horizon": 5,
+      "censoring_survival_train": 0.5549972375822626
+    }
+  ],
+  "clinical_use": "Requiere valoración independiente de discriminación, calibración, utilidad y aplicabilidad; ninguna guarda informática certifica este uso.",
+  "certainty": "La predicción individual es probabilística, no una afirmación de que una persona enfermará con certeza."
+}

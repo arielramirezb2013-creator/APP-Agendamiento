@@ -1,0 +1,165 @@
+{
+  "originales_directory": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/originales",
+  "opcion_vinculos": "consolidados",
+  "copias": [],
+  "derivados": [
+    {
+      "clave": "caracterizacion_versionada",
+      "origen": "Caracterizacion_ASEAR_LIMPIA.xlsx",
+      "hoja": "Datos",
+      "sha256_origen": "55a3678c501a7c1386be7450174ef1da2d7c267b56a5a1c1ec7df8a9b4f256c1",
+      "salida": "derivados/Caracterizacion__desenlaces_versionados.csv",
+      "filas_origen": 56,
+      "reglas": [
+        "versionado apertura (pendiente) → calificación (final)"
+      ],
+      "excluidas_por_validez": {},
+      "filas_seleccionadas": 56,
+      "versionado_desenlaces": {
+        "expedientes": 56,
+        "versiones_pendientes": 38,
+        "expedientes_sin_version_pendiente_apertura_no_anterior": 18,
+        "versiones_salida": 94,
+        "distribucion_grupo": {
+          "COVID": 47,
+          "NO_COVID": 47
+        }
+      },
+      "filas_salida": 94,
+      "sha256_salida": "cf9fbe1a099e18fd3992d9c0ff4ca92418a215b1755741ed3a3edbc49da81f2b",
+      "columna_id_agregada": "ID_EVENTO_DERIVADO = archivo:fila_original"
+    },
+    {
+      "clave": "rotacion_vinculos_consolidados",
+      "origen": "Base_Rotacion_Historica_LIMPIA.xlsx",
+      "hoja": "Rotacion Limpia",
+      "sha256_origen": "4f67122349837eba25856ba784a7eae6b6774c1540cb679f2666da6fd128eeed",
+      "salida": "derivados/Base_Rotacion_Historica__vinculos_consolidados.csv",
+      "filas_origen": 11293,
+      "reglas": [
+        "consolidación de contratos consecutivos con tolerancia 7 días"
+      ],
+      "excluidas_por_validez": {
+        "Identificacion vacía": 0,
+        "Fecha Inicio Contrato vacía o ilegible": 0,
+        "Fecha Fin Contrato no vacía pero ilegible": 0
+      },
+      "filas_seleccionadas": 11293,
+      "consolidacion_vinculos": {
+        "contratos_entrada": 11293,
+        "vinculos_salida": 5549,
+        "vinculos_abiertos": 3336,
+        "contratos_abiertos_seguidos_de_otro_cerrados_por_imputacion": 53,
+        "tolerancia_dias": 7,
+        "distribucion_contratos_por_vinculo": {
+          "1": 3540,
+          "2": 838,
+          "3": 324,
+          "4": 299,
+          "5": 185,
+          "6": 139,
+          "7": 62,
+          "8": 54,
+          "9": 22,
+          "10": 23,
+          "11": 10,
+          "12": 9,
+          "13": 25,
+          "14": 1,
+          "15": 5,
+          "16": 1,
+          "17": 8,
+          "18": 4
+        }
+      },
+      "filas_salida": 5549,
+      "sha256_salida": "3fccc735295980915bea797ec61c3156a0e554dff93f337a594d1b5c3e469a00",
+      "columna_id_agregada": "ID_EVENTO_DERIVADO = archivo:fila_original"
+    },
+    {
+      "clave": "ausentismo_comun",
+      "origen": "Ausentismo_Consolidado_2020-2026.xlsx",
+      "hoja": "Ausentismo",
+      "sha256_origen": "f027c5cab608b49b9081ad19a315541523d4442bf5a4535ee856cc2f5f21260d",
+      "salida": "derivados/Ausentismo_Consolidado__ausentismo_comun.csv",
+      "filas_origen": 33495,
+      "reglas": [
+        "TIPO DE EVENTO in ['A.C. - E.G.', 'A.C - E.G', 'A.C-E.G', 'E.G', 'E.G.', 'EG']",
+        "duplicados semánticos por ['CEDULA TRABAJADOR', 'FECHA INICIAL', 'FECHA FINAL', 'DIAS DE INCAPACIDAD'] (se conserva la primera fila)"
+      ],
+      "distribucion_columna_filtro": {
+        "A.C. - E.G.": 22045,
+        "E.G": 7275,
+        "A.T": 1328,
+        "A.T.": 1265,
+        "A.C - E.G": 1025,
+        "A.C-E.G": 312,
+        "EG": 147,
+        "AT": 35,
+        "E.L": 20,
+        "E.G.": 18,
+        "E.L.": 14,
+        "SOAT": 7,
+        "A.TRANSITO": 2,
+        "A": 1,
+        "(vacío)": 1
+      },
+      "excluidas_por_validez": {
+        "CEDULA TRABAJADOR vacía": 0,
+        "FECHA INICIAL vacía o ilegible": 5,
+        "FECHA FINAL vacía o ilegible": 0,
+        "FECHA FINAL anterior a FECHA INICIAL": 6,
+        "DIAS DE INCAPACIDAD no numérico o negativo": 0
+      },
+      "filas_seleccionadas": 30811,
+      "duplicados_exactos_retirados": 1720,
+      "duplicados_semanticos_retirados": 653,
+      "filas_salida": 28438,
+      "sha256_salida": "edea70b2af36b816de4d7e914bf9afed48116646b481b10866cab0314cef49a3",
+      "columna_id_agregada": "ID_EVENTO_DERIVADO = archivo:fila_original"
+    },
+    {
+      "clave": "ausentismo_laboral",
+      "origen": "Ausentismo_Consolidado_2020-2026.xlsx",
+      "hoja": "Ausentismo",
+      "sha256_origen": "f027c5cab608b49b9081ad19a315541523d4442bf5a4535ee856cc2f5f21260d",
+      "salida": "derivados/Ausentismo_Consolidado__ausentismo_laboral.csv",
+      "filas_origen": 33495,
+      "reglas": [
+        "TIPO DE EVENTO in ['A.T.', 'A.T', 'AT']",
+        "duplicados semánticos por ['CEDULA TRABAJADOR', 'FECHA INICIAL', 'FECHA FINAL', 'DIAS DE INCAPACIDAD'] (se conserva la primera fila)"
+      ],
+      "distribucion_columna_filtro": {
+        "A.C. - E.G.": 22045,
+        "E.G": 7275,
+        "A.T": 1328,
+        "A.T.": 1265,
+        "A.C - E.G": 1025,
+        "A.C-E.G": 312,
+        "EG": 147,
+        "AT": 35,
+        "E.L": 20,
+        "E.G.": 18,
+        "E.L.": 14,
+        "SOAT": 7,
+        "A.TRANSITO": 2,
+        "A": 1,
+        "(vacío)": 1
+      },
+      "excluidas_por_validez": {
+        "CEDULA TRABAJADOR vacía": 0,
+        "FECHA INICIAL vacía o ilegible": 0,
+        "FECHA FINAL vacía o ilegible": 0,
+        "FECHA FINAL anterior a FECHA INICIAL": 1,
+        "DIAS DE INCAPACIDAD no numérico o negativo": 0
+      },
+      "filas_seleccionadas": 2627,
+      "duplicados_exactos_retirados": 431,
+      "duplicados_semanticos_retirados": 160,
+      "filas_salida": 2036,
+      "sha256_salida": "f3031bae44a931936d839c9da9b6f8be0d163fdaa0d11e5bee13dd4483d158a9",
+      "columna_id_agregada": "ID_EVENTO_DERIVADO = archivo:fila_original"
+    }
+  ],
+  "avisos": []
+}

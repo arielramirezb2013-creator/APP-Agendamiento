@@ -1,0 +1,5 @@
+stage,event,n,median_days,min_days,max_days
+train,False,257,884.0,81.0,884.0
+train,True,<5,suprimido,suprimido,suprimido
+validation,False,85,884.0,248.0,884.0
+test,False,92,884.0,200.0,884.0

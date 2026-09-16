@@ -1,0 +1,86 @@
+COMANDO: /tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/venv/bin/python /home/user/APP-Agendamiento/entregables/ml/rehavid_el_v5_asear/Rehavid_EL_V5_Codigo_Legible.py run --config /tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215957Z_consolidados_final/config_asear.json --out /tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215957Z_consolidados_final/resultado
+CODIGO: 3
+
+--- STDOUT ---
+Resultado y motivos: /tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215957Z_consolidados_final/resultado/LEER_PRIMERO.md
+{
+  "software": "5.0.0",
+  "status": "TRAINING_SUPPORT_BLOCKED",
+  "phase": "completed",
+  "exit_code": 3,
+  "training_completed": false,
+  "selected_model": null,
+  "selection_completed": false,
+  "predicted_horizons_months": [],
+  "findings": [
+    "Ningún horizonte tiene soporte en la validación reservada; no se elige el mejor por entrenamiento.",
+    "Revise el motivo y el soporte de entrenamiento/validación por horizonte; no se concluye inviabilidad de toda la empresa."
+  ],
+  "cohorts": {
+    "train": {
+      "people": 260,
+      "events": 5
+    },
+    "validation": {
+      "people": 85,
+      "events": 1
+    },
+    "test": {
+      "people": 92,
+      "events": 0
+    },
+    "score": {
+      "people": 3536,
+      "events": null
+    }
+  },
+  "clinical_validation": "not_established",
+  "company": "ASEAR S.A.S. E.S.P.",
+  "candidate_status": [],
+  "validation_scope": "internal_independent_person_holdout",
+  "horizon_status": [
+    {
+      "stage": "validation",
+      "horizon_months": 12,
+      "status": "not_estimable",
+      "reason": "pocos eventos observados al horizonte para evaluar discriminación; pocos eventos de entrenamiento al horizonte para estimar probabilidades",
+      "horizon_days": 365.0,
+      "n_people": 85,
+      "events_by_horizon": 0,
+      "at_risk_horizon": 70,
+      "training_at_risk_horizon": 200,
+      "training_events_by_horizon": 0,
+      "censoring_survival_train": 0.7692307692307694
+    },
+    {
+      "stage": "validation",
+      "horizon_months": 36,
+      "status": "not_estimable",
+      "reason": "pocos eventos observados al horizonte para evaluar discriminación",
+      "horizon_days": 1096.0,
+      "n_people": 85,
+      "events_by_horizon": 0,
+      "at_risk_horizon": 51,
+      "training_at_risk_horizon": 158,
+      "training_events_by_horizon": 2,
+      "censoring_survival_train": 0.6139253754775239
+    },
+    {
+      "stage": "validation",
+      "horizon_months": 60,
+      "status": "not_estimable",
+      "reason": "pocos eventos observados al horizonte para evaluar discriminación",
+      "horizon_days": 1826.0,
+      "n_people": 85,
+      "events_by_horizon": 1,
+      "at_risk_horizon": 48,
+      "training_at_risk_horizon": 140,
+      "training_events_by_horizon": 5,
+      "censoring_survival_train": 0.5549972375822626
+    }
+  ]
+}
+
+--- STDERR ---
+/home/user/APP-Agendamiento/entregables/ml/rehavid_el_v5_asear/rehavid_motor_v5_legible_946e16a11a37/rehavid_el/data.py:138: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  original = df[col].replace(r"^\s*$", np.nan, regex=True)

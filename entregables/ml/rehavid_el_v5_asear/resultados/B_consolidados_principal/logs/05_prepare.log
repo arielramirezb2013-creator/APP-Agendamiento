@@ -1,0 +1,42 @@
+COMANDO: /tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/venv/bin/python /home/user/APP-Agendamiento/entregables/ml/rehavid_el_v5_asear/Rehavid_EL_V5_Codigo_Legible.py prepare --config /tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215519Z_consolidados/config_asear.json --out /tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215519Z_consolidados/preparacion
+CODIGO: 0
+
+--- STDOUT ---
+Resultado y motivos: /tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215519Z_consolidados/preparacion/LEER_PRIMERO.md
+{
+  "software": "5.0.0",
+  "status": "PREPARED_NOT_TRAINED",
+  "phase": "feasibility",
+  "exit_code": 0,
+  "training_completed": false,
+  "selected_model": null,
+  "selection_completed": false,
+  "predicted_horizons_months": [],
+  "findings": [
+    "Preparación terminada; todavía no se ha entrenado. Consulte feasibility_by_horizon.csv: potencialmente evaluable no equivale a suficiencia estadística ni buen desempeño."
+  ],
+  "cohorts": {
+    "train": {
+      "people": 260,
+      "events": 5
+    },
+    "validation": {
+      "people": 85,
+      "events": 1
+    },
+    "test": {
+      "people": 92,
+      "events": 0
+    },
+    "score": {
+      "people": 3536,
+      "events": null
+    }
+  },
+  "clinical_validation": "not_established",
+  "company": "ASEAR S.A.S. E.S.P."
+}
+
+--- STDERR ---
+/home/user/APP-Agendamiento/entregables/ml/rehavid_el_v5_asear/rehavid_motor_v5_legible_946e16a11a37/rehavid_el/data.py:138: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  original = df[col].replace(r"^\s*$", np.nan, regex=True)

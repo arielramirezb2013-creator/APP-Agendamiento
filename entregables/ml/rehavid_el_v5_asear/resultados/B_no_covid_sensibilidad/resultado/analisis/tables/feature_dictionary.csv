@@ -1,0 +1,38 @@
+feature,source,definition
+tenure_years,employment,"Antigüedad del vínculo vigente, sin sumar lagunas ni reingresos."
+health_available_ausentismo_comun_3m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_ausentismo_comun_3m,health_events,"Número de registros de ausentismo_comun, ventana retrospectiva 3 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_ausentismo_comun_3m,health_events,"Días documentados de ausentismo_comun, ventana retrospectiva 3 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_ausentismo_laboral_3m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_ausentismo_laboral_3m,health_events,"Número de registros de ausentismo_laboral, ventana retrospectiva 3 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_ausentismo_laboral_3m,health_events,"Días documentados de ausentismo_laboral, ventana retrospectiva 3 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_at_3m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_at_3m,health_events,"Número de registros de at, ventana retrospectiva 3 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_at_3m,health_events,"Días documentados de at, ventana retrospectiva 3 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_veo_3m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_veo_3m,health_events,"Número de registros de veo, ventana retrospectiva 3 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_veo_3m,health_events,"Días documentados de veo, ventana retrospectiva 3 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_ausentismo_comun_6m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_ausentismo_comun_6m,health_events,"Número de registros de ausentismo_comun, ventana retrospectiva 6 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_ausentismo_comun_6m,health_events,"Días documentados de ausentismo_comun, ventana retrospectiva 6 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_ausentismo_laboral_6m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_ausentismo_laboral_6m,health_events,"Número de registros de ausentismo_laboral, ventana retrospectiva 6 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_ausentismo_laboral_6m,health_events,"Días documentados de ausentismo_laboral, ventana retrospectiva 6 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_at_6m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_at_6m,health_events,"Número de registros de at, ventana retrospectiva 6 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_at_6m,health_events,"Días documentados de at, ventana retrospectiva 6 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_veo_6m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_veo_6m,health_events,"Número de registros de veo, ventana retrospectiva 6 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_veo_6m,health_events,"Días documentados de veo, ventana retrospectiva 6 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_ausentismo_comun_12m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_ausentismo_comun_12m,health_events,"Número de registros de ausentismo_comun, ventana retrospectiva 12 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_ausentismo_comun_12m,health_events,"Días documentados de ausentismo_comun, ventana retrospectiva 12 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_ausentismo_laboral_12m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_ausentismo_laboral_12m,health_events,"Número de registros de ausentismo_laboral, ventana retrospectiva 12 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_ausentismo_laboral_12m,health_events,"Días documentados de ausentismo_laboral, ventana retrospectiva 12 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_at_12m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_at_12m,health_events,"Número de registros de at, ventana retrospectiva 12 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_at_12m,health_events,"Días documentados de at, ventana retrospectiva 12 meses, disponibles en t0; NaN si cobertura incompleta."
+health_available_veo_12m,health_events,Cobertura de registros documentada en configuración: 1 completa / 0 no completa.
+health_count_veo_12m,health_events,"Número de registros de veo, ventana retrospectiva 12 meses, disponibles en t0; NaN si cobertura incompleta."
+health_days_veo_12m,health_events,"Días documentados de veo, ventana retrospectiva 12 meses, disponibles en t0; NaN si cobertura incompleta."

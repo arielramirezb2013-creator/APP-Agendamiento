@@ -9,10 +9,13 @@ from __future__ import annotations
 
 import argparse
 import shutil
+import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 LISTA_BLANCA = [
-    "INFORME_RESUMEN.md", "parametros_ejecucion.json", "config_asear.json",
+    "INFORME_RESUMEN.md", "parametros_ejecucion.json", "decisiones_aplicadas.json", "config_asear.json",
     "verificaciones/verificaciones_previas.json", "verificaciones/soporte_por_fecha_indice.csv",
     "fuentes_motor/manifest_derivacion.json",
     "formularios/plan_fuentes.csv", "formularios/plan_columnas.csv", "formularios/plan_estados.csv",
@@ -27,13 +30,32 @@ LISTA_BLANCA = [
     "resultado/analisis/audit/feasibility_scope.json", "resultado/analisis/audit/manifest.json",
     "resultado/analisis/audit/etapas_y_responsabilidades.json",
 ]
-TABLAS = ["cohort_flow", "feasibility_by_horizon", "horizon_status", "followup", "event_status", "quality",
-          "feature_missingness", "feature_dictionary", "candidate_status", "candidate_validation", "test_metrics",
+# Tablas con conteos: se exportan con la supresión min_cell_count del motor (celdas 0<n<5 → "<5").
+TABLAS_SUPRIMIDAS = ["cohort_flow", "feasibility_by_horizon", "horizon_status", "followup", "event_status", "feature_missingness"]
+TABLAS = ["quality", "feature_dictionary", "candidate_status", "candidate_validation", "test_metrics",
           "calibration", "decision_curve", "etapas_y_responsabilidades", "inventory"]
 
 
 def exportar(run_dir: Path, destino: Path) -> list[str]:
+    import json
+    import pandas as pd
+    from utilidades import suprimir_celdas
     copiados = []
+    minimo = 5
+    config = run_dir / "config_asear.json"
+    if config.exists():
+        minimo = int(json.loads(config.read_text(encoding="utf-8")).get("evaluation", {}).get("min_cell_count", 5))
+    for tabla in TABLAS_SUPRIMIDAS:
+        origen = run_dir / "resultado" / "analisis" / "tables" / f"{tabla}.csv"
+        if origen.is_file():
+            try:
+                frame = pd.read_csv(origen, keep_default_na=False)
+            except (ValueError, OSError):
+                continue
+            objetivo = destino / "resultado" / "analisis" / "tables" / f"{tabla}_suprimido.csv"
+            objetivo.parent.mkdir(parents=True, exist_ok=True)
+            suprimir_celdas(frame, minimo).to_csv(objetivo, index=False)
+            copiados.append(objetivo.relative_to(destino).as_posix())
     rutas = list(LISTA_BLANCA) + [f"resultado/analisis/tables/{t}.csv" for t in TABLAS]
     rutas += [p.relative_to(run_dir).as_posix() for p in (run_dir / "resultado" / "analisis" / "figures").glob("*.png")]
     rutas += [p.relative_to(run_dir).as_posix() for p in (run_dir / "logs").glob("*.log")]

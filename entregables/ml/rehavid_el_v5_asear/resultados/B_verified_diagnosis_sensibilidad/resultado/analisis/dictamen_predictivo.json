@@ -1,0 +1,11 @@
+{
+  "purpose": "Predecir primer evento EL verificado a partir de información previa a la fecha índice",
+  "endpoint": "Primer evento de enfermedad laboral calificada como tal por la ARL (Calificacion DESC = SI ATEP, Causa Siniestro DESC = ENFERMEDAD LABORAL, Origen Siniestro DESC = PROPIO DEL TRABAJO) en trabajadores con vinculo laboral vigente en ASEAR S.A.S. E.S.P. en la fecha indice. Fecha del evento y de disponibilidad = fecha de calificacion (final_decision); la apertura del siniestro se representa como estado pendiente. Incluye todos los diagnosticos calificados (osteomusculares y COVID-19 U071/U072); la sensibilidad no_covid restringe a NO_COVID. [Sensibilidad verified_diagnosis: Fecha del evento = fecha del siniestro (diagnostico); disponibilidad = fecha de la version (apertura/calificacion). label_maturation_days = 1033 = percentil 90 del rezago siniestro -> calificacion observado en la extraccion (mediana 137,5 dias, p75 471, max 2.536), para no contar como libres de evento los siniestros recientes aun no calificados.]",
+  "event_date_basis": "verified_diagnosis",
+  "company": "ASEAR S.A.S. E.S.P.",
+  "validation_scope": "internal_independent_person_holdout",
+  "model_status": "not_trained",
+  "horizons": [],
+  "clinical_use": "Requiere valoración independiente de discriminación, calibración, utilidad y aplicabilidad; ninguna guarda informática certifica este uso.",
+  "certainty": "La predicción individual es probabilística, no una afirmación de que una persona enfermará con certeza."
+}

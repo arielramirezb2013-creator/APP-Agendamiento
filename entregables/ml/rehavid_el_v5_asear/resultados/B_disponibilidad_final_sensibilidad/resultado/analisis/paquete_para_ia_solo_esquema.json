@@ -1,0 +1,121 @@
+{
+  "company": "ASEAR S.A.S. E.S.P.",
+  "sources": {
+    "employment": [
+      {
+        "file": "employment.csv",
+        "columns": [
+          "company",
+          "person_id",
+          "start_date",
+          "end_date",
+          "recorded_at",
+          "spell_id",
+          "_source_sha256",
+          "_source_input_index",
+          "_source_record_index"
+        ],
+        "rows": null,
+        "row_count_status": "not_counted_header_only",
+        "sheet": 0,
+        "proposed_mapping": {
+          "company": "company",
+          "person_id": "person_id",
+          "start_date": "start_date",
+          "end_date": "end_date",
+          "recorded_at": "recorded_at",
+          "spell_id": "spell_id"
+        }
+      }
+    ],
+    "outcomes": [
+      {
+        "file": "outcomes.csv",
+        "columns": [
+          "company",
+          "person_id",
+          "event_id",
+          "status",
+          "event_date",
+          "available_at",
+          "outcome_group",
+          "_source_sha256",
+          "_source_input_index",
+          "_source_record_index"
+        ],
+        "rows": null,
+        "row_count_status": "not_counted_header_only",
+        "sheet": 0,
+        "proposed_mapping": {
+          "company": "company",
+          "person_id": "person_id",
+          "event_id": "event_id",
+          "status": "status",
+          "event_date": "event_date",
+          "available_at": "available_at",
+          "outcome_group": "outcome_group"
+        }
+      }
+    ],
+    "followup": [
+      {
+        "file": "followup.csv",
+        "columns": [
+          "company",
+          "person_id",
+          "obs_start",
+          "obs_end",
+          "verified_at",
+          "_source_spell_id",
+          "_registry_interval_index",
+          "_source_sha256",
+          "_source_input_index",
+          "_source_record_index",
+          "_source_derivation"
+        ],
+        "rows": null,
+        "row_count_status": "not_counted_header_only",
+        "sheet": 0,
+        "proposed_mapping": {
+          "company": "company",
+          "person_id": "person_id",
+          "obs_start": "obs_start",
+          "obs_end": "obs_end",
+          "verified_at": "verified_at"
+        }
+      }
+    ],
+    "health_events": [
+      {
+        "file": "health_events.csv",
+        "columns": [
+          "company",
+          "person_id",
+          "event_id",
+          "event_date",
+          "available_at",
+          "source_kind",
+          "days",
+          "severity",
+          "_source_sha256",
+          "_source_input_index",
+          "_source_record_index"
+        ],
+        "rows": null,
+        "row_count_status": "not_counted_header_only",
+        "sheet": 0,
+        "proposed_mapping": {
+          "company": "company",
+          "person_id": "person_id",
+          "event_id": "event_id",
+          "event_date": "event_date",
+          "available_at": "available_at",
+          "source_kind": "source_kind",
+          "days": "days",
+          "severity": "severity"
+        }
+      }
+    ]
+  },
+  "instructions": "Sólo esquema y recuentos agregados. No deduzca origen laboral, fechas de disponibilidad ni cobertura. Proponga mapeos para revisión humana. No hay registros individuales."
+}

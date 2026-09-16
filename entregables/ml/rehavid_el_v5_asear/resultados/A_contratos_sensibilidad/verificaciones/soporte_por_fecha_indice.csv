@@ -1,0 +1,14 @@
+t0,activos,prevalentes_excluidos,elegibles,meses_seguimiento_hasta_cierre,mediana_dias_seguimiento_elegibles,elegibles_con_vinculo_desde_3m_antes,elegibles_con_vinculo_desde_6m_antes,elegibles_con_vinculo_desde_12m_antes,eventos_a_12m,horizonte_12m_dentro_de_cobertura,eventos_a_36m,horizonte_36m_dentro_de_cobertura,eventos_a_60m,horizonte_60m_dentro_de_cobertura,eventos_totales_observables
+2020-12-31,258,0,258,65.9,334.0,75,48,10,0,True,1,True,1,True,1
+2021-03-31,437,0,437,63.0,244.0,258,75,11,0,True,1,True,1,True,1
+2021-06-30,646,4,642,60.0,163.0,434,256,47,0,True,1,True,2,False,2
+2021-09-30,678,4,674,57.0,87.0,572,369,24,1,True,1,True,2,False,2
+2021-12-31,519,3,516,53.9,149.0,271,238,61,1,True,1,True,2,False,2
+2022-03-31,748,4,744,51.0,244.0,320,132,58,1,True,1,True,2,False,2
+2022-06-30,743,4,739,48.0,169.0,568,216,62,1,True,2,True,2,False,2
+2022-09-30,810,7,803,45.0,77.0,679,522,64,0,True,1,True,1,False,1
+2022-12-31,511,4,507,42.0,304.0,227,200,19,0,True,2,True,2,False,2
+2023-03-31,877,8,869,39.0,251.0,332,75,42,0,True,2,True,2,False,2
+2023-06-30,896,6,890,36.0,184.0,575,266,31,1,True,2,False,2,False,2
+2023-09-30,964,6,958,33.0,92.0,850,557,31,1,True,2,False,2,False,2
+2023-12-31,715,5,710,30.0,213.0,477,432,142,1,True,2,False,2,False,2

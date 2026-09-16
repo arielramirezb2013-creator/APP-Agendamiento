@@ -1,0 +1,17 @@
+{
+  "status": "prepared",
+  "config_path": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215957Z_consolidados_final/resultado/preparacion/config_canonica.json",
+  "findings": [],
+  "row_counts": {
+    "employment": 5549,
+    "outcomes": 94,
+    "health_events": 30474,
+    "followup": 5516
+  },
+  "clinical_validation_claim": false,
+  "paths": {
+    "report": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215957Z_consolidados_final/resultado/preparacion/preparacion_fuentes.json",
+    "manifest_local": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215957Z_consolidados_final/resultado/preparacion/procedencia_local.json",
+    "findings_csv": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215957Z_consolidados_final/resultado/preparacion/hallazgos_preparacion.csv"
+  }
+}

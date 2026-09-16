@@ -1,0 +1,5 @@
+﻿entrada_id,usar,revisado,fuente,archivo,hoja,encabezado,separador,codificacion,campos_clave_contrato,prefijo_id_a_retirar,normalizacion_id_revisada,evidencia_normalizacion_id
+ENTRADA_0001,SI,SI,health_events,derivados/Ausentismo_Consolidado__ausentismo_comun.csv,,0,",",utf-8-sig,,,NO,
+ENTRADA_0002,SI,SI,health_events,derivados/Ausentismo_Consolidado__ausentismo_laboral.csv,,0,",",utf-8-sig,,,NO,
+ENTRADA_0003,SI,SI,employment,derivados/Base_Rotacion_Historica__vinculos.csv,,0,",",utf-8-sig,person_id;start_date,,NO,
+ENTRADA_0004,SI,SI,outcomes,derivados/Caracterizacion__desenlaces_versionados.csv,,0,",",utf-8-sig,,C,SI,"Caracterizacion_ASEAR_LIMPIA.xlsx, columna 'Empleado DNI': 56/56 valores con el patron letra 'C' + 7 a 10 digitos (C = cedula de ciudadania en la codificacion de la ARL); las bases de nomina (Base_Rotacion_Historica_LIMPIA.xlsx 'Identificacion' con 'Tipo identificacion' = CEDULA DE CIUDADANIA / CEDULA DE EXTRANJERIA) registran el documento solo con digitos. El motor comprueba colisiones al retirar el prefijo; verificar_bases.py reporta la tasa de cruce entre ambas bases."

@@ -1,0 +1,50 @@
+[
+  {
+    "source": "employment",
+    "input_index": 0,
+    "path_local": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215848Z_consolidados_no_covid/fuentes_motor/derivados/Base_Rotacion_Historica__vinculos_consolidados.csv",
+    "sheet": 0,
+    "rows_read": 5549,
+    "status": "read",
+    "columns_read": 52,
+    "sha256": "3fccc735295980915bea797ec61c3156a0e554dff93f337a594d1b5c3e469a00"
+  },
+  {
+    "source": "outcomes",
+    "input_index": 0,
+    "path_local": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215848Z_consolidados_no_covid/fuentes_motor/derivados/Caracterizacion__desenlaces_versionados.csv",
+    "sheet": 0,
+    "rows_read": 94,
+    "status": "read",
+    "columns_read": 41,
+    "sha256": "cf9fbe1a099e18fd3992d9c0ff4ca92418a215b1755741ed3a3edbc49da81f2b"
+  },
+  {
+    "source": "health_events",
+    "input_index": 0,
+    "path_local": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215848Z_consolidados_no_covid/fuentes_motor/derivados/Ausentismo_Consolidado__ausentismo_comun.csv",
+    "sheet": 0,
+    "rows_read": 28438,
+    "status": "read",
+    "columns_read": 23,
+    "sha256": "edea70b2af36b816de4d7e914bf9afed48116646b481b10866cab0314cef49a3"
+  },
+  {
+    "source": "health_events",
+    "input_index": 1,
+    "path_local": "/tmp/claude-0/-home-user-APP-Agendamiento/a0122bb2-9092-5cf7-890f-1196c801245f/scratchpad/rehavid/asear_trabajo/ejecucion_20260916T215848Z_consolidados_no_covid/fuentes_motor/derivados/Ausentismo_Consolidado__ausentismo_laboral.csv",
+    "sheet": 0,
+    "rows_read": 2036,
+    "status": "read",
+    "columns_read": 23,
+    "sha256": "f3031bae44a931936d839c9da9b6f8be0d163fdaa0d11e5bee13dd4483d158a9"
+  },
+  {
+    "source": "followup",
+    "status": "derived",
+    "rows_derived": 5516,
+    "evidence_ref": "Caracterizacion_ASEAR_LIMPIA.xlsx: extraccion del registro de siniestros de la ARL para el contrato 094103330 de ASEAR S.A.S. E.S.P. (Ind Afiliada = EMPRESA), archivo procesado por Rehavid el 2026-08-11 (hoja Bitacora); fecha de corte de la extraccion no declarada en el archivo, ultima calificacion registrada 2026-06-17. Marco legal: afiliacion obligatoria de todos los trabajadores dependientes a la ARL del empleador (Ley 1562 de 2012, art. 2; Decreto 1295 de 1994) y calificacion de origen en primera oportunidad por la ARL (Ley 1562 de 2012, art. 4; Decreto 1477 de 2014).",
+    "coverage_intervals": 1,
+    "assumption": "Documented registry observation during employment; not absence of case records."
+  }
+]

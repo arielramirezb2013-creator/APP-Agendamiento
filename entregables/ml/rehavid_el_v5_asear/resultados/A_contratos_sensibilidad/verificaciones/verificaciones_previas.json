@@ -1,0 +1,751 @@
+{
+  "as_of": "2026-06-30",
+  "opcion_vinculos": "contratos",
+  "bases": {
+    "caracterizacion": {
+      "archivo": "Caracterizacion_ASEAR_LIMPIA.xlsx",
+      "hojas": [
+        "Datos",
+        "Bitácora"
+      ],
+      "filas": 56,
+      "columnas": 36,
+      "causa_siniestro": {
+        "ENFERMEDAD LABORAL": 56
+      },
+      "origen_siniestro": {
+        "PROPIO DEL TRABAJO": 56
+      },
+      "calificacion": {
+        "SI ATEP": 56
+      },
+      "situacion": {
+        "TERMINADO": 35,
+        "ACTIVO": 21
+      },
+      "tipo_riesgo": {
+        "ERGONÓMICO": 30,
+        "BIOLÓGICO": 19,
+        "SIN INFORMACION": 7
+      },
+      "diagnostico_codigo": {
+        "G560": 14,
+        "U072": 14,
+        "M751": 10,
+        "U071": 10,
+        "M770": 4,
+        "M654": 2,
+        "M658": 1,
+        "M771": 1
+      },
+      "empresa": {
+        "ASEAR S.A.S. E.S.P.": 56
+      },
+      "dni_prefijo_letra": {
+        "C": 56
+      },
+      "dni_patron_letra_digitos": 56,
+      "personas_distintas": 54,
+      "expedientes_distintos": 56,
+      "rango::Fecha Siniestro Fecha": {
+        "min": "2014-06-15",
+        "max": "2025-06-05",
+        "vacios": 0,
+        "por_anio": {
+          "2014": 2,
+          "2016": 2,
+          "2017": 5,
+          "2018": 2,
+          "2019": 2,
+          "2020": 16,
+          "2021": 11,
+          "2022": 4,
+          "2023": 3,
+          "2024": 4,
+          "2025": 5
+        }
+      },
+      "rango::Fecha Apertura Siniestro Fecha": {
+        "min": "2016-02-16",
+        "max": "2026-04-27",
+        "vacios": 0,
+        "por_anio": {
+          "2016": 1,
+          "2017": 1,
+          "2018": 3,
+          "2019": 3,
+          "2020": 19,
+          "2021": 9,
+          "2022": 4,
+          "2023": 1,
+          "2024": 3,
+          "2025": 8,
+          "2026": 4
+        }
+      },
+      "rango::Fecha Calificacion Siniestro Fecha": {
+        "min": "2017-04-17",
+        "max": "2026-06-17",
+        "vacios": 0,
+        "por_anio": {
+          "2017": 2,
+          "2018": 3,
+          "2019": 3,
+          "2020": 18,
+          "2021": 9,
+          "2022": 5,
+          "2024": 4,
+          "2025": 7,
+          "2026": 5
+        }
+      },
+      "rango::Fecha Notificacion Siniestro ID": {
+        "min": "2016-02-12",
+        "max": "2026-04-21",
+        "vacios": 0,
+        "por_anio": {
+          "2016": 1,
+          "2017": 1,
+          "2018": 3,
+          "2019": 3,
+          "2020": 19,
+          "2021": 9,
+          "2022": 4,
+          "2023": 1,
+          "2024": 3,
+          "2025": 8,
+          "2026": 4
+        }
+      },
+      "suma_dias_it": 561.0,
+      "rezago_siniestro_a_calificacion_dias": {
+        "mediana": 137.5,
+        "p75": 470.75,
+        "p90": 1032.5,
+        "max": 2536.0
+      },
+      "rezago_apertura_a_calificacion_dias": {
+        "mediana": 6.5,
+        "p90": 70.5,
+        "apertura_igual_o_posterior_a_calificacion": 18
+      }
+    },
+    "rotacion": {
+      "archivo": "Base_Rotacion_Historica_LIMPIA.xlsx",
+      "hojas": [
+        "Rotacion Limpia",
+        "Bitácora Limpieza"
+      ],
+      "filas": 11293,
+      "columnas": 50,
+      "tipo_identificacion": {
+        "CEDULA DE CIUDADANIA": 11187,
+        "CÉDULA DE EXTRANJERÍA": 106
+      },
+      "identificacion_no_numerica": 0,
+      "personas_distintas": 3668,
+      "identificaciones_con_varios_tipos": 0,
+      "rango::Fecha Inicio Contrato": {
+        "min": "2019-01-01",
+        "max": "2026-07-06",
+        "vacios": 0,
+        "por_anio": {
+          "2019": 10,
+          "2020": 248,
+          "2021": 774,
+          "2022": 1264,
+          "2023": 1488,
+          "2024": 2679,
+          "2025": 2768,
+          "2026": 2062
+        }
+      },
+      "rango::Fecha Fin Contrato": {
+        "min": "2021-06-20",
+        "max": "2027-04-15",
+        "vacios": 3389,
+        "por_anio": {
+          "2021": 513,
+          "2022": 1272,
+          "2023": 1284,
+          "2024": 1979,
+          "2025": 2023,
+          "2026": 832,
+          "2027": 1
+        }
+      },
+      "fin_posterior_a_as_of": 252,
+      "fin_anterior_a_inicio": 0,
+      "inicio_vacio": 0,
+      "vinculos_duplicados_persona_inicio": 1,
+      "vinculos_por_persona": {
+        "1": 1539,
+        "2": 512,
+        "3": 461,
+        "4": 325,
+        "5": 234,
+        "6": 182,
+        "7": 135,
+        "8": 86,
+        "9": 62,
+        "10": 44,
+        "11": 19,
+        "12": 18,
+        "13": 32,
+        "14": 1,
+        "15": 5,
+        "16": 1,
+        "17": 8,
+        "18": 4
+      },
+      "vinculos_solapados_con_el_anterior": 12,
+      "contratos_sin_fin_seguidos_de_otro": 53,
+      "brecha_dias_entre_contratos_consecutivos": {
+        "(-10000, 0]": 12,
+        "(0, 1]": 4842,
+        "(1, 7]": 836,
+        "(7, 15]": 236,
+        "(15, 30]": 763,
+        "(30, 90]": 497,
+        "(90, 365]": 189,
+        "(365, 100000]": 197
+      },
+      "tipo_contrato": {
+        "OBRA O LABOR": 10324,
+        "TERMINO FIJO INFERIOR A UN AÑO": 511,
+        "TERMINO FIJO": 305,
+        "OBRA O LABOR - GOBERNACION": 77,
+        "TERMINO FIJO MANEJO Y CONFIANZA": 64,
+        "DURACIÓN DE LA OBRA O LABOR": 4,
+        "TRABAJO OCASIONAL": 3,
+        "OBRA O LABOR SUPERVISORES": 2,
+        "(vacío)": 2,
+        "CONTRATO POR DIAS": 1
+      },
+      "empresa_cliente_top": {
+        "E.S.E METRO SALUD": 1000,
+        "EMPRESAS PUBLICAS DE MEDELLIN": 988,
+        "ASEAR PERSONAL DE PLANTA": 903,
+        "ALCALDIA DE ITAGUI": 788,
+        "UNIVERSIDAD DE ANTIOQUIA": 754,
+        "INSTITUTO TECNOLOGICO METROPOLITANO - ITM": 679,
+        "ESE HOSPITAL MENTAL DE ANTIOQUIA": 586,
+        "ENVIASEO E.S.P": 495,
+        "POLITECNICO COLOMBIANO JAIME ISAZA CADAVID": 474,
+        "MUNICIPIO DE SABANETA": 423,
+        "FISCALIA GENERAL DE LA NACION SECCIONAL ANTIOQUIA": 417,
+        "ALCALDIA DE MEDELLIN": 317,
+        "NUEVA EMPRESA PROMOTORA DE SALUD SA NUEVA EPS": 302,
+        "AREA METROPOLITANA": 285,
+        "TECNOLOGICO DE ANTIOQUIA": 268
+      }
+    },
+    "personal": {
+      "archivo": "Base_Datos_Personal_LIMPIA.xlsx",
+      "hojas": [
+        "Personal Limpio",
+        "Bitácora Limpieza"
+      ],
+      "filas": 3640,
+      "columnas": 50,
+      "personas_distintas": 3590,
+      "rango::Fecha Inicio Contrato": {
+        "min": "2019-01-01",
+        "max": "2026-07-06",
+        "vacios": 0,
+        "por_anio": {
+          "2019": 2,
+          "2020": 1,
+          "2021": 5,
+          "2022": 11,
+          "2023": 35,
+          "2024": 598,
+          "2025": 1098,
+          "2026": 1890
+        }
+      },
+      "rango::Fecha Fin Contrato": {
+        "min": "2026-07-05",
+        "max": "2027-04-15",
+        "vacios": 3389,
+        "por_anio": {
+          "2026": 250,
+          "2027": 1
+        }
+      },
+      "personas_ausentes_en_rotacion": 0,
+      "vinculos_persona_inicio_ausentes_en_rotacion": 0,
+      "personas_de_rotacion_ausentes_en_personal": 78,
+      "empresa_cliente_top": {
+        "EMPRESAS PUBLICAS DE MEDELLIN": 513,
+        "UNIVERSIDAD DE ANTIOQUIA": 378,
+        "ASEAR PERSONAL DE PLANTA": 300,
+        "NUEVA EMPRESA PROMOTORA DE SALUD SA NUEVA EPS": 299,
+        "FISCALIA GENERAL DE LA NACION SECCIONAL ANTIOQUIA": 215,
+        "ENVIASEO E.S.P": 212,
+        "ALCALDIA DE ITAGUI": 189,
+        "HOSPITAL ALMA MATER DE ANTIOQUIA": 154,
+        "E.S.E METRO SALUD": 149,
+        "INSTITUTO TECNOLOGICO METROPOLITANO - ITM": 149
+      }
+    },
+    "ausentismo": {
+      "archivo": "Ausentismo_Consolidado_2020-2026.xlsx",
+      "hojas": [
+        "Ausentismo"
+      ],
+      "filas": 33495,
+      "columnas": 22,
+      "tipo_evento": {
+        "A.C. - E.G.": 22045,
+        "E.G": 7275,
+        "A.T": 1328,
+        "A.T.": 1265,
+        "A.C - E.G": 1025,
+        "A.C-E.G": 312,
+        "EG": 147,
+        "AT": 35,
+        "E.L": 20,
+        "E.G.": 18,
+        "E.L.": 14,
+        "SOAT": 7,
+        "A.TRANSITO": 2,
+        "A": 1,
+        "(vacío)": 1
+      },
+      "tipo_incapacidad": {
+        "INICIAL": 25918,
+        "PRORROGA": 7535,
+        "PRÓRROGA": 34,
+        "INICIO": 3,
+        "(vacío)": 2,
+        "pRORROGA": 2,
+        "INICAL": 1
+      },
+      "cedula_no_numerica": 0,
+      "cedula_longitud": {
+        "6": 2,
+        "7": 652,
+        "8": 18889,
+        "9": 24,
+        "10": 13874,
+        "11": 4,
+        "12": 1,
+        "13": 3,
+        "14": 3,
+        "15": 43
+      },
+      "personas_distintas": 8267,
+      "rango::FECHA INICIAL": {
+        "min": "2019-12-27",
+        "max": "2026-06-25",
+        "vacios": 7,
+        "por_anio": {
+          "2019": 2,
+          "2020": 3531,
+          "2021": 6768,
+          "2022": 6987,
+          "2023": 3703,
+          "2024": 4977,
+          "2025": 5596,
+          "2026": 1924
+        }
+      },
+      "rango::FECHA FINAL": {
+        "min": "2020-01-03",
+        "max": "2026-09-14",
+        "vacios": 4,
+        "por_anio": {
+          "2020": 3518,
+          "2021": 6702,
+          "2022": 6981,
+          "2023": 3769,
+          "2024": 4999,
+          "2025": 5573,
+          "2026": 1949
+        }
+      },
+      "dias_no_numericos": 0,
+      "dias_negativos": 4,
+      "fin_anterior_a_inicio": 7,
+      "duplicados_exactos": 2151,
+      "personas_ausentes_en_rotacion": 6641,
+      "cruce_con_rotacion_por_anio": {
+        "2019": {
+          "filas": 2,
+          "filas_con_vinculo": 0
+        },
+        "2020": {
+          "filas": 3531,
+          "filas_con_vinculo": 471
+        },
+        "2021": {
+          "filas": 6768,
+          "filas_con_vinculo": 874
+        },
+        "2022": {
+          "filas": 6987,
+          "filas_con_vinculo": 1243
+        },
+        "2023": {
+          "filas": 3703,
+          "filas_con_vinculo": 1060
+        },
+        "2024": {
+          "filas": 4977,
+          "filas_con_vinculo": 1597
+        },
+        "2025": {
+          "filas": 5596,
+          "filas_con_vinculo": 3275
+        },
+        "2026": {
+          "filas": 1924,
+          "filas_con_vinculo": 1512
+        }
+      },
+      "archivo_origen": {
+        "3. Formato Ausentismo 2022 (6) (1).xls": 6988,
+        "2. Ausentismo a Diciembre2021.xls": 6776,
+        "6. AUSENTISMO 2025 ASEAR (6) (1).xls": 5596,
+        "5. AUSENTISMO A DICIEMBRE 2024.xls": 4990,
+        "4. Formato Ausentismo 2023 ASEAR (11) (1).xls": 3693,
+        "1. Ausentismo 2020.xls": 3528,
+        "7. AUSENTISMO 2026 A JUNIO.xls": 1924
+      }
+    },
+    "accidentalidad": {
+      "archivo": "Accidentalidad_Consolidado_2020-2026.xlsx",
+      "hojas": [
+        "Accidentalidad"
+      ],
+      "filas": 2476,
+      "columnas": 16,
+      "tipo_evento": {
+        "ACCIDENTE LEVE": 1524,
+        "ACCIDENTE": 457,
+        "(vacío)": 215,
+        "INCIDENTE": 197,
+        "ACCIDENTE GRAVE": 54,
+        "ACCIDENTE SEVERO": 28,
+        "OPERARIA DE ASEO": 1
+      },
+      "documento_vacio_por_anio": {
+        "2020": 173,
+        "2021": 0,
+        "2022": 525,
+        "2023": 515,
+        "2024": 138,
+        "2025": 0,
+        "2026": 0
+      },
+      "rango::FECHA DEL ACCIDENTE": {
+        "min": "2020-01-03",
+        "max": "2026-06-26",
+        "vacios": 0,
+        "por_anio": {
+          "2020": 173,
+          "2021": 457,
+          "2022": 525,
+          "2023": 515,
+          "2024": 229,
+          "2025": 403,
+          "2026": 174
+        }
+      }
+    },
+    "recomendaciones": {
+      "archivo": "Personal_Recomendaciones_Restricciones_LIMPIA.xlsx",
+      "hojas": [
+        "Recomendaciones Limpia",
+        "Bitácora Limpieza"
+      ],
+      "filas": 152,
+      "columnas": 17
+    }
+  },
+  "cruces": {
+    "personas_con_el": 54,
+    "personas_con_el_en_rotacion": 19,
+    "personas_con_el_sin_vinculo_en_rotacion": 35,
+    "de_las_sin_vinculo_en_personal": 0,
+    "de_las_sin_vinculo_en_ausentismo": 19,
+    "personas_con_el_en_rotacion_por_anio_de_calificacion": {
+      "2017": {
+        "con_vinculo": 1,
+        "sin_vinculo": 1
+      },
+      "2018": {
+        "con_vinculo": 2,
+        "sin_vinculo": 1
+      },
+      "2019": {
+        "con_vinculo": 1,
+        "sin_vinculo": 2
+      },
+      "2020": {
+        "con_vinculo": 1,
+        "sin_vinculo": 17
+      },
+      "2021": {
+        "con_vinculo": 1,
+        "sin_vinculo": 8
+      },
+      "2022": {
+        "con_vinculo": 2,
+        "sin_vinculo": 3
+      },
+      "2024": {
+        "con_vinculo": 2,
+        "sin_vinculo": 2
+      },
+      "2025": {
+        "con_vinculo": 6,
+        "sin_vinculo": 1
+      },
+      "2026": {
+        "con_vinculo": 4,
+        "sin_vinculo": 1
+      }
+    }
+  },
+  "soporte_por_fecha_indice": [
+    {
+      "t0": "2020-12-31",
+      "activos": 258,
+      "prevalentes_excluidos": 0,
+      "elegibles": 258,
+      "meses_seguimiento_hasta_cierre": 65.9,
+      "mediana_dias_seguimiento_elegibles": 334.0,
+      "elegibles_con_vinculo_desde_3m_antes": 75,
+      "elegibles_con_vinculo_desde_6m_antes": 48,
+      "elegibles_con_vinculo_desde_12m_antes": 10,
+      "eventos_a_12m": 0,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 1,
+      "horizonte_36m_dentro_de_cobertura": true,
+      "eventos_a_60m": 1,
+      "horizonte_60m_dentro_de_cobertura": true,
+      "eventos_totales_observables": 1
+    },
+    {
+      "t0": "2021-03-31",
+      "activos": 437,
+      "prevalentes_excluidos": 0,
+      "elegibles": 437,
+      "meses_seguimiento_hasta_cierre": 63.0,
+      "mediana_dias_seguimiento_elegibles": 244.0,
+      "elegibles_con_vinculo_desde_3m_antes": 258,
+      "elegibles_con_vinculo_desde_6m_antes": 75,
+      "elegibles_con_vinculo_desde_12m_antes": 11,
+      "eventos_a_12m": 0,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 1,
+      "horizonte_36m_dentro_de_cobertura": true,
+      "eventos_a_60m": 1,
+      "horizonte_60m_dentro_de_cobertura": true,
+      "eventos_totales_observables": 1
+    },
+    {
+      "t0": "2021-06-30",
+      "activos": 646,
+      "prevalentes_excluidos": 4,
+      "elegibles": 642,
+      "meses_seguimiento_hasta_cierre": 60.0,
+      "mediana_dias_seguimiento_elegibles": 163.0,
+      "elegibles_con_vinculo_desde_3m_antes": 434,
+      "elegibles_con_vinculo_desde_6m_antes": 256,
+      "elegibles_con_vinculo_desde_12m_antes": 47,
+      "eventos_a_12m": 0,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 1,
+      "horizonte_36m_dentro_de_cobertura": true,
+      "eventos_a_60m": 2,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 2
+    },
+    {
+      "t0": "2021-09-30",
+      "activos": 678,
+      "prevalentes_excluidos": 4,
+      "elegibles": 674,
+      "meses_seguimiento_hasta_cierre": 57.0,
+      "mediana_dias_seguimiento_elegibles": 87.0,
+      "elegibles_con_vinculo_desde_3m_antes": 572,
+      "elegibles_con_vinculo_desde_6m_antes": 369,
+      "elegibles_con_vinculo_desde_12m_antes": 24,
+      "eventos_a_12m": 1,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 1,
+      "horizonte_36m_dentro_de_cobertura": true,
+      "eventos_a_60m": 2,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 2
+    },
+    {
+      "t0": "2021-12-31",
+      "activos": 519,
+      "prevalentes_excluidos": 3,
+      "elegibles": 516,
+      "meses_seguimiento_hasta_cierre": 53.9,
+      "mediana_dias_seguimiento_elegibles": 149.0,
+      "elegibles_con_vinculo_desde_3m_antes": 271,
+      "elegibles_con_vinculo_desde_6m_antes": 238,
+      "elegibles_con_vinculo_desde_12m_antes": 61,
+      "eventos_a_12m": 1,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 1,
+      "horizonte_36m_dentro_de_cobertura": true,
+      "eventos_a_60m": 2,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 2
+    },
+    {
+      "t0": "2022-03-31",
+      "activos": 748,
+      "prevalentes_excluidos": 4,
+      "elegibles": 744,
+      "meses_seguimiento_hasta_cierre": 51.0,
+      "mediana_dias_seguimiento_elegibles": 244.0,
+      "elegibles_con_vinculo_desde_3m_antes": 320,
+      "elegibles_con_vinculo_desde_6m_antes": 132,
+      "elegibles_con_vinculo_desde_12m_antes": 58,
+      "eventos_a_12m": 1,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 1,
+      "horizonte_36m_dentro_de_cobertura": true,
+      "eventos_a_60m": 2,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 2
+    },
+    {
+      "t0": "2022-06-30",
+      "activos": 743,
+      "prevalentes_excluidos": 4,
+      "elegibles": 739,
+      "meses_seguimiento_hasta_cierre": 48.0,
+      "mediana_dias_seguimiento_elegibles": 169.0,
+      "elegibles_con_vinculo_desde_3m_antes": 568,
+      "elegibles_con_vinculo_desde_6m_antes": 216,
+      "elegibles_con_vinculo_desde_12m_antes": 62,
+      "eventos_a_12m": 1,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 2,
+      "horizonte_36m_dentro_de_cobertura": true,
+      "eventos_a_60m": 2,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 2
+    },
+    {
+      "t0": "2022-09-30",
+      "activos": 810,
+      "prevalentes_excluidos": 7,
+      "elegibles": 803,
+      "meses_seguimiento_hasta_cierre": 45.0,
+      "mediana_dias_seguimiento_elegibles": 77.0,
+      "elegibles_con_vinculo_desde_3m_antes": 679,
+      "elegibles_con_vinculo_desde_6m_antes": 522,
+      "elegibles_con_vinculo_desde_12m_antes": 64,
+      "eventos_a_12m": 0,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 1,
+      "horizonte_36m_dentro_de_cobertura": true,
+      "eventos_a_60m": 1,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 1
+    },
+    {
+      "t0": "2022-12-31",
+      "activos": 511,
+      "prevalentes_excluidos": 4,
+      "elegibles": 507,
+      "meses_seguimiento_hasta_cierre": 42.0,
+      "mediana_dias_seguimiento_elegibles": 304.0,
+      "elegibles_con_vinculo_desde_3m_antes": 227,
+      "elegibles_con_vinculo_desde_6m_antes": 200,
+      "elegibles_con_vinculo_desde_12m_antes": 19,
+      "eventos_a_12m": 0,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 2,
+      "horizonte_36m_dentro_de_cobertura": true,
+      "eventos_a_60m": 2,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 2
+    },
+    {
+      "t0": "2023-03-31",
+      "activos": 877,
+      "prevalentes_excluidos": 8,
+      "elegibles": 869,
+      "meses_seguimiento_hasta_cierre": 39.0,
+      "mediana_dias_seguimiento_elegibles": 251.0,
+      "elegibles_con_vinculo_desde_3m_antes": 332,
+      "elegibles_con_vinculo_desde_6m_antes": 75,
+      "elegibles_con_vinculo_desde_12m_antes": 42,
+      "eventos_a_12m": 0,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 2,
+      "horizonte_36m_dentro_de_cobertura": true,
+      "eventos_a_60m": 2,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 2
+    },
+    {
+      "t0": "2023-06-30",
+      "activos": 896,
+      "prevalentes_excluidos": 6,
+      "elegibles": 890,
+      "meses_seguimiento_hasta_cierre": 36.0,
+      "mediana_dias_seguimiento_elegibles": 184.0,
+      "elegibles_con_vinculo_desde_3m_antes": 575,
+      "elegibles_con_vinculo_desde_6m_antes": 266,
+      "elegibles_con_vinculo_desde_12m_antes": 31,
+      "eventos_a_12m": 1,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 2,
+      "horizonte_36m_dentro_de_cobertura": false,
+      "eventos_a_60m": 2,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 2
+    },
+    {
+      "t0": "2023-09-30",
+      "activos": 964,
+      "prevalentes_excluidos": 6,
+      "elegibles": 958,
+      "meses_seguimiento_hasta_cierre": 33.0,
+      "mediana_dias_seguimiento_elegibles": 92.0,
+      "elegibles_con_vinculo_desde_3m_antes": 850,
+      "elegibles_con_vinculo_desde_6m_antes": 557,
+      "elegibles_con_vinculo_desde_12m_antes": 31,
+      "eventos_a_12m": 1,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 2,
+      "horizonte_36m_dentro_de_cobertura": false,
+      "eventos_a_60m": 2,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 2
+    },
+    {
+      "t0": "2023-12-31",
+      "activos": 715,
+      "prevalentes_excluidos": 5,
+      "elegibles": 710,
+      "meses_seguimiento_hasta_cierre": 30.0,
+      "mediana_dias_seguimiento_elegibles": 213.0,
+      "elegibles_con_vinculo_desde_3m_antes": 477,
+      "elegibles_con_vinculo_desde_6m_antes": 432,
+      "elegibles_con_vinculo_desde_12m_antes": 142,
+      "eventos_a_12m": 1,
+      "horizonte_12m_dentro_de_cobertura": true,
+      "eventos_a_36m": 2,
+      "horizonte_36m_dentro_de_cobertura": false,
+      "eventos_a_60m": 2,
+      "horizonte_60m_dentro_de_cobertura": false,
+      "eventos_totales_observables": 2
+    }
+  ],
+  "soporte_por_fecha_indice_definicion": "Cribado con vínculos 'contratos': personas con vínculo vigente en t0, no prevalentes; eventos = calificaciones posteriores a t0 y anteriores al fin del vínculo vigente (o al fin de cobertura). No aplica la partición 60/20/20 ni las exclusiones por estado pendiente del motor; es una cota superior aproximada del soporte que el motor encontrará.",
+  "hallazgos": [],
+  "bloqueante": false
+}

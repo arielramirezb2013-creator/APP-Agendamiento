@@ -1,0 +1,33 @@
+{
+  "software": "5.0.0",
+  "status": "PREPARED_NOT_TRAINED",
+  "phase": "feasibility",
+  "exit_code": 0,
+  "training_completed": false,
+  "selected_model": null,
+  "selection_completed": false,
+  "predicted_horizons_months": [],
+  "findings": [
+    "Preparación terminada; todavía no se ha entrenado. Consulte feasibility_by_horizon.csv: potencialmente evaluable no equivale a suficiencia estadística ni buen desempeño."
+  ],
+  "cohorts": {
+    "train": {
+      "people": 260,
+      "events": 5
+    },
+    "validation": {
+      "people": 85,
+      "events": 1
+    },
+    "test": {
+      "people": 92,
+      "events": 0
+    },
+    "score": {
+      "people": 3536,
+      "events": null
+    }
+  },
+  "clinical_validation": "not_established",
+  "company": "ASEAR S.A.S. E.S.P."
+}
