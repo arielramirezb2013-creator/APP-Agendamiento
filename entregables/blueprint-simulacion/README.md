@@ -54,6 +54,19 @@ Cada registro identifica sesión, escenario, ronda, modo, participante, actor, p
 
 El informe presenta qué se examinó y con quiénes, qué ocurrió por ronda, información faltante y reprocesos, responsabilidades con desacuerdo, barreras con sustento, cambios acordados y el requisito para el siguiente prototipo con su forma de comprobación. Las rondas se comparan solo si corresponden al mismo escenario. Los indicadores subjetivos (percepción) se separan de los observados (comportamiento y resultado técnico) y cada uno muestra su fórmula. Las exportaciones nunca incluyen el PIN.
 
+## Sistema visual
+
+La presentación sigue el diseño del video de referencia elaborado con Gemini a partir del guion y de la herramienta. Se analizó fotograma a fotograma y se aplicó en todos los niveles:
+
+- Paleta: azul marino profundo (#142543 en páginas y #162546 en botones, bandas y carriles), blanco y grises fríos (#FDFDFD, #EAECF0, #F0F1F2), gris pizarra (#5A5F66) para las llamadas de atención, azul claro (#E1EAF3 con borde #4B82B8) para instrucciones y verde (#3E9167) solo para las acciones de avance. Tipografía Roboto con respaldo del sistema; respuestas largas en Roboto Mono.
+- Entrada: cabecera blanca con marca y título completo; tarjetas estrechas centradas para participante (avatar y actor) y facilitador (crear sesión o entrar con código y PIN); pie con separadores.
+- Facilitador: lienzo blanco; el código de la sesión se muestra en grande en una caja gris azulada; los cuatro momentos y Resultados forman un stepper en flecha; las acciones de avance van en píldora verde y el cierre se presenta como un panel tipo diálogo con título, descripción y tabla Estado/Registros.
+- Participante: página azul marino con título «Participante»; una tarjeta blanca grande de dos columnas: barra lateral con avatar del actor, nombre y llamadas gris pizarra con punta (escenario, ronda y paso, acción esperada, tiempo); contenido con cejilla «Participante de…», título de la actividad, píldora verde para ver el recorrido completo, banda del paso con etiqueta en flecha (A1…D3), panel azul claro con la instrucción y el ejemplo, grupos de preguntas y botón grande «Guardar mi respuesta».
+- Blueprint: banda de fases en flecha azul marino, carriles como pestañas verticales con texto rotado e icono, pasos con etiqueta en flecha, celdas como tarjetas de nodo, franja sombreada en el carril de custodia (back), flechas de flujo en el carril del trabajador, líneas de interacción, visibilidad e interacción interna conservadas, leyenda de carriles y control de zoom.
+- Informe y consulta de resultados: mismos títulos, tablas y botones; el HTML exportado lleva la hoja de estilo completa.
+
+Elementos del video que no se trasladaron por no corresponder a funciones de la herramienta: campana de notificaciones, botón flotante de chat, menú de usuario y logos de marcas reales (se usa un bloque de marca neutro «Service Blueprint · Con simulación guiada» y el texto «Proyecto 2 · caso de estudio SURA»).
+
 ## Iconografía
 
 La herramienta incorpora el kit de iconos del proyecto (154 pictogramas SVG de una misma familia: trazo 1.65, terminales redondeados, sin rellenos, color heredado del texto). Los iconos acompañan a las etiquetas y nunca las sustituyen: la pantalla se entiende sin interpretar los dibujos. Van incrustados en el propio archivo HTML (hoja de estilo y ayudante `BPIcons` del kit), sin rutas locales ni conexión.
