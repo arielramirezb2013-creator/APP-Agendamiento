@@ -67,6 +67,8 @@ La presentación sigue el diseño del video de referencia elaborado con Gemini a
 
 El tema es exclusivamente claro, como el video; la página declara `color-scheme: light` y pinta todos los fondos, así que no cambia con el modo oscuro del sistema. Tras una revisión con cuatro lentes (fidelidad, funcionalidad, accesibilidad y consistencia) se ajustaron contrastes a AA (gris de apoyo #5F6470, verde de avance #2E7A52), los anchos en teléfonos (botones que envuelven, tablas con desplazamiento, avisos flotantes al pie), el orden en pantallas estrechas (primero la tarea, luego el contexto) y la restauración del foco de teclado tras cada actualización.
 
+Orientación y movimiento: cada pantalla del facilitador abre con una guía «Qué hacer ahora» que cambia con el estado de la sesión; el participante y el facilitador ven una tira de progreso con los once pasos (completado, con excepción, actual, pendiente); durante la valoración el facilitador ve un medidor de valoraciones recibidas en lugar de la tabla de actividades. Las vistas entran con un desvanecimiento breve, los botones responden al pasar el cursor y muestran un indicador mientras guardan, el estado «en curso» late suavemente, el código de sesión aparece con un pequeño realce y los avisos se deslizan. Todo el movimiento se desactiva cuando el sistema pide reducir animaciones.
+
 Elementos del video que no se trasladaron por no corresponder a funciones de la herramienta: campana de notificaciones, botón flotante de chat, menú de usuario y logos de marcas reales (se usa un bloque de marca neutro «Service Blueprint · Con simulación guiada» y el texto «Proyecto 2 · caso de estudio SURA»).
 
 ## Iconografía
