@@ -69,6 +69,12 @@ El tema es exclusivamente claro, como el video; la página declara `color-scheme
 
 Orientación y movimiento: cada pantalla del facilitador abre con una guía «Qué hacer ahora» que cambia con el estado de la sesión; el participante y el facilitador ven una tira de progreso con los once pasos (completado, con excepción, actual, pendiente); durante la valoración el facilitador ve un medidor de valoraciones recibidas en lugar de la tabla de actividades. Las vistas entran con un desvanecimiento breve, los botones responden al pasar el cursor y muestran un indicador mientras guardan, el estado «en curso» late suavemente, el código de sesión aparece con un pequeño realce y los avisos se deslizan. Todo el movimiento se desactiva cuando el sistema pide reducir animaciones.
 
+Seguimiento y vista previa del facilitador: en Ejecutar, la tarjeta «Seguimiento por participante» muestra, para cada persona, conexión, pasos con registro (mini tira A1 a D3), actividad actual y su estado, qué colocó por última vez y los problemas detectados (información parcial o insuficiente, finalidad no autorizada, piezas fuera de contrato, sin responsable claro, M.P. no sabe qué pasa, evidencia denegada, solicitud sin responder, rectificaciones). El botón «Ver su pantalla» abre el momento «Vista del participante», que reproduce en solo lectura exactamente lo que ve esa persona en ese instante; el modo «Su pantalla y mi seguimiento» la pone al lado de la ficha del facilitador con el detalle de lo que colocó en cada paso.
+
+Informe imprimible: «Imprimir o guardar como PDF» abre el cuadro de impresión del navegador con el informe maquetado para A4 (portada con datos de la sesión, índice de capítulos, títulos numerados, tablas con cabecera repetida y filas sin cortar). El mismo HTML exportable lleva esa maquetación.
+
+Estabilidad de pantalla: la interfaz solo se repinta cuando cambia el contenido y conserva el desplazamiento del recorrido, los desplegables abiertos y el foco; la animación de entrada ocurre únicamente al cambiar de vista o de paso.
+
 Elementos del video que no se trasladaron por no corresponder a funciones de la herramienta: campana de notificaciones, botón flotante de chat, menú de usuario y logos de marcas reales (se usa un bloque de marca neutro «Service Blueprint · Con simulación guiada» y el texto «Proyecto 2 · caso de estudio SURA»).
 
 ## Iconografía
