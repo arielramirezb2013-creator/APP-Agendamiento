@@ -93,8 +93,9 @@ window.SIM_CONFIG = {
 };
 ```
 
-- `estudio.id` cumple `RE_ID`. Forma parte de la llave con que el navegador guarda el avance: no se cambia con
-  el estudio en marcha. Los campos vacíos de `estudio` toman el valor de `GUION.estudio`.
+- `estudio.id` cumple `RE_ID` y distingue una sesión de simulación de otra. Forma parte de la llave con que el
+  navegador del participante guarda el avance (`simasinc:v1:<estudio.id>:<usuario>`), así que dos sesiones
+  distintas no se pisan en el mismo navegador. No se cambia con el estudio en marcha. Los campos vacíos de `estudio` toman el valor de `GUION.estudio`.
 - La configuración **nunca** contiene contraseñas en claro, ni la clave de administración, ni etiquetas privadas
   de las cuentas.
 - El simulador de archivo único trae la configuración dentro del HTML, en esta línea exacta:
@@ -126,7 +127,8 @@ que el simulador envía al receptor. Un documento parcial sirve además para con
 }
 ```
 
-- `participante.id`: `p` + 16 hexadecimales, aleatorio por dispositivo. Identifica una participación.
+- `participante.id`: `p` + 16 hexadecimales, aleatorio por dispositivo. Identifica una participación. Cada
+  recorrido se guarda por separado: una misma persona que recorra la simulación dos veces produce dos.
   Dos documentos con el mismo `participante.id` son versiones del mismo recorrido: vale el más reciente (`generado`).
 - `participante.datos` solo trae lo que la persona decidió escribir. Si `anonimo` es `true`, viene vacío.
 - En los registros la persona aparece con el alias `participanteNombre` = su usuario, nunca con su nombre.
@@ -214,12 +216,25 @@ aceptan los mismos campos como formulario (`application/x-www-form-urlencoded`).
 
 ## 8. Panel del investigador
 
-Estado del proyecto en `localStorage` del navegador del investigador (`simasinc-admin:v1`), con copia de
-seguridad exportable. Protegido con una clave de administración que se define al crear el proyecto; se guarda su
-huella (PBKDF2 con sal) y nunca aparece en las exportaciones.
+El panel guarda **varias sesiones de simulación** (estudios) en el `localStorage` del navegador del
+investigador, cada una con sus cuentas y las respuestas de sus participantes:
 
-Momentos del panel: **Estudio** (datos del estudio, texto adicional del consentimiento, forma de entrega),
-**Cuentas** (crear por rol, contraseñas, etiqueta privada, invitaciones), **Publicar** (descargar
+| Llave | Contenido |
+|---|---|
+| `simasinc-admin:v1` | índice: huella de la clave de administración, `actual` y la ficha de cada estudio (`clave`, `id`, `titulo`, `creado`, `modificado`, `cuentas`, `respuestas`, `completas`) |
+| `simasinc-admin:v1:p:<clave>` | el proyecto de ese estudio |
+| `simasinc-admin:v1:r:<clave>` | sus respuestas importadas |
+| `simasinc-admin:v1:abierto` | desbloqueo de la pestaña (`sessionStorage`) |
+
+`clave` es una llave interna estable (`e` + 10 hexadecimales) que no cambia aunque el investigador edite el
+identificador público `estudio.id`. El formato anterior, de un solo estudio dentro de `simasinc-admin:v1`, se
+migra al abrir. La clave de administración se guarda como huella (PBKDF2 con sal) y nunca aparece en ninguna
+exportación. Un documento cuyo `estudio.id` corresponde a otro estudio guardado se señala y no entra en el
+análisis del estudio abierto.
+
+Momentos del panel: **Estudios** (lista de sesiones guardadas; crear, duplicar con cuentas nuevas, abrir y
+eliminar), **Estudio** (datos del estudio, texto adicional del consentimiento, forma de entrega, copia de
+seguridad), **Cuentas** (crear por rol, contraseñas, etiqueta privada, invitaciones), **Publicar** (descargar
 `configuracion.js`, `recibir-config.php` y el simulador de archivo único con las cuentas), **Respuestas**
 (importar archivos o traerlos del servidor, validar, excluir), **Seguimiento** (en qué va cada participante,
 qué respondió, qué problemas tuvo) y **Resultados** (informe consolidado, tablas, exportaciones).
@@ -260,6 +275,7 @@ Acciones que el informe pone en sus botones y que atiende `adm-4-eventos.js`:
 | `node tests/simulador.js` | navegador, archivo local sin red: los 12 roles por la interfaz, acceso, declaración, pausa, reanudación, cierre inesperado, respaldo, archivo de avance, retiro, teléfono y teclado |
 | `node tests/simulador-red.js` | navegador, sitio con receptor simulado: envío a medida que avanza, caída de conexión, reintento, recuperación en otro dispositivo, envío al final, reapertura sin conexión, sitio sin configurar |
 | `node tests/servidor.js` | receptor PHP real con `php -S` |
+| `node tests/panel.js` | panel del investigador: clave, estudio, cuentas, publicación, importación, seguimiento, informe, copia de seguridad y varias sesiones |
 
 `tests/lib.js` trae las ayudas comunes: `servir(dir, extra)` servidor estático en el proceso, `lanzar()`,
 `pagina(ctx, errores, permitido)` que anota errores de consola y peticiones externas, `clic`, `hay`, `texto`,

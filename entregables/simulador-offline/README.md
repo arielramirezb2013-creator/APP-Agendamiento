@@ -31,10 +31,26 @@ El sistema hace de los actores que no están conectados: pide evidencia al custo
 - Para continuar en otro dispositivo: con receptor, basta entrar con el mismo usuario y contraseña; sin receptor, se descarga un archivo de avance y se carga en el otro equipo.
 - Si el navegador no permite guardar, el simulador lo advierte y sigue funcionando mientras la pestaña esté abierta.
 
+## Varias sesiones de simulación
+
+El panel guarda cada sesión por separado, con su identificador, sus cuentas y las respuestas de sus
+participantes. Sirve para repetir la simulación con otro grupo, en otra entidad o en otro momento del proyecto.
+
+- **No se mezclan.** Cada sesión lleva un identificador propio que viaja en la configuración y en cada
+  respuesta. Si importa un archivo de otra sesión, el panel lo señala y no lo suma a ese análisis.
+- **Por participante.** Cada persona entra con su usuario y cada recorrido queda con su propio identificador de
+  participación. Si alguien recorre la simulación dos veces, aparecen las dos por separado.
+- **En el navegador del participante.** El avance se guarda bajo el identificador de la sesión, así que una
+  misma persona puede participar en dos sesiones desde el mismo navegador sin perder ninguna.
+- **En el servidor.** El receptor guarda un archivo por sesión, usuario y participación.
+- **Duplicar.** Una sesión nueva puede copiar los datos y las cuentas de otra, siempre con contraseñas nuevas y
+  sin copiar las respuestas.
+
 ## Qué hace el investigador
 
 Todo desde `administrador.html`, que abre con doble clic o desde el sitio. Vea `guia-investigador.html`.
 
+0. **Estudios.** Varias sesiones de simulación guardadas por separado: crear, duplicar con cuentas nuevas, abrir y eliminar.
 1. **Estudio.** Datos del estudio, texto adicional de la declaración y forma de entrega.
 2. **Cuentas.** Una cuenta por participante, con su rol. El panel genera usuario, contraseña e invitación.
 3. **Publicar.** Descarga `configuracion.js` (y `recibir-config.php` si hay receptor) para quien publica. También genera un simulador de un solo archivo con las cuentas reales.
@@ -75,7 +91,9 @@ python3 src/build.py
 | `nucleo.js` | Utilidades comunes: pintado estable, iconos, SHA-256 y PBKDF2, huella de integridad, reglas del blueprint, CSV |
 | `datos-guion.js` | Textos de orientación, declaración y conducción |
 | `sim-1-estado.js`, `sim-2-vistas.js`, `sim-3-eventos.js` | Simulador: estado y conductor automático, pantallas, eventos |
-| `adm-1-proyecto.js`, `adm-2-vistas.js`, `adm-3-resultados.js`, `adm-4-eventos.js` | Panel del investigador |
+| `adm-1-proyecto.js` | Panel: estudios guardados, almacenamiento, cuentas, configuración publicada y respuestas |
+| `adm-2-vistas.js`, `adm-4-eventos.js` | Panel: pantallas, eventos e inicio |
+| `adm-3-resultados.js` | Panel: análisis consolidado, informe imprimible y exportaciones |
 | `servidor/` | `recibir.php`, `recibir-config.php`, `sw.js` y protección de la carpeta de respuestas |
 | `guias/` | Guías del paquete |
 | `estilos*.css`, `head-*.html`, `skel-*.html` | Estilos propios y esqueletos de página |
@@ -89,6 +107,7 @@ node tests/motor.js            # sin navegador: los 12 roles completan las dos r
 node tests/simulador.js        # navegador, archivo local sin red
 node tests/simulador-red.js    # navegador, sitio con receptor simulado
 node tests/servidor.js         # receptor PHP real con php -S
+node tests/panel.js            # panel del investigador, de punta a punta
 ```
 
 Requieren Node, Playwright con Chromium y, para el receptor, PHP. Las pruebas se ejecutan contra los archivos construidos: reconstruya antes de probar.
@@ -99,3 +118,4 @@ Requieren Node, Playwright con Chromium y, para el receptor, PHP. Las pruebas se
 | `simulador.js` | Los 12 roles por la interfaz desde `file://`; acceso, declaración, rechazo, recarga con borrador, pausa, cierre inesperado, corrección de respuestas, respaldo, archivo de avance, retiro, navegador sin almacenamiento; teléfono (390, 360 y 320 px), nombres accesibles, foco y teclado. |
 | `simulador-red.js` | Envío a medida que avanza, caída de conexión y reintento, falla del servidor, recuperación en otro dispositivo, envío al final, retiro, reapertura sin conexión y sitio sin configurar. |
 | `servidor.js` | Protocolo del receptor, validaciones, rutas maliciosas, código PHP dentro de una respuesta, límites, envíos simultáneos y recorrido de punta a punta con el simulador. |
+| `panel.js` | Clave de administración, estudio, cuentas, `configuracion.js` y `recibir-config.php`, simulador de archivo único, importación (con archivos alterados y de otra sesión), seguimiento, informe y exportaciones, copia de seguridad y varias sesiones de simulación. |

@@ -7,7 +7,7 @@ const { clic, hay, texto, w, fs, path } = L;
 const T = L.contador("Simulador en un sitio web, con receptor simulado");
 const motor = M.crearMotor(M.configDemo());
 const CLAVE = "K7QF-M2XD", ENVIO = "clave-de-envio-de-prueba";
-function configuracion(envio, estudio) {
+function configuracion(envio, estudio) {   // `estudio` permite montar varias sesiones de simulación distintas
   const cuentas = [["eps-01", "eps"], ["jn-01", "jn"]].map(([u, a], i) => { const s = "00112233aabbcc0" + i; return { u, a, s, h:motor.huellaClave(u, CLAVE, s, 5000) }; });
   return { formato:1, estudio:Object.assign({ id:"estudio-prueba", titulo:"Estudio de prueba", investigador:"Investigador de prueba", contacto:"contacto@ejemplo.org" }, estudio || {}), kdf:{ alg:"PBKDF2-HMAC-SHA256", iter:5000 }, envio, cuentas, generado:"2026-01-01T00:00:00.000Z" };
 }
@@ -118,6 +118,24 @@ const actividades = d => (d ? d.registros.filter(r => r.tipo === "actividad").le
     T.ok(recargo && (await pgW.evaluate(() => document.body.getAttribute("data-etapa"))) === "simulacion" && (await hay(pgW, '[data-act="continuar"]')) && !consolaW.length, "después de la primera visita la página abre sin conexión y restablece la sesión donde iba", consolaW.join(" | "));
     T.ok(/descarga un archivo/.test(await (async () => { await clic(pgW, '[data-act="orient-ver"]'); await clic(pgW, '[data-act="orient"][data-arg="1"]'); await clic(pgW, '[data-act="orient"][data-arg="2"]'); return texto(pgW, "#vista"); })()), "sin receptor, la orientación explica que la entrega es por archivo");
     await ctxW.close(); await W.cerrar();
+
+    /* ---------- Dos sesiones de simulación en el mismo navegador ---------- */
+    const D = await sitio(configuracion(null, { id:"estudio-uno", titulo:"Sesión uno" }), true);
+    fs.writeFileSync(path.join(D.dir, "dos.html"), fs.readFileSync(path.join(D.dir, "index.html"), "utf8").replace('<script src="configuracion.js"></script>', "<script>window.SIM_CONFIG = " + JSON.stringify(configuracion(null, { id:"estudio-dos", titulo:"Sesión dos" })) + ";</script>"));
+    const ctxD = await br.newContext({ viewport:{ width:1280, height:900 } }), pgD = await L.pagina(ctxD, errores, u => u.startsWith(D.base));
+    await pgD.goto(D.url); await L.entrarDemo(pgD, "eps-01", CLAVE); await L.pasarOrientacion(pgD); await L.aceptarDeclaracion(pgD, null);
+    await L.recorrerInterfaz(pgD, 0, h => h.filter(x => x === "actividad").length === 2);
+    const llaves = () => pgD.evaluate(() => Object.keys(localStorage).filter(k => k.indexOf("simasinc:v1:") === 0).sort());
+    const tras1 = await llaves();
+    await pgD.goto(D.base + "/dos.html"); await L.entrarDemo(pgD, "eps-01", CLAVE);
+    T.ok((await pgD.evaluate(() => document.body.getAttribute("data-etapa"))) === "orientacion" && !/Bienvenido de nuevo/.test(await texto(pgD, "#vista")), "con el mismo usuario en otra sesión de simulación se empieza de cero, sin arrastrar el avance");
+    await L.pasarOrientacion(pgD); await L.aceptarDeclaracion(pgD, null); await L.recorrerInterfaz(pgD, 1, h => h.filter(x => x === "actividad").length === 1);
+    const tras2 = await llaves();
+    T.ok(tras2.length > tras1.length && tras2.some(k => k.indexOf("estudio-uno") > 0) && tras2.some(k => k.indexOf("estudio-dos") > 0), "cada sesión guarda su avance en su propia llave, sin pisarse", tras2.join(" "));
+    // En la misma pestaña, cada sesión recuerda su propio acceso: al volver se continúa sin pedir la contraseña.
+    await pgD.goto(D.url); await L.w(pgD, 500);
+    T.ok((await pgD.evaluate(() => document.body.getAttribute("data-etapa"))) === "simulacion" && /2 de 16/.test(await texto(pgD, "#vista")), "y al volver a la primera sesión se retoma donde iba", (await texto(pgD, "#vista")).slice(0, 160));
+    await ctxD.close(); await D.cerrar();
 
     /* ---------- Sitio sin configurar o mal configurado ---------- */
     for (const [cfg, nombre] of [[null, "sin configuracion.js"], ["window.SIM_CONFIG = { formato:1, estudio:{ id:'x' }, cuentas:[] };", "con una configuración sin cuentas"], ["esto no es javascript {", "con un configuracion.js dañado"]]) {

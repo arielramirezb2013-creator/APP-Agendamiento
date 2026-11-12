@@ -47,6 +47,7 @@
     <li><a href="#resumen">El recorrido completo en una página</a></li>
     <li><a href="#antes">Antes de empezar</a></li>
     <li><a href="#panel">El panel, momento a momento</a></li>
+    <li><a href="#sesiones">Varias sesiones de simulación</a></li>
     <li><a href="#invitar">Cómo invitar a cada participante</a></li>
     <li><a href="#participante">Qué verá el participante</a></li>
     <li><a href="#pausa">Pausas, caídas de conexión y errores</a></li>
@@ -85,6 +86,9 @@
 <h2 id="panel">3. El panel, momento a momento</h2>
 <p>La primera vez el panel le pide crear una <b>clave de administración</b>. Las siguientes veces se la pide para entrar. Esa clave no aparece en ningún archivo que el panel exporte. Si la olvida, la única salida es restaurar una copia de seguridad del proyecto.</p>
 
+<h3><span class="momento">0</span>Estudios</h3>
+<p>La lista de sus sesiones de simulación guardadas en este navegador. Puede crear una sesión nueva, duplicar la abierta (copia los datos y las cuentas, con contraseñas nuevas, sin las respuestas), abrir otra o eliminarla. Trabaje siempre con una abierta: lo que haga en los demás momentos pertenece a esa sesión. Vea el <a href="#sesiones">apartado 4</a>.</p>
+
 <h3><span class="momento">1</span>Estudio</h3>
 <p>Escriba el título, su nombre como investigador responsable, el contacto, el director, el comité de ética y la fecha límite. Estos datos aparecen en la declaración que lee cada participante. Elija aquí la forma de entrega.</p>
 <div class="aviso"><b>El identificador del estudio no se cambia con el estudio en marcha</b>El navegador de cada participante guarda su avance con ese identificador. Si lo cambia, quienes ya empezaron tendrían que comenzar de nuevo.</div>
@@ -111,7 +115,27 @@
 <h3><span class="momento">6</span>Resultados</h3>
 <p>Informe consolidado por rol y por ronda. Cada tabla se exporta a CSV. Puede descargar el informe completo, imprimirlo o guardarlo como PDF, y descargar todos los datos en JSON.</p>
 
-<h2 id="invitar">4. Cómo invitar a cada participante</h2>
+<h2 id="sesiones">4. Varias sesiones de simulación</h2>
+<p>Una «sesión de simulación» es un estudio completo: su identificador, sus cuentas y las respuestas de sus participantes. El panel guarda todas las que usted cree y no las mezcla. Es lo que necesita si repite la simulación con otro grupo, en otra entidad o en otro momento del proyecto.</p>
+<div class="tabla"><table>
+  <thead><tr><th>Qué distingue una sesión de otra</th><th>Dónde actúa</th></tr></thead>
+  <tbody>
+    <tr><td>El <b>identificador del estudio</b>, que usted define en «Estudio».</td><td>Viaja en <code>configuracion.js</code> y en cada respuesta. Por él sabe el panel a qué sesión pertenece un archivo.</td></tr>
+    <tr><td>El <b>usuario</b> de cada cuenta.</td><td>Identifica a la persona dentro de su sesión.</td></tr>
+    <tr><td>El <b>identificador de participación</b>, que el simulador genera en el dispositivo de cada persona.</td><td>Separa cada recorrido. Si alguien recorre la simulación dos veces, usted ve las dos.</td></tr>
+  </tbody>
+</table></div>
+<p>Consecuencias prácticas:</p>
+<ul>
+  <li>Una misma persona puede participar en dos sesiones desde el mismo navegador sin perder ninguna: el avance se guarda bajo el identificador de cada sesión.</li>
+  <li>Si importa en una sesión un archivo que pertenece a otra, el panel se lo dice y no lo suma a ese análisis. Abra la sesión correcta e impórtelo allí.</li>
+  <li>El receptor del servidor guarda un archivo por sesión, usuario y participación.</li>
+  <li>Al duplicar una sesión, las contraseñas son nuevas: tiene que enviar invitaciones nuevas y publicar la configuración de esa sesión.</li>
+  <li>La copia de seguridad es de la sesión abierta. Si tiene varias, expórtelas una por una. Al restaurar una copia, si ya existe una sesión con el mismo identificador de estudio se reemplaza; si no, se añade.</li>
+</ul>
+<div class="aviso"><b>Un identificador por sesión</b>No reutilice el identificador de una sesión en otra: el panel y el navegador de los participantes los distinguen por él. Si duplica una sesión, el panel le propone un identificador nuevo; revíselo antes de publicar.</div>
+
+<h2 id="invitar">5. Cómo invitar a cada participante</h2>
 <p>Cada persona necesita tres cosas: la <b>dirección del sitio</b>, su <b>usuario</b> y su <b>contraseña</b>. El panel arma el texto de la invitación con esos datos, el rol y el tiempo estimado. Puede copiarlo cuenta por cuenta, descargar todas las cuentas en una hoja de cálculo o imprimir las invitaciones.</p>
 <ul>
   <li>Envíe cada invitación solo a su destinatario. Quien tenga el usuario y la contraseña entra con ese rol.</li>
@@ -121,7 +145,7 @@
 </ul>
 <div class="nota"><b>Tiempo estimado por rol</b>Entre 30 y 45 minutos, según el número de pasos en que interviene el rol. El participante puede repartirlo en varias sesiones.</div>
 
-<h2 id="participante">5. Qué verá el participante</h2>
+<h2 id="participante">6. Qué verá el participante</h2>
 <ol class="pasos">
   <li><b>Acceso.</b> Escribe su usuario y su contraseña. La cuenta define su rol.</li>
   <li><b>Orientación,</b> en cuatro pantallas: qué es el estudio y qué se busca, el caso sintético y la ruta, cómo funciona la simulación y su rol con los pasos en que interviene.</li>
@@ -141,7 +165,7 @@
   </tbody>
 </table></div>
 
-<h2 id="pausa">6. Pausas, caídas de conexión y errores</h2>
+<h2 id="pausa">7. Pausas, caídas de conexión y errores</h2>
 <ul>
   <li><b>Pausar.</b> El participante puede pulsar «Pausar» cuando quiera. Su avance queda guardado y, al volver a entrar con su usuario y su contraseña, ve «Bienvenido de nuevo» con el paso donde quedó.</li>
   <li><b>Recarga o cierre inesperado.</b> El simulador guarda cada cambio. Si la página se recarga o el navegador se cierra, se restablece el mismo paso con lo que tenía escrito.</li>
@@ -150,7 +174,7 @@
   <li><b>Ventanas privadas.</b> Una ventana privada o de incógnito borra el avance al cerrarse. La orientación se lo advierte al participante.</li>
 </ul>
 
-<h2 id="recibir">7. Cómo llegan las respuestas</h2>
+<h2 id="recibir">8. Cómo llegan las respuestas</h2>
 <h3>Entrega por archivo</h3>
 <p>Al terminar, el participante descarga un archivo llamado <code>respuestas-usuario-fecha.json</code> y se lo envía por el medio que usted le indicó. En el momento «Respuestas» del panel, elija los archivos o arrástrelos.</p>
 <h3>Entrega por servidor</h3>
@@ -164,7 +188,7 @@
   <li>Una huella de integridad. Si el archivo se altera o llega incompleto, el panel lo rechaza.</li>
 </ul>
 
-<h2 id="resultados">8. Seguimiento y resultados</h2>
+<h2 id="resultados">9. Seguimiento y resultados</h2>
 <p>El informe consolidado separa siempre lo que respondieron los participantes de lo que simuló el sistema. Incluye:</p>
 <ul>
   <li>Quiénes participaron y la cobertura por rol.</li>
@@ -178,15 +202,15 @@
 </ul>
 <p>Las cuentas de prueba y de demostración quedan fuera del análisis, salvo que usted pida incluirlas. También puede excluir una respuesta en particular.</p>
 
-<h2 id="cuidado">9. Cuidado de los datos</h2>
+<h2 id="cuidado">10. Cuidado de los datos</h2>
 <ul>
-  <li><b>Copia de seguridad.</b> Exporte el proyecto con frecuencia. El archivo contiene las cuentas con sus contraseñas y las respuestas importadas: guárdelo como un documento confidencial.</li>
+  <li><b>Copia de seguridad.</b> Exporte cada sesión con frecuencia. El archivo contiene las cuentas con sus contraseñas y las respuestas importadas: guárdelo como un documento confidencial.</li>
   <li><b>Archivos confidenciales.</b> La hoja de cuentas y la tabla de datos personales son para su uso. No las publique ni las adjunte a informes.</li>
   <li><b>Retiro de un participante.</b> Si alguien se retira desde el simulador, sus respuestas se borran de su dispositivo y, con entrega por servidor, también del servidor. Si se lo pide directamente, elimine su respuesta en el panel y, con entrega por servidor, bórrela también del servidor desde el panel.</li>
   <li><b>Cierre del estudio.</b> Descargue todo, guarde una copia final y pida a quien publica que borre las respuestas del servidor.</li>
 </ul>
 
-<h2 id="limites">10. Límites que debe conocer</h2>
+<h2 id="limites">11. Límites que debe conocer</h2>
 <ul>
   <li><b>El acceso del simulador no es un mecanismo de seguridad.</b> Asigna el rol y evita entradas por descuido. La protección del sitio depende del servidor: HTTPS y control de acceso.</li>
   <li><b>Sin servidor, el avance vive en el navegador del participante.</b> Usted solo lo conoce cuando recibe su archivo.</li>
@@ -197,7 +221,7 @@
   <li><b>Qué mide la simulación.</b> Percepción y comportamiento en un escenario simulado. No es el resultado técnico del módulo.</li>
 </ul>
 
-<h2 id="preguntas">11. Preguntas frecuentes</h2>
+<h2 id="preguntas">12. Preguntas frecuentes</h2>
 <div class="tabla"><table>
   <thead><tr><th>Pregunta</th><th>Respuesta</th></tr></thead>
   <tbody>
@@ -206,7 +230,8 @@
     <tr><td>Un participante empezó en el trabajo y quiere seguir en casa.</td><td>Con entrega por servidor, entra con su usuario y contraseña y continúa. Con entrega por archivo, descarga su archivo de avance al pausar y lo carga en el otro equipo.</td></tr>
     <tr><td>El panel rechaza un archivo.</td><td>Lea el motivo que muestra. Si dice que la huella no coincide, pida al participante que lo descargue y lo envíe de nuevo.</td></tr>
     <tr><td>¿Puedo cambiar el texto de la declaración?</td><td>Puede añadir un párrafo y los datos del comité en el momento «Estudio». Para reemplazar el texto completo, pida a quien publica que edite la sección <code>consentimiento</code> de <code>configuracion.js</code>.</td></tr>
-    <tr><td>Cambié de computador.</td><td>Exporte la copia de seguridad en el computador anterior y restáurela en el nuevo.</td></tr>
+    <tr><td>Cambié de computador.</td><td>Exporte la copia de seguridad de cada sesión en el computador anterior y restáurelas en el nuevo.</td></tr>
+    <tr><td>¿Puedo correr dos grupos a la vez?</td><td>Sí. Cree una sesión por grupo en «Estudios». Cada una tiene su identificador, sus cuentas y su informe.</td></tr>
     <tr><td>¿Qué pasa si un participante borra los datos de su navegador?</td><td>Con entrega por servidor recupera su avance al entrar. Sin servidor, solo si había descargado su archivo de avance.</td></tr>
   </tbody>
 </table></div>

@@ -14,8 +14,9 @@ QUÉ HAY EN ESTA CARPETA
                           de demostración: reemplácela por la que genera el
                           panel del investigador.
   sw.js                   Deja reabrir el simulador sin conexión.
-  administrador.html      Panel del investigador: estudio, cuentas,
-                          publicación, respuestas, seguimiento y resultados.
+  administrador.html      Panel del investigador: estudios (varias sesiones
+                          de simulación), cuentas, publicación, respuestas,
+                          seguimiento y resultados.
   recibir.php             Receptor opcional de respuestas (requiere PHP).
   recibir-config.php      Claves del receptor. Viene sin claves: reemplácelo
                           por el que genera el panel del investigador.

@@ -67,7 +67,7 @@
     <tr><td><code>index.html</code></td><td>El simulador. Es lo que abre el participante.</td><td>Sí</td></tr>
     <tr><td><code>configuracion.js</code></td><td>Datos del estudio y cuentas (usuario, rol y huella de la contraseña; nunca la contraseña). La que viene en el paquete es de demostración.</td><td>Sí, la que le entregue el investigador</td></tr>
     <tr><td><code>sw.js</code></td><td>Permite reabrir el simulador sin conexión después de la primera visita.</td><td>Sí, junto a <code>index.html</code></td></tr>
-    <tr><td><code>administrador.html</code></td><td>Panel del investigador: cuentas, publicación, respuestas y resultados. También funciona abierto desde el computador del investigador.</td><td>Opcional</td></tr>
+    <tr><td><code>administrador.html</code></td><td>Panel del investigador: sesiones de simulación, cuentas, publicación, respuestas y resultados. También funciona abierto desde el computador del investigador.</td><td>Opcional</td></tr>
     <tr><td><code>recibir.php</code>, <code>recibir-config.php</code>, carpeta <code>respuestas/</code></td><td>Receptor opcional: guarda en el servidor las respuestas que envía el simulador.</td><td>Solo si el investigador eligió entrega por servidor</td></tr>
     <tr><td><code>guia-despliegue.html</code>, <code>guia-investigador.html</code>, <code>LEEME.txt</code></td><td>Documentación.</td><td>No hace falta</td></tr>
   </tbody>
@@ -145,7 +145,7 @@ return [
 
 <h2 id="operar">7. Durante el estudio</h2>
 <h3>Cambios en las cuentas</h3>
-<p>Cuando el investigador cree o cambie cuentas le enviará un <code>configuracion.js</code> nuevo. Reemplace el archivo. Si la entrega es por servidor y cambió la clave de envío, reemplace también <code>recibir-config.php</code>. No cambie el identificador del estudio con participantes en curso: el navegador guarda el avance con ese identificador.</p>
+<p>Cuando el investigador cree o cambie cuentas le enviará un <code>configuracion.js</code> nuevo. Reemplace el archivo. Si el investigador corre <b>varias sesiones de simulación a la vez</b>, cada una necesita su propia carpeta en el sitio, con su <code>index.html</code> y su <code>configuracion.js</code>; con el receptor, cada carpeta puede compartir el mismo <code>recibir.php</code> o tener el suyo, porque las respuestas se guardan separadas por el identificador del estudio. Si la entrega es por servidor y cambió la clave de envío, reemplace también <code>recibir-config.php</code>. No cambie el identificador del estudio con participantes en curso: el navegador guarda el avance con ese identificador.</p>
 <h3>Copias y cierre</h3>
 <ul>
   <li>Incluya <code>respuestas/</code> en las copias de seguridad mientras dure el estudio, con el mismo cuidado que cualquier dato de investigación.</li>
