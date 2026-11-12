@@ -1,0 +1,34 @@
+// Estabilidad del repintado, seguimiento por participante, vista del participante e informe imprimible.
+const L = require('./lib');
+(async () => {
+  const { srv, url } = await L.serve(); const b = await L.launch(); const ctx = await L.contexto(b); const errs = []; const { T, fin } = L.informe();
+  const { F, code } = await L.crearSesion(ctx, url, errs, 'Mesa de prueba');
+  const ana = await L.unir(ctx, url, errs, code, 'Ana', 'tra'); const beto = await L.unir(ctx, url, errs, code, 'Beto', 'eps'); const dani = await L.unir(ctx, url, errs, code, 'Dani', 'ips');
+  await L.click(F, '[data-act="iniciar"]'); await L.w(400); await F.reload({ waitUntil: 'domcontentloaded' }); await L.w(400); await dani.reload({ waitUntil: 'domcontentloaded' }); await L.w(400);
+  await L.click(dani, '[data-act="ver-todo"]'); await L.w(800); await dani.$eval('.sb-wrap', el => { el.scrollLeft = 600; });
+  await dani.evaluate(() => { window.__first = document.querySelector('#vista > *'); });
+  await F.$eval('[data-act="fsub"][data-arg="preparar"]', el => el.click()); await L.w(2000);
+  const after = await dani.evaluate(() => ({ same: window.__first === document.querySelector('#vista > *'), sl: document.querySelector('.sb-wrap').scrollLeft, enter: document.getElementById('vista').classList.contains('enter') }));
+  T('el participante no se repinta ni salta cuando otros actúan; conserva el desplazamiento', after.same && after.sl === 600 && !after.enter, JSON.stringify(after));
+  await L.click(dani, '[data-act="ver-todo"]');
+  await L.click(dani, '[data-act="f"][data-arg="suficiencia"][data-v="parcial"]'); await dani.check('input[data-in="f-falta"][data-arg="hl"]'); await dani.selectOption('select[data-in="f-finalidad"]', 'calificacion'); await L.click(dani, '[data-act="f"][data-arg="decision"][data-v="expedir"]'); await dani.selectOption('select[data-in="f-responde"]', 'nadie'); await dani.fill('input[data-in="f-dias"]', '2'); await dani.fill('input[data-in="f-obs"]', 'no llegó el historial laboral'); await L.click(dani, '[data-act="guardar"]'); await L.w(500);
+  await L.click(F, '[data-act="fsub"][data-arg="ejecutar"]'); await L.w(400);
+  const mon = await L.txt(F, 'table.monitor');
+  T('seguimiento por participante: avance, qué colocó y problemas', /Dani/.test(mon) && /expedir/.test(mon) && /finalidad no autorizada/.test(mon) && /información parcial/.test(mon) && /sin responsable claro/.test(mon) && /Ana/.test(mon), mon.slice(mon.indexOf('Dani'), mon.indexOf('Dani') + 200));
+  await F.screenshot({ path: L.path.join(L.SALIDA, 'seguimiento.png'), fullPage: true });
+  await F.$eval('table.monitor [data-act="ver-part"]', el => el.click()); await L.w(500);
+  const prev = await F.evaluate(() => ({ inert: !!document.querySelector('.preview[inert]'), pcard: !!document.querySelector('.preview .pcard') }));
+  T('vista del participante en solo lectura', prev.inert && prev.pcard, JSON.stringify(prev));
+  await L.click(F, '[data-act="prev-split"][data-arg="1"]'); await L.w(400); T('modo «su pantalla y mi seguimiento»', !!(await F.$('.split .ficha')));
+  await F.screenshot({ path: L.path.join(L.SALIDA, 'vista-participante.png'), fullPage: true });
+  const tercero = await F.$$eval('[data-act="prev-sel"]', els => els[2].getAttribute('data-arg')); await L.click(F, `[data-act="prev-sel"][data-arg="${tercero}"]`); await L.w(300);
+  T('cambia de participante en la vista previa', /Dani/.test(await L.txt(F, '.preview-banner')));
+  await L.click(F, '[data-act="fsub"][data-arg="ejecutar"]'); T('el facilitador sigue siéndolo tras la vista previa', /Ejecutar/.test(await L.txt(F, '#vista')) && (await F.evaluate(() => document.body.dataset.rol)) === 'facilitador');
+  T('la vista previa no altera la identidad del participante real', /Dani/.test(await L.txt(dani, '#appright')) && /Actividad completada/.test(await L.txt(dani, '#vista')));
+  await L.click(F, '[data-act="fsub"][data-arg="resultados"]'); await L.w(300);
+  const html = L.fs.readFileSync(await (await L.descargar(F, '[data-act="exp-informe"]')).path(), 'utf8'); L.fs.writeFileSync(L.path.join(L.SALIDA, 'informe.html'), html);
+  T('informe exportable con portada, índice y sin botones', /doc-cover/.test(html) && /doc-toc/.test(html) && !/<button/.test(html) && !/2468/.test(html));
+  const P = await ctx.newPage(); await P.route(/googleapis|gstatic/, r => r.abort()); await P.setContent(html, { waitUntil: 'domcontentloaded' }); await P.emulateMedia({ media: 'print' }); await P.pdf({ path: L.path.join(L.SALIDA, 'informe.pdf'), format: 'A4', printBackground: true });
+  T('el informe se imprime a PDF', L.fs.statSync(L.path.join(L.SALIDA, 'informe.pdf')).size > 20000);
+  const rc = fin(errs); await b.close(); srv.close(); process.exit(rc);
+})().catch(e => { console.log('ERR', e.message.split('\n')[0]); process.exit(1); });
