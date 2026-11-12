@@ -92,3 +92,12 @@
     .wrap, .appbar, .foot { padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
     .top .msg:not(:empty) { left:max(16px, env(safe-area-inset-left, 0px)); right:max(16px, env(safe-area-inset-right, 0px)); bottom:calc(12px + env(safe-area-inset-bottom, 0px)); }
   }
+  /* Relato del caso en cada paso */
+  .relato { background:var(--surface-2); border-left:4px solid var(--navy); border-radius:6px; padding:14px 18px; margin:0 0 14px; }
+  .relato p { font-size:15px; line-height:23px; margin:0; max-width:74ch; } .relato .lbl { margin-bottom:6px; }
+  .relato .en-juego { margin-top:8px; color:var(--text-2); } .relato .en-juego b { color:var(--navy); }
+  details.mapa-paso > summary { font-size:14px; color:var(--link); margin-bottom:4px; }
+  .ficha-kv { margin-top:6px; } .ficha-caso .kv b { white-space:nowrap; }
+  .nav-row .mini.hm { flex:0 1 auto; text-align:right; }
+  .actividad fieldset .mini.ayuda { margin:0 0 8px; max-width:70ch; }
+  .sigue { margin:14px 0 0; color:var(--text-2); }

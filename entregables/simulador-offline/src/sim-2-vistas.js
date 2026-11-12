@@ -117,13 +117,17 @@ function vistaOrientacion() {
       <div class="guia">${ico("gobernanza-etica")}<div><b>${esc(E.aclaraTitulo)}</b><ul class="lista">${E.aclara.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div></div>${S.consent ? "" : cargarAvanceHtml()}`;
   } else if (id === "caso") {
     const C = O.caso;
+    const K = GUION.caso;
     c = `<h1 tabindex="-1">${esc(C.titulo)}</h1><p>${esc(C.intro)}</p>
-      <div class="ficha-caso">${ico("documentos-datos-sinteticos", "lg")}<div><b>Caso M.P.</b><p>${esc(BP.caso.ficha)}</p><p class="mini">${esc(BP.caso.alcance)}</p></div></div>
+      <div class="ficha-caso">${ico("documentos-datos-sinteticos", "lg")}<div><b>Quién es M.P.</b><div class="kv ficha-kv">${K.ficha.map(f => `<b>${esc(f[0])}</b><span>${esc(f[1])}</span>`).join("")}</div></div></div>
+      ${K.relato.map(t => `<p>${esc(t)}</p>`).join("")}
+      <div class="guia">${ico("capitulos-tensiones-rupturas")}<div>${esc(K.disputa)}</div></div>
+      <p class="mini">${esc(BP.caso.alcance)}</p>
       <h2>${ico("navegacion-blueprint")}${esc(C.rutaTitulo)}</h2>
       <div class="ruta">${SB.fases.map(f => `<div class="ruta-fase"><div class="ruta-t">${ico(ICO.fase[f.id])}<b>${esc(f.n)}</b><span class="mini">${esc(f.sub)}</span></div><ol>${PASOS.filter(p => p.fase === f.id).map(p => `<li><span class="step-tag sm">${esc(p.id)}</span><span>${esc(p.n)}</span></li>`).join("")}</ol></div>`).join("")}</div>
       <h2>${ico("documentos-evidencia")}${esc(C.evidenciaTitulo)}</h2>
       <div class="twrap"><table class="t apila"><thead><tr><th scope="col">Pieza</th><th scope="col">Qué es</th><th scope="col">Custodio</th></tr></thead><tbody>${Object.keys(EV).map(k => `<tr><td class="nw">${ico(ICO.ev[k], "sm")}<b>${esc(EV[k].sl)}</b></td><td>${esc(EV[k].n)}</td><td>${esc(nomL(EV[k].cust))}</td></tr>`).join("")}</tbody></table></div>
-      <p class="mini" style="margin-top:10px">${esc(ESC.nota)}</p>`;
+      <p class="mini" style="margin-top:10px">${esc(GUION.caso.nota)}</p>`;
   } else if (id === "mecanica") {
     const M = O.mecanica, canal = CFG.envio ? M.envio[CFG.envio.modo] : M.envio.archivo;
     c = `<h1 tabindex="-1">${esc(M.titulo)}</h1><ol class="puntos">${M.puntos.concat([canal]).map(x => `<li><b>${esc(x.t)}</b><span>${esc(x.d)}</span></li>`).join("")}</ol>
@@ -131,6 +135,7 @@ function vistaOrientacion() {
   } else {
     const R = O.rol;
     c = `<h1 tabindex="-1">${esc(R.titulo)}</h1><p>${esc(R.intro)}</p>
+      ${GUION.roles[a] ? `<div class="qpanel">${esc(GUION.roles[a])}</div>` : ""}
       <div class="ficha-rol"><div class="avatar xl">${icoActor(a)}</div><div><div class="rol-n">${esc(nomL(a))}</div><div class="kv"><b>Función en la ruta</b><span>${esc(A[a].funcion)}</span><b>Tensión conocida</b><span>${esc(A[a].tension)}</span><b>Grupo</b><span>${esc(A[a].grupo)}</span></div></div></div>
       <h2>${ico("navegacion-blueprint")}${esc(R.intervieneTitulo)}</h2>${intervencionHtml(a)}<p class="mini" style="margin-top:8px">${esc(R.intervieneNota)}</p>
       <details data-det="terminos"><summary>${esc(R.terminosTitulo)}</summary><dl class="info">${BP.terminos.map(t => `<dt>${esc(t[0])}</dt><dd>${esc(t[1])}</dd>`).join("")}</dl></details>`;
@@ -230,10 +235,16 @@ function celdaDe(p, actor, modo) {
   const k = ["F1", "F2", "F3", "F5"].filter(f => { const c = BP.celdas[p.id + f]; return c && (c.a === actor || (c.t || []).indexOf(actor) >= 0); })[0];
   return k ? BP.celdas[p.id + k][vModo(modo)] : null;
 }
+// Qué está pasando con el caso en este paso, en el modo de la ronda.
+function relatoPaso(p, modo, conTitulo) {
+  const g = GUION.pasos[p.id]; if (!g) return "";
+  const t = g[vModo(modo)];
+  return `<div class="relato">${conTitulo ? `<div class="lbl">${ico(ICO.paso[p.id], "sm")}${esc(p.id)} · ${esc(p.n)}</div>` : ""}<p>${esc(t)}</p>${g.enJuego ? `<p class="mini en-juego">${ico("capitulos-decision-avance", "sm")}<b>Qué se juega aquí.</b> ${esc(g.enJuego)}</p>` : ""}</div>`;
+}
 function situacionHtml(p, actor, modo, act) {
   const reto = SIM.retos.filter(x => x.actor === actor && (x.etapa === p.id || x.etapa === "*") && GUION.retosOmitidos.indexOf(x.id) < 0)[0], c = celdaDe(p, actor, modo);
   if (!reto && !c) return "";
-  return `<div class="situacion"><div class="lbl">${ico("navegacion-escenario", "sm")}Su situación en este paso</div>
+  return `<div class="situacion"><div class="lbl">${ico("navegacion-escenario", "sm")}Lo que tiene usted sobre la mesa</div>
     ${reto ? `<p><b>${esc(reto.titulo)}.</b> ${esc(reto[vModo(modo)])}</p>` : ""}
     ${c ? `<div class="kv"><b>Evidencia</b><span>${esc(c.ev)}</span><b>Responsable y plazo</b><span>${esc(c.r)}</span><b>Registro</b><span>${esc(c.tz)}</span></div>` : ""}
     ${reto && reto.base && reto.base.length ? `<details data-det="base-${esc(p.id)}"><summary>Base normativa</summary><ul class="lista">${reto.base.map(k => `<li>${esc(SIM.normas[k] || k)}</li>`).join("")}</ul></details>` : ""}</div>`;
@@ -247,22 +258,22 @@ function formActividad(p, act, modo) {
   const dias = `<input type="number" min="0" max="3650" step="1" inputmode="numeric" data-in="f-dias" value="${esc(f.dias == null ? "" : f.dias)}" style="width:110px">`;
   let h = "";
   if (act.tipo === "decide") {
-    h += `<fieldset><legend>${ico("investigacion-completitud", "sm")}1. ¿La información disponible es suficiente para actuar?</legend>${opt("f", "suficiencia", ESC.suficiencia, f.suficiencia)}${f.suficiencia && f.suficiencia !== "suficiente" ? `<div class="campos"><span class="mini">¿Qué falta? Marque las piezas.</span><br>${Object.keys(EV).map(k => `<label><input type="checkbox" data-in="f-falta" data-arg="${k}" ${(f.falta || []).indexOf(k) >= 0 ? "checked" : ""}>${esc(EV[k].sl)} · ${esc(EV[k].n)}</label>`).join("")}</div>` : ""}</fieldset>`;
-    h += `<fieldset><legend>${ico("gobernanza-finalidad", "sm")}2. ¿Con qué finalidad consulta la evidencia?</legend><select data-in="f-finalidad" aria-label="Finalidad de la consulta"><option value="">Elija una finalidad…</option>${ESC.finalidades.map(x => `<option value="${x.id}" ${f.finalidad === x.id ? "selected" : ""}>${esc(x.n)}</option>`).join("")}</select><p class="mini">Elija la que usaría en la práctica.</p></fieldset>`;
-    h += `<fieldset><legend>${ico("acciones-decidir", "sm")}3. Su decisión</legend>${opt("f", "decision", act.ops, f.decision)}</fieldset>`;
-    h += `<fieldset><legend>${ico("gobernanza-responsable-plazo", "sm")}4. ¿Quién responde por esta decisión y en cuántos días?</legend><div class="row"><label>Responde<select data-in="f-responde"><option value="">Elija…</option><option value="yo" ${f.responde === "yo" ? "selected" : ""}>Mi entidad (${esc(nom(yo))})</option>${BP.actores.filter(a => a.id !== yo).map(a => `<option value="${a.id}" ${f.responde === a.id ? "selected" : ""}>${esc(a.n)}</option>`).join("")}<option value="nadie" ${f.responde === "nadie" ? "selected" : ""}>Nadie claramente</option></select></label><label>Días${dias}</label></div>${modo === "propuesto" ? `<div class="campos" style="margin-top:8px"><span class="mini">¿A quién notifica? El módulo registra el acuse de cada uno.</span><br>${BP.actores.filter(a => a.id !== yo).map(a => `<label><input type="checkbox" data-in="f-notifica" data-arg="${a.id}" ${(f.notifica || []).indexOf(a.id) >= 0 ? "checked" : ""}>${esc(a.corto)}</label>`).join("")}</div>` : ""}</fieldset>`;
+    h += `<fieldset><legend>${ico("investigacion-completitud", "sm")}1. Con lo que tiene ahora, ¿puede actuar?</legend><p class="mini ayuda">Piense en la evidencia que le llegaría de verdad en este punto de la ruta, no en la que debería llegarle.</p>${opt("f", "suficiencia", ESC.suficiencia, f.suficiencia)}${f.suficiencia && f.suficiencia !== "suficiente" ? `<div class="campos"><span class="mini">¿Qué le haría falta? Marque las piezas que echa de menos.</span><br>${Object.keys(EV).map(k => `<label><input type="checkbox" data-in="f-falta" data-arg="${k}" ${(f.falta || []).indexOf(k) >= 0 ? "checked" : ""}>${esc(EV[k].sl)} · ${esc(EV[k].n)}</label>`).join("")}</div>` : ""}</fieldset>`;
+    h += `<fieldset><legend>${ico("gobernanza-finalidad", "sm")}2. ¿Para qué consultaría esa evidencia?</legend><p class="mini ayuda">Declarar la finalidad es lo que en el módulo propuesto permite o deniega cada consulta. Elija la que usaría en la práctica, aunque no esté seguro de que se la autoricen.</p><select data-in="f-finalidad" aria-label="Finalidad de la consulta"><option value="">Elija una finalidad…</option>${ESC.finalidades.map(x => `<option value="${x.id}" ${f.finalidad === x.id ? "selected" : ""}>${esc(x.n)}</option>`).join("")}</select></fieldset>`;
+    h += `<fieldset><legend>${ico("acciones-decidir", "sm")}3. ¿Qué decide?</legend><p class="mini ayuda">La decisión que tomaría hoy, con lo que tiene sobre la mesa.</p>${opt("f", "decision", act.ops, f.decision)}</fieldset>`;
+    h += `<fieldset><legend>${ico("gobernanza-responsable-plazo", "sm")}4. ¿Quién responde por esta decisión y en cuántos días?</legend><p class="mini ayuda">Los días son los que le tomaría en la práctica, contando lo que implica reunir, revisar y notificar.</p><div class="row"><label>Responde<select data-in="f-responde"><option value="">Elija…</option><option value="yo" ${f.responde === "yo" ? "selected" : ""}>Mi entidad (${esc(nom(yo))})</option>${BP.actores.filter(a => a.id !== yo).map(a => `<option value="${a.id}" ${f.responde === a.id ? "selected" : ""}>${esc(a.n)}</option>`).join("")}<option value="nadie" ${f.responde === "nadie" ? "selected" : ""}>Nadie claramente</option></select></label><label>Días${dias}</label></div>${modo === "propuesto" ? `<div class="campos" style="margin-top:8px"><span class="mini">¿A quién notifica? El módulo registra el acuse de cada uno.</span><br>${BP.actores.filter(a => a.id !== yo).map(a => `<label><input type="checkbox" data-in="f-notifica" data-arg="${a.id}" ${(f.notifica || []).indexOf(a.id) >= 0 ? "checked" : ""}>${esc(a.corto)}</label>`).join("")}</div>` : ""}</fieldset>`;
   } else if (act.tipo === "custodia") {
     const sim = regsDe({ ronda:r, paso:p.id }).filter(x => (x.tipo === "solicitud" || x.tipo === "consulta") && x.payload.a === yo);
     h += simuladosHtml(sim, modo === "actual" ? "Lo que le piden" : "Lo que el módulo ya entregó de su evidencia");
-    h += `<fieldset><legend>${ico("acciones-entregar", "sm")}1. ¿Qué responde?</legend>${opt("f", "respuesta", ESC.respCustodia, f.respuesta)}</fieldset><fieldset><legend>${ico("investigacion-tiempo", "sm")}2. ¿Cuántos días le toma?</legend><label class="sr-only" for="f-dias-c">Días</label>${dias.replace("<input", '<input id="f-dias-c"')}</fieldset>`;
+    h += `<fieldset><legend>${ico("acciones-entregar", "sm")}1. ¿Qué entrega?</legend><p class="mini ayuda">Puede entregar todo lo que le piden, solo lo que es pertinente para la finalidad declarada, o negarse.</p>${opt("f", "respuesta", ESC.respCustodia, f.respuesta)}</fieldset><fieldset><legend>${ico("investigacion-tiempo", "sm")}2. ¿Cuántos días le tomaría?</legend><p class="mini ayuda">Desde que le llega la solicitud hasta que la evidencia sale de su entidad.</p><label class="sr-only" for="f-dias-c">Días</label>${dias.replace("<input", '<input id="f-dias-c"')}</fieldset>`;
   } else if (act.tipo === "focal") {
-    h += `<fieldset><legend>${ico("acciones-ver-detalle", "sm")}1. En este paso, ¿sabe qué pasa con su caso?</legend>${opt("f", "sabe", ESC.focal.sabe, f.sabe)}</fieldset>`;
-    h += `<fieldset><legend>${ico("gobernanza-responsable-plazo", "sm")}2. ¿Quién le responde y en cuántos días?</legend><div class="row"><label>Le responde<select data-in="f-responde"><option value="">Elija…</option>${BP.actores.filter(a => a.id !== "tra").map(a => `<option value="${a.id}" ${f.responde === a.id ? "selected" : ""}>${esc(a.n)}</option>`).join("")}<option value="nadie" ${f.responde === "nadie" ? "selected" : ""}>No sé</option></select></label><label>Días (si lo sabe)${dias}</label></div></fieldset>`;
-    h += `<fieldset><legend>${ico("investigacion-reprocesos", "sm")}3. ¿Qué tuvo que hacer usted? Puede marcar varias.</legend>${opt("fm", "hizo", ESC.focal.hizo, f.hizo, true)}</fieldset>`;
+    h += `<fieldset><legend>${ico("acciones-ver-detalle", "sm")}1. En este momento, ¿sabe qué está pasando con su caso?</legend><p class="mini ayuda">Responda como M.P.: qué entiende ella de lo que ocurre, no lo que usted sabe por su oficio.</p>${opt("f", "sabe", ESC.focal.sabe, f.sabe)}</fieldset>`;
+    h += `<fieldset><legend>${ico("gobernanza-responsable-plazo", "sm")}2. ¿A quién le corresponde responderle, y en cuántos días?</legend><p class="mini ayuda">Si no lo sabe, dígalo: eso también es un hallazgo.</p><div class="row"><label>Le responde<select data-in="f-responde"><option value="">Elija…</option>${BP.actores.filter(a => a.id !== "tra").map(a => `<option value="${a.id}" ${f.responde === a.id ? "selected" : ""}>${esc(a.n)}</option>`).join("")}<option value="nadie" ${f.responde === "nadie" ? "selected" : ""}>No sé</option></select></label><label>Días (si lo sabe)${dias}</label></div></fieldset>`;
+    h += `<fieldset><legend>${ico("investigacion-reprocesos", "sm")}3. ¿Qué le tocó hacer a ella para que esto avanzara?</legend><p class="mini ayuda">Las gestiones que M.P. o su hermana tuvieron que hacer por su cuenta. Puede marcar varias.</p>${opt("fm", "hizo", ESC.focal.hizo, f.hizo, true)}</fieldset>`;
   } else if (act.tipo === "soporte") {
-    h += `<fieldset><legend>${ico("acciones-ver-detalle", "sm")}1. ¿Qué alcanza a ver del caso?</legend>${opt("f", "ve", ESC.soporte.ve, f.ve)}</fieldset><fieldset><legend>${ico("acciones-vigilar", "sm")}2. ¿Qué acción toma?</legend>${opt("f", "accion", ESC.soporte.accion, f.accion)}</fieldset>`;
+    h += `<fieldset><legend>${ico("acciones-ver-detalle", "sm")}1. ¿Qué alcanza a ver del caso desde su entidad?</legend>${opt("f", "ve", ESC.soporte.ve, f.ve)}</fieldset><fieldset><legend>${ico("acciones-vigilar", "sm")}2. ¿Qué haría con lo que ve?</legend><p class="mini ayuda">Lo que haría de verdad en este punto, con las competencias y los recursos que tiene.</p>${opt("f", "accion", ESC.soporte.accion, f.accion)}</fieldset>`;
   }
-  h += `<fieldset><legend>${ico("acciones-observar", "sm")}Observación (opcional)</legend><input type="text" data-in="f-obs" aria-label="Observación" value="${esc(f.obs || "")}" maxlength="600" class="ancho" placeholder="Qué le llamó la atención, qué faltó o qué chocó"></fieldset>`;
+  h += `<fieldset><legend>${ico("acciones-observar", "sm")}¿Quiere añadir algo sobre este paso? (opcional)</legend><input type="text" data-in="f-obs" aria-label="Observación sobre este paso" value="${esc(f.obs || "")}" maxlength="600" class="ancho" placeholder="Lo que le llamó la atención, lo que faltó o lo que en su experiencia no ocurre así"></fieldset>`;
   return h;
 }
 const ETQ = { suficiencia:"Información", falta:"Faltó", finalidad:"Finalidad", decisionTxt:"Decisión", responde:"Responde", dias:"Días", notifica:"Notifica a", obs:"Observación", respuesta:"Respuesta", sabe:"Qué sabe", hizo:"Qué tuvo que hacer", ve:"Qué ve", accion:"Acción" };
@@ -283,15 +294,16 @@ function respuestaKv(pl, yo) {
   return `<div class="kv done-kv">${Object.keys(ETQ).filter(k => pl[k] != null && pl[k] !== "" && !(Array.isArray(pl[k]) && !pl[k].length)).map(k => `<b>${esc(ETQ[k])}</b><span>${esc(valorTxt(k, pl[k], yo))}</span>`).join("")}</div>`;
 }
 function resultadoHtml(p, modo, reg) {
-  const pl = reg.payload, c = pl.comprobacion, yo = S.yo.actor, sig = posicion().sig;
+  const pl = reg.payload, c = pl.comprobacion, yo = S.yo.actor, sig = posicion().sig, G = GUION.guardado;
   const efectos = vigentes().filter(x => x.payload && x.payload.origenActividad === reg.id);
   let comp = "";
   if (c) {
     const perm = Object.keys(c.piezasPermitidas).map(k => EV[k].sl + " " + c.piezasPermitidas[k].length + " de " + EV[k].campos.length).join(" · ");
-    comp = `<div class="comprobacion"><div class="lbl">${ico("gobernanza-contrato-datos", "sm")}Comprobación frente al contrato de datos de su rol</div><p>Finalidad declarada «${esc(finTxt(pl.finalidad))}»: ${c.finalidadAutorizada ? `<span class="regla-ok">autorizada para ${esc(nom(yo))}</span>` : `<span class="regla-no">no autorizada para ${esc(nom(yo))}</span>`}.${perm ? " Vista mínima: " + esc(perm) + "." : ""}${c.piezasDenegadas.length ? ` Fuera de su contrato: <span class="regla-no">${esc(c.piezasDenegadas.map(k => EV[k].sl).join(", "))}</span>.` : ""}${c.piezasPropias.length ? " Evidencia propia: " + esc(c.piezasPropias.map(k => EV[k].sl).join(", ")) + "." : ""}</p><p class="mini">${modo === "actual" ? "Hoy nadie hace esta comprobación. Se registra para comparar con la ronda 2." : "Con el módulo, esta comprobación se hace en cada consulta y queda registrada."}</p></div>`;
+    comp = `<div class="comprobacion"><div class="lbl">${ico("gobernanza-contrato-datos", "sm")}Comprobación frente al contrato de datos de su rol</div><p>Finalidad declarada «${esc(finTxt(pl.finalidad))}»: ${c.finalidadAutorizada ? `<span class="regla-ok">autorizada para ${esc(nom(yo))}</span>` : `<span class="regla-no">no autorizada para ${esc(nom(yo))}</span>`}.${perm ? " Vista mínima: " + esc(perm) + "." : ""}${c.piezasDenegadas.length ? ` Fuera de su contrato: <span class="regla-no">${esc(c.piezasDenegadas.map(k => EV[k].sl).join(", "))}</span>.` : ""}${c.piezasPropias.length ? " Evidencia propia: " + esc(c.piezasPropias.map(k => EV[k].sl).join(", ")) + "." : ""}</p><p class="mini">${esc(modo === "actual" ? G.comprobacionHoy : G.comprobacionMod)}</p></div>`;
   }
-  return `<div class="qpanel ok">${ico("estados-guardado")}Respuesta guardada · ${esc(hora(reg.t))}${reg.version > 1 ? " · corregida (la anterior queda en el historial)" : ""}</div>
-    ${respuestaKv(pl, yo)}${comp}${simuladosHtml(efectos, "Qué ocurrió en la simulación después de su respuesta")}
+  return `<div class="qpanel ok">${ico("estados-guardado")}<b>${esc(G.titulo)}</b> a las ${esc(hora(reg.t))}${reg.version > 1 ? " · es una corrección: la respuesta anterior queda en el historial" : ""}</div>
+    ${respuestaKv(pl, yo)}${comp}${efectos.length ? simuladosHtml(efectos, G.efectos) + `<p class="mini">${esc(G.efectosNota)}</p>` : ""}
+    <p class="mini sigue">${ico("acciones-siguiente", "sm")}${esc(G.sigue)}</p>
     <div class="nav-row"><button type="button" class="btn outline" data-act="rectificar">${ico("acciones-editar")}Corregir mi respuesta</button><span class="sp"></span><button type="button" class="btn" data-act="continuar">${sig ? "Continuar al paso " + esc(sig.pasos[0]) : "Continuar al cierre de la ronda"}${ico("acciones-siguiente")}</button></div>`;
 }
 function contratoHtml(a) {
@@ -304,7 +316,8 @@ function rondaIntroHtml(r) {
   const G = GUION.rondas[r.modo], bs = bloques(r.id), acts = bs.filter(b => b.tipo === "actividad");
   return `<div class="pmain-head"><div><div class="eyebrow">Ronda ${ESC.rondas.indexOf(r) + 1} de ${ESC.rondas.length}</div><h1 class="h1" tabindex="-1">${ico(ICO.modo[r.modo])}${esc(G.titulo)}</h1></div></div>
     ${G.parrafos.map(p => `<p>${esc(p)}</p>`).join("")}
-    ${r.modo === "propuesto" ? `<h2>${ico("gobernanza-contrato-datos")}${esc(G.reglasTitulo)}</h2><ol class="reglas">${BP.reglas.map(x => `<li>${ico(ICO.regla[x.n])}<span><b>${esc(x.nombre)}.</b> ${esc(x.enun)}</span></li>`).join("")}</ol><h2>${icoActor(S.yo.actor)}El contrato de datos de su rol</h2>${contratoHtml(S.yo.actor)}` : ""}
+    ${GUION.roles[S.yo.actor] ? `<div class="qpanel">${icoActor(S.yo.actor)} ${esc(GUION.roles[S.yo.actor])}</div>` : ""}
+    ${r.modo === "propuesto" ? `<h2>${ico("gobernanza-contrato-datos")}${esc(G.reglasTitulo)}</h2><ol class="reglas">${BP.reglas.map(x => `<li>${ico(ICO.regla[x.n])}<span><b>${esc(x.nombre)}.</b> ${esc(x.enun)}</span></li>`).join("")}</ol><h2>${icoActor(S.yo.actor)}${esc(G.contratoTitulo)}</h2>${contratoHtml(S.yo.actor)}` : ""}
     <div class="guia">${ico("navegacion-blueprint")}<div><b>Su recorrido en esta ronda.</b> ${acts.length ? "Interviene en " + plural(acts.length, "paso", "pasos") + ": " + esc(acts.map(b => b.pasos[0]).join(", ")) + ". En los demás lee el contexto." : "Su rol no tiene actividades en esta ronda: lee el contexto."} Al final valora el contrato y responde cuatro preguntas.</div></div>
     <button type="button" class="btn big" data-act="ronda-iniciar" style="margin-top:18px">${ico("acciones-iniciar")}Comenzar la ronda</button>`;
 }
@@ -316,7 +329,7 @@ function valoracionHtml(r) {
       <div class="kv done-kv"><b>Contrato</b><span>${esc(etiqueta(ESC.valoracion.semaforo, val.payload.semaforo))}${val.payload.ajuste ? " · " + esc(val.payload.ajuste) : ""}</span><b>Frente a hoy</b><span>${esc(etiqueta(ESC.valoracion.mejora, val.payload.mejora))}</span>${ESC.preguntas.map(q => `<b>${esc(q.id)}</b><span>${esc(q.tipo === "multi" ? (pre.payload[q.id] || []).map(x => etiqueta(q.ops, x)).join(", ") : q.tipo === "texto" ? pre.payload[q.id] : etiqueta(q.ops, pre.payload[q.id]))}${pre.payload[q.id + "cual"] ? " · " + esc(pre.payload[q.id + "cual"]) : ""}</span>`).join("")}</div>
       <div class="nav-row"><button type="button" class="btn outline" data-act="val-rectificar">${ico("acciones-editar")}Corregir mi valoración</button><span class="sp"></span><button type="button" class="btn" data-act="ronda-cerrar">${sig ? "Continuar a la ronda " + (ESC.rondas.indexOf(sig) + 1) : "Terminar y pasar a la entrega"}${ico("acciones-siguiente")}</button></div>`;
   }
-  return `<div class="actividad"><div class="qpanel">Valore el contrato de datos de ${esc(nomL(yo.actor))} tal como lo recorrió en esta ronda (${r.modo === "actual" ? "la ruta como funciona hoy" : "la ruta con el módulo propuesto"}) y responda las cuatro preguntas.</div>
+  return `<div class="actividad"><div class="qpanel">Terminó el recorrido de ${esc(r.n.toLowerCase())}. Antes de seguir, valore el contrato de datos de su rol tal como lo vivió en esta ronda y responda cuatro preguntas sobre lo que acaba de recorrer. Son las mismas en las dos rondas, para poder compararlas.</div>
     <details data-det="contrato"><summary>Ver el contrato de datos de su rol</summary>${contratoHtml(yo.actor)}</details>
     <fieldset><legend>${ico("capitulos-validacion-contratos", "sm")}El contrato de su rol</legend>${opt("v", "semaforo", ESC.valoracion.semaforo, v.semaforo)}${v.semaforo === "ajustar" || v.semaforo === "rechazar" ? `<input type="text" data-in="v-ajuste" aria-label="Qué cambiaría del contrato" value="${esc(v.ajuste || "")}" maxlength="600" class="ancho" placeholder="Qué cambiaría y por qué${v.semaforo === "rechazar" ? " (necesario si rechaza)" : ""}">` : ""}</fieldset>
     <fieldset><legend>${ico("investigacion-cambio-observado", "sm")}Frente a hoy, esta forma de trabajar es…</legend>${opt("v", "mejora", ESC.valoracion.mejora, v.mejora)}${r.modo === "actual" ? `<p class="mini">${esc(GUION.rondas.actual.notaMejora)}</p>` : ""}</fieldset>
@@ -328,7 +341,7 @@ function valoracionHtml(r) {
 function vistaSimulacion() {
   const s = S.ses, yo = S.yo, rd = rondaAct(), r = rondaDef(s.rondaActual), modo = r.modo, a = avance();
   const side = `<aside class="pside" aria-label="Su rol y su avance"><div class="avatar xl">${icoActor(yo.actor)}</div><div class="pside-actor">${esc(nomL(yo.actor))}</div><div class="pside-name">usuario ${esc(S.cuenta.u)}${S.cuenta.p || CFG.demo ? " · cuenta de prueba" : ""}</div>
-    <div class="callouts"><div class="callout"><b>${ico("navegacion-escenario", "sm")}Caso</b>${esc(ESC.n)}</div><div class="callout"><b>${ico(ICO.modo[modo], "sm")}Ronda</b>${esc(r.n)}</div><div class="callout"><b>${ico("capitulos-indicadores", "sm")}Su avance</b>${a.hechas} de ${a.total} respuestas<div class="meter"><span style="width:${a.pct}%"></span></div></div></div>
+    <div class="callouts"><div class="callout"><b>${ico("navegacion-escenario", "sm")}El caso</b>${esc(GUION.caso.ficha[0][1])}. ${esc(GUION.caso.ficha[3][1])}.</div><div class="callout"><b>${ico(ICO.modo[modo], "sm")}Ronda</b>${esc(r.n)}</div><div class="callout"><b>${ico("capitulos-indicadores", "sm")}Su avance</b>${a.hechas} de ${a.total} respuestas<div class="meter"><span style="width:${a.pct}%"></span></div></div></div>
     <p class="mini" style="margin-top:12px">${esc(ESC.nota)}</p>
     <button type="button" class="btn outline sm" data-act="orient-ver">${ico("navegacion-guia", "sm")}Ver la orientación</button>
     <button type="button" class="enlace" data-act="retirar">Retirarme del estudio</button></aside>`;
@@ -341,14 +354,17 @@ function vistaSimulacion() {
     if (b.tipo === "contexto") {
       const sig = posicion().sig;
       main = `<div class="pmain-head"><div><div class="eyebrow">${esc(r.n)}</div><h1 class="h1" tabindex="-1">${ico(ICO.actividad.contexto)}${b.pasos.length > 1 ? "Pasos " + esc(b.pasos[0]) + " a " + esc(b.pasos[b.pasos.length - 1]) : "Paso " + esc(b.pasos[0])}: contexto</h1></div><div class="head-right"><span class="chip ch-grey">${ico("acciones-observar", "sm")}su rol no interviene</span>${verTodo}</div></div>${progresoHtml()}
-        <div class="qpanel">${esc(GUION.contexto.instr)}</div>${b.pasos.map(pid => pasoTarjeta(PASOS[PIDX[pid]], modo, yo.actor, true)).join("")}
-        <fieldset class="bloque"><legend>${ico("acciones-observar", "sm")}${esc(GUION.contexto.obs)}</legend><input type="text" data-in="x-obs" aria-label="Observación sobre estos pasos" value="${esc(S.ctxObs || "")}" maxlength="600" class="ancho"></fieldset>
+        <div class="qpanel">${esc(GUION.contexto.instr)}</div>
+        ${b.pasos.map(pid => { const pp = PASOS[PIDX[pid]]; return relatoPaso(pp, modo, true) + `<details data-det="paso-${esc(pid)}" class="mapa-paso"><summary>${ico("navegacion-blueprint", "sm")}Ver quién hace qué en ${esc(pid)}</summary>${pasoTarjeta(pp, modo, yo.actor, true)}</details>`; }).join("")}
+        <fieldset class="bloque"><legend>${ico("acciones-observar", "sm")}${esc(GUION.contexto.obs)}</legend><input type="text" data-in="x-obs" aria-label="Observación sobre estos pasos" value="${esc(S.ctxObs || "")}" maxlength="600" class="ancho"><p class="mini">${esc(GUION.contexto.obsAyuda)}</p></fieldset>
         <div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="continuar">${sig ? "Continuar al paso " + esc(sig.pasos[0]) : "Continuar al cierre de la ronda"}${ico("acciones-siguiente")}</button></div>${completo}`;
     } else {
       const p = pasoActual(), act = b.act, mio = miActividad(s.rondaActual, p.id), editando = !mio || S.form.rectificando;
       const cuerpo = editando ? `<div class="actividad"><div class="qpanel">${esc(act.tipo === "custodia" && modo === "propuesto" ? act.instrMod : act.instr)}</div>${situacionHtml(p, yo.actor, modo, act)}${act.tipo === "decide" ? `<details data-det="info" open><summary>Información disponible en este paso</summary>${infoDisponible(p, yo.actor, modo)}</details>` : ""}${formActividad(p, act, modo)}${errHtml()}<button type="button" class="btn big" data-act="guardar" style="margin-top:18px">${ico("acciones-guardar")}Guardar mi respuesta</button>${mio ? `<button type="button" class="btn outline" data-act="cancelar-rect" style="margin-top:10px">${ico("acciones-cerrar")}Cancelar</button>` : ""}</div>` : resultadoHtml(p, modo, mio);
       main = `<div class="pmain-head"><div><div class="eyebrow">${esc(r.n)}</div><h1 class="h1" tabindex="-1">${ico(ICO.actividad[act.tipo])}${esc(act.titulo)}</h1></div><div class="head-right"><span class="chip ${editando ? "ch-navy live" : "ch-teal"}">${ico(editando ? "estados-en-curso" : "estados-completado", "sm")}${editando ? "su turno" : "respondida"}</span>${verTodo}</div></div>${progresoHtml()}
-        <div class="lbl" style="margin-bottom:6px">${ico("navegacion-blueprint", "sm")}Qué ocurre en este paso</div>${pasoTarjeta(p, modo, yo.actor, false)}<div class="sep-bloque"></div>${cuerpo}${completo}`;
+        ${relatoPaso(p, modo)}
+        <details data-det="paso-mapa" class="mapa-paso"><summary>${ico("navegacion-blueprint", "sm")}Ver quién hace qué en este paso</summary>${pasoTarjeta(p, modo, yo.actor, false)}</details>
+        <div class="sep-bloque"></div>${cuerpo}${completo}`;
     }
   }
   return `<div class="pcard">${side}<div class="pmain">${main}</div></div>`;

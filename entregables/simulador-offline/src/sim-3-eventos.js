@@ -94,7 +94,7 @@ const ACCIONES = {
   "avance-descargar":async () => { const ok = await descargarArchivo(nombreArchivo(), jsonRespuesta(), "application/json"); if (ok) { S.descargado = ahora(); guardarLocal(); } aviso(ok ? "Archivo de avance descargado. Guárdelo: con él puede continuar en otro dispositivo." : "No se descargó el archivo. Inténtelo de nuevo.", !ok); },
   "recargar":() => { guardarLocal(); location.reload(); },
   "c-anon":(arg, v) => { S.cons.anonimo = v; guardarLocal(); render(); },
-  "consent-si":() => { if (aceptarConsentimiento()) { guardarLocal(); envioProgresivo(); aviso("Gracias. Su declaración quedó registrada."); } },
+  "consent-si":() => { if (aceptarConsentimiento()) { guardarLocal(); envioProgresivo(); aviso("Gracias. Su declaración quedó registrada; puede comenzar cuando quiera."); } },
   "consent-no":() => { const u = S.cuenta.u; borrarLocal(u); salir(); S.etapa = "rechazo"; render(); },
   "volver-acceso":() => { S.etapa = "acceso"; render(); },
   "ronda-iniciar":() => { iniciarRonda(); guardarLocal(); render(); },
@@ -102,11 +102,11 @@ const ACCIONES = {
   "fm":(arg, v) => { alternar(S.form, arg, v); guardarLocal(); render(); },
   "v":(arg, v) => { S.val[arg] = S.val[arg] === v ? null : v; guardarLocal(); render(); },
   "vm":(arg, v) => { alternar(S.val, arg, v); guardarLocal(); render(); },
-  "guardar":() => { const reg = guardarActividad(); if (reg) { guardarLocal(); envioProgresivo(); aviso("Respuesta guardada."); } },
+  "guardar":() => { const reg = guardarActividad(); if (reg) { guardarLocal(); envioProgresivo(); aviso("Su respuesta quedó registrada."); } },
   "rectificar":() => { const mio = miActividad(S.ses.rondaActual, S.ses.pasoActual); if (mio) { S.form = prellenar(mio.payload); render(); } },
   "cancelar-rect":() => { S.form = {}; guardarLocal(); render(); },
   "continuar":() => { avanzar(); guardarLocal(); envioProgresivo(); render(); },
-  "guardar-val":() => { if (guardarValoracion()) { guardarLocal(); envioProgresivo(); aviso("Valoración y respuestas guardadas."); } },
+  "guardar-val":() => { if (guardarValoracion()) { guardarLocal(); envioProgresivo(); aviso("Su valoración y sus respuestas quedaron registradas."); } },
   "val-rectificar":() => { S.val = prellenarValoracion(S.ses.rondaActual); render(); },
   "val-cancelar":() => { S.val = {}; guardarLocal(); render(); },
   "ronda-cerrar":() => { cerrarRonda(); guardarLocal(); render(); if (S.etapa === "cierre" && CFG.envio && CFG.envio.modo === "progresivo") enviar(false); },
@@ -123,13 +123,13 @@ const ACCIONES = {
   "copiar":async () => { const ok = await copiarTexto(jsonRespuesta()); aviso(ok ? "Respuestas copiadas. Péguelas en un correo para el investigador." : "No fue posible copiar. Descargue el archivo.", !ok); },
   "guardar-comentario":() => {
     const t = textoLimpio(S.comentario, 2000), prev = regsDe({ tipo:"observacion", participanteId:S.yo.id }).filter(r => r.payload.final)[0];
-    if (!t && !prev) return aviso("Escriba el comentario.", true);
+    if (!t && !prev) return aviso("Escriba primero su comentario y vuelva a guardar.", true);
     registrar("observacion", { texto:t, final:true }, Object.assign({ paso:"—" }, prev ? { reemplaza:prev.id, version:(prev.version || 1) + 1 } : {}));
     if (S.envio.estado === "enviado") S.envio = { estado:"pendiente" };
-    guardarLocal(); aviso("Comentario guardado."); envioProgresivo();
+    guardarLocal(); aviso("Su comentario quedó guardado con sus respuestas."); envioProgresivo();
   },
   "salir":() => { S.confirmar = "salir"; render(); },
-  "salir-si":() => { guardarLocal(); salir(); render(); aviso("Su avance quedó guardado en este dispositivo."); },
+  "salir-si":() => { guardarLocal(); salir(); render(); aviso("Su avance quedó guardado en este dispositivo. Vuelva cuando quiera con su usuario y su contraseña."); },
   "retirar":() => { S.confirmar = "retirar"; render(); },
   "retirar-si":async () => { await retirar(); render(); },
   "borrar":() => { S.confirmar = "borrar"; render(); },
