@@ -31,7 +31,7 @@ Varias personas pueden representar la misma entidad (por ejemplo, dos representa
 
 ## Recorrido del facilitador
 
-1. **Preparar.** Cree la sesión (nombre y PIN). Comparta el código. Confirme la lista de participantes; puede reasignar actores antes de iniciar.
+1. **Preparar.** Cree la sesión (nombre y PIN). Comparta el código. Confirme la lista de participantes. Un participante sin registros se puede quitar y volver a añadir con otro actor.
 2. **Ejecutar.** Inicie la ronda 1 (funcionamiento actual). Para cada paso vea qué actor tiene la actividad pendiente, en curso, bloqueada o completada. Avance cuando se cumplan las condiciones; si debe avanzar sin cumplirlas, justifique la excepción y quedará registrada. Al terminar los pasos, los participantes valoran la ronda. Luego inicie la ronda 2 (funcionamiento propuesto con el módulo).
 3. **Revisar.** Clasifique observaciones, registre riesgos con su mitigación, y para cada conflicto distinga entre proponer una solución y comprobar que quedó resuelta.
 4. **Cerrar.** El estado de cierre se calcula con condiciones verificables: Pendiente de evidencia, Requiere ajustes, Listo para revisión del facilitador, Cerrado con decisión documentada. No se puede cerrar con valoraciones obligatorias faltantes, conflictos críticos abiertos o riesgos sin mitigación descrita. La decisión final registra quién decidió, con qué evidencia y qué condiciones se exigen al siguiente prototipo. Desde aquí se descargan el informe (HTML), las tablas (CSV) y, en opciones avanzadas, el JSON completo. Archivar conserva toda la evidencia.
@@ -121,8 +121,40 @@ Recorrido automatizado en modalidad presencial con un facilitador y siete partic
 - Recargar la página recupera la sesión y la identidad del participante.
 - No hay cierre favorable sin evidencia obligatoria ni sin decisión documentada.
 - Las pantallas y el informe muestran los mismos registros (tabla de valoraciones igual al número de registros).
-- El acceso de facilitador exige PIN; el PIN no aparece en JSON, CSV ni informe HTML.
+- El acceso de facilitador exige PIN; el PIN no aparece en JSON, CSV ni informe HTML. «Salir» revoca el acceso en ese navegador. Es una barrera de uso, no un mecanismo de seguridad: la comprobación ocurre en el navegador.
 - Una persona puede completar una actividad solo con las instrucciones en pantalla.
 - Sin desbordamiento horizontal a 1024 px y a 390 px de ancho.
 
 Pendiente: prueba de la modalidad compartida entre navegadores independientes y prueba breve con usuarios representativos (registrar dónde necesitaron ayuda y ajustar).
+
+## Auditoría de código y correcciones
+
+Una auditoría de código con pruebas reproducibles encontró 30 hallazgos. Las correcciones se aplicaron sobre las fuentes de `src/` y quedan cubiertas por `tests/auditoria.js` (11 comprobaciones) y por la regresión completa `tests/e2e.js` (43).
+
+Corregido:
+
+- **Almacén local.** Cada documento se guarda en su propia clave (`sbsim_doc_v2:<ruta>`): dos pestañas que escriben a la vez ya no se pisan. Los datos del formato anterior se migran al abrir. Si el almacenamiento está lleno, la herramienta lo dice en lugar de confirmar un guardado que no ocurrió.
+- **Cierre.** Un conflicto de rol clasificado por el facilitador y sin comprobar mantiene el estado «Requiere ajustes». Una sesión archivada después de cerrarse conserva «Cerrado con decisión documentada».
+- **Acceso.** Los resultados ya no se abren por enlace mientras la sesión no esté cerrada. El PIN no queda escrito en el formulario. El código de sesión se valida.
+- **Estados.** Una sesión cerrada o archivada no admite acciones de conducción ni respuestas nuevas. Archivar pide un segundo clic. Avanzar solo actúa desde el paso que muestra el botón y cada acción se ejecuta una sola vez.
+- **Formulario del participante.** Si el facilitador cambia de paso mientras alguien escribe, la pantalla se actualiza y lo avisa; ya no se guarda una respuesta en el paso equivocado. La barra de avisos se actualiza siempre.
+- **Correcciones de respuestas.** Al corregir, las solicitudes, consultas, notificaciones y acuses de la versión anterior dejan de contar en indicadores y tablas.
+- **Contrato y evidencia propia.** La evidencia que un actor custodia no aparece como «fuera de su contrato» ni genera solicitudes a sí mismo.
+- **Recorrido completo.** Un participante ve solo sus propias respuestas, no las de otros representantes.
+- **Exportaciones.** El CSV neutraliza las celdas que una hoja de cálculo leería como fórmula. El informe toma toda la hoja de estilos. Las descargas rechazadas por el visor se informan bien.
+- **Repintado.** El foco vuelve a la opción elegida y el cursor conserva su posición. La tipografía externa ya no bloquea el arranque.
+- **Campos ocultos.** No se guardan textos de campos que dejaron de verse (piezas faltantes con información suficiente, ajuste con contrato aceptado).
+
+Pendiente, documentado y sin corregir:
+
+- **Límite de la modalidad compartida.** Cada registro es un documento y el almacén compartido admite 5000: caben unas ocho sesiones completas de doce actores. Antes de un uso intensivo conviene exportar y limpiar.
+- **Cierre de ronda sin valoraciones.** El facilitador puede cerrar una ronda aunque falten valoraciones; después no hay forma de recogerlas para esa ronda.
+- **Reingreso de un participante.** Salir y volver a entrar con el mismo nombre y actor crea un participante nuevo.
+- **Custodia a mitad de paso.** Si a un actor le llega una solicitud después de responder su actividad del paso, la respuesta a la solicitud reemplaza la anterior.
+- **Día virtual.** Suma los días que declaran todas las personas que responden en la ronda; crece con el número de participantes. Léalo como total declarado, no como duración de la ruta.
+- **Cierre con una sola ronda.** Se conserva: la sesión se puede cerrar con una ronda. El informe no compara rondas en ese caso.
+- Las revisiones de interfaz, accesibilidad y documentación de esta herramienta quedaron sin ejecutar.
+
+## Versión asíncrona
+
+Cuando no es posible reunir a los participantes, use la versión individual de `../simulador-offline`: cada persona entra con el usuario y la contraseña de su rol y recorre la simulación por su cuenta. Comparte con esta herramienta el contenido doctoral (`datos-blueprint.js`, `datos-escenario.js`), el sistema visual y el kit de iconos.

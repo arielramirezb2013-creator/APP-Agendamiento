@@ -2,9 +2,17 @@
 "use strict";
 /* ============ Utilidades ============ */
 const _smart = {};
-function setHtml(el, h) { if (el.__last === h) return false; el.__last = h; const scroll = [...el.querySelectorAll(".sb-wrap,.feed,.twrap")].map(x => [x.scrollLeft, x.scrollTop]); const abiertos = [...el.querySelectorAll("details")].map(d => d.open); const ae = document.activeElement; const foco = ae && el.contains(ae) ? { act:ae.getAttribute("data-act"), arg:ae.getAttribute("data-arg"), inp:ae.getAttribute("data-in"), iarg:ae.getAttribute("data-arg") } : null;
-  el.innerHTML = h; el.querySelectorAll(".sb-wrap,.feed,.twrap").forEach((x, i) => { if (scroll[i]) { x.scrollLeft = scroll[i][0]; x.scrollTop = scroll[i][1]; } }); el.querySelectorAll("details").forEach((d, i) => { if (abiertos[i] != null && abiertos[i] !== d.open) d.open = abiertos[i]; });
-  if (foco && foco.inp) { const q = `[data-in="${foco.inp}"]` + (foco.iarg ? `[data-arg="${foco.iarg}"]` : ""); const x = el.querySelector(q); if (x && x !== document.activeElement) { try { x.focus({ preventScroll:true }); } catch (e) {} } } return true; }
+function setHtml(el, h) { if (el.__last === h) return false; el.__last = h;
+  const porClave = (lista, base) => { const cuenta = {}, out = []; lista.forEach(x => { const b = base(x); cuenta[b] = (cuenta[b] || 0) + 1; out.push([b + "#" + cuenta[b], x]); }); return out; };
+  const kDet = d => ((d.querySelector("summary") || {}).textContent || "").replace(/\d+/g, "").trim();
+  const kScr = x => x.classList.contains("sb-wrap") ? "sb" : x.classList.contains("feed") ? "feed" : "t:" + (((x.querySelector("table") || { getAttribute() {} }).getAttribute("data-tabla")) || (x.querySelector("table") || {}).className || "");
+  const scroll = {}; porClave([...el.querySelectorAll(".sb-wrap,.feed,.twrap")], kScr).forEach(p => { scroll[p[0]] = [p[1].scrollLeft, p[1].scrollTop]; });
+  const abiertos = {}; porClave([...el.querySelectorAll("details")], kDet).forEach(p => { abiertos[p[0]] = p[1].open; });
+  const ae = document.activeElement; let foco = null; if (ae && el.contains(ae)) { foco = { inp:ae.getAttribute("data-in"), act:ae.getAttribute("data-act"), arg:ae.getAttribute("data-arg"), v:ae.getAttribute("data-v") }; try { foco.ss = ae.selectionStart; foco.se = ae.selectionEnd; } catch (e) {} }
+  el.innerHTML = h;
+  porClave([...el.querySelectorAll(".sb-wrap,.feed,.twrap")], kScr).forEach(p => { const s = scroll[p[0]]; if (s) { p[1].scrollLeft = s[0]; p[1].scrollTop = s[1]; } });
+  porClave([...el.querySelectorAll("details")], kDet).forEach(p => { if (p[0] in abiertos && abiertos[p[0]] !== p[1].open) p[1].open = abiertos[p[0]]; });
+  if (foco && (foco.inp || foco.act)) { const q = s => String(s).replace(/["\\]/g, "\\$&"); const selq = (foco.inp ? '[data-in="' + q(foco.inp) + '"]' : '[data-act="' + q(foco.act) + '"]') + (foco.arg ? '[data-arg="' + q(foco.arg) + '"]' : "") + (foco.v ? '[data-v="' + q(foco.v) + '"]' : ""); const x = el.querySelector(selq); if (x && x !== document.activeElement) { try { x.focus({ preventScroll:true }); if (foco.inp && foco.ss != null && x.setSelectionRange) x.setSelectionRange(foco.ss, foco.se); } catch (e) {} } } return true; }
 function smartEl(id) { const el = document.getElementById(id); if (!el) return null; if (!_smart[id]) _smart[id] = { get el() { return el; }, get innerHTML() { return el.innerHTML; }, set innerHTML(h) { setHtml(el, h); }, get classList() { return el.classList; }, get textContent() { return el.textContent; }, querySelector: s => el.querySelector(s), querySelectorAll: s => el.querySelectorAll(s) }; return _smart[id]; }
 const $ = id => (id === "vista" || id === "top" || id === "appright") ? smartEl(id) : document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
@@ -41,22 +49,31 @@ const FIN = {}; ESC.finalidades.forEach(f => { FIN[f.id] = f; });
 
 /* ============ LocalDB: misma API mínima que db, en este navegador ============ */
 function LocalDB() {
-  const KEY = "sbsim_db_v1"; let cache = null; const subs = [];
-  const leer = () => { if (cache) return cache; try { cache = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { cache = {}; } return cache; };
-  const escribir = () => { try { localStorage.setItem(KEY, JSON.stringify(cache)); } catch (e) {} avisar(); try { bc && bc.postMessage("cambio"); } catch (e) {} };
-  let bc = null; try { bc = new BroadcastChannel("sbsim_db_v1"); bc.onmessage = () => { cache = null; avisar(); }; } catch (e) {}
-  window.addEventListener("storage", ev => { if (ev.key === KEY) { cache = null; avisar(); } });
-  setInterval(() => { const antes = JSON.stringify(cache || {}); cache = null; if (JSON.stringify(leer()) !== antes) avisar(); }, 3000);
+  const PRE = "sbsim_doc_v2:", VIEJA = "sbsim_db_v1", REV = "sbsim_rev_v2"; const subs = [], mem = {};
+  const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const leerDoc = p => { const raw = lsGet(PRE + p); if (raw == null) { delete mem[p]; return undefined; } const m = mem[p]; if (m && m.raw === raw) return m.obj; try { const obj = JSON.parse(raw); mem[p] = { raw, obj }; return obj; } catch (e) { return undefined; } };
+  const rutas = () => { const out = []; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf(PRE) === 0) out.push(k.slice(PRE.length)); } } catch (e) {} return out; };
+  // Cada escritura toca SOLO la clave de su documento: dos pestañas que guardan a la vez documentos distintos no se pisan.
+  const escribirDoc = (p, d) => { try { if (d === undefined) localStorage.removeItem(PRE + p); else localStorage.setItem(PRE + p, JSON.stringify(d)); localStorage.setItem(REV, ahora() + ":" + Math.random()); } catch (e) { throw { code:"quota_exceeded", message:"el almacenamiento de este navegador está lleno" }; } avisar(p); try { bc && bc.postMessage(p); } catch (e) {} };
+  // Migración única del formato anterior (un solo objeto). Si el JSON antiguo está dañado se deja intacto para poder recuperarlo.
+  try { const v = lsGet(VIEJA); if (v) { const o = JSON.parse(v); if (o && typeof o === "object") { Object.keys(o).forEach(p => { if (lsGet(PRE + p) == null) localStorage.setItem(PRE + p, JSON.stringify(o[p])); }); localStorage.removeItem(VIEJA); } } } catch (e) {}
+  const pend = {}; let tPend = null; const programar = p => { pend[p == null ? "*" : p] = 1; if (!tPend) tPend = setTimeout(() => { tPend = null; const ps = Object.keys(pend); ps.forEach(k => delete pend[k]); if (ps.indexOf("*") >= 0) avisar(null); else ps.forEach(avisar); }, 0); };
+  let bc = null; try { bc = new BroadcastChannel("sbsim_db_v2"); bc.onmessage = ev => programar(ev.data); } catch (e) {}
+  window.addEventListener("storage", ev => { if (ev.key == null) programar(null); else if (ev.key.indexOf(PRE) === 0) programar(ev.key.slice(PRE.length)); });
+  let rev = lsGet(REV); setInterval(() => { const r = lsGet(REV); if (r !== rev) avisar(null); }, 3000);
   const meta = { fromCache:false, hasPendingWrites:false };
-  const snapDoc = (path) => { const d = leer()[path]; return { id:path.split("/").pop(), exists:!!d, data:() => d ? clone(d) : undefined, metadata:meta }; };
-  const enCol = (colPath) => Object.keys(leer()).filter(p => p.startsWith(colPath + "/") && p.slice(colPath.length + 1).indexOf("/") < 0).sort();
+  const snapDoc = (path) => { const d = leerDoc(path); return { id:path.split("/").pop(), exists:d !== undefined, data:() => d !== undefined ? clone(d) : undefined, metadata:meta }; };
+  const hijo = (colPath, p) => p.indexOf(colPath + "/") === 0 && p.slice(colPath.length + 1).indexOf("/") < 0;
+  const enCol = (colPath) => rutas().filter(p => hijo(colPath, p)).sort();
   const cmp = (op, a, b) => op === "==" ? a === b : op === "!=" ? a !== b : op === "<" ? a < b : op === "<=" ? a <= b : op === ">" ? a > b : op === ">=" ? a >= b : op === "in" ? (b || []).indexOf(a) >= 0 : false;
-  const snapCol = (q) => { let docs = enCol(q.path).map(snapDoc).filter(s => q.filters.every(f => cmp(f[1], (s.data() || {})[f[0]], f[2]))); if (q.order) docs.sort((x, y) => { const a = (x.data() || {})[q.order[0]], b = (y.data() || {})[q.order[0]]; const r = a == null ? 1 : b == null ? -1 : a < b ? -1 : a > b ? 1 : 0; return q.order[1] === "desc" ? -r : r; }); if (q.lim) docs = docs.slice(0, q.lim); return { docs, size:docs.length, empty:!docs.length, docChanges:() => [], metadata:meta }; };
-  function avisar() { subs.slice().forEach(s => { try { s.cb(s.kind === "doc" ? snapDoc(s.path) : snapCol(s.q)); } catch (e) {} }); }
+  const snapCol = (q) => { let docs = enCol(q.path).map(snapDoc).filter(s => s.exists && q.filters.every(f => cmp(f[1], (s.data() || {})[f[0]], f[2]))); if (q.order) docs.sort((x, y) => { const a = (x.data() || {})[q.order[0]], b = (y.data() || {})[q.order[0]]; const r = a == null ? 1 : b == null ? -1 : a < b ? -1 : a > b ? 1 : 0; return q.order[1] === "desc" ? -r : r; }); if (q.lim) docs = docs.slice(0, q.lim); return { docs, size:docs.length, empty:!docs.length, docChanges:() => [], metadata:meta }; };
+  const afecta = (s, p) => p == null || (s.kind === "doc" ? s.path === p : hijo(s.q.path, p));
+  function avisar(p) { rev = lsGet(REV); subs.slice().forEach(s => { if (!afecta(s, p)) return; try { s.cb(s.kind === "doc" ? snapDoc(s.path) : snapCol(s.q)); } catch (e) {} }); }
   const suscribir = (s) => { subs.push(s); setTimeout(() => { if (subs.indexOf(s) >= 0) s.cb(s.kind === "doc" ? snapDoc(s.path) : snapCol(s.q)); }, 0); return () => { const i = subs.indexOf(s); if (i >= 0) subs.splice(i, 1); }; };
-  const doc = (path) => ({ id:path.split("/").pop(), path, get:async () => snapDoc(path), set:async (data) => { leer()[path] = clone(data); escribir(); },
-    update:async (data) => { const d = leer()[path]; if (!d) throw { code:"invalid_argument", message:"no existe" }; const merge = (t, s) => { Object.keys(s).forEach(k => { if (s[k] && typeof s[k] === "object" && !Array.isArray(s[k]) && t[k] && typeof t[k] === "object" && !Array.isArray(t[k])) merge(t[k], s[k]); else t[k] = clone(s[k]); }); }; merge(d, data); escribir(); },
-    delete:async () => { delete leer()[path]; escribir(); }, onSnapshot:(cb) => suscribir({ kind:"doc", path, cb }), collection:(sub) => col(path + "/" + sub) });
+  const merge = (t, s) => { Object.keys(s).forEach(k => { if (s[k] && typeof s[k] === "object" && !Array.isArray(s[k]) && t[k] && typeof t[k] === "object" && !Array.isArray(t[k])) merge(t[k], s[k]); else t[k] = clone(s[k]); }); };
+  const doc = (path) => ({ id:path.split("/").pop(), path, get:async () => snapDoc(path), set:async (data) => { escribirDoc(path, clone(data)); },
+    update:async (data) => { const d0 = leerDoc(path); if (d0 === undefined) throw { code:"invalid_argument", message:"no existe" }; const d = clone(d0); merge(d, data); escribirDoc(path, d); },
+    delete:async () => { escribirDoc(path, undefined); }, onSnapshot:(cb) => suscribir({ kind:"doc", path, cb }), collection:(sub) => col(path + "/" + sub) });
   const query = (path, filters, order, lim) => ({ path, filters, order, lim, where:(f, op, v) => query(path, filters.concat([[f, op, v]]), order, lim), orderBy:(f, dir) => query(path, filters, [f, dir || "asc"], lim), limit:(n) => query(path, filters, order, n), get:async function () { return snapCol(this); }, onSnapshot:function (cb) { return suscribir({ kind:"col", q:this, cb }); } });
   const col = (path) => Object.assign(query(path, [], null, null), { doc:(id) => doc(path + "/" + (id || uid())), add:async (data) => { const d = doc(path + "/" + uid()); await d.set(data); return d; } });
   return { doc, collection:col, local:true };

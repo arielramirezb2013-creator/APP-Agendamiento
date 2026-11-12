@@ -55,4 +55,51 @@ function informe() {
   const fin = errs => { console.log(errs && errs.length ? errs.join('\n') : 'SIN ERRORES DE CONSOLA'); console.log(`RESULTADO: ${ok} OK, ${fail} FAIL`); return fail || (errs && errs.length) ? 1 : 0; };
   return { T, fin };
 }
-module.exports = { serve, launch, w, click, txt, descargar, contexto, pagina, crearSesion, unir, informe, ROOT, SALIDA, fs, path };
+
+/* ===== Ayudas añadidas para tests/e2e.js (las anteriores no cambian) ===== */
+// Almacén local de la modalidad presencial: un documento por clave en localStorage ('sbsim_doc_v2:<ruta>').
+// El lector también entiende el formato anterior (un solo objeto en 'sbsim_db_v1').
+async function almacen(pg) { return pg.evaluate(() => (() => { const d = {}; try { Object.assign(d, JSON.parse(localStorage.getItem('sbsim_db_v1') || '{}')); } catch (e) {} for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf('sbsim_doc_v2:') === 0) { try { d[k.slice(13)] = JSON.parse(localStorage.getItem(k)); } catch (e) {} } } return d; })()); }
+// Sesión, participantes y registros (todas las versiones, por orden de creación) tal como están guardados.
+async function estado(pg, code) {
+  const d = await almacen(pg), base = 'sesiones/' + code, de = sub => Object.keys(d).filter(k => k.indexOf(base + '/' + sub + '/') === 0).map(k => d[k]);
+  const regs = de('registros').sort((a, b) => (a.t || 0) - (b.t || 0)); const reemplazados = {}; regs.forEach(r => { if (r.reemplaza) reemplazados[r.reemplaza] = 1; });
+  return { ses: d[base] || null, parts: de('participantes').sort((a, b) => (a.creado || 0) - (b.creado || 0)), regs, vigentes: regs.filter(r => !reemplazados[r.id]) };
+}
+// Espera activa en Node: devuelve el primer valor verdadero de fn() o null si vence el plazo (no lanza).
+async function esperar(fn, ms, paso) { const fin = Date.now() + (ms || 6000); for (;;) { let v = null; try { v = await fn(); } catch (e) { v = null; } if (v) return v; if (Date.now() >= fin) return null; await w(paso || 80); } }
+// Espera a que la página cumpla una condición; devuelve true/false (no lanza).
+async function ve(pg, fn, arg, ms) { return pg.waitForFunction(fn, arg, { timeout: ms || 6000 }).then(() => true, () => false); }
+// Quita el foco del campo activo para que la vista se repinte (el render se pospone mientras un campo tiene el foco).
+async function soltar(pg) { await pg.evaluate(() => { const a = document.activeElement; if (a && a !== document.body && a.blur) a.blur(); }); await w(250); }
+// Marca una casilla por DOM con foco (solo si no lo está): dispara input y change como un clic real.
+async function marcar(pg, sel) { await pg.waitForSelector(sel, { state: 'attached' }); const hecho = await pg.$eval(sel, el => { if (el.checked) return false; el.focus(); el.click(); return true; }); await w(150); return hecho; }
+// Latido: cada pestaña de participante escribe su «ultimo» cada 30 s, y el almacén local guarda el objeto entero desde la
+// copia de la pestaña que escribe. Si un latido cae a pocos milisegundos de otra escritura, una de las dos se pierde.
+// calma() lee cuándo late cada pestaña y, si viene un latido dentro de la ventana, espera a verlo guardado antes de seguir;
+// así la acción que escribe a continuación no coincide con él. Devuelve los milisegundos que esperó.
+async function calma(pg, code, ventana) {
+  const T = 30000, antes = ventana || 1200, tope = 2500, t0 = Date.now(); let total = 0;
+  while (Date.now() - t0 < 20000) {
+    const ult = await pg.evaluate(c => { try { const d = (() => { const d = {}; try { Object.assign(d, JSON.parse(localStorage.getItem('sbsim_db_v1') || '{}')); } catch (e) {} for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf('sbsim_doc_v2:') === 0) { try { d[k.slice(13)] = JSON.parse(localStorage.getItem(k)); } catch (e) {} } } return d; })(); return Object.keys(d).filter(k => k.indexOf('sesiones/' + c + '/participantes/') === 0).map(k => d[k].ultimo || 0).filter(Boolean); } catch (e) { return []; } }, code);
+    const ahora = Date.now(); let espera = 0;
+    ult.forEach(u => {
+      const edad = ahora - u, desde = ((edad % T) + T) % T, falta = T - desde;
+      if (edad < 80) espera = Math.max(espera, 80 - edad);                    // acaba de latir: se deja asentar
+      else if (falta <= antes) espera = Math.max(espera, Math.min(falta, 120)); // viene un latido: se espera a que toque
+      else if (edad >= T && desde <= tope) espera = Math.max(espera, 40);       // ya tocaba y aún no consta: se espera a verlo
+    });
+    if (!espera) break; total += espera; await w(espera);
+  }
+  return total;
+}
+// Varios participantes entran seguidos: todas las pestañas se abren y se llenan antes, y entran una tras otra, cada una
+// cuando la anterior ya quedó guardada y la siguiente la ve. Así sus latidos quedan agrupados en pocos segundos.
+async function unirVarios(ctx, url, errs, code, gente) {
+  const pags = await Promise.all(gente.map(() => pagina(ctx, url, errs))); const P = {};
+  for (let i = 0; i < gente.length; i++) { await pags[i].fill('input[data-in="e-code"]', code); await pags[i].fill('input[data-in="e-nombre"]', gente[i][0]); await pags[i].selectOption('select[data-in="e-actor"]', gente[i][1]); P[gente[i][0]] = pags[i]; }
+  const consta = (pg, nombre) => ve(pg, a => { try { const d = (() => { const d = {}; try { Object.assign(d, JSON.parse(localStorage.getItem('sbsim_db_v1') || '{}')); } catch (e) {} for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf('sbsim_doc_v2:') === 0) { try { d[k.slice(13)] = JSON.parse(localStorage.getItem(k)); } catch (e) {} } } return d; })(); return Object.keys(d).some(k => k.indexOf('sesiones/' + a.c + '/participantes/') === 0 && d[k].nombre === a.n && d[k].ultimo > 0); } catch (e) { return false; } }, { c: code, n: nombre });
+  for (let i = 0; i < gente.length; i++) { await click(pags[i], '[data-act="entrar-part"]'); await ve(pags[i], () => !!document.querySelector('.pside')); await consta(pags[i], gente[i][0]); if (pags[i + 1]) { await consta(pags[i + 1], gente[i][0]); await w(80); } }
+  return P;
+}
+module.exports = { serve, launch, w, click, txt, descargar, contexto, pagina, crearSesion, unir, informe, almacen, estado, esperar, ve, soltar, marcar, calma, unirVarios, ROOT, SALIDA, fs, path };
