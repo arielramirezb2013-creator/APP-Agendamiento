@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Guía de despliegue · Simulación de la ruta de incapacidad</title>
+<style>
+  :root { color-scheme: light; --navy:#162546; --text:#2D313F; --text-2:#4E5563; --line:#DCDFE5; --bar:#EAECF0; --tint:#E1EAF3; --tint-b:#4B82B8; --ok:#2E7A52; --ok-soft:#EAF5EE; --warn:#7A4E0E; --warn-soft:#F8ECD6; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#F3F4F6; color:var(--text); font:16px/25px "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .hoja { max-width:880px; margin:0 auto; background:#fff; padding:40px 48px 56px; }
+  header.portada { border-bottom:3px solid var(--navy); padding-bottom:18px; margin-bottom:24px; }
+  .antetitulo { font-size:13px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:var(--text-2); }
+  h1 { font-size:30px; line-height:36px; margin:6px 0 6px; color:var(--navy); }
+  .bajada { margin:0; color:var(--text-2); }
+  h2 { font-size:21px; line-height:27px; color:var(--navy); margin:34px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--line); }
+  h3 { font-size:17px; line-height:23px; margin:22px 0 6px; }
+  p { margin:0 0 10px; } ul, ol { margin:0 0 12px; padding-left:24px; } li { margin:4px 0; }
+  nav.indice { background:var(--bar); border-radius:8px; padding:14px 20px; } nav.indice h2 { border:0; margin:0 0 6px; padding:0; font-size:16px; } nav.indice ol { columns:2; column-gap:32px; margin:0; }
+  a { color:#2F6DB5; } code, pre { font-family:"Roboto Mono", Consolas, "Courier New", monospace; font-size:14px; }
+  code { background:var(--bar); padding:1px 5px; border-radius:4px; overflow-wrap:anywhere; }
+  pre { background:#0F1B33; color:#E6EBF1; padding:14px 16px; border-radius:8px; overflow-x:auto; line-height:21px; margin:0 0 14px; } pre code { background:none; padding:0; color:inherit; }
+  table { width:100%; border-collapse:collapse; margin:6px 0 16px; font-size:15px; line-height:22px; } th, td { text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line); }
+  th { background:var(--bar); font-size:13px; letter-spacing:.03em; text-transform:uppercase; color:var(--text-2); }
+  .tabla { overflow-x:auto; }
+  .nota, .aviso, .bien { border-left:4px solid var(--tint-b); background:var(--tint); border-radius:6px; padding:12px 16px; margin:12px 0 16px; }
+  .aviso { border-left-color:#B7791F; background:var(--warn-soft); } .bien { border-left-color:var(--ok); background:var(--ok-soft); }
+  .nota b:first-child, .aviso b:first-child, .bien b:first-child { display:block; margin-bottom:2px; }
+  ol.pasos { counter-reset:paso; list-style:none; padding:0; } ol.pasos > li { counter-increment:paso; position:relative; padding:0 0 4px 46px; margin:0 0 14px; }
+  ol.pasos > li::before { content:counter(paso); position:absolute; left:0; top:0; width:32px; height:32px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  ul.lista-check { list-style:none; padding:0; } ul.lista-check li { padding-left:30px; position:relative; } ul.lista-check li::before { content:"☐"; position:absolute; left:4px; font-size:18px; }
+  footer { margin-top:40px; padding-top:12px; border-top:1px solid var(--line); font-size:13px; color:var(--text-2); }
+  @media (max-width:700px) { .hoja { padding:24px 18px 40px; } nav.indice ol { columns:1; } h1 { font-size:25px; line-height:31px; } }
+  @media print { body { background:#fff; font-size:12.5px; line-height:19px; } .hoja { max-width:none; padding:0; } pre { white-space:pre-wrap; border:1px solid #999; background:#fff; color:#000; } h2 { break-after:avoid; } table, .nota, .aviso, .bien, pre { break-inside:avoid; } a { color:inherit; text-decoration:none; } @page { size:A4; margin:16mm 15mm; } }
+</style>
+</head>
+<body>
+<div class="hoja">
+<header class="portada">
+  <div class="antetitulo">Simulación de la ruta de incapacidad · versión individual</div>
+  <h1>Guía de despliegue</h1>
+  <p class="bajada">Para la persona que publicará el simulador en un sitio web protegido.</p>
+</header>
+
+<nav class="indice" aria-label="Contenido">
+  <h2>Contenido</h2>
+  <ol>
+    <li><a href="#que">Qué va a publicar</a></li>
+    <li><a href="#requisitos">Requisitos</a></li>
+    <li><a href="#pasos">Publicación paso a paso</a></li>
+    <li><a href="#receptor">Receptor de respuestas (opcional)</a></li>
+    <li><a href="#estatico">Sitios sin PHP</a></li>
+    <li><a href="#comprobar">Comprobación final</a></li>
+    <li><a href="#operar">Durante el estudio</a></li>
+    <li><a href="#cabeceras">Cabeceras recomendadas</a></li>
+    <li><a href="#contrato">Contrato del receptor</a></li>
+    <li><a href="#problemas">Solución de problemas</a></li>
+  </ol>
+</nav>
+
+<h2 id="que">1. Qué va a publicar</h2>
+<p>Un simulador que cada participante recorre por su cuenta. Son archivos estáticos: no hay base de datos ni servidor de aplicación. El investigador le enviará a cada participante la dirección del sitio, un usuario y una contraseña que corresponden a su rol.</p>
+<div class="tabla"><table>
+  <thead><tr><th>Archivo</th><th>Para qué sirve</th><th>¿Se publica?</th></tr></thead>
+  <tbody>
+    <tr><td><code>index.html</code></td><td>El simulador. Es lo que abre el participante.</td><td>Sí</td></tr>
+    <tr><td><code>configuracion.js</code></td><td>Datos del estudio y cuentas (usuario, rol y huella de la contraseña; nunca la contraseña). La que viene en el paquete es de demostración.</td><td>Sí, la que le entregue el investigador</td></tr>
+    <tr><td><code>sw.js</code></td><td>Permite reabrir el simulador sin conexión después de la primera visita.</td><td>Sí, junto a <code>index.html</code></td></tr>
+    <tr><td><code>administrador.html</code></td><td>Panel del investigador: cuentas, publicación, respuestas y resultados. También funciona abierto desde el computador del investigador.</td><td>Opcional</td></tr>
+    <tr><td><code>recibir.php</code>, <code>recibir-config.php</code>, carpeta <code>respuestas/</code></td><td>Receptor opcional: guarda en el servidor las respuestas que envía el simulador.</td><td>Solo si el investigador eligió entrega por servidor</td></tr>
+    <tr><td><code>guia-despliegue.html</code>, <code>guia-investigador.html</code>, <code>LEEME.txt</code></td><td>Documentación.</td><td>No hace falta</td></tr>
+  </tbody>
+</table></div>
+<div class="nota"><b>Dos formas de entrega de respuestas</b>El investigador elige una en su panel. <b>Por archivo:</b> el participante descarga un archivo al terminar y se lo envía al investigador; el sitio puede ser solo estático. <b>Por servidor:</b> el simulador envía las respuestas a <code>recibir.php</code> a medida que el participante avanza; requiere PHP.</div>
+
+<h2 id="requisitos">2. Requisitos</h2>
+<ul>
+  <li>Un sitio que sirva archivos estáticos por <b>HTTPS</b>.</li>
+  <li>Un mecanismo de control de acceso del servidor (vea el paso 2).</li>
+  <li>Solo para la entrega por servidor: <b>PHP 7.4 o superior</b>, sin extensiones especiales, y una carpeta donde PHP pueda escribir.</li>
+</ul>
+<p>El simulador no hace ninguna petición a terceros: no carga fuentes, analítica ni librerías externas.</p>
+
+<h2 id="pasos">3. Publicación paso a paso</h2>
+<ol class="pasos">
+  <li><b>Suba el contenido del paquete a una carpeta del sitio.</b> Por ejemplo <code>https://su-sitio.example/simulacion/</code>. Todos los archivos van en la misma carpeta, y <code>respuestas/</code> dentro de ella.</li>
+  <li><b>Proteja el sitio en el servidor.</b>
+    <p>El usuario y la contraseña del simulador sirven para asignar el rol de cada participante y para que nadie entre por descuido. Se comprueban en el navegador y <b>no reemplazan la protección del servidor</b>. El caso es sintético y no contiene datos reales, pero las respuestas sí son datos de investigación. Use al menos una de estas medidas:</p>
+    <ul>
+      <li>Autenticación del servidor para toda la carpeta (por ejemplo autenticación básica sobre HTTPS, con una credencial común que el investigador entrega junto con la invitación).</li>
+      <li>Acceso restringido por red, VPN o inicio de sesión institucional.</li>
+    </ul>
+    <p>Las páginas ya piden a los buscadores que no las indexen.</p>
+  </li>
+  <li><b>Reemplace <code>configuracion.js</code> por el archivo que le entregue el investigador.</b>
+    <p>El paquete trae una configuración de demostración con una cuenta por rol (usuarios <code>demo-…</code>, contraseña <code>DEMO-2026</code>). Sirve para comprobar que el sitio funciona. No la deje en un sitio en uso: mientras esté, la pantalla de acceso muestra esas cuentas.</p>
+  </li>
+  <li><b>Si la entrega es por servidor, instale el receptor.</b> Siga el <a href="#receptor">apartado 4</a>. Si es por archivo, puede borrar <code>recibir.php</code>, <code>recibir-config.php</code> y <code>respuestas/</code>.</li>
+  <li><b>Decida si publica <code>administrador.html</code>.</b> El investigador puede usar el panel desde su computador, sin publicarlo. Publicarlo es útil con entrega por servidor: desde el mismo sitio el panel trae las respuestas con un clic. Queda bajo la misma protección del sitio y además pide la clave de administración del investigador. El panel no guarda nada en el servidor: los datos del proyecto viven en el navegador del investigador.</li>
+  <li><b>Entregue la dirección al investigador.</b> La dirección pública del simulador es la de la carpeta, por ejemplo <code>https://su-sitio.example/simulacion/</code>. El investigador la escribe en su panel para armar las invitaciones.</li>
+</ol>
+
+<h2 id="receptor">4. Receptor de respuestas (opcional)</h2>
+<ol class="pasos">
+  <li><b>Suba <code>recibir.php</code> y la carpeta <code>respuestas/</code></b> junto a <code>index.html</code>.</li>
+  <li><b>Reemplace <code>recibir-config.php</code> por el que le entregue el investigador.</b> Trae dos claves: la clave de envío, que también va en <code>configuracion.js</code>, y la huella de la clave de administración del servidor. El archivo de ejemplo del paquete no tiene claves y, mientras esté así, el receptor rechaza todo.
+<pre><code>&lt;?php
+return [
+    'clave_envio' =&gt; '…',
+    'clave_admin_sha256' =&gt; '…',
+    'carpeta' =&gt; __DIR__ . '/respuestas',
+    'max_bytes' =&gt; 1048576,
+    'max_documentos' =&gt; 2000,
+];</code></pre>
+  </li>
+  <li><b>Dé permiso de escritura a PHP sobre <code>respuestas/</code></b> y a nadie más. En un servidor Linux suele bastar con que la carpeta pertenezca al usuario de PHP y tenga permisos <code>750</code>.</li>
+  <li><b>Impida que la carpeta se lea desde la web.</b>
+    <ul>
+      <li>En Apache ya queda protegida por el <code>.htaccess</code> del paquete.</li>
+      <li>En nginx y otros servidores que no leen <code>.htaccess</code>, añada una regla. Ejemplo para nginx:
+<pre><code>location ^~ /simulacion/respuestas/ { deny all; return 404; }</code></pre></li>
+      <li>Mejor aún: guarde las respuestas fuera de la raíz pública. Cambie la línea <code>'carpeta'</code> de <code>recibir-config.php</code> por una ruta privada, por ejemplo <code>'carpeta' =&gt; '/var/datos/simulacion-respuestas'</code>.</li>
+    </ul>
+    <p>Como defensa adicional, cada archivo guardado empieza con una instrucción PHP que responde 404 si alguien lo pide por la web.</p>
+  </li>
+  <li><b>Pida al investigador que pulse «Probar el receptor» en su panel</b> (momento «Publicar»). Debe responder que puede guardar.</li>
+</ol>
+<p>Cada participación queda en un archivo <code>&lt;estudio&gt;~&lt;usuario&gt;~&lt;participante&gt;.json.php</code>. Un documento completo ocupa menos de 100 KB. El receptor acepta documentos de hasta 1 MB y hasta 2000 documentos; ambos límites se cambian en <code>recibir-config.php</code>.</p>
+<div class="aviso"><b>Qué protege cada clave</b>La clave de envío está en <code>configuracion.js</code> y la puede ver cualquier participante: solo frena el ruido de internet. Con ella no se pueden leer las respuestas de otros. Listar y borrar respuestas exige la clave de administración del servidor, que solo conoce el investigador; el servidor guarda únicamente su huella.</div>
+
+<h2 id="estatico">5. Sitios sin PHP</h2>
+<p>En un sitio solo estático publique <code>index.html</code>, <code>configuracion.js</code> y <code>sw.js</code>. El investigador debe elegir «entrega por archivo» en su panel. Al terminar, cada participante descarga un archivo con sus respuestas y se lo envía al investigador.</p>
+<p>Sin receptor, el avance de cada participante se guarda solo en su navegador. Puede pausar y retomar en el mismo equipo. Para continuar en otro equipo debe descargar su archivo de avance y cargarlo allí.</p>
+
+<h2 id="comprobar">6. Comprobación final</h2>
+<ul class="lista-check">
+  <li>La dirección abre por HTTPS y pide la credencial o el acceso que usted definió.</li>
+  <li>La pantalla de acceso muestra el título del estudio y <b>no</b> muestra «Cuentas de demostración».</li>
+  <li>Con una cuenta de prueba entregada por el investigador se puede entrar, ver la orientación y la declaración.</li>
+  <li>Con entrega por servidor: «Probar el receptor» responde bien y, después de aceptar la declaración con la cuenta de prueba, aparece un archivo en <code>respuestas/</code>.</li>
+  <li>La dirección <code>…/respuestas/</code> y la de cualquier archivo dentro de ella responden 403 o 404.</li>
+  <li>Tras una primera visita, la página vuelve a abrir con la red desconectada.</li>
+</ul>
+
+<h2 id="operar">7. Durante el estudio</h2>
+<h3>Cambios en las cuentas</h3>
+<p>Cuando el investigador cree o cambie cuentas le enviará un <code>configuracion.js</code> nuevo. Reemplace el archivo. Si la entrega es por servidor y cambió la clave de envío, reemplace también <code>recibir-config.php</code>. No cambie el identificador del estudio con participantes en curso: el navegador guarda el avance con ese identificador.</p>
+<h3>Copias y cierre</h3>
+<ul>
+  <li>Incluya <code>respuestas/</code> en las copias de seguridad mientras dure el estudio, con el mismo cuidado que cualquier dato de investigación.</li>
+  <li>Al cerrar el estudio, confirme con el investigador que ya descargó todo y borre la carpeta <code>respuestas/</code> y sus copias según lo acordado.</li>
+  <li>Si un participante pide retirar sus datos, el investigador puede borrarlos desde su panel. También puede borrar usted el archivo de esa participación.</li>
+</ul>
+<h3>Registros del servidor</h3>
+<p>El receptor no escribe el contenido de las respuestas en el registro de errores. El registro de accesos del servidor sí guarda direcciones IP y horas: trátelo según la política de la institución.</p>
+
+<h2 id="cabeceras">8. Cabeceras recomendadas</h2>
+<p>No son obligatorias, pero conviene añadirlas a la carpeta del simulador.</p>
+<pre><code># Apache (.htaccess o configuración del sitio)
+Header always set Strict-Transport-Security "max-age=31536000"
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "DENY"
+Header always set Referrer-Policy "no-referrer"
+&lt;FilesMatch "^(index\.html|configuracion\.js|sw\.js)$"&gt;
+  Header set Cache-Control "no-cache"
+&lt;/FilesMatch&gt;</code></pre>
+<pre><code># nginx
+add_header Strict-Transport-Security "max-age=31536000" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-Frame-Options "DENY" always;
+add_header Referrer-Policy "no-referrer" always;
+location ~ ^/simulacion/(index\.html|configuracion\.js|sw\.js)$ { add_header Cache-Control "no-cache"; }</code></pre>
+<p><code>Cache-Control: no-cache</code> hace que el navegador compruebe si hay una versión nueva de la configuración cada vez que el participante abre el sitio.</p>
+
+<h2 id="contrato">9. Contrato del receptor</h2>
+<p>Si prefiere implementar el receptor en otra tecnología, respete este contrato y el investigador solo tendrá que escribir la dirección en su panel. Siempre <code>POST</code>. El cuerpo es JSON enviado como <code>text/plain;charset=UTF-8</code>. La respuesta es JSON: <code>{"ok": true, …}</code> o <code>{"ok": false, "error": "…"}</code> con el código HTTP correspondiente.</p>
+<div class="tabla"><table>
+  <thead><tr><th>accion</th><th>Campos</th><th>Respuesta</th></tr></thead>
+  <tbody>
+    <tr><td><code>probar</code></td><td><code>clave</code></td><td><code>{ok, version, guarda}</code></td></tr>
+    <tr><td><code>guardar</code></td><td><code>clave</code>, <code>documento</code>, <code>reanudar</code></td><td><code>{ok, recibido}</code>. Reemplaza la versión anterior del mismo estudio, usuario y participante.</td></tr>
+    <tr><td><code>recuperar</code></td><td><code>clave</code>, <code>estudio</code>, <code>usuario</code>, <code>reanudar</code></td><td><code>{ok, documento}</code>: el más reciente cuya llave de reanudación coincide, o <code>null</code>.</td></tr>
+    <tr><td><code>retirar</code></td><td><code>clave</code>, <code>estudio</code>, <code>usuario</code>, <code>participante</code></td><td><code>{ok, eliminado}</code></td></tr>
+    <tr><td><code>listar</code></td><td><code>claveAdmin</code>, <code>estudio</code> (opcional)</td><td><code>{ok, documentos: [{recibido, documento}]}</code>. Si llega como formulario, responde como archivo adjunto.</td></tr>
+    <tr><td><code>borrar</code></td><td><code>claveAdmin</code>, <code>estudio</code>, <code>usuario</code>, <code>participante</code></td><td><code>{ok, eliminado}</code></td></tr>
+  </tbody>
+</table></div>
+<p>Dos reglas importantes: el documento debe guardarse y devolverse <b>sin transformarlo</b> (trae una huella de integridad que el panel comprueba), y la llave de reanudación se guarda como huella SHA-256, nunca en claro.</p>
+
+<h2 id="problemas">10. Solución de problemas</h2>
+<div class="tabla"><table>
+  <thead><tr><th>Qué se ve</th><th>Causa probable</th><th>Qué hacer</th></tr></thead>
+  <tbody>
+    <tr><td>«El simulador todavía no está configurado»</td><td>Falta <code>configuracion.js</code>, está en otra carpeta o está dañado.</td><td>Súbalo junto a <code>index.html</code>. El detalle aparece al desplegar «Detalle para quien administra el sitio».</td></tr>
+    <tr><td>La pantalla de acceso muestra «Cuentas de demostración»</td><td>Sigue publicada la configuración de demostración.</td><td>Reemplace <code>configuracion.js</code> por la del investigador.</td></tr>
+    <tr><td>«El usuario o la contraseña no coinciden» con datos correctos</td><td>El sitio tiene una configuración anterior o el navegador conserva una copia vieja.</td><td>Confirme que subió la última configuración y recargue sin caché.</td></tr>
+    <tr><td>«Probar el receptor» responde 403</td><td><code>recibir-config.php</code> sin claves, o las claves no coinciden con las del panel.</td><td>Suba el <code>recibir-config.php</code> y el <code>configuracion.js</code> generados en la misma descarga.</td></tr>
+    <tr><td>El receptor responde 500 y habla de permisos</td><td>PHP no puede escribir en la carpeta de respuestas.</td><td>Ajuste el dueño y los permisos de la carpeta.</td></tr>
+    <tr><td>El receptor responde 413</td><td>El servidor limita el tamaño de las peticiones por debajo de 1 MB.</td><td>Suba <code>post_max_size</code> de PHP y el límite del servidor web a 2 MB.</td></tr>
+    <tr><td>La página no abre sin conexión</td><td>El sitio no usa HTTPS o falta <code>sw.js</code>.</td><td>Publique por HTTPS y deje <code>sw.js</code> junto a <code>index.html</code>.</td></tr>
+    <tr><td>El panel no logra «Traer del servidor»</td><td>El panel está abierto desde otro origen y la protección del sitio bloquea la petición.</td><td>Publique <code>administrador.html</code> en el mismo sitio, o use el botón de descarga que ofrece el panel.</td></tr>
+  </tbody>
+</table></div>
+
+<footer>Escenario sintético; ninguna persona identificable. Los plazos del caso son supuestos de simulación.</footer>
+</div>
+</body>
+</html>

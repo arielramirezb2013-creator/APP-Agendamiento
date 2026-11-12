@@ -50,7 +50,7 @@ const GUION = {
         { t:"Los demás actores están simulados", d:"Nadie más está conectado. El sistema representa a los otros actores con los datos sintéticos del caso: le pide evidencia, consulta, notifica y deja registro. Lo que genera el sistema aparece marcado como «simulado»." },
         { t:"El recorrido es lineal", d:"Su respuesta queda registrada y el caso continúa según el escenario. Puede corregir una respuesta antes de pasar al paso siguiente." },
         { t:"Cierre de cada ronda", d:"Al terminar cada ronda valora el contrato de datos de su rol y responde cuatro preguntas." },
-        { t:"Puede hacer pausas", d:"Sus respuestas se guardan en este dispositivo a medida que avanza. Puede salir y continuar después con el mismo usuario, en este mismo navegador." }
+        { t:"Puede hacer pausas", d:"Sus respuestas se guardan en este dispositivo a medida que avanza. Puede pausar y continuar después con el mismo usuario, en este mismo navegador. No use una ventana privada o de incógnito: al cerrarla se borra el avance." }
       ],
       envio:{
         progresivo:{ t:"Envío de sus respuestas", d:"Sus respuestas se envían al investigador a medida que avanza, para que pueda seguir el progreso del estudio. Si no hay conexión, al final podrá descargarlas en un archivo y enviarlas usted." },

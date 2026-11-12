@@ -130,7 +130,7 @@ function restaurarDe(doc, origen) {
 async function buscarEnServidor() {
   const u = S.cuenta.u; S.buscando = true; render();
   let doc = null;
-  try { const j = await llamarServidor({ accion:"recuperar", estudio:CFG.estudio.id, usuario:u, reanudar:S.cuenta.r }); doc = j.documento || null; } catch (e) {}
+  try { const j = await llamarServidor({ accion:"recuperar", estudio:CFG.estudio.id, usuario:u, reanudar:S.cuenta.r }, 8000); doc = j.documento || null; } catch (e) {}
   if (!S.cuenta || S.cuenta.u !== u) return;
   S.buscando = false;
   if (doc && !S.consent && !documentoRestaurable(doc)) restaurarDe(doc, "servidor");
@@ -342,11 +342,16 @@ function documentoRespuesta() {
   return doc;
 }
 const nombreArchivo = () => (S.ses && S.ses.estado === "cerrada" ? "respuestas-" : "avance-") + S.cuenta.u + "-" + fechaArchivo() + ".json";
-async function llamarServidor(cuerpo) {
-  const r = await fetch(CFG.envio.url, { method:"POST", headers:{ "Content-Type":"text/plain;charset=UTF-8" }, body:JSON.stringify(Object.assign({ clave:CFG.envio.clave }, cuerpo)), cache:"no-store", credentials:"same-origin" });
-  const j = await r.json().catch(() => null);
-  if (!r.ok || !j || j.ok !== true) throw new Error((j && j.error) || (r.ok ? "respuesta no reconocida del servidor" : "el servidor respondió " + r.status));
-  return j;
+async function llamarServidor(cuerpo, plazoMs) {
+  const ctl = typeof AbortController !== "undefined" ? new AbortController() : null, t = ctl ? setTimeout(() => ctl.abort(), plazoMs || 20000) : null;
+  try {
+    const r = await fetch(CFG.envio.url, { method:"POST", headers:{ "Content-Type":"text/plain;charset=UTF-8" }, body:JSON.stringify(Object.assign({ clave:CFG.envio.clave }, cuerpo)), cache:"no-store", credentials:"same-origin", signal:ctl ? ctl.signal : undefined });
+    const j = await r.json().catch(() => null);
+    if (!r.ok || !j || j.ok !== true) throw new Error((j && j.error) || (r.ok ? "respuesta no reconocida del servidor" : "el servidor respondió " + r.status));
+    return j;
+  } catch (e) {
+    throw new Error(e && e.name === "AbortError" ? "el servidor no respondió a tiempo" : e && e.name === "TypeError" ? "no hay conexión con el servidor" : String((e && e.message) || e));
+  } finally { if (t) clearTimeout(t); }
 }
 let enviando = null;
 // Envía el documento completo; cada envío reemplaza al anterior del mismo participante.
@@ -372,11 +377,12 @@ const envioProgresivo = () => { if (CFG.envio && CFG.envio.modo === "progresivo"
 const envioPendiente = () => !!(CFG.envio && S.cuenta && S.consent && S.ses && (S.envio.estado !== "enviado" || S.envio.registros !== S.regs.length));
 // Reintento automático: al volver la conexión y cada minuto mientras quede algo por enviar.
 function reintentarEnvio() { if (enLinea && !enviando && CFG.envio && CFG.envio.modo === "progresivo" && envioPendiente()) enviar(true); }
+// Retiro: borra lo guardado en este dispositivo y pide al servidor eliminar lo enviado. Devuelve si el servidor lo confirmó.
 async function retirar() {
-  const u = S.cuenta.u;
-  if (CFG.envio && S.yo && S.envio && S.envio.estado !== "pendiente") { try { await llamarServidor({ accion:"retirar", estudio:CFG.estudio.id, usuario:u, participante:S.yo.id }); } catch (e) {} }
+  const u = S.cuenta.u, pid = S.yo && S.yo.id; let servidor = null;
+  if (CFG.envio && S.consent && pid) { try { await llamarServidor({ accion:"retirar", estudio:CFG.estudio.id, usuario:u, participante:pid }, 10000); servidor = true; } catch (e) { servidor = false; } }
   borrarLocal(u); recordarSesion("");
-  S = estadoInicial(); S.etapa = "retirado";
+  S = estadoInicial(); S.etapa = "retirado"; S.retiroServidor = servidor;
 }
 
 /* ---------- Avisos ---------- */

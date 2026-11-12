@@ -50,7 +50,7 @@ Cada comprobación reúne varias condiciones con nombre. Si falla, la línea `FA
 
 - Los clics se hacen por DOM y con foco (`L.click`), porque la herramienta pospone el repintado mientras un campo de texto tiene el foco. Para leer la pantalla después de escribir, primero hay que mover el foco (`L.soltar`).
 - Las condiciones que dependen de otra pestaña se esperan (`L.ve`, `L.esperar`), no se suponen tras una pausa fija.
-- Lo guardado se lee de `localStorage['sbsim_db_v1']` con `L.estado(pagina, codigo)`: sesión, participantes, registros (todas las versiones) y registros vigentes.
+- Lo guardado se lee del almacén local (una clave por documento, `sbsim_doc_v2:<ruta>`) con `L.estado(pagina, codigo)`: sesión, participantes, registros (todas las versiones) y registros vigentes.
 - El orden de los participantes del mismo actor en tablas y desacuerdos depende de identificadores aleatorios: se compara sin depender del orden.
 - El PIN de prueba (2468) se busca como dato suelto, no como subcadena, porque una marca de tiempo puede contener esas cifras.
 - Antes de cada acción que escribe, `L.calma` espera a que no haya un latido inminente. Cada pestaña de participante escribe su señal de vida cada 30 segundos y el almacén local guarda el objeto completo desde la copia de la pestaña que escribe; dos escrituras de pestañas distintas separadas por pocos milisegundos se pisan. Sin esa espera, la suite fallaría de vez en cuando por esa razón y no por una regresión. `L.unirVarios` hace entrar a los participantes seguidos para que sus latidos queden agrupados y la espera sea corta.

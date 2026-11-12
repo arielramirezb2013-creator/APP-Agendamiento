@@ -164,7 +164,7 @@ function vistaConsentimiento() {
   </div></div>`;
 }
 const vistaRechazo = () => `<div class="hoja"><div class="card"><h1 tabindex="-1">${esc(CONS.rechazoTitulo)}</h1><p>${esc(CONS.rechazoTexto)}</p><div class="nav-row"><button type="button" class="btn" data-act="volver-acceso">Volver al inicio</button></div></div></div>`;
-const vistaRetirado = () => `<div class="hoja"><div class="card"><h1 tabindex="-1">Se retiró del estudio</h1><p>Sus respuestas se borraron de este dispositivo. ${CFG.envio ? "Se pidió al servidor eliminar las que ya se habían enviado." : "Si ya había entregado un archivo, pida al investigador que lo elimine."} Gracias por su tiempo.</p><div class="nav-row"><button type="button" class="btn" data-act="volver-acceso">Volver al inicio</button></div></div></div>`;
+const vistaRetirado = () => `<div class="hoja"><div class="card"><h1 tabindex="-1">Se retiró del estudio</h1><p>Sus respuestas se borraron de este dispositivo. ${S.retiroServidor === true ? "El servidor del estudio eliminó las que ya se habían enviado." : S.retiroServidor === false ? "No fue posible avisar al servidor del estudio: pida al investigador que elimine las respuestas que ya se habían enviado." : "Si ya había entregado un archivo, pida al investigador que lo elimine."} Gracias por su tiempo.</p><div class="nav-row"><button type="button" class="btn" data-act="volver-acceso">Volver al inicio</button></div></div></div>`;
 
 /* ---------- Simulación: piezas ---------- */
 function progresoHtml() {

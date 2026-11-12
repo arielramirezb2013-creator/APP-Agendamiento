@@ -1,0 +1,51 @@
+SIMULACIÓN DE LA RUTA DE INCAPACIDAD · VERSIÓN INDIVIDUAL
+Paquete para publicar en un sitio web protegido
+=========================================================
+
+Cada participante entra solo, con el usuario y la contraseña que el
+investigador le asignó según su rol. Recibe una orientación, declara su
+participación voluntaria, recorre la simulación y entrega sus respuestas.
+Los demás actores están simulados. El caso es sintético.
+
+QUÉ HAY EN ESTA CARPETA
+
+  index.html              El simulador. Es lo que abre el participante.
+  configuracion.js        Datos del estudio y cuentas. La que viene aquí es
+                          de demostración: reemplácela por la que genera el
+                          panel del investigador.
+  sw.js                   Deja reabrir el simulador sin conexión.
+  administrador.html      Panel del investigador: estudio, cuentas,
+                          publicación, respuestas, seguimiento y resultados.
+  recibir.php             Receptor opcional de respuestas (requiere PHP).
+  recibir-config.php      Claves del receptor. Viene sin claves: reemplácelo
+                          por el que genera el panel del investigador.
+  respuestas/             Carpeta donde el receptor guarda las respuestas.
+  guia-investigador.html  Guía para el investigador.
+  guia-despliegue.html    Guía para quien publica el sitio.
+
+QUÉ LEER
+
+  Si usted es el investigador:        guia-investigador.html
+  Si usted va a publicar el sitio:    guia-despliegue.html
+
+LO MÍNIMO
+
+  1. El investigador abre administrador.html, define el estudio, crea las
+     cuentas y descarga configuracion.js.
+  2. Quien publica sube esta carpeta a un sitio con HTTPS y acceso
+     restringido, y reemplaza configuracion.js.
+  3. El investigador envía a cada participante la dirección, su usuario y
+     su contraseña.
+  4. Las respuestas llegan al investigador por archivo o por el receptor.
+     El investigador las importa en el panel y obtiene los resultados.
+
+PARA PROBAR SIN PUBLICAR NADA
+
+  Abra index.html con doble clic. Use un usuario de demostración, por
+  ejemplo demo-eps, con la contraseña DEMO-2026.
+
+IMPORTANTE
+
+  El usuario y la contraseña del simulador asignan el rol. No reemplazan la
+  protección del servidor. Publique siempre por HTTPS y con control de
+  acceso.

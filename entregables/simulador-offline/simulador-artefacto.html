@@ -707,7 +707,7 @@ const GUION = {
         { t:"Los demás actores están simulados", d:"Nadie más está conectado. El sistema representa a los otros actores con los datos sintéticos del caso: le pide evidencia, consulta, notifica y deja registro. Lo que genera el sistema aparece marcado como «simulado»." },
         { t:"El recorrido es lineal", d:"Su respuesta queda registrada y el caso continúa según el escenario. Puede corregir una respuesta antes de pasar al paso siguiente." },
         { t:"Cierre de cada ronda", d:"Al terminar cada ronda valora el contrato de datos de su rol y responde cuatro preguntas." },
-        { t:"Puede hacer pausas", d:"Sus respuestas se guardan en este dispositivo a medida que avanza. Puede salir y continuar después con el mismo usuario, en este mismo navegador." }
+        { t:"Puede hacer pausas", d:"Sus respuestas se guardan en este dispositivo a medida que avanza. Puede pausar y continuar después con el mismo usuario, en este mismo navegador. No use una ventana privada o de incógnito: al cerrarla se borra el avance." }
       ],
       envio:{
         progresivo:{ t:"Envío de sus respuestas", d:"Sus respuestas se envían al investigador a medida que avanza, para que pueda seguir el progreso del estudio. Si no hay conexión, al final podrá descargarlas en un archivo y enviarlas usted." },
@@ -1261,7 +1261,7 @@ function restaurarDe(doc, origen) {
 async function buscarEnServidor() {
   const u = S.cuenta.u; S.buscando = true; render();
   let doc = null;
-  try { const j = await llamarServidor({ accion:"recuperar", estudio:CFG.estudio.id, usuario:u, reanudar:S.cuenta.r }); doc = j.documento || null; } catch (e) {}
+  try { const j = await llamarServidor({ accion:"recuperar", estudio:CFG.estudio.id, usuario:u, reanudar:S.cuenta.r }, 8000); doc = j.documento || null; } catch (e) {}
   if (!S.cuenta || S.cuenta.u !== u) return;
   S.buscando = false;
   if (doc && !S.consent && !documentoRestaurable(doc)) restaurarDe(doc, "servidor");
@@ -1473,11 +1473,16 @@ function documentoRespuesta() {
   return doc;
 }
 const nombreArchivo = () => (S.ses && S.ses.estado === "cerrada" ? "respuestas-" : "avance-") + S.cuenta.u + "-" + fechaArchivo() + ".json";
-async function llamarServidor(cuerpo) {
-  const r = await fetch(CFG.envio.url, { method:"POST", headers:{ "Content-Type":"text/plain;charset=UTF-8" }, body:JSON.stringify(Object.assign({ clave:CFG.envio.clave }, cuerpo)), cache:"no-store", credentials:"same-origin" });
-  const j = await r.json().catch(() => null);
-  if (!r.ok || !j || j.ok !== true) throw new Error((j && j.error) || (r.ok ? "respuesta no reconocida del servidor" : "el servidor respondió " + r.status));
-  return j;
+async function llamarServidor(cuerpo, plazoMs) {
+  const ctl = typeof AbortController !== "undefined" ? new AbortController() : null, t = ctl ? setTimeout(() => ctl.abort(), plazoMs || 20000) : null;
+  try {
+    const r = await fetch(CFG.envio.url, { method:"POST", headers:{ "Content-Type":"text/plain;charset=UTF-8" }, body:JSON.stringify(Object.assign({ clave:CFG.envio.clave }, cuerpo)), cache:"no-store", credentials:"same-origin", signal:ctl ? ctl.signal : undefined });
+    const j = await r.json().catch(() => null);
+    if (!r.ok || !j || j.ok !== true) throw new Error((j && j.error) || (r.ok ? "respuesta no reconocida del servidor" : "el servidor respondió " + r.status));
+    return j;
+  } catch (e) {
+    throw new Error(e && e.name === "AbortError" ? "el servidor no respondió a tiempo" : e && e.name === "TypeError" ? "no hay conexión con el servidor" : String((e && e.message) || e));
+  } finally { if (t) clearTimeout(t); }
 }
 let enviando = null;
 // Envía el documento completo; cada envío reemplaza al anterior del mismo participante.
@@ -1503,11 +1508,12 @@ const envioProgresivo = () => { if (CFG.envio && CFG.envio.modo === "progresivo"
 const envioPendiente = () => !!(CFG.envio && S.cuenta && S.consent && S.ses && (S.envio.estado !== "enviado" || S.envio.registros !== S.regs.length));
 // Reintento automático: al volver la conexión y cada minuto mientras quede algo por enviar.
 function reintentarEnvio() { if (enLinea && !enviando && CFG.envio && CFG.envio.modo === "progresivo" && envioPendiente()) enviar(true); }
+// Retiro: borra lo guardado en este dispositivo y pide al servidor eliminar lo enviado. Devuelve si el servidor lo confirmó.
 async function retirar() {
-  const u = S.cuenta.u;
-  if (CFG.envio && S.yo && S.envio && S.envio.estado !== "pendiente") { try { await llamarServidor({ accion:"retirar", estudio:CFG.estudio.id, usuario:u, participante:S.yo.id }); } catch (e) {} }
+  const u = S.cuenta.u, pid = S.yo && S.yo.id; let servidor = null;
+  if (CFG.envio && S.consent && pid) { try { await llamarServidor({ accion:"retirar", estudio:CFG.estudio.id, usuario:u, participante:pid }, 10000); servidor = true; } catch (e) { servidor = false; } }
   borrarLocal(u); recordarSesion("");
-  S = estadoInicial(); S.etapa = "retirado";
+  S = estadoInicial(); S.etapa = "retirado"; S.retiroServidor = servidor;
 }
 
 /* ---------- Avisos ---------- */
@@ -1679,7 +1685,7 @@ function vistaConsentimiento() {
   </div></div>`;
 }
 const vistaRechazo = () => `<div class="hoja"><div class="card"><h1 tabindex="-1">${esc(CONS.rechazoTitulo)}</h1><p>${esc(CONS.rechazoTexto)}</p><div class="nav-row"><button type="button" class="btn" data-act="volver-acceso">Volver al inicio</button></div></div></div>`;
-const vistaRetirado = () => `<div class="hoja"><div class="card"><h1 tabindex="-1">Se retiró del estudio</h1><p>Sus respuestas se borraron de este dispositivo. ${CFG.envio ? "Se pidió al servidor eliminar las que ya se habían enviado." : "Si ya había entregado un archivo, pida al investigador que lo elimine."} Gracias por su tiempo.</p><div class="nav-row"><button type="button" class="btn" data-act="volver-acceso">Volver al inicio</button></div></div></div>`;
+const vistaRetirado = () => `<div class="hoja"><div class="card"><h1 tabindex="-1">Se retiró del estudio</h1><p>Sus respuestas se borraron de este dispositivo. ${S.retiroServidor === true ? "El servidor del estudio eliminó las que ya se habían enviado." : S.retiroServidor === false ? "No fue posible avisar al servidor del estudio: pida al investigador que elimine las respuestas que ya se habían enviado." : "Si ya había entregado un archivo, pida al investigador que lo elimine."} Gracias por su tiempo.</p><div class="nav-row"><button type="button" class="btn" data-act="volver-acceso">Volver al inicio</button></div></div></div>`;
 
 /* ---------- Simulación: piezas ---------- */
 function progresoHtml() {
