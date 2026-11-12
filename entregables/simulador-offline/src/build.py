@@ -94,18 +94,17 @@ def main():
     print("Simulador (archivo único, con cuentas de demostración):")
     escribir(RAIZ / "simulador.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=demo))
     escribir(RAIZ / "simulador-artefacto.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=demo, doctype=False))
-    if all((AQUI / x).exists() for x in ADM):
-        print("Paquete web:")
-        escribir(PAQUETE / "index.html", pagina("head-sim.html", "skel-sim.html", SIM, externa=True))
-        escribir(PAQUETE / "configuracion.js", "/* Configuración de demostración. Reemplácela por la que genera el panel del investigador (administrador.html). */\nwindow.SIM_CONFIG = " + json.dumps(demo, ensure_ascii=False, indent=1) + ";\n")
-        escribir(PAQUETE / "administrador.html", pagina("head-adm.html", "skel-adm.html", ADM, rol="admin", con_config=False))
-        for origen, destino in [("servidor/sw.js", "sw.js"), ("servidor/recibir.php", "recibir.php"), ("servidor/recibir-config.php", "recibir-config.php"), ("servidor/htaccess-respuestas.txt", "respuestas/.htaccess"), ("servidor/index-respuestas.html", "respuestas/index.html"),
-                                ("guias/LEEME.txt", "LEEME.txt"), ("guias/guia-despliegue.html", "guia-despliegue.html"), ("guias/guia-investigador.html", "guia-investigador.html")]:
-            if (AQUI / origen).exists(): escribir(PAQUETE / destino, leer(AQUI / origen))
-            else: print("  (falta la fuente " + origen + ")")
-        comprimir(PAQUETE, RAIZ / "paquete-web.zip")
-    else:
-        print("Paquete web: pendiente (faltan módulos del panel del investigador).")
+    print("Paquete web:")
+    escribir(PAQUETE / "index.html", pagina("head-sim.html", "skel-sim.html", SIM, externa=True))
+    escribir(PAQUETE / "configuracion.js", "/* Configuración de demostración. Reemplácela por la que genera el panel del investigador (administrador.html). */\nwindow.SIM_CONFIG = " + json.dumps(demo, ensure_ascii=False, indent=1) + ";\n")
+    faltan = [x for x in ADM if not (AQUI / x).exists()]
+    if faltan: print("  (panel del investigador pendiente: faltan " + ", ".join(faltan) + ")")
+    else: escribir(PAQUETE / "administrador.html", pagina("head-adm.html", "skel-adm.html", ADM, rol="admin", con_config=False))
+    for origen, destino in [("servidor/sw.js", "sw.js"), ("servidor/recibir.php", "recibir.php"), ("servidor/recibir-config.php", "recibir-config.php"), ("servidor/htaccess-respuestas.txt", "respuestas/.htaccess"), ("servidor/index-respuestas.html", "respuestas/index.html"),
+                            ("guias/LEEME.txt", "LEEME.txt"), ("guias/guia-despliegue.html", "guia-despliegue.html"), ("guias/guia-investigador.html", "guia-investigador.html")]:
+        if (AQUI / origen).exists(): escribir(PAQUETE / destino, leer(AQUI / origen))
+        else: print("  (falta la fuente " + origen + ")")
+    comprimir(PAQUETE, RAIZ / "paquete-web.zip")
 
 
 if __name__ == "__main__":
