@@ -69,3 +69,18 @@
   @media (prefers-reduced-motion:no-preference) { .modal-caja { animation:pop-in .22s ease both; } .modal-fondo { animation:fade-in .2s ease both; } }
   @media print { .modal, .nav-row, .enlace { display:none !important; } }
   .otro-equipo { margin-top:16px; } .retomar .ficha-rol .meter { max-width:260px; }
+
+  /* Móvil: cabecera que no desborda, filas del paso apiladas y tablas cortas en bloque */
+  @media (max-width:600px) {
+    .appbar { gap:8px; } .brand { flex:1 1 auto; min-width:0; padding-right:10px; } .brand-text { min-width:0; } .brand-text b { font-size:14px; line-height:17px; }
+    .appbar-right .who { display:none; } .appbar-right { gap:8px; flex:none; } .brand-mark { flex:none; }
+    .top { gap:6px 10px; } .top .guardado { font-size:12px; } .top .badge { white-space:normal; }
+    .paso-fila { grid-template-columns:1fr; gap:4px; } .paso-fila b { justify-self:start; }
+    .twrap table.t.apila { min-width:0; } table.t.apila thead { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+    table.t.apila tr { display:block; padding:8px 0; border-bottom:1px solid var(--line); } table.t.apila tbody tr:last-child { border-bottom:0; } table.t.apila td { display:block; border:0; padding:2px 12px; } table.t.apila td.nw { white-space:normal; }
+    .pmain-head .h1 { font-size:22px; line-height:28px; } .pmain-head .head-right { margin-left:0; }
+    .nav-row .btn { flex:1 1 auto; } .nav-row .sp { display:none; } .nav-row .mini { flex:1 1 100%; order:-1; }
+    .ficha-caso { flex-direction:column; } .puntos li { grid-template-columns:32px 1fr; column-gap:10px; padding:10px 12px; }
+    .optrow button { flex:1 1 100%; } .kv { grid-template-columns:1fr; gap:0 0; } .kv b { padding-top:8px; }
+    .modal-caja { padding:18px 16px 16px; } .closing { padding:18px 14px 16px; } .closing .estado-cierre { font-size:20px; line-height:26px; }
+  }

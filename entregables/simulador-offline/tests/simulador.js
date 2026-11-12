@@ -2,6 +2,7 @@
 //   node tests/simulador.js            todo
 //   node tests/simulador.js roles      solo el recorrido de los 12 roles
 //   node tests/simulador.js sesion     solo acceso, pausa, reanudación y recuperación
+//   node tests/simulador.js accesible  solo teléfono, nombres accesibles, foco y teclado
 const L = require("./lib"), M = require("./motor");
 const { clic, hay, texto, w, fs, path } = L;
 const ARCHIVO = "file://" + path.join(L.RAIZ, "simulador.html");
@@ -126,11 +127,64 @@ async function sesion(br, errores) {
   await ctx4.close();
 }
 
+// Revisión de cada pantalla en un teléfono angosto: título, nombres accesibles, foco y ancho.
+const revisar = pg => pg.evaluate(() => {
+  const p = [], vista = document.getElementById("vista");
+  const titulos = vista.querySelectorAll("h1, #titulo-cierre");
+  if (titulos.length !== 1) p.push("títulos principales: " + titulos.length);
+  const nombre = el => {
+    if (el.getAttribute("aria-label")) return el.getAttribute("aria-label");
+    if (el.id) { const l = document.querySelector('label[for="' + el.id + '"]'); if (l) return l.textContent; }
+    const env = el.closest("label"); if (env) return env.textContent;
+    if (el.tagName === "BUTTON") return el.textContent;
+    return el.getAttribute("title") || "";
+  };
+  document.querySelectorAll("button, input:not([hidden]):not([type=hidden]), select, textarea").forEach(el => { if (!String(nombre(el)).trim()) p.push("sin nombre accesible: " + el.outerHTML.slice(0, 90)); });
+  document.querySelectorAll("svg").forEach(el => { if (el.getAttribute("aria-hidden") !== "true" && !el.getAttribute("aria-label")) p.push("icono sin aria-hidden ni etiqueta"); });
+  document.querySelectorAll("[aria-pressed]").forEach(el => { if (["true", "false"].indexOf(el.getAttribute("aria-pressed")) < 0) p.push("aria-pressed inválido"); });
+  const ids = {}; document.querySelectorAll("[id]").forEach(el => { ids[el.id] = (ids[el.id] || 0) + 1; }); Object.keys(ids).forEach(k => { if (ids[k] > 1) p.push("id repetido: " + k); });
+  const cw = document.documentElement.clientWidth, sw = document.documentElement.scrollWidth; if (sw > cw + 1) p.push("desborde horizontal " + sw + " > " + cw);
+  if (!document.documentElement.lang) p.push("sin idioma");
+  return { p, foco:document.activeElement ? document.activeElement.tagName + (document.activeElement.id ? "#" + document.activeElement.id : "") : "", h:titulos[0] ? titulos[0].textContent.trim() : "" };
+});
+async function accesible(br, errores) {
+  const problemas = [], vistas = new Set();
+  const anotar = async (pg, donde, pideFoco) => { const r = await revisar(pg); vistas.add(r.h); r.p.forEach(x => problemas.push(donde + ": " + x)); if (pideFoco && !/^(H1|DIV#titulo-cierre)/.test(r.foco)) problemas.push(donde + ": el foco no fue al título (" + r.foco + ")"); };
+  for (const [u, ancho] of [["demo-eps", 360], ["demo-trabajador", 320], ["demo-mintrabajo", 390]]) {
+    const ctx = await br.newContext({ viewport:{ width:ancho, height:780 }, acceptDownloads:true }), pg = await L.pagina(ctx, errores);
+    await pg.goto(ARCHIVO); await anotar(pg, u + " acceso", false);
+    await L.entrarDemo(pg, u);
+    for (let i = 1; i <= 4; i++) { await anotar(pg, u + " orientación " + i, true); await clic(pg, '[data-act="orient"][data-arg="' + i + '"]'); }
+    await anotar(pg, u + " declaración", true); await clic(pg, '[data-act="c-anon"][data-v="no"]'); await anotar(pg, u + " declaración con datos", false); await clic(pg, '[data-act="c-anon"][data-v="si"]');
+    await L.aceptarDeclaracion(pg, null);
+    for (let i = 0; i < 400; i++) {
+      await anotar(pg, u + " pantalla " + i + " «" + (await texto(pg, "#vista h1, #titulo-cierre")).slice(0, 40) + "»", true);
+      if (i === 3) { await clic(pg, '[data-act="salir"]'); const r = await revisar(pg); if (!/BUTTON/.test(r.foco)) problemas.push(u + ": el diálogo no recibe el foco"); r.p.filter(x => !/títulos principales/.test(x)).forEach(x => problemas.push(u + " diálogo: " + x)); await pg.keyboard.press("Tab"); await pg.keyboard.press("Tab"); await pg.keyboard.press("Tab"); if (!(await pg.evaluate(() => !!document.activeElement.closest(".modal-caja")))) problemas.push(u + ": el foco se escapa del diálogo con Tab"); await pg.keyboard.press("Escape"); await w(pg); }
+      if (i === 5) { await clic(pg, '[data-act="ver-todo"]'); await anotar(pg, u + " ruta completa", false); await clic(pg, '[data-act="ver-todo"]'); }
+      const h = await L.pantalla(pg, i); if (h === "cierre") break;
+    }
+    await ctx.close();
+  }
+  T.ok(!problemas.length, "en teléfono (390, 360 y 320 px) cada pantalla tiene un título, nombres accesibles, foco en el título al cambiar y no desborda", problemas.slice(0, 8).join(" | "));
+  T.ok(vistas.size >= 12, "se revisaron " + vistas.size + " pantallas distintas");
+  // Teclado: entrar con Enter y responder una actividad sin ratón
+  const ctx = await br.newContext({ viewport:{ width:1280, height:900 } }), pg = await L.pagina(ctx, errores);
+  await pg.goto(ARCHIVO); await pg.focus('[data-in="a-u"]'); await pg.keyboard.type("demo-jueces"); await pg.keyboard.press("Tab"); await pg.keyboard.type("DEMO-2026"); await pg.keyboard.press("Enter");
+  await pg.waitForFunction(() => document.body.getAttribute("data-etapa") === "orientacion", null, { timeout:15000 });
+  T.ok(true, "se puede entrar solo con el teclado (Enter envía el acceso)");
+  await L.pasarOrientacion(pg); await L.aceptarDeclaracion(pg, null); await clic(pg, '[data-act="ronda-iniciar"]'); while (!(await hay(pg, '[data-act="guardar"]'))) await L.pantalla(pg, 0);
+  await pg.focus('[data-act="f"][data-arg="ve"][data-v="parcial"]'); await pg.keyboard.press("Enter"); await w(pg);
+  const foco = await pg.evaluate(() => { const a = document.activeElement; return a.getAttribute("data-arg") + "/" + a.getAttribute("data-v") + "/" + a.getAttribute("aria-pressed"); });
+  T.ok(foco === "ve/parcial/true", "al elegir una opción con el teclado el foco se queda en esa opción", foco);
+  await ctx.close();
+}
+
 (async () => {
   const br = await L.lanzar(), errores = [];
   try {
     if (cual === "todo" || cual === "roles") await roles(br, errores);
     if (cual === "todo" || cual === "sesion") await sesion(br, errores);
+    if (cual === "todo" || cual === "accesible") await accesible(br, errores);
     T.ok(!errores.length, "sin errores de consola, sin excepciones y sin peticiones de red", errores.slice(0, 5).join(" | "));
   } catch (e) { T.ok(false, "la prueba se interrumpió", e.stack || e); }
   await br.close();

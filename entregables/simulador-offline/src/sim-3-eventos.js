@@ -13,7 +13,15 @@ function claveVista() {
 }
 let vkActual = null, pendiente = false;
 const esCampoTexto = el => !!el && (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && ["checkbox", "radio", "button", "submit"].indexOf(el.type) < 0));
+// Título de la pestaña: dice en qué pantalla está el participante.
+function tituloVentana() {
+  const base = CFG.estudio.titulo;
+  if (!S.cuenta) return base;
+  const donde = S.retomar ? "Bienvenido de nuevo" : S.etapa === "orientacion" ? "Orientación" : S.etapa === "consentimiento" ? "Declaración" : S.etapa === "cierre" ? "Entrega" : S.etapa === "simulacion" && S.ses ? dondeQuedo() : "";
+  return (donde ? donde + " · " : "") + base;
+}
 function render() {
+  document.title = tituloVentana();
   document.body.setAttribute("data-rol", "participante");
   document.body.setAttribute("data-etapa", S.etapa);
   renderTop();

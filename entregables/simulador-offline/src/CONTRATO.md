@@ -188,9 +188,25 @@ aceptan los mismos campos como formulario (`application/x-www-form-urlencoded`).
 - Guarda cada documento en `respuestas/<estudio>__<usuario>__<participante>.json.php`, con una primera línea
   `<?php http_response_code(404); exit; ?>` para que el archivo no pueda leerse desde la web aunque el servidor
   ignore `.htaccess`. Junto al documento guarda `recibido` y el SHA-256 de la llave de reanudación.
-- `recibir-config.php` devuelve un arreglo PHP con `clave_envio`, `clave_admin_sha256`, `carpeta`, `max_bytes`,
-  `max_documentos`. Con las claves vacías el receptor responde 403 a todo: no queda abierto por omisión.
-  El panel genera este archivo.
+- `recibir-config.php` devuelve un arreglo PHP. Con las claves vacías el receptor responde 403 a todo: no queda
+  abierto por omisión. El panel genera este archivo exactamente con esta forma (las claves son cadenas entre
+  comillas simples; el panel escapa `\` y `'`):
+
+  ```php
+  <?php
+  // Configuración del receptor de respuestas. La genera el panel del investigador (momento «Publicar»).
+  return [
+      'clave_envio' => 'CLAVE-DE-ENVIO',
+      'clave_admin_sha256' => 'SHA-256 en hexadecimal de la clave de administración del servidor',
+      'carpeta' => __DIR__ . '/respuestas',
+      'max_bytes' => 1048576,
+      'max_documentos' => 2000,
+  ];
+  ```
+
+  La clave de envío y la clave de administración del servidor se generan en el panel con `hex(azar(16))`
+  (32 hexadecimales). El panel guarda la clave de administración del servidor en el proyecto y solo publica
+  su SHA-256 (`SHA.hex(clave)`).
 - El simulador llama con `credentials: "same-origin"`. Envía en segundo plano; si falla, reintenta al volver la
   conexión y cada minuto, y el participante siempre puede descargar su archivo.
 
@@ -236,6 +252,16 @@ Acciones que el informe pone en sus botones y que atiende `adm-4-eventos.js`:
 
 ## 10. Pruebas
 
-`tests/motor.js` recorre la simulación completa sin navegador con cada rol (`node tests/motor.js`) y con
-`--muestras` escribe doce documentos de respuestas en `tests/salida/muestras/`. Las pruebas de navegador usan
-Playwright (`/opt/node22/lib/node_modules/playwright`, `PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers`).
+| Prueba | Qué cubre |
+|---|---|
+| `node tests/motor.js` | motor sin navegador: los 12 roles completan las dos rondas; con `--muestras` escribe doce documentos de respuestas en `tests/salida/muestras/` |
+| `node tests/simulador.js` | navegador, archivo local sin red: los 12 roles por la interfaz, acceso, declaración, pausa, reanudación, cierre inesperado, respaldo, archivo de avance, retiro, teléfono y teclado |
+| `node tests/simulador-red.js` | navegador, sitio con receptor simulado: envío a medida que avanza, caída de conexión, reintento, recuperación en otro dispositivo, envío al final, reapertura sin conexión, sitio sin configurar |
+| `node tests/servidor.js` | receptor PHP real con `php -S` |
+
+`tests/lib.js` trae las ayudas comunes: `servir(dir, extra)` servidor estático en el proceso, `lanzar()`,
+`pagina(ctx, errores, permitido)` que anota errores de consola y peticiones externas, `clic`, `hay`, `texto`,
+`descargar`, `contador(titulo)` con `ok(cond, texto, detalle)` y `fin()`, `temporal()`, y el recorrido del
+simulador por la interfaz: `entrarDemo(pg, usuario, clave)`, `pasarOrientacion`, `aceptarDeclaracion(pg, datos)`,
+`llenarActividad`, `llenarValoracion`, `pantalla(pg, n)` y `recorrerInterfaz(pg, variante, parar)`.
+Playwright está en `/opt/node22/lib/node_modules/playwright` (`PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers`).

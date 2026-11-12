@@ -123,7 +123,8 @@ const GUION = {
       parrafos:[
         "Recorra la ruta como funciona hoy. La evidencia viaja por oficio, por correo o en manos de la trabajadora.",
         "Responda con lo que ocurre en la práctica y con lo que usted haría, no con lo que debería ocurrir."
-      ]
+      ],
+      notaMejora:"En esta ronda recorrió la ruta como funciona hoy. La misma pregunta se repite en la ronda 2 para poder comparar."
     },
     propuesto:{
       titulo:"Ronda 2 · la ruta con el módulo propuesto",

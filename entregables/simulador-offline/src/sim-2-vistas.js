@@ -2,11 +2,13 @@
 
 /* ---------- Piezas comunes ---------- */
 function opt(act, arg, ops, cur, multi) {
-  return `<div class="optrow" role="group">${ops.map(o => {
+  return `<div class="optrow">${ops.map(o => {
     const on = multi ? (cur || []).indexOf(o[0]) >= 0 : String(cur) === String(o[0]);
     return `<button type="button" data-act="${act}" data-arg="${esc(arg)}" data-v="${esc(o[0])}" aria-pressed="${on}">${esc(o[1])}</button>`;
   }).join("")}</div>`;
 }
+// El mismo aviso de error de la barra superior, repetido junto al botón que lo causó (solo visual).
+const errHtml = () => S.msgErr && S.msg ? `<p class="msg err en-linea" aria-hidden="true">${ico("estados-advertencia", "sm")}${esc(S.msg)}</p>` : "";
 const chipSim = `<span class="chip ch-gold" title="Lo generó el sistema para representar a los actores que no están conectados">simulado</span>`;
 const piezasTxt = ks => (ks || []).length ? ks.map(k => EV[k].sl).join(", ") : "información del trámite";
 const piezasLargo = ks => (ks || []).length ? ks.map(k => EV[k].n + " (" + EV[k].sl + ")").join(", ") : "información del trámite, sin piezas de evidencia";
@@ -30,7 +32,7 @@ function etapasHtml() {
   return `<ol class="etapas" aria-label="Etapas de su participación">${items.map((t, i) => `<li class="${i < cur ? "hecha" : i === cur ? "actual" : ""}"${i === cur ? ' aria-current="step"' : ""}><span class="n">${i < cur ? ico("estados-completado", "sm") : i + 1}</span><span class="t">${esc(t)}</span></li>`).join("")}</ol>`;
 }
 function renderTop() {
-  const msg = `<span class="msg ${S.msgErr ? "err" : ""}" role="status" aria-live="polite">${S.msg ? ico(S.msgErr ? "estados-advertencia" : "estados-completado", "sm") : ""}${esc(S.msg)}</span>`;
+  const msg = `<span class="msg ${S.msgErr ? "err" : ""}" role="${S.msgErr ? "alert" : "status"}">${S.msg ? ico(S.msgErr ? "estados-advertencia" : "estados-completado", "sm") : ""}${esc(S.msg)}</span>`;
   if (!S.cuenta) {
     pintar("appright", `<span class="who"><span><b>${esc(CFG.estudio.programa)}</b><small>${esc(CFG.estudio.institucion)}</small></span></span>`);
     pintar("top", `<span class="sp"></span>${msg}`);
@@ -66,7 +68,7 @@ function vistaAcceso() {
       <label>Usuario<input type="text" data-in="a-u" value="${esc(a.u)}" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
       <label>Contraseña<input type="${a.ver ? "text" : "password"}" data-in="a-c" value="${esc(a.c)}" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
       <label class="check"><input type="checkbox" data-in="a-ver" ${a.ver ? "checked" : ""}>Mostrar la contraseña</label>
-      <button type="submit" class="btn" id="btn-entrar">${ico("acciones-entrar")}Entrar</button>
+      ${errHtml()}<button type="submit" class="btn" id="btn-entrar">${ico("acciones-entrar")}Entrar</button>
     </div>
     <div class="auth-foot"><p class="mini">Use el usuario y la contraseña que le envió el investigador. Cada usuario corresponde a un rol de la ruta.</p></div>
   </form></div>
@@ -102,7 +104,7 @@ function intervencionHtml(actor) {
     const txt = porRonda.every((x, i) => (x && x.tipo) === (porRonda[0] && porRonda[0].tipo)) ? TIPO[porRonda[0].tipo] : porRonda.map((x, i) => "Ronda " + (i + 1) + ": " + (x ? TIPO[x.tipo].toLowerCase() : "no interviene")).join(" · ");
     return `<tr><td class="nw"><span class="step-tag sm">${esc(p.id)}</span></td><td>${ico(ICO.paso[p.id], "sm")}${esc(p.n)}</td><td>${esc(txt)}</td></tr>`;
   }).join("");
-  return `<div class="twrap"><table class="t"><thead><tr><th scope="col">Paso</th><th scope="col">Qué ocurre</th><th scope="col">Qué hace usted</th></tr></thead><tbody>${filas}</tbody></table></div>`;
+  return `<div class="twrap"><table class="t apila"><thead><tr><th scope="col">Paso</th><th scope="col">Qué ocurre</th><th scope="col">Qué hace usted</th></tr></thead><tbody>${filas}</tbody></table></div>`;
 }
 function vistaOrientacion() {
   const O = GUION.orientacion, i = Math.max(0, Math.min(S.orient, O.pasos.length - 1)), id = O.pasos[i].id, a = S.cuenta.a;
@@ -120,7 +122,7 @@ function vistaOrientacion() {
       <h2>${ico("navegacion-blueprint")}${esc(C.rutaTitulo)}</h2>
       <div class="ruta">${SB.fases.map(f => `<div class="ruta-fase"><div class="ruta-t">${ico(ICO.fase[f.id])}<b>${esc(f.n)}</b><span class="mini">${esc(f.sub)}</span></div><ol>${PASOS.filter(p => p.fase === f.id).map(p => `<li><span class="step-tag sm">${esc(p.id)}</span><span>${esc(p.n)}</span></li>`).join("")}</ol></div>`).join("")}</div>
       <h2>${ico("documentos-evidencia")}${esc(C.evidenciaTitulo)}</h2>
-      <div class="twrap"><table class="t"><thead><tr><th scope="col">Pieza</th><th scope="col">Qué es</th><th scope="col">Custodio</th></tr></thead><tbody>${Object.keys(EV).map(k => `<tr><td class="nw">${ico(ICO.ev[k], "sm")}<b>${esc(EV[k].sl)}</b></td><td>${esc(EV[k].n)}</td><td>${esc(nomL(EV[k].cust))}</td></tr>`).join("")}</tbody></table></div>
+      <div class="twrap"><table class="t apila"><thead><tr><th scope="col">Pieza</th><th scope="col">Qué es</th><th scope="col">Custodio</th></tr></thead><tbody>${Object.keys(EV).map(k => `<tr><td class="nw">${ico(ICO.ev[k], "sm")}<b>${esc(EV[k].sl)}</b></td><td>${esc(EV[k].n)}</td><td>${esc(nomL(EV[k].cust))}</td></tr>`).join("")}</tbody></table></div>
       <p class="mini" style="margin-top:10px">${esc(ESC.nota)}</p>`;
   } else if (id === "mecanica") {
     const M = O.mecanica, canal = CFG.envio ? M.envio[CFG.envio.modo] : M.envio.archivo;
@@ -157,7 +159,7 @@ function vistaConsentimiento() {
     <fieldset class="bloque"><legend>${ico("acciones-aceptar", "sm")}${esc(CONS.declaracionesTitulo)}</legend>${CONS.declaraciones.map(d => casilla(d, d.req)).join("")}</fieldset>
     <fieldset class="bloque"><legend>${ico("actores-participante", "sm")}${esc(CONS.datosTitulo)}</legend><p class="mini">${esc(CONS.datosIntro)}</p>${opt("c-anon", "anonimo", CONS.anonimo, k.anonimo)}
       ${conDatos ? `<div class="datos-grid">${CONS.datos.map(d => `<label>${esc(d.n)}<input type="${d.tipo}" data-in="c-dato" data-arg="${esc(d.id)}" value="${esc(k.datos[d.id] || "")}" autocomplete="${d.auto}" maxlength="200"${d.tipo === "number" ? ' min="0" max="80" inputmode="numeric"' : ""}></label>`).join("")}</div>${casilla(CONS.declaracionDatos, false)}<label class="check"><input type="checkbox" data-in="c-resumen" ${k.resumen ? "checked" : ""}><span>${esc(CONS.resumen.t)}</span></label>` : ""}
-    </fieldset>
+    </fieldset>${errHtml()}
     <div class="nav-row"><button type="button" class="btn outline" data-act="orient" data-arg="0">${ico("acciones-anterior")}Volver a la orientación</button><span class="sp"></span><button type="button" class="btn outline" data-act="consent-no">${esc(CONS.rechazar)}</button><button type="button" class="btn green" data-act="consent-si">${ico("acciones-aceptar")}${esc(CONS.aceptar)}</button></div>
   </div></div>`;
 }
@@ -214,7 +216,7 @@ const zoomTools = () => `<div class="sb-tools"><button type="button" class="zoom
 function infoDisponible(p, actor, modo) {
   const piezas = ESC.entradas[p.id] || [];
   if (!piezas.length) return `<p class="mini">Este paso no requiere consultar piezas de evidencia.</p>`;
-  return `<div class="twrap"><table class="t"><thead><tr><th scope="col">Pieza</th><th scope="col">Custodio</th><th scope="col">${modo === "actual" ? "Cómo llega hoy" : "Qué puede ver con el módulo"}</th></tr></thead><tbody>${piezas.map(pz => {
+  return `<div class="twrap"><table class="t apila"><thead><tr><th scope="col">Pieza</th><th scope="col">Custodio</th><th scope="col">${modo === "actual" ? "Cómo llega hoy" : "Qué puede ver con el módulo"}</th></tr></thead><tbody>${piezas.map(pz => {
     let txt, no = false;
     if (EV[pz].cust === actor) txt = "Es evidencia que usted custodia: la tiene en origen.";
     else if (modo === "actual") txt = "Por oficio, por correo o en papel, según llegue. Campos de la pieza: " + EV[pz].campos.join(", ") + ".";
@@ -317,9 +319,9 @@ function valoracionHtml(r) {
   return `<div class="actividad"><div class="qpanel">Valore el contrato de datos de ${esc(nomL(yo.actor))} tal como lo recorrió en esta ronda (${r.modo === "actual" ? "la ruta como funciona hoy" : "la ruta con el módulo propuesto"}) y responda las cuatro preguntas.</div>
     <details data-det="contrato"><summary>Ver el contrato de datos de su rol</summary>${contratoHtml(yo.actor)}</details>
     <fieldset><legend>${ico("capitulos-validacion-contratos", "sm")}El contrato de su rol</legend>${opt("v", "semaforo", ESC.valoracion.semaforo, v.semaforo)}${v.semaforo === "ajustar" || v.semaforo === "rechazar" ? `<input type="text" data-in="v-ajuste" aria-label="Qué cambiaría del contrato" value="${esc(v.ajuste || "")}" maxlength="600" class="ancho" placeholder="Qué cambiaría y por qué${v.semaforo === "rechazar" ? " (necesario si rechaza)" : ""}">` : ""}</fieldset>
-    <fieldset><legend>${ico("investigacion-cambio-observado", "sm")}Frente a hoy, esta forma de trabajar es…</legend>${opt("v", "mejora", ESC.valoracion.mejora, v.mejora)}</fieldset>
+    <fieldset><legend>${ico("investigacion-cambio-observado", "sm")}Frente a hoy, esta forma de trabajar es…</legend>${opt("v", "mejora", ESC.valoracion.mejora, v.mejora)}${r.modo === "actual" ? `<p class="mini">${esc(GUION.rondas.actual.notaMejora)}</p>` : ""}</fieldset>
     ${ESC.preguntas.map(q => `<fieldset><legend>${ico(ICO.sub[q.sub], "sm")}${esc(q.id)}. ${esc(q.t)}</legend>${q.tipo === "texto" ? `<input type="text" data-in="v-p" data-arg="${q.id}" aria-label="${esc(q.t)}" value="${esc(v[q.id] || "")}" maxlength="800" class="ancho" placeholder="Escriba al menos un requisito concreto">` : opt(q.tipo === "multi" ? "vm" : "v", q.id, q.ops, v[q.id], q.tipo === "multi")}${q.cual && (q.tipo === "multi" ? (v[q.id] || []).length && (v[q.id] || []).indexOf("ninguna") < 0 : v[q.id] && v[q.id] !== "si") ? `<input type="text" data-in="v-p" data-arg="${q.id}cual" aria-label="${esc(q.cual)}" value="${esc(v[q.id + "cual"] || "")}" maxlength="600" class="ancho" placeholder="${esc(q.cual)}">` : ""}</fieldset>`).join("")}
-    <button type="button" class="btn big" data-act="guardar-val" style="margin-top:18px">${ico("acciones-guardar")}Guardar valoración y respuestas</button>${v.rectificando ? `<button type="button" class="btn outline" data-act="val-cancelar" style="margin-top:10px">${ico("acciones-cerrar")}Cancelar</button>` : ""}</div>`;
+    ${errHtml()}<button type="button" class="btn big" data-act="guardar-val" style="margin-top:18px">${ico("acciones-guardar")}Guardar valoración y respuestas</button>${v.rectificando ? `<button type="button" class="btn outline" data-act="val-cancelar" style="margin-top:10px">${ico("acciones-cerrar")}Cancelar</button>` : ""}</div>`;
 }
 
 /* ---------- Simulación: pantalla ---------- */
@@ -344,7 +346,7 @@ function vistaSimulacion() {
         <div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="continuar">${sig ? "Continuar al paso " + esc(sig.pasos[0]) : "Continuar al cierre de la ronda"}${ico("acciones-siguiente")}</button></div>${completo}`;
     } else {
       const p = pasoActual(), act = b.act, mio = miActividad(s.rondaActual, p.id), editando = !mio || S.form.rectificando;
-      const cuerpo = editando ? `<div class="actividad"><div class="qpanel">${esc(act.tipo === "custodia" && modo === "propuesto" ? act.instrMod : act.instr)}</div>${situacionHtml(p, yo.actor, modo, act)}${act.tipo === "decide" ? `<details data-det="info" open><summary>Información disponible en este paso</summary>${infoDisponible(p, yo.actor, modo)}</details>` : ""}${formActividad(p, act, modo)}<button type="button" class="btn big" data-act="guardar" style="margin-top:18px">${ico("acciones-guardar")}Guardar mi respuesta</button>${mio ? `<button type="button" class="btn outline" data-act="cancelar-rect" style="margin-top:10px">${ico("acciones-cerrar")}Cancelar</button>` : ""}</div>` : resultadoHtml(p, modo, mio);
+      const cuerpo = editando ? `<div class="actividad"><div class="qpanel">${esc(act.tipo === "custodia" && modo === "propuesto" ? act.instrMod : act.instr)}</div>${situacionHtml(p, yo.actor, modo, act)}${act.tipo === "decide" ? `<details data-det="info" open><summary>Información disponible en este paso</summary>${infoDisponible(p, yo.actor, modo)}</details>` : ""}${formActividad(p, act, modo)}${errHtml()}<button type="button" class="btn big" data-act="guardar" style="margin-top:18px">${ico("acciones-guardar")}Guardar mi respuesta</button>${mio ? `<button type="button" class="btn outline" data-act="cancelar-rect" style="margin-top:10px">${ico("acciones-cerrar")}Cancelar</button>` : ""}</div>` : resultadoHtml(p, modo, mio);
       main = `<div class="pmain-head"><div><div class="eyebrow">${esc(r.n)}</div><h1 class="h1" tabindex="-1">${ico(ICO.actividad[act.tipo])}${esc(act.titulo)}</h1></div><div class="head-right"><span class="chip ${editando ? "ch-navy live" : "ch-teal"}">${ico(editando ? "estados-en-curso" : "estados-completado", "sm")}${editando ? "su turno" : "respondida"}</span>${verTodo}</div></div>${progresoHtml()}
         <div class="lbl" style="margin-bottom:6px">${ico("navegacion-blueprint", "sm")}Qué ocurre en este paso</div>${pasoTarjeta(p, modo, yo.actor, false)}<div class="sep-bloque"></div>${cuerpo}${completo}`;
     }
@@ -358,7 +360,7 @@ function misRespuestasHtml() {
     const pl = r.payload, txt = r.tipo === "actividad" ? resumenActividad(pl) + (pl.obs ? " · «" + pl.obs + "»" : "") : r.tipo === "valoracion" ? etiqueta(ESC.valoracion.semaforo, pl.semaforo) + " · " + etiqueta(ESC.valoracion.mejora, pl.mejora) : r.tipo === "preguntas" ? ESC.preguntas.map(q => q.id + ": " + (Array.isArray(pl[q.id]) ? pl[q.id].join(", ") : pl[q.id])).join(" · ") : pl.texto || "";
     return `<tr><td class="nw">${esc(r.ronda)}</td><td class="nw">${esc(r.paso)}</td><td class="nw">${esc(r.tipo)}</td><td>${esc(txt)}</td></tr>`;
   }).join("");
-  return `<div class="twrap"><table class="t"><thead><tr><th scope="col">Ronda</th><th scope="col">Paso</th><th scope="col">Tipo</th><th scope="col">Lo que respondió</th></tr></thead><tbody>${filas}</tbody></table></div>`;
+  return `<div class="twrap"><table class="t apila"><thead><tr><th scope="col">Ronda</th><th scope="col">Paso</th><th scope="col">Tipo</th><th scope="col">Lo que respondió</th></tr></thead><tbody>${filas}</tbody></table></div>`;
 }
 function vistaCierre() {
   const C = GUION.cierre, v = vigentes(), n = t => v.filter(r => r.origen === "participante" && r.tipo === t).length, e = S.envio || {}, obsAct = v.filter(r => r.tipo === "actividad" && r.payload.obs).length;
