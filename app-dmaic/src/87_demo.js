@@ -29,14 +29,24 @@ const DEMO = (function(){
      citas. Es un caso realista del negocio de Rehavid, no un ejemplo de
      fábrica genérico.
      ================================================================== */
+  const DATOS_PROY = {
+    nombre : 'Reducción de citas de terapia reprogramadas',
+    empresa: 'Alimentos del Norte S.A.S.',
+    arl    : 'ARL Positiva',
+    area   : 'Servicio de terapia física · sede norte',
+    lider  : 'Ing. Ariel Ramírez — Rehavid'
+  };
+
   function cargar(){
     reset();
-    const p = ST.proj();
-    p.nombre  = 'Reducción de citas de terapia reprogramadas';
-    p.empresa = 'Alimentos del Norte S.A.S.';
-    p.arl     = 'ARL Positiva';
-    p.area    = 'Servicio de terapia física · sede norte';
-    p.lider   = 'Ing. Ariel Ramírez — Rehavid';
+    /* La simulación vive en SU PROPIO proyecto. Antes se escribía encima del
+       proyecto abierto y se llevaba por delante lo que el usuario tuviera
+       escrito; ahora se puede ver la herramienta funcionando sin arriesgar
+       nada. Si ya había una simulación cargada se reutiliza, para no acumular
+       copias cada vez que se pulsa el botón. */
+    const previa = ST.db.projects.find(x => x.demo);
+    const p = previa || ST.newProject(DATOS_PROY.nombre, true, DATOS_PROY);
+    if (previa){ previa.data = {}; ST.db.activeId = previa.id; Object.assign(previa, DATOS_PROY); }
     p.creado  = '2026-02-02';
     p.demo    = true;
 
@@ -1610,9 +1620,20 @@ const DEMO = (function(){
   /* --------------------------------------------------------- limpiar */
   function limpiar(){
     const p = ST.proj();
+    if (!p) return;
+    if (p.demo){
+      // la simulación es un proyecto aparte: se borra entero y la app vuelve
+      // al proyecto en el que estuviera trabajando el usuario
+      ST.delProject(p.id);
+      return;
+    }
+    /* Compatibilidad: las simulaciones cargadas por versiones anteriores sí
+       se escribían sobre el proyecto activo. Si alguien abre un navegador con
+       esos datos, «limpiar» sigue dejándolo en blanco como antes. */
     p.data = {};
     p.nombre = 'Proyecto de mejora 1';
     p.empresa = ''; p.arl = ''; p.area = ''; p.lider = '';
+    p.logos = { arl:null, empresa:null };
     p.creado = hoy(); p.actualizado = hoy();
     delete p.demo;
     ST.save(true);

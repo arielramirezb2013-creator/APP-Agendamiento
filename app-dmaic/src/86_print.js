@@ -181,7 +181,9 @@ const PRINT = (function(){
   /* ------------------------------------------------------------ portada */
   function portada(titulo, sub){
     const p = ST.proj(), c = ST.cfg;
-    const logos = [c.logos.rehavid || REHAVID_LOGO_PNG, c.logos.arl, c.logos.empresa]
+    // los del cliente salen del proyecto: la portada no puede llevar el logo
+    // de la empresa del encargo anterior
+    const logos = [ST.logo('rehavid'), ST.logo('arl'), ST.logo('empresa')]
       .filter(Boolean).map(s => '<img src="' + s + '">').join('');
     return '<div class="p-cover">' +
       '<div class="p-logos">' + logos + '</div>' +

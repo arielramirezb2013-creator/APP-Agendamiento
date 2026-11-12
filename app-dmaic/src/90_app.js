@@ -19,10 +19,10 @@ renderTop(){
   $('#topbar').innerHTML =
     '<button class="btn xs g" id="btnNav" title="Menú">' + ICO.menu + '</button>' +
     '<div class="logos">' +
-      slot('rehavid', 'Rehavid', ST.cfg.logos.rehavid || REHAVID_LOGO_PNG, true) +
-      (ST.cfg.logos.arl || ST.cfg.logos.empresa ? '<div class="topsep"></div>' : '') +
-      slot('arl', 'ARL contratante', ST.cfg.logos.arl) +
-      slot('empresa', 'Empresa atendida', ST.cfg.logos.empresa) +
+      slot('rehavid', 'Rehavid', ST.logo('rehavid'), true) +
+      (ST.logo('arl') || ST.logo('empresa') ? '<div class="topsep"></div>' : '') +
+      slot('arl', 'ARL contratante', ST.logo('arl')) +
+      slot('empresa', 'Empresa atendida', ST.logo('empresa')) +
     '</div>' +
     '<div class="topsep"></div>' +
     '<div style="min-width:0;flex:1">' +
@@ -134,8 +134,8 @@ viewInicio(){
     h += '<div class="note warn" style="display:flex;align-items:center;gap:12px">' + ICO.simular +
       '<div style="flex:1"><b>Estás viendo la simulación.</b> Es un caso completo de ejemplo ' +
       '(Rehavid contratada por una ARL para intervenir el servicio de terapia de una empresa afiliada) ' +
-      'que sirve para recorrer toda la herramienta funcionando. Cuando quieras empezar tu proyecto real, ' +
-      'límpiala.</div>' +
+      'que sirve para recorrer toda la herramienta funcionando. Vive en <b>su propio proyecto</b>: ' +
+      'tus proyectos reales siguen intactos en «Proyectos», y puedes eliminarla cuando quieras.</div>' +
       '<button class="btn sm dg" data-democlear="1">' + ICO.limpiar + ' Limpiar simulación</button></div>';
 
   h += '<div class="card"><div class="card-b"><div class="fgrid" style="grid-template-columns:repeat(4,minmax(0,1fr))">' +
@@ -282,50 +282,77 @@ viewExportar(){
 
 /* ---------------------------------------------------------- PROYECTOS */
 viewProyectos(){
+  const grupos = ST.porEmpresa();
+  const nEmp = grupos.filter(g => g.empresa).length;
   let h = '<div class="page-h"><div style="flex:1"><div class="crumb">Gestión</div><h1>Proyectos</h1>' +
-    '<div class="sub">Cada empresa atendida puede tener su propio proyecto DMAIC. Todo se guarda en este equipo.</div></div>' +
+    '<div class="sub">Cada proyecto guarda sus propios datos, logotipos y entregables. Una empresa puede ' +
+    'tener varios proyectos y nada se cruza entre ellos. Todo se guarda en este equipo.</div></div>' +
     '<button class="btn p" data-newproj="1">' + ICO.mas + ' Nuevo proyecto</button></div>';
-  h += '<div class="grid3">' + ST.db.projects.map(p => {
-    const act = p.id === ST.db.activeId;
-    const prev = ST.db.activeId; ST.db.activeId = p.id;
-    const pr = projProgress(); ST.db.activeId = prev;
-    return '<div class="card" style="margin:0;' + (act ? 'border-color:var(--br-2)' : '') + '"><div class="card-b">' +
-      '<div style="font-weight:800;font-size:14px">' + esc(p.nombre) + (act ? ' <span class="pill ok">activo</span>' : '') + '</div>' +
-      '<div style="font-size:11.5px;color:var(--tx3);margin:5px 0 9px">' +
-        esc([p.empresa, p.arl].filter(Boolean).join(' · ') || 'sin empresa') + '<br>actualizado ' + esc(p.actualizado || '—') + '</div>' +
-      '<div class="progress"><i style="width:' + (pr * 100).toFixed(0) + '%"></i></div>' +
-      '<div style="display:flex;gap:6px;margin-top:11px">' +
-      (act ? '' : '<button class="btn sm p" data-openproj="' + p.id + '">Abrir</button>') +
-      '<button class="btn sm g" data-dupproj="' + p.id + '">Duplicar</button>' +
-      '<div class="spacer"></div>' +
-      '<button class="btn sm dg" data-delproj="' + p.id + '">Eliminar</button></div>' +
-      '</div></div>';
-  }).join('') + '</div>';
+
+  h += '<div class="kpis" style="margin-bottom:18px">' +
+    '<div class="kpi"><div class="k-l">Proyectos</div><div class="k-v">' + ST.db.projects.length + '</div></div>' +
+    '<div class="kpi"><div class="k-l">Empresas atendidas</div><div class="k-v">' + nEmp + '</div></div>' +
+    '</div>';
+
+  h += grupos.map(g => {
+    const sinEmp = !g.empresa;
+    const arls = [...new Set(g.items.map(p => (p.arl || '').trim()).filter(Boolean))];
+    return '<div class="sect-t" style="margin-top:4px">' +
+      (sinEmp ? 'Sin empresa asignada' : esc(g.empresa)) +
+      ' <span class="pill">' + g.items.length + (g.items.length === 1 ? ' proyecto' : ' proyectos') + '</span>' +
+      (arls.length ? ' <span class="pill">' + esc(arls.join(' · ')) + '</span>' : '') +
+      '</div>' +
+      (sinEmp ? '<div class="note warn" style="margin:0 0 10px">Escribe la empresa atendida en la pantalla ' +
+                'de Inicio de cada proyecto para mantenerlos separados por cliente.</div>' : '') +
+      '<div class="grid3" style="margin-bottom:18px">' + g.items.map(p => {
+        const act = p.id === ST.db.activeId;
+        const prev = ST.db.activeId; ST.db.activeId = p.id;
+        const pr = projProgress(); ST.db.activeId = prev;
+        // contar claves miente: abrir una herramienta ya crea su entrada vacía
+        const nDatos = TOOLS.filter(t => toolFilled(t, (p.data || {})[t.id])).length;
+        return '<div class="card" style="margin:0;' + (act ? 'border-color:var(--br-2)' : '') + '"><div class="card-b">' +
+          '<div style="font-weight:800;font-size:14px">' + esc(p.nombre) +
+            (act ? ' <span class="pill ok">activo</span>' : '') +
+            (p.demo ? ' <span class="pill warn">simulación</span>' : '') + '</div>' +
+          '<div style="font-size:11.5px;color:var(--tx3);margin:5px 0 9px">' +
+            esc(p.arl ? 'ARL: ' + p.arl : 'sin ARL') +
+            (p.area ? '<br>' + esc(p.area) : '') +
+            '<br>' + nDatos + ' formato(s) con datos · actualizado ' + esc(p.actualizado || '—') + '</div>' +
+          '<div class="progress"><i style="width:' + (pr * 100).toFixed(0) + '%"></i></div>' +
+          '<div style="display:flex;gap:6px;margin-top:11px">' +
+          (act ? '' : '<button class="btn sm p" data-openproj="' + p.id + '">Abrir</button>') +
+          '<button class="btn sm g" data-dupproj="' + p.id + '">Duplicar</button>' +
+          '<div class="spacer"></div>' +
+          '<button class="btn sm dg" data-delproj="' + p.id + '">Eliminar</button></div>' +
+          '</div></div>';
+      }).join('') + '</div>';
+  }).join('');
   return h;
 },
 
 /* ------------------------------------------------------------ AJUSTES */
 viewAjustes(){
-  const c = ST.cfg;
+  const c = ST.cfg, pAct = ST.proj();
   let used = 0; try { used = new Blob([JSON.stringify(ST.db)]).size; } catch(e){}
   let h = '<div class="page-h"><div style="flex:1"><div class="crumb">Configuración</div><h1>Ajustes</h1>' +
     '<div class="sub">Marca, módulos activos y almacenamiento.</div></div></div>';
 
   h += '<div class="grid2"><div class="card"><div class="card-h"><h3>Logotipos</h3></div><div class="card-b">' +
-    '<div class="note">El logo de <b>Rehavid</b> viene incluido y se estampa en los Excel exportados. ' +
-    'Sube el de la <b>ARL contratante</b> y el de la <b>empresa atendida</b> para personalizar los entregables.</div>' +
-    ['rehavid|Logo Rehavid (reemplazar por el oficial)','arl|Logo ARL contratante','empresa|Logo empresa atendida']
-      .map(s => { const [k, l] = s.split('|');
+    '<div class="note">El logo de <b>Rehavid</b> es el mismo en todos los encargos y se estampa en ' +
+    'los Excel exportados. Los de la <b>ARL</b> y la <b>empresa atendida</b> pertenecen al proyecto ' +
+    'abierto: al cambiar de proyecto cambian con él, así dos clientes nunca comparten identidad.</div>' +
+    ['rehavid|Logo Rehavid (reemplazar por el oficial)|en todos los proyectos',
+     'arl|Logo ARL contratante|sólo en «' + (pAct ? pAct.nombre : '—') + '»',
+     'empresa|Logo empresa atendida|sólo en «' + (pAct ? pAct.nombre : '—') + '»']
+      .map(s => { const [k, l, amb] = s.split('|'); const src = ST.logo(k);
         return '<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--bd2)">' +
           '<div class="logo-slot" data-logo="' + k + '" style="height:52px;min-width:110px">' +
-          ((k === 'rehavid' ? (c.logos.rehavid || REHAVID_LOGO_PNG) : c.logos[k])
-            ? '<img src="' + (k === 'rehavid' ? (c.logos.rehavid || REHAVID_LOGO_PNG) : c.logos[k]) + '" style="max-height:46px">'
-            : '<span class="lbl">subir</span>') + '</div>' +
-          '<div style="flex:1;font-size:12.5px">' + esc(l) + '</div>' +
-          (c.logos[k] ? '<button class="btn xs dg" data-logorm="' + k + '">Quitar</button>' : '') + '</div>'; }).join('') +
-    '<div class="fgrid" style="grid-template-columns:1fr 1fr;margin-top:13px">' +
-    '<div class="fld"><label>Nombre de la ARL</label><input class="inp" data-cfg="arlNombre" value="' + esc(c.arlNombre || '') + '"></div>' +
-    '<div class="fld"><label>Nombre de la empresa</label><input class="inp" data-cfg="empresaNombre" value="' + esc(c.empresaNombre || '') + '"></div>' +
+          (src ? '<img src="' + src + '" style="max-height:46px">' : '<span class="lbl">subir</span>') + '</div>' +
+          '<div style="flex:1;font-size:12.5px">' + esc(l) +
+            '<div style="font-size:11px;color:var(--tx3);margin-top:2px">' + esc(amb) + '</div></div>' +
+          (ST.logo(k) && k !== 'rehavid' ? '<button class="btn xs dg" data-logorm="' + k + '">Quitar</button>'
+           : (c.logos.rehavid && k === 'rehavid' ? '<button class="btn xs dg" data-logorm="rehavid">Quitar</button>' : '')) +
+          '</div>'; }).join('') +
     '</div></div></div>';
 
   h += '<div class="card"><div class="card-h"><h3>Módulos del proyecto activo</h3></div><div class="card-b">' +
@@ -355,8 +382,8 @@ viewAjustes(){
     '<button class="btn sm g" data-impjson="1">⤒ Restaurar</button>' +
     '<button class="btn sm dg" data-wipe="1">Borrar todo</button></div>' +
     '<div class="sect-t" style="margin-top:16px">Simulación</div>' +
-    '<div class="hint">Carga un proyecto de ejemplo completo para recorrer la herramienta funcionando, ' +
-    'y bórralo cuando vayas a empezar el proyecto real.</div>' +
+    '<div class="hint">Crea un proyecto de ejemplo, aparte y completo, para recorrer la herramienta ' +
+    'funcionando. No toca tus proyectos reales y puedes eliminarlo cuando quieras.</div>' +
     '<div style="margin-top:9px;display:flex;gap:8px;flex-wrap:wrap">' +
     '<button class="btn sm a" data-demoload="1">' + ICO.simular + ' Cargar simulación</button>' +
     '<button class="btn sm dg" data-democlear="1">' + ICO.limpiar + ' Limpiar simulación</button></div>' +
@@ -567,13 +594,15 @@ function bindGlobal(){
     }
     if ((el = T('data-logo'))){
       const k = el.dataset.logo;
-      pickImage(async url => { ST.cfg.logos[k] = await shrinkImage(url, 600, 240, .92);
-        ST.save(true); UI.renderTop(); UI.renderView(); toast('Logo actualizado', 'ok'); });
+      pickImage(async url => { ST.setLogo(k, await shrinkImage(url, 600, 240, .92));
+        UI.renderTop(); UI.renderView();
+        toast(k === 'rehavid' ? 'Logo de Rehavid actualizado'
+                              : 'Logo actualizado en este proyecto', 'ok'); });
       return;
     }
     if ((el = T('data-logorm'))){
       e.stopPropagation();
-      ST.cfg.logos[el.dataset.logorm] = null; ST.save(true); UI.renderTop(); UI.renderView(); return;
+      ST.setLogo(el.dataset.logorm, null); UI.renderTop(); UI.renderView(); return;
     }
 
     /* herramienta */
@@ -602,8 +631,7 @@ function bindGlobal(){
     }
 
     /* proyectos */
-    if ((el = T('data-newproj'))){ prompt2('Nuevo proyecto', 'Nombre del proyecto', '', n => {
-      ST.newProject(n); go('inicio'); UI.renderTop(); }); return; }
+    if ((el = T('data-newproj'))){ nuevoProyecto(); return; }
     if ((el = T('data-openproj'))){ ST.db.activeId = el.dataset.openproj; ST.save(true); go('inicio'); UI.renderTop(); return; }
     if ((el = T('data-dupproj'))){ ST.dupProject(el.dataset.dupproj); UI.renderTop(); UI.renderView(); return; }
     if ((el = T('data-delproj'))){
@@ -635,18 +663,16 @@ function bindGlobal(){
       PRINT.imprimir(alcance || 'todo', ref); return;
     }
     if ((el = T('data-demoload'))){
-      confirmar('Se cargará un proyecto de ejemplo completo sobre el proyecto activo, ' +
-                'reemplazando lo que tenga escrito. ¿Continuar?', () => {
-        const n = DEMO.cargar(); UI.renderTop(); go('inicio');
-        toast('Simulación cargada: ' + n + ' formatos diligenciados', 'ok', 5000);
-      });
+      // ya no destruye nada: la simulación se crea como proyecto aparte
+      const n = DEMO.cargar(); UI.renderTop(); go('inicio');
+      toast('Simulación cargada en un proyecto aparte: ' + n + ' formatos diligenciados', 'ok', 6000);
       return;
     }
     if ((el = T('data-democlear'))){
-      confirmar('Se borrarán TODOS los datos de la simulación y el proyecto quedará en blanco ' +
-                'para empezar a usarlo. ¿Continuar?', () => {
+      confirmar('Se eliminará el proyecto de simulación con todos sus datos. ' +
+                'Tus proyectos reales no se tocan. ¿Continuar?', () => {
         DEMO.limpiar(); UI.renderTop(); go('inicio');
-        toast('Listo, el proyecto quedó en blanco', 'ok');
+        toast('Simulación eliminada', 'ok');
       }, true);
       return;
     }
@@ -707,10 +733,52 @@ async function withBusy(msg, fn){
   try { const r = await fn(); m.close(); toast('Listo ✓', 'ok'); return r; }
   catch(err){ m.close(); console.error(err); toast('Error: ' + err.message, 'bad', 8000); }
 }
+/** Alta de proyecto pidiendo ya la empresa: es lo que mantiene separados los
+ *  encargos de distintos clientes. La lista de empresas ya usadas evita que
+ *  un error de tecleo parta en dos los proyectos de la misma empresa. */
+function nuevoProyecto(){
+  const empresas = [...new Set(ST.db.projects.map(p => (p.empresa || '').trim()).filter(Boolean))];
+  const p0 = ST.proj() || {};
+  modal({
+    title:'Nuevo proyecto',
+    html:'<div class="note">Cada proyecto guarda sus propios datos y logotipos. Puedes tener varios ' +
+         'proyectos de la misma empresa sin que se mezclen.</div>' +
+         '<div class="fgrid" style="grid-template-columns:1fr 1fr">' +
+         '<div class="fld" style="grid-column:span 2"><label>Nombre del proyecto</label>' +
+           '<input class="inp" id="_np_nombre" placeholder="Reducción de reprocesos en facturación"></div>' +
+         '<div class="fld"><label>Empresa atendida</label>' +
+           '<input class="inp" id="_np_empresa" list="_np_empresas" placeholder="Alimentos del Norte S.A.S.">' +
+           '<datalist id="_np_empresas">' + empresas.map(e => '<option value="' + esc(e) + '">').join('') + '</datalist>' +
+           '<div class="hint">Escribe la misma empresa para agrupar varios proyectos suyos.</div></div>' +
+         '<div class="fld"><label>ARL contratante</label>' +
+           '<input class="inp" id="_np_arl" value="' + esc(p0.arl || '') + '"></div>' +
+         '<div class="fld"><label>Área o proceso</label><input class="inp" id="_np_area"></div>' +
+         '<div class="fld"><label>Líder del proyecto (Rehavid)</label>' +
+           '<input class="inp" id="_np_lider" value="' + esc(p0.lider || '') + '"></div>' +
+         '</div>',
+    footer:'<button class="btn g" data-x>Cancelar</button><button class="btn p" data-ok>Crear proyecto</button>',
+    onMount(o, close){
+      const v = id => (o.querySelector(id).value || '').trim();
+      setTimeout(() => o.querySelector('#_np_nombre').focus(), 40);
+      const crear = () => {
+        const nom = v('#_np_nombre');
+        if (!nom){ o.querySelector('#_np_nombre').focus(); toast('Ponle un nombre al proyecto', 'warn'); return; }
+        close();
+        ST.newProject(nom, false, { empresa:v('#_np_empresa'), arl:v('#_np_arl'),
+                                    area:v('#_np_area'), lider:v('#_np_lider') });
+        go('inicio'); UI.renderTop();
+      };
+      o.querySelector('[data-ok]').onclick = crear;
+      o.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') crear(); });
+    }
+  });
+}
+
 function exportJSON(){
   const p = ST.proj();
   const payload = { app:'Rehavid LSS DMAIC', version:APP_VERSION, exportado:new Date().toISOString(),
-    cfg:{ logos:ST.cfg.logos, arlNombre:ST.cfg.arlNombre, empresaNombre:ST.cfg.empresaNombre }, proyecto:p };
+    // los logos del cliente van DENTRO del proyecto; en cfg sólo la marca propia
+    cfg:{ logos:{ rehavid: ST.cfg.logos.rehavid || null } }, proyecto:p };
   download(new Blob([JSON.stringify(payload, null, 1)], { type:'application/json' }),
     XL.sanitize(p.nombre) + '.rehavid.json');
   toast('Copia de seguridad descargada', 'ok');
@@ -726,9 +794,19 @@ function importJSON(){
         const o = JSON.parse(r.result);
         const proyectos = o.proyecto ? [o.proyecto] : (o.projects || (o.db && o.db.projects) || []);
         if (!proyectos.length) throw new Error('El archivo no contiene proyectos');
-        proyectos.forEach(p => { p.id = uid(); ST.db.projects.push(p); });
+        proyectos.forEach(p => { p.id = uid(); if (!p.logos) p.logos = { arl:null, empresa:null };
+                                 ST.db.projects.push(p); });
         ST.db.activeId = ST.db.projects[ST.db.projects.length - 1].id;
-        if (o.cfg && o.cfg.logos) Object.assign(ST.cfg.logos, o.cfg.logos);
+        // compatibilidad: en copias antiguas los logos del cliente venían en
+        // cfg (global). Se asignan al proyecto importado, no a toda la app.
+        if (o.cfg && o.cfg.logos){
+          const L = o.cfg.logos, dest = ST.proj();
+          if (L.rehavid && !ST.cfg.logos.rehavid) ST.cfg.logos.rehavid = L.rehavid;
+          if (dest){
+            if (L.arl && !dest.logos.arl) dest.logos.arl = L.arl;
+            if (L.empresa && !dest.logos.empresa) dest.logos.empresa = L.empresa;
+          }
+        }
         ST.save(true); UI.renderTop(); go('inicio');
         toast('Se importaron ' + proyectos.length + ' proyecto(s)', 'ok');
       } catch(e){ toast('Archivo inválido: ' + e.message, 'bad', 7000); }

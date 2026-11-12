@@ -158,9 +158,10 @@ const CFG_KEY = 'rehavid_lss_cfg_v1';
 
 const ST = {
   db:  { projects: [], activeId: null },
-  cfg: { theme:'light', navmin:false, logos:{ arl:null, empresa:null, rehavid:null },
+  // sólo el logo de Rehavid es global; los del cliente van en cada proyecto
+  cfg: { theme:'light', navmin:false, logos:{ rehavid:null },
          brand:{ p1:'#0B5D6B', p2:'#12B3A6', p3:'#F5A623' },
-         arlNombre:'', empresaNombre:'', autosave:true, lastRoute:'' },
+         autosave:true, lastRoute:'' },
   dirty:false, _t:null,
 
   load(){
@@ -169,6 +170,23 @@ const ST = {
     if (!ST.db.projects) ST.db.projects = [];
     if (!ST.db.projects.length) ST.newProject('Proyecto de mejora 1', true);
     if (!ST.proj()) ST.db.activeId = ST.db.projects[0].id;
+
+    /* Migración: los logos de la ARL y de la empresa eran globales, de modo
+       que al cambiar de proyecto seguía apareciendo el logo del cliente
+       anterior —y se estampaba en sus entregables—. Ahora viven en el
+       proyecto; los que hubiera guardados se asignan al que estaba abierto. */
+    if (!ST.cfg.logos) ST.cfg.logos = { rehavid:null };
+    ST.db.projects.forEach(p => { if (!p.logos) p.logos = { arl:null, empresa:null }; });
+    const vg = ST.cfg.logos;
+    if (vg.arl || vg.empresa){
+      const dest = ST.proj() || ST.db.projects[0];
+      if (dest){
+        if (vg.arl && !dest.logos.arl) dest.logos.arl = vg.arl;
+        if (vg.empresa && !dest.logos.empresa) dest.logos.empresa = vg.empresa;
+      }
+      vg.arl = null; vg.empresa = null;
+      ST.save(true);
+    }
   },
   save(now){
     ST.dirty = true;
@@ -187,16 +205,48 @@ const ST = {
   },
   proj(){ return ST.db.projects.find(p => p.id === ST.db.activeId) || null; },
 
-  newProject(nombre, silent){
+  newProject(nombre, silent, extra){
+    const e = extra || {};
     const p = {
       id: uid(), nombre: nombre || 'Proyecto sin título',
-      empresa:'', arl:'', area:'', lider:'', creado: hoy(), actualizado: hoy(),
+      empresa: e.empresa || '', arl: e.arl || '', area: e.area || '', lider: e.lider || '',
+      creado: hoy(), actualizado: hoy(),
       mods: { DEFINIR:true, MEDIR:true, ANALIZAR:true, MEJORAR:true, CONTROLAR:true },
+      // los logos del cliente viajan CON el proyecto: así dos empresas
+      // distintas nunca comparten identidad visual por accidente
+      logos: { arl:null, empresa:null },
       data: {}                                     // { toolId: {...} }
     };
     ST.db.projects.push(p); ST.db.activeId = p.id;
     if (!silent){ ST.save(true); toast('Proyecto creado: ' + p.nombre, 'ok'); }
     return p;
+  },
+
+  /** Logo vigente. El de Rehavid es global porque es nuestra marca y es la
+   *  misma en todos los encargos; los de la ARL y la empresa atendida
+   *  pertenecen al proyecto, para que no se crucen entre clientes. */
+  logo(k){
+    if (k === 'rehavid') return ST.cfg.logos.rehavid || REHAVID_LOGO_PNG;
+    const p = ST.proj();
+    return (p && p.logos && p.logos[k]) || null;
+  },
+  setLogo(k, v){
+    if (k === 'rehavid') ST.cfg.logos.rehavid = v;
+    else { const p = ST.proj(); if (!p) return; if (!p.logos) p.logos = {}; p.logos[k] = v; }
+    ST.save(true);
+  },
+  /** Proyectos agrupados por empresa atendida, para que la gestión no sea
+   *  una lista plana en cuanto hay varios clientes. */
+  porEmpresa(){
+    const g = new Map();
+    ST.db.projects.forEach(p => {
+      const nom = String(p.empresa || '').trim();
+      const k = nom.toLowerCase().replace(/\s+/g, ' ') || '￿';
+      if (!g.has(k)) g.set(k, { empresa: nom, items: [] });
+      else if (nom && !g.get(k).empresa) g.get(k).empresa = nom;
+      g.get(k).items.push(p);
+    });
+    return [...g.entries()].sort((a, b) => a[0].localeCompare(b[0], 'es')).map(e => e[1]);
   },
   delProject(id){
     const i = ST.db.projects.findIndex(p => p.id === id); if (i < 0) return;
