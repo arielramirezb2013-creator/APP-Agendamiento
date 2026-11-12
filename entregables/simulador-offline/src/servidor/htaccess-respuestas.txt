@@ -1,0 +1,8 @@
+# Nadie debe leer esta carpeta desde la web: aquí se guardan las respuestas de los participantes.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order deny,allow
+  Deny from all
+</IfModule>

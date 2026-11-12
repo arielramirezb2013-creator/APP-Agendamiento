@@ -216,7 +216,7 @@ function avanzar() {
   const s = S.ses, rd = rondaAct(), pos = posicion(), b = pos.b, sig = pos.sig, t = ahora();
   if (rd.estado !== "en_curso") return;
   if (b.tipo === "actividad" && !miActividad(s.rondaActual, b.pasos[0])) return;
-  if (b.tipo === "contexto" && (S.ctxObs || "").trim()) registrar("observacion", { texto:S.ctxObs.trim(), pasos:b.pasos }, { paso:b.pasos[0] });
+  if (b.tipo === "contexto" && textoLimpio(S.ctxObs)) registrar("observacion", { texto:textoLimpio(S.ctxObs), pasos:b.pasos }, { paso:b.pasos[0] });
   b.pasos.forEach(pid => { rd.pasos[pid] = Object.assign(rd.pasos[pid] || {}, { estado:"completado", completado:t }); });
   registrarConduccion("avance", { de:b.pasos, a:sig ? sig.pasos[0] : "valoracion", bloque:b.tipo }, { paso:b.pasos[b.pasos.length - 1] });
   if (sig) { s.pasoActual = sig.pasos[0]; sig.pasos.forEach(pid => { rd.pasos[pid] = { estado:"en_curso", iniciado:t }; }); prepararBloque(sig); }
@@ -236,7 +236,7 @@ function guardarActividad() {
   if (!act || rondaAct().estado !== "en_curso") return null;
   const falta = validarForm(act);
   if (falta.length) { aviso("Falta completar: " + falta.join(", ") + ".", true); return null; }
-  const payload = { tipo:act.tipo, obs:(f.obs || "").trim() || null, abierto:S.abierto || null };
+  const payload = { tipo:act.tipo, obs:textoLimpio(f.obs) || null, abierto:S.abierto || null };
   if (act.tipo === "decide") {
     Object.assign(payload, { suficiencia:f.suficiencia, falta:f.suficiencia === "suficiente" ? [] : (f.falta || []).slice(), finalidad:f.finalidad, decision:f.decision, decisionTxt:etiqueta(act.ops, f.decision), responde:f.responde, dias:num(f.dias), notifica:modo === "propuesto" ? (f.notifica || []).slice() : [] });
     payload.comprobacion = comprobarFinalidad(yo, f.finalidad, ESC.entradas[p.id] || [], p.id);
@@ -277,8 +277,8 @@ function guardarValoracion() {
   if (falta.length) { aviso("Falta responder: " + falta.join(", ") + ".", true); return false; }
   const prevV = regsDe({ ronda:r, tipo:"valoracion", participanteId:S.yo.id })[0], prevP = regsDe({ ronda:r, tipo:"preguntas", participanteId:S.yo.id })[0];
   const rep = x => Object.assign({ paso:"—" }, x ? { reemplaza:x.id, version:(x.version || 1) + 1 } : {});
-  registrar("valoracion", { semaforo:v.semaforo, ajuste:(v.ajuste || "").trim(), mejora:v.mejora }, rep(prevV));
-  const pp = {}; ESC.preguntas.forEach(q => { pp[q.id] = q.tipo === "multi" ? (v[q.id] || []).slice() : q.tipo === "texto" ? (v[q.id] || "").trim() : v[q.id]; if ((v[q.id + "cual"] || "").trim()) pp[q.id + "cual"] = v[q.id + "cual"].trim(); });
+  registrar("valoracion", { semaforo:v.semaforo, ajuste:textoLimpio(v.ajuste), mejora:v.mejora }, rep(prevV));
+  const pp = {}; ESC.preguntas.forEach(q => { pp[q.id] = q.tipo === "multi" ? (v[q.id] || []).slice() : q.tipo === "texto" ? textoLimpio(v[q.id], 800) : v[q.id]; if (textoLimpio(v[q.id + "cual"])) pp[q.id + "cual"] = textoLimpio(v[q.id + "cual"]); });
   registrar("preguntas", pp, rep(prevP));
   S.val = {};
   return true;
@@ -300,7 +300,7 @@ const varsTexto = () => Object.assign({}, CFG.estudio, { minutos:S.cuenta ? minu
 const plantilla = t => String(t == null ? "" : t).replace(/\{(\w+)\}/g, (m, k) => { const v = varsTexto()[k]; return v != null && v !== "" ? v : m; });
 function datosLimpios() {
   const out = {}; if (S.cons.anonimo !== "no") return out;
-  CONS.datos.forEach(d => { const v = String(S.cons.datos[d.id] == null ? "" : S.cons.datos[d.id]).trim(); if (v) out[d.id] = v.slice(0, 200); });
+  CONS.datos.forEach(d => { const v = textoLimpio(S.cons.datos[d.id], 200); if (v) out[d.id] = v; });
   return out;
 }
 function validarConsentimiento() {

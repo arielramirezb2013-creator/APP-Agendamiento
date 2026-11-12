@@ -185,9 +185,11 @@ aceptan los mismos campos como formulario (`application/x-www-form-urlencoded`).
   ruido. `claveAdmin` es una clave larga y aleatoria que solo conoce el investigador; el servidor guarda su SHA-256.
 - El receptor valida: instrumento y formato, identificadores con expresiones regulares estrictas, tamaño máximo
   (1 MB por documento), número máximo de documentos, y nunca usa texto del cliente para armar rutas sin validarlo.
-- Guarda cada documento en `respuestas/<estudio>__<usuario>__<participante>.json.php`, con una primera línea
-  `<?php http_response_code(404); exit; ?>` para que el archivo no pueda leerse desde la web aunque el servidor
-  ignore `.htaccess`. Junto al documento guarda `recibido` y el SHA-256 de la llave de reanudación.
+- Guarda cada documento en `respuestas/<estudio>~<usuario>~<participante>.json.php` (la virgulilla no puede
+  aparecer en un identificador, así que el nombre no es ambiguo). La primera línea del archivo es
+  `<?php http_response_code(404); exit; __halt_compiler();` para que no pueda leerse desde la web aunque el
+  servidor ignore `.htaccess`; el resto es un JSON con `recibido`, `reanudar_sha256` y `documento`, escrito
+  con `<` y `>` como secuencias `\u` para que no quede ninguna etiqueta dentro.
 - `recibir-config.php` devuelve un arreglo PHP. Con las claves vacías el receptor responde 403 a todo: no queda
   abierto por omisión. El panel genera este archivo exactamente con esta forma (las claves son cadenas entre
   comillas simples; el panel escapa `\` y `'`):

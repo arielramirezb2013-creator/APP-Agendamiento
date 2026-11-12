@@ -122,7 +122,7 @@ const ACCIONES = {
   "compartir":async () => { try { await navigator.share({ files:[new File([jsonRespuesta()], nombreArchivo(), { type:"application/json" })], title:CFG.estudio.titulo, text:"Archivo de respuestas de la simulación" }); S.descargado = ahora(); guardarLocal(); aviso("Archivo compartido."); } catch (e) { if (!e || e.name !== "AbortError") aviso("No fue posible compartir. Descargue el archivo.", true); } },
   "copiar":async () => { const ok = await copiarTexto(jsonRespuesta()); aviso(ok ? "Respuestas copiadas. Péguelas en un correo para el investigador." : "No fue posible copiar. Descargue el archivo.", !ok); },
   "guardar-comentario":() => {
-    const t = (S.comentario || "").trim(), prev = regsDe({ tipo:"observacion", participanteId:S.yo.id }).filter(r => r.payload.final)[0];
+    const t = textoLimpio(S.comentario, 2000), prev = regsDe({ tipo:"observacion", participanteId:S.yo.id }).filter(r => r.payload.final)[0];
     if (!t && !prev) return aviso("Escriba el comentario.", true);
     registrar("observacion", { texto:t, final:true }, Object.assign({ paso:"—" }, prev ? { reemplaza:prev.id, version:(prev.version || 1) + 1 } : {}));
     if (S.envio.estado === "enviado") S.envio = { estado:"pendiente" };

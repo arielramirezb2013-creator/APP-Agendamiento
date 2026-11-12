@@ -43,6 +43,11 @@ const EV = BP.evidencia, CIRC = ["", "①", "②", "③", "④", "⑤"];
 const FIN = {}; ESC.finalidades.forEach(f => { FIN[f.id] = f; });
 const nom = id => id === "modulo" ? "Módulo" : id === "sistema" ? "Sistema" : A[id] ? A[id].corto : (id || "—");
 const nomL = id => id === "modulo" ? "Índice + reglas + logs" : A[id] ? A[id].n : nom(id);
+// Texto libre listo para guardar: sin caracteres de control ni mitades sueltas de un emoji, recortado por caracteres.
+function textoLimpio(v, max) {
+  const cs = Array.from(String(v == null ? "" : v)).filter(c => { const k = c.codePointAt(0); return !((k >= 0xD800 && k <= 0xDFFF) || (k < 32 && k !== 10 && k !== 9) || k === 127); });
+  return cs.join("").trim().length > (max || 600) ? Array.from(cs.join("").trim()).slice(0, max || 600).join("") : cs.join("").trim();
+}
 const plural = (n, uno, varios) => n + " " + (n === 1 ? uno : varios);
 const etiqueta = (ops, v) => { const o = (ops || []).filter(x => x[0] === v)[0]; return o ? o[1] : (v == null ? "" : String(v)); };
 
