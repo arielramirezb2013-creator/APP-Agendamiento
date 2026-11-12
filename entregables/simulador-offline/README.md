@@ -14,10 +14,12 @@ Contenido del paquete: `index.html` (simulador), `configuracion.js` (estudio y c
 ## Qué hace el participante
 
 1. **Acceso.** Usuario y contraseña. La cuenta define el rol: trabajador, empleador, IPS, EPS, ARL, AFP, Junta Regional, Junta Nacional, MinTrabajo, MinSalud, SuperSalud o Jueces.
-2. **Orientación.** Cuatro pantallas: qué es el estudio y qué se busca, el caso y la ruta, cómo funciona la simulación y su rol.
+2. **Orientación.** Cuatro pantallas: qué es el estudio y qué se busca; el caso sintético, con la ficha de M.P. y la historia de cómo llegó al día 150; cómo funciona la simulación; y su rol, presentado en primera persona.
 3. **Declaración de participación voluntaria.** Información del estudio, cuatro declaraciones necesarias y datos personales opcionales. Quien no acepta sale sin que quede nada guardado.
 4. **Dos rondas.** La ruta como funciona hoy y la ruta con el módulo propuesto. En cada uno de los once pasos ve qué ocurre; si su rol interviene responde una actividad, y si no, lee el contexto. Al cierre de cada ronda valora el contrato de datos de su rol y responde P1 a P4.
 5. **Entrega.** Envío al receptor del sitio o descarga de un archivo que le manda al investigador.
+
+Cada paso abre con un relato de qué está ocurriendo con el caso en ese momento y qué se juega allí, distinto en cada ronda. Debajo queda plegado el mapa del paso con los carriles del blueprint, y las preguntas llevan una línea que explica para qué se pregunta, sin sugerir la respuesta.
 
 El sistema hace de los actores que no están conectados: pide evidencia al custodio, consulta por el módulo con la vista mínima del contrato, notifica y registra acuses. Todo lo que genera el sistema queda marcado como simulado y se cuenta aparte.
 
