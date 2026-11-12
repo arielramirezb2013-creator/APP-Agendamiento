@@ -1,0 +1,588 @@
+{
+ "modulos": [
+  {
+   "id": "GUIA",
+   "nombre": "GUÍA DE APLICACIÓN",
+   "desc": "Manual Lean Six Sigma: qué es cada herramienta, cómo se usa y cómo se encadenan las fases.",
+   "guia": true
+  },
+  {
+   "id": "DEFINIR",
+   "nombre": "DEFINIR",
+   "desc": "Delimitar el problema, el alcance, el equipo y la línea base.",
+   "guia": false
+  },
+  {
+   "id": "MEDIR",
+   "nombre": "MEDIR",
+   "desc": "Mapear el proceso y cuantificar el desempeño actual con datos.",
+   "guia": false
+  },
+  {
+   "id": "ANALIZAR",
+   "nombre": "ANALIZAR",
+   "desc": "Encontrar y validar la causa raíz del problema.",
+   "guia": false
+  },
+  {
+   "id": "MEJORAR",
+   "nombre": "MEJORAR",
+   "desc": "Generar, priorizar e implementar las soluciones.",
+   "guia": false
+  },
+  {
+   "id": "CONTROLAR",
+   "nombre": "CONTROLAR",
+   "desc": "Estandarizar, controlar y sostener la mejora en el tiempo.",
+   "guia": false
+  }
+ ],
+ "tools": [
+  {
+   "id": "definir.matriz_priorizacion",
+   "mod": "DEFINIR",
+   "title": "Matriz de Priorizacion de Proyectos",
+   "hoja": "Matriz Priorizacion Proyectos",
+   "extra": false
+  },
+  {
+   "id": "definir.clarificacion_problema",
+   "mod": "DEFINIR",
+   "title": "Clarificación del Problema",
+   "hoja": "Clarificacion Problema",
+   "extra": false
+  },
+  {
+   "id": "definir.arbol_ctq",
+   "mod": "DEFINIR",
+   "title": "CARACTERISTICAS CRITICAS DE CALIDAD (CTQ)",
+   "hoja": "Árbol CTQ (Critico Para Calida",
+   "extra": false
+  },
+  {
+   "id": "definir.series_tiempo",
+   "mod": "DEFINIR",
+   "title": "SERIE DE TIEMPO - BASE LINE",
+   "hoja": "Series de tiempo",
+   "extra": false
+  },
+  {
+   "id": "definir.pareto",
+   "mod": "DEFINIR",
+   "title": "GRAFICO PARETO - BASE LINE",
+   "hoja": "Pareto",
+   "extra": false
+  },
+  {
+   "id": "definir.objetivo_smart",
+   "mod": "DEFINIR",
+   "title": "Objetivo del Proyecto",
+   "hoja": "Objetivo SMART",
+   "extra": false
+  },
+  {
+   "id": "definir.sipoc",
+   "mod": "DEFINIR",
+   "title": "SIPOC",
+   "hoja": "SIPOC",
+   "extra": false
+  },
+  {
+   "id": "definir.beneficios",
+   "mod": "DEFINIR",
+   "title": "BENEFICIOS O AHORROS POTENCIALES",
+   "hoja": "Beneficios",
+   "extra": false
+  },
+  {
+   "id": "definir.tabla_identificacion",
+   "mod": "DEFINIR",
+   "title": "TABLA DE IDENTIFICACIÓN DEL PROYECTO",
+   "hoja": "Tabla identificacion proyect",
+   "extra": false
+  },
+  {
+   "id": "definir.project_members",
+   "mod": "DEFINIR",
+   "title": "PROJECT MEMBERS",
+   "hoja": "Project Members",
+   "extra": false
+  },
+  {
+   "id": "definir.gantt",
+   "mod": "DEFINIR",
+   "title": "DIAGRAMA DE GANTT",
+   "hoja": "Gantt",
+   "extra": false
+  },
+  {
+   "id": "definir.plan_comunicacion",
+   "mod": "DEFINIR",
+   "title": "PLAN DE COMUNICACIÓN",
+   "hoja": "Plan de comunicacion",
+   "extra": false
+  },
+  {
+   "id": "definir.recursos",
+   "mod": "DEFINIR",
+   "title": "RECURSOS PARA EL PROYECTO",
+   "hoja": "Recursos",
+   "extra": false
+  },
+  {
+   "id": "definir.project_charter",
+   "mod": "DEFINIR",
+   "title": "Project Charter",
+   "hoja": "Project Charter",
+   "extra": false
+  },
+  {
+   "id": "definir.a3_definir",
+   "mod": "DEFINIR",
+   "title": "A3 — DEFINE",
+   "hoja": "A3 Definir",
+   "extra": false
+  },
+  {
+   "id": "medir.swin_line",
+   "mod": "MEDIR",
+   "title": "SWIM LINE — Diagrama de flujo funcional cruzado",
+   "hoja": "Swin Line",
+   "extra": false
+  },
+  {
+   "id": "medir.process_mapping_detailed",
+   "mod": "MEDIR",
+   "title": "PROCESS MAPPING DETAILED — Mapa detallado del proceso",
+   "hoja": "Process Mapping Detailed",
+   "extra": false
+  },
+  {
+   "id": "medir.metricos_desempeno",
+   "mod": "MEDIR",
+   "title": "MÉTRICOS DE DESEMPEÑO",
+   "hoja": "Metricos de desempeño",
+   "extra": false
+  },
+  {
+   "id": "medir.plan_muestreo_cualitativo",
+   "mod": "MEDIR",
+   "title": "PLAN DE MUESTREO — DATOS CUALITATIVOS",
+   "hoja": "Plan de muestreo cualitativo",
+   "extra": false
+  },
+  {
+   "id": "medir.tamano_muestra_cualitativos",
+   "mod": "MEDIR",
+   "title": "MUESTRA DATOS CUALITATIVOS — Tamaño de muestra",
+   "hoja": "Tamaño de muestra cualitativos",
+   "extra": false
+  },
+  {
+   "id": "medir.plan_muestreo_cuantitativo",
+   "mod": "MEDIR",
+   "title": "PLAN DE MUESTREO — DATOS CUANTITATIVOS",
+   "hoja": "Plan de muestreo cuantitativo",
+   "extra": false
+  },
+  {
+   "id": "medir.tamano_muestra_cuantitativo",
+   "mod": "MEDIR",
+   "title": "MUESTRA DATOS CUANTITATIVOS — Tamaño de muestra",
+   "hoja": "Tamaño de muestra cuantitativo",
+   "extra": false
+  },
+  {
+   "id": "medir.hojas_verificacion",
+   "mod": "MEDIR",
+   "title": "HOJAS DE VERIFICACIÓN (CHECK SHEETS)",
+   "hoja": "Hojas de verificacion",
+   "extra": false
+  },
+  {
+   "id": "medir.plan_recoleccion",
+   "mod": "MEDIR",
+   "title": "PLAN RECOLECCIÓN DE DATOS",
+   "hoja": "Plan de recoleccion",
+   "extra": false
+  },
+  {
+   "id": "medir.yield",
+   "mod": "MEDIR",
+   "title": "YIELD — Rendimiento del proceso",
+   "hoja": "YIELD",
+   "extra": false
+  },
+  {
+   "id": "medir.rty_fpy",
+   "mod": "MEDIR",
+   "title": "RTY — FPY (Rolled Throughput Yield / First Pass Yield)",
+   "hoja": "RTY-FPY",
+   "extra": false
+  },
+  {
+   "id": "medir.grafico_serie_tiempo",
+   "mod": "MEDIR",
+   "title": "GRÁFICO SERIE DE TIEMPO",
+   "hoja": "Grafico Serie de tiempo",
+   "extra": false
+  },
+  {
+   "id": "medir.valor_add",
+   "mod": "MEDIR",
+   "title": "% VALUE ADD TIME — Porcentaje de valor agregado",
+   "hoja": "%VALOR ADD",
+   "extra": false
+  },
+  {
+   "id": "medir.ppm",
+   "mod": "MEDIR",
+   "title": "PPM — Parts Per Million (partes por millón)",
+   "hoja": "PPM",
+   "extra": false
+  },
+  {
+   "id": "medir.dpmo",
+   "mod": "MEDIR",
+   "title": "DPMO — Defects Per Million Opportunities",
+   "hoja": "DPMO",
+   "extra": false
+  },
+  {
+   "id": "medir.dpu",
+   "mod": "MEDIR",
+   "title": "DPU — Defects Per Unit (defectos por unidad)",
+   "hoja": "DPU",
+   "extra": false
+  },
+  {
+   "id": "medir.a3_medir",
+   "mod": "MEDIR",
+   "title": "A3 MEDIR — Resumen de la fase",
+   "hoja": "A3 Medir",
+   "extra": false
+  },
+  {
+   "id": "analizar.brainstorming",
+   "mod": "ANALIZAR",
+   "title": "BRAINSTORMING — Lluvia de ideas y AFFINITY DIAGRAM",
+   "hoja": "Brainstorming",
+   "extra": false
+  },
+  {
+   "id": "analizar.diagramas_ishikawa",
+   "mod": "ANALIZAR",
+   "title": "ISHIKAWA DIAGRAM - CAUSE AND EFFECT",
+   "hoja": "Diagramas Ishikawa",
+   "extra": false
+  },
+  {
+   "id": "analizar.5_whys",
+   "mod": "ANALIZAR",
+   "title": "5 Whys - 5 Por que",
+   "hoja": "5 Why´s",
+   "extra": false
+  },
+  {
+   "id": "analizar.tree_diagram",
+   "mod": "ANALIZAR",
+   "title": "TREE DIAGRAM/ WHY — Árbol de porqués",
+   "hoja": "Tree diagram",
+   "extra": false
+  },
+  {
+   "id": "analizar.validacion_de_causas",
+   "mod": "ANALIZAR",
+   "title": "PLAN DE VERIFICACION DE CAUSAS",
+   "hoja": "Validacion de causas",
+   "extra": false
+  },
+  {
+   "id": "analizar.descripcion_causa_raiz",
+   "mod": "ANALIZAR",
+   "title": "ESTABLECE LA CAUSA RAIZ DEL PROBLEMA",
+   "hoja": "Descripcion causa raiz",
+   "extra": false
+  },
+  {
+   "id": "analizar.a3_analizar",
+   "mod": "ANALIZAR",
+   "title": "A3 — ANALIZAR",
+   "hoja": "A3 Analizar",
+   "extra": false
+  },
+  {
+   "id": "mejorar.brainstorming",
+   "mod": "MEJORAR",
+   "title": "BRAINSTORMING DE SOLUCIONES — AFFINITY DIAGRAM",
+   "hoja": "Brainstorming",
+   "extra": false
+  },
+  {
+   "id": "mejorar.seleccion_soluciones",
+   "mod": "MEJORAR",
+   "title": "SELECCIÓN DE SOLUCIONES",
+   "hoja": "Seleccion de soluciones",
+   "extra": false
+  },
+  {
+   "id": "mejorar.plan_accion",
+   "mod": "MEJORAR",
+   "title": "PLAN DE ACCION - MEJORA",
+   "hoja": "Plan de accion",
+   "extra": false
+  },
+  {
+   "id": "mejorar.quick_improvement",
+   "mod": "MEJORAR",
+   "title": "QUICK IMPROVEMENT",
+   "hoja": "Quick Improvement",
+   "extra": false
+  },
+  {
+   "id": "mejorar.descripcion_solucion",
+   "mod": "MEJORAR",
+   "title": "ESTABLECE LA MEJORA Y SOLUCION DEL PROBLEMA",
+   "hoja": "Descripcion de la solucion",
+   "extra": false
+  },
+  {
+   "id": "mejorar.a3_mejorar",
+   "mod": "MEJORAR",
+   "title": "A3 — MEJORAR",
+   "hoja": "A3 Mejorar",
+   "extra": false
+  },
+  {
+   "id": "controlar.estandar_1",
+   "mod": "CONTROLAR",
+   "title": "ESTANDAR DE TRABAJO (formato 1 — pasos e instrucciones)",
+   "hoja": "Estandar 1",
+   "extra": false
+  },
+  {
+   "id": "controlar.estandar_2",
+   "mod": "CONTROLAR",
+   "title": "ESTANDAR DE TRABAJO (formato 2 — tabla con ayuda visual)",
+   "hoja": "Estandar 2",
+   "extra": false
+  },
+  {
+   "id": "controlar.estandar_3",
+   "mod": "CONTROLAR",
+   "title": "ESTANDAR DE TRABAJO (formato 3 — ayuda visual y procedimiento)",
+   "hoja": "Estandar 3",
+   "extra": false
+  },
+  {
+   "id": "controlar.plan_de_control",
+   "mod": "CONTROLAR",
+   "title": "PLAN DE CONTROL",
+   "hoja": "Plan de control",
+   "extra": false
+  },
+  {
+   "id": "controlar.grafico_antes_despues",
+   "mod": "CONTROLAR",
+   "title": "GRAFICO ANTES Y DESPUES DEL PROYECTO",
+   "hoja": "Grafico Antes-Despues",
+   "extra": false
+  },
+  {
+   "id": "controlar.a3_controlar",
+   "mod": "CONTROLAR",
+   "title": "A3 — CONTROLAR",
+   "hoja": "A3 Controlar",
+   "extra": false
+  },
+  {
+   "id": "controlar.charter_cierre",
+   "mod": "CONTROLAR",
+   "title": "Project Charter — CIERRE DEL PROYECTO",
+   "hoja": "Project Charter",
+   "extra": false
+  },
+  {
+   "id": "controlar.a3_final",
+   "mod": "CONTROLAR",
+   "title": "A3 LEAN SIX SIGMA DMAIC — A3 FINAL DEL PROYECTO",
+   "hoja": "A3 final",
+   "extra": false
+  },
+  {
+   "id": "guia.inicio",
+   "mod": "GUIA",
+   "title": "Cómo usar esta aplicación",
+   "hoja": "MANUAL · 1/12",
+   "extra": true
+  },
+  {
+   "id": "guia.que_es_lean",
+   "mod": "GUIA",
+   "title": "¿Qué es Lean?",
+   "hoja": "MANUAL · 2/12",
+   "extra": true
+  },
+  {
+   "id": "guia.que_es_six_sigma",
+   "mod": "GUIA",
+   "title": "¿Qué es Six Sigma?",
+   "hoja": "MANUAL · 3/12",
+   "extra": true
+  },
+  {
+   "id": "guia.lean_six_sigma",
+   "mod": "GUIA",
+   "title": "¿Qué es Lean Six Sigma?",
+   "hoja": "MANUAL · 4/12",
+   "extra": true
+  },
+  {
+   "id": "guia.que_es_dmaic",
+   "mod": "GUIA",
+   "title": "¿Qué es DMAIC?",
+   "hoja": "MANUAL · 5/12",
+   "extra": true
+  },
+  {
+   "id": "guia.seleccion_proyectos",
+   "mod": "GUIA",
+   "title": "Selección de proyectos",
+   "hoja": "MANUAL · 6/12",
+   "extra": true
+  },
+  {
+   "id": "guia.fase_definir",
+   "mod": "GUIA",
+   "title": "Fase DEFINIR — paso a paso",
+   "hoja": "MANUAL · 7/12",
+   "extra": true
+  },
+  {
+   "id": "guia.fase_medir",
+   "mod": "GUIA",
+   "title": "Fase MEDIR — paso a paso",
+   "hoja": "MANUAL · 8/12",
+   "extra": true
+  },
+  {
+   "id": "guia.fase_analizar",
+   "mod": "GUIA",
+   "title": "Fase ANALIZAR — paso a paso",
+   "hoja": "MANUAL · 9/12",
+   "extra": true
+  },
+  {
+   "id": "guia.fase_mejorar",
+   "mod": "GUIA",
+   "title": "Fase MEJORAR — paso a paso",
+   "hoja": "MANUAL · 10/12",
+   "extra": true
+  },
+  {
+   "id": "guia.fase_controlar",
+   "mod": "GUIA",
+   "title": "Fase CONTROLAR — paso a paso",
+   "hoja": "MANUAL · 11/12",
+   "extra": true
+  },
+  {
+   "id": "guia.cierre",
+   "mod": "GUIA",
+   "title": "Cierre del proyecto y presentación final",
+   "hoja": "MANUAL · 12/12",
+   "extra": true
+  },
+  {
+   "id": "medir.msa_grr",
+   "mod": "MEDIR",
+   "title": "EVALUACIÓN DEL SISTEMA DE MEDICIÓN — MSA (GR&R)",
+   "hoja": "MSA - GR&R (manual)",
+   "extra": true
+  },
+  {
+   "id": "medir.capacidad_proceso",
+   "mod": "MEDIR",
+   "title": "ANÁLISIS DE CAPACIDAD DEL PROCESO (Cp, Cpk, Pp, Ppk)",
+   "hoja": "Capacidad del proceso",
+   "extra": true
+  },
+  {
+   "id": "medir.histograma",
+   "mod": "MEDIR",
+   "title": "HISTOGRAMA Y GRÁFICA DE CAJA",
+   "hoja": "Histograma y grafica de caja",
+   "extra": true
+  },
+  {
+   "id": "medir.dispersion",
+   "mod": "MEDIR",
+   "title": "DIAGRAMA DE DISPERSIÓN",
+   "hoja": "Diagrama de dispersion",
+   "extra": true
+  },
+  {
+   "id": "medir.resumen_grafico",
+   "mod": "MEDIR",
+   "title": "RESUMEN GRÁFICO",
+   "hoja": "Resumen grafico",
+   "extra": true
+  },
+  {
+   "id": "medir.msa_plan",
+   "mod": "MEDIR",
+   "title": "PLAN MSA — PLANEACIÓN DEL ESTUDIO DEL SISTEMA DE MEDICIÓN",
+   "hoja": "Plan MSA",
+   "extra": true
+  },
+  {
+   "id": "analizar.prueba_hipotesis",
+   "mod": "ANALIZAR",
+   "title": "PRUEBA DE HIPÓTESIS — VALIDACIÓN ESTADÍSTICA DE LA CAUSA",
+   "hoja": "Prueba de hipotesis",
+   "extra": true
+  },
+  {
+   "id": "analizar.correlacion_regresion",
+   "mod": "ANALIZAR",
+   "title": "CORRELACIÓN Y REGRESIÓN — RELACIÓN ENTRE X y Y",
+   "hoja": "Correlacion y regresion",
+   "extra": true
+  },
+  {
+   "id": "analizar.niveles_causa",
+   "mod": "ANALIZAR",
+   "title": "NIVELES DE CAUSA — SÍNTOMA · CAUSA APARENTE · CAUSA RAÍZ",
+   "hoja": "Niveles de causa",
+   "extra": true
+  },
+  {
+   "id": "mejorar.poka_yoke",
+   "mod": "MEJORAR",
+   "title": "POKA YOKE — A PRUEBA DE ERRORES",
+   "hoja": "Poka Yoke (manual)",
+   "extra": true
+  },
+  {
+   "id": "mejorar.modelos_mejora",
+   "mod": "MEJORAR",
+   "title": "MODELOS DE MEJORA",
+   "hoja": "Modelos de mejora (manual)",
+   "extra": true
+  },
+  {
+   "id": "controlar.graficos_control",
+   "mod": "CONTROLAR",
+   "title": "CONTROL ESTADÍSTICO DEL PROCESO (SPC) — GRÁFICOS DE CONTROL",
+   "hoja": "Gráficos de control (manual)",
+   "extra": true
+  },
+  {
+   "id": "controlar.plan_reaccion",
+   "mod": "CONTROLAR",
+   "title": "PLAN DE REACCIÓN",
+   "hoja": "Plan de reacción (manual)",
+   "extra": true
+  }
+ ]
+}
