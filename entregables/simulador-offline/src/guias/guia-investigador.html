@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Guía del investigador · Simulación de la ruta de incapacidad</title>
+<style>
+  :root { color-scheme: light; --navy:#162546; --text:#2D313F; --text-2:#4E5563; --line:#DCDFE5; --bar:#EAECF0; --tint:#E1EAF3; --tint-b:#4B82B8; --ok:#2E7A52; --ok-soft:#EAF5EE; --warn:#7A4E0E; --warn-soft:#F8ECD6; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#F3F4F6; color:var(--text); font:16px/25px "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .hoja { max-width:880px; margin:0 auto; background:#fff; padding:40px 48px 56px; }
+  header.portada { border-bottom:3px solid var(--navy); padding-bottom:18px; margin-bottom:24px; }
+  .antetitulo { font-size:13px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:var(--text-2); }
+  h1 { font-size:30px; line-height:36px; margin:6px 0 6px; color:var(--navy); }
+  .bajada { margin:0; color:var(--text-2); }
+  h2 { font-size:21px; line-height:27px; color:var(--navy); margin:34px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--line); }
+  h3 { font-size:17px; line-height:23px; margin:22px 0 6px; }
+  p { margin:0 0 10px; } ul, ol { margin:0 0 12px; padding-left:24px; } li { margin:4px 0; }
+  nav.indice { background:var(--bar); border-radius:8px; padding:14px 20px; } nav.indice h2 { border:0; margin:0 0 6px; padding:0; font-size:16px; } nav.indice ol { columns:2; column-gap:32px; margin:0; }
+  a { color:#2F6DB5; } code { font-family:"Roboto Mono", Consolas, "Courier New", monospace; font-size:14px; background:var(--bar); padding:1px 5px; border-radius:4px; overflow-wrap:anywhere; }
+  table { width:100%; border-collapse:collapse; margin:6px 0 16px; font-size:15px; line-height:22px; } th, td { text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line); }
+  th { background:var(--bar); font-size:13px; letter-spacing:.03em; text-transform:uppercase; color:var(--text-2); }
+  .tabla { overflow-x:auto; }
+  .nota, .aviso, .bien { border-left:4px solid var(--tint-b); background:var(--tint); border-radius:6px; padding:12px 16px; margin:12px 0 16px; }
+  .aviso { border-left-color:#B7791F; background:var(--warn-soft); } .bien { border-left-color:var(--ok); background:var(--ok-soft); }
+  .nota b:first-child, .aviso b:first-child, .bien b:first-child { display:block; margin-bottom:2px; }
+  ol.pasos { counter-reset:paso; list-style:none; padding:0; } ol.pasos > li { counter-increment:paso; position:relative; padding:0 0 4px 46px; margin:0 0 14px; }
+  ol.pasos > li::before { content:counter(paso); position:absolute; left:0; top:0; width:32px; height:32px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .momento { display:inline-block; background:var(--navy); color:#fff; font-weight:700; font-size:13px; padding:2px 10px; border-radius:4px; margin-right:6px; }
+  footer { margin-top:40px; padding-top:12px; border-top:1px solid var(--line); font-size:13px; color:var(--text-2); }
+  @media (max-width:700px) { .hoja { padding:24px 18px 40px; } nav.indice ol { columns:1; } h1 { font-size:25px; line-height:31px; } }
+  @media print { body { background:#fff; font-size:12.5px; line-height:19px; } .hoja { max-width:none; padding:0; } h2 { break-after:avoid; } table, .nota, .aviso, .bien { break-inside:avoid; } a { color:inherit; text-decoration:none; } @page { size:A4; margin:16mm 15mm; } }
+</style>
+</head>
+<body>
+<div class="hoja">
+<header class="portada">
+  <div class="antetitulo">Simulación de la ruta de incapacidad · versión individual</div>
+  <h1>Guía del investigador</h1>
+  <p class="bajada">Cómo preparar el estudio, invitar a los participantes, recibir sus respuestas y obtener los resultados.</p>
+</header>
+
+<nav class="indice" aria-label="Contenido">
+  <h2>Contenido</h2>
+  <ol>
+    <li><a href="#resumen">El recorrido completo en una página</a></li>
+    <li><a href="#antes">Antes de empezar</a></li>
+    <li><a href="#panel">El panel, momento a momento</a></li>
+    <li><a href="#invitar">Cómo invitar a cada participante</a></li>
+    <li><a href="#participante">Qué verá el participante</a></li>
+    <li><a href="#pausa">Pausas, caídas de conexión y errores</a></li>
+    <li><a href="#recibir">Cómo llegan las respuestas</a></li>
+    <li><a href="#resultados">Seguimiento y resultados</a></li>
+    <li><a href="#cuidado">Cuidado de los datos</a></li>
+    <li><a href="#limites">Límites que debe conocer</a></li>
+    <li><a href="#preguntas">Preguntas frecuentes</a></li>
+  </ol>
+</nav>
+
+<h2 id="resumen">1. El recorrido completo en una página</h2>
+<ol class="pasos">
+  <li><b>Abra <code>administrador.html</code></b> con doble clic y cree su clave de administración.</li>
+  <li><b>Defina el estudio:</b> sus datos como investigador, el contacto y la forma de entrega de las respuestas.</li>
+  <li><b>Cree una cuenta por participante,</b> con el rol que le corresponde. El panel genera el usuario y la contraseña.</li>
+  <li><b>Descargue <code>configuracion.js</code></b> y entréguelo a la persona que publica el sitio.</li>
+  <li><b>Envíe a cada participante</b> la dirección del sitio, su usuario y su contraseña.</li>
+  <li><b>Reciba las respuestas</b> por archivo o tráigalas del servidor, e impórtelas en el panel.</li>
+  <li><b>Revise el seguimiento</b> y obtenga los resultados: informe, tablas y datos.</li>
+</ol>
+<div class="bien"><b>Para probar ya, sin publicar nada</b>Abra <code>simulador.html</code> con doble clic. Trae una cuenta de demostración por rol: usuarios <code>demo-trabajador</code>, <code>demo-empleador</code>, <code>demo-ips</code>, <code>demo-eps</code>, <code>demo-arl</code>, <code>demo-afp</code>, <code>demo-juntaregional</code>, <code>demo-juntanacional</code>, <code>demo-mintrabajo</code>, <code>demo-minsalud</code>, <code>demo-supersalud</code> y <code>demo-jueces</code>. La contraseña de todas es <code>DEMO-2026</code>. Las respuestas de esas cuentas quedan marcadas como demostración y no entran al análisis.</div>
+
+<h2 id="antes">2. Antes de empezar</h2>
+<ul>
+  <li><b>Valide la declaración de participación voluntaria.</b> El texto que trae el simulador es una plantilla. Revíselo con el comité de ética de su institución y con las normas de protección de datos personales que le apliquen (en Colombia, la Ley 1581 de 2012). En el panel puede añadir un párrafo propio y el número de aprobación.</li>
+  <li><b>Decida la forma de entrega</b> con la persona que publica el sitio:
+    <ul>
+      <li><b>Por archivo.</b> Funciona en cualquier sitio. Al terminar, el participante descarga un archivo y se lo envía a usted.</li>
+      <li><b>Por servidor.</b> Requiere PHP en el sitio. Las respuestas llegan solas a medida que cada participante avanza, usted ve el progreso y el participante puede retomar desde otro dispositivo.</li>
+    </ul>
+  </li>
+  <li><b>Use un computador personal.</b> El panel guarda el proyecto en el navegador de ese computador: las cuentas con sus contraseñas y las respuestas que usted importe.</li>
+</ul>
+
+<h2 id="panel">3. El panel, momento a momento</h2>
+<p>La primera vez el panel le pide crear una <b>clave de administración</b>. Las siguientes veces se la pide para entrar. Esa clave no aparece en ningún archivo que el panel exporte. Si la olvida, la única salida es restaurar una copia de seguridad del proyecto.</p>
+
+<h3><span class="momento">1</span>Estudio</h3>
+<p>Escriba el título, su nombre como investigador responsable, el contacto, el director, el comité de ética y la fecha límite. Estos datos aparecen en la declaración que lee cada participante. Elija aquí la forma de entrega.</p>
+<div class="aviso"><b>El identificador del estudio no se cambia con el estudio en marcha</b>El navegador de cada participante guarda su avance con ese identificador. Si lo cambia, quienes ya empezaron tendrían que comenzar de nuevo.</div>
+
+<h3><span class="momento">2</span>Cuentas</h3>
+<p>Cree una cuenta por persona y asígnele su rol. Puede crear una por cada uno de los doce roles de una vez, o varias de un mismo rol si lo van a representar varias personas. El panel genera el usuario (por ejemplo <code>eps-01</code>) y una contraseña del tipo <code>K7QF-M2XD</code>.</p>
+<ul>
+  <li>La <b>etiqueta privada</b> es para usted: anote a quién le entregó cada cuenta. No sale del panel.</li>
+  <li>Marque como <b>cuenta de prueba</b> las que use para ensayar. Sus respuestas no entran al análisis.</li>
+  <li>Los doce roles son: trabajador (M.P. y su familia), empleador, IPS, EPS, ARL, AFP, Junta Regional, Junta Nacional, MinTrabajo, MinSalud, SuperSalud y Jueces.</li>
+</ul>
+
+<h3><span class="momento">3</span>Publicar</h3>
+<p>Descargue <code>configuracion.js</code> y entréguelo a quien publica el sitio. Si la entrega es por servidor, descargue también <code>recibir-config.php</code>. Cada vez que cree, cambie o elimine cuentas debe descargar y entregar una configuración nueva; el panel le avisa cuando la publicada quedó desactualizada.</p>
+<p>La configuración lleva las cuentas con la huella de cada contraseña, no la contraseña. Con el sitio publicado, pulse «Probar el receptor» si usa entrega por servidor.</p>
+<p>Desde aquí también puede generar un <b>simulador en un solo archivo con sus cuentas</b>. Sirve para enviarlo por correo a alguien que lo abrirá en un computador, sin sitio web. En teléfonos use siempre la dirección del sitio.</p>
+
+<h3><span class="momento">4</span>Respuestas</h3>
+<p>Importe los archivos que le envíen los participantes, o tráigalos del servidor. El panel comprueba cada archivo: que sea de este simulador, que no esté alterado ni incompleto, y de qué cuenta y rol viene. Si importa dos veces la misma participación, conserva la versión más reciente.</p>
+
+<h3><span class="momento">5</span>Seguimiento</h3>
+<p>Muestra, para cada cuenta, en qué va el participante, qué respondió por última vez y qué problemas registró: decisiones con información parcial o insuficiente, piezas que faltaron, finalidades no autorizadas y observaciones.</p>
+
+<h3><span class="momento">6</span>Resultados</h3>
+<p>Informe consolidado por rol y por ronda. Cada tabla se exporta a CSV. Puede descargar el informe completo, imprimirlo o guardarlo como PDF, y descargar todos los datos en JSON.</p>
+
+<h2 id="invitar">4. Cómo invitar a cada participante</h2>
+<p>Cada persona necesita tres cosas: la <b>dirección del sitio</b>, su <b>usuario</b> y su <b>contraseña</b>. El panel arma el texto de la invitación con esos datos, el rol y el tiempo estimado. Puede copiarlo cuenta por cuenta, descargar todas las cuentas en una hoja de cálculo o imprimir las invitaciones.</p>
+<ul>
+  <li>Envíe cada invitación solo a su destinatario. Quien tenga el usuario y la contraseña entra con ese rol.</li>
+  <li>Si el sitio tiene una protección adicional (una credencial común del servidor), inclúyala en la invitación.</li>
+  <li>La contraseña no distingue mayúsculas ni guiones: <code>k7qf m2xd</code> funciona igual que <code>K7QF-M2XD</code>.</li>
+  <li>Si alguien pierde su contraseña, genere una nueva en el panel, descargue la configuración y pida que la publiquen. El avance que esa persona ya tenía en su navegador se conserva.</li>
+</ul>
+<div class="nota"><b>Tiempo estimado por rol</b>Entre 30 y 45 minutos, según el número de pasos en que interviene el rol. El participante puede repartirlo en varias sesiones.</div>
+
+<h2 id="participante">5. Qué verá el participante</h2>
+<ol class="pasos">
+  <li><b>Acceso.</b> Escribe su usuario y su contraseña. La cuenta define su rol.</li>
+  <li><b>Orientación,</b> en cuatro pantallas: qué es el estudio y qué se busca, el caso sintético y la ruta, cómo funciona la simulación y su rol con los pasos en que interviene.</li>
+  <li><b>Declaración de participación voluntaria.</b> Lee la información del estudio, marca cuatro declaraciones y decide si da o no sus datos personales. Si no desea participar, sale sin que quede nada guardado.</li>
+  <li><b>Ronda 1: la ruta como funciona hoy.</b> Recorre los once pasos. Donde su rol interviene responde una actividad corta; donde no, lee el contexto y puede dejar una observación. Al final valora el contrato de datos de su rol y responde cuatro preguntas.</li>
+  <li><b>Ronda 2: la ruta con el módulo propuesto.</b> El mismo caso, con las cinco reglas del módulo y el contrato de su rol a la vista.</li>
+  <li><b>Entrega.</b> Envía sus respuestas o descarga su archivo. Puede añadir un comentario final.</li>
+</ol>
+<p>Los demás actores no están conectados. El sistema los representa con los datos del caso: le pide evidencia al custodio, consulta por el módulo, notifica y registra acuses. Todo eso aparece marcado como «simulado».</p>
+<div class="tabla"><table>
+  <thead><tr><th>Tipo de actividad</th><th>Quién la responde</th><th>Qué se le pregunta</th></tr></thead>
+  <tbody>
+    <tr><td>Decidir</td><td>El actor que decide en el paso</td><td>Si la información es suficiente y qué falta, con qué finalidad consulta, su decisión, quién responde y en cuántos días. En la ronda 2, a quién notifica.</td></tr>
+    <tr><td>Responder por evidencia que custodia</td><td>El custodio de una pieza que el paso necesita</td><td>Qué entrega (todo, solo lo pertinente o nada) y cuántos días le toma.</td></tr>
+    <tr><td>Vivir el paso</td><td>El trabajador</td><td>Qué sabe de su caso, quién le responde y qué tuvo que hacer.</td></tr>
+    <tr><td>Vigilar o apoyar</td><td>Entidades de control y actores de apoyo</td><td>Qué alcanza a ver del caso y qué acción toma.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="pausa">6. Pausas, caídas de conexión y errores</h2>
+<ul>
+  <li><b>Pausar.</b> El participante puede pulsar «Pausar» cuando quiera. Su avance queda guardado y, al volver a entrar con su usuario y su contraseña, ve «Bienvenido de nuevo» con el paso donde quedó.</li>
+  <li><b>Recarga o cierre inesperado.</b> El simulador guarda cada cambio. Si la página se recarga o el navegador se cierra, se restablece el mismo paso con lo que tenía escrito.</li>
+  <li><b>Sin conexión.</b> La simulación continúa. Con entrega por servidor, lo pendiente se envía solo cuando vuelve la conexión. En el sitio web, la página abre sin conexión después de la primera visita.</li>
+  <li><b>Otro dispositivo.</b> Con entrega por servidor basta entrar con el mismo usuario y contraseña: el simulador recupera el avance. Con entrega por archivo, el participante descarga su «archivo de avance» al pausar y lo carga en el otro equipo desde la primera pantalla de la orientación.</li>
+  <li><b>Ventanas privadas.</b> Una ventana privada o de incógnito borra el avance al cerrarse. La orientación se lo advierte al participante.</li>
+</ul>
+
+<h2 id="recibir">7. Cómo llegan las respuestas</h2>
+<h3>Entrega por archivo</h3>
+<p>Al terminar, el participante descarga un archivo llamado <code>respuestas-usuario-fecha.json</code> y se lo envía por el medio que usted le indicó. En el momento «Respuestas» del panel, elija los archivos o arrástrelos.</p>
+<h3>Entrega por servidor</h3>
+<p>En el momento «Respuestas», use «Traer del servidor». Conviene abrir el panel desde el mismo sitio (<code>…/administrador.html</code>). Si lo abre desde su computador y el sitio tiene protección adicional, el panel le ofrece descargar el paquete de respuestas para importarlo después.</p>
+<h3>Qué trae cada archivo</h3>
+<ul>
+  <li>La cuenta y el rol. Nunca la contraseña.</li>
+  <li>La declaración aceptada, con su fecha y el texto que la persona leyó.</li>
+  <li>Los datos personales que la persona decidió dar, si dio alguno.</li>
+  <li>Todas sus respuestas y lo que el sistema simuló a partir de ellas.</li>
+  <li>Una huella de integridad. Si el archivo se altera o llega incompleto, el panel lo rechaza.</li>
+</ul>
+
+<h2 id="resultados">8. Seguimiento y resultados</h2>
+<p>El informe consolidado separa siempre lo que respondieron los participantes de lo que simuló el sistema. Incluye:</p>
+<ul>
+  <li>Quiénes participaron y la cobertura por rol.</li>
+  <li>Las decisiones por paso y ronda: suficiencia de la información, piezas que faltaron, finalidad declarada, responsable y días.</li>
+  <li>La respuesta de los custodios, la experiencia del trabajador y lo que ven las entidades de control.</li>
+  <li>Los desacuerdos entre personas que representan el mismo rol.</li>
+  <li>La valoración de cada contrato de datos y la percepción frente a hoy.</li>
+  <li>Las preguntas P1 a P4, las dificultades y los requisitos para el siguiente prototipo.</li>
+  <li>Los indicadores comparados entre las dos rondas, con la fórmula de cada uno.</li>
+  <li>La correspondencia con las subpreguntas del proyecto y las hipótesis.</li>
+</ul>
+<p>Las cuentas de prueba y de demostración quedan fuera del análisis, salvo que usted pida incluirlas. También puede excluir una respuesta en particular.</p>
+
+<h2 id="cuidado">9. Cuidado de los datos</h2>
+<ul>
+  <li><b>Copia de seguridad.</b> Exporte el proyecto con frecuencia. El archivo contiene las cuentas con sus contraseñas y las respuestas importadas: guárdelo como un documento confidencial.</li>
+  <li><b>Archivos confidenciales.</b> La hoja de cuentas y la tabla de datos personales son para su uso. No las publique ni las adjunte a informes.</li>
+  <li><b>Retiro de un participante.</b> Si alguien se retira desde el simulador, sus respuestas se borran de su dispositivo y, con entrega por servidor, también del servidor. Si se lo pide directamente, elimine su respuesta en el panel y, con entrega por servidor, bórrela también del servidor desde el panel.</li>
+  <li><b>Cierre del estudio.</b> Descargue todo, guarde una copia final y pida a quien publica que borre las respuestas del servidor.</li>
+</ul>
+
+<h2 id="limites">10. Límites que debe conocer</h2>
+<ul>
+  <li><b>El acceso del simulador no es un mecanismo de seguridad.</b> Asigna el rol y evita entradas por descuido. La protección del sitio depende del servidor: HTTPS y control de acceso.</li>
+  <li><b>Sin servidor, el avance vive en el navegador del participante.</b> Usted solo lo conoce cuando recibe su archivo.</li>
+  <li><b>La huella de integridad</b> detecta archivos alterados o incompletos. No prueba quién respondió.</li>
+  <li><b>Lo simulado no es evidencia.</b> Solicitudes, consultas, notificaciones y acuses los genera el sistema. Son parte del escenario, no respuestas de los participantes.</li>
+  <li><b>Los días son declarados.</b> Cada persona declara cuántos días le toma su parte. El informe los resume por paso y rol; no los suma como si fueran una línea de tiempo.</li>
+  <li><b>Las hipótesis H1 a H4</b> aparecen con su formulación actual, «pendiente de confirmar». El informe no las renombra ni las interpreta.</li>
+  <li><b>Qué mide la simulación.</b> Percepción y comportamiento en un escenario simulado. No es el resultado técnico del módulo.</li>
+</ul>
+
+<h2 id="preguntas">11. Preguntas frecuentes</h2>
+<div class="tabla"><table>
+  <thead><tr><th>Pregunta</th><th>Respuesta</th></tr></thead>
+  <tbody>
+    <tr><td>¿Dos personas pueden usar la misma cuenta?</td><td>Pueden, y el panel las recibe como dos participaciones del mismo rol. Es mejor una cuenta por persona: así sabe quién falta y la recuperación del avance no se confunde.</td></tr>
+    <tr><td>Un participante dice que su usuario no entra.</td><td>Compruebe que el sitio tiene la configuración más reciente y que escribió el usuario tal como aparece en la invitación.</td></tr>
+    <tr><td>Un participante empezó en el trabajo y quiere seguir en casa.</td><td>Con entrega por servidor, entra con su usuario y contraseña y continúa. Con entrega por archivo, descarga su archivo de avance al pausar y lo carga en el otro equipo.</td></tr>
+    <tr><td>El panel rechaza un archivo.</td><td>Lea el motivo que muestra. Si dice que la huella no coincide, pida al participante que lo descargue y lo envíe de nuevo.</td></tr>
+    <tr><td>¿Puedo cambiar el texto de la declaración?</td><td>Puede añadir un párrafo y los datos del comité en el momento «Estudio». Para reemplazar el texto completo, pida a quien publica que edite la sección <code>consentimiento</code> de <code>configuracion.js</code>.</td></tr>
+    <tr><td>Cambié de computador.</td><td>Exporte la copia de seguridad en el computador anterior y restáurela en el nuevo.</td></tr>
+    <tr><td>¿Qué pasa si un participante borra los datos de su navegador?</td><td>Con entrega por servidor recupera su avance al entrar. Sin servidor, solo si había descargado su archivo de avance.</td></tr>
+  </tbody>
+</table></div>
+
+<footer>Escenario sintético; ninguna persona identificable. Los plazos del caso son supuestos de simulación.</footer>
+</div>
+</body>
+</html>
