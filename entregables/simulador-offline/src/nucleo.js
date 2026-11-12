@@ -282,13 +282,18 @@ function validarRespuesta(d) {
   return e;
 }
 
-/* ---------- Descarga de archivos ---------- */
-let DL = null;   // capacidad de descargas cuando la página corre dentro de un visor que bloquea los enlaces de descarga
+/* ---------- Descarga de archivos ----------
+   Dentro de un visor que bloquea los enlaces de descarga (un artefacto publicado) se usa la capacidad de
+   descargas del visor: la persona confirma el guardado y puede rechazarlo. Fuera de él, un enlace de descarga. */
+let DL = null, enVisor = false;
 async function initDescargas() {
-  try { if (window.claude && typeof window.claude.use === "function") DL = await window.claude.use("downloads"); } catch (e) { DL = null; }
+  enVisor = !!(window.claude && typeof window.claude.use === "function");
+  if (enVisor) { try { DL = await window.claude.use("downloads"); } catch (e) { DL = null; } }
 }
+// Devuelve true solo si el archivo se entregó a la persona.
 async function descargarArchivo(nombre, datos, mime) {
-  if (DL) { try { await DL.save({ filename:nombre, data:datos }); return true; } catch (e) { if (e && e.code === "cancelled") return false; } }
+  if (DL) { try { await DL.save({ filename:nombre, data:datos }); return true; } catch (e) { return false; } }
+  if (enVisor) return false;
   try {
     const a = document.createElement("a"), url = URL.createObjectURL(new Blob([datos], { type:mime || "application/octet-stream" }));
     a.href = url; a.download = nombre; a.rel = "noopener"; document.body.appendChild(a); a.click(); a.remove();

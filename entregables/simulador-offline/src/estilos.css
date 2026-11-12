@@ -84,3 +84,11 @@
     .optrow button { flex:1 1 100%; } .kv { grid-template-columns:1fr; gap:0 0; } .kv b { padding-top:8px; }
     .modal-caja { padding:18px 16px 16px; } .closing { padding:18px 14px 16px; } .closing .estado-cierre { font-size:20px; line-height:26px; }
   }
+
+  /* Márgenes laterales de al menos 16 px y respeto de las zonas seguras del teléfono */
+  .top { top:env(safe-area-inset-top, 0px); }
+  .modal { padding:max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+  @media (max-width:600px) {
+    .wrap, .appbar, .foot { padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+    .top .msg:not(:empty) { left:max(16px, env(safe-area-inset-left, 0px)); right:max(16px, env(safe-area-inset-right, 0px)); bottom:calc(12px + env(safe-area-inset-bottom, 0px)); }
+  }

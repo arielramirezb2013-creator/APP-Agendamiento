@@ -91,7 +91,7 @@ const ACCIONES = {
   "retomar-continuar":() => { S.retomar = null; S.abierto = ahora(); render(); },
   "retomar-nuevo":() => { empezarDeNuevo(); render(); },
   "avance-elegir":() => { const i = $("avance-archivo"); if (i) i.click(); },
-  "avance-descargar":async () => { const ok = await descargarArchivo(nombreArchivo(), jsonRespuesta(), "application/json"); if (ok) { S.descargado = ahora(); guardarLocal(); } aviso(ok ? "Archivo de avance descargado. Guárdelo: con él puede continuar en otro dispositivo." : "El navegador no permitió la descarga.", !ok); },
+  "avance-descargar":async () => { const ok = await descargarArchivo(nombreArchivo(), jsonRespuesta(), "application/json"); if (ok) { S.descargado = ahora(); guardarLocal(); } aviso(ok ? "Archivo de avance descargado. Guárdelo: con él puede continuar en otro dispositivo." : "No se descargó el archivo. Inténtelo de nuevo.", !ok); },
   "recargar":() => { guardarLocal(); location.reload(); },
   "c-anon":(arg, v) => { S.cons.anonimo = v; guardarLocal(); render(); },
   "consent-si":() => { if (aceptarConsentimiento()) { guardarLocal(); envioProgresivo(); aviso("Gracias. Su declaración quedó registrada."); } },
@@ -118,7 +118,7 @@ const ACCIONES = {
     render();
   },
   "enviar":async () => { const ok = await enviar(false); aviso(ok ? "Respuestas enviadas." : "No fue posible enviar. Reintente o descargue el archivo.", !ok); },
-  "descargar":async () => { const ok = await descargarArchivo(nombreArchivo(), jsonRespuesta(), "application/json"); if (ok) { S.descargado = ahora(); guardarLocal(); aviso("Archivo descargado. Envíelo al investigador."); } else aviso("El navegador no permitió la descarga. Use «Copiar como texto».", true); },
+  "descargar":async () => { const ok = await descargarArchivo(nombreArchivo(), jsonRespuesta(), "application/json"); if (ok) { S.descargado = ahora(); guardarLocal(); aviso("Archivo descargado. Envíelo al investigador."); } else aviso("No se descargó el archivo. Inténtelo de nuevo o use «Copiar como texto».", true); },
   "compartir":async () => { try { await navigator.share({ files:[new File([jsonRespuesta()], nombreArchivo(), { type:"application/json" })], title:CFG.estudio.titulo, text:"Archivo de respuestas de la simulación" }); S.descargado = ahora(); guardarLocal(); aviso("Archivo compartido."); } catch (e) { if (!e || e.name !== "AbortError") aviso("No fue posible compartir. Descargue el archivo.", true); } },
   "copiar":async () => { const ok = await copiarTexto(jsonRespuesta()); aviso(ok ? "Respuestas copiadas. Péguelas en un correo para el investigador." : "No fue posible copiar. Descargue el archivo.", !ok); },
   "guardar-comentario":() => {
