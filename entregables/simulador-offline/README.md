@@ -19,9 +19,13 @@ Contenido del paquete: `index.html` (simulador), `configuracion.js` (estudio y c
 4. **Dos rondas.** La ruta como funciona hoy y la ruta con el módulo propuesto. En cada uno de los once pasos ve qué ocurre; si su rol interviene responde una actividad, y si no, lee el contexto. Al cierre de cada ronda valora el contrato de datos de su rol y responde P1 a P4.
 5. **Entrega.** Envío al receptor del sitio o descarga de un archivo que le manda al investigador.
 
+Al cerrar la ronda 1 el contrato de datos todavía no se ha vivido: la pantalla lo presenta como lo que el módulo propondría para su rol y le pide decir si lo aceptaría. Al cerrar la ronda 2 lo valora ya recorrido. La misma pregunta de comparación se repite en las dos rondas, con una nota que explica por qué.
+
 Cada paso abre con un relato de qué está ocurriendo con el caso en ese momento y qué se juega allí, distinto en cada ronda. Debajo queda plegado el mapa del paso con los carriles del blueprint, y las preguntas llevan una línea que explica para qué se pregunta, sin sugerir la respuesta.
 
-El sistema hace de los actores que no están conectados: pide evidencia al custodio, consulta por el módulo con la vista mínima del contrato, notifica y registra acuses. Todo lo que genera el sistema queda marcado como simulado y se cuenta aparte.
+El relato describe la situación y no resuelve lo que el participante tiene que decidir: donde el escenario pone una decisión en sus manos —calificar el origen, abrir la controversia, dictaminar, apelar, pagar— el relato la deja abierta. Donde la simulación supone algo que la matriz de contratos no autoriza, lo dice en el propio paso (es el caso de D1 con el empleador). La ronda 1 no explica las reglas del módulo: la comprobación de la finalidad se presenta allí como una comparación con el contrato que se propondrá, no como una calificación de la respuesta.
+
+El sistema hace de los actores que no están conectados: pide evidencia al custodio, consulta por el módulo con la vista mínima del contrato, notifica y registra acuses. Todo lo que genera el sistema queda marcado como simulado y se cuenta aparte, y el registro distingue los actos de la propia entidad del participante de la reacción de los actores simulados.
 
 ## Pausa, reanudación y fallas
 
@@ -72,7 +76,7 @@ Todo desde `administrador.html`, que abre con doble clic o desde el sitio. Vea `
 ## Decisiones de contenido que conviene confirmar
 
 - **Evidencia propia.** Un actor no necesita contrato para usar la evidencia que él mismo custodia (por ejemplo, la EPS y los certificados de incapacidad en A2).
-- **D1, empleador e historia clínica.** El paso dice que el empleador «reubica con las restricciones (vista mínima)», pero su contrato no incluye la historia clínica. El simulador le concede en D1 los campos «restricciones funcionales» y «concepto de rehabilitación» (`GUION.vistasPaso` en `src/datos-guion.js`).
+- **D1, empleador e historia clínica.** El paso dice que el empleador «reubica con las restricciones (vista mínima)», pero su contrato no incluye la historia clínica. El simulador le concede en D1 los campos «restricciones funcionales» y «concepto de rehabilitación» (`GUION.vistasPaso` en `src/datos-guion.js`) y lo advierte en pantalla como supuesto de la simulación (`GUION.pasos.D1.supuesto`).
 - **ARL en E5.** Responde como apoyo, igual que en la herramienta de mesa. La situación del catálogo que le pedía decidir si asume la prestación no se muestra (`GUION.retosOmitidos`).
 - **Pregunta «frente a hoy» en la ronda 1.** Se conserva en las dos rondas para poder comparar y se explica con una nota.
 - **Sin ejemplos de respuesta.** Las actividades no muestran ejemplos, para no inducir las respuestas.

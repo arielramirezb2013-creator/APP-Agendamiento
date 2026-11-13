@@ -223,19 +223,21 @@ function avanzar() {
   else rd.estado = "valoracion";
   S.form = {}; S.ctxObs = ""; S.verTodo = false; S.abierto = t;
 }
+// «a», «a y b», «a, b y c»: los avisos de lo que falta se leen como una frase.
+function listaFrase(xs) { return xs.length < 2 ? (xs[0] || "") : xs.slice(0, -1).join(", ") + " y " + xs[xs.length - 1]; }
 function validarForm(act) {
   const f = S.form, falta = [], sinDias = f.dias == null || String(f.dias).trim() === "" || !isFinite(parseFloat(String(f.dias).replace(",", "."))) || parseFloat(String(f.dias).replace(",", ".")) < 0;
-  if (act.tipo === "decide") { if (!f.suficiencia) falta.push("si la información es suficiente"); if (!f.finalidad) falta.push("la finalidad"); if (!f.decision) falta.push("la decisión"); if (!f.responde) falta.push("quién responde"); if (sinDias) falta.push("los días"); }
-  if (act.tipo === "custodia") { if (!f.respuesta) falta.push("qué responde"); if (sinDias) falta.push("los días"); }
-  if (act.tipo === "focal") { if (!f.sabe) falta.push("qué sabe de su caso"); if (!f.responde) falta.push("quién le responde"); if (!(f.hizo || []).length) falta.push("qué tuvo que hacer"); }
-  if (act.tipo === "soporte") { if (!f.ve) falta.push("qué alcanza a ver"); if (!f.accion) falta.push("qué acción toma"); }
+  if (act.tipo === "decide") { if (!f.suficiencia) falta.push("si con lo que tiene puede actuar"); if (!f.finalidad) falta.push("con qué finalidad consultaría"); if (!f.decision) falta.push("qué decide"); if (!f.responde) falta.push("quién responde por la decisión"); if (sinDias) falta.push("en cuántos días"); }
+  if (act.tipo === "custodia") { if (!f.respuesta) falta.push("qué entrega"); if (sinDias) falta.push("cuántos días le tomaría"); }
+  if (act.tipo === "focal") { if (!f.sabe) falta.push("qué sabe de su caso"); if (!f.responde) falta.push("quién le responde"); if (!(f.hizo || []).length) falta.push("qué le tocó hacer"); }
+  if (act.tipo === "soporte") { if (!f.ve) falta.push("qué alcanza a ver del caso"); if (!f.accion) falta.push("qué acción tomaría"); }
   return falta;
 }
 function guardarActividad() {
   const s = S.ses, r = s.rondaActual, p = pasoActual(), modo = modoDe(r), yo = S.yo.actor, act = actividadDe(p, yo, modo), f = S.form;
   if (!act || rondaAct().estado !== "en_curso") return null;
   const falta = validarForm(act);
-  if (falta.length) { aviso("Falta completar: " + falta.join(", ") + ".", true); return null; }
+  if (falta.length) { aviso("Antes de guardar falta responder " + listaFrase(falta) + ".", true); return null; }
   const payload = { tipo:act.tipo, obs:textoLimpio(f.obs) || null, abierto:S.abierto || null };
   if (act.tipo === "decide") {
     Object.assign(payload, { suficiencia:f.suficiencia, falta:f.suficiencia === "suficiente" ? [] : (f.falta || []).slice(), finalidad:f.finalidad, decision:f.decision, decisionTxt:etiqueta(act.ops, f.decision), responde:f.responde, dias:num(f.dias), notifica:modo === "propuesto" ? (f.notifica || []).slice() : [] });
@@ -263,18 +265,18 @@ function guardarActividad() {
   return reg;
 }
 function validarValoracion() {
-  const v = S.val, falta = [];
-  if (!v.semaforo) falta.push("la valoración del contrato");
-  if (v.semaforo === "rechazar" && !(v.ajuste || "").trim()) falta.push("qué cambiaría del contrato");
-  if (!v.mejora) falta.push("la percepción frente a hoy");
-  ESC.preguntas.forEach(q => { if (q.tipo === "texto" ? !(v[q.id] || "").trim() : q.tipo === "multi" ? !(v[q.id] || []).length : !v[q.id]) falta.push(q.id); });
+  const v = S.val, L = GUION.falta, falta = [];
+  if (!v.semaforo) falta.push(L.semaforo);
+  if (v.semaforo === "rechazar" && !(v.ajuste || "").trim()) falta.push(L.ajuste);
+  if (!v.mejora) falta.push(L.mejora);
+  ESC.preguntas.forEach(q => { if (q.tipo === "texto" ? !(v[q.id] || "").trim() : q.tipo === "multi" ? !(v[q.id] || []).length : !v[q.id]) falta.push(L[q.id] || q.id); });
   return falta;
 }
 function guardarValoracion() {
   const s = S.ses, r = s.rondaActual, v = S.val;
   if (rondaAct().estado !== "valoracion") return false;
   const falta = validarValoracion();
-  if (falta.length) { aviso("Falta responder: " + falta.join(", ") + ".", true); return false; }
+  if (falta.length) { aviso("Antes de guardar falta responder " + listaFrase(falta) + ".", true); return false; }
   const prevV = regsDe({ ronda:r, tipo:"valoracion", participanteId:S.yo.id })[0], prevP = regsDe({ ronda:r, tipo:"preguntas", participanteId:S.yo.id })[0];
   const rep = x => Object.assign({ paso:"—" }, x ? { reemplaza:x.id, version:(x.version || 1) + 1 } : {});
   registrar("valoracion", { semaforo:v.semaforo, ajuste:textoLimpio(v.ajuste), mejora:v.mejora }, rep(prevV));

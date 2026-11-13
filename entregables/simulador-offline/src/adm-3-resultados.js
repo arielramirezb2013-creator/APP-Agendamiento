@@ -488,7 +488,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     /* 14. Registro completo */
     T("registros", "Registros vigentes", ["Fecha y hora", "Participante", "Rol", "Ronda", "Paso", "Origen", "Tipo", "Contenido"],
       [].concat(...PS.map(P => P.regs.map(x => [fechaSegura(x.t), P.alias, rolL(P.actor), rondaC(x.ronda), idxPaso(x.paso) >= 0 ? x.paso : "—", origenTxt(x), tipoTxt(x), contenido(x)]))),
-      "Todos los registros vigentes de las participaciones analizadas, en el orden en que se anotaron. Origen «Participante»: lo que la persona respondió. «Sistema · simulado»: lo que el sistema hizo en nombre de actores que no estaban conectados. «Sistema · conducción»: inicio, avance y cierre de las rondas, y el enlace de una respuesta con su solicitud.");
+      "Todos los registros vigentes de las participaciones analizadas, en el orden en que se anotaron. Origen «Participante»: lo que la persona respondió. «Sistema · simulado»: lo que el sistema generó a partir de la respuesta, tanto los actos de la propia entidad del participante (solicitudes, consultas y notificaciones) como la reacción de los actores que no estaban conectados. «Sistema · conducción»: inicio, avance y cierre de las rondas, y el enlace de una respuesta con su solicitud.");
     const nRegs = PS.reduce((n, P) => n + P.regs.length, 0), nDesc = PS.reduce((n, P) => n + P.descartados, 0);
     cap("registro", "Registro completo", "documentos-evidencia",
       "Los " + nRegs + " registros vigentes de las participaciones analizadas." + (nDesc ? " No aparecen " + plural(nDesc, "registro reemplazado por una corrección o nacido de una respuesta corregida", "registros reemplazados por una corrección o nacidos de una respuesta corregida") + "." : ""),
