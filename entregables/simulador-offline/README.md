@@ -23,7 +23,11 @@ Al cerrar la ronda 1 el contrato de datos todavía no se ha vivido: la pantalla 
 
 Cada paso abre con un relato de qué está ocurriendo con el caso en ese momento y qué se juega allí, distinto en cada ronda. Debajo queda plegado el mapa del paso con los carriles del blueprint, y las preguntas llevan una línea que explica para qué se pregunta, sin sugerir la respuesta.
 
-El relato describe la situación y no resuelve lo que el participante tiene que decidir: donde el escenario pone una decisión en sus manos —calificar el origen, abrir la controversia, dictaminar, apelar, pagar— el relato la deja abierta. Donde la simulación supone algo que la matriz de contratos no autoriza, lo dice en el propio paso (es el caso de D1 con el empleador). La ronda 1 no explica las reglas del módulo: la comprobación de la finalidad se presenta allí como una comparación con el contrato que se propondrá, no como una calificación de la respuesta.
+**Regla del relato.** Los once pasos tienen una decisión en `ESC.decisiones`, así que en los once el relato narra en qué estado llega el caso, por dónde viaja la evidencia y qué queda registrado, y deja en condicional el acto del rol que decide en ese paso: «de esa consulta depende si…», «lo que la EPS resuelva…», «el responsable del SG-SST decide qué manda…». Nunca nombra la opción elegida. Las dos rondas cierran con el mismo tipo de frase —qué queda registrado, dónde y a cargo de quién—, para que el tono no telegrafíe la respuesta.
+
+Donde la simulación supone algo que la matriz de contratos no autoriza, lo dice en el propio paso (es el caso de D1 con el empleador). La ronda 1 no explica las reglas del módulo: la comprobación de la finalidad se presenta allí como una comparación con el contrato que se propondrá, sin marcarla en verde ni en rojo.
+
+Las preguntas que se comparan entre rondas se formulan igual en las dos: la valoración del contrato, la comparación «frente a hoy» y, en la actividad de custodia, qué entrega y cuántos días. Si el enunciado cambiara de una ronda a otra, el informe compararía respuestas a preguntas distintas.
 
 El sistema hace de los actores que no están conectados: pide evidencia al custodio, consulta por el módulo con la vista mínima del contrato, notifica y registra acuses. Todo lo que genera el sistema queda marcado como simulado y se cuenta aparte, y el registro distingue los actos de la propia entidad del participante de la reacción de los actores simulados.
 
@@ -80,6 +84,7 @@ Todo desde `administrador.html`, que abre con doble clic o desde el sitio. Vea `
 - **ARL en E5.** Responde como apoyo, igual que en la herramienta de mesa. La situación del catálogo que le pedía decidir si asume la prestación no se muestra (`GUION.retosOmitidos`).
 - **Pregunta «frente a hoy» en la ronda 1.** Se conserva en las dos rondas para poder comparar y se explica con una nota.
 - **Sin ejemplos de respuesta.** Las actividades no muestran ejemplos, para no inducir las respuestas.
+- **El relato y el rol de M.P.** El relato describe por dónde viaja la evidencia, y en algunos pasos eso incluye la gestión que hoy recae sobre la trabajadora (en A3, que es ella quien tiene que pedirle la matriz al empleador). Es contenido del blueprint y es el hecho que el módulo pretende cambiar, pero para el rol de M.P. queda escrito encima de la pregunta «¿qué le tocó hacer por su cuenta?». Al leer ese indicador conviene tenerlo presente.
 - **Hipótesis H1 a H4.** Conservan su formulación «pendiente de confirmar» de `datos-escenario.js`.
 
 ## Construcción
