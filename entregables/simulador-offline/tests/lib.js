@@ -94,6 +94,13 @@ async function llenarActividad(pg, n) {
   else if (await hay(pg, '[data-act="f"][data-arg="sabe"]')) { await opcion(pg, "f", "sabe", n); await pg.selectOption('[data-in="f-responde"]', n % 3 ? "eps" : "nadie"); await opcion(pg, "fm", "hizo", n); }
   else if (await hay(pg, '[data-act="f"][data-arg="ve"]')) { await opcion(pg, "f", "ve", n); await opcion(pg, "f", "accion", n + 1); }
   else throw new Error("actividad sin formulario reconocible");
+  // La comparación con el módulo aparece cuando ya respondió lo suyo.
+  if (await hay(pg, '[data-act="f"][data-arg="cmp"]')) {
+    const v = await opcion(pg, "f", "cmp", n);
+    if (v === "otra") await pg.fill('[data-in="f-cmpCual"]', "Habría pedido la historia laboral antes de decidir");
+    await pg.fill('[data-in="f-cmpDias"]', String(1 + (n % 9)));
+    await opcion(pg, "f", "cmpSeg", n);
+  }
   if (n % 3 === 0) await pg.fill('[data-in="f-obs"]', "Observación " + n);
 }
 async function llenarValoracion(pg, n) {
@@ -105,8 +112,17 @@ async function llenarValoracion(pg, n) {
   await pg.fill('[data-in="v-p"][data-arg="P4"]', "Requisito " + n);
 }
 // Avanza una pantalla de la simulación y dice qué hizo.
+// Rellena la encuesta de perfil del participante, que va entre la declaración y el recorrido.
+async function llenarEncuesta(pg, n) {
+  for (const k of ["edad", "formacion", "frecuencia"]) await opcion(pg, "e", k, n);
+  const txt = { formacionCual:"Medicina del trabajo", complementarios:"Especialización en SST", experiencia:String(3 + (n % 15)),
+    rolActual:"Analista de la ruta de incapacidad", trayectoria:"EPS, analista de incapacidades, 4 años", otrosRoles:"Sí, estuve en una IPS" };
+  for (const k of Object.keys(txt)) { const sel = '[data-in="e-campo"][data-arg="' + k + '"]'; if (await hay(pg, sel)) await pg.fill(sel, txt[k]); }
+  await clic(pg, '[data-act="enc-guardar"]');
+}
 async function pantalla(pg, n) {
   if (await hay(pg, "#titulo-cierre")) return "cierre";
+  if (await hay(pg, '[data-act="enc-guardar"]')) { await llenarEncuesta(pg, n); return "encuesta"; }
   if (await hay(pg, '[data-act="ronda-iniciar"]')) { await clic(pg, '[data-act="ronda-iniciar"]'); return "inicio"; }
   if (await hay(pg, '[data-act="guardar"]')) { await llenarActividad(pg, n); await clic(pg, '[data-act="guardar"]'); return "actividad"; }
   if (await hay(pg, '[data-act="guardar-val"]')) { await llenarValoracion(pg, n); await clic(pg, '[data-act="guardar-val"]'); return "valoracion"; }
@@ -125,4 +141,4 @@ async function recorrerInterfaz(pg, variante, parar) {
   }
   return hechos;
 }
-module.exports = { chromium, servir, lanzar, pagina, w, clic, hay, texto, descargar, contador, temporal, entrarDemo, pasarOrientacion, aceptarDeclaracion, opcion, llenarActividad, llenarValoracion, pantalla, recorrerInterfaz, RAIZ, SALIDA, fs, path };
+module.exports = { chromium, servir, lanzar, pagina, w, clic, hay, texto, descargar, contador, temporal, entrarDemo, pasarOrientacion, aceptarDeclaracion, opcion, llenarActividad, llenarValoracion, llenarEncuesta, pantalla, recorrerInterfaz, RAIZ, SALIDA, fs, path };

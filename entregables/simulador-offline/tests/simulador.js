@@ -9,7 +9,7 @@ const ARCHIVO = "file://" + path.join(L.RAIZ, "simulador.html");
 const cual = process.argv[2] || "todo";
 const T = L.contador("Simulador en archivo local, sin red (" + cual + ")");
 const cfg = M.configDemo(), motor = M.crearMotor(cfg);
-const esperadas = actor => motor.ESC.rondas.reduce((n, r) => n + motor.bloquesDe(actor, r.modo).filter(b => b.tipo === "actividad").length, 0);
+const esperadas = actor => motor.bloquesDe(actor, "actual").filter(b => b.tipo === "actividad").length;
 const estado = pg => pg.evaluate(() => { const o = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); o[k] = localStorage.getItem(k); } return o; });
 const guardado = async (pg, u) => { const e = await estado(pg), k = Object.keys(e).filter(x => x.endsWith(":" + u))[0]; return k ? JSON.parse(e[k]) : null; };
 const etapa = pg => pg.evaluate(() => document.body.getAttribute("data-etapa"));
@@ -25,8 +25,8 @@ async function roles(br, errores) {
     if (enCierre) { const d = await L.descargar(pg, '[data-act="descargar"]'); doc = JSON.parse(d.texto); errs = motor.validarRespuesta(doc); if (!/^respuestas-/.test(d.nombre)) errs.push("nombre de archivo " + d.nombre); }
     const v = doc ? M.crearMotor(cfg).validarRespuesta(doc) && doc.registros : [], act = hechos.filter(h => h === "actividad").length;
     const vig = doc ? (() => { const r = {}; doc.registros.forEach(x => { if (x.reemplaza) r[x.reemplaza] = 1; }); return doc.registros.filter(x => !r[x.id]); })() : [];
-    T.ok(enCierre && !errs.length && doc.estado === "completa" && act === esperadas(q.a) && vig.filter(r => r.tipo === "actividad").length === esperadas(q.a) && vig.filter(r => r.tipo === "valoracion").length === 2 && vig.filter(r => r.tipo === "preguntas").length === 2 && doc.cuenta.actor === q.a && doc.cuenta.demo === true,
-      q.u + ": completa las dos rondas en la interfaz y entrega un documento válido (" + act + " actividades de " + esperadas(q.a) + ")", errs.join("; ") + " · hechos " + hechos.length);
+    T.ok(enCierre && !errs.length && doc.estado === "completa" && act === esperadas(q.a) && vig.filter(r => r.tipo === "actividad").length === esperadas(q.a) && vig.filter(r => r.tipo === "valoracion").length === 1 && vig.filter(r => r.tipo === "preguntas").length === 1 && vig.filter(r => r.tipo === "encuesta").length === 1 && vig.filter(r => r.tipo === "actividad").every(r => r.payload.comparacion && r.payload.comparacion.decision) && doc.cuenta.actor === q.a && doc.cuenta.demo === true,
+      q.u + ": completa el recorrido en la interfaz, con su encuesta y su comparación, y entrega un documento válido (" + act + " actividades de " + esperadas(q.a) + ")", errs.join("; ") + " · hechos " + hechos.length);
     if (doc && i % 4 === 0) T.ok(doc.participante.anonimo === false && doc.participante.datos.nombre === "Persona " + i && !doc.registros.some(r => JSON.stringify(r).includes("Persona " + i)), q.u + ": los datos personales van solo en la ficha del participante, no en los registros");
     if (doc && i % 4 === 1) T.ok(doc.participante.anonimo === true && !Object.keys(doc.participante.datos).length, q.u + ": participación sin datos personales");
     await ctx.close();
@@ -77,7 +77,7 @@ async function sesion(br, errores) {
   await clic(pg, '[data-act="salir"]'); await clic(pg, '[data-act="salir-si"]', 150);
   T.ok((await etapa(pg)) === "acceso", "pausar vuelve a la pantalla de acceso");
   await L.entrarDemo(pg, "demo-arl");
-  T.ok(/Bienvenido de nuevo/.test(await texto(pg, "#vista h1")) && /paso E4/.test(await texto(pg, "#vista")) && /1 de 10/.test(await texto(pg, "#vista")), "al volver a entrar muestra dónde quedó y cuánto lleva", await texto(pg, "#vista"));
+  T.ok(/Bienvenido de nuevo/.test(await texto(pg, "#vista h1")) && /paso E4/.test(await texto(pg, "#vista")) && /1 de 5/.test(await texto(pg, "#vista")), "al volver a entrar muestra dónde quedó y cuánto lleva", await texto(pg, "#vista"));
   await clic(pg, '[data-act="retomar-continuar"]');
   T.ok((await pg.inputValue('[data-in="f-obs"]')) === "borrador a medias", "continúa en el mismo formulario con su borrador");
   // Cierre inesperado del navegador: se cierra la página sin avisar y se abre otra
@@ -88,7 +88,9 @@ async function sesion(br, errores) {
   await clic(pg2, '[data-act="retomar-continuar"]');
   T.ok((await pg2.inputValue('[data-in="f-dias"]')) === "9", "y conserva lo último que había escrito");
   // Corrección de una respuesta
-  await clic(pg2, '[data-act="f"][data-arg="decision"][data-v="apelar"]'); await pg2.selectOption('[data-in="f-responde"]', "yo"); await clic(pg2, '[data-act="guardar"]');
+  await clic(pg2, '[data-act="f"][data-arg="decision"][data-v="apelar"]'); await pg2.selectOption('[data-in="f-responde"]', "yo");
+  await clic(pg2, '[data-act="f"][data-arg="cmp"][data-v="misma"]'); await pg2.fill('[data-in="f-cmpDias"]', "4"); await clic(pg2, '[data-act="f"][data-arg="cmpSeg"][data-v="alta"]');
+  await clic(pg2, '[data-act="guardar"]');
   await clic(pg2, '[data-act="rectificar"]');
   T.ok((await pg2.inputValue('[data-in="f-dias"]')) === "9" && (await pg2.locator('[data-act="f"][data-arg="decision"][data-v="apelar"]').getAttribute("aria-pressed")) === "true", "corregir abre el formulario con la respuesta anterior");
   await clic(pg2, '[data-act="f"][data-arg="decision"][data-v="no_apelar"]'); await clic(pg2, '[data-act="guardar"]');
@@ -172,7 +174,7 @@ async function accesible(br, errores) {
   await pg.goto(ARCHIVO); await pg.focus('[data-in="a-u"]'); await pg.keyboard.type("demo-jueces"); await pg.keyboard.press("Tab"); await pg.keyboard.type("DEMO-2026"); await pg.keyboard.press("Enter");
   await pg.waitForFunction(() => document.body.getAttribute("data-etapa") === "orientacion", null, { timeout:15000 });
   T.ok(true, "se puede entrar solo con el teclado (Enter envía el acceso)");
-  await L.pasarOrientacion(pg); await L.aceptarDeclaracion(pg, null); await clic(pg, '[data-act="ronda-iniciar"]'); while (!(await hay(pg, '[data-act="guardar"]'))) await L.pantalla(pg, 0);
+  await L.pasarOrientacion(pg); await L.aceptarDeclaracion(pg, null); await L.llenarEncuesta(pg, 0); await clic(pg, '[data-act="ronda-iniciar"]'); while (!(await hay(pg, '[data-act="guardar"]'))) await L.pantalla(pg, 0);
   await pg.focus('[data-act="f"][data-arg="ve"][data-v="parcial"]'); await pg.keyboard.press("Enter"); await w(pg);
   const foco = await pg.evaluate(() => { const a = document.activeElement; return a.getAttribute("data-arg") + "/" + a.getAttribute("data-v") + "/" + a.getAttribute("aria-pressed"); });
   T.ok(foco === "ve/parcial/true", "al elegir una opción con el teclado el foco se queda en esa opción", foco);

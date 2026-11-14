@@ -387,7 +387,7 @@ const enlaceCuenta = q => (urlPublica() || "index.html") + "#u=" + encodeURIComp
 // Igual que minutosEstimados() del simulador: duración que se informa al participante según su rol.
 function minutosDeRol(actor) {
   const T = GUION.tiempos; let m = T.inicio + T.cierre;
-  ESC.rondas.forEach(r => { bloquesDe(actor, r.modo).forEach(b => { m += b.tipo === "contexto" ? T.contexto * b.pasos.length : T[b.act.tipo]; }); m += T.valoracion; });
+  RONDAS.forEach(r => { bloquesDe(actor, r.modo).forEach(b => { m += b.tipo === "contexto" ? T.contexto * b.pasos.length : T[b.act.tipo]; }); m += T.valoracion; });
   return Math.max(10, Math.round(m / 5) * 5);
 }
 function textoInvitacion(q) {
@@ -629,16 +629,16 @@ function seguimientoDe(d) {
   if (memoSeguimiento.has(d.huella)) return memoSeguimiento.get(d.huella);
   const actor = d.cuenta.actor, s = d.sesion, regs = vigentesDoc(d), mios = regs.filter(r => r.origen === "participante");
   const acts = mios.filter(r => r.tipo === "actividad" && r.payload), completa = d.estado === "completa";
-  const ids = ESC.rondas.map(r => r.id), iR = ids.indexOf(s.rondaActual), rondasSes = s.rondas || {};
+  const ids = RONDAS.map(r => r.id), iR = ids.indexOf(s.rondaActual), rondasSes = s.rondas || {};
   const estadoRonda = id => (esPropia(rondasSes, id) && rondasSes[id].estado) || "pendiente";
   const est = iR >= 0 ? estadoRonda(s.rondaActual) : "";
   let donde;
-  if (completa) donde = { etapa:"Entrega", texto:"Terminó las dos rondas" };
+  if (completa) donde = { etapa:"Entrega", texto:"Terminó el recorrido" };
   else if (iR < 0) donde = { etapa:"Simulación", texto:"Aceptó la declaración" };
-  else if (est === "pendiente") donde = { etapa:"Simulación", texto:"Ronda " + (iR + 1) + " · por iniciar" };
-  else if (est === "valoracion") donde = { etapa:"Simulación", texto:"Ronda " + (iR + 1) + " · cierre de la ronda" };
-  else donde = { etapa:"Simulación", texto:"Ronda " + (iR + 1) + " · paso " + (s.pasoActual || "—") + (esPaso(s.pasoActual) ? " · " + PASOS[PIDX[s.pasoActual]].n : "") };
-  const rondas = ESC.rondas.map((r, i) => {
+  else if (est === "pendiente") donde = { etapa:"Simulación", texto:"Recorrido por iniciar" };
+  else if (est === "valoracion") donde = { etapa:"Simulación", texto:"Cierre del recorrido" };
+  else donde = { etapa:"Simulación", texto:"paso " + (s.pasoActual || "—") + (esPaso(s.pasoActual) ? " · " + PASOS[PIDX[s.pasoActual]].n : "") };
+  const rondas = RONDAS.map((r, i) => {
     const porPaso = mapaVacio(); acts.forEach(x => { if (x.ronda === r.id && esPaso(x.paso)) porPaso[x.paso] = x; });
     const actual = !completa && s.rondaActual === r.id && est === "en_curso" ? s.pasoActual : null;
     const pasos = PASOS.map(p => { const act = actividadDe(p, actor, r.modo), reg = porPaso[p.id] || null; return { p, act, reg, estado:reg ? (num(reg.version) > 1 ? "rect" : "ok") : actual === p.id ? "cur" : act ? "" : "na" }; });

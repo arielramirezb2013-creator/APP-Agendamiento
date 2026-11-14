@@ -21,7 +21,7 @@ const CONS = Object.assign({}, GUION.consentimiento, CFG.consentimiento);
 
 /* ---------- Estado ---------- */
 const estadoInicial = () => ({
-  etapa:"acceso",                  // acceso | orientacion | consentimiento | rechazo | simulacion | cierre | retirado
+  etapa:"acceso",                  // acceso | orientacion | consentimiento | rechazo | encuesta | simulacion | cierre | retirado
   orient:0,                        // pantalla de la orientación
   cuenta:null,                     // { u, a, p }
   yo:null,                         // { id, nombre (alias), actor }
@@ -31,7 +31,7 @@ const estadoInicial = () => ({
   descargado:0,
   acc:{ u:"", c:"", ver:false },   // formulario de acceso
   cons:{ decl:{}, anonimo:"si", datos:{}, resumen:false },
-  form:{}, val:{}, ctxObs:"", comentario:"", abierto:0,
+  form:{}, val:{}, enc:{}, ctxObs:"", comentario:"", abierto:0,
   verTodo:false, zoom:1, confirmar:null, guardado:0,
   retomar:null,                    // null | { origen:"local"|"servidor"|"archivo", t } : pantalla de reanudación
   buscando:false,                  // consultando al servidor si hay un avance guardado
@@ -54,7 +54,7 @@ const ALM = (() => {
 })();
 const claveLocal = u => "simasinc:v1:" + CFG.estudio.id + ":" + u;
 const CLAVE_SESION = "simasinc:v1:" + CFG.estudio.id + ":sesion";
-const PERSISTE = ["etapa", "orient", "cuenta", "yo", "ses", "regs", "consent", "envio", "descargado", "cons", "form", "val", "ctxObs", "comentario", "abierto"];
+const PERSISTE = ["etapa", "orient", "cuenta", "yo", "ses", "regs", "consent", "envio", "descargado", "cons", "form", "val", "enc", "ctxObs", "comentario", "abierto", "caso"];
 let guardadoFallo = false;
 function guardarLocal() {
   if (!S.cuenta || !ALM.datos) return false;
@@ -82,8 +82,8 @@ function aplicarGuardado(d) { PERSISTE.forEach(k => { if (d[k] !== undefined) S[
 // Abre la cuenta. Si hay avance guardado en este dispositivo, lo restablece y muestra la pantalla de reanudación.
 function abrirCuenta(q, reanudar) {
   const d = cargarLocal(q.u), previo = d && d.cuenta.a === q.a ? d : null;
-  const cuenta = { u:q.u, a:q.a, p:!!q.p, r:reanudar || (previo && previo.cuenta.r) || "" };
-  S = estadoInicial();
+  const cuenta = { u:q.u, a:q.a, p:!!q.p, perfil:q.perfil || null, r:reanudar || (previo && previo.cuenta.r) || "" };
+  S = estadoInicial(); S.cuenta = cuenta; aplicarPerfil();
   if (previo) {
     aplicarGuardado(previo); S.cuenta = cuenta;
     if (S.etapa === "acceso") S.etapa = "orientacion";
@@ -92,6 +92,7 @@ function abrirCuenta(q, reanudar) {
   } else {
     S.cuenta = cuenta; S.yo = { id:"p" + hex(azar(8)), nombre:q.u, actor:q.a }; S.etapa = "orientacion"; S.abierto = ahora();
   }
+  aplicarPerfil();
   recordarSesion(q.u); guardarLocal();
   return !!previo;
 }
@@ -112,7 +113,7 @@ function documentoRestaurable(doc) {
   if (doc.estudio.id !== CFG.estudio.id) return "el archivo es de otro estudio";
   if (doc.cuenta.usuario !== S.cuenta.u || doc.cuenta.actor !== S.cuenta.a) return "el archivo es de otra cuenta";
   const s = doc.sesion;
-  if (!s || !s.rondas || !rondaDef(s.rondaActual) || PIDX[s.pasoActual] == null || !ESC.rondas.every(r => s.rondas[r.id] && s.rondas[r.id].pasos)) return "el archivo no trae una sesión que se pueda continuar";
+  if (!s || !s.rondas || !rondaDef(s.rondaActual) || PIDX[s.pasoActual] == null || !RONDAS.every(r => s.rondas[r.id] && s.rondas[r.id].pasos)) return "el archivo no trae una sesión que se pueda continuar";
   return "";
 }
 function restaurarDe(doc, origen) {
@@ -122,7 +123,7 @@ function restaurarDe(doc, origen) {
   S.ses = clone(doc.sesion); S.regs = clone(doc.registros);
   S.consent = { aceptado:true, t:doc.consentimiento.t, version:doc.consentimiento.version, declaraciones:doc.consentimiento.declaraciones || {}, anonimo:!!doc.participante.anonimo, datos:doc.participante.datos || {}, resumen:!!doc.participante.resumen, texto:doc.consentimiento.texto || [] };
   S.cons = { decl:Object.assign({}, S.consent.declaraciones), anonimo:S.consent.anonimo ? "si" : "no", datos:Object.assign({}, S.consent.datos), resumen:S.consent.resumen };
-  S.etapa = S.ses.estado === "cerrada" ? "cierre" : "simulacion";
+  S.etapa = S.ses.estado === "cerrada" ? "cierre" : (regsDe({ tipo:"encuesta", participanteId:S.yo.id })[0] ? "simulacion" : "encuesta");
   S.retomar = { origen, t:Date.parse(doc.generado) || ahora() };
   if (rondaAct().estado === "en_curso") prepararBloque(bloqueActual());
   S.abierto = ahora(); guardarLocal();
@@ -150,8 +151,8 @@ function empezarDeNuevo() {
 
 /* ---------- Sesión individual ---------- */
 function nuevaSesion() {
-  const rondas = {}; ESC.rondas.forEach(r => { rondas[r.id] = { estado:"pendiente", pasos:{} }; });
-  return { codigo:S.yo.id, nombre:CFG.estudio.titulo, escenario:ESC.id, modalidad:"asincrona", estado:"en_curso", creada:ahora(), rondaActual:ESC.rondas[0].id, pasoActual:PASOS[0].id, rondas };
+  const rondas = {}; RONDAS.forEach(r => { rondas[r.id] = { estado:"pendiente", pasos:{} }; });
+  return { codigo:S.yo.id, nombre:CFG.estudio.titulo, escenario:ESC.id, modalidad:"asincrona", estado:"en_curso", creada:ahora(), rondaActual:RONDAS[0].id, pasoActual:PASOS[0].id, rondas };
 }
 const vigentes = () => vigentesDe(S.regs);
 const regsDe = f => vigentes().filter(r => cumple(r, f));
@@ -166,13 +167,13 @@ function posicion() { const bs = bloques(), pid = S.ses.pasoActual; let i = bs.f
 const bloqueActual = () => posicion().b;
 function minutosEstimados(actor) {
   const T = GUION.tiempos; let m = T.inicio + T.cierre;
-  ESC.rondas.forEach(r => { bloquesDe(actor, r.modo).forEach(b => { m += b.tipo === "contexto" ? T.contexto * b.pasos.length : T[b.act.tipo]; }); m += T.valoracion; });
+  RONDAS.forEach(r => { bloquesDe(actor, r.modo).forEach(b => { m += b.tipo === "contexto" ? T.contexto * b.pasos.length : T[b.act.tipo]; }); m += T.valoracion; });
   return Math.max(10, Math.round(m / 5) * 5);
 }
 // Avance global del participante: actividades y valoraciones hechas frente a las que le corresponden.
 function avance() {
   let total = 0, hechas = 0;
-  ESC.rondas.forEach(r => {
+  RONDAS.forEach(r => {
     bloquesDe(S.yo.actor, r.modo).forEach(b => { if (b.tipo === "actividad") { total++; if (S.ses && miActividad(r.id, b.pasos[0])) hechas++; } });
     total++; if (S.ses && regsDe({ ronda:r.id, tipo:"preguntas", participanteId:S.yo.id }).length) hechas++;
   });
@@ -190,6 +191,91 @@ function registrar(tipo, payload, extra) {
 const registrarConduccion = (tipo, payload, extra) => registrar(tipo, payload, Object.assign({ origen:"sistema", participanteId:null, participanteNombre:null, actor:null }, extra || {}));
 // Lo que el sistema hace en nombre de los actores que no están conectados. Siempre lleva simulado:true.
 const registrarSimulado = (tipo, payload, extra) => registrarConduccion(tipo, Object.assign({ simulado:true }, payload), extra);
+
+/* ---------- El caso y sus ramas ----------
+   El perfil trae la persona y el contenido de las cinco piezas; el estado del caso guarda lo que
+   ha ido ocurriendo. El estado NO se acumula a mano: se recalcula replicando los registros
+   vigentes, así una corrección de respuesta lo deja consistente sin lógica aparte. */
+function perfilActual() {
+  const id = (S.cuenta && S.cuenta.perfil) || (CFG.estudio && CFG.estudio.perfil) || null;
+  return perfilDe(id);
+}
+function casoActual() { if (!S.caso) recomputarCaso(); return S.caso; }
+function aplicarPerfil() { resolverGuion(perfilActual()); }
+// Aplica un registro sobre el estado. `r` es una actividad del participante o una decisión del sistema.
+function aplicarRegistro(E, r) {
+  const pl = r.payload || {}, pid = r.paso;
+  if (r.tipo === "decision") {
+    const op = RAMAS.pasos[pid] && (pl.cual === "extra" ? (RAMAS.pasos[pid].extraOps || {}) : RAMAS.pasos[pid].ops)[pl.valor];
+    if (op && op.efecto) op.efecto(E, num(pl.dias), { por:pl.por || "sistema" });
+    E.historia.push({ paso:pid, por:pl.por || "sistema", valor:pl.valor, cual:pl.cual || "main", forzado:!!pl.forzado });
+    (E.decididos || (E.decididos = {}))[pid + ":" + (pl.cual || "main")] = true;
+    return;
+  }
+  if (r.tipo !== "actividad") return;
+  if (pl.tipo === "decide") {
+    const cual = pl.extra ? "extra" : "main";
+    const op = RAMAS.pasos[pid] && (cual === "extra" ? (RAMAS.pasos[pid].extraOps || {}) : RAMAS.pasos[pid].ops)[pl.decision];
+    if (op && op.efecto) op.efecto(E, num(pl.dias), { por:"participante" });
+    E.historia.push({ paso:pid, por:"participante", valor:pl.decision, cual:cual });
+    (E.decididos || (E.decididos = {}))[pid + ":" + cual] = true;
+  } else if (pl.tipo === "custodia") {
+    const op = RAMAS.custodia[pl.respuesta];
+    if (op && op.efecto) op.efecto(E, num(pl.dias), { piezas:pl.piezas || [], pide:pl.pide, paso:pid });
+    E.historia.push({ paso:pid, por:"participante", valor:pl.respuesta, cual:"custodia" });
+  } else if (pl.tipo === "soporte") {
+    const op = RAMAS.soporte[pl.accion];
+    if (op && op.efecto) op.efecto(E, 0, { actor:r.actor, paso:pid });
+    E.historia.push({ paso:pid, por:"participante", valor:pl.accion, cual:"soporte" });
+  }
+  if (pl.dias != null) E.diasDeclarados = (E.diasDeclarados || 0) + num(pl.dias);
+}
+function recomputarCaso() {
+  const E = RAMAS.inicial(perfilActual());
+  vigentes().slice().sort((a, b) => (a.t - b.t) || (PIDX[a.paso] - PIDX[b.paso]))
+    .forEach(r => { try { aplicarRegistro(E, r); } catch (e) {} });
+  S.caso = E;
+  return E;
+}
+/* Lo que deciden los actores que no están conectados, cuando el participante no juega ese papel.
+   Devuelve las decisiones ya aplicadas, para que quien llama las registre. */
+function resolverPaso(pid) {
+  const E = casoActual(), yo = S.yo.actor, r = RAMAS.pasos[pid], dec = ESC.decisiones[pid], out = [];
+  if (!r || !E) return out;
+  const hechas = E.decididos || (E.decididos = {});
+  if (!hechas[pid + ":main"] && r.actor !== yo) {
+    const d = RAMAS.decidirSistema(pid, E, yo, perfilActual());
+    if (d && d.valor && r.ops[d.valor]) {
+      r.ops[d.valor].efecto && r.ops[d.valor].efecto(E, 0, { por:"sistema" });
+      hechas[pid + ":main"] = true;
+      E.historia.push({ paso:pid, por:"sistema", valor:d.valor, cual:"main", forzado:d.forzado });
+      out.push({ paso:pid, cual:"main", valor:d.valor, actor:r.actor, forzado:d.forzado });
+    }
+  }
+  if (dec && dec.extra && !hechas[pid + ":extra"] && dec.extra.a !== yo && r.extraOps) {
+    const v = r.extraSistema ? r.extraSistema(E) : null;
+    if (v && r.extraOps[v]) {
+      r.extraOps[v].efecto && r.extraOps[v].efecto(E, 0, { por:"sistema" });
+      hechas[pid + ":extra"] = true;
+      E.historia.push({ paso:pid, por:"sistema", valor:v, cual:"extra" });
+      out.push({ paso:pid, cual:"extra", valor:v, actor:dec.extra.a });
+    }
+  }
+  return out;
+}
+// Registra como simulado lo que decidieron esos actores, enlazado con la respuesta que lo provocó.
+function registrarDecisiones(lista, pid, origenActividad) {
+  lista.forEach(d => registrarSimulado("decision", { de:d.actor, paso:d.paso, cual:d.cual, valor:d.valor, forzado:!!d.forzado, por:"sistema", origenActividad:origenActividad || null }, { paso:pid }));
+}
+// Texto de una opción, para mostrar la consecuencia.
+function textoOpcion(pid, cual, valor, E) {
+  const r = RAMAS.pasos[pid]; if (!r) return "";
+  const op = cual === "extra" ? (r.extraOps || {})[valor] : cual === "custodia" ? RAMAS.custodia[valor] : cual === "soporte" ? RAMAS.soporte[valor] : r.ops[valor];
+  if (!op) return "";
+  return op.texto + (op.extra && E ? " " + op.extra(E) : "");
+}
+// ¿Este paso no ocurre en el recorrido que el participante produjo?
+const pasoNoOcurre = pid => RAMAS.noOcurre(casoActual(), pid, S.yo && S.yo.actor);
 
 /* ---------- Conductor automático ---------- */
 /* Al llegar a una actividad de custodia el sistema hace de quien decide en el paso:
@@ -209,28 +295,31 @@ function iniciarRonda() {
   if (rd.estado !== "pendiente") return;
   rd.estado = "en_curso"; rd.iniciada = t; s.pasoActual = p0;
   const b = bloqueActual(); b.pasos.forEach(pid => { rd.pasos[pid] = { estado:"en_curso", iniciado:t }; });
-  registrarConduccion("inicio_ronda", { ronda:s.rondaActual }, { paso:p0 });
-  prepararBloque(b); S.form = {}; S.ctxObs = ""; S.abierto = t;
+  registrarConduccion("inicio_ronda", { ronda:s.rondaActual, perfil:(perfilActual() || {}).id || null }, { paso:p0 });
+  recomputarCaso(); prepararBloque(b); S.form = {}; S.ctxObs = ""; S.abierto = t;
 }
 function avanzar() {
   const s = S.ses, rd = rondaAct(), pos = posicion(), b = pos.b, sig = pos.sig, t = ahora();
   if (rd.estado !== "en_curso") return;
-  if (b.tipo === "actividad" && !miActividad(s.rondaActual, b.pasos[0])) return;
+  if (b.tipo === "actividad" && !miActividad(s.rondaActual, b.pasos[0]) && !pasoNoOcurre(b.pasos[0])) return;
   if (b.tipo === "contexto" && textoLimpio(S.ctxObs)) registrar("observacion", { texto:textoLimpio(S.ctxObs), pasos:b.pasos }, { paso:b.pasos[0] });
+  b.pasos.forEach(pid => { const sis = resolverPaso(pid); if (sis.length) registrarDecisiones(sis, pid, null); });
+  recomputarCaso();
   b.pasos.forEach(pid => { rd.pasos[pid] = Object.assign(rd.pasos[pid] || {}, { estado:"completado", completado:t }); });
   registrarConduccion("avance", { de:b.pasos, a:sig ? sig.pasos[0] : "valoracion", bloque:b.tipo }, { paso:b.pasos[b.pasos.length - 1] });
   if (sig) { s.pasoActual = sig.pasos[0]; sig.pasos.forEach(pid => { rd.pasos[pid] = { estado:"en_curso", iniciado:t }; }); prepararBloque(sig); }
   else rd.estado = "valoracion";
   S.form = {}; S.ctxObs = ""; S.verTodo = false; S.abierto = t;
 }
-// «a», «a y b», «a, b y c»: los avisos de lo que falta se leen como una frase.
-function listaFrase(xs) { return xs.length < 2 ? (xs[0] || "") : xs.slice(0, -1).join(", ") + " y " + xs[xs.length - 1]; }
 function validarForm(act) {
   const f = S.form, falta = [], sinDias = f.dias == null || String(f.dias).trim() === "" || !isFinite(parseFloat(String(f.dias).replace(",", "."))) || parseFloat(String(f.dias).replace(",", ".")) < 0;
   if (act.tipo === "decide") { if (!f.suficiencia) falta.push("si con lo que tiene puede actuar"); if (!f.finalidad) falta.push("con qué finalidad consultaría"); if (!f.decision) falta.push("qué decide"); if (!f.responde) falta.push("quién responde por la decisión"); if (sinDias) falta.push("en cuántos días"); }
   if (act.tipo === "custodia") { if (!f.respuesta) falta.push("qué entrega"); if (sinDias) falta.push("cuántos días le tomaría"); }
   if (act.tipo === "focal") { if (!f.sabe) falta.push("qué sabe de su caso"); if (!f.responde) falta.push("quién le responde"); if (!(f.hizo || []).length) falta.push("qué le tocó hacer"); }
   if (act.tipo === "soporte") { if (!f.ve) falta.push("qué alcanza a ver del caso"); if (!f.accion) falta.push("qué acción tomaría"); }
+  if (!f.cmp) falta.push("si con la información del módulo su decisión sería la misma");
+  else if (f.cmp === "otra" && !textoLimpio(f.cmpCual)) falta.push("cuál habría sido esa otra decisión");
+  if (!f.cmpSeg) falta.push("con cuánta seguridad decidiría");
   return falta;
 }
 function guardarActividad() {
@@ -238,7 +327,8 @@ function guardarActividad() {
   if (!act || rondaAct().estado !== "en_curso") return null;
   const falta = validarForm(act);
   if (falta.length) { aviso("Antes de guardar falta responder " + listaFrase(falta) + ".", true); return null; }
-  const payload = { tipo:act.tipo, obs:textoLimpio(f.obs) || null, abierto:S.abierto || null };
+  const payload = { tipo:act.tipo, obs:textoLimpio(f.obs, 2000) || null, abierto:S.abierto || null,
+    comparacion:{ decision:f.cmp || null, cual:textoLimpio(f.cmpCual, 600) || null, dias:f.cmpDias == null || String(f.cmpDias).trim() === "" ? null : num(f.cmpDias), seguridad:f.cmpSeg || null } };
   if (act.tipo === "decide") {
     Object.assign(payload, { suficiencia:f.suficiencia, falta:f.suficiencia === "suficiente" ? [] : (f.falta || []).slice(), finalidad:f.finalidad, decision:f.decision, decisionTxt:etiqueta(act.ops, f.decision), responde:f.responde, dias:num(f.dias), notifica:modo === "propuesto" ? (f.notifica || []).slice() : [] });
     payload.comprobacion = comprobarFinalidad(yo, f.finalidad, ESC.entradas[p.id] || [], p.id);
@@ -261,6 +351,11 @@ function guardarActividad() {
     }
   }
   if (act.tipo === "custodia") regsDe({ ronda:r, paso:p.id, tipo:"solicitud" }).filter(x => x.payload.a === yo).forEach(x => registrarConduccion("respuesta", Object.assign({ solicitud:x.id, de:yo, a:x.payload.de, respuesta:payload.respuesta, dias:payload.dias }, de)));
+  // El caso reacciona: se replica el estado con esta respuesta y se resuelven las decisiones ajenas.
+  recomputarCaso();
+  registrarDecisiones(resolverPaso(p.id), p.id, reg.id);
+  recomputarCaso();
+  payload.estado = RAMAS.compacto(S.caso);
   S.form = {};
   return reg;
 }
@@ -291,7 +386,7 @@ function cerrarRonda() {
   if (rd.estado !== "valoracion" || !valoracionHecha(r)) return;
   rd.estado = "cerrada"; rd.cerrada = t;
   registrarConduccion("cierre_ronda", { ronda:r }, { paso:"—" });
-  const sig = ESC.rondas[ESC.rondas.map(x => x.id).indexOf(r) + 1];
+  const sig = RONDAS[RONDAS.map(x => x.id).indexOf(r) + 1];
   if (sig) { s.rondaActual = sig.id; s.pasoActual = PASOS[0].id; }
   else { s.estado = "cerrada"; s.cerrada = t; S.etapa = "cierre"; }
   S.form = {}; S.val = {}; S.verTodo = false;
@@ -322,9 +417,31 @@ function aceptarConsentimiento() {
   const texto = [CONS.titulo].concat(CONS.info.map(i => i.t + ": " + plantilla(i.d)), CONS.adicional ? [plantilla(CONS.adicional)] : [], CONS.declaraciones.filter(d => decl[d.id]).map(d => d.t), decl[CONS.declaracionDatos.id] ? [CONS.declaracionDatos.t] : []);
   S.consent = { aceptado:true, t:ahora(), version:String(CONS.version), declaraciones:decl, anonimo:!Object.keys(datos).length, datos, resumen:!!(S.cons.resumen && datos.correo), texto };
   if (!S.ses) S.ses = nuevaSesion();
+  S.etapa = "encuesta"; S.abierto = ahora();
+  return true;
+}
+/* ---------- Encuesta de perfil del participante ---------- */
+function validarEncuesta() {
+  const falta = [];
+  GUION.encuesta.campos.forEach(c => {
+    if (!c.req) return;
+    if (c.id === "formacionCual" && S.enc.formacion !== "otra") return;
+    const v = S.enc[c.id];
+    if (v == null || String(v).trim() === "") falta.push(c.n.toLowerCase());
+  });
+  return falta;
+}
+function guardarEncuesta() {
+  const falta = validarEncuesta();
+  if (falta.length) { aviso("Antes de comenzar falta responder " + listaFrase(falta) + ".", true); return false; }
+  const pl = {};
+  GUION.encuesta.campos.forEach(c => { const v = S.enc[c.id]; if (v != null && String(v).trim() !== "") pl[c.id] = c.tipo === "numero" ? num(v) : textoLimpio(v, 1200); });
+  const previo = regsDe({ tipo:"encuesta", participanteId:S.yo.id })[0];
+  registrar("encuesta", pl, Object.assign({ paso:"—" }, previo ? { reemplaza:previo.id, version:(previo.version || 1) + 1 } : {}));
   S.etapa = "simulacion"; S.abierto = ahora();
   return true;
 }
+const encuestaHecha = () => !!regsDe({ tipo:"encuesta", participanteId:S.yo.id })[0];
 
 /* ---------- Documento de respuestas y entrega ---------- */
 function documentoRespuesta() {
@@ -333,7 +450,7 @@ function documentoRespuesta() {
     instrumento:INSTRUMENTO, formato:FORMATO, version:VERSION,
     estudio:{ id:CFG.estudio.id, titulo:CFG.estudio.titulo, configuracion:CFG.generado },
     cuenta:{ usuario:S.cuenta.u, actor:S.cuenta.a, prueba:!!S.cuenta.p, demo:!!CFG.demo },
-    participante:{ id:S.yo.id, anonimo:S.consent.anonimo, datos:S.consent.datos, resumen:S.consent.resumen },
+    participante:{ id:S.yo.id, anonimo:S.consent.anonimo, datos:S.consent.datos, resumen:S.consent.resumen, perfil:(perfilActual() || {}).id || null, encuesta:(regsDe({ tipo:"encuesta", participanteId:S.yo.id })[0] || { payload:{} }).payload },
     consentimiento:{ aceptado:true, t:S.consent.t, version:S.consent.version, declaraciones:S.consent.declaraciones, texto:S.consent.texto },
     estado:s.estado === "cerrada" ? "completa" : "parcial",
     avance:{ ronda:s.rondaActual, paso:s.estado === "cerrada" ? null : s.pasoActual, hechas:a.hechas, total:a.total },

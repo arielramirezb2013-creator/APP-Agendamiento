@@ -49,6 +49,8 @@ function textoLimpio(v, max) {
   return cs.join("").trim().length > (max || 600) ? Array.from(cs.join("").trim()).slice(0, max || 600).join("") : cs.join("").trim();
 }
 const plural = (n, uno, varios) => n + " " + (n === 1 ? uno : varios);
+// «a», «a y b», «a, b y c»: listas que se leen como una frase.
+function listaFrase(xs) { return xs.length < 2 ? (xs[0] || "") : xs.slice(0, -1).join(", ") + " y " + xs[xs.length - 1]; }
 const etiqueta = (ops, v) => { const o = (ops || []).filter(x => x[0] === v)[0]; return o ? o[1] : (v == null ? "" : String(v)); };
 
 /* ---------- Iconografía: identificadores del kit por concepto ---------- */
@@ -181,7 +183,11 @@ function pasoDurante(e) {
 const PASOS = SB.pasos.filter(p => p.fase === "antes").concat(BP.etapas.map(pasoDurante), SB.pasos.filter(p => p.fase === "despues"));
 const PIDX = {}; PASOS.forEach((p, i) => { PIDX[p.id] = i; });
 const vModo = m => m === "propuesto" ? "mod" : "hoy";
-const rondaDef = id => ESC.rondas.filter(r => r.id === id)[0];
+/* La versión asíncrona recorre la ruta UNA sola vez y pone la comparación con el módulo dentro de
+   cada paso: una persona sola no sostiene dos recorridos completos. Conserva el identificador de
+   la primera ronda del escenario para que los documentos sigan siendo compatibles. */
+const RONDAS = [Object.assign({}, ESC.rondas[0], { n:GUION.ronda.n })];
+const rondaDef = id => RONDAS.filter(r => r.id === id)[0] || RONDAS[0];
 const modoDe = ronda => (rondaDef(ronda) || {}).modo || "actual";
 function reglasDe(p, modo) {
   const o = p[vModo(modo)], dec = ESC.decisiones[p.id];
@@ -238,6 +244,72 @@ function comprobarFinalidad(actor, finId, piezas, pasoId) {
     if (v) perm[pz] = v; else den.push(pz);
   });
   return { finalidadAutorizada:aut, piezasPermitidas:perm, piezasDenegadas:den, piezasPropias:propias };
+}
+/* ---------- Perfiles del caso ----------
+   Un perfil es una persona y el contenido real de los campos de las cinco piezas de evidencia.
+   PERFIL_BASE es el caso del proyecto, incluido en la construcción; CFG.perfiles trae los que
+   cargó el investigador. Una cuenta puede fijar el suyo con `perfil`. */
+function perfilesDisponibles() {
+  const ex = (typeof CFG === "object" && CFG && CFG.perfiles) || [];
+  if (ex.length) return ex;
+  return typeof PERFIL_BASE === "undefined" ? [] : [PERFIL_BASE];
+}
+function perfilDe(id) { const ps = perfilesDisponibles(); return ps.filter(p => p.id === id)[0] || ps[0] || null; }
+/* El guion habla del caso con marcas —{persona}, {cargo}, {dia}…— que se resuelven una sola vez,
+   cuando se sabe con qué perfil recorre el participante. Así ningún texto queda atado a un caso. */
+let GUION_ORIG = null;
+function resolverGuion(perfil) {
+  if (!GUION_ORIG) GUION_ORIG = clone(GUION);
+  const p = (perfil && perfil.persona) || {}, c = (perfil && perfil.caso) || {};
+  const ac = p.acompanaCorto || "quien la acompaña";
+  const M = { persona:p.nombre || "la trabajadora", acompana:ac, acompanaMayus:ac.charAt(0).toUpperCase() + ac.slice(1),
+    edad:p.edad == null ? "—" : String(p.edad), cargo:p.cargo || "—", empresa:p.empresa || "—",
+    dia:c.diaRuta == null ? "—" : String(c.diaRuta), diagnostico:c.diagnostico || "—" };
+  const sub = t => t.replace(/\{(persona|acompanaMayus|acompana|edad|cargo|empresa|dia|diagnostico)\}/g, (m, k) => M[k]);
+  const walk = (dst, src) => { Object.keys(src).forEach(k => { const v = src[k]; dst[k] = typeof v === "string" ? sub(v) : (v && typeof v === "object") ? walk(Array.isArray(v) ? [] : {}, v) : v; }); return dst; };
+  walk(GUION, GUION_ORIG);
+  return GUION;
+}
+// La ficha de la persona del caso, con los rótulos del guion y los datos del perfil.
+function fichaPerfil(perfil) {
+  const p = (perfil && perfil.persona) || {}, c = (perfil && perfil.caso) || {}, out = [];
+  GUION.fichaPersona.forEach(f => { if (p[f[0]] != null && p[f[0]] !== "") out.push([f[1], String(p[f[0]])]); });
+  if (c.diagnostico) out.push(["Diagnóstico", c.diagnostico]);
+  if (c.diaRuta != null) out.push(["Dónde va el caso", "Día " + c.diaRuta + " de incapacidad" + (c.origenEnDisputa ? "; el origen sigue sin definirse" : "")]);
+  const af = p.afiliaciones || {};
+  if (af.eps || af.arl || af.pensiones) out.push(["Afiliaciones", [af.eps, af.arl, af.pensiones].filter(Boolean).join(", ")]);
+  return out;
+}
+// El contenido de un campo: el del perfil si lo trae, y si no el nombre del campo del blueprint.
+function campoPerfil(perfil, pieza, i) {
+  const e = ((perfil || {}).evidencia || {})[pieza];
+  const v = e && e.campos ? e.campos[i] : null;
+  return v == null || v === "" ? null : String(v);
+}
+/* Lo que de verdad llega de cada pieza en la ruta de hoy, según el estado del caso:
+   si la pieza llegó, con qué campos, y qué campos el perfil declara que hoy no llegan. */
+function expedienteHoy(E, perfil, pasoId) {
+  return RAMAS.piezasDe(pasoId).map(k => {
+    const st = (E.piezas || {})[k] || {}, ev = ((perfil || {}).evidencia || {})[k] || {}, falta = ev.faltaHoy || [];
+    return { k:k, llego:!!st.llego, conVersion:!!st.conVersion, propia:false,
+      campos:EV[k].campos.map((n, i) => ({ n:n, i:i,
+        v:st.llego && (st.campos == null || st.campos.indexOf(i) >= 0) && falta.indexOf(i) < 0 ? campoPerfil(perfil, k, i) : null })) };
+  });
+}
+// Lo que el módulo le abriría al actor en ese paso: su vista mínima por contrato.
+function expedienteModulo(perfil, actor, pasoId) {
+  return RAMAS.piezasDe(pasoId).map(k => {
+    const propia = EV[k].cust === actor;
+    const v = propia ? EV[k].campos.map((c, i) => i) : vistaDe(actor, k, pasoId);
+    return { k:k, abierta:!!v, propia:propia,
+      campos:EV[k].campos.map((n, i) => ({ n:n, i:i, v:v && v.indexOf(i) >= 0 ? campoPerfil(perfil, k, i) : null })) };
+  });
+}
+// Campos que el módulo añadiría a lo que hoy llega: es la diferencia que el participante compara.
+function camposQueAnade(E, perfil, actor, pasoId) {
+  const hoy = expedienteHoy(E, perfil, pasoId), mod = expedienteModulo(perfil, actor, pasoId), out = [];
+  mod.forEach((m, j) => m.campos.forEach(c => { if (c.v && !hoy[j].campos[c.i].v) out.push({ pieza:m.k, n:c.n, v:c.v }); }));
+  return out;
 }
 const camposTxt = (pz, idx) => idx.map(i => EV[pz].campos[i]).join(", ");
 const retenidosTxt = (pz, idx) => EV[pz].campos.filter((c, i) => idx.indexOf(i) < 0).join(", ");

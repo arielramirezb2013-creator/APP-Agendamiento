@@ -41,8 +41,8 @@ function fraseRegistro(r) {
   return r.tipo;
 }
 function etapasHtml() {
-  const items = ["Orientación", "Declaración"].concat(ESC.rondas.map((r, i) => "Ronda " + (i + 1)), ["Entrega"]);
-  const cur = S.etapa === "orientacion" ? 0 : S.etapa === "consentimiento" ? 1 : S.etapa === "simulacion" && S.ses ? 2 + ESC.rondas.map(r => r.id).indexOf(S.ses.rondaActual) : items.length - 1;
+  const items = ["Orientación", "Declaración", "Su perfil", "Recorrido", "Entrega"];
+  const cur = S.etapa === "orientacion" ? 0 : S.etapa === "consentimiento" ? 1 : S.etapa === "encuesta" ? 2 : S.etapa === "simulacion" ? 3 : items.length - 1;
   return `<ol class="etapas" aria-label="Etapas de su participación">${items.map((t, i) => `<li class="${i < cur ? "hecha" : i === cur ? "actual" : ""}"${i === cur ? ' aria-current="step"' : ""}><span class="n">${i < cur ? ico("estados-completado", "sm") : i + 1}</span><span class="t">${esc(t)}</span></li>`).join("")}</ol>`;
 }
 function renderTop() {
@@ -113,7 +113,7 @@ const cargarAvanceHtml = () => `<p class="mini otro-equipo">¿Ya había comenzad
 function intervencionHtml(actor) {
   const TIPO = { focal:"Vive el paso como M.P.", decide:"Decide", custodia:"Responde por evidencia que custodia", soporte:"Vigila o apoya" };
   const filas = PASOS.map(p => {
-    const porRonda = ESC.rondas.map(r => actividadDe(p, actor, r.modo));
+    const porRonda = RONDAS.map(r => actividadDe(p, actor, r.modo));
     if (!porRonda.some(Boolean)) return "";
     const txt = porRonda.every((x, i) => (x && x.tipo) === (porRonda[0] && porRonda[0].tipo)) ? TIPO[porRonda[0].tipo] : porRonda.map((x, i) => "Ronda " + (i + 1) + ": " + (x ? TIPO[x.tipo].toLowerCase() : "no interviene")).join(" · ");
     return `<tr><td class="nw"><span class="step-tag sm">${esc(p.id)}</span></td><td>${ico(ICO.paso[p.id], "sm")}${esc(p.n)}</td><td>${esc(txt)}</td></tr>`;
@@ -131,10 +131,10 @@ function vistaOrientacion() {
       <div class="guia">${ico("gobernanza-etica")}<div><b>${esc(E.aclaraTitulo)}</b><ul class="lista">${E.aclara.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div></div>${S.consent ? "" : cargarAvanceHtml()}`;
   } else if (id === "caso") {
     const C = O.caso;
-    const K = GUION.caso;
+    const K = GUION.caso, perfil = perfilActual();
     c = `<h1 tabindex="-1">${esc(C.titulo)}</h1><p>${esc(C.intro)}</p>
-      <div class="ficha-caso">${ico("documentos-datos-sinteticos", "lg")}<div><b>Quién es M.P.</b><div class="kv ficha-kv">${K.ficha.map(f => `<b>${esc(f[0])}</b><span>${esc(f[1])}</span>`).join("")}</div></div></div>
-      ${K.relato.map(t => `<p>${esc(t)}</p>`).join("")}
+      <div class="ficha-caso">${ico("documentos-datos-sinteticos", "lg")}<div><b>${esc(K.fichaTitulo)}</b><div class="kv ficha-kv">${fichaPerfil(perfil).map(f => `<b>${esc(f[0])}</b><span>${esc(f[1])}</span>`).join("")}</div></div></div>
+      <h2>${ico("navegacion-escenario")}${esc(K.resumenTitulo)}</h2><p>${esc((perfil && perfil.caso && perfil.caso.resumen) || "")}</p>
       <div class="guia">${ico("capitulos-tensiones-rupturas")}<div>${esc(K.disputa)}</div></div>
       <div class="guia">${ico("navegacion-escenario")}<div>${esc(K.recorrido)}</div></div>
       <p class="mini">${esc(BP.caso.alcance)}</p>
@@ -152,7 +152,7 @@ function vistaOrientacion() {
     c = `<h1 tabindex="-1">${esc(R.titulo)}</h1><p>${esc(R.intro)}</p>
       ${GUION.roles[a] ? `<div class="qpanel">${esc(GUION.roles[a])}</div>` : ""}
       <div class="ficha-rol"><div class="avatar xl">${icoActor(a)}</div><div><div class="rol-n">${esc(nomL(a))}</div><div class="kv"><b>Función en la ruta</b><span>${esc(A[a].funcion)}</span><b>Tensión conocida</b><span>${esc(A[a].tension)}</span><b>Grupo</b><span>${esc(A[a].grupo)}</span></div></div></div>
-      <h2>${ico("navegacion-blueprint")}${esc(R.intervieneTitulo)}</h2>${intervencionHtml(a)}<p class="mini" style="margin-top:8px">${esc(PASOS.some(p => ESC.rondas.some(rr => !actividadDe(p, a, rr.modo))) ? R.intervieneNota : R.intervieneNotaTodos)}</p>
+      <h2>${ico("navegacion-blueprint")}${esc(R.intervieneTitulo)}</h2>${intervencionHtml(a)}<p class="mini" style="margin-top:8px">${esc(PASOS.some(p => RONDAS.some(rr => !actividadDe(p, a, rr.modo))) ? R.intervieneNota : R.intervieneNotaTodos)}</p>
       <details data-det="terminos" open><summary>${esc(R.terminosTitulo)}</summary><dl class="info">${BP.terminos.concat(R.terminos || []).map(t => `<dt>${esc(t[0])}</dt><dd>${esc(t[1])}</dd>`).join("")}</dl></details>`;
   }
   const ult = i === O.pasos.length - 1, hecho = !!S.consent;
@@ -257,13 +257,54 @@ function relatoPaso(p, modo, conTitulo) {
   const sup = modo === "propuesto" && g.supuesto ? `<p class="mini"><b>Supuesto de esta simulación.</b> ${esc(g.supuesto)}</p>` : "";
   return `<div class="relato">${conTitulo ? `<div class="lbl">${ico(ICO.paso[p.id], "sm")}${esc(p.id)} · ${esc(p.n)}</div>` : ""}<p>${esc(t)}</p>${g.enJuego ? `<p class="mini en-juego">${ico("capitulos-decision-avance", "sm")}<b>Qué se juega aquí.</b> ${esc(g.enJuego)}</p>` : ""}${sup}</div>`;
 }
-function situacionHtml(p, actor, modo, act) {
+/* Lo que le compete al rol en este paso y la base legal de esa competencia, a la vista y no plegada:
+   el encargo del catálogo doctoral (SIM.retos), el responsable y el plazo que supone el proyecto
+   (BP.celdas), las normas que lo sustentan (SIM.normas) y los precedentes del actor (BP.actores). */
+function competenciaHtml(p, actor, modo) {
+  const C = GUION.competencia, ac = A[actor] || {};
   const reto = SIM.retos.filter(x => x.actor === actor && (x.etapa === p.id || x.etapa === "*") && GUION.retosOmitidos.indexOf(x.id) < 0)[0], c = celdaDe(p, actor, modo);
   if (!reto && !c) return "";
-  return `<div class="situacion"><div class="lbl">${ico("navegacion-escenario", "sm")}Lo que tiene usted sobre la mesa</div>
+  return `<div class="situacion"><div class="lbl">${ico("navegacion-escenario", "sm")}${esc(C.titulo)}</div>
     ${reto ? `<p><b>${esc(reto.titulo)}.</b> ${esc(reto[vModo(modo)])}</p>` : ""}
-    ${c ? `<div class="kv"><b>Evidencia</b><span>${esc(c.ev)}</span><b>Responsable y plazo</b><span>${esc(c.r)}</span><b>Registro</b><span>${esc(c.tz)}</span></div>` : ""}
-    ${reto && reto.base && reto.base.length ? `<details data-det="base-${esc(p.id)}"><summary>Base normativa</summary><ul class="lista">${reto.base.map(k => `<li>${esc(SIM.normas[k] || k)}</li>`).join("")}</ul></details>` : ""}</div>`;
+    ${c ? `<div class="kv"><b>${esc(C.plazoTitulo)}</b><span>${esc(c.r)}</span><b>Registro que debería quedar</b><span>${esc(c.tz)}</span></div>` : ""}
+    ${reto && reto.base && reto.base.length ? `<div class="normas"><div class="lbl mini">${ico("gobernanza-etica", "sm")}${esc(C.normasTitulo)}</div><ul class="lista">${reto.base.map(k => `<li>${esc(SIM.normas[k] || k)}</li>`).join("")}</ul></div>` : ""}
+    ${(ac.prec || []).length ? `<p class="mini">${esc(C.precedentesTitulo)}: ${esc(ac.prec.join(" · "))}.</p>` : ""}
+    <p class="mini">${esc(C.nota)}</p></div>`;
+}
+
+/* El expediente como le llega al actor en este paso: cada pieza, campo por campo, con el contenido
+   del perfil del caso, y los vacíos dichos como vacíos. Es «la información que viaja». */
+function expedienteHtml(p, actor, modo) {
+  const X = GUION.expediente, perfil = perfilActual(), E = casoActual(), piezas = RAMAS.piezasDe(p.id);
+  const cab = `<div class="lbl">${ico("documentos-evidencia", "sm")}${esc(X.tituloHoy)}</div>`;
+  if (!piezas.length) return `<div class="expediente">${cab}<p class="mini">${esc(X.nada)}</p></div>`;
+  const hoy = expedienteHoy(E, perfil, p.id);
+  return `<div class="expediente">${cab}<p class="mini">${esc(X.introHoy)}</p>
+    ${hoy.map(x => {
+      const propia = EV[x.k].cust === actor, llego = x.llego || propia;
+      const estado = propia ? X.propia : llego ? (x.conVersion ? X.conVersion : X.sinVersion) : X.noLlego;
+      return `<details data-det="exp-${esc(p.id)}-${esc(x.k)}"${llego ? " open" : ""}><summary>${ico(ICO.ev[x.k], "sm")}<b>${esc(EV[x.k].sl)}</b> · ${esc(EV[x.k].n)} <span class="mini">${esc(estado)}</span></summary>
+        ${llego
+          ? `<dl class="info">${x.campos.map(c => { const v = propia ? campoPerfil(perfil, x.k, c.i) : c.v; return `<dt>${esc(c.n)}</dt><dd${v ? "" : ' class="regla-no"'}>${esc(v || X.vacio)}</dd>`; }).join("")}</dl>`
+          : `<p class="mini">Esta pieza la custodia ${esc(nomF(EV[x.k].cust))} y en este punto del caso no llegó a su entidad.</p>`}
+      </details>`;
+    }).join("")}</div>`;
+}
+
+/* Lo que el módulo le habría abierto, y la comparación: la pregunta que el estudio compara.
+   Solo aparece cuando el participante ya respondió lo suyo, para no contaminar su decisión. */
+function comparacionHtml(p, actor) {
+  const X = GUION.expediente, C = GUION.comparacion, f = S.form;
+  const anade = camposQueAnade(casoActual(), perfilActual(), actor, p.id);
+  return `<div class="sep-bloque"></div><div class="modulo">
+    <div class="lbl">${ico("actores-modulo", "sm")}${esc(X.tituloMod)}</div><p class="mini">${esc(X.introMod)}</p>
+    ${anade.length
+      ? `<div class="lbl mini">${esc(X.anade)}</div><dl class="info">${anade.map(a => `<dt>${esc(a.n)} <span class="mini">${esc(EV[a.pieza].sl)}</span></dt><dd>${esc(a.v)}</dd>`).join("")}</dl>`
+      : `<p class="mini">${esc(X.anadeNada)}</p>`}
+    <fieldset><legend>${ico("investigacion-cambio-observado", "sm")}${esc(C.pregunta)}</legend><p class="mini ayuda">${esc(C.intro)}</p>${opt("f", "cmp", C.ops, f.cmp)}${f.cmp === "otra" ? `<input type="text" data-in="f-cmpCual" aria-label="${esc(C.cual)}" value="${esc(f.cmpCual || "")}" maxlength="600" class="ancho" placeholder="${esc(C.cual)}">` : ""}</fieldset>
+    <fieldset><legend>${ico("investigacion-tiempo", "sm")}${esc(C.dias)}</legend><p class="mini ayuda">${esc(C.diasAyuda)}</p><label class="sr-only" for="f-cmpdias">${esc(C.dias)}</label><input id="f-cmpdias" type="number" min="0" max="3650" step="1" inputmode="numeric" data-in="f-cmpDias" value="${esc(f.cmpDias == null ? "" : f.cmpDias)}" style="width:110px"></fieldset>
+    <fieldset><legend>${ico("investigacion-completitud", "sm")}${esc(C.seguridad)}</legend>${opt("f", "cmpSeg", C.seguridadOps, f.cmpSeg)}</fieldset>
+  </div>`;
 }
 function simuladosHtml(regs, titulo) {
   if (!regs.length) return "";
@@ -296,11 +337,23 @@ function formActividad(p, act, modo) {
   } else if (act.tipo === "soporte") {
     h += `<fieldset><legend>${ico("acciones-ver-detalle", "sm")}1. ¿Qué alcanza a ver del caso desde su entidad?</legend>${opt("f", "ve", ESC.soporte.ve, f.ve)}</fieldset><fieldset><legend>${ico("acciones-vigilar", "sm")}2. ¿Qué haría con lo que ve?</legend><p class="mini ayuda">Lo que haría de verdad en este punto, con las competencias y los recursos que tiene.</p>${opt("f", "accion", ESC.soporte.accion, f.accion)}</fieldset>`;
   }
-  h += `<fieldset><legend>${ico("acciones-observar", "sm")}¿Quiere añadir algo sobre este paso? (opcional)</legend><input type="text" data-in="f-obs" aria-label="Observación sobre este paso" value="${esc(f.obs || "")}" maxlength="600" class="ancho" placeholder="Lo que le llamó la atención, lo que faltó o lo que en su experiencia no ocurre así"></fieldset>`;
+  // La comparación con el módulo aparece cuando ya respondió lo suyo, para no contaminar su decisión.
+  const listo = act.tipo === "decide" ? !!f.decision : act.tipo === "custodia" ? !!f.respuesta
+    : act.tipo === "focal" ? !!(f.sabe && f.responde && (f.hizo || []).length) : !!(f.ve && f.accion);
+  h += listo
+    ? comparacionHtml(p, yo)
+    : `<p class="mini ayuda" style="margin-top:14px">${ico("actores-modulo", "sm")}Cuando responda lo anterior, aquí aparecerá qué le habría llegado con el módulo propuesto y la pregunta de comparación.</p>`;
+  const O = GUION.observacion;
+  h += `<fieldset><legend>${ico("acciones-observar", "sm")}${esc(O.titulo)} <span class="mini">(${esc(O.marca)})</span></legend><p class="mini ayuda">${esc(O.ayuda)}</p><textarea data-in="f-obs" aria-label="${esc(O.titulo)}" maxlength="2000" rows="4">${esc(f.obs || "")}</textarea></fieldset>`;
   return h;
 }
-const ETQ = { suficiencia:"Información", falta:"Faltó", finalidad:"Finalidad", decisionTxt:"Decisión", responde:"Responde", dias:"Días", notifica:"Notifica a", obs:"Observación", respuesta:"Respuesta", sabe:"Qué sabe", hizo:"Qué tuvo que hacer", ve:"Qué ve", accion:"Acción" };
+const ETQ = { suficiencia:"Información", falta:"Faltó", finalidad:"Finalidad", decisionTxt:"Decisión", responde:"Responde", dias:"Días", notifica:"Notifica a", respuesta:"Respuesta", sabe:"Qué sabe", hizo:"Qué tuvo que hacer", ve:"Qué ve", accion:"Acción", comparacion:"Con el módulo", obs:"Lo que añadió" };
 function valorTxt(k, v, yo) {
+  if (k === "comparacion") {
+    const C = GUION.comparacion;
+    if (!v || !v.decision) return "";
+    return etiqueta(C.ops, v.decision) + (v.cual ? " · «" + v.cual + "»" : "") + (v.dias != null ? " · " + plural(v.dias, "día", "días") : "") + (v.seguridad ? " · " + etiqueta(C.seguridadOps, v.seguridad).toLowerCase() : "");
+  }
   if (k === "suficiencia") return etiqueta(ESC.suficiencia, v);
   if (k === "finalidad") return finTxt(v);
   if (k === "responde") return v === "yo" ? "Mi entidad (" + nom(yo) + ")" : v === "nadie" ? (yo === "tra" ? "No sé" : "Nadie claramente") : nomL(v);
@@ -314,7 +367,8 @@ function valorTxt(k, v, yo) {
   return Array.isArray(v) ? v.join(", ") : String(v);
 }
 function respuestaKv(pl, yo) {
-  return `<div class="kv done-kv">${Object.keys(ETQ).filter(k => pl[k] != null && pl[k] !== "" && !(Array.isArray(pl[k]) && !pl[k].length)).map(k => `<b>${esc(ETQ[k])}</b><span>${esc(valorTxt(k, pl[k], yo))}</span>`).join("")}</div>`;
+  const hay = k => pl[k] != null && pl[k] !== "" && !(Array.isArray(pl[k]) && !pl[k].length) && !(k === "comparacion" && !pl[k].decision);
+  return `<div class="kv done-kv">${Object.keys(ETQ).filter(hay).map(k => `<b>${esc(ETQ[k])}</b><span>${esc(valorTxt(k, pl[k], yo))}</span>`).join("")}</div>`;
 }
 function resultadoHtml(p, modo, reg) {
   const pl = reg.payload, c = pl.comprobacion, yo = S.yo.actor, sig = posicion().sig, G = GUION.guardado;
@@ -329,10 +383,36 @@ function resultadoHtml(p, modo, reg) {
     comp = `<div class="comprobacion"><div class="lbl">${ico("gobernanza-contrato-datos", "sm")}${esc(esHoy ? G.comprobacionTituloHoy : G.comprobacionTituloMod)}</div><p>Finalidad declarada «${esc(finTxt(pl.finalidad))}»: ${c.finalidadAutorizada ? marca(true, vSi) : marca(false, vNo)}.${perm ? " Vista mínima: " + esc(perm) + "." : ""}${c.piezasDenegadas.length ? ` ${esc(esHoy ? "Quedaría fuera de ese contrato" : "Fuera de su contrato")}: ${marca(false, c.piezasDenegadas.map(k => EV[k].sl).join(", "))}.` : ""}${c.piezasPropias.length ? " Evidencia propia: " + esc(c.piezasPropias.map(k => EV[k].sl).join(", ")) + "." : ""}</p><p class="mini">${esc(esHoy ? G.comprobacionHoy : G.comprobacionMod)}</p></div>`;
   }
   return `<div class="qpanel ok">${ico("estados-guardado")}<b>${esc(G.titulo)}</b> a las ${esc(hora(reg.t))}${reg.version > 1 ? " · es una corrección: la respuesta anterior queda en el historial" : ""}</div>
-    ${respuestaKv(pl, yo)}${comp}${efectos.length ? simuladosHtml(efectos, G.efectos) + `<p class="mini">${esc(G.efectosNota)}</p>` : ""}
-    <p class="mini sigue">${ico("acciones-siguiente", "sm")}${esc(G.sigue)}</p>
-    <div class="nav-row"><button type="button" class="btn outline" data-act="rectificar">${ico("acciones-editar")}Corregir mi respuesta</button><span class="sp"></span><button type="button" class="btn" data-act="continuar">${sig ? "Continuar al paso " + esc(sig.pasos[0]) : "Continuar al cierre de la ronda"}${ico("acciones-siguiente")}</button></div>`;
+    ${respuestaKv(pl, yo)}${comp}${consecuenciaHtml(p, reg, efectos)}
+    <p class="mini sigue">${ico("acciones-siguiente", "sm")}${esc(GUION.consecuencia.sigue)}</p>
+    <div class="nav-row"><button type="button" class="btn outline" data-act="rectificar">${ico("acciones-editar")}Corregir mi respuesta</button><span class="sp"></span><button type="button" class="btn" data-act="continuar">${sig ? "Continuar al paso " + esc(sig.pasos[0]) : "Continuar al cierre del recorrido"}${ico("acciones-siguiente")}</button></div>`;
 }
+
+/* Qué pasó en el caso con esa respuesta: la consecuencia de lo que el participante decidió, lo que
+   hicieron los actores que no están conectados, y cómo queda el caso para los pasos que siguen. */
+function consecuenciaHtml(p, reg, efectos) {
+  const K = GUION.consecuencia, G = GUION.guardado, E = casoActual(), pl = reg.payload;
+  const cual = pl.tipo === "decide" ? (pl.extra ? "extra" : "main") : pl.tipo;
+  const valor = pl.tipo === "decide" ? pl.decision : pl.tipo === "custodia" ? pl.respuesta : pl.tipo === "soporte" ? pl.accion : null;
+  const mia = valor ? textoOpcion(p.id, cual, valor, E) : "";
+  const dec = vigentes().filter(x => x.tipo === "decision" && x.paso === p.id && x.payload.origenActividad === reg.id);
+  const otros = dec.map(x => {
+    const t = textoOpcion(p.id, x.payload.cual, x.payload.valor, E);
+    return `<li>${ico("actores-modulo", "sm")}<span><b>${esc(mayus(nomF(x.payload.de)))}.</b> ${esc(t)}${x.payload.forzado ? ` <span class="mini">${esc(K.forzado)}</span>` : ""}</span> ${chipSim}</li>`;
+  }).join("");
+  const est = RAMAS.resumenEstado(E);
+  return `<div class="consecuencia"><div class="lbl">${ico("capitulos-decision-avance", "sm")}${esc(K.titulo)}</div>
+    ${mia ? `<p>${esc(mia)}</p>` : ""}
+    ${otros ? `<div class="lbl mini">${esc(K.sistema)}</div><ul class="lista limpia">${otros}</ul>` : ""}
+    ${efectos.length ? simuladosHtml(efectos, G.efectos) + `<p class="mini">${esc(G.efectosNota)}</p>` : ""}
+    <div class="lbl mini">${esc(K.estado)}</div><div class="kv">${est.map(x => `<b>${esc(x[0])}</b><span>${esc(x[1])}</span>`).join("")}</div></div>`;
+}
+// Una línea con el caso: quién es y dónde va, para la barra lateral.
+function resumenCaso(perfil) {
+  const p = (perfil && perfil.persona) || {}, c = (perfil && perfil.caso) || {};
+  return [p.nombre, p.cargo ? String(p.cargo).toLowerCase() : null, c.diaRuta != null ? "día " + c.diaRuta : null].filter(Boolean).join(" · ");
+}
+const sigTxt = sig => sig ? "Continuar al paso " + esc(sig.pasos[0]) : "Continuar al cierre del recorrido";
 function contratoHtml(a) {
   const ac = A[a];
   const consulta = (ac.consulta || []).length ? ac.consulta.map(c => EV[c[0]].sl + ": " + camposTxt(c[0], c[1]) + " (" + c[1].length + " de " + EV[c[0]].campos.length + ")").join(" · ") + (ac.consultaNota ? " · " + ac.consultaNota : "") : (ac.consultaTxt || "—");
@@ -340,35 +420,58 @@ function contratoHtml(a) {
   return `<div class="kv"><b>Contrato</b><span>${esc(ac.contrato)}</span><b>Finalidad autorizada</b><span>«${esc(ac.fin)}»</span><b>Qué consulta</b><span>${esc(consulta)}</span><b>Qué entrega</b><span>${esc(entrega)}</span><b>Responsable y plazo</b><span>${esc(ac.resp)} · ${esc(ac.plazo)}</span><b>Notifica a</b><span>${esc(ac.notifica)}</span><b>Registro</b><span>${esc(ac.traza)}</span></div>`;
 }
 function rondaIntroHtml(r) {
-  const G = GUION.rondas[r.modo], bs = bloques(r.id), acts = bs.filter(b => b.tipo === "actividad");
-  return `<div class="pmain-head"><div><div class="eyebrow">Ronda ${ESC.rondas.indexOf(r) + 1} de ${ESC.rondas.length}</div><h1 class="h1" tabindex="-1">${ico(ICO.modo[r.modo])}${esc(G.titulo)}</h1></div></div>
+  const G = GUION.ronda, bs = bloques(r.id), acts = bs.filter(b => b.tipo === "actividad");
+  return `<div class="pmain-head"><div><div class="eyebrow">${esc(G.n)}</div><h1 class="h1" tabindex="-1">${ico(ICO.modo[r.modo])}${esc(G.titulo)}</h1></div></div>
     ${G.parrafos.map(p => `<p>${esc(p)}</p>`).join("")}
     ${GUION.roles[S.yo.actor] ? `<div class="qpanel">${icoActor(S.yo.actor)} ${esc(GUION.roles[S.yo.actor])}</div>` : ""}
-    ${r.modo === "propuesto" ? `<h2>${ico("gobernanza-contrato-datos")}${esc(G.reglasTitulo)}</h2><ol class="reglas">${BP.reglas.map(x => `<li>${ico(ICO.regla[x.n])}<span><b>${CIRC[x.n]} ${esc(x.nombre)}.</b> ${esc(x.enun)}</span></li>`).join("")}</ol><h2>${icoActor(S.yo.actor)}${esc(G.contratoTitulo)}</h2>${contratoHtml(S.yo.actor)}` : ""}
+    <details data-det="reglas"><summary>${esc(G.reglasTitulo)}</summary><ol class="reglas">${BP.reglas.map(x => `<li>${ico(ICO.regla[x.n])}<span><b>${CIRC[x.n]} ${esc(x.nombre)}.</b> ${esc(x.enun)}</span></li>`).join("")}</ol></details>
+    <details data-det="contrato-intro"><summary>${esc(G.contratoTitulo)}</summary>${contratoHtml(S.yo.actor)}</details>
     <div class="guia">${ico("navegacion-blueprint")}<div><b>Su recorrido en esta ronda.</b> ${acts.length ? "Interviene en " + plural(acts.length, "paso", "pasos") + " de los " + PASOS.length + ": " + esc(acts.map(b => b.pasos[0]).join(", ")) + "." + (bs.length > acts.length ? " En los demás lee el contexto." : " No hay ninguno en el que solo mire.") : "Su rol no tiene actividades en esta ronda: lee el contexto de los once pasos."} ${esc(G.recorridoCierre)}</div></div>
-    <button type="button" class="btn big" data-act="ronda-iniciar" style="margin-top:18px">${ico("acciones-iniciar")}Comenzar la ronda</button>`;
+    <button type="button" class="btn big" data-act="ronda-iniciar" style="margin-top:18px">${ico("acciones-iniciar")}Comenzar el recorrido</button>`;
 }
 function valoracionHtml(r) {
-  const v = S.val, yo = S.yo, hecha = valoracionHecha(r.id), sig = ESC.rondas[ESC.rondas.indexOf(r) + 1];
+  const v = S.val, yo = S.yo, hecha = valoracionHecha(r.id), sig = null;
   if (hecha && !v.rectificando) {
     const val = regsDe({ ronda:r.id, tipo:"valoracion", participanteId:yo.id })[0], pre = regsDe({ ronda:r.id, tipo:"preguntas", participanteId:yo.id })[0];
     return `<div class="qpanel ok">${ico("estados-guardado")}Valoración y respuestas guardadas · ${esc(hora(pre.t))}</div>
       <div class="kv done-kv"><b>Contrato</b><span>${esc(etiqueta(ESC.valoracion.semaforo, val.payload.semaforo))}${val.payload.ajuste ? " · " + esc(val.payload.ajuste) : ""}</span><b>Frente a hoy</b><span>${esc(etiqueta(ESC.valoracion.mejora, val.payload.mejora))}</span>${ESC.preguntas.map(q => `<b>${esc(q.id)}</b><span>${esc(q.tipo === "multi" ? (pre.payload[q.id] || []).map(x => etiqueta(q.ops, x)).join(", ") : q.tipo === "texto" ? pre.payload[q.id] : etiqueta(q.ops, pre.payload[q.id]))}${pre.payload[q.id + "cual"] ? " · " + esc(pre.payload[q.id + "cual"]) : ""}</span>`).join("")}</div>
-      <div class="nav-row"><button type="button" class="btn outline" data-act="val-rectificar">${ico("acciones-editar")}Corregir mi valoración</button><span class="sp"></span><button type="button" class="btn" data-act="ronda-cerrar">${sig ? "Continuar a la ronda " + (ESC.rondas.indexOf(sig) + 1) : "Terminar y pasar a la entrega"}${ico("acciones-siguiente")}</button></div>`;
+      <div class="nav-row"><button type="button" class="btn outline" data-act="val-rectificar">${ico("acciones-editar")}Corregir mi valoración</button><span class="sp"></span><button type="button" class="btn" data-act="ronda-cerrar">Terminar y pasar a la entrega${ico("acciones-siguiente")}</button></div>`;
   }
-  return `<div class="actividad"><div class="qpanel">${esc(GUION.rondas[r.modo].cierre)}</div>
+  return `<div class="actividad"><div class="qpanel">${esc(GUION.ronda.cierre)}</div>
     <details data-det="contrato"><summary>Ver el contrato de datos de su rol</summary>${contratoHtml(yo.actor)}</details>
     <fieldset><legend>${ico("capitulos-validacion-contratos", "sm")}El contrato de su rol</legend>${opt("v", "semaforo", ESC.valoracion.semaforo, v.semaforo)}${v.semaforo === "ajustar" || v.semaforo === "rechazar" ? `<input type="text" data-in="v-ajuste" aria-label="Qué cambiaría del contrato" value="${esc(v.ajuste || "")}" maxlength="600" class="ancho" placeholder="Qué cambiaría y por qué${v.semaforo === "rechazar" ? " (necesario si rechaza)" : ""}">` : ""}</fieldset>
-    <fieldset><legend>${ico("investigacion-cambio-observado", "sm")}Frente a la ruta como funciona hoy, esta forma de trabajar es…</legend>${opt("v", "mejora", ESC.valoracion.mejora, v.mejora)}${r.modo === "actual" ? `<p class="mini">${esc(GUION.rondas.actual.notaMejora)}</p>` : ""}</fieldset>
+    <fieldset><legend>${ico("investigacion-cambio-observado", "sm")}Frente a la ruta como funciona hoy, esta forma de trabajar es…</legend>${opt("v", "mejora", ESC.valoracion.mejora, v.mejora)}<p class="mini">${esc(GUION.ronda.notaMejora)}</p></fieldset>
     ${ESC.preguntas.map(q => `<fieldset><legend>${ico(ICO.sub[q.sub], "sm")}${esc(q.id)}. ${esc(q.t)}</legend>${q.tipo === "texto" ? `<input type="text" data-in="v-p" data-arg="${q.id}" aria-label="${esc(q.t)}" value="${esc(v[q.id] || "")}" maxlength="800" class="ancho" placeholder="Escriba al menos un requisito concreto">` : opt(q.tipo === "multi" ? "vm" : "v", q.id, q.ops, v[q.id], q.tipo === "multi")}${q.cual && (q.tipo === "multi" ? (v[q.id] || []).length && (v[q.id] || []).indexOf("ninguna") < 0 : v[q.id] && v[q.id] !== "si") ? `<input type="text" data-in="v-p" data-arg="${q.id}cual" aria-label="${esc(q.cual)}" value="${esc(v[q.id + "cual"] || "")}" maxlength="600" class="ancho" placeholder="${esc(q.cual)}">` : ""}</fieldset>`).join("")}
     ${errHtml()}<button type="button" class="btn big" data-act="guardar-val" style="margin-top:18px">${ico("acciones-guardar")}Guardar valoración y respuestas</button>${v.rectificando ? `<button type="button" class="btn outline" data-act="val-cancelar" style="margin-top:10px">${ico("acciones-cerrar")}Cancelar</button>` : ""}</div>`;
+}
+
+/* ---------- Encuesta de perfil del participante ---------- */
+function vistaEncuesta() {
+  const Q = GUION.encuesta, e = S.enc;
+  const campo = c => {
+    if (c.id === "formacionCual" && e.formacion !== "otra") return "";
+    const ayuda = c.ayuda ? `<p class="mini ayuda">${esc(c.ayuda)}</p>` : "";
+    let control;
+    if (c.tipo === "ops") control = opt("e", c.id, c.ops, e[c.id]);
+    else if (c.tipo === "largo") control = `<textarea data-in="e-campo" data-arg="${esc(c.id)}" aria-label="${esc(c.n)}" maxlength="1200" rows="4">${esc(e[c.id] || "")}</textarea>`;
+    else if (c.tipo === "numero") control = `<input type="number" min="0" max="70" step="1" inputmode="numeric" data-in="e-campo" data-arg="${esc(c.id)}" aria-label="${esc(c.n)}" value="${esc(e[c.id] == null ? "" : e[c.id])}" style="width:110px">`;
+    else control = `<input type="text" data-in="e-campo" data-arg="${esc(c.id)}" aria-label="${esc(c.n)}" value="${esc(e[c.id] || "")}" maxlength="300" class="ancho">`;
+    return `<fieldset><legend>${esc(c.n)}${c.req ? "" : ` <span class="mini">(opcional)</span>`}</legend>${ayuda}${control}</fieldset>`;
+  };
+  return `<div class="hoja"><div class="card">
+    <h1 tabindex="-1">${ico("actores-trabajador")}${esc(Q.titulo)}</h1>
+    <p>${esc(Q.intro)}</p>
+    <div class="actividad">${Q.campos.map(campo).join("")}
+      ${errHtml()}<button type="button" class="btn big" data-act="enc-guardar" style="margin-top:18px">${ico("acciones-siguiente")}${esc(Q.guardar)}</button></div>
+    <p class="mini" style="margin-top:12px">${esc(Q.nota)}</p>
+  </div></div>`;
 }
 
 /* ---------- Simulación: pantalla ---------- */
 function vistaSimulacion() {
   const s = S.ses, yo = S.yo, rd = rondaAct(), r = rondaDef(s.rondaActual), modo = r.modo, a = avance();
   const side = `<aside class="pside" aria-label="Su rol y su avance"><div class="avatar xl">${icoActor(yo.actor)}</div><div class="pside-actor">${esc(nomL(yo.actor))}</div><div class="pside-name">usuario ${esc(S.cuenta.u)}${S.cuenta.p || CFG.demo ? " · cuenta de prueba" : ""}</div>
-    <div class="callouts"><div class="callout"><b>${ico("navegacion-escenario", "sm")}El caso</b>${esc(GUION.caso.ficha[0][1])}. ${esc(GUION.caso.ficha[3][1])}.</div><div class="callout"><b>${ico(ICO.modo[modo], "sm")}Ronda</b>${esc(r.n)}</div><div class="callout"><b>${ico("capitulos-indicadores", "sm")}Su avance</b>${a.hechas} de ${a.total} respuestas<div class="meter"><span style="width:${a.pct}%"></span></div></div></div>
+    <div class="callouts"><div class="callout"><b>${ico("navegacion-escenario", "sm")}El caso</b>${esc(resumenCaso(perfilActual()))}</div><div class="callout"><b>${ico(ICO.modo[modo], "sm")}Recorrido</b>${esc(r.n)}</div><div class="callout"><b>${ico("capitulos-indicadores", "sm")}Su avance</b>${a.hechas} de ${a.total} respuestas<div class="meter"><span style="width:${a.pct}%"></span></div></div></div>
     <p class="mini" style="margin-top:12px">${esc(ESC.nota)}</p>
     <button type="button" class="btn outline sm" data-act="orient-ver">${ico("navegacion-guia", "sm")}Ver la orientación</button>
     <button type="button" class="enlace" data-act="retirar">Retirarme del estudio</button></aside>`;
@@ -384,13 +487,19 @@ function vistaSimulacion() {
         <div class="qpanel">${esc(b.pasos.length > 1 ? GUION.contexto.instr : GUION.contexto.instrUno)}</div>
         ${b.pasos.map(pid => { const pp = PASOS[PIDX[pid]]; return relatoPaso(pp, modo, true) + `<details data-det="paso-${esc(pid)}" class="mapa-paso"><summary>${ico("navegacion-blueprint", "sm")}Ver quién hace qué en ${esc(pid)}</summary>${pasoTarjeta(pp, modo, yo.actor, true)}</details>`; }).join("")}
         <fieldset class="bloque"><legend>${ico("acciones-observar", "sm")}${esc(GUION.contexto.obs)}</legend><input type="text" data-in="x-obs" aria-label="${b.pasos.length > 1 ? "Observación sobre estos pasos" : "Observación sobre este paso"}" value="${esc(S.ctxObs || "")}" maxlength="600" class="ancho"><p class="mini">${esc(GUION.contexto.obsAyuda)}</p></fieldset>
-        <div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="continuar">${sig ? "Continuar al paso " + esc(sig.pasos[0]) : "Continuar al cierre de la ronda"}${ico("acciones-siguiente")}</button></div>${completo}`;
+        <div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="continuar">${sig ? "Continuar al paso " + esc(sig.pasos[0]) : "Continuar al cierre del recorrido"}${ico("acciones-siguiente")}</button></div>${completo}`;
     } else {
       const p = pasoActual(), act = b.act, mio = miActividad(s.rondaActual, p.id), editando = !mio || S.form.rectificando;
       const primera = (bloques(s.rondaActual).filter(x => x.tipo === "actividad")[0] || { pasos:[] }).pasos[0] === p.id;
       const instr = act.tipo === "custodia" && modo === "propuesto" ? act.instrMod : (!primera && act.instrCorta ? act.instrCorta : act.instr);
-      const cuerpo = editando ? `<div class="actividad"><div class="qpanel">${esc(instr)}</div>${situacionHtml(p, yo.actor, modo, act)}${act.tipo === "decide" ? `<details data-det="info" open><summary>Información disponible en este paso</summary>${infoDisponible(p, yo.actor, modo)}</details>` : ""}${formActividad(p, act, modo)}${errHtml()}<button type="button" class="btn big" data-act="guardar" style="margin-top:18px">${ico("acciones-guardar")}Guardar mi respuesta</button>${mio ? `<button type="button" class="btn outline" data-act="cancelar-rect" style="margin-top:10px">${ico("acciones-cerrar")}Cancelar</button>` : ""}</div>` : resultadoHtml(p, modo, mio);
-      main = `<div class="pmain-head"><div><div class="eyebrow">${esc(r.n)}</div><h1 class="h1" tabindex="-1">${ico(ICO.actividad[act.tipo])}${esc(act.titulo)}</h1></div><div class="head-right"><span class="chip ${editando ? "ch-navy live" : "ch-teal"}">${ico(editando ? "estados-en-curso" : "estados-completado", "sm")}${editando ? "su turno" : "respondida"}</span>${verTodo}</div></div>${progresoHtml()}
+      const razon = pasoNoOcurre(p.id);
+      const cuerpo = razon
+        ? `<div class="actividad"><div class="qpanel">${ico("estados-cerrado")}<b>Este paso no ocurre en el recorrido que usted produjo.</b><p class="mini">${esc(razon)}</p></div>
+            <div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="continuar">${sigTxt(posicion().sig)}${ico("acciones-siguiente")}</button></div></div>`
+        : editando
+          ? `<div class="actividad"><div class="qpanel">${esc(instr)}</div>${competenciaHtml(p, yo.actor, modo)}${expedienteHtml(p, yo.actor, modo)}${formActividad(p, act, modo)}${errHtml()}<button type="button" class="btn big" data-act="guardar" style="margin-top:18px">${ico("acciones-guardar")}Guardar mi respuesta y ver qué pasa</button>${mio ? `<button type="button" class="btn outline" data-act="cancelar-rect" style="margin-top:10px">${ico("acciones-cerrar")}Cancelar</button>` : ""}</div>`
+          : resultadoHtml(p, modo, mio);
+      main = `<div class="pmain-head"><div><div class="eyebrow">${esc(r.n)} · paso ${esc(p.id)} de ${PASOS.length}</div><h1 class="h1" tabindex="-1">${ico(ICO.actividad[act.tipo])}${esc(razon ? p.n : act.titulo)}</h1></div><div class="head-right"><span class="chip ${razon ? "ch-grey" : editando ? "ch-navy live" : "ch-teal"}">${ico(razon ? "estados-cerrado" : editando ? "estados-en-curso" : "estados-completado", "sm")}${razon ? "no ocurre" : editando ? "su turno" : "respondida"}</span>${verTodo}</div></div>${progresoHtml()}
         ${relatoPaso(p, modo)}
         <details data-det="paso-mapa" class="mapa-paso"><summary>${ico("navegacion-blueprint", "sm")}Ver quién hace qué en este paso</summary>${pasoTarjeta(p, modo, yo.actor, false)}</details>
         <div class="sep-bloque"></div>${cuerpo}${completo}`;
@@ -421,7 +530,7 @@ function vistaCierre() {
   }
   return `<div class="hoja"><div class="card cierre">
     <div class="closing"><div class="estado-cierre ok" tabindex="-1" id="titulo-cierre">${ico("estados-cerrado", "lg")}${esc(C.titulo)}</div><p class="closing-desc">${esc(C.gracias)}</p>
-      <table class="st"><thead><tr><th scope="col">Lo que registró</th><th scope="col">Cantidad</th></tr></thead><tbody><tr><td>Actividades respondidas</td><td>${n("actividad")}</td></tr><tr><td>Valoraciones del contrato</td><td>${n("valoracion")}</td></tr><tr><td>Preguntas P1 a P4 respondidas</td><td>${n("preguntas")} de ${ESC.rondas.length}</td></tr><tr><td>Observaciones</td><td>${n("observacion") + obsAct}</td></tr></tbody></table></div>
+      <table class="st"><thead><tr><th scope="col">Lo que registró</th><th scope="col">Cantidad</th></tr></thead><tbody><tr><td>Actividades respondidas</td><td>${n("actividad")}</td></tr><tr><td>Valoraciones del contrato</td><td>${n("valoracion")}</td></tr><tr><td>Preguntas P1 a P4 respondidas</td><td>${n("preguntas") ? "sí" : "no"}</td></tr><tr><td>Observaciones</td><td>${n("observacion") + obsAct}</td></tr></tbody></table></div>
     <h2>${ico("acciones-exportar")}Entrega de sus respuestas</h2>${entrega}
     <fieldset class="bloque"><legend>${ico("acciones-observar", "sm")}${esc(C.comentario)}</legend><textarea data-in="x-comentario" aria-label="Comentario para el investigador" maxlength="2000" rows="3">${esc(S.comentario || "")}</textarea><button type="button" class="btn sec" data-act="guardar-comentario" style="margin-top:8px">${ico("acciones-guardar")}Guardar comentario</button></fieldset>
     <details data-det="mis"><summary>Ver lo que respondí</summary>${misRespuestasHtml()}</details>

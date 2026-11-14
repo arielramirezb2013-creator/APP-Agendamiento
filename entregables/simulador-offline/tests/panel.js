@@ -115,7 +115,7 @@ function documento(usuario, actor, estudioId, variante, hasta) {
     await ctxU.close();
     /* ---------- Respuestas ---------- */
     const eps1 = p.proyecto.cuentas.filter(q => q.a === "eps")[0].u, eps2 = p.proyecto.cuentas.filter(q => q.a === "eps")[1].u, jr1 = p.proyecto.cuentas.filter(q => q.a === "jr")[0].u;
-    const docs = [documento(eps1, "eps", "estudio-de-prueba", 0), documento(eps2, "eps", "estudio-de-prueba", 1), documento(jr1, "jr", "estudio-de-prueba", 2, { ronda:"R2", paso:"E3" })];
+    const docs = [documento(eps1, "eps", "estudio-de-prueba", 0), documento(eps2, "eps", "estudio-de-prueba", 1), documento(jr1, "jr", "estudio-de-prueba", 2, { ronda:"R1", paso:"E3" })];
     const rutas = docs.map((d, i) => { const f = path.join(L.SALIDA, "resp-" + i + ".json"); fs.writeFileSync(f, JSON.stringify(d, null, 1)); return f; });
     const alterado = JSON.parse(JSON.stringify(docs[0])); alterado.participante.id = "p" + "f".repeat(16); alterado.registros.push({ id:"x", tipo:"observacion", payload:{ texto:"añadido a mano" } });
     const fAlt = path.join(L.SALIDA, "resp-alterada.json"); fs.writeFileSync(fAlt, JSON.stringify(alterado));
@@ -135,7 +135,7 @@ function documento(usuario, actor, estudioId, variante, hasta) {
     /* ---------- Seguimiento ---------- */
     await ir(pg, "seguimiento");
     const seg = await texto(pg, "#vista");
-    T.ok(/sin respuesta/.test(seg) && /Terminó las dos rondas/.test(seg) && /paso E3/.test(seg), "el seguimiento muestra quién no ha respondido, quién terminó y en qué paso va el resto", seg.slice(0, 200));
+    T.ok(/sin respuesta/.test(seg) && /Terminó el recorrido/.test(seg) && /paso E3/.test(seg), "el seguimiento muestra quién no ha respondido, quién terminó y en qué paso va el resto", seg.slice(0, 200));
     await clic(pg, '[data-act="seg-ficha"]', 400);
     const ficha = await texto(pg, "#vista");
     T.ok(/Qué respondió, paso a paso/.test(ficha) && /Declaración/.test(ficha) && !(await roto(pg)), "la ficha de un participante muestra sus respuestas en las dos rondas");

@@ -1,0 +1,112 @@
+{
+  "formato": "perfiles-simulacion/1",
+  "nota": "Perfiles sintéticos. Ninguno corresponde a una persona real. Si se inspiran en sentencias judiciales, se toma el patrón del caso, nunca los datos de las partes.",
+  "perfiles": [
+    {
+      "id": "mp",
+      "persona": {
+        "nombre": "M.P.",
+        "edad": 41,
+        "cargo": "Operaria de empaque",
+        "empresa": "Alimentos Andinos S.A.S.",
+        "sector": "Alimentos",
+        "antiguedad": "6 años",
+        "contrato": "Término indefinido",
+        "jornada": "Turnos de 8 horas, rotativos",
+        "ingreso": "2 salarios mínimos",
+        "ciudad": "Ciudad sintética",
+        "hogar": "Jefa de hogar, dos hijos menores a cargo",
+        "acompana": "Su hermana L.P., que la lleva a las diligencias y hace las filas con ella",
+        "afiliaciones": {
+          "eps": "EPS SURA",
+          "arl": "ARL SURA",
+          "pensiones": "Administradora de pensiones (AFP / Colpensiones)"
+        },
+        "acompanaCorto": "su hermana L.P."
+      },
+      "caso": {
+        "diagnostico": "Lumbago con ciática (CIE-10 M54.4)",
+        "diaRuta": 150,
+        "origenEnDisputa": true,
+        "resumen": "Consultó hace cinco meses por un dolor lumbar que se le irradiaba a la pierna. Desde entonces ha renovado la incapacidad cada treinta días. En el día 120 le correspondía a la EPS definir el origen; esa definición sigue en disputa entre la EPS y la ARL y el caso cursa ante la Junta Regional.",
+        "fuente": "Caso sintético del proyecto, construido sobre el service blueprint y el prototipo de medio nivel."
+      },
+      "evidencia": {
+        "hc": {
+          "pieza": "Resumen clínico estructurado",
+          "version": "v.3",
+          "custodio": "IPS",
+          "campos": [
+            "M54.4 · Lumbago con ciática. Primera consulta el día 1; resonancia del día 95: protrusión discal L5-S1 con compromiso radicular.",
+            "150 días continuos a la fecha de corte, sin reintegro intermedio.",
+            "No levantar cargas de más de 5 kg; no permanecer de pie más de 30 minutos seguidos; no flexionar el tronco de forma repetitiva.",
+            "Pendiente: la valoración de fisiatría está programada para el día 165.",
+            "12 consultas, 2 remisiones a fisioterapia (20 sesiones) y analgesia escalonada; mejoría parcial y recaída tras el intento de reintegro del día 118.",
+            "Jefa de hogar con dos hijos menores; refiere ansiedad por la pérdida de ingreso."
+          ],
+          "faltaHoy": [
+            3,
+            4
+          ]
+        },
+        "apt": {
+          "pieza": "Matriz de exposición / análisis de puesto",
+          "version": "v.2",
+          "custodio": "Empleador",
+          "campos": [
+            "Operaria de empaque, línea 3: empaque manual, sellado y estibado de cajas de producto terminado.",
+            "Cajas de 12 a 18 kg; entre 320 y 400 levantamientos por turno de 8 horas.",
+            "Índice de levantamiento 2,4 (NIOSH), por encima del límite recomendado de 1,0.",
+            "v.2 · 14 de marzo de 2026 · ingeniera de seguridad y salud en el trabajo.",
+            "Dos llamados de atención por llegadas tarde en 2024."
+          ],
+          "faltaHoy": [
+            3
+          ]
+        },
+        "inc": {
+          "pieza": "Certificados de incapacidad",
+          "version": "corte día 150",
+          "custodio": "EPS",
+          "campos": [
+            "150 días continuos de incapacidad.",
+            "Cinco prórrogas de 30 días, expedidas por el médico tratante.",
+            "Día 1 de la incapacidad, con el certificado inicial de la IPS.",
+            "Ingreso base de cotización: 2 salarios mínimos."
+          ],
+          "faltaHoy": []
+        },
+        "hl": {
+          "pieza": "Historia laboral y semanas",
+          "version": "corte día 150",
+          "custodio": "Administradora de pensiones",
+          "campos": [
+            "612 semanas cotizadas en total; 48 en los últimos tres años.",
+            "Densidad de cotización de 0,84 en los últimos cinco años.",
+            "Entre 1 y 2 salarios mínimos de forma continua desde 2011.",
+            "Cuatro empleadores; en Alimentos Andinos S.A.S. desde hace 6 años."
+          ],
+          "faltaHoy": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        "dic": {
+          "pieza": "Dictamen de primera instancia",
+          "version": "v.1 según firma",
+          "custodio": "Junta Regional",
+          "existeDesde": "E3",
+          "campos": [
+            "Lo define la Junta Regional en el paso E3.",
+            "Lo define la Junta Regional en el paso E3.",
+            "Lo define la Junta Regional en el paso E3.",
+            "Lo define la Junta Regional en el paso E3."
+          ],
+          "faltaHoy": []
+        }
+      }
+    }
+  ]
+}

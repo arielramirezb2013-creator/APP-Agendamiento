@@ -56,9 +56,19 @@ def estilos():
     return leer(MESA / "src/theme.css") + "\n  /* ===== Kit de iconos (iconos.css) ===== */\n  " + leer(MESA / "kit-iconos/iconos.css").strip() + "\n" + extra
 
 
+def perfil_base():
+    """El caso del proyecto, en el formato de perfiles, incluido en la construcción.
+    Da el contenido real de los campos de las cinco piezas de evidencia, que el blueprint solo nombra."""
+    p = RAIZ / "perfiles/perfil-ejemplo-mp.json"
+    d = json.loads(leer(p))
+    return "/* Perfil base del caso, desde perfiles/perfil-ejemplo-mp.json */\nconst PERFIL_BASE = " + json.dumps(d["perfiles"][0], ensure_ascii=False) + ";"
+
+
 def aplicacion(partes):
     datos = [MESA / "src/datos-blueprint.js", MESA / "src/datos-escenario.js", AQUI / "datos-guion.js"]
-    cuerpo = "\n".join(leer(p).rstrip() for p in datos + [AQUI / x for x in partes])
+    cuerpo = "\n".join(leer(p).rstrip() for p in datos)
+    cuerpo += "\n" + perfil_base() + "\n" + leer(AQUI / "datos-ramas.js").rstrip()
+    cuerpo += "\n" + "\n".join(leer(AQUI / x).rstrip() for x in partes)
     return '(function () {\n"use strict";\n' + cuerpo + "\n})();"
 
 

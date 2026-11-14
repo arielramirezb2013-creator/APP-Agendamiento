@@ -155,7 +155,7 @@ const sellar = d => { d.huella = motor.huellaDoc(d); return d; };
     const ctxB = await br.newContext({ viewport:{ width:1280, height:900 } }), pgB = await L.pagina(ctxB, errores, propio);
     await pgB.goto(S.base + "/index.html"); await L.entrarDemo(pgB, "eps-01", CLAVE);
     let visto = ""; for (let i = 0; i < 50; i++) { visto = await L.texto(pgB, "#vista"); if (/Bienvenido de nuevo/.test(visto)) break; await L.w(pgB, 100); }
-    T.ok(/Bienvenido de nuevo/.test(visto) && /servidor del estudio/.test(visto) && /2 de 16/.test(visto), "en otro navegador, con el mismo usuario y contraseña, el receptor devuelve el avance", visto.slice(0, 200));
+    T.ok(/Bienvenido de nuevo/.test(visto) && /servidor del estudio/.test(visto) && /2 de 8/.test(visto), "en otro navegador, con el mismo usuario y contraseña, el receptor devuelve el avance", visto.slice(0, 200));
     await L.clic(pgB, '[data-act="retomar-continuar"]'); await L.recorrerInterfaz(pgB, 0); await L.w(pgB, 800);
     w1 = leer();
     T.ok(w1 && w1.documento.estado === "completa" && !motor.validarRespuesta(w1.documento).length && /Sus respuestas fueron enviadas/.test(await L.texto(pgB, "#vista")), "y al terminar allí queda en el servidor el documento completo y válido");

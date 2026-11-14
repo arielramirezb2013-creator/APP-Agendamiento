@@ -1,5 +1,5 @@
 /* ============ Simulador: pintado, eventos e inicio ============ */
-const VISTAS = { acceso:vistaAcceso, orientacion:vistaOrientacion, consentimiento:vistaConsentimiento, rechazo:vistaRechazo, retirado:vistaRetirado, simulacion:vistaSimulacion, cierre:vistaCierre };
+const VISTAS = { acceso:vistaAcceso, orientacion:vistaOrientacion, consentimiento:vistaConsentimiento, rechazo:vistaRechazo, encuesta:vistaEncuesta, retirado:vistaRetirado, simulacion:vistaSimulacion, cierre:vistaCierre };
 // Identifica la pantalla: al cambiar se lleva el foco al título y la página al inicio.
 function claveVista() {
   if (falloGrave) return "fallo";
@@ -17,7 +17,7 @@ const esCampoTexto = el => !!el && (el.tagName === "TEXTAREA" || (el.tagName ===
 function tituloVentana() {
   const base = CFG.estudio.titulo;
   if (!S.cuenta) return base;
-  const donde = S.retomar ? "Bienvenido de nuevo" : S.etapa === "orientacion" ? "Orientación" : S.etapa === "consentimiento" ? "Declaración" : S.etapa === "cierre" ? "Entrega" : S.etapa === "simulacion" && S.ses ? dondeQuedo() : "";
+  const donde = S.retomar ? "Bienvenido de nuevo" : S.etapa === "orientacion" ? "Orientación" : S.etapa === "consentimiento" ? "Declaración" : S.etapa === "encuesta" ? "Su perfil" : S.etapa === "cierre" ? "Entrega" : S.etapa === "simulacion" && S.ses ? dondeQuedo() : "";
   return (donde ? donde + " · " : "") + base;
 }
 function render() {
@@ -57,6 +57,11 @@ function prellenar(pl) {
   ["falta", "notifica", "hizo"].forEach(k => { if (pl[k]) f[k] = pl[k].slice(); });
   if (pl.dias != null) f.dias = String(pl.dias);
   if (pl.obs) f.obs = pl.obs;
+  const c = pl.comparacion || {};
+  if (c.decision) f.cmp = c.decision;
+  if (c.cual) f.cmpCual = c.cual;
+  if (c.dias != null) f.cmpDias = String(c.dias);
+  if (c.seguridad) f.cmpSeg = c.seguridad;
   return f;
 }
 function prellenarValoracion(ronda) {
@@ -94,7 +99,9 @@ const ACCIONES = {
   "avance-descargar":async () => { const ok = await descargarArchivo(nombreArchivo(), jsonRespuesta(), "application/json"); if (ok) { S.descargado = ahora(); guardarLocal(); } aviso(ok ? "Archivo de avance descargado. Guárdelo: con él puede continuar en otro dispositivo." : "No se descargó el archivo. Inténtelo de nuevo.", !ok); },
   "recargar":() => { guardarLocal(); location.reload(); },
   "c-anon":(arg, v) => { S.cons.anonimo = v; guardarLocal(); render(); },
-  "consent-si":() => { if (aceptarConsentimiento()) { guardarLocal(); envioProgresivo(); aviso("Gracias. Su declaración quedó registrada; puede comenzar cuando quiera."); } },
+  "consent-si":() => { if (aceptarConsentimiento()) { guardarLocal(); envioProgresivo(); aviso("Gracias. Su declaración quedó registrada."); } },
+  "e":(arg, v) => { S.enc[arg] = S.enc[arg] === v ? null : v; guardarLocal(); render(); },
+  "enc-guardar":() => { if (guardarEncuesta()) { guardarLocal(); envioProgresivo(); aviso("Gracias. Puede comenzar el recorrido cuando quiera."); } },
   "consent-no":() => { const u = S.cuenta.u; borrarLocal(u); salir(); S.etapa = "rechazo"; render(); },
   "volver-acceso":() => { S.etapa = "acceso"; render(); },
   "ronda-iniciar":() => { iniciarRonda(); guardarLocal(); render(); },
@@ -150,7 +157,8 @@ document.addEventListener("input", ev => {
   const k = i.getAttribute("data-in"), arg = i.getAttribute("data-arg") || "";
   if (k === "a-u") S.acc.u = i.value; else if (k === "a-c") S.acc.c = i.value;
   else if (k === "c-dato") S.cons.datos[arg] = i.value;
-  else if (k === "f-dias") S.form.dias = i.value; else if (k === "f-obs") S.form.obs = i.value;
+  else if (k.slice(0, 2) === "f-") S.form[k.slice(2)] = i.value;
+  else if (k === "e-campo") S.enc[arg] = i.value;
   else if (k === "x-obs") S.ctxObs = i.value; else if (k === "x-comentario") S.comentario = i.value;
   else if (k === "v-ajuste") S.val.ajuste = i.value; else if (k === "v-p") S.val[arg] = i.value;
   else return;

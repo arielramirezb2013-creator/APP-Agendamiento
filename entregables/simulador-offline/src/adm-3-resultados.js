@@ -52,7 +52,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
   const fechaSegura = t => typeof t === "number" && isFinite(t) && Math.abs(t) < 8.64e15 ? fecha(t) : "—";
 
   /* ---------- Escenario: rondas, pasos, roles y etiquetas legibles ---------- */
-  const R = ESC.rondas, RID = R.map(r => r.id), REQ = lst(ESC.requeridos);
+  const R = RONDAS, RID = R.map(r => r.id), REQ = lst(ESC.requeridos);
   const esRol = a => !!own(A, a);
   const idxPaso = id => { const i = own(PIDX, id); return typeof i === "number" ? i : -1; };
   const rondaC = id => { const i = RID.indexOf(id); return i < 0 ? "—" : "Ronda " + (i + 1) + " · " + (R[i].modo === "propuesto" ? "con el módulo" : "hoy"); };

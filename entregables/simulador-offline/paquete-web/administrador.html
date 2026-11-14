@@ -750,7 +750,7 @@ const GUION = {
   estudio: {
     id:"ruta-incapacidad-p2",
     titulo:"Simulación de la ruta de incapacidad laboral",
-    subtitulo:"Interoperabilidad clínico-laboral · caso sintético M.P. · organización ancla SURA",
+    subtitulo:"Interoperabilidad clínico-laboral · caso sintético {persona} · organización ancla SURA",
     programa:"Proyecto 2 · DGIT 6202",
     institucion:"Universidad de los Andes",
     investigador:"", director:"", contacto:"", comite:"", cierre:""
@@ -759,24 +759,15 @@ const GUION = {
   /* ---------- El caso sintético ----------
      Datos tomados del prototipo «Mapa de actores» y del service blueprint del proyecto. Ninguna persona es
      identificable: el nombre, la empresa y la aseguradora de pensiones son ficticios. */
+  /* ---------- El caso ----------
+     La ficha y el relato los trae el perfil cargado (perfiles/FORMATO-PERFILES.md); aquí quedan
+     solo los textos que valen para cualquier caso. */
   caso: {
-    nombre:"M.P.",
-    ficha:[
-      ["Quién", "M.P., 41 años, operaria de empaque"],
-      ["Dónde trabaja", "Alimentos Andinos S.A.S., una empresa sintética del sector de alimentos"],
-      ["Diagnóstico", "Lumbago con ciática (CIE-10 M54.4)"],
-      ["Dónde va el caso", "Día 150 de incapacidad continua; el origen sigue sin definirse desde el día 120"],
-      ["Quién la acompaña", "Su hermana L.P., que la lleva a las diligencias y hace las filas con ella"],
-      ["Afiliaciones", "EPS SURA, ARL SURA y la administradora de pensiones donde cotiza, que en las tablas de la simulación aparece con la etiqueta del documento del proyecto: «AFP / Colpensiones»"]
-    ],
-    relato:[
-      "Hace cinco meses M.P. consultó en la IPS por un dolor lumbar que se le irradiaba a la pierna. Le diagnosticaron lumbago con ciática y le expidieron la primera incapacidad. Desde entonces la ha renovado cada treinta días, y en cada renovación ha llevado copias a la EPS y a la empresa.",
-      "En el día 120 le correspondía a la EPS decir si el origen de esa dolencia es común o laboral. De esa definición depende quién paga el subsidio, quién responde por la rehabilitación y a qué régimen pertenece el caso. Esa definición sigue en disputa entre la EPS y la ARL, y el caso cursa ante la Junta Regional de Calificación de Invalidez.",
-      "Hoy es el día 150. El subsidio de la EPS se agota en el día 180, las cuatro piezas de evidencia que ya existen están repartidas entre cuatro custodios distintos —la quinta, el dictamen, todavía no se ha emitido— y M.P. todavía no sabe quién va a responderle después. Esta simulación recorre esa misma ruta dos veces: primero como funciona hoy y después como funcionaría con el módulo propuesto."
-    ],
     disputa:"Lo que está en disputa es el origen de la enfermedad. Mientras no se defina, cada entidad actúa con una parte de la evidencia y la coordinación recae sobre la propia trabajadora.",
-    recorrido:"En el recorrido usted vuelve a cada uno de los once pasos de la ruta, incluidos los que el caso ya dejó atrás, y responde por su cuenta. Lo que usted decida no tiene que coincidir con lo que el expediente del caso registra: eso es justamente lo que interesa conocer.",
-    nota:"Caso sintético construido para la investigación. Los nombres, la empresa y los plazos en días son supuestos de simulación; no corresponden a ninguna persona ni a ningún expediente real."
+    recorrido:"En el recorrido usted vuelve a cada uno de los once pasos de la ruta, incluidos los que el caso ya dejó atrás, y responde por su cuenta. Lo que usted decida cambia el caso: el recorrido que salga depende de sus respuestas.",
+    nota:"Caso sintético construido para la investigación. Los nombres, la empresa y los plazos en días son supuestos de simulación; no corresponden a ninguna persona ni a ningún expediente real.",
+    fichaTitulo:"Quién es la persona del caso",
+    resumenTitulo:"Por dónde va el caso"
   },
 
   /* ---------- Qué ocurre en cada paso de la ruta ----------
@@ -784,36 +775,36 @@ const GUION = {
      Se apoya en el service blueprint del proyecto y no añade hechos nuevos al escenario. */
   pasos: {
     A1:{ enJuego:"Dónde queda guardada la evidencia que más adelante van a necesitar todos.",
-      hoy:"M.P. consulta en la IPS por el dolor lumbar. El médico tratante la examina y registra el diagnóstico; de esa consulta depende si le expide la primera incapacidad ese mismo día o si la remite antes a un especialista. Lo que salga de ahí sale en papel, y la historia clínica se queda en la IPS, sin resumen estructurado y sin versión: ninguna otra entidad sabe todavía que existe.",
+      hoy:"{persona} consulta en la IPS por el dolor lumbar. El médico tratante la examina y registra el diagnóstico; de esa consulta depende si le expide la primera incapacidad ese mismo día o si la remite antes a un especialista. Lo que salga de ahí sale en papel, y la historia clínica se queda en la IPS, sin resumen estructurado y sin versión: ninguna otra entidad sabe todavía que existe.",
       mod:"La consulta ocurre igual, y lo que el médico tratante resuelva queda indexado el mismo día. La historia sigue viviendo en la IPS: el módulo solo guarda que existe, de qué versión es y quién la custodia. Cada consulta posterior quedará registrada con quién la hizo y para qué." },
-    A2:{ enJuego:"El subsidio que sostiene el ingreso de M.P. y el conteo de días que después dispara todo lo demás.",
+    A2:{ enJuego:"El subsidio que sostiene el ingreso de {persona} y el conteo de días que después dispara todo lo demás.",
       hoy:"La incapacidad se renueva cada treinta días durante cuatro meses. Cada prórroga llega a la EPS por ventanilla y al empleador por correo, sin acuse, y con cada una la EPS decide si reconoce y paga el subsidio o si pide soportes adicionales antes de pagar. Los certificados quedan en la EPS y el empleador tramita la nómina con las copias que reciba: el conteo de días vive en dos archivos distintos.",
       mod:"La incapacidad se renueva igual y cada prórroga queda registrada con el responsable que la reconoce. Los certificados siguen en la EPS, que decide como antes si reconoce el subsidio o si pide soportes; el empleador consulta los días acumulados y la fecha de inicio, sin ver el resto del certificado. El módulo avisa cuando el caso se acerca al día 120." },
-    A3:{ enJuego:"La prueba de a qué estuvo expuesta M.P. en su puesto, que es la mitad de la discusión sobre el origen.",
-      hoy:"Para calificar el origen hace falta saber a qué estaba expuesta M.P. en la línea de empaque. La EPS exige esa matriz, y la solicitud llega a la empresa por oficio después de pasar por las manos de la propia trabajadora. En la empresa la arma el responsable de seguridad y salud en el trabajo, que decide qué manda: el formato del SG-SST con versión y fecha, una copia sin ninguna de las dos, o nada hasta que haya una orden expresa. La matriz y las evaluaciones de puesto se quedan en el SG-SST.",
+    A3:{ enJuego:"La prueba de a qué estuvo expuesta {persona} en su puesto, que es la mitad de la discusión sobre el origen.",
+      hoy:"Para calificar el origen hace falta saber a qué estaba expuesta {persona} en la línea de empaque. La EPS exige esa matriz, y la solicitud llega a la empresa por oficio después de pasar por las manos de la propia trabajadora. En la empresa la arma el responsable de seguridad y salud en el trabajo, que decide qué manda: el formato del SG-SST con versión y fecha, una copia sin ninguna de las dos, o nada hasta que haya una orden expresa. La matriz y las evaluaciones de puesto se quedan en el SG-SST.",
       mod:"La matriz de exposición está expuesta por contrato, en su versión v.2, con responsable y fecha, y la matriz misma permanece en el SG-SST. Quien consulta declara una finalidad y el módulo abre solo los campos que esa finalidad autoriza: el historial disciplinario se retiene en origen. El responsable del SG-SST sigue decidiendo qué expone y qué retiene, y cada suministro queda con constancia de versión, fecha y responsable." },
     E1:{ enJuego:"De esta decisión dependen quién paga, quién rehabilita y a qué régimen pertenece el caso.",
-      hoy:"Llegó el día 120 y le corresponde a la EPS decir si la dolencia de M.P. es de origen común o laboral, o pedir más información antes de calificar. Para eso cuenta con lo que se haya podido reunir: una historia clínica parcial, sin el concepto del especialista, y una matriz de exposición sin versión ni fecha. Lo que la EPS resuelva sale por correo y nadie firma un acuse de recibo: no queda constancia de cuándo se enteraron la ARL ni M.P.",
-      mod:"La EPS declara la finalidad con la que va a consultar y el módulo le abre la vista mínima de la historia clínica y de la matriz de exposición que esa finalidad autoriza; la historia laboral queda fuera, porque no es pertinente para calificar el origen. Con eso decide y firma. Lo que resuelva se notifica con acuse a la ARL, a la administradora de pensiones y a M.P., y cada consulta queda registrada con quién la hizo y para qué." },
+      hoy:"Llegó el día 120 y le corresponde a la EPS decir si la dolencia de {persona} es de origen común o laboral, o pedir más información antes de calificar. Para eso cuenta con lo que se haya podido reunir: una historia clínica parcial, sin el concepto del especialista, y una matriz de exposición sin versión ni fecha. Lo que la EPS resuelva sale por correo y nadie firma un acuse de recibo: no queda constancia de cuándo se enteraron la ARL ni {persona}",
+      mod:"La EPS declara la finalidad con la que va a consultar y el módulo le abre la vista mínima de la historia clínica y de la matriz de exposición que esa finalidad autoriza; la historia laboral queda fuera, porque no es pertinente para calificar el origen. Con eso decide y firma. Lo que resuelva se notifica con acuse a la ARL, a la administradora de pensiones y a {persona}, y cada consulta queda registrada con quién la hizo y para qué." },
     E2:{ enJuego:"De esta respuesta depende si el caso se queda en la calificación de la EPS o pasa a la Junta Regional, y cuánto tiempo más queda el origen sin definir.",
-      hoy:"A la ARL le llega la calificación por correo, sin los documentos que la sustentan. Para decidir si la acepta, si la controvierte ante la Junta Regional o si pide evidencia adicional, tiene que volver a reunir la prueba: se la pide a la EPS por oficio y, una vez más, a la propia M.P. Si radica ante la Junta, lo hace también por oficio y sin constancia de recibo.",
+      hoy:"A la ARL le llega la calificación por correo, sin los documentos que la sustentan. Para decidir si la acepta, si la controvierte ante la Junta Regional o si pide evidencia adicional, tiene que volver a reunir la prueba: se la pide a la EPS por oficio y, una vez más, a la propia {persona} Si radica ante la Junta, lo hace también por oficio y sin constancia de recibo.",
       mod:"La ARL declara «investigación de origen y prestaciones» y el módulo le abre, de la historia clínica, de la matriz y de los certificados, los campos que su contrato autoriza para esa finalidad; si intenta abrir la historia laboral, la consulta se deniega y la denegación queda registrada. Con eso decide si acepta, si controvierte o si pide más. Si radica ante la Junta, la radicación queda con acuse." },
     E3:{ enJuego:"El dictamen define el origen, el porcentaje de pérdida de capacidad y la fecha de estructuración: de ahí cuelga todo lo que sigue.",
-      hoy:"El expediente llega a la Junta Regional en papel. Al revisarlo están la historia clínica, la matriz de exposición y los certificados de incapacidad, pero falta la historia laboral: ese certificado de semanas lo custodia la administradora de pensiones y no viene en el paquete. Con un expediente así, la Junta puede dictaminar con lo que tiene, suspender hasta que llegue el certificado o devolver el expediente para que lo completen; en la ruta de hoy, devolverlo significa que son M.P. y su hermana L.P. las que tienen que ir hasta la ventanilla a conseguirlo y a radicar de nuevo. Lo que la Junta resuelva se comunica por correo.",
-      mod:"Antes de radicar, el módulo verifica que el expediente esté completo: historia clínica, matriz de exposición, certificados e historia laboral. La Junta puede pedirle esa historia laboral a la administradora de pensiones por contrato, y decide sobre el expediente que tenga. Lo que dictamine se notifica con acuse a los cuatro destinatarios del caso: la EPS, la ARL, la administradora de pensiones y M.P." },
-    E4:{ enJuego:"Que la segunda instancia pueda revisar lo mismo que vio la primera, y que M.P. sepa que su caso sigue abierto.",
-      hoy:"Corre el término para apelar el dictamen. Si la ARL apela, lo hace por oficio, y a la Junta Nacional le llega un paquete incompleto: sin la evolución clínica que usó la Regional y sin una cronología de lo ocurrido. M.P. no consta notificada de esa apelación; si se entera, es después y por terceros.",
-      mod:"Si la ARL apela, el paquete viaja íntegro y con la traza de lo que consultó la primera instancia, y M.P. y la Junta Regional reciben acuse. En este prototipo la Junta Nacional no resuelve la apelación: revisa si ese paquete permite decidir con una motivación trazable y registra qué falta." },
-    E5:{ enJuego:"El ingreso de M.P. a partir del día 181 y la claridad sobre quién responde por él.",
-      hoy:"Pasó el día 180 y el subsidio de la EPS se agotó. La administradora de pensiones se entera del dictamen porque alguien se lo lleva en papel, y tiene que decidir si asume el subsidio desde el día 181, si lo remite a la ARL por tratarse de origen laboral o si espera la firmeza antes de decidir. Entre la ARL y la administradora se discute quién debe pagar, y de esa discusión no queda registro escrito: M.P. no sabe quién le paga a partir del día 181 ni a quién preguntárselo.",
-      mod:"La administradora de pensiones consulta el dictamen y los certificados bajo su propia finalidad y decide sobre esa base: asumir el subsidio desde el día 181, remitir a la ARL o esperar la firmeza. Lo que resuelva se notifica con acuse a M.P., a la EPS y a la ARL, y queda con responsable y con plazo." },
-    D1:{ enJuego:"Que M.P. vuelva a un puesto compatible con sus restricciones funcionales, y qué respaldo escrito queda de esa decisión.",
-      hoy:"M.P. vuelve a la empresa con restricciones. El concepto de rehabilitación está en la historia clínica de la IPS, no hay un formato común para escribir las restricciones ni un canal para recibirlas, y el empleador decide con lo que le llegue: reintegrarla con restricciones, reubicarla en otro cargo o esperar el concepto de rehabilitación. Lo que resuelva se comunica por carta y no deja registro.",
-      mod:"El empleador consulta, bajo la finalidad «reubicación laboral», la vista mínima de restricciones que el módulo le expone —en esta simulación, las restricciones funcionales y el concepto de rehabilitación— y decide sobre esa base; el resto de la historia clínica no se abre. El concepto y las restricciones siguen en la IPS, con versión. Lo que el empleador resuelva queda registrado, y M.P. recibe el acuse con responsable y plazo.",
+      hoy:"El expediente llega a la Junta Regional en papel. Al revisarlo están la historia clínica, la matriz de exposición y los certificados de incapacidad, pero falta la historia laboral: ese certificado de semanas lo custodia la administradora de pensiones y no viene en el paquete. Con un expediente así, la Junta puede dictaminar con lo que tiene, suspender hasta que llegue el certificado o devolver el expediente para que lo completen; en la ruta de hoy, devolverlo significa que son {persona} y {acompana} las que tienen que ir hasta la ventanilla a conseguirlo y a radicar de nuevo. Lo que la Junta resuelva se comunica por correo.",
+      mod:"Antes de radicar, el módulo verifica que el expediente esté completo: historia clínica, matriz de exposición, certificados e historia laboral. La Junta puede pedirle esa historia laboral a la administradora de pensiones por contrato, y decide sobre el expediente que tenga. Lo que dictamine se notifica con acuse a los cuatro destinatarios del caso: la EPS, la ARL, la administradora de pensiones y {persona}" },
+    E4:{ enJuego:"Que la segunda instancia pueda revisar lo mismo que vio la primera, y que {persona} sepa que su caso sigue abierto.",
+      hoy:"Corre el término para apelar el dictamen. Si la ARL apela, lo hace por oficio, y a la Junta Nacional le llega un paquete incompleto: sin la evolución clínica que usó la Regional y sin una cronología de lo ocurrido. {persona} no consta notificada de esa apelación; si se entera, es después y por terceros.",
+      mod:"Si la ARL apela, el paquete viaja íntegro y con la traza de lo que consultó la primera instancia, y {persona} y la Junta Regional reciben acuse. En este prototipo la Junta Nacional no resuelve la apelación: revisa si ese paquete permite decidir con una motivación trazable y registra qué falta." },
+    E5:{ enJuego:"El ingreso de {persona} a partir del día 181 y la claridad sobre quién responde por él.",
+      hoy:"Pasó el día 180 y el subsidio de la EPS se agotó. La administradora de pensiones se entera del dictamen porque alguien se lo lleva en papel, y tiene que decidir si asume el subsidio desde el día 181, si lo remite a la ARL por tratarse de origen laboral o si espera la firmeza antes de decidir. Entre la ARL y la administradora se discute quién debe pagar, y de esa discusión no queda registro escrito: {persona} no sabe quién le paga a partir del día 181 ni a quién preguntárselo.",
+      mod:"La administradora de pensiones consulta el dictamen y los certificados bajo su propia finalidad y decide sobre esa base: asumir el subsidio desde el día 181, remitir a la ARL o esperar la firmeza. Lo que resuelva se notifica con acuse a {persona}, a la EPS y a la ARL, y queda con responsable y con plazo." },
+    D1:{ enJuego:"Que {persona} vuelva a un puesto compatible con sus restricciones funcionales, y qué respaldo escrito queda de esa decisión.",
+      hoy:"{persona} vuelve a la empresa con restricciones. El concepto de rehabilitación está en la historia clínica de la IPS, no hay un formato común para escribir las restricciones ni un canal para recibirlas, y el empleador decide con lo que le llegue: reintegrarla con restricciones, reubicarla en otro cargo o esperar el concepto de rehabilitación. Lo que resuelva se comunica por carta y no deja registro.",
+      mod:"El empleador consulta, bajo la finalidad «reubicación laboral», la vista mínima de restricciones que el módulo le expone —en esta simulación, las restricciones funcionales y el concepto de rehabilitación— y decide sobre esa base; el resto de la historia clínica no se abre. El concepto y las restricciones siguen en la IPS, con versión. Lo que el empleador resuelva queda registrado, y {persona} recibe el acuse con responsable y plazo.",
       supuesto:"La matriz de contratos del proyecto solo autoriza al empleador a consultar los certificados de incapacidad; el alcance de esta vista está pendiente de confirmar con el investigador." },
-    D2:{ enJuego:"La prestación de la que depende el sostenimiento de M.P. a mediano plazo.",
+    D2:{ enJuego:"La prestación de la que depende el sostenimiento de {persona} a mediano plazo.",
       hoy:"Con el dictamen en firme hay que radicar la prestación en papel ante la administradora de pensiones o ante la ARL. La historia laboral y el dictamen están en archivos separados y ninguna de las dos entidades ve el expediente completo: la administradora decide si resuelve con eso, si pide una historia laboral actualizada o si remite a la ARL. La resolución sale por correo, después de meses en los que nadie informa el estado del trámite.",
-      mod:"La administradora de pensiones consulta el dictamen y la historia laboral en origen, con la versión del estándar de pérdida de capacidad que corresponda, y decide sobre esa base: resolver la prestación, pedir la historia actualizada o remitir a la ARL. Si el origen quedó laboral, la ARL asume la prestación con una decisión motivada. Lo que se resuelva se notifica con acuse, y M.P. ve «prestación en estudio», con responsable y con la fecha en que vence." },
+      mod:"La administradora de pensiones consulta el dictamen y la historia laboral en origen, con la versión del estándar de pérdida de capacidad que corresponda, y decide sobre esa base: resolver la prestación, pedir la historia actualizada o remitir a la ARL. Si el origen quedó laboral, la ARL asume la prestación con una decisión motivada. Lo que se resuelva se notifica con acuse, y {persona} ve «prestación en estudio», con responsable y con la fecha en que vence." },
     D3:{ enJuego:"La vía que queda cuando la ruta no avanza: una queja ante la Superintendencia o una tutela, y lo que hay que reunir para presentarla.",
       hoy:"Si nada avanza, la queja ante la Superintendencia o la tutela se presentan con las copias que se hayan ido guardando, porque no hay una cronología común del caso. La Superintendencia decide qué hace con esa queja: enrutarla con responsable y plazo, pedir informes a la EPS por oficio, o archivarla por falta de competencia. Cada entidad responde con su propio archivo, y el despacho judicial que reciba una tutela reconstruye la línea de tiempo con lo que le aporten.",
       mod:"La vista de estado ya es la cronología del caso —etapas, responsables, plazos y acuses— y se puede adjuntar a la queja o a la tutela. La Superintendencia decide sobre esa misma cronología y puede consultar el estado y las fechas sin abrir campos clínicos. Si el caso llega a tutela, el despacho judicial consulta la cronología completa y el registro de accesos, y lo que ordene queda registrado con plazo." }
@@ -821,18 +812,18 @@ const GUION = {
 
   /* ---------- Quién es usted en este caso ---------- */
   roles: {
-    tra:"Usted responde como M.P.: 41 años, operaria de empaque, en el día 150 de una incapacidad que empezó hace cinco meses. Su hermana L.P. la acompaña a las diligencias. No se le pregunta qué dice la norma, sino qué entiende de su propio caso en cada momento, quién siente que le responde y qué le tocó hacer para que el trámite avanzara.",
-    emp:"Usted responde por el empleador de M.P., desde el área de seguridad y salud en el trabajo. Allí vive la matriz de exposición del puesto de empaque, que otras entidades le van a pedir, y más adelante le corresponderá decidir cómo recibe de vuelta a una trabajadora con restricciones.",
-    ips:"Usted responde por la IPS que atiende a M.P. Allí están su historia clínica, el diagnóstico y el concepto de rehabilitación. Cuando alguien pide esa evidencia, usted decide qué entrega, en qué forma y en cuánto tiempo.",
-    eps:"Usted responde por la EPS donde M.P. está afiliada. Ha reconocido sus incapacidades durante cinco meses y custodia los certificados. En el día 120 le corresponde decir, en primera oportunidad, si el origen de la dolencia es común o laboral.",
+    tra:"Usted responde como {persona}: {edad} años, {cargo}, en el día {dia} de una incapacidad prolongada. {acompanaMayus} la acompaña a las diligencias. No se le pregunta qué dice la norma, sino qué entiende de su propio caso en cada momento, quién siente que le responde y qué le tocó hacer para que el trámite avanzara.",
+    emp:"Usted responde por el empleador de {persona}, desde el área de seguridad y salud en el trabajo. Allí vive la matriz de exposición del puesto de empaque, que otras entidades le van a pedir, y más adelante le corresponderá decidir cómo recibe de vuelta a una trabajadora con restricciones.",
+    ips:"Usted responde por la IPS que atiende a {persona} Allí están su historia clínica, el diagnóstico y el concepto de rehabilitación. Cuando alguien pide esa evidencia, usted decide qué entrega, en qué forma y en cuánto tiempo.",
+    eps:"Usted responde por la EPS donde {persona} está afiliada. Ha reconocido sus incapacidades durante cinco meses y custodia los certificados. En el día 120 le corresponde decir, en primera oportunidad, si el origen de la dolencia es común o laboral.",
     arl:"Usted responde por la administradora de riesgos laborales de la empresa. Si el origen resulta laboral, las prestaciones corren por su cuenta. Cuando llegue la calificación de la EPS tendrá que decidir si la acepta o si la controvierte ante la Junta.",
-    afp:"Usted responde por la administradora de pensiones donde M.P. cotiza, que en las tablas de la simulación aparece como «AFP / Colpensiones». Custodia su historia laboral y sus semanas cotizadas, y a partir del día 181 puede corresponderle el subsidio. También decide la prestación cuando el dictamen quede en firme.",
+    afp:"Usted responde por la administradora de pensiones donde {persona} cotiza, que en las tablas de la simulación aparece como «AFP / Colpensiones». Custodia su historia laboral y sus semanas cotizadas, y a partir del día 181 puede corresponderle el subsidio. También decide la prestación cuando el dictamen quede en firme.",
     jr:"Usted responde por la Junta Regional de Calificación de Invalidez. Cuando la controversia llegue, le corresponde dictaminar el origen, la pérdida de capacidad laboral y la fecha de estructuración, con el expediente que le hayan radicado.",
     jn:"Usted responde por la Junta Nacional. En este prototipo no resuelve la apelación: verifica si el paquete que le llega permite decidir con una motivación trazable y registra qué le falta.",
     mintrabajo:"Usted responde por el Ministerio del Trabajo, en su función de inspección, vigilancia y control sobre el empleador y la administradora de riesgos laborales. No le corresponde calificar ni pagar: le corresponde requerir lo que haga falta y, si un término se venció, escalar con un plazo. No necesita datos clínicos para eso.",
     minsalud:"Usted responde por el Ministerio de Salud, que fija el vocabulario y los contenidos mínimos de la información en salud. No consulta casos: gobierna el lenguaje con el que las demás entidades los escriben.",
-    supersalud:"Usted responde por la Superintendencia Nacional de Salud, que vigila a las EPS y a las IPS. Si M.P. se queja por la demora, le corresponde decidir qué hace con esa queja: enrutarla con un responsable y un plazo, pedir informes, o archivarla si no es de su competencia. Para eso no necesita abrir su historia clínica.",
-    jueces:"Usted responde por el despacho judicial que recibe una tutela de M.P. por la demora y por la falta de notificación. No le corresponde calificar el origen: le corresponde establecer si alguien incumplió un deber y ordenar lo que haya que ordenar, con un plazo, a partir de lo que el expediente le permita reconstruir."
+    supersalud:"Usted responde por la Superintendencia Nacional de Salud, que vigila a las EPS y a las IPS. Si {persona} se queja por la demora, le corresponde decidir qué hace con esa queja: enrutarla con un responsable y un plazo, pedir informes, o archivarla si no es de su competencia. Para eso no necesita abrir su historia clínica.",
+    jueces:"Usted responde por el despacho judicial que recibe una tutela de {persona} por la demora y por la falta de notificación. No le corresponde calificar el origen: le corresponde establecer si alguien incumplió un deber y ordenar lo que haya que ordenar, con un plazo, a partir de lo que el expediente le permita reconstruir."
   },
 
   orientacion: {
@@ -841,12 +832,12 @@ const GUION = {
       titulo:"Qué es este estudio y qué se busca",
       parrafos:[
         "Esta simulación hace parte de una investigación doctoral sobre interoperabilidad clínico-laboral: cómo circula la evidencia clínica y laboral entre las entidades que intervienen cuando una incapacidad se prolonga y hay que definir su origen, quién paga y cómo regresa la persona al trabajo.",
-        "Usted participa porque conoce uno de esos roles. Va a recorrer un caso sintético dos veces: primero como funciona la ruta hoy y después como funcionaría con un módulo de interoperabilidad propuesto."
+        "Usted participa porque conoce uno de esos roles. Va a recorrer un caso sintético paso por paso, decidiendo lo que le corresponde a su entidad, y en cada paso verá qué cambiaría si la ruta funcionara con el módulo de interoperabilidad que propone la investigación."
       ],
       buscaTitulo:"Qué se busca con su participación",
       busca:[
         "Conocer cómo actúa su rol en cada paso de la ruta: con qué información cuenta, qué le falta, a quién se la pide y cuánto tarda.",
-        "Conocer cómo cambiaría esa actuación si la ruta funcionara con el módulo propuesto.",
+        "Conocer si esa actuación cambiaría, y en cuánto tiempo, si la evidencia le llegara como la entregaría el módulo propuesto.",
         "Recoger las dificultades que usted encuentra y los requisitos que debería cumplir el siguiente prototipo."
       ],
       subTitulo:"Sus respuestas aportan a tres subpreguntas del proyecto",
@@ -866,11 +857,11 @@ const GUION = {
     mecanica: {
       titulo:"Cómo funciona la simulación",
       puntos:[
-        { t:"Dos rondas, el mismo caso", d:"En la ronda 1 recorre la ruta como funciona hoy. En la ronda 2 la recorre como funcionaría con el módulo propuesto." },
-        { t:"Paso a paso", d:"En cada paso verá qué ocurre con el caso. Si su rol interviene, responde una actividad corta. Si no interviene, lee el contexto y continúa." },
+        { t:"Un recorrido, con la comparación dentro", d:"Recorre la ruta una sola vez, como funciona hoy. En cada paso, después de decidir, ve qué le habría llegado con el módulo propuesto y dice si su decisión sería la misma." },
+        { t:"Paso a paso", d:"En cada paso verá en qué estado llega el caso, el expediente tal como le llega a su entidad, lo que le compete y su base normativa. Si su rol interviene, decide; si no, lee el contexto y continúa. En todos puede escribir lo que quiera añadir." },
         { t:"Los demás actores están simulados", d:"Nadie más está conectado. El sistema lleva el caso por usted: representa a los otros actores con los datos sintéticos del escenario y, en nombre de su entidad, anota los actos que se derivan de lo que usted responde: las solicitudes, las consultas, las notificaciones y los acuses. Todo eso aparece marcado como «simulado» y se cuenta aparte de sus respuestas. El renglón que enlaza su respuesta con la solicitud que la motivó no lleva ese distintivo, porque la respuesta es suya." },
-        { t:"El recorrido es lineal", d:"Su respuesta queda registrada y el caso continúa según el escenario. Puede corregir una respuesta antes de pasar al paso siguiente." },
-        { t:"Cierre de cada ronda", d:"Al terminar cada ronda lee el contrato de datos que el módulo propone para su rol, dice si lo aceptaría y responde cuatro preguntas sobre lo que acaba de recorrer." },
+        { t:"El caso reacciona a lo que usted decide", d:"No hay un guion fijo: si pide más información el término se alarga, si no entrega una pieza quien la necesitaba decide sin ella, y los actores que no están conectados responden a lo que usted hizo. Puede corregir una respuesta antes de pasar al paso siguiente." },
+        { t:"Antes de empezar y al terminar", d:"Antes del recorrido responde unas preguntas sobre su perfil profesional. Al terminar lee el contrato de datos que el módulo propone para su rol, dice si lo aceptaría y responde cuatro preguntas sobre lo que recorrió." },
         { t:"Puede hacer pausas", d:"Sus respuestas se guardan en este dispositivo a medida que avanza. Puede pausar y continuar después con el mismo usuario, en este mismo navegador. No use una ventana privada o de incógnito: al cerrarla se borra el avance." }
       ],
       envio:{
@@ -890,8 +881,8 @@ const GUION = {
       /* Dos términos que la simulación usa y que la lista del blueprint no trae. */
       terminos:[
         ["contrato de datos", "qué puede consultar un rol, qué tiene que entregar, quién responde y en qué plazo; es lo que usted valora al cerrar cada ronda."],
-        ["vista de estado", "lo que M.P. alcanza a ver de su propio caso: etapa, responsable, plazo y acuses, sin campos clínicos."],
-        ["administradora de pensiones", "la entidad donde M.P. cotiza, que custodia su historia laboral; en las tablas y los menús aparece con la etiqueta del documento del proyecto, «AFP / Colpensiones»."]
+        ["vista de estado", "lo que {persona} alcanza a ver de su propio caso: etapa, responsable, plazo y acuses, sin campos clínicos."],
+        ["administradora de pensiones", "la entidad donde {persona} cotiza, que custodia su historia laboral; en las tablas y los menús aparece con la etiqueta del documento del proyecto, «AFP / Colpensiones»."]
       ]
     }
   },
@@ -937,11 +928,32 @@ const GUION = {
     rechazoTexto:"No se guardó ninguna respuesta. Gracias por su tiempo. Si cambia de opinión, puede volver a entrar con su usuario y su contraseña."
   },
 
+  /* ---------- Encuesta de perfil del participante ----------
+     Va después de la declaración de participación y antes del recorrido. No identifica a nadie:
+     describe la experiencia profesional de quien responde, para poder leer sus respuestas. */
+  encuesta: {
+    titulo:"Su perfil profesional",
+    intro:"Antes de empezar, unas preguntas sobre usted. No se le pide su nombre ni el de su entidad: sirven para leer sus respuestas sabiendo desde qué experiencia las da.",
+    nota:"Si alguna pregunta no aplica a su caso, escriba «no aplica». Puede cambiar estas respuestas antes de entregar.",
+    guardar:"Guardar y comenzar el recorrido",
+    campos:[
+      { id:"edad", n:"Edad", tipo:"ops", req:true, ops:[["18-29","18 a 29"],["30-39","30 a 39"],["40-49","40 a 49"],["50-59","50 a 59"],["60+","60 o más"]] },
+      { id:"formacion", n:"Profesión o formación de base", tipo:"ops", req:true, ops:[["salud","Área de la salud"],["derecho","Derecho"],["administracion","Administración o economía"],["ingenieria","Ingeniería o tecnología"],["sst","Seguridad y salud en el trabajo"],["otra","Otra"]] },
+      { id:"formacionCual", n:"¿Cuál?", tipo:"texto", ayuda:"Su título o su formación principal.", req:true },
+      { id:"complementarios", n:"Estudios complementarios", tipo:"texto", ayuda:"Especializaciones, maestrías, diplomados o certificaciones pertinentes a este trabajo. Si no tiene, escriba «ninguno»." },
+      { id:"experiencia", n:"Años de experiencia en este tipo de trámites", tipo:"numero", req:true, ayuda:"Años trabajando con incapacidades, calificación de origen, prestaciones o seguridad y salud en el trabajo." },
+      { id:"rolActual", n:"Cargo o función que desempeña hoy", tipo:"texto", req:true },
+      { id:"trayectoria", n:"Entidades o empresas donde ha trabajado y el rol que tuvo en cada una", tipo:"largo", req:true, ayuda:"Una por renglón, sin nombres de personas. Por ejemplo: «EPS, analista de incapacidades, 4 años» o «empresa del sector alimentos, responsable de SG-SST, 3 años»." },
+      { id:"frecuencia", n:"¿Con qué frecuencia atiende casos como este?", tipo:"ops", req:true, ops:[["diario","A diario"],["semanal","Varias veces por semana"],["mensual","Algunas veces al mes"],["rara","Rara vez"],["nunca","Nunca, pero conozco el trámite"]] },
+      { id:"otrosRoles", n:"¿Ha trabajado en alguno de los otros roles de esta ruta?", tipo:"texto", ayuda:"Por ejemplo, si hoy está en una ARL pero antes estuvo en una EPS o en una IPS. Si no, escriba «no»." }
+    ]
+  },
+
   /* Títulos e instrucciones de las actividades por tipo. Se describe la situación, nunca lo que conviene responder. */
   actividad: {
-    focal:{ titulo:"Cómo vive M.P. este paso",
-      instr:"Póngase en el lugar de M.P. y responda desde ahí. Interesa qué entiende ella de lo que está pasando con su caso en este momento, a quién siente que le corresponde responderle y qué le tocó hacer por su cuenta para que el trámite avanzara. No hay respuestas correctas ni incorrectas: lo que se busca es lo que ocurre de verdad, no lo que debería ocurrir.",
-      instrCorta:"Siga respondiendo como M.P.: qué entiende de su caso en este momento, a quién le corresponde responderle y qué le tocó hacer para que esto avanzara." },
+    focal:{ titulo:"Cómo vive {persona} este paso",
+      instr:"Póngase en el lugar de {persona} y responda desde ahí. Interesa qué entiende ella de lo que está pasando con su caso en este momento, a quién siente que le corresponde responderle y qué le tocó hacer por su cuenta para que el trámite avanzara. No hay respuestas correctas ni incorrectas: lo que se busca es lo que ocurre de verdad, no lo que debería ocurrir.",
+      instrCorta:"Siga respondiendo como {persona}: qué entiende de su caso en este momento, a quién le corresponde responderle y qué le tocó hacer para que esto avanzara." },
     decide:{ titulo:"Le toca decidir en este paso",
       instr:"Mire primero con qué información cuenta y si le alcanza para actuar; si algo le falta, señálelo. Después declare con qué finalidad consultaría esa evidencia, tome la decisión y diga quién responde por ella en su entidad y en cuántos días. Responda como lo haría en su trabajo, con las limitaciones que tendría en la práctica." },
     custodia:{ titulo:"Le piden evidencia que usted custodia",
@@ -956,50 +968,107 @@ const GUION = {
     titulo:"Su respuesta quedó registrada",
     comprobacionTituloHoy:"Cómo se vería esta consulta frente al contrato que propone el módulo",
     comprobacionTituloMod:"Comprobación frente al contrato de datos de su rol",
-    comprobacionHoy:"Hoy nadie hace esta comprobación. Su respuesta queda registrada tal como la dio; el sistema la contrasta aparte, para poder compararla con la ronda del módulo.",
+    comprobacionHoy:"Hoy nadie hace esta comprobación. Su respuesta queda registrada tal como la dio; el sistema la contrasta aparte, para poder compararla con lo que autorizaría el módulo.",
     comprobacionMod:"Con el módulo, esta comprobación se hace en cada consulta y queda registrada con quién consultó, para qué y con qué resultado.",
     efectos:"Qué ocurrió en la simulación después de su respuesta",
     efectosNota:"Esto lo generó el sistema a partir de su respuesta y de los datos sintéticos del caso. Según el paso, unos renglones son los actos de su propia entidad —las solicitudes que usted haría, sus consultas y sus notificaciones— y otros son la reacción de los actores que no están conectados. Ninguno es la respuesta de otra persona.",
     sigue:"Cuando quiera, continúe: el caso avanza al siguiente momento de la ruta."
   },
 
-  rondas: {
-    actual:{
-      titulo:"Ronda 1 · la ruta como funciona hoy",
-      parrafos:[
-        "Va a recorrer la ruta de M.P. tal como funciona hoy, desde el primer día de incapacidad hasta el seguimiento. En este escenario la evidencia viaja por oficio, por correo o en las manos de la propia trabajadora, y cada entidad guarda su parte del expediente.",
-        "En los pasos en los que su rol interviene, responda con lo que ocurre en la práctica y con lo que usted haría de verdad, con las limitaciones que tendría. En los demás, lea el contexto para saber en qué estado le llega el caso.",
-        "Tómese el tiempo que necesite. Puede pausar y continuar después."
-      ],
-      cierre:"Terminó el recorrido de la ruta como funciona hoy. Antes de pasar a la ronda 2, lea el contrato de datos que el módulo propone para su rol —qué podría consultar, qué tendría que entregar, quién responde y en qué plazo— y diga si lo aceptaría tal como está. Después responda cuatro preguntas sobre lo que acaba de recorrer: son las mismas al cerrar la ronda 2, para poder comparar las dos.",
-      recorridoCierre:"Al final leerá el contrato de datos que el módulo propone para su rol, dirá si lo aceptaría y responderá cuatro preguntas.",
-      notaMejora:"Esta pregunta se repite, con el mismo enunciado, al cerrar la ronda 2: así las dos respuestas se pueden comparar. En esta ronda acaba de recorrer la ruta como funciona hoy, de modo que si lo que vio coincide con lo que ocurre en su entidad, la respuesta es «Igual»."
-    },
-    propuesto:{
-      titulo:"Ronda 2 · la ruta con el módulo propuesto",
-      parrafos:[
-        "Ahora va a recorrer el mismo caso de M.P., con los mismos pasos, pero suponiendo que la ruta funciona con el módulo de interoperabilidad que propone la investigación.",
-        "El módulo no guarda la evidencia: cada entidad sigue conservando la suya en origen. Lo que el módulo guarda es un índice de qué existe y dónde, las reglas de quién puede ver qué y para qué, y el registro de cada consulta, entrega y notificación.",
-        "Responda cómo actuaría usted si la ruta funcionara así. Es una hipótesis de diseño que esta simulación sirve justamente para poner a prueba."
-      ],
-      cierre:"Terminó el recorrido de la ruta con el módulo propuesto. Valore ahora el contrato de datos de su rol, tal como lo acaba de vivir, y responda las mismas cuatro preguntas de la ronda 1.",
-      recorridoCierre:"Al final valorará ese contrato, ya recorrido, y responderá las mismas cuatro preguntas de la ronda 1.",
-      reglasTitulo:"Las cinco reglas del módulo",
-      contratoTitulo:"Lo que el módulo le permitiría a su rol"
-    }
+  /* ---------- El recorrido ----------
+     La versión asíncrona recorre la ruta UNA sola vez: una persona sola, sin facilitador, no
+     sostiene dos recorridos completos. La comparación con el módulo va dentro de cada paso. */
+  ronda: {
+    n:"El recorrido de la ruta",
+    titulo:"Va a recorrer la ruta de este caso, paso por paso",
+    parrafos:[
+      "Va a recorrer los once pasos de la ruta de incapacidad de este caso, desde el primer día hasta el seguimiento. En cada paso verá el expediente tal como le llega a su entidad, con el contenido de cada documento y con los vacíos que tenga, lo que le compete decidir allí y la base normativa que lo sustenta.",
+      "Lo que usted decida cambia el caso. Si pide más información, el término se alarga; si no entrega una pieza, quien la necesitaba decide sin ella; si califica el origen de un modo o de otro, el caso sigue por caminos distintos. Los demás actores no están conectados: el sistema los representa y reacciona a lo que usted hizo.",
+      "Después de decidir, en la misma pantalla verá qué le habría llegado con el módulo de interoperabilidad que propone la investigación y se le preguntará si con esa información su decisión sería la misma. Esa comparación, paso por paso, es lo que el estudio necesita.",
+      "Tómese el tiempo que necesite: son entre 30 y 45 minutos. Puede pausar y continuar después."
+    ],
+    reglasTitulo:"Las cinco reglas del módulo propuesto",
+    contratoTitulo:"Lo que el módulo le permitiría a su rol",
+    recorridoCierre:"Al final valorará el contrato de datos que el módulo propone para su rol y responderá cuatro preguntas sobre lo que recorrió.",
+    cierre:"Terminó el recorrido. Para cerrar, lea el contrato de datos que el módulo propone para su rol —qué podría consultar, qué tendría que entregar, quién responde y en qué plazo—, diga si lo aceptaría tal como está y responda cuatro preguntas sobre lo que acaba de recorrer.",
+    notaMejora:"Responda pensando en lo que vio paso por paso: en cada uno se le mostró qué le habría llegado con el módulo y qué habría cambiado."
   },
+
+  /* ---------- El expediente que viaja ----------
+     El blueprint nombra los campos de cada pieza; el perfil del caso trae su contenido. Esto es
+     lo que convierte «HC parcial» en un documento que el participante puede leer. */
+  expediente: {
+    tituloHoy:"El expediente como le llega a usted",
+    introHoy:"Esto es lo que hay en sus manos en este punto del caso. Lo que no llegó aparece dicho como lo que es: un vacío con nombre.",
+    tituloMod:"Lo que le habría llegado con el módulo",
+    introMod:"El módulo no le abre el expediente completo: de cada pieza le abre los campos que el contrato de su rol autoriza para la finalidad que usted declara, y el resto se queda en origen.",
+    noLlego:"No llegó a su entidad",
+    retenido:"Se queda en origen: fuera del contrato de su rol para esta finalidad",
+    vacio:"No llegó",
+    sinVersion:"sin versión, sin fecha y sin responsable",
+    conVersion:"con versión, fecha y responsable",
+    propia:"Evidencia que usted custodia",
+    nada:"En este paso no entra ninguna pieza nueva de evidencia.",
+    anade:"Lo que el módulo añadiría a lo que usted tiene ahora",
+    anadeNada:"Con el módulo, en este paso usted no vería ningún campo más de lo que ya tiene."
+  },
+
+  /* ---------- Lo que le compete en el paso, y su base legal ---------- */
+  competencia: {
+    titulo:"Lo que le compete en este paso",
+    normasTitulo:"Base normativa",
+    precedentesTitulo:"Precedentes que pesan sobre su rol",
+    plazoTitulo:"Responsable y plazo que el proyecto supone",
+    nota:"Los plazos en días son supuestos de simulación tomados de la matriz de contratos del documento del proyecto; no son términos legales."
+  },
+
+  /* ---------- La comparación, dentro de cada paso ---------- */
+  comparacion: {
+    titulo:"Con esa información, ¿cambiaría su decisión?",
+    intro:"Es lo que el estudio compara: no si el módulo le parece buena idea, sino si con esa información usted habría actuado distinto, y en cuánto tiempo.",
+    pregunta:"Con lo que el módulo le habría abierto, su decisión sería…",
+    ops:[["misma","La misma"],["otra","Otra decisión"],["no_debi","Con lo de hoy no debí decidir"]],
+    cual:"¿Cuál habría sido, y por qué?",
+    dias:"¿En cuántos días, con esa información?",
+    diasAyuda:"Los días que le tomaría el mismo trámite si la evidencia le llegara así.",
+    seguridad:"¿Con cuánta seguridad decidiría?",
+    seguridadOps:[["alta","Con seguridad"],["media","Con dudas"],["baja","Seguiría sin poder decidir"]]
+  },
+
+  /* ---------- Lo que ocurre después de responder ---------- */
+  consecuencia: {
+    titulo:"Qué pasó en el caso con su respuesta",
+    sistema:"Lo que hicieron los actores que no están conectados",
+    estado:"Cómo queda el caso después de este paso",
+    forzado:"El sistema tomó este curso para que su rol alcance a intervenir más adelante en la ruta.",
+    sigue:"Cuando quiera, continúe: el caso avanza al siguiente paso de la ruta."
+  },
+
+  /* ---------- El espacio en blanco de cada paso ---------- */
+  observacion: {
+    titulo:"Lo que quiera añadir sobre este paso",
+    ayuda:"Aquí escriba lo que la pregunta no alcanza a recoger: lo que en su experiencia no ocurre así, lo que falta, lo que le va a complicar el paso siguiente, la norma que usted aplicaría, el dato que echó de menos. Es opcional, pero es donde suelen estar los hallazgos.",
+    marca:"opcional"
+  },
+
+  /* ---------- Rótulos de la ficha de la persona del caso ---------- */
+  fichaPersona:[
+    ["nombre","Quién"],["edad","Edad"],["cargo","Cargo"],["empresa","Dónde trabaja"],["sector","Sector"],
+    ["antiguedad","Antigüedad"],["contrato","Contrato"],["jornada","Jornada"],["ingreso","Ingreso"],
+    ["ciudad","Dónde"],["hogar","Hogar"],["acompana","Quién la acompaña"]
+  ],
 
   contexto: {
     titulo:"Lo que ocurre mientras su rol no interviene",
-    instr:"En estos pasos su rol no tiene que decidir ni entregar nada. Léalos para saber por dónde va el caso de M.P. y en qué estado le llegará cuando le toque actuar.",
-    instrUno:"En este paso su rol no tiene que decidir ni entregar nada. Léalo para saber por dónde va el caso de M.P. y en qué estado le llegará cuando le toque actuar.",
+    instr:"En estos pasos su rol no tiene que decidir ni entregar nada. Léalos para saber por dónde va el caso de {persona} y en qué estado le llegará cuando le toque actuar.",
+    instrUno:"En este paso su rol no tiene que decidir ni entregar nada. Léalo para saber por dónde va el caso de {persona} y en qué estado le llegará cuando le toque actuar.",
     obs:"Si algo de lo que acaba de leer le llama la atención, escríbalo aquí (opcional)",
     obsAyuda:"Por ejemplo, algo que en su experiencia no ocurre así, algo que falta o algo que le parece que se le va a complicar después."
   },
 
   cierre: {
     titulo:"Terminó la simulación",
-    gracias:"Gracias por recorrer las dos rondas y por compartir su criterio. Lo que respondió es la evidencia que esta investigación necesita.",
+    gracias:"Gracias por recorrer la ruta completa y por compartir su criterio. Lo que respondió es la evidencia que esta investigación necesita.",
     comentario:"¿Quiere añadir algo para el investigador? (opcional)",
     archivoTitulo:"Entregue su archivo de respuestas",
     archivoPasos:["Descargue el archivo con el botón.","Envíelo al investigador por el medio que él le indicó.","Cuando el investigador confirme que lo recibió, puede borrar sus datos de este dispositivo."],
@@ -1031,7 +1100,399 @@ const GUION = {
   },
 
   /* Minutos por pantalla, para estimar la duración que se informa al participante. */
-  tiempos: { inicio:6, focal:1, decide:2.5, custodia:1.5, soporte:1, contexto:0.5, valoracion:4, cierre:2 }
+  tiempos: { inicio:9, focal:2, decide:4, custodia:3, soporte:2.5, contexto:1, valoracion:6, cierre:3 }
+};
+/* Perfil base del caso, desde perfiles/perfil-ejemplo-mp.json */
+const PERFIL_BASE = {"id": "mp", "persona": {"nombre": "M.P.", "edad": 41, "cargo": "Operaria de empaque", "empresa": "Alimentos Andinos S.A.S.", "sector": "Alimentos", "antiguedad": "6 años", "contrato": "Término indefinido", "jornada": "Turnos de 8 horas, rotativos", "ingreso": "2 salarios mínimos", "ciudad": "Ciudad sintética", "hogar": "Jefa de hogar, dos hijos menores a cargo", "acompana": "Su hermana L.P., que la lleva a las diligencias y hace las filas con ella", "afiliaciones": {"eps": "EPS SURA", "arl": "ARL SURA", "pensiones": "Administradora de pensiones (AFP / Colpensiones)"}, "acompanaCorto": "su hermana L.P."}, "caso": {"diagnostico": "Lumbago con ciática (CIE-10 M54.4)", "diaRuta": 150, "origenEnDisputa": true, "resumen": "Consultó hace cinco meses por un dolor lumbar que se le irradiaba a la pierna. Desde entonces ha renovado la incapacidad cada treinta días. En el día 120 le correspondía a la EPS definir el origen; esa definición sigue en disputa entre la EPS y la ARL y el caso cursa ante la Junta Regional.", "fuente": "Caso sintético del proyecto, construido sobre el service blueprint y el prototipo de medio nivel."}, "evidencia": {"hc": {"pieza": "Resumen clínico estructurado", "version": "v.3", "custodio": "IPS", "campos": ["M54.4 · Lumbago con ciática. Primera consulta el día 1; resonancia del día 95: protrusión discal L5-S1 con compromiso radicular.", "150 días continuos a la fecha de corte, sin reintegro intermedio.", "No levantar cargas de más de 5 kg; no permanecer de pie más de 30 minutos seguidos; no flexionar el tronco de forma repetitiva.", "Pendiente: la valoración de fisiatría está programada para el día 165.", "12 consultas, 2 remisiones a fisioterapia (20 sesiones) y analgesia escalonada; mejoría parcial y recaída tras el intento de reintegro del día 118.", "Jefa de hogar con dos hijos menores; refiere ansiedad por la pérdida de ingreso."], "faltaHoy": [3, 4]}, "apt": {"pieza": "Matriz de exposición / análisis de puesto", "version": "v.2", "custodio": "Empleador", "campos": ["Operaria de empaque, línea 3: empaque manual, sellado y estibado de cajas de producto terminado.", "Cajas de 12 a 18 kg; entre 320 y 400 levantamientos por turno de 8 horas.", "Índice de levantamiento 2,4 (NIOSH), por encima del límite recomendado de 1,0.", "v.2 · 14 de marzo de 2026 · ingeniera de seguridad y salud en el trabajo.", "Dos llamados de atención por llegadas tarde en 2024."], "faltaHoy": [3]}, "inc": {"pieza": "Certificados de incapacidad", "version": "corte día 150", "custodio": "EPS", "campos": ["150 días continuos de incapacidad.", "Cinco prórrogas de 30 días, expedidas por el médico tratante.", "Día 1 de la incapacidad, con el certificado inicial de la IPS.", "Ingreso base de cotización: 2 salarios mínimos."], "faltaHoy": []}, "hl": {"pieza": "Historia laboral y semanas", "version": "corte día 150", "custodio": "Administradora de pensiones", "campos": ["612 semanas cotizadas en total; 48 en los últimos tres años.", "Densidad de cotización de 0,84 en los últimos cinco años.", "Entre 1 y 2 salarios mínimos de forma continua desde 2011.", "Cuatro empleadores; en Alimentos Andinos S.A.S. desde hace 6 años."], "faltaHoy": [0, 1, 2, 3]}, "dic": {"pieza": "Dictamen de primera instancia", "version": "v.1 según firma", "custodio": "Junta Regional", "existeDesde": "E3", "campos": ["Lo define la Junta Regional en el paso E3.", "Lo define la Junta Regional en el paso E3.", "Lo define la Junta Regional en el paso E3.", "Lo define la Junta Regional en el paso E3."], "faltaHoy": []}}};
+/* ============ Ramificación: estado del caso, consecuencias y actores simulados ============
+   La versión asíncrona no tiene facilitador, así que el caso tiene que reaccionar a lo que el
+   participante decide. En lugar de un árbol de caminos (once pasos por dos o tres opciones son
+   miles de recorridos imposibles de escribir), el caso lleva un ESTADO que se acumula:
+
+     · cada decisión aplica efectos sobre ese estado y deja una consecuencia escrita;
+     · cada paso siguiente se describe desde el estado en que le llega el caso;
+     · los actores que no están conectados deciden por reglas sobre ese mismo estado.
+
+   Así se escribe una vez por opción —unas treinta por caso— y salen todos los recorridos.
+   Nada de esto contradice el contenido doctoral: las opciones son las de ESC.decisiones, las
+   piezas y sus campos los de BP.evidencia, y las vistas mínimas las de BP.actores. */
+
+const RAMAS = {
+
+  /* ---------- Estado inicial del caso ----------
+     piezas[k]: qué se sabe de cada pieza de evidencia en el expediente que viaja.
+       llego      si la pieza llegó a quien la necesitaba;
+       conVersion si llegó con versión, fecha y responsable;
+       campos     posiciones de los campos que alcanzaron a llegar (null = todos los que existen). */
+  inicial: function (perfil) {
+    const E = {
+      piezas: {}, origen: null, acuse: false, controversia: null, dictamen: null,
+      devoluciones: 0, apelacion: null, paquete: null, pago: null, reintegro: null,
+      prestacion: null, queja: null, vigilancia: [], gestionesMP: 0, acuses: 0, dias: 0,
+      saltados: {}, historia: []
+    };
+    Object.keys(EV).forEach(k => { E.piezas[k] = { llego: false, conVersion: false, campos: null }; });
+    // El resumen clínico y los certificados nacen en la ruta; la historia laboral existe desde antes.
+    E.piezas.hl.existe = true;
+    if (perfil && perfil.caso && perfil.caso.origenEnDisputa === false) E.sinDisputa = true;
+    return E;
+  },
+
+  /* ---------- Qué piezas pide cada paso ----------
+     Se toma de ESC.entradas. La función solo existe para no repetirla en cada regla. */
+  piezasDe: function (pasoId) { return (ESC.entradas[pasoId] || []).slice(); },
+
+  /* ---------- Consecuencias de cada decisión ----------
+     Una entrada por paso. `ops[valor]` trae el efecto sobre el estado y la frase que se le muestra
+     al participante después de guardar. `sistema(E, yo)` dice qué hace el actor cuando no es el
+     participante quien lo juega. */
+  pasos: {
+
+    A1: {
+      actor: "ips",
+      ops: {
+        expedir: {
+          texto: "Se expide la primera incapacidad. El certificado sale impreso y queda en manos de la trabajadora; la historia clínica se queda en la IPS, sin resumen estructurado y sin versión.",
+          efecto: function (E) { E.piezas.inc.llego = true; E.piezas.inc.conVersion = true; E.piezas.hc.existe = true; }
+        },
+        remitir: {
+          texto: "La remisión al especialista aplaza la incapacidad: hasta que no haya concepto no empieza a contarse el término, y conseguir esa cita queda del lado de la trabajadora.",
+          efecto: function (E, d) { E.dias += d; E.gestionesMP += 1; E.piezas.hc.existe = true; }
+        }
+      },
+      sistema: function () { return "expedir"; }
+    },
+
+    A2: {
+      actor: "eps",
+      ops: {
+        reconocer: {
+          texto: "La EPS reconoce la prórroga y paga el subsidio. Los certificados quedan en la EPS y el empleador tramita la nómina con las copias que reciba.",
+          efecto: function (E) { E.piezas.inc.llego = true; E.piezas.inc.conVersion = true; E.pago = "eps"; }
+        },
+        pedir: {
+          texto: "Pedir soportes adicionales detiene el pago hasta que lleguen, y conseguirlos recae en la trabajadora.",
+          efecto: function (E, d) { E.dias += d; E.gestionesMP += 1; }
+        }
+      },
+      sistema: function () { return "reconocer"; }
+    },
+
+    A3: {
+      actor: "emp",
+      ops: {
+        entregar: {
+          texto: "La matriz de exposición llega con versión, fecha y responsable: se puede saber a qué estaba expuesta la trabajadora y en qué puesto.",
+          efecto: function (E) { E.piezas.apt.llego = true; E.piezas.apt.conVersion = true; }
+        },
+        entregar_sin: {
+          texto: "La matriz llega sin versión ni fecha. Nadie puede verificar si corresponde al puesto en el que la trabajadora estaba cuando apareció la dolencia.",
+          efecto: function (E) { E.piezas.apt.llego = true; E.piezas.apt.conVersion = false; }
+        },
+        negar: {
+          texto: "Sin la matriz de exposición, la definición del origen tendrá que hacerse sin la prueba de a qué estaba expuesta la trabajadora. Conseguirla, si alguien insiste, recae en ella.",
+          efecto: function (E) { E.piezas.apt.llego = false; E.gestionesMP += 1; }
+        }
+      },
+      sistema: function (E, yo, perfil) {
+        const f = ((perfil || {}).evidencia || {}).apt;
+        return f && (f.faltaHoy || []).indexOf(3) >= 0 ? "entregar_sin" : "entregar";
+      }
+    },
+
+    E1: {
+      actor: "eps",
+      ops: {
+        comun: {
+          texto: "Con el origen calificado como común, el subsidio y la rehabilitación siguen a cargo del sistema de salud. La ARL queda fuera del costo, y de ella depende si acepta esa calificación o la discute.",
+          efecto: function (E) { E.origen = "comun"; }
+        },
+        laboral: {
+          texto: "Con el origen calificado como laboral, las prestaciones pasan a la ARL. De ella depende si lo acepta o lo controvierte, porque es la que paga.",
+          efecto: function (E) { E.origen = "laboral"; }
+        },
+        mas_info: {
+          texto: "El origen sigue sin definirse. El reloj del día 180 no se detiene por eso: cuando el subsidio de la EPS se agote, nadie habrá dicho todavía a quién le corresponde pagar.",
+          efecto: function (E, d) { E.dias += d; E.origen = null; E.gestionesMP += 1; }
+        }
+      },
+      // Sin la prueba de exposición es difícil sostener el origen laboral.
+      sistema: function (E) { return E.piezas.apt.llego && E.piezas.apt.conVersion ? "laboral" : "comun"; }
+    },
+
+    E2: {
+      actor: "arl",
+      ops: {
+        aceptar: {
+          texto: "La ARL acepta la calificación. El caso no pasa a la Junta Regional: el origen queda como lo definió la EPS.",
+          efecto: function (E) { E.controversia = "aceptada"; if (E.origen === "laboral") E.pago = "arl"; }
+        },
+        controvertir: {
+          texto: "La controversia queda abierta y el caso pasa a la Junta Regional de Calificación de Invalidez. Mientras la Junta no dictamine, el origen sigue sin definirse.",
+          efecto: function (E) { E.controversia = "abierta"; }
+        },
+        mas_info: {
+          texto: "Pedir evidencia adicional alarga el término sin cerrar nada, y buena parte de esa evidencia se la vuelven a pedir a la trabajadora.",
+          efecto: function (E, d) { E.dias += d; E.gestionesMP += 1; }
+        }
+      },
+      /* La ARL controvierte cuando el origen laboral la pone a pagar. Si la calificación fue común
+         no tiene por qué discutirla, salvo que el caso siga su curso hacia la Junta porque el
+         recorrido del participante lo necesita (ver mantenerViva). */
+      sistema: function (E) { return E.origen === "laboral" ? "controvertir" : "aceptada" && "aceptar"; }
+    },
+
+    E3: {
+      actor: "jr",
+      ops: {
+        dictaminar: {
+          texto: "La Junta dictamina con el expediente que tiene.",
+          efecto: function (E, d, ctx) {
+            E.dictamen = { origen: E.origen || "laboral", por: ctx && ctx.por || "sistema", conVacios: !RAMAS.expedienteCompleto(E) };
+            E.dias += d;
+          },
+          extra: function (E) {
+            return RAMAS.expedienteCompleto(E)
+              ? "El expediente estaba completo, así que la motivación se apoya en todas las piezas."
+              : "El expediente estaba incompleto: faltaba " + RAMAS.faltaTxt(E) + ", y eso queda escrito en el dictamen.";
+          }
+        },
+        suspender: {
+          texto: "El trámite se suspende hasta que llegue la pieza que falta. La Junta la pide por oficio y el término se alarga.",
+          efecto: function (E, d) { E.dias += d; E.piezas.hl.llego = true; E.piezas.hl.conVersion = true; }
+        },
+        devolver: {
+          texto: "El expediente vuelve a manos de la trabajadora para que lo complete: es ella la que va hasta la ventanilla a conseguir lo que falta y a radicar de nuevo.",
+          efecto: function (E, d) { E.devoluciones += 1; E.gestionesMP += 1; E.dias += d; E.piezas.hl.llego = true; }
+        }
+      },
+      sistema: function (E) { return E.piezas.hl.llego ? "dictaminar" : "suspender"; }
+    },
+
+    E4: {
+      actor: "jn",
+      ops: {
+        valida: {
+          texto: "La segunda instancia da por bueno el paquete: hay con qué decidir y la motivación se puede rastrear.",
+          efecto: function (E) { E.paquete = "ok"; }
+        },
+        incompleto: {
+          texto: "La segunda instancia registra que el paquete no permite decidir: falta la evolución clínica que usó la primera instancia o la cronología de lo ocurrido.",
+          efecto: function (E) { E.paquete = "incompleto"; }
+        }
+      },
+      sistema: function (E) { return E.dictamen && !E.dictamen.conVacios ? "valida" : "incompleto"; },
+      extraOps: {
+        apelar: {
+          texto: "La apelación queda radicada y el caso sube a la Junta Nacional. La trabajadora no consta notificada de esa apelación.",
+          efecto: function (E) { E.apelacion = true; }
+        },
+        no_apelar: {
+          texto: "Sin apelación, el dictamen queda en firme y empieza a contar para las prestaciones.",
+          efecto: function (E) { E.apelacion = false; }
+        }
+      },
+      extraSistema: function (E) { return E.dictamen && E.dictamen.origen === "laboral" ? "apelar" : "no_apelar"; }
+    },
+
+    E5: {
+      actor: "afp",
+      ops: {
+        subsidio: {
+          texto: "La administradora de pensiones asume el subsidio desde el día 181. Hay por fin una entidad con nombre que responde por el pago.",
+          efecto: function (E) { E.pago = "afp"; }
+        },
+        remitir: {
+          texto: "El caso se remite a la ARL por tratarse de origen laboral. Si la ARL no lo recibe de inmediato, el pago queda entre las dos entidades.",
+          efecto: function (E) { E.pago = E.origen === "laboral" ? "arl" : "nadie"; }
+        },
+        esperar: {
+          texto: "Esperar la firmeza antes de decidir deja el pago en suspenso: pasado el día 180, nadie está pagando.",
+          efecto: function (E, d) { E.pago = "nadie"; E.dias += d; }
+        }
+      },
+      sistema: function (E) { return E.origen === "laboral" ? "remitir" : E.origen === "comun" ? "subsidio" : "esperar"; }
+    },
+
+    D1: {
+      actor: "emp",
+      ops: {
+        reintegrar: {
+          texto: "La trabajadora se reintegra con restricciones a su mismo puesto.",
+          efecto: function (E) { E.reintegro = "reintegrada"; },
+          extra: function (E) {
+            return RAMAS.campoLlego(E, "hc", 2)
+              ? "Las restricciones estaban escritas, así que el puesto se ajusta a lo que dice el concepto."
+              : "Las restricciones no llegaron por escrito: el reintegro se hace con lo que la trabajadora alcance a explicar.";
+          }
+        },
+        reubicar: {
+          texto: "La trabajadora se reubica en otro cargo compatible con sus restricciones.",
+          efecto: function (E) { E.reintegro = "reubicada"; }
+        },
+        esperar: {
+          texto: "Esperar el concepto de rehabilitación deja el reintegro en el aire, y conseguir ese concepto recae otra vez en la trabajadora.",
+          efecto: function (E, d) { E.reintegro = "pendiente"; E.dias += d; E.gestionesMP += 1; }
+        }
+      },
+      sistema: function (E) { return RAMAS.campoLlego(E, "hc", 2) ? "reubicar" : "esperar"; }
+    },
+
+    D2: {
+      actor: "afp",
+      ops: {
+        resolver: {
+          texto: "La prestación se resuelve con el dictamen y la historia laboral que haya en el expediente.",
+          efecto: function (E) { E.prestacion = "resuelta"; }
+        },
+        pedir: {
+          texto: "Pedir la historia laboral actualizada alarga el trámite. Es la misma pieza que ya debería estar en el expediente.",
+          efecto: function (E, d) { E.dias += d; E.piezas.hl.llego = true; }
+        },
+        remitir: {
+          texto: "El caso se remite a la ARL, que asume la prestación si el origen quedó laboral.",
+          efecto: function (E) { E.prestacion = "arl"; }
+        }
+      },
+      sistema: function (E) { return E.dictamen && E.piezas.hl.llego ? "resolver" : "pedir"; }
+    },
+
+    D3: {
+      actor: "supersalud",
+      ops: {
+        enrutar: {
+          texto: "La queja queda enrutada con un responsable y un plazo: por primera vez hay alguien con nombre a cargo de responderle.",
+          efecto: function (E) { E.queja = "enrutada"; E.acuses += 1; }
+        },
+        pedir: {
+          texto: "Se piden informes a la EPS por oficio. Cada entidad contestará con su propio archivo.",
+          efecto: function (E, d) { E.queja = "informes"; E.dias += d; }
+        },
+        archivar: {
+          texto: "La queja se archiva por falta de competencia. La vía que queda es la judicial, y reunir el expediente para esa vía recae en la trabajadora.",
+          efecto: function (E) { E.queja = "archivada"; E.gestionesMP += 1; }
+        }
+      },
+      sistema: function () { return "enrutar"; }
+    }
+  },
+
+  /* ---------- Consecuencias de las respuestas que no son decisiones ---------- */
+
+  // Custodia: qué sale de la entidad que conserva la pieza.
+  custodia: {
+    completa: {
+      texto: "Se entrega todo lo que piden. Sale también lo que no era pertinente para la finalidad declarada, y de eso no queda control.",
+      efecto: function (E, d, ctx) { (ctx.piezas || []).forEach(k => { E.piezas[k].llego = true; E.piezas[k].conVersion = true; E.piezas[k].campos = null; }); }
+    },
+    parcial: {
+      texto: "Se entrega solo lo pertinente para la finalidad declarada. El resto se queda en la entidad.",
+      efecto: function (E, d, ctx) {
+        (ctx.piezas || []).forEach(k => {
+          const v = vistaDe(ctx.pide, k, ctx.paso);
+          E.piezas[k].llego = true; E.piezas[k].conVersion = true; E.piezas[k].campos = v ? v.slice() : [];
+        });
+      }
+    },
+    denegar: {
+      texto: "No se entrega nada. Quien necesita esa pieza tendrá que conseguirla por otra vía, y la vía que queda hoy es pedírsela a la trabajadora.",
+      efecto: function (E, d, ctx) { (ctx.piezas || []).forEach(k => { E.piezas[k].llego = false; }); E.gestionesMP += 1; }
+    }
+  },
+
+  // Vigilancia y apoyo: no decide el fondo, pero deja requerimientos.
+  soporte: {
+    ninguna: { texto: "No se toma ninguna acción: el trámite sigue su curso sin intervención." },
+    requerir: {
+      texto: "Queda un requerimiento de información a la entidad responsable.",
+      efecto: function (E, d, ctx) { E.vigilancia.push({ paso: ctx.paso, de: ctx.actor, tipo: "requerimiento" }); }
+    },
+    ordenar: {
+      texto: "Queda una orden con plazo, y el plazo empieza a correr desde que se notifica.",
+      efecto: function (E, d, ctx) { E.vigilancia.push({ paso: ctx.paso, de: ctx.actor, tipo: "orden" }); E.acuses += 1; }
+    }
+  },
+
+  /* ---------- Reglas de lectura del estado ---------- */
+
+  // ¿El expediente tiene todo lo que el paso necesita?
+  expedienteCompleto: function (E, pasoId) {
+    return RAMAS.piezasDe(pasoId || "E3").every(k => E.piezas[k].llego);
+  },
+  faltaTxt: function (E, pasoId) {
+    const f = RAMAS.piezasDe(pasoId || "E3").filter(k => !E.piezas[k].llego);
+    return f.length ? listaFrase(f.map(k => EV[k].n.toLowerCase() + " (" + EV[k].sl + ")")) : "nada";
+  },
+  // ¿Llegó un campo concreto de una pieza?
+  campoLlego: function (E, pieza, i) {
+    const p = E.piezas[pieza];
+    return !!(p && p.llego && (p.campos == null || p.campos.indexOf(i) >= 0));
+  },
+
+  /* ---------- El estado del caso, para el informe y para la pantalla ---------- */
+  // Versión compacta, que viaja dentro de cada respuesta: así el investigador ve qué ruta produjo.
+  compacto: function (E) {
+    const p = {};
+    Object.keys(E.piezas).forEach(k => {
+      const x = E.piezas[k];
+      p[k] = !x.llego ? "no_llego" : x.campos == null ? (x.conVersion ? "completa" : "sin_version") : "parcial";
+    });
+    return { piezas:p, origen:E.origen, controversia:E.controversia,
+      dictamen:E.dictamen ? E.dictamen.origen + (E.dictamen.conVacios ? "_con_vacios" : "") : null,
+      apelacion:E.apelacion, paquete:E.paquete, pago:E.pago, reintegro:E.reintegro, prestacion:E.prestacion,
+      queja:E.queja, devoluciones:E.devoluciones, gestionesMP:E.gestionesMP, acuses:E.acuses,
+      vigilancia:(E.vigilancia || []).length, diasDeclarados:E.diasDeclarados || 0 };
+  },
+  // Versión legible, que se le muestra al participante después de cada paso.
+  resumenEstado: function (E) {
+    const ORI = { comun:"común", laboral:"laboral" }, PAGO = { eps:"la EPS", arl:"la ARL", afp:"la administradora de pensiones", nadie:"nadie, por ahora" };
+    const out = [];
+    out.push(["Origen de la dolencia", E.origen ? "calificado " + ORI[E.origen] : "sin definir"]);
+    const falta = Object.keys(EV).filter(k => !E.piezas[k].llego && k !== "dic");
+    out.push(["Expediente", falta.length ? "falta " + listaFrase(falta.map(k => EV[k].sl)) : "completo con lo que la ruta ha producido"]);
+    if (E.controversia) out.push(["Controversia", E.controversia === "abierta" ? "abierta ante la Junta Regional" : "no se abrió"]);
+    if (E.dictamen) out.push(["Dictamen", "origen " + ORI[E.dictamen.origen] + (E.dictamen.conVacios ? ", con vacíos en el expediente" : ", con el expediente completo")]);
+    if (E.apelacion != null) out.push(["Apelación", E.apelacion ? "radicada" : "no hubo"]);
+    if (E.pago) out.push(["Quién paga desde el día 181", PAGO[E.pago] || E.pago]);
+    if (E.reintegro) out.push(["Reintegro", E.reintegro]);
+    if (E.prestacion) out.push(["Prestación", E.prestacion === "resuelta" ? "resuelta" : E.prestacion]);
+    if (E.queja) out.push(["Queja", E.queja]);
+    out.push(["Gestiones que le tocaron a la trabajadora", String(E.gestionesMP)]);
+    out.push(["Acuses que quedaron", String(E.acuses)]);
+    if (E.devoluciones) out.push(["Devoluciones del expediente", String(E.devoluciones)]);
+    if ((E.vigilancia || []).length) out.push(["Requerimientos y órdenes", String(E.vigilancia.length)]);
+    return out;
+  },
+
+  /* ---------- Pasos que no ocurren en este recorrido ----------
+     Si no hubo controversia, el caso no llega a la Junta; si no hubo apelación, no hay segunda
+     instancia. El paso se muestra igual, diciendo por qué no ocurrió: es parte del hallazgo. */
+  noOcurre: function (E, pasoId, yo) {
+    if (yo && actividadDe(PASOS[PIDX[pasoId]], yo, "actual")) return null;
+    if (pasoId === "E3" && E.controversia === "aceptada") return "La ARL aceptó la calificación de la EPS, así que la controversia no se abrió y el caso no llegó a la Junta Regional.";
+    if (pasoId === "E4" && E.apelacion === false) return "Nadie apeló el dictamen dentro del término, así que no hubo segunda instancia.";
+    if (pasoId === "E4" && E.controversia === "aceptada") return "Sin controversia no hubo dictamen de la Junta, así que no hay nada que apelar.";
+    return null;
+  },
+
+  /* ---------- Decisión de un actor que no está conectado ----------
+     Regla general: la del paso. Excepción: si ese curso dejaría sin actividad al participante,
+     el sistema toma el que mantiene vivo su rol, porque la persona entró a jugar ese rol.
+     La excepción queda registrada y se informa, para que el investigador sepa cuándo actuó. */
+  decidirSistema: function (pasoId, E, yo, perfil) {
+    const r = RAMAS.pasos[pasoId]; if (!r) return null;
+    let v = r.sistema ? r.sistema(E, yo, perfil) : null;
+    const forzado = RAMAS.mantenerViva(pasoId, v, yo);
+    return { valor: forzado || v, forzado: !!forzado };
+  },
+  /* ¿Qué curso hay que tomar para que el participante alcance a jugar su rol?
+     Solo se aplica en los dos puntos donde una decisión ajena puede cerrar la ruta. */
+  mantenerViva: function (pasoId, valor, yo) {
+    const tiene = pid => !!actividadDe(PASOS[PIDX[pid]], yo, "actual");
+    if (pasoId === "E2" && valor === "aceptar" && (tiene("E3") || tiene("E4"))) return "controvertir";
+    if (pasoId === "E4" && valor === "no_apelar" && tiene("E4")) return "apelar";
+    return null;
+  }
 };
 /* ============ Núcleo común del simulador asíncrono y del panel del investigador ============ */
 const INSTRUMENTO = "simulador_blueprint_asincrono";
@@ -1084,6 +1545,8 @@ function textoLimpio(v, max) {
   return cs.join("").trim().length > (max || 600) ? Array.from(cs.join("").trim()).slice(0, max || 600).join("") : cs.join("").trim();
 }
 const plural = (n, uno, varios) => n + " " + (n === 1 ? uno : varios);
+// «a», «a y b», «a, b y c»: listas que se leen como una frase.
+function listaFrase(xs) { return xs.length < 2 ? (xs[0] || "") : xs.slice(0, -1).join(", ") + " y " + xs[xs.length - 1]; }
 const etiqueta = (ops, v) => { const o = (ops || []).filter(x => x[0] === v)[0]; return o ? o[1] : (v == null ? "" : String(v)); };
 
 /* ---------- Iconografía: identificadores del kit por concepto ---------- */
@@ -1216,7 +1679,11 @@ function pasoDurante(e) {
 const PASOS = SB.pasos.filter(p => p.fase === "antes").concat(BP.etapas.map(pasoDurante), SB.pasos.filter(p => p.fase === "despues"));
 const PIDX = {}; PASOS.forEach((p, i) => { PIDX[p.id] = i; });
 const vModo = m => m === "propuesto" ? "mod" : "hoy";
-const rondaDef = id => ESC.rondas.filter(r => r.id === id)[0];
+/* La versión asíncrona recorre la ruta UNA sola vez y pone la comparación con el módulo dentro de
+   cada paso: una persona sola no sostiene dos recorridos completos. Conserva el identificador de
+   la primera ronda del escenario para que los documentos sigan siendo compatibles. */
+const RONDAS = [Object.assign({}, ESC.rondas[0], { n:GUION.ronda.n })];
+const rondaDef = id => RONDAS.filter(r => r.id === id)[0] || RONDAS[0];
 const modoDe = ronda => (rondaDef(ronda) || {}).modo || "actual";
 function reglasDe(p, modo) {
   const o = p[vModo(modo)], dec = ESC.decisiones[p.id];
@@ -1273,6 +1740,72 @@ function comprobarFinalidad(actor, finId, piezas, pasoId) {
     if (v) perm[pz] = v; else den.push(pz);
   });
   return { finalidadAutorizada:aut, piezasPermitidas:perm, piezasDenegadas:den, piezasPropias:propias };
+}
+/* ---------- Perfiles del caso ----------
+   Un perfil es una persona y el contenido real de los campos de las cinco piezas de evidencia.
+   PERFIL_BASE es el caso del proyecto, incluido en la construcción; CFG.perfiles trae los que
+   cargó el investigador. Una cuenta puede fijar el suyo con `perfil`. */
+function perfilesDisponibles() {
+  const ex = (typeof CFG === "object" && CFG && CFG.perfiles) || [];
+  if (ex.length) return ex;
+  return typeof PERFIL_BASE === "undefined" ? [] : [PERFIL_BASE];
+}
+function perfilDe(id) { const ps = perfilesDisponibles(); return ps.filter(p => p.id === id)[0] || ps[0] || null; }
+/* El guion habla del caso con marcas —{persona}, {cargo}, {dia}…— que se resuelven una sola vez,
+   cuando se sabe con qué perfil recorre el participante. Así ningún texto queda atado a un caso. */
+let GUION_ORIG = null;
+function resolverGuion(perfil) {
+  if (!GUION_ORIG) GUION_ORIG = clone(GUION);
+  const p = (perfil && perfil.persona) || {}, c = (perfil && perfil.caso) || {};
+  const ac = p.acompanaCorto || "quien la acompaña";
+  const M = { persona:p.nombre || "la trabajadora", acompana:ac, acompanaMayus:ac.charAt(0).toUpperCase() + ac.slice(1),
+    edad:p.edad == null ? "—" : String(p.edad), cargo:p.cargo || "—", empresa:p.empresa || "—",
+    dia:c.diaRuta == null ? "—" : String(c.diaRuta), diagnostico:c.diagnostico || "—" };
+  const sub = t => t.replace(/\{(persona|acompanaMayus|acompana|edad|cargo|empresa|dia|diagnostico)\}/g, (m, k) => M[k]);
+  const walk = (dst, src) => { Object.keys(src).forEach(k => { const v = src[k]; dst[k] = typeof v === "string" ? sub(v) : (v && typeof v === "object") ? walk(Array.isArray(v) ? [] : {}, v) : v; }); return dst; };
+  walk(GUION, GUION_ORIG);
+  return GUION;
+}
+// La ficha de la persona del caso, con los rótulos del guion y los datos del perfil.
+function fichaPerfil(perfil) {
+  const p = (perfil && perfil.persona) || {}, c = (perfil && perfil.caso) || {}, out = [];
+  GUION.fichaPersona.forEach(f => { if (p[f[0]] != null && p[f[0]] !== "") out.push([f[1], String(p[f[0]])]); });
+  if (c.diagnostico) out.push(["Diagnóstico", c.diagnostico]);
+  if (c.diaRuta != null) out.push(["Dónde va el caso", "Día " + c.diaRuta + " de incapacidad" + (c.origenEnDisputa ? "; el origen sigue sin definirse" : "")]);
+  const af = p.afiliaciones || {};
+  if (af.eps || af.arl || af.pensiones) out.push(["Afiliaciones", [af.eps, af.arl, af.pensiones].filter(Boolean).join(", ")]);
+  return out;
+}
+// El contenido de un campo: el del perfil si lo trae, y si no el nombre del campo del blueprint.
+function campoPerfil(perfil, pieza, i) {
+  const e = ((perfil || {}).evidencia || {})[pieza];
+  const v = e && e.campos ? e.campos[i] : null;
+  return v == null || v === "" ? null : String(v);
+}
+/* Lo que de verdad llega de cada pieza en la ruta de hoy, según el estado del caso:
+   si la pieza llegó, con qué campos, y qué campos el perfil declara que hoy no llegan. */
+function expedienteHoy(E, perfil, pasoId) {
+  return RAMAS.piezasDe(pasoId).map(k => {
+    const st = (E.piezas || {})[k] || {}, ev = ((perfil || {}).evidencia || {})[k] || {}, falta = ev.faltaHoy || [];
+    return { k:k, llego:!!st.llego, conVersion:!!st.conVersion, propia:false,
+      campos:EV[k].campos.map((n, i) => ({ n:n, i:i,
+        v:st.llego && (st.campos == null || st.campos.indexOf(i) >= 0) && falta.indexOf(i) < 0 ? campoPerfil(perfil, k, i) : null })) };
+  });
+}
+// Lo que el módulo le abriría al actor en ese paso: su vista mínima por contrato.
+function expedienteModulo(perfil, actor, pasoId) {
+  return RAMAS.piezasDe(pasoId).map(k => {
+    const propia = EV[k].cust === actor;
+    const v = propia ? EV[k].campos.map((c, i) => i) : vistaDe(actor, k, pasoId);
+    return { k:k, abierta:!!v, propia:propia,
+      campos:EV[k].campos.map((n, i) => ({ n:n, i:i, v:v && v.indexOf(i) >= 0 ? campoPerfil(perfil, k, i) : null })) };
+  });
+}
+// Campos que el módulo añadiría a lo que hoy llega: es la diferencia que el participante compara.
+function camposQueAnade(E, perfil, actor, pasoId) {
+  const hoy = expedienteHoy(E, perfil, pasoId), mod = expedienteModulo(perfil, actor, pasoId), out = [];
+  mod.forEach((m, j) => m.campos.forEach(c => { if (c.v && !hoy[j].campos[c.i].v) out.push({ pieza:m.k, n:c.n, v:c.v }); }));
+  return out;
 }
 const camposTxt = (pz, idx) => idx.map(i => EV[pz].campos[i]).join(", ");
 const retenidosTxt = (pz, idx) => EV[pz].campos.filter((c, i) => idx.indexOf(i) < 0).join(", ");
@@ -1732,7 +2265,7 @@ const enlaceCuenta = q => (urlPublica() || "index.html") + "#u=" + encodeURIComp
 // Igual que minutosEstimados() del simulador: duración que se informa al participante según su rol.
 function minutosDeRol(actor) {
   const T = GUION.tiempos; let m = T.inicio + T.cierre;
-  ESC.rondas.forEach(r => { bloquesDe(actor, r.modo).forEach(b => { m += b.tipo === "contexto" ? T.contexto * b.pasos.length : T[b.act.tipo]; }); m += T.valoracion; });
+  RONDAS.forEach(r => { bloquesDe(actor, r.modo).forEach(b => { m += b.tipo === "contexto" ? T.contexto * b.pasos.length : T[b.act.tipo]; }); m += T.valoracion; });
   return Math.max(10, Math.round(m / 5) * 5);
 }
 function textoInvitacion(q) {
@@ -1974,16 +2507,16 @@ function seguimientoDe(d) {
   if (memoSeguimiento.has(d.huella)) return memoSeguimiento.get(d.huella);
   const actor = d.cuenta.actor, s = d.sesion, regs = vigentesDoc(d), mios = regs.filter(r => r.origen === "participante");
   const acts = mios.filter(r => r.tipo === "actividad" && r.payload), completa = d.estado === "completa";
-  const ids = ESC.rondas.map(r => r.id), iR = ids.indexOf(s.rondaActual), rondasSes = s.rondas || {};
+  const ids = RONDAS.map(r => r.id), iR = ids.indexOf(s.rondaActual), rondasSes = s.rondas || {};
   const estadoRonda = id => (esPropia(rondasSes, id) && rondasSes[id].estado) || "pendiente";
   const est = iR >= 0 ? estadoRonda(s.rondaActual) : "";
   let donde;
-  if (completa) donde = { etapa:"Entrega", texto:"Terminó las dos rondas" };
+  if (completa) donde = { etapa:"Entrega", texto:"Terminó el recorrido" };
   else if (iR < 0) donde = { etapa:"Simulación", texto:"Aceptó la declaración" };
-  else if (est === "pendiente") donde = { etapa:"Simulación", texto:"Ronda " + (iR + 1) + " · por iniciar" };
-  else if (est === "valoracion") donde = { etapa:"Simulación", texto:"Ronda " + (iR + 1) + " · cierre de la ronda" };
-  else donde = { etapa:"Simulación", texto:"Ronda " + (iR + 1) + " · paso " + (s.pasoActual || "—") + (esPaso(s.pasoActual) ? " · " + PASOS[PIDX[s.pasoActual]].n : "") };
-  const rondas = ESC.rondas.map((r, i) => {
+  else if (est === "pendiente") donde = { etapa:"Simulación", texto:"Recorrido por iniciar" };
+  else if (est === "valoracion") donde = { etapa:"Simulación", texto:"Cierre del recorrido" };
+  else donde = { etapa:"Simulación", texto:"paso " + (s.pasoActual || "—") + (esPaso(s.pasoActual) ? " · " + PASOS[PIDX[s.pasoActual]].n : "") };
+  const rondas = RONDAS.map((r, i) => {
     const porPaso = mapaVacio(); acts.forEach(x => { if (x.ronda === r.id && esPaso(x.paso)) porPaso[x.paso] = x; });
     const actual = !completa && s.rondaActual === r.id && est === "en_curso" ? s.pasoActual : null;
     const pasos = PASOS.map(p => { const act = actividadDe(p, actor, r.modo), reg = porPaso[p.id] || null; return { p, act, reg, estado:reg ? (num(reg.version) > 1 ? "rect" : "ok") : actual === p.id ? "cur" : act ? "" : "na" }; });
@@ -2458,7 +2991,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
   const fechaSegura = t => typeof t === "number" && isFinite(t) && Math.abs(t) < 8.64e15 ? fecha(t) : "—";
 
   /* ---------- Escenario: rondas, pasos, roles y etiquetas legibles ---------- */
-  const R = ESC.rondas, RID = R.map(r => r.id), REQ = lst(ESC.requeridos);
+  const R = RONDAS, RID = R.map(r => r.id), REQ = lst(ESC.requeridos);
   const esRol = a => !!own(A, a);
   const idxPaso = id => { const i = own(PIDX, id); return typeof i === "number" ? i : -1; };
   const rondaC = id => { const i = RID.indexOf(id); return i < 0 ? "—" : "Ronda " + (i + 1) + " · " + (R[i].modo === "propuesto" ? "con el módulo" : "hoy"); };

@@ -134,7 +134,7 @@ const actividades = d => (d ? d.registros.filter(r => r.tipo === "actividad").le
     T.ok(tras2.length > tras1.length && tras2.some(k => k.indexOf("estudio-uno") > 0) && tras2.some(k => k.indexOf("estudio-dos") > 0), "cada sesión guarda su avance en su propia llave, sin pisarse", tras2.join(" "));
     // En la misma pestaña, cada sesión recuerda su propio acceso: al volver se continúa sin pedir la contraseña.
     await pgD.goto(D.url); await L.w(pgD, 500);
-    T.ok((await pgD.evaluate(() => document.body.getAttribute("data-etapa"))) === "simulacion" && /2 de 16/.test(await texto(pgD, "#vista")), "y al volver a la primera sesión se retoma donde iba", (await texto(pgD, "#vista")).slice(0, 160));
+    T.ok((await pgD.evaluate(() => document.body.getAttribute("data-etapa"))) === "simulacion" && /2 de 8/.test(await texto(pgD, "#vista")), "y al volver a la primera sesión se retoma donde iba", (await texto(pgD, "#vista")).slice(0, 160));
     await ctxD.close(); await D.cerrar();
 
     /* ---------- Sitio sin configurar o mal configurado ---------- */
