@@ -108,6 +108,10 @@ const ACC = {
   /* acceso */
   "copia-elegir":() => abrirArchivo("copia-archivo"),
   "copia-elegir-panel":() => abrirArchivo("copia-archivo-panel"),
+  "perfil-elegir":() => abrirArchivo("perfil-archivo"),
+  "perfil-ver":id => { UI.perfilVer = UI.perfilVer === id ? null : id; render(); },
+  "perfil-cerrar":() => { UI.perfilVer = null; render(); },
+  "perfil-eliminar":id => { borrarPerfil(id); if (UI.perfilVer === id) UI.perfilVer = null; render(); aviso("Caso eliminado."); },
   "copia-cancelar":() => { UI.acceso.pendiente = null; render(); },
   "copia-restaurar":() => {
     const p = UI.acceso.pendiente; if (!p) return;
@@ -281,6 +285,20 @@ document.addEventListener("change", async ev => {
   if (k === "resp-incluir") { const e = entradaDe(arg); if (e) { e.excluida = !i.checked; guardarRespuestas(); analisisMemo = null; render(); } return; }
   if (k === "copia-archivo") { const fs0 = [].slice.call(i.files); i.value = ""; leerArchivos(fs0, out => { const c = leerCopia(out[0] && out[0].texto || ""); if (c.error) return aviso(c.error, true); UI.acceso.pendiente = c; render(); }); return; }
   if (k === "copia-archivo-panel") { const fs0 = [].slice.call(i.files); i.value = ""; leerArchivos(fs0, out => { const c = leerCopia(out[0] && out[0].texto || ""); if (c.error) return aviso(c.error, true); const reemplazo = aplicarCopia(c); analisisMemo = null; UI.ficha = null; UI.importe = null; UI.vista = "estudio"; render(); aviso(reemplazo ? "Copia restaurada sobre la sesión «" + estudioEfectivo().titulo + "»." : "Copia restaurada como una sesión nueva."); }); return; }
+  if (k === "perfil-archivo") {
+    const fs1 = [].slice.call(i.files); i.value = "";
+    leerArchivos(fs1, out => {
+      const res = { anadidos:0, reemplazados:0, errores:[] };
+      out.forEach(o => { const r = cargarPerfiles(o.texto || ""); res.anadidos += r.anadidos; res.reemplazados += r.reemplazados; res.errores = res.errores.concat(r.errores); });
+      UI.perfilesErr = res; render();
+      aviso(res.anadidos || res.reemplazados
+        ? "Casos cargados: " + res.anadidos + " nuevos y " + res.reemplazados + " actualizados." + (res.errores.length ? " " + res.errores.length + " con errores." : "")
+        : "No se cargó ningún caso: revise los errores.", !res.anadidos && !res.reemplazados);
+    });
+    return;
+  }
+  if (k === "perfil-activo") { PROY.perfil = i.getAttribute("data-arg") || ""; guardarProyecto(); render(); return; }
+  if (k === "cuenta-perfil") { const q = PROY.cuentas.filter(x => x.u === i.getAttribute("data-arg"))[0]; if (q) { q.perfil = i.value || ""; guardarProyecto(); render(); } return; }
   if (k === "resp-archivo") { const fs = [].slice.call(i.files); i.value = ""; leerArchivos(fs, out => { importarTextos(out, "archivo"); analisisMemo = null; render(); aviso("Importación terminada."); }); return; }
   if (k === "unico-archivo") {
     const fs = [].slice.call(i.files); i.value = "";

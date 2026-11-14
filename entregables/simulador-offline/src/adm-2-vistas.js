@@ -106,6 +106,46 @@ const CAMPOS_FORM = [
   { k:"comite", n:"Comité de ética y número de aprobación" },
   { k:"cierre", n:"Fecha límite para participar", ayuda:"Texto libre; aparece en la invitación." }
 ];
+/* Los casos cargados: cada uno trae una persona y el contenido de las cinco piezas de evidencia.
+   El investigador elige con cuál recorren todos, y puede fijar otro por cuenta en «Cuentas». */
+function perfilesHtml() {
+  const lista = PROY.perfiles || [], err = UI.perfilesErr;
+  const fila = p => {
+    const ev = p.evidencia || {}, faltan = Object.keys(EV).filter(k => ((ev[k] || {}).faltaHoy || []).length);
+    const campos = Object.keys(EV).reduce((n, k) => n + ((ev[k] || {}).campos || []).length, 0);
+    const elegido = (PROY.perfil || "") === p.id;
+    const usan = PROY.cuentas.filter(q => (q.perfil || PROY.perfil) === p.id).length;
+    return `<tr${elegido ? ' class="abierto"' : ""}>
+      <td><label class="opcion-radio"><input type="radio" name="perfil-activo" data-in="perfil-activo" data-arg="${esc(p.id)}" ${elegido ? "checked" : ""}><span><b>${esc(p.persona.nombre || p.id)}</b>${elegido ? " " + chipEstado("ch-teal", "caso en uso", "estados-completado") : ""}<div class="mini">${esc([p.persona.edad != null ? p.persona.edad + " años" : "", p.persona.cargo, p.caso.diagnostico].filter(Boolean).join(" · "))}</div></span></label></td>
+      <td class="num">${p.caso.diaRuta == null ? "—" : "día " + p.caso.diaRuta}</td>
+      <td class="mini">${campos} campos${faltan.length ? "<div>hoy no llega: " + esc(faltan.map(k => EV[k].sl).join(", ")) + "</div>" : "<div>todo llega hoy</div>"}</td>
+      <td class="num">${usan}</td>
+      <td class="nw acc">${btn("perfil-ver", p.id, "Ver", "sm outline", "acciones-ver-detalle")}${btn("perfil-eliminar", p.id, "Eliminar", "sm outline", "acciones-eliminar")}</td></tr>`;
+  };
+  const tabla = lista.length
+    ? `<div class="twrap"><table class="t"><thead><tr><th scope="col">Caso</th><th scope="col">Empieza en</th><th scope="col">Evidencia</th><th scope="col">Cuentas</th><th scope="col"></th></tr></thead><tbody>${lista.map(fila).join("")}</tbody></table></div>`
+    : `<p class="mini">Todavía no ha cargado ningún caso. Mientras tanto, la simulación usa el caso base del proyecto (M.P.), que viene incluido.</p>`;
+  const errores = err && err.errores && err.errores.length
+    ? `<div class="aviso err"><b>No se pudieron cargar ${err.errores.length === 1 ? "un caso" : err.errores.length + " casos"}:</b><ul class="lista">${err.errores.map(e => `<li><b>${esc(e.id)}</b>: ${esc(e.fallas.join("; "))}</li>`).join("")}</ul></div>`
+    : "";
+  const detalle = UI.perfilVer ? perfilDetalleHtml(perfilDelProyecto(UI.perfilVer)) : "";
+  return `<p>Cada caso trae una persona —nombre, edad, cargo, antigüedad— y el contenido real de los campos de las cinco piezas de evidencia. Eso es lo que cada actor lee en su pantalla cuando el expediente le llega.</p>
+    <p class="mini">El formato está en <span class="mono">perfiles/FORMATO-PERFILES.md</span>, con un ejemplo completo en <span class="mono">perfiles/perfil-ejemplo-mp.json</span>. El caso marcado es con el que recorren todos los participantes, salvo que en «Cuentas» le fije otro a alguien.</p>
+    ${errores}${tabla}${detalle}
+    <div class="row">${btn("perfil-elegir", "", "Cargar casos desde un archivo", "sec", "acciones-importar")}${archivoOculto("perfil-archivo", ".json,application/json")}</div>`;
+}
+function perfilDetalleHtml(p) {
+  if (!p) return "";
+  const fichas = Object.keys(p.persona).filter(k => typeof p.persona[k] !== "object").map(k => `<b>${esc(k)}</b><span>${esc(String(p.persona[k]))}</span>`).join("");
+  const piezas = Object.keys(EV).map(k => {
+    const e = p.evidencia[k] || { campos:[], faltaHoy:[] };
+    return `<details data-det="perfil-${esc(p.id)}-${esc(k)}"><summary><b>${esc(EV[k].sl)}</b> ${esc(EV[k].n)} · custodia ${esc(nomL(EV[k].cust))}</summary><dl class="info">${EV[k].campos.map((c, i) => `<dt>${esc(c)}${(e.faltaHoy || []).indexOf(i) >= 0 ? ' <span class="chip ch-red">hoy no llega</span>' : ""}</dt><dd>${esc(e.campos[i] || "—")}</dd>`).join("")}</dl></details>`;
+  }).join("");
+  return `<div class="panel"><div class="row"><h3 style="margin-right:auto">${esc(p.persona.nombre || p.id)}</h3>${btn("perfil-cerrar", "", "Cerrar", "sm outline", "acciones-cerrar")}</div>
+    <p>${esc(p.caso.resumen || "")}</p><div class="kv">${fichas}</div>${piezas}
+    ${p.caso.fuente ? `<p class="mini">Origen del caso: ${esc(p.caso.fuente)}</p>` : ""}</div>`;
+}
+
 function vistaEstudio() {
   const e = PROY.estudio, en = PROY.entrega, idMal = String(e.id || "").trim() && !idEstudioValido();
   const campo = c => `<label class="campo${c.k === "id" && idMal ? " mal" : ""}">${esc(c.n)}${campoTexto("e-" + c.k, "", e[c.k], `maxlength="${LARGO_ESTUDIO[c.k] || 160}"${c.k === "id" ? ' autocapitalize="none" spellcheck="false"' : ""}`)}${c.ayuda ? `<span class="mini">${esc(c.ayuda)}</span>` : ""}${c.k === "id" && idMal ? `<span class="msg err">Solo letras minúsculas, cifras, punto, guion o guion bajo.</span>` : ""}</label>`;
@@ -127,6 +167,7 @@ function vistaEstudio() {
       <div class="campos-grid"><label class="campo">Versión del texto${campoTexto("c-version", "", PROY.consentimiento.version, 'maxlength="20"')}<span class="mini">Queda registrada en cada respuesta.</span></label></div>
       <label class="campo">Párrafo adicional (opcional)<textarea data-in="c-adicional" maxlength="2000" rows="3" placeholder="Por ejemplo, el número de aprobación del comité o una aclaración de su institución.">${esc(PROY.consentimiento.adicional)}</textarea></label>
       <details data-det="cons-vista"><summary>Ver el texto que leerá el participante</summary>${textoConsentimientoHtml()}</details>`)}
+    ${seccion("Casos de la simulación", "documentos-datos-sinteticos", perfilesHtml())}
     ${seccion("Cómo le llegan las respuestas", "acciones-importar", `${optAdm("entrega", "", [["archivo", "Por archivo: el participante me lo envía"], ["servidor", "Por servidor: llegan solas al sitio"]], en.forma)}${srv}`)}
     ${seccion("Copia de seguridad del proyecto", "gobernanza-custodia", `
       <p>La copia trae esta sesión: el estudio, sus cuentas con las contraseñas, la invitación y las respuestas importadas. <b>Guárdela como un documento confidencial.</b> No incluye la clave de este panel ni la clave de administración del servidor.</p>

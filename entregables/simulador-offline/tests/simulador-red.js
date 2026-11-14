@@ -137,6 +137,30 @@ const actividades = d => (d ? d.registros.filter(r => r.tipo === "actividad").le
     T.ok((await pgD.evaluate(() => document.body.getAttribute("data-etapa"))) === "simulacion" && /2 de 8/.test(await texto(pgD, "#vista")), "y al volver a la primera sesión se retoma donde iba", (await texto(pgD, "#vista")).slice(0, 160));
     await ctxD.close(); await D.cerrar();
 
+    /* ---------- Un sitio con los casos cargados por el investigador ---------- */
+    const base = JSON.parse(L.fs.readFileSync(L.path.join(L.RAIZ, "perfiles/perfil-ejemplo-mp.json"), "utf8")).perfiles[0];
+    const otro = JSON.parse(JSON.stringify(base));
+    otro.id = "ja"; otro.persona.nombre = "J.A."; otro.persona.cargo = "Auxiliar de bodega"; otro.persona.edad = 52;
+    otro.caso.diaRuta = 95; otro.caso.resumen = "Consultó por un dolor de hombro tras una caída en la bodega.";
+    otro.evidencia.hc.campos[0] = "S43.4 · Esguince de hombro derecho, tras caída desde su propia altura el día 1.";
+    otro.evidencia.hc.faltaHoy = [0];
+    const cfgP = configuracion(null, { id:"estudio-con-casos" });
+    cfgP.perfiles = [base, otro]; cfgP.estudio.perfil = "ja";
+    const P = await sitio(cfgP, true), ctxP = await br.newContext(), pgP = await L.pagina(ctxP, errores, u => u.startsWith(P.base));
+    await pgP.goto(P.url); await L.entrarDemo(pgP, "eps-01", CLAVE);
+    await clic(pgP, '[data-act="orient"][data-arg="1"]', 150);
+    const caso = await texto(pgP, "#vista");
+    T.ok(/J\.A\./.test(caso) && /Auxiliar de bodega/.test(caso) && /dolor de hombro/.test(caso) && !/Operaria de empaque/.test(caso),
+      "el simulador recorre el caso que el investigador dejó elegido", caso.slice(0, 200));
+    for (let i = 2; i <= 4; i++) await clic(pgP, '[data-act="orient"][data-arg="' + i + '"]');
+    await L.aceptarDeclaracion(pgP, null); await L.llenarEncuesta(pgP, 1);
+    await clic(pgP, '[data-act="ronda-iniciar"]');
+    let visto = "";
+    for (let i = 0; i < 8; i++) { visto += " " + (await texto(pgP, "#vista")); if (await hay(pgP, "#titulo-cierre")) break; await L.pantalla(pgP, 1); }
+    T.ok(/levantamientos por turno/.test(visto) && /No llegó/.test(visto),
+      "el expediente que viaja trae el contenido del caso cargado, con sus vacíos", visto.slice(0, 160));
+    await ctxP.close(); await P.cerrar();
+
     /* ---------- Sitio sin configurar o mal configurado ---------- */
     for (const [cfg, nombre] of [[null, "sin configuracion.js"], ["window.SIM_CONFIG = { formato:1, estudio:{ id:'x' }, cuentas:[] };", "con una configuración sin cuentas"], ["esto no es javascript {", "con un configuracion.js dañado"]]) {
       const N = await sitio(cfg), ctxN = await br.newContext(), pgN = await L.pagina(ctxN, [], u => u.startsWith(N.base));

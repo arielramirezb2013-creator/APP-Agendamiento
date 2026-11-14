@@ -1935,7 +1935,9 @@ function proyectoNuevo() {
     estudio, consentimiento:{ version:String(GUION.consentimiento.version || "1"), adicional:"" },
     url:"",                                   // dirección pública del simulador, para las invitaciones
     entrega:{ forma:"archivo", url:"recibir.php", modo:"progresivo", clave:"", claveAdmin:"" },
-    cuentas:[],                               // { u, a, etiqueta, clave, s, p, creada, h, hd }
+    perfiles:[],                              // casos sintéticos cargados (perfiles/FORMATO-PERFILES.md)
+    perfil:"",                                // identificador del caso con el que recorren todos, si no se fija por cuenta
+    cuentas:[],                               // { u, a, etiqueta, clave, s, p, perfil, creada, h, hd }
     invitacion:INVITACION_BASE, incluirPruebas:false,
     config:null,                              // { firma, generado }: última configuración generada
     publicado:null,                           // { firma, generado, id, config, unico }: última configuración descargada
@@ -2281,8 +2283,69 @@ function cuentasCsv() {
   return csvTabla(["Usuario", "Rol", "Para quién es", "Contraseña", "Enlace", "Cuenta de prueba"], PROY.cuentas.map(q => [q.u, nomL(q.a), q.etiqueta, q.clave, conUrl ? enlaceCuenta(q) : "", q.p ? "sí" : "no"]));
 }
 
+/* ---------- Perfiles del caso ----------
+   Un perfil es una persona y el contenido de los campos de las cinco piezas de evidencia.
+   El formato está en perfiles/FORMATO-PERFILES.md; aquí se valida antes de aceptarlo. */
+const PIEZAS_PERFIL = Object.keys(EV);
+function revisarPerfil(p) {
+  const fallas = [];
+  if (!p || typeof p !== "object") return ["no es un objeto"];
+  if (!RE_ID.test(String(p.id || ""))) fallas.push("el identificador «" + String(p.id || "") + "» no sirve (letras, números, punto, guion)");
+  if (!p.persona || !String(p.persona.nombre || "").trim()) fallas.push("falta el nombre de la persona");
+  if (!p.caso || !String(p.caso.resumen || "").trim()) fallas.push("falta el resumen del caso");
+  PIEZAS_PERFIL.forEach(k => {
+    const e = (p.evidencia || {})[k];
+    if (!e) { fallas.push("falta la pieza " + EV[k].sl); return; }
+    const n = (e.campos || []).length, esperados = EV[k].campos.length;
+    if (n !== esperados) fallas.push(EV[k].sl + ": trae " + n + " campos y necesita " + esperados);
+    else if ((e.campos || []).some(c => !String(c || "").trim())) fallas.push(EV[k].sl + ": hay campos vacíos");
+    (e.faltaHoy || []).forEach(i => { if (!(i >= 0 && i < esperados)) fallas.push(EV[k].sl + ": «faltaHoy» señala un campo que no existe (" + i + ")"); });
+  });
+  return fallas;
+}
+// Deja el perfil en la forma que el simulador espera, sin campos de más.
+function perfilLimpio(p) {
+  const out = { id:String(p.id), persona:{}, caso:{}, evidencia:{} };
+  Object.keys(p.persona || {}).forEach(k => { const v = p.persona[k]; out.persona[k] = v && typeof v === "object" ? clone(v) : (typeof v === "number" ? v : textoLimpio(v, 400)); });
+  ["diagnostico", "resumen", "fuente"].forEach(k => { if (p.caso[k]) out.caso[k] = textoLimpio(p.caso[k], 1500); });
+  if (p.caso.diaRuta != null) out.caso.diaRuta = num(p.caso.diaRuta);
+  out.caso.origenEnDisputa = p.caso.origenEnDisputa !== false;
+  PIEZAS_PERFIL.forEach(k => {
+    const e = p.evidencia[k];
+    out.evidencia[k] = { pieza:EV[k].n, version:textoLimpio(e.version, 60) || EV[k].ver, custodio:nomL(EV[k].cust),
+      campos:e.campos.map(c => textoLimpio(c, 1200)),
+      faltaHoy:(e.faltaHoy || []).map(i => num(i)).filter(i => i < EV[k].campos.length) };
+    if (e.existeDesde) out.evidencia[k].existeDesde = String(e.existeDesde);
+  });
+  return out;
+}
+/* Incorpora un archivo de perfiles. Devuelve { añadidos, reemplazados, errores:[{id, fallas}] }. */
+function cargarPerfiles(texto) {
+  let j = null;
+  try { j = JSON.parse(texto); } catch (e) { return { errores:[{ id:"archivo", fallas:["no es un JSON válido: " + (e.message || "")] }], anadidos:0, reemplazados:0 }; }
+  const lista = Array.isArray(j) ? j : Array.isArray(j.perfiles) ? j.perfiles : [j];
+  const res = { anadidos:0, reemplazados:0, errores:[] };
+  lista.forEach(p => {
+    const fallas = revisarPerfil(p);
+    if (fallas.length) { res.errores.push({ id:String((p && p.id) || "sin identificador"), fallas:fallas }); return; }
+    const limpio = perfilLimpio(p), i = PROY.perfiles.findIndex(x => x.id === limpio.id);
+    if (i >= 0) { PROY.perfiles[i] = limpio; res.reemplazados++; } else { PROY.perfiles.push(limpio); res.anadidos++; }
+  });
+  if (!PROY.perfil && PROY.perfiles.length) PROY.perfil = PROY.perfiles[0].id;
+  if (res.anadidos || res.reemplazados) guardarProyecto();
+  return res;
+}
+function borrarPerfil(id) {
+  PROY.perfiles = PROY.perfiles.filter(p => p.id !== id);
+  PROY.cuentas.forEach(q => { if (q.perfil === id) q.perfil = ""; });
+  if (PROY.perfil === id) PROY.perfil = PROY.perfiles.length ? PROY.perfiles[0].id : "";
+  guardarProyecto();
+}
+const perfilDelProyecto = id => PROY.perfiles.filter(p => p.id === id)[0] || null;
+const nombrePerfil = id => { const p = perfilDelProyecto(id); return p ? (p.persona.nombre || p.id) + (p.caso.diagnostico ? " · " + p.caso.diagnostico : "") : "—"; };
+
 /* ---------- Configuración publicada ---------- */
-function estudioPublicable() { const e = {}; CAMPOS_ESTUDIO.forEach(k => { e[k] = String(PROY.estudio[k] == null ? "" : PROY.estudio[k]).trim(); }); return e; }
+function estudioPublicable() { const e = {}; CAMPOS_ESTUDIO.forEach(k => { e[k] = String(PROY.estudio[k] == null ? "" : PROY.estudio[k]).trim(); }); if (PROY.perfil) e.perfil = PROY.perfil; return e; }
 const consentimientoPublicable = () => ({ version:String(PROY.consentimiento.version || "").trim() || String(GUION.consentimiento.version || "1"), adicional:String(PROY.consentimiento.adicional || "").trim() });
 function envioPublicable(completa) {
   const en = PROY.entrega; if (en.forma !== "servidor") return null;
@@ -2290,7 +2353,7 @@ function envioPublicable(completa) {
 }
 // Huella de todo lo que entra en la configuración: si cambia, lo publicado quedó desactualizado.
 function firmaPublicable() {
-  return SHA.hex(canonico({ estudio:estudioPublicable(), consentimiento:consentimientoPublicable(), envio:envioPublicable(false), cuentas:PROY.cuentas.map(q => [q.u, q.a, q.s, normClave(q.clave), !!q.p]) }));
+  return SHA.hex(canonico({ estudio:estudioPublicable(), consentimiento:consentimientoPublicable(), envio:envioPublicable(false), perfil:PROY.perfil, perfiles:PROY.perfiles, cuentas:PROY.cuentas.map(q => [q.u, q.a, q.s, normClave(q.clave), !!q.p, q.perfil || ""]) }));
 }
 const firmaReceptor = () => SHA.hex(PROY.entrega.clave + "\n" + PROY.entrega.claveAdmin);
 // La huella de cada contraseña tarda: se calcula una sola vez por cuenta y se recuerda mientras no cambien sus datos.
@@ -2321,7 +2384,8 @@ async function configPublicable(completa, progreso) {
   if (!PROY.config || PROY.config.firma !== firma) PROY.config = { firma, generado:new Date().toISOString() };
   return {
     formato:FORMATO, estudio:estudioPublicable(), consentimiento:consentimientoPublicable(), kdf:{ alg:KDF.alg, iter:KDF.iter }, envio:envioPublicable(completa),
-    cuentas:PROY.cuentas.map((q, i) => { const c = { u:q.u, a:q.a, s:q.s, h:hs[i] }; if (q.p) c.p = true; return c; }),
+    perfiles:clone(PROY.perfiles),
+    cuentas:PROY.cuentas.map((q, i) => { const c = { u:q.u, a:q.a, s:q.s, h:hs[i] }; if (q.p) c.p = true; if (q.perfil) c.perfil = q.perfil; return c; }),
     generado:PROY.config.generado
   };
 }
@@ -2689,6 +2753,46 @@ const CAMPOS_FORM = [
   { k:"comite", n:"Comité de ética y número de aprobación" },
   { k:"cierre", n:"Fecha límite para participar", ayuda:"Texto libre; aparece en la invitación." }
 ];
+/* Los casos cargados: cada uno trae una persona y el contenido de las cinco piezas de evidencia.
+   El investigador elige con cuál recorren todos, y puede fijar otro por cuenta en «Cuentas». */
+function perfilesHtml() {
+  const lista = PROY.perfiles || [], err = UI.perfilesErr;
+  const fila = p => {
+    const ev = p.evidencia || {}, faltan = Object.keys(EV).filter(k => ((ev[k] || {}).faltaHoy || []).length);
+    const campos = Object.keys(EV).reduce((n, k) => n + ((ev[k] || {}).campos || []).length, 0);
+    const elegido = (PROY.perfil || "") === p.id;
+    const usan = PROY.cuentas.filter(q => (q.perfil || PROY.perfil) === p.id).length;
+    return `<tr${elegido ? ' class="abierto"' : ""}>
+      <td><label class="opcion-radio"><input type="radio" name="perfil-activo" data-in="perfil-activo" data-arg="${esc(p.id)}" ${elegido ? "checked" : ""}><span><b>${esc(p.persona.nombre || p.id)}</b>${elegido ? " " + chipEstado("ch-teal", "caso en uso", "estados-completado") : ""}<div class="mini">${esc([p.persona.edad != null ? p.persona.edad + " años" : "", p.persona.cargo, p.caso.diagnostico].filter(Boolean).join(" · "))}</div></span></label></td>
+      <td class="num">${p.caso.diaRuta == null ? "—" : "día " + p.caso.diaRuta}</td>
+      <td class="mini">${campos} campos${faltan.length ? "<div>hoy no llega: " + esc(faltan.map(k => EV[k].sl).join(", ")) + "</div>" : "<div>todo llega hoy</div>"}</td>
+      <td class="num">${usan}</td>
+      <td class="nw acc">${btn("perfil-ver", p.id, "Ver", "sm outline", "acciones-ver-detalle")}${btn("perfil-eliminar", p.id, "Eliminar", "sm outline", "acciones-eliminar")}</td></tr>`;
+  };
+  const tabla = lista.length
+    ? `<div class="twrap"><table class="t"><thead><tr><th scope="col">Caso</th><th scope="col">Empieza en</th><th scope="col">Evidencia</th><th scope="col">Cuentas</th><th scope="col"></th></tr></thead><tbody>${lista.map(fila).join("")}</tbody></table></div>`
+    : `<p class="mini">Todavía no ha cargado ningún caso. Mientras tanto, la simulación usa el caso base del proyecto (M.P.), que viene incluido.</p>`;
+  const errores = err && err.errores && err.errores.length
+    ? `<div class="aviso err"><b>No se pudieron cargar ${err.errores.length === 1 ? "un caso" : err.errores.length + " casos"}:</b><ul class="lista">${err.errores.map(e => `<li><b>${esc(e.id)}</b>: ${esc(e.fallas.join("; "))}</li>`).join("")}</ul></div>`
+    : "";
+  const detalle = UI.perfilVer ? perfilDetalleHtml(perfilDelProyecto(UI.perfilVer)) : "";
+  return `<p>Cada caso trae una persona —nombre, edad, cargo, antigüedad— y el contenido real de los campos de las cinco piezas de evidencia. Eso es lo que cada actor lee en su pantalla cuando el expediente le llega.</p>
+    <p class="mini">El formato está en <span class="mono">perfiles/FORMATO-PERFILES.md</span>, con un ejemplo completo en <span class="mono">perfiles/perfil-ejemplo-mp.json</span>. El caso marcado es con el que recorren todos los participantes, salvo que en «Cuentas» le fije otro a alguien.</p>
+    ${errores}${tabla}${detalle}
+    <div class="row">${btn("perfil-elegir", "", "Cargar casos desde un archivo", "sec", "acciones-importar")}${archivoOculto("perfil-archivo", ".json,application/json")}</div>`;
+}
+function perfilDetalleHtml(p) {
+  if (!p) return "";
+  const fichas = Object.keys(p.persona).filter(k => typeof p.persona[k] !== "object").map(k => `<b>${esc(k)}</b><span>${esc(String(p.persona[k]))}</span>`).join("");
+  const piezas = Object.keys(EV).map(k => {
+    const e = p.evidencia[k] || { campos:[], faltaHoy:[] };
+    return `<details data-det="perfil-${esc(p.id)}-${esc(k)}"><summary><b>${esc(EV[k].sl)}</b> ${esc(EV[k].n)} · custodia ${esc(nomL(EV[k].cust))}</summary><dl class="info">${EV[k].campos.map((c, i) => `<dt>${esc(c)}${(e.faltaHoy || []).indexOf(i) >= 0 ? ' <span class="chip ch-red">hoy no llega</span>' : ""}</dt><dd>${esc(e.campos[i] || "—")}</dd>`).join("")}</dl></details>`;
+  }).join("");
+  return `<div class="panel"><div class="row"><h3 style="margin-right:auto">${esc(p.persona.nombre || p.id)}</h3>${btn("perfil-cerrar", "", "Cerrar", "sm outline", "acciones-cerrar")}</div>
+    <p>${esc(p.caso.resumen || "")}</p><div class="kv">${fichas}</div>${piezas}
+    ${p.caso.fuente ? `<p class="mini">Origen del caso: ${esc(p.caso.fuente)}</p>` : ""}</div>`;
+}
+
 function vistaEstudio() {
   const e = PROY.estudio, en = PROY.entrega, idMal = String(e.id || "").trim() && !idEstudioValido();
   const campo = c => `<label class="campo${c.k === "id" && idMal ? " mal" : ""}">${esc(c.n)}${campoTexto("e-" + c.k, "", e[c.k], `maxlength="${LARGO_ESTUDIO[c.k] || 160}"${c.k === "id" ? ' autocapitalize="none" spellcheck="false"' : ""}`)}${c.ayuda ? `<span class="mini">${esc(c.ayuda)}</span>` : ""}${c.k === "id" && idMal ? `<span class="msg err">Solo letras minúsculas, cifras, punto, guion o guion bajo.</span>` : ""}</label>`;
@@ -2710,6 +2814,7 @@ function vistaEstudio() {
       <div class="campos-grid"><label class="campo">Versión del texto${campoTexto("c-version", "", PROY.consentimiento.version, 'maxlength="20"')}<span class="mini">Queda registrada en cada respuesta.</span></label></div>
       <label class="campo">Párrafo adicional (opcional)<textarea data-in="c-adicional" maxlength="2000" rows="3" placeholder="Por ejemplo, el número de aprobación del comité o una aclaración de su institución.">${esc(PROY.consentimiento.adicional)}</textarea></label>
       <details data-det="cons-vista"><summary>Ver el texto que leerá el participante</summary>${textoConsentimientoHtml()}</details>`)}
+    ${seccion("Casos de la simulación", "documentos-datos-sinteticos", perfilesHtml())}
     ${seccion("Cómo le llegan las respuestas", "acciones-importar", `${optAdm("entrega", "", [["archivo", "Por archivo: el participante me lo envía"], ["servidor", "Por servidor: llegan solas al sitio"]], en.forma)}${srv}`)}
     ${seccion("Copia de seguridad del proyecto", "gobernanza-custodia", `
       <p>La copia trae esta sesión: el estudio, sus cuentas con las contraseñas, la invitación y las respuestas importadas. <b>Guárdela como un documento confidencial.</b> No incluye la clave de este panel ni la clave de administración del servidor.</p>
@@ -3702,6 +3807,10 @@ const ACC = {
   /* acceso */
   "copia-elegir":() => abrirArchivo("copia-archivo"),
   "copia-elegir-panel":() => abrirArchivo("copia-archivo-panel"),
+  "perfil-elegir":() => abrirArchivo("perfil-archivo"),
+  "perfil-ver":id => { UI.perfilVer = UI.perfilVer === id ? null : id; render(); },
+  "perfil-cerrar":() => { UI.perfilVer = null; render(); },
+  "perfil-eliminar":id => { borrarPerfil(id); if (UI.perfilVer === id) UI.perfilVer = null; render(); aviso("Caso eliminado."); },
   "copia-cancelar":() => { UI.acceso.pendiente = null; render(); },
   "copia-restaurar":() => {
     const p = UI.acceso.pendiente; if (!p) return;
@@ -3875,6 +3984,20 @@ document.addEventListener("change", async ev => {
   if (k === "resp-incluir") { const e = entradaDe(arg); if (e) { e.excluida = !i.checked; guardarRespuestas(); analisisMemo = null; render(); } return; }
   if (k === "copia-archivo") { const fs0 = [].slice.call(i.files); i.value = ""; leerArchivos(fs0, out => { const c = leerCopia(out[0] && out[0].texto || ""); if (c.error) return aviso(c.error, true); UI.acceso.pendiente = c; render(); }); return; }
   if (k === "copia-archivo-panel") { const fs0 = [].slice.call(i.files); i.value = ""; leerArchivos(fs0, out => { const c = leerCopia(out[0] && out[0].texto || ""); if (c.error) return aviso(c.error, true); const reemplazo = aplicarCopia(c); analisisMemo = null; UI.ficha = null; UI.importe = null; UI.vista = "estudio"; render(); aviso(reemplazo ? "Copia restaurada sobre la sesión «" + estudioEfectivo().titulo + "»." : "Copia restaurada como una sesión nueva."); }); return; }
+  if (k === "perfil-archivo") {
+    const fs1 = [].slice.call(i.files); i.value = "";
+    leerArchivos(fs1, out => {
+      const res = { anadidos:0, reemplazados:0, errores:[] };
+      out.forEach(o => { const r = cargarPerfiles(o.texto || ""); res.anadidos += r.anadidos; res.reemplazados += r.reemplazados; res.errores = res.errores.concat(r.errores); });
+      UI.perfilesErr = res; render();
+      aviso(res.anadidos || res.reemplazados
+        ? "Casos cargados: " + res.anadidos + " nuevos y " + res.reemplazados + " actualizados." + (res.errores.length ? " " + res.errores.length + " con errores." : "")
+        : "No se cargó ningún caso: revise los errores.", !res.anadidos && !res.reemplazados);
+    });
+    return;
+  }
+  if (k === "perfil-activo") { PROY.perfil = i.getAttribute("data-arg") || ""; guardarProyecto(); render(); return; }
+  if (k === "cuenta-perfil") { const q = PROY.cuentas.filter(x => x.u === i.getAttribute("data-arg"))[0]; if (q) { q.perfil = i.value || ""; guardarProyecto(); render(); } return; }
   if (k === "resp-archivo") { const fs = [].slice.call(i.files); i.value = ""; leerArchivos(fs, out => { importarTextos(out, "archivo"); analisisMemo = null; render(); aviso("Importación terminada."); }); return; }
   if (k === "unico-archivo") {
     const fs = [].slice.call(i.files); i.value = "";

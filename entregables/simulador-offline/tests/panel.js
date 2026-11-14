@@ -87,12 +87,30 @@ function documento(usuario, actor, estudioId, variante, hasta) {
     T.ok(p.proyecto.cuentas.filter(q => q.u === eps[1].u)[0].clave !== claveAntes, "regenerar la contraseña de una cuenta la cambia");
     const csv = await L.descargar(pg, '[data-act="cuentas-csv"]');
     T.ok(csv.texto.includes(eps[0].u) && csv.texto.includes("Para Ana") && csv.texto.split("\r\n").length === 14, "la hoja de cuentas trae las 12 filas con su etiqueta privada", String(csv.texto.split("\r\n").length));
+    /* ---------- Casos del estudio ---------- */
+    await ir(pg, "estudio");
+    const perfilBueno = JSON.parse(L.fs.readFileSync(L.path.join(L.RAIZ, "perfiles/perfil-ejemplo-mp.json"), "utf8"));
+    const segundo = JSON.parse(JSON.stringify(perfilBueno.perfiles[0]));
+    segundo.id = "ja"; segundo.persona.nombre = "J.A."; segundo.persona.cargo = "Auxiliar de bodega"; segundo.caso.diaRuta = 95;
+    const malo = JSON.parse(JSON.stringify(perfilBueno.perfiles[0]));
+    malo.id = "roto"; malo.evidencia.hc.campos = ["solo uno"];
+    const archivoPerfiles = L.path.join(L.SALIDA, "perfiles-prueba.json");
+    L.fs.writeFileSync(archivoPerfiles, JSON.stringify({ formato:"perfiles-simulacion/1", perfiles:[perfilBueno.perfiles[0], segundo, malo] }));
+    await pg.setInputFiles("#perfil-archivo", archivoPerfiles); await L.w(pg, 400);
+    const vistaCasos = await texto(pg, "#vista");
+    p = await proyecto(pg);
+    T.ok(p.proyecto.perfiles.length === 2 && p.proyecto.perfiles.map(x => x.id).join(",") === "mp,ja" && /roto/.test(vistaCasos) && /6 campos y necesita|trae 1 campos/.test(vistaCasos),
+      "el panel carga los casos válidos y dice por qué rechaza el que no lo es", vistaCasos.slice(0, 240));
+    await clic(pg, '[data-in="perfil-activo"][data-arg="ja"]', 200);
+    p = await proyecto(pg);
+    T.ok(p.proyecto.perfil === "ja", "el investigador elige con qué caso recorren todos");
     /* ---------- Publicar ---------- */
     await ir(pg, "publicar");
     const cfgDesc = await L.descargar(pg, '[data-act="bajar-config"]');
     const cfg = JSON.parse(cfgDesc.texto.slice(cfgDesc.texto.indexOf("{"), cfgDesc.texto.lastIndexOf(";")));
     const errsCfg = motor.validarConfig(cfg);
     T.ok(cfgDesc.nombre === "configuracion.js" && !errsCfg.length && cfg.cuentas.length === 13 && cfg.envio && cfg.envio.modo === "progresivo", "configuracion.js es válida y trae las 13 cuentas", errsCfg.join("; "));
+    T.ok((cfg.perfiles || []).length === 2 && cfg.estudio.perfil === "ja" && cfg.perfiles[1].evidencia.hc.campos.length === 6, "la configuración publicada lleva los casos y cuál está en uso", JSON.stringify((cfg.perfiles || []).map(x => x.id)));
     const texto1 = JSON.stringify(cfg);
     const sinClaves = p.proyecto.cuentas.every(q => !texto1.includes(q.clave)) && !texto1.includes(CLAVE_PANEL) && !texto1.includes("Para Ana") && !texto1.includes(p.proyecto.entrega.claveAdmin);
     T.ok(sinClaves, "la configuración no lleva contraseñas en claro, ni etiquetas privadas, ni la clave de administración");

@@ -57,7 +57,9 @@ function proyectoNuevo() {
     estudio, consentimiento:{ version:String(GUION.consentimiento.version || "1"), adicional:"" },
     url:"",                                   // dirección pública del simulador, para las invitaciones
     entrega:{ forma:"archivo", url:"recibir.php", modo:"progresivo", clave:"", claveAdmin:"" },
-    cuentas:[],                               // { u, a, etiqueta, clave, s, p, creada, h, hd }
+    perfiles:[],                              // casos sintéticos cargados (perfiles/FORMATO-PERFILES.md)
+    perfil:"",                                // identificador del caso con el que recorren todos, si no se fija por cuenta
+    cuentas:[],                               // { u, a, etiqueta, clave, s, p, perfil, creada, h, hd }
     invitacion:INVITACION_BASE, incluirPruebas:false,
     config:null,                              // { firma, generado }: última configuración generada
     publicado:null,                           // { firma, generado, id, config, unico }: última configuración descargada
@@ -403,8 +405,69 @@ function cuentasCsv() {
   return csvTabla(["Usuario", "Rol", "Para quién es", "Contraseña", "Enlace", "Cuenta de prueba"], PROY.cuentas.map(q => [q.u, nomL(q.a), q.etiqueta, q.clave, conUrl ? enlaceCuenta(q) : "", q.p ? "sí" : "no"]));
 }
 
+/* ---------- Perfiles del caso ----------
+   Un perfil es una persona y el contenido de los campos de las cinco piezas de evidencia.
+   El formato está en perfiles/FORMATO-PERFILES.md; aquí se valida antes de aceptarlo. */
+const PIEZAS_PERFIL = Object.keys(EV);
+function revisarPerfil(p) {
+  const fallas = [];
+  if (!p || typeof p !== "object") return ["no es un objeto"];
+  if (!RE_ID.test(String(p.id || ""))) fallas.push("el identificador «" + String(p.id || "") + "» no sirve (letras, números, punto, guion)");
+  if (!p.persona || !String(p.persona.nombre || "").trim()) fallas.push("falta el nombre de la persona");
+  if (!p.caso || !String(p.caso.resumen || "").trim()) fallas.push("falta el resumen del caso");
+  PIEZAS_PERFIL.forEach(k => {
+    const e = (p.evidencia || {})[k];
+    if (!e) { fallas.push("falta la pieza " + EV[k].sl); return; }
+    const n = (e.campos || []).length, esperados = EV[k].campos.length;
+    if (n !== esperados) fallas.push(EV[k].sl + ": trae " + n + " campos y necesita " + esperados);
+    else if ((e.campos || []).some(c => !String(c || "").trim())) fallas.push(EV[k].sl + ": hay campos vacíos");
+    (e.faltaHoy || []).forEach(i => { if (!(i >= 0 && i < esperados)) fallas.push(EV[k].sl + ": «faltaHoy» señala un campo que no existe (" + i + ")"); });
+  });
+  return fallas;
+}
+// Deja el perfil en la forma que el simulador espera, sin campos de más.
+function perfilLimpio(p) {
+  const out = { id:String(p.id), persona:{}, caso:{}, evidencia:{} };
+  Object.keys(p.persona || {}).forEach(k => { const v = p.persona[k]; out.persona[k] = v && typeof v === "object" ? clone(v) : (typeof v === "number" ? v : textoLimpio(v, 400)); });
+  ["diagnostico", "resumen", "fuente"].forEach(k => { if (p.caso[k]) out.caso[k] = textoLimpio(p.caso[k], 1500); });
+  if (p.caso.diaRuta != null) out.caso.diaRuta = num(p.caso.diaRuta);
+  out.caso.origenEnDisputa = p.caso.origenEnDisputa !== false;
+  PIEZAS_PERFIL.forEach(k => {
+    const e = p.evidencia[k];
+    out.evidencia[k] = { pieza:EV[k].n, version:textoLimpio(e.version, 60) || EV[k].ver, custodio:nomL(EV[k].cust),
+      campos:e.campos.map(c => textoLimpio(c, 1200)),
+      faltaHoy:(e.faltaHoy || []).map(i => num(i)).filter(i => i < EV[k].campos.length) };
+    if (e.existeDesde) out.evidencia[k].existeDesde = String(e.existeDesde);
+  });
+  return out;
+}
+/* Incorpora un archivo de perfiles. Devuelve { añadidos, reemplazados, errores:[{id, fallas}] }. */
+function cargarPerfiles(texto) {
+  let j = null;
+  try { j = JSON.parse(texto); } catch (e) { return { errores:[{ id:"archivo", fallas:["no es un JSON válido: " + (e.message || "")] }], anadidos:0, reemplazados:0 }; }
+  const lista = Array.isArray(j) ? j : Array.isArray(j.perfiles) ? j.perfiles : [j];
+  const res = { anadidos:0, reemplazados:0, errores:[] };
+  lista.forEach(p => {
+    const fallas = revisarPerfil(p);
+    if (fallas.length) { res.errores.push({ id:String((p && p.id) || "sin identificador"), fallas:fallas }); return; }
+    const limpio = perfilLimpio(p), i = PROY.perfiles.findIndex(x => x.id === limpio.id);
+    if (i >= 0) { PROY.perfiles[i] = limpio; res.reemplazados++; } else { PROY.perfiles.push(limpio); res.anadidos++; }
+  });
+  if (!PROY.perfil && PROY.perfiles.length) PROY.perfil = PROY.perfiles[0].id;
+  if (res.anadidos || res.reemplazados) guardarProyecto();
+  return res;
+}
+function borrarPerfil(id) {
+  PROY.perfiles = PROY.perfiles.filter(p => p.id !== id);
+  PROY.cuentas.forEach(q => { if (q.perfil === id) q.perfil = ""; });
+  if (PROY.perfil === id) PROY.perfil = PROY.perfiles.length ? PROY.perfiles[0].id : "";
+  guardarProyecto();
+}
+const perfilDelProyecto = id => PROY.perfiles.filter(p => p.id === id)[0] || null;
+const nombrePerfil = id => { const p = perfilDelProyecto(id); return p ? (p.persona.nombre || p.id) + (p.caso.diagnostico ? " · " + p.caso.diagnostico : "") : "—"; };
+
 /* ---------- Configuración publicada ---------- */
-function estudioPublicable() { const e = {}; CAMPOS_ESTUDIO.forEach(k => { e[k] = String(PROY.estudio[k] == null ? "" : PROY.estudio[k]).trim(); }); return e; }
+function estudioPublicable() { const e = {}; CAMPOS_ESTUDIO.forEach(k => { e[k] = String(PROY.estudio[k] == null ? "" : PROY.estudio[k]).trim(); }); if (PROY.perfil) e.perfil = PROY.perfil; return e; }
 const consentimientoPublicable = () => ({ version:String(PROY.consentimiento.version || "").trim() || String(GUION.consentimiento.version || "1"), adicional:String(PROY.consentimiento.adicional || "").trim() });
 function envioPublicable(completa) {
   const en = PROY.entrega; if (en.forma !== "servidor") return null;
@@ -412,7 +475,7 @@ function envioPublicable(completa) {
 }
 // Huella de todo lo que entra en la configuración: si cambia, lo publicado quedó desactualizado.
 function firmaPublicable() {
-  return SHA.hex(canonico({ estudio:estudioPublicable(), consentimiento:consentimientoPublicable(), envio:envioPublicable(false), cuentas:PROY.cuentas.map(q => [q.u, q.a, q.s, normClave(q.clave), !!q.p]) }));
+  return SHA.hex(canonico({ estudio:estudioPublicable(), consentimiento:consentimientoPublicable(), envio:envioPublicable(false), perfil:PROY.perfil, perfiles:PROY.perfiles, cuentas:PROY.cuentas.map(q => [q.u, q.a, q.s, normClave(q.clave), !!q.p, q.perfil || ""]) }));
 }
 const firmaReceptor = () => SHA.hex(PROY.entrega.clave + "\n" + PROY.entrega.claveAdmin);
 // La huella de cada contraseña tarda: se calcula una sola vez por cuenta y se recuerda mientras no cambien sus datos.
@@ -443,7 +506,8 @@ async function configPublicable(completa, progreso) {
   if (!PROY.config || PROY.config.firma !== firma) PROY.config = { firma, generado:new Date().toISOString() };
   return {
     formato:FORMATO, estudio:estudioPublicable(), consentimiento:consentimientoPublicable(), kdf:{ alg:KDF.alg, iter:KDF.iter }, envio:envioPublicable(completa),
-    cuentas:PROY.cuentas.map((q, i) => { const c = { u:q.u, a:q.a, s:q.s, h:hs[i] }; if (q.p) c.p = true; return c; }),
+    perfiles:clone(PROY.perfiles),
+    cuentas:PROY.cuentas.map((q, i) => { const c = { u:q.u, a:q.a, s:q.s, h:hs[i] }; if (q.p) c.p = true; if (q.perfil) c.perfil = q.perfil; return c; }),
     generado:PROY.config.generado
   };
 }

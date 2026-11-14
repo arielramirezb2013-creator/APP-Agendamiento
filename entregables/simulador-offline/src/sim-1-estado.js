@@ -13,7 +13,8 @@ const CFG = (() => {
     ok:!errores.length, errores, origen:window.SIM_CONFIG_INCLUIDA ? "incluida" : c ? "externa" : null,
     demo:c && c.demo ? { clave:String(c.demo.clave || "") } : null,
     estudio, kdf:Object.assign({}, KDF, (c && c.kdf) || {}), envio,
-    cuentas:errores.length ? [] : c.cuentas, consentimiento:(c && c.consentimiento) || {}, generado:(c && c.generado) || null
+    cuentas:errores.length ? [] : c.cuentas, consentimiento:(c && c.consentimiento) || {},
+    perfiles:Array.isArray(c && c.perfiles) ? c.perfiles : [], generado:(c && c.generado) || null
   };
 })();
 // Texto del consentimiento: el del guion, con lo que el investigador haya ajustado en la configuración.
