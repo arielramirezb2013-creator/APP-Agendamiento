@@ -4,8 +4,15 @@ Paquete para publicar en un sitio web protegido
 
 Cada participante entra solo, con el usuario y la contraseña que el
 investigador le asignó según su rol. Recibe una orientación, declara su
-participación voluntaria, recorre la simulación y entrega sus respuestas.
-Los demás actores están simulados. El caso es sintético.
+participación voluntaria, responde una encuesta corta sobre su perfil
+profesional, recorre la simulación y entrega sus respuestas. Los demás
+actores están simulados. Los casos son sintéticos.
+
+El investigador elige en su panel cuál de los dos instrumentos se aplica:
+el expediente de pensión de invalidez (el que viene puesto, con cuatro
+expedientes sintéticos y dos condiciones del mismo expediente) o el
+recorrido de la ruta de incapacidad de once pasos. Para publicar el sitio
+da igual: son los mismos archivos.
 
 QUÉ HAY EN ESTA CARPETA
 
@@ -15,8 +22,11 @@ QUÉ HAY EN ESTA CARPETA
                           panel del investigador.
   sw.js                   Deja reabrir el simulador sin conexión.
   administrador.html      Panel del investigador: estudios (varias sesiones
-                          de simulación), cuentas, publicación, respuestas,
-                          seguimiento y resultados.
+                          de simulación), instrumento y expediente, cuentas,
+                          publicación, respuestas, seguimiento y resultados.
+                          Abre con dos claves distintas: la del investigador,
+                          que ve todo, y la del perfil técnico, que solo ve
+                          «Estudio» y «Publicar».
   recibir.php             Receptor opcional de respuestas (requiere PHP).
   recibir-config.php      Claves del receptor. Viene sin claves: reemplácelo
                           por el que genera el panel del investigador.
@@ -28,11 +38,13 @@ QUÉ LEER
 
   Si usted es el investigador:        guia-investigador.html
   Si usted va a publicar el sitio:    guia-despliegue.html
+                                      (apartado 5: publicar en Azure)
 
 LO MÍNIMO
 
-  1. El investigador abre administrador.html, define el estudio, crea las
-     cuentas y descarga configuracion.js.
+  1. El investigador abre administrador.html, define el estudio, elige el
+     instrumento y el expediente, crea las cuentas y descarga
+     configuracion.js.
   2. Quien publica sube esta carpeta a un sitio con HTTPS y acceso
      restringido, y reemplaza configuracion.js.
   3. El investigador envía a cada participante la dirección, su usuario y

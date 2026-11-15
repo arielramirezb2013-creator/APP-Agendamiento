@@ -2,22 +2,44 @@
 
 Versión de la herramienta para cuando no es posible reunir a los participantes. Cada persona entra sola, con el usuario y la contraseña que el investigador le asignó según su rol, y recorre la simulación con los demás actores simulados. Reemplaza la conducción en vivo de `../blueprint-simulacion` por un conductor automático y conserva el mismo contenido doctoral.
 
-## Los dos entregables
+## Dos instrumentos
+
+El investigador elige en el panel cuál se aplica. Los dos usan las mismas cuentas, la misma declaración de participación, la misma encuesta de perfil y el mismo panel.
+
+| Instrumento | Qué recorre el participante | Qué mide | Dura |
+|---|---|---|---|
+| **Expediente de pensión de invalidez** (marco `DGIT-PENSION-R1`, el que viene puesto) | Uno de los cuatro expedientes sintéticos, dos veces: con los canales del flujo actual y con el módulo interoperable | H1 completitud de la evidencia en el punto que resuelve, H2 identificación de responsabilidades, H3 trazabilidad de los accesos | 25 a 45 min según el rol |
+| **Recorrido de la ruta de incapacidad** | Los once pasos del service blueprint, comparando en cada paso lo de hoy con lo del módulo | Suficiencia de la información, finalidades, plazos y valoración de cada contrato de datos | 25 a 40 min según el rol |
+
+## Los entregables
 
 | Entregable | Archivo | Para qué |
 |---|---|---|
-| 1. Simulador en un solo archivo | `simulador.html` | Abre con doble clic, sin conexión. Trae una cuenta de demostración por rol (usuarios `demo-…`, contraseña `DEMO-2026`). Sirve para probar y para enviar tal cual. |
-| 2. Paquete para el sitio web | `paquete-web.zip` (carpeta `paquete-web/`) | Lo que se le entrega a quien publica: simulador, configuración, panel del investigador, receptor opcional y guías. |
+| 1. Simulador en un solo archivo | `simulador.html` | Abre con doble clic, sin conexión. Aplica el instrumento del expediente (PI-L01) y trae una cuenta de demostración por rol (usuarios `demo-…`, contraseña `DEMO-2026`). Sirve para probar y para enviar tal cual. |
+| 2. El mismo, con el otro instrumento | `simulador-ruta.html` | Igual, con el recorrido de la ruta de incapacidad. |
+| 3. Paquete para el sitio web | `paquete-web.zip` (carpeta `paquete-web/`) | Lo que se le entrega a quien publica: simulador, configuración, panel del investigador, receptor opcional y guías. El instrumento y el expediente los fija la configuración que genera el panel. |
 
 Contenido del paquete: `index.html` (simulador), `configuracion.js` (estudio y cuentas), `sw.js` (reapertura sin conexión), `administrador.html` (panel del investigador), `recibir.php` con `recibir-config.php` y `respuestas/` (receptor opcional), `guia-investigador.html`, `guia-despliegue.html` y `LEEME.txt`.
 
 ## Qué hace el participante
 
+Lo común a los dos instrumentos:
+
 1. **Acceso.** Usuario y contraseña. La cuenta define el rol: trabajador, empleador, IPS, EPS, ARL, AFP, Junta Regional, Junta Nacional, MinTrabajo, MinSalud, SuperSalud o Jueces.
-2. **Orientación.** Cuatro pantallas: qué es el estudio y qué se busca; el caso sintético, con la ficha de M.P. y la historia de cómo llegó al día 150; cómo funciona la simulación; y su rol, presentado en primera persona.
+2. **Orientación**, en cuatro pantallas: qué es el estudio y qué se busca; el caso o el expediente con el que va a trabajar; cómo funciona la simulación; y qué le toca a su rol, en primera persona.
 3. **Declaración de participación voluntaria.** Información del estudio, cuatro declaraciones necesarias y datos personales opcionales. Quien no acepta sale sin que quede nada guardado.
-4. **Dos rondas.** La ruta como funciona hoy y la ruta con el módulo propuesto. En cada uno de los once pasos ve qué ocurre; si su rol interviene responde una actividad, y si no, lee el contexto. Al cierre de cada ronda valora el contrato de datos de su rol y responde P1 a P4.
-5. **Entrega.** Envío al receptor del sitio o descarga de un archivo que le manda al investigador.
+4. **Encuesta de perfil profesional.** Después de la declaración: edad, profesión de base, estudios complementarios, años en el rol, rol actual, trayectoria por entidades y con qué frecuencia participa en la ruta. No pide su nombre ni el de su entidad; sirve para leer sus respuestas sabiendo desde qué experiencia las da.
+5. **Entrega.** Envío al receptor del sitio o descarga de un archivo que le manda al investigador, con un comentario final opcional.
+
+Con el **instrumento del expediente**, entre la encuesta y la entrega:
+
+- **El expediente**, con su ficha completa: la persona, su trayectoria laboral con empresas y cargos, lo clínico, la cronología, los actores con lo que custodia cada uno y los puntos de decisión con la evidencia que exige cada uno.
+- **Las dos condiciones**, una después de la otra, en el orden que alterna el simulador según la cuenta, con el expediente reiniciado al empezar la segunda. En cada punto ve los soportes requeridos con su estado y su criterio de conformidad, declara con qué finalidad consulta, y puede consultar, solicitar o devolver lo que no cumple el criterio. Cada actuación cuesta horas virtuales —menos con el módulo— y hay un corte de 48 horas por condición. Decide, dice por qué y puede añadir lo que quiera.
+- **Las preguntas de cierre**: a quién le corresponde cada una de las seis tareas del expediente (H2) y la reconstrucción de cuatro accesos con sus cinco elementos —quién, qué pieza, en qué momento, qué acción y con qué resultado— (H3).
+
+Con el **recorrido de la ruta**, en su lugar:
+
+- **Un recorrido de los once pasos.** Donde su rol interviene responde una actividad corta y compara, en el mismo paso, lo que haría hoy con lo que haría con el módulo; donde no interviene, lee el contexto y puede dejar una observación. Al cerrar valora el contrato de datos de su rol y responde P1 a P4.
 
 Al cerrar la ronda 1 el contrato de datos todavía no se ha vivido: la pantalla lo presenta como lo que el módulo propondría para su rol y le pide decir si lo aceptaría. Al cerrar la ronda 2 lo valora ya recorrido. La misma pregunta de comparación se repite en las dos rondas, con una nota que explica por qué.
 
@@ -30,6 +52,31 @@ Donde la simulación supone algo que la matriz de contratos no autoriza, lo dice
 Las preguntas que se comparan entre rondas se formulan igual en las dos: la valoración del contrato, la comparación «frente a hoy» y, en la actividad de custodia, qué entrega y cuántos días. Si el enunciado cambiara de una ronda a otra, el informe compararía respuestas a preguntas distintas.
 
 El sistema hace de los actores que no están conectados: pide evidencia al custodio, consulta por el módulo con la vista mínima del contrato, notifica y registra acuses. Todo lo que genera el sistema queda marcado como simulado y se cuenta aparte, y el registro distingue los actos de la propia entidad del participante de la reacción de los actores simulados.
+
+## El instrumento del expediente
+
+El catálogo está en `src/datos-expedientes.js`, transcrito del documento del instrumento: el marco (pregunta, problema, tres subpreguntas y tres hipótesis con su variable y su regla), el protocolo (aplicación, reinicio, corte de 48 horas virtuales y las dos condiciones), las catorce piezas de soporte, los tres estados de conformidad y los cuatro expedientes.
+
+| Expediente | Quién solicita | Puntos | Punto que resuelve | Conformes al radicar |
+|---|---|---|---|---|
+| PI-L01 | Mateo Roldán Vega, montacarguista | P1 · P2 · P3 | P2 | 4 de 5 |
+| PI-L02 | Javier Pardo Navas | P1 · P2 | P2 | 2 de 4 |
+| PI-L03 | Mónica Beltrán Rivas | P1 · P2 · P3 | P2 | 2 de 4 |
+| PI-L04 | Elena Marín Cuéllar | P1 · P2 | P2 | 4 de 6 |
+
+Cómo se miden las tres hipótesis:
+
+- **H1 · completitud.** Elementos requeridos disponibles y conformes ÷ total de requeridos, en el punto que resuelve, comparando las dos condiciones del mismo expediente en puntos porcentuales. Un soporte solicitado no cuenta hasta que llega, se verifica contra su criterio y se acepta. La diferencia se calcula participación por participación, de modo que cada persona es su propio control.
+- **H2 · responsabilidades.** Aciertos sobre las seis tareas del expediente, contra la respuesta de referencia del documento.
+- **H3 · trazabilidad.** Accesos reconstruidos por completo sobre cuatro: cuentan solo si coinciden los cinco elementos. El informe también reporta cuántos elementos de los veinte acertó cada persona y cuál de los cinco se pierde más.
+
+Lo que el recorrido respeta del protocolo: el expediente se reinicia entre condiciones, el orden se alterna entre participantes, queda la instantánea anterior a la decisión que resuelve, los estados solo cambian cuando el soporte llega y se acepta, y el corte de 48 horas no se puede pasar: una actuación que no alcance se rechaza diciendo cuántas horas quedan.
+
+Decisiones de diseño del recorrido, para que quepa en los 45 minutos del estudio sin perder la medida:
+
+- Los puntos **posteriores** a la decisión que resuelve se leen como tramo ilustrativo —con lo que quedaría conforme según el expediente que el participante deja— en lugar de volverse a decidir en cada condición. Afecta igual a las dos condiciones, así que la comparación no se desequilibra.
+- Un rol que **no decide** pero custodia algo que un punto requiere recorre ese punto desde su lado (entregar o no lo que se le pide) y lee el contexto de los demás; también responde H2 y H3.
+- El **control de acceso por finalidad** se aplica de verdad: una consulta declarada como control administrativo no abre las piezas clínicas (HC, AUD, FUN) y la denegación queda registrada.
 
 ## Pausa, reanudación y fallas
 
@@ -61,12 +108,25 @@ participantes. Sirve para repetir la simulación con otro grupo, en otra entidad
 Todo desde `administrador.html`, que abre con doble clic o desde el sitio. Vea `guia-investigador.html`.
 
 0. **Estudios.** Varias sesiones de simulación guardadas por separado: crear, duplicar con cuentas nuevas, abrir y eliminar.
-1. **Estudio.** Datos del estudio, texto adicional de la declaración y forma de entrega.
+1. **Estudio.** Datos del estudio, texto adicional de la declaración, **instrumento y expediente** con el que trabajan todos, los **dos perfiles de administración** y la forma de entrega.
 2. **Cuentas.** Una cuenta por participante, con su rol. El panel genera usuario, contraseña e invitación.
 3. **Publicar.** Descarga `configuracion.js` (y `recibir-config.php` si hay receptor) para quien publica. También genera un simulador de un solo archivo con las cuentas reales.
 4. **Respuestas.** Importa los archivos que le envían o los trae del servidor.
 5. **Seguimiento.** En qué va cada participante, qué respondió y qué problemas tuvo.
-6. **Resultados.** Informe consolidado por rol y ronda, tablas en CSV, datos en JSON e informe imprimible.
+6. **Resultados.** Informe consolidado del instrumento que se aplique, tablas en CSV, datos en JSON e informe imprimible.
+
+### Los dos perfiles de administración
+
+El panel abre con dos claves distintas, y el perfil depende de la clave con la que se entre:
+
+- **Investigador:** todo el panel.
+- **Perfil técnico**, para quien ayuda a montar la herramienta: solo «Estudio» y «Publicar» —la dirección del sitio, el receptor con su prueba y los archivos para subirlos—. No ve las contraseñas de los participantes, ni las respuestas, ni el seguimiento, ni los resultados, ni las copias de seguridad; los despachadores de clics y de campos rechazan cualquier acción fuera de esa lista.
+
+El investigador crea, cambia o quita esa clave en «Estudio → Perfiles de administración». Las dos quedan guardadas como huella PBKDF2 junto al índice del panel. Separan lo que cada perfil ve y hace dentro del panel; no cifran lo que el navegador guarda.
+
+### Qué trae el informe del expediente
+
+Capítulos: quiénes participaron y su perfil profesional; **H1** con la completitud en el punto que resuelve por condición, por rol, por expediente y participación por participación, las horas gastadas y el soporte en el que se rompe la completitud; las **actuaciones y decisiones** con las finalidades declaradas y lo que el control de acceso denegó; **H2** tarea por tarea con la atribución equivocada más frecuente; **H3** con el elemento que más se pierde y el detalle de cada acceso; **lo que escribieron** los participantes, con una caja de búsqueda que filtra por cualquier columna; y el **registro completo**, para auditar cualquier cifra.
 
 ## Seguridad y privacidad: qué es y qué no es
 
@@ -75,6 +135,7 @@ Todo desde `administrador.html`, que abre con doble clic o desde el sitio. Vea `
 - Las respuestas no llevan la contraseña ni su huella. Los datos personales son opcionales y van solo en la ficha del participante; en los registros la persona aparece con el alias de su cuenta.
 - Cada documento de respuestas trae una huella de integridad. Detecta archivos alterados o incompletos; no prueba quién lo escribió.
 - Ninguna página hace peticiones a terceros.
+- Los accesos de administración están protegidos y sus credenciales no aparecen en las exportaciones.
 - El texto de la declaración es una plantilla. Debe validarse con el comité de ética de la institución antes de usarla.
 
 ## Decisiones de contenido que conviene confirmar
@@ -85,7 +146,8 @@ Todo desde `administrador.html`, que abre con doble clic o desde el sitio. Vea `
 - **Pregunta «frente a hoy» en la ronda 1.** Se conserva en las dos rondas para poder comparar y se explica con una nota.
 - **Sin ejemplos de respuesta.** Las actividades no muestran ejemplos, para no inducir las respuestas.
 - **El relato y el rol de M.P.** El relato describe por dónde viaja la evidencia, y en algunos pasos eso incluye la gestión que hoy recae sobre la trabajadora (en A3, que es ella quien tiene que pedirle la matriz al empleador). Es contenido del blueprint y es el hecho que el módulo pretende cambiar, pero para el rol de M.P. queda escrito encima de la pregunta «¿qué le tocó hacer por su cuenta?». Al leer ese indicador conviene tenerlo presente.
-- **Hipótesis H1 a H4.** Conservan su formulación «pendiente de confirmar» de `datos-escenario.js`.
+- **Hipótesis.** El instrumento del expediente trae las tres del documento del marco (H1 completitud, H2 identificación de responsabilidades, H3 trazabilidad de los accesos), textuales y con su regla de medida. El recorrido de la ruta conserva las cuatro de `datos-escenario.js` con su formulación «pendiente de confirmar». Ninguna se reescribe ni se renombra.
+- **El recorrido de la ruta se conserva** como segundo instrumento, no se reemplaza: `simulador-ruta.html` y todas sus pruebas siguen en verde.
 
 ## Construcción
 
@@ -100,21 +162,27 @@ python3 src/build.py
 |---|---|
 | `CONTRATO.md` | Formatos e interfaces: cuentas, configuración, documento de respuestas, registros, receptor y panel |
 | `nucleo.js` | Utilidades comunes: pintado estable, iconos, SHA-256 y PBKDF2, huella de integridad, reglas del blueprint, CSV |
-| `datos-guion.js` | Textos de orientación, declaración y conducción |
+| `datos-guion.js` | Textos de orientación, declaración, encuesta de perfil y conducción de los dos instrumentos |
+| `datos-expedientes.js` | Catálogo del instrumento del expediente: marco, protocolo, piezas, estados y los cuatro expedientes |
+| `datos-ramas.js` | Reglas de consecuencia del recorrido de la ruta: lo que cambia en el caso según lo que responde el participante |
+| `exp-1-motor.js` | Expediente: estado, actuaciones con su costo en horas, completitud, control de acceso, calificación de H2 y H3, y los bloques del recorrido |
+| `exp-2-estado.js`, `exp-3-vistas.js` | Expediente: conducción de las dos condiciones y pantallas |
 | `sim-1-estado.js`, `sim-2-vistas.js`, `sim-3-eventos.js` | Simulador: estado y conductor automático, pantallas, eventos |
-| `adm-1-proyecto.js` | Panel: estudios guardados, almacenamiento, cuentas, configuración publicada y respuestas |
+| `adm-1-proyecto.js` | Panel: estudios guardados, almacenamiento, cuentas, perfiles de administración, configuración publicada y respuestas |
 | `adm-2-vistas.js`, `adm-4-eventos.js` | Panel: pantallas, eventos e inicio |
-| `adm-3-resultados.js` | Panel: análisis consolidado, informe imprimible y exportaciones |
+| `adm-3-resultados.js` | Panel: análisis del recorrido de la ruta, informe imprimible y exportaciones, y lo que comparten los dos informes |
+| `adm-5-expediente.js` | Panel: análisis del instrumento del expediente (H1, H2, H3, actuaciones, textos y registro) |
 | `servidor/` | `recibir.php`, `recibir-config.php`, `sw.js` y protección de la carpeta de respuestas |
 | `guias/` | Guías del paquete |
 | `estilos*.css`, `head-*.html`, `skel-*.html` | Estilos propios y esqueletos de página |
 
-`simulador-artefacto.html` es el mismo simulador sin la envoltura del documento, para publicarlo como artefacto.
+`simulador-artefacto.html` es el mismo simulador sin la envoltura del documento, para publicarlo como artefacto. `simulador-ruta.html` es la misma construcción con el otro instrumento.
 
 ## Pruebas
 
 ```
-node tests/motor.js            # sin navegador: los 12 roles completan las dos rondas
+node tests/motor.js            # sin navegador: los 12 roles completan el recorrido de la ruta
+node tests/expediente.js       # el instrumento del expediente: catálogo, condiciones, corte y medidas
 node tests/simulador.js        # navegador, archivo local sin red
 node tests/simulador-red.js    # navegador, sitio con receptor simulado
 node tests/servidor.js         # receptor PHP real con php -S
@@ -125,8 +193,9 @@ Requieren Node, Playwright con Chromium y, para el receptor, PHP. Las pruebas se
 
 | Prueba | Qué comprueba |
 |---|---|
-| `motor.js` | Cada rol recorre las dos rondas y entrega un documento válido y sin credenciales. Con `--muestras` escribe doce documentos de ejemplo. |
+| `motor.js` | Cada rol recorre la ruta y entrega un documento válido y sin credenciales. Con `--muestras` escribe doce documentos de ejemplo. |
+| `expediente.js` | El cociente «Inicio n/m» del documento frente al que se calcula de la tabla de soportes en los diez puntos; custodios, responsabilidades y accesos coherentes; el orden alternado de las condiciones; los doce roles completan el instrumento dentro de los 45 minutos; el corte de 48 horas; un soporte pedido no cuenta hasta verificarlo y aceptarlo; la denegación de lo clínico a una finalidad de control administrativo; el reinicio entre condiciones; el contraste de horas y de completitud entre las dos condiciones; y la pausa y el regreso a mitad del expediente. |
 | `simulador.js` | Los 12 roles por la interfaz desde `file://`; acceso, declaración, rechazo, recarga con borrador, pausa, cierre inesperado, corrección de respuestas, respaldo, archivo de avance, retiro, navegador sin almacenamiento; teléfono (390, 360 y 320 px), nombres accesibles, foco y teclado. |
 | `simulador-red.js` | Envío a medida que avanza, caída de conexión y reintento, falla del servidor, recuperación en otro dispositivo, envío al final, retiro, reapertura sin conexión y sitio sin configurar. |
 | `servidor.js` | Protocolo del receptor, validaciones, rutas maliciosas, código PHP dentro de una respuesta, límites, envíos simultáneos y recorrido de punta a punta con el simulador. |
-| `panel.js` | Clave de administración, estudio, cuentas, `configuracion.js` y `recibir-config.php`, simulador de archivo único, importación (con archivos alterados y de otra sesión), seguimiento, informe y exportaciones, copia de seguridad y varias sesiones de simulación. |
+| `panel.js` | Clave de administración, los dos perfiles con lo que cada uno puede hacer, estudio, elección de instrumento y expediente, cuentas, `configuracion.js` y `recibir-config.php`, simulador de archivo único, importación (con archivos alterados y de otra sesión), seguimiento, los dos informes con sus exportaciones, la búsqueda en los textos libres, copia de seguridad y varias sesiones de simulación. |

@@ -45,6 +45,7 @@
   <h2>Contenido</h2>
   <ol>
     <li><a href="#resumen">El recorrido completo en una página</a></li>
+    <li><a href="#instrumentos">Los dos instrumentos</a></li>
     <li><a href="#antes">Antes de empezar</a></li>
     <li><a href="#panel">El panel, momento a momento</a></li>
     <li><a href="#sesiones">Varias sesiones de simulación</a></li>
@@ -63,6 +64,7 @@
 <ol class="pasos">
   <li><b>Abra <code>administrador.html</code></b> con doble clic y cree su clave de administración.</li>
   <li><b>Defina el estudio:</b> sus datos como investigador, el contacto y la forma de entrega de las respuestas.</li>
+  <li><b>Elija el instrumento</b> y, si es el del expediente, sobre cuál de los cuatro trabajan todos. Vea el <a href="#instrumentos">apartado 2</a>.</li>
   <li><b>Cree una cuenta por participante,</b> con el rol que le corresponde. El panel genera el usuario y la contraseña.</li>
   <li><b>Descargue <code>configuracion.js</code></b> y entréguelo a la persona que publica el sitio.</li>
   <li><b>Envíe a cada participante</b> la dirección del sitio, su usuario y su contraseña.</li>
@@ -71,7 +73,31 @@
 </ol>
 <div class="bien"><b>Para probar ya, sin publicar nada</b>Abra <code>simulador.html</code> con doble clic. Trae una cuenta de demostración por rol: usuarios <code>demo-trabajador</code>, <code>demo-empleador</code>, <code>demo-ips</code>, <code>demo-eps</code>, <code>demo-arl</code>, <code>demo-afp</code>, <code>demo-juntaregional</code>, <code>demo-juntanacional</code>, <code>demo-mintrabajo</code>, <code>demo-minsalud</code>, <code>demo-supersalud</code> y <code>demo-jueces</code>. La contraseña de todas es <code>DEMO-2026</code>. Las respuestas de esas cuentas quedan marcadas como demostración y no entran al análisis.</div>
 
-<h2 id="antes">2. Antes de empezar</h2>
+<h2 id="instrumentos">2. Los dos instrumentos</h2>
+<p>El simulador aplica uno de dos instrumentos, y usted elige cuál en «Estudio → Instrumento y expediente». Los dos usan las mismas cuentas, la misma declaración de participación, la misma encuesta de perfil y el mismo panel; cambian el recorrido y, por lo tanto, lo que mide el informe.</p>
+<div class="tabla"><table>
+  <thead><tr><th></th><th>Expediente de pensión de invalidez</th><th>Recorrido de la ruta de incapacidad</th></tr></thead>
+  <tbody>
+    <tr><td><b>Qué recorre el participante</b></td><td>Un expediente real reescrito, dos veces: una con los canales del flujo actual y otra con el módulo interoperable.</td><td>Los once pasos de la ruta de incapacidad, comparando en cada paso lo que haría hoy con lo que haría con el módulo.</td></tr>
+    <tr><td><b>Cuánto dura</b></td><td>Una sola sesión de 25 a 45 minutos, según el rol.</td><td>Una sola sesión de 25 a 40 minutos, según el rol.</td></tr>
+    <tr><td><b>Qué mide</b></td><td>Las tres hipótesis del marco: completitud de la evidencia (H1), identificación de responsabilidades (H2) y trazabilidad de los accesos (H3).</td><td>Suficiencia de la información paso a paso, finalidades, plazos declarados y la valoración de cada contrato de datos.</td></tr>
+    <tr><td><b>De dónde sale el caso</b></td><td>Los cuatro expedientes sintéticos que trae incluidos, derivados de sentencias reales reescritas.</td><td>El caso base del proyecto, o los casos que usted cargue en «Casos de la simulación de la ruta».</td></tr>
+  </tbody>
+</table></div>
+<p>El instrumento del expediente es el que viene puesto. Lo demás de esta guía sirve para los dos; donde cambia algo, se dice.</p>
+
+<h3>Cómo funciona el instrumento del expediente</h3>
+<ol class="pasos">
+  <li><b>Usted elige el expediente</b> con el que trabajan todos los participantes: PI-L01 a PI-L04. Cada uno trae su persona, su trayectoria laboral con empresas y cargos, su cuadro clínico, su cronología, sus actores con lo que custodia cada uno, los puntos de decisión y la evidencia que exige cada punto, con el estado en que llegó al radicar el expediente y el criterio con el que se considera conforme.</li>
+  <li><b>El participante recorre el expediente dos veces.</b> Primero en una condición y luego en la otra; el orden lo alterna el simulador según la cuenta, como pide el protocolo, y el expediente se reinicia al empezar la segunda. En cada punto ve los soportes que la decisión requiere, declara con qué finalidad consulta y puede consultar, solicitar o devolver lo que no cumple el criterio. Cada actuación cuesta horas virtuales —con el módulo cuestan menos— y hay un corte de 48 horas por condición.</li>
+  <li><b>Un soporte solicitado no cuenta como conforme</b> hasta que llega, se verifica contra su criterio y se acepta. Eso es lo que hace que las dos condiciones se puedan comparar: la misma intención de subsanar cuesta distinto en cada una.</li>
+  <li><b>Antes de la decisión que resuelve el derecho</b> queda guardada la instantánea del expediente que pide el protocolo. Los puntos posteriores a esa decisión se leen como tramo ilustrativo, con lo que quedaría conforme según el expediente que el participante deja.</li>
+  <li><b>Al cerrar,</b> dice a quién le corresponde cada una de las seis tareas del expediente (H2) y reconstruye cuatro accesos con sus cinco elementos: quién accedió, a qué pieza, en qué momento, con qué acción y con qué resultado (H3).</li>
+</ol>
+<p>Cada paso tiene un espacio en blanco para que la persona escriba lo que la pregunta no alcanza a recoger. Todo ese texto queda junto en el informe, con su rol, su expediente, su condición y su punto, y se puede buscar por palabras.</p>
+<div class="nota"><b>Qué puede ver cada rol</b>El participante solo trabaja los puntos en los que su rol decide o custodia algo que el punto requiere; de los demás lee el contexto. Y el control de acceso por finalidad se aplica de verdad: una consulta declarada como control administrativo no abre las piezas clínicas, y la denegación queda registrada.</div>
+
+<h2 id="antes">3. Antes de empezar</h2>
 <ul>
   <li><b>Valide la declaración de participación voluntaria.</b> El texto que trae el simulador es una plantilla. Revíselo con el comité de ética de su institución y con las normas de protección de datos personales que le apliquen (en Colombia, la Ley 1581 de 2012). En el panel puede añadir un párrafo propio y el número de aprobación.</li>
   <li><b>Decida la forma de entrega</b> con la persona que publica el sitio:
@@ -83,14 +109,16 @@
   <li><b>Use un computador personal.</b> El panel guarda el proyecto en el navegador de ese computador: las cuentas con sus contraseñas y las respuestas que usted importe.</li>
 </ul>
 
-<h2 id="panel">3. El panel, momento a momento</h2>
+<h2 id="panel">4. El panel, momento a momento</h2>
 <p>La primera vez el panel le pide crear una <b>clave de administración</b>. Las siguientes veces se la pide para entrar. Esa clave no aparece en ningún archivo que el panel exporte. Si la olvida, la única salida es restaurar una copia de seguridad del proyecto.</p>
 
 <h3><span class="momento">0</span>Estudios</h3>
-<p>La lista de sus sesiones de simulación guardadas en este navegador. Puede crear una sesión nueva, duplicar la abierta (copia los datos y las cuentas, con contraseñas nuevas, sin las respuestas), abrir otra o eliminarla. Trabaje siempre con una abierta: lo que haga en los demás momentos pertenece a esa sesión. Vea el <a href="#sesiones">apartado 4</a>.</p>
+<p>La lista de sus sesiones de simulación guardadas en este navegador. Puede crear una sesión nueva, duplicar la abierta (copia los datos y las cuentas, con contraseñas nuevas, sin las respuestas), abrir otra o eliminarla. Trabaje siempre con una abierta: lo que haga en los demás momentos pertenece a esa sesión. Vea el <a href="#sesiones">apartado 5</a>.</p>
 
 <h3><span class="momento">1</span>Estudio</h3>
 <p>Escriba el título, su nombre como investigador responsable, el contacto, el director, el comité de ética y la fecha límite. Estos datos aparecen en la declaración que lee cada participante. Elija aquí la forma de entrega.</p>
+<p>En <b>«Instrumento y expediente»</b> decide cuál de los dos instrumentos se aplica y, para el del expediente, sobre cuál de los cuatro trabajan todos los participantes. La tabla muestra de cada expediente su persona, sus puntos de decisión, cuántos de los soportes que exige la decisión que resuelve estaban conformes al radicar, y cuánto dura el recorrido; «Ver» abre la ficha completa antes de elegirlo. Lo que elija viaja en la configuración publicada, así que si lo cambia con el estudio en marcha tendrá que publicar de nuevo.</p>
+<p>En <b>«Perfiles de administración»</b> puede crear la clave del <b>perfil técnico</b>, para la persona que le ayuda a publicar el sitio. Con esa clave el panel abre solo «Estudio» y «Publicar»: esa persona no ve las contraseñas de los participantes, ni las respuestas, ni el seguimiento, ni los resultados, ni las copias de seguridad. Su clave y la del perfil técnico quedan guardadas como huella y no salen en ninguna exportación.</p>
 <div class="aviso"><b>El identificador del estudio no se cambia con el estudio en marcha</b>El navegador de cada participante guarda su avance con ese identificador. Si lo cambia, quienes ya empezaron tendrían que comenzar de nuevo.</div>
 
 <h3><span class="momento">2</span>Cuentas</h3>
@@ -113,9 +141,9 @@
 <p>Muestra, para cada cuenta, en qué va el participante, qué respondió por última vez y qué problemas registró: decisiones con información parcial o insuficiente, piezas que faltaron, finalidades no autorizadas y observaciones.</p>
 
 <h3><span class="momento">6</span>Resultados</h3>
-<p>Informe consolidado por rol y por ronda. Cada tabla se exporta a CSV. Puede descargar el informe completo, imprimirlo o guardarlo como PDF, y descargar todos los datos en JSON.</p>
+<p>Informe consolidado del instrumento que esté aplicando. Cada tabla se exporta a CSV. Puede descargar el informe completo, imprimirlo o guardarlo como PDF, y descargar todos los datos en JSON. Si cambia el instrumento, el informe se rearma solo; las respuestas del otro instrumento quedan fuera y el panel lo dice.</p>
 
-<h2 id="sesiones">4. Varias sesiones de simulación</h2>
+<h2 id="sesiones">5. Varias sesiones de simulación</h2>
 <p>Una «sesión de simulación» es un estudio completo: su identificador, sus cuentas y las respuestas de sus participantes. El panel guarda todas las que usted cree y no las mezcla. Es lo que necesita si repite la simulación con otro grupo, en otra entidad o en otro momento del proyecto.</p>
 <div class="tabla"><table>
   <thead><tr><th>Qué distingue una sesión de otra</th><th>Dónde actúa</th></tr></thead>
@@ -135,7 +163,7 @@
 </ul>
 <div class="aviso"><b>Un identificador por sesión</b>No reutilice el identificador de una sesión en otra: el panel y el navegador de los participantes los distinguen por él. Si duplica una sesión, el panel le propone un identificador nuevo; revíselo antes de publicar.</div>
 
-<h2 id="invitar">5. Cómo invitar a cada participante</h2>
+<h2 id="invitar">6. Cómo invitar a cada participante</h2>
 <p>Cada persona necesita tres cosas: la <b>dirección del sitio</b>, su <b>usuario</b> y su <b>contraseña</b>. El panel arma el texto de la invitación con esos datos, el rol y el tiempo estimado. Puede copiarlo cuenta por cuenta, descargar todas las cuentas en una hoja de cálculo o imprimir las invitaciones.</p>
 <ul>
   <li>Envíe cada invitación solo a su destinatario. Quien tenga el usuario y la contraseña entra con ese rol.</li>
@@ -145,7 +173,19 @@
 </ul>
 <div class="nota"><b>Tiempo estimado por rol</b>Entre 30 y 45 minutos, según el número de pasos en que interviene el rol. El participante puede repartirlo en varias sesiones.</div>
 
-<h2 id="participante">6. Qué verá el participante</h2>
+<h2 id="participante">7. Qué verá el participante</h2>
+<h3>Con el instrumento del expediente</h3>
+<ol class="pasos">
+  <li><b>Acceso.</b> Escribe su usuario y su contraseña. La cuenta define su rol.</li>
+  <li><b>Orientación,</b> en cuatro pantallas: qué es el estudio, el expediente con el que va a trabajar, cómo funciona la simulación y qué le toca a su rol en ese expediente.</li>
+  <li><b>Declaración de participación voluntaria,</b> con sus cuatro declaraciones y la decisión de dar o no sus datos personales.</li>
+  <li><b>Encuesta de perfil profesional:</b> edad, profesión de base, estudios complementarios, años en el rol, rol actual, trayectoria por entidades y con qué frecuencia participa en la ruta. No se le pide su nombre ni el de su entidad.</li>
+  <li><b>El expediente,</b> con su ficha completa: la persona, su trayectoria laboral, lo clínico, la cronología, los actores con lo que custodia cada uno y los puntos de decisión.</li>
+  <li><b>Las dos condiciones,</b> una después de la otra, en el orden que le tocó. En cada punto: los soportes requeridos con su estado y su criterio, la finalidad de cada consulta, las actuaciones con su costo en horas, la decisión, por qué la tomó y un espacio en blanco. Al cerrar cada punto ve cuántos requeridos quedaron conformes, y al cerrar cada condición el resumen de lo que decidió y de las horas que gastó.</li>
+  <li><b>Las preguntas de cierre:</b> las seis responsabilidades (H2) y los cuatro accesos (H3).</li>
+  <li><b>Entrega.</b> Envía sus respuestas o descarga su archivo, y puede añadir un comentario final.</li>
+</ol>
+<h3>Con el recorrido de la ruta de incapacidad</h3>
 <ol class="pasos">
   <li><b>Acceso.</b> Escribe su usuario y su contraseña. La cuenta define su rol.</li>
   <li><b>Orientación,</b> en cuatro pantallas: qué es el estudio y qué se busca; el caso sintético, con la ficha de M.P. y la historia de cómo llegó al día 150; cómo funciona la simulación; y su rol, presentado en primera persona, con los pasos en los que interviene.</li>
@@ -167,7 +207,7 @@
   </tbody>
 </table></div>
 
-<h2 id="pausa">7. Pausas, caídas de conexión y errores</h2>
+<h2 id="pausa">8. Pausas, caídas de conexión y errores</h2>
 <ul>
   <li><b>Pausar.</b> El participante puede pulsar «Pausar» cuando quiera. Su avance queda guardado y, al volver a entrar con su usuario y su contraseña, ve «Bienvenido de nuevo» con el paso donde quedó.</li>
   <li><b>Recarga o cierre inesperado.</b> El simulador guarda cada cambio. Si la página se recarga o el navegador se cierra, se restablece el mismo paso con lo que tenía escrito.</li>
@@ -176,7 +216,7 @@
   <li><b>Ventanas privadas.</b> Una ventana privada o de incógnito borra el avance al cerrarse. La orientación se lo advierte al participante.</li>
 </ul>
 
-<h2 id="recibir">8. Cómo llegan las respuestas</h2>
+<h2 id="recibir">9. Cómo llegan las respuestas</h2>
 <h3>Entrega por archivo</h3>
 <p>Al terminar, el participante descarga un archivo llamado <code>respuestas-usuario-fecha.json</code> y se lo envía por el medio que usted le indicó. En el momento «Respuestas» del panel, elija los archivos o arrástrelos.</p>
 <h3>Entrega por servidor</h3>
@@ -190,7 +230,19 @@
   <li>Una huella de integridad. Si el archivo se altera o llega incompleto, el panel lo rechaza.</li>
 </ul>
 
-<h2 id="resultados">9. Seguimiento y resultados</h2>
+<h2 id="resultados">10. Seguimiento y resultados</h2>
+<h3>Con el instrumento del expediente</h3>
+<p>El informe está armado alrededor de las tres hipótesis del marco, que aparecen con su enunciado textual, su variable y su regla de medida:</p>
+<ul>
+  <li><b>Quiénes participaron</b> y el perfil profesional que declararon, en resumen y participación por participación.</li>
+  <li><b>H1 · completitud:</b> la proporción de requeridos conformes en el punto que resuelve, por condición, por rol y por expediente, con la diferencia en puntos porcentuales calculada persona por persona —cada participante es su propio control—, las horas virtuales que gastó cada uno y el soporte concreto en el que se rompe la completitud.</li>
+  <li><b>Las actuaciones y las decisiones:</b> consultas, solicitudes, devoluciones, aceptaciones y rechazos por condición y por rol; las finalidades que declararon y lo que el control de acceso denegó; y qué decidieron en cada punto.</li>
+  <li><b>H2 · responsabilidades:</b> aciertos sobre seis, por rol y tarea por tarea, con la atribución equivocada más frecuente de cada tarea.</li>
+  <li><b>H3 · trazabilidad:</b> accesos reconstruidos sobre cuatro, cuál de los cinco elementos se pierde más y el detalle de cada acceso.</li>
+  <li><b>Lo que escribieron:</b> todo el texto libre, con una caja de búsqueda que filtra por cualquier columna.</li>
+  <li><b>Registro completo,</b> con una línea legible por registro, para auditar cualquier cifra del informe.</li>
+</ul>
+<h3>Con el recorrido de la ruta de incapacidad</h3>
 <p>El informe consolidado separa siempre lo que respondieron los participantes de lo que simuló el sistema. Incluye:</p>
 <ul>
   <li>Quiénes participaron y la cobertura por rol.</li>
@@ -204,7 +256,7 @@
 </ul>
 <p>Las cuentas de prueba y de demostración quedan fuera del análisis, salvo que usted pida incluirlas. También puede excluir una respuesta en particular.</p>
 
-<h2 id="cuidado">10. Cuidado de los datos</h2>
+<h2 id="cuidado">11. Cuidado de los datos</h2>
 <ul>
   <li><b>Copia de seguridad.</b> Exporte cada sesión con frecuencia. El archivo contiene las cuentas con sus contraseñas y las respuestas importadas: guárdelo como un documento confidencial.</li>
   <li><b>Archivos confidenciales.</b> La hoja de cuentas y la tabla de datos personales son para su uso. No las publique ni las adjunte a informes.</li>
@@ -212,7 +264,7 @@
   <li><b>Cierre del estudio.</b> Descargue todo, guarde una copia final y pida a quien publica que borre las respuestas del servidor.</li>
 </ul>
 
-<h2 id="limites">11. Límites que debe conocer</h2>
+<h2 id="limites">12. Límites que debe conocer</h2>
 <ul>
   <li><b>El acceso del simulador no es un mecanismo de seguridad.</b> Asigna el rol y evita entradas por descuido. La protección del sitio depende del servidor: HTTPS y control de acceso.</li>
   <li><b>Sin servidor, el avance vive en el navegador del participante.</b> Usted solo lo conoce cuando recibe su archivo.</li>
@@ -223,7 +275,7 @@
   <li><b>Qué mide la simulación.</b> Percepción y comportamiento en un escenario simulado. No es el resultado técnico del módulo.</li>
 </ul>
 
-<h2 id="preguntas">12. Preguntas frecuentes</h2>
+<h2 id="preguntas">13. Preguntas frecuentes</h2>
 <div class="tabla"><table>
   <thead><tr><th>Pregunta</th><th>Respuesta</th></tr></thead>
   <tbody>

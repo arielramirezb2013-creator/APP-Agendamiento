@@ -1,5 +1,12 @@
 # Formato de los perfiles sintéticos
 
+> **Esto aplica al recorrido de la ruta de incapacidad, no al instrumento del expediente.**
+> El instrumento que el estudio aplica por omisión es el del **expediente de pensión de invalidez**
+> (marco `DGIT-PENSION-R1`), que trae sus propios cuatro expedientes incluidos en
+> `src/datos-expedientes.js` y no necesita cargar nada: el investigador solo elige, en el panel,
+> sobre cuál de los cuatro trabajan todos. Los perfiles de este formato se usan cuando el estudio
+> aplica el otro instrumento, el recorrido de los once pasos de la ruta de incapacidad.
+
 Un **perfil** es un caso completo: la persona incapacitada y el contenido real de las cinco piezas
 de evidencia que viajan por la ruta. Es lo que convierte «HC parcial · APT sin versión» en un
 documento que el participante puede leer.

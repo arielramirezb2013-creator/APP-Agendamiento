@@ -50,6 +50,7 @@
     <li><a href="#requisitos">Requisitos</a></li>
     <li><a href="#pasos">Publicación paso a paso</a></li>
     <li><a href="#receptor">Receptor de respuestas (opcional)</a></li>
+    <li><a href="#azure">Publicar en Azure</a></li>
     <li><a href="#estatico">Sitios sin PHP</a></li>
     <li><a href="#comprobar">Comprobación final</a></li>
     <li><a href="#operar">Durante el estudio</a></li>
@@ -97,7 +98,7 @@
     <p>El paquete trae una configuración de demostración con una cuenta por rol (usuarios <code>demo-…</code>, contraseña <code>DEMO-2026</code>). Sirve para comprobar que el sitio funciona. No la deje en un sitio en uso: mientras esté, la pantalla de acceso muestra esas cuentas.</p>
   </li>
   <li><b>Si la entrega es por servidor, instale el receptor.</b> Siga el <a href="#receptor">apartado 4</a>. Si es por archivo, puede borrar <code>recibir.php</code>, <code>recibir-config.php</code> y <code>respuestas/</code>.</li>
-  <li><b>Decida si publica <code>administrador.html</code>.</b> El investigador puede usar el panel desde su computador, sin publicarlo. Publicarlo es útil con entrega por servidor: desde el mismo sitio el panel trae las respuestas con un clic. Queda bajo la misma protección del sitio y además pide la clave de administración del investigador. El panel no guarda nada en el servidor: los datos del proyecto viven en el navegador del investigador.</li>
+  <li><b>Decida si publica <code>administrador.html</code>.</b> El investigador puede usar el panel desde su computador, sin publicarlo. Publicarlo es útil con entrega por servidor: desde el mismo sitio el panel trae las respuestas con un clic. Queda bajo la misma protección del sitio y además pide una clave de administración: el panel abre con dos perfiles —el del investigador, que ve todo, y el <b>perfil técnico</b>, pensado para usted, que solo muestra «Estudio» y «Publicar». Pídale al investigador la clave del perfil técnico si quiere usar el panel para descargar los archivos o probar el receptor. El panel no guarda nada en el servidor: los datos del proyecto viven en el navegador del investigador.</li>
   <li><b>Entregue la dirección al investigador.</b> La dirección pública del simulador es la de la carpeta, por ejemplo <code>https://su-sitio.example/simulacion/</code>. El investigador la escribe en su panel para armar las invitaciones.</li>
 </ol>
 
@@ -129,11 +130,73 @@ return [
 <p>Cada participación queda en un archivo <code>&lt;estudio&gt;~&lt;usuario&gt;~&lt;participante&gt;.json.php</code>. Un documento completo ocupa menos de 100 KB. El receptor acepta documentos de hasta 1 MB y hasta 2000 documentos; ambos límites se cambian en <code>recibir-config.php</code>.</p>
 <div class="aviso"><b>Qué protege cada clave</b>La clave de envío está en <code>configuracion.js</code> y la puede ver cualquier participante: solo frena el ruido de internet. Con ella no se pueden leer las respuestas de otros. Listar y borrar respuestas exige la clave de administración del servidor, que solo conoce el investigador; el servidor guarda únicamente su huella.</div>
 
-<h2 id="estatico">5. Sitios sin PHP</h2>
+<h2 id="azure">5. Publicar en Azure</h2>
+<p>El estudio se publica en Azure. Hay dos caminos, y el que elija depende de una sola decisión del investigador: si las respuestas llegan por servidor o por archivo.</p>
+<div class="tabla"><table>
+  <thead><tr><th>Si el investigador eligió…</th><th>Servicio</th><th>Por qué</th></tr></thead>
+  <tbody>
+    <tr><td><b>Entrega por servidor</b> (las respuestas llegan solas y la persona puede retomar en otro equipo)</td><td><b>App Service</b> en Linux, con PHP 8.2 o superior</td><td>Es el único de los dos que ejecuta <code>recibir.php</code>.</td></tr>
+    <tr><td><b>Entrega por archivo</b> (cada participante envía su archivo al investigador)</td><td><b>Static Web Apps</b>, o App Service igualmente</td><td>Solo hacen falta archivos estáticos.</td></tr>
+  </tbody>
+</table></div>
+
+<h3>5.1 App Service con el receptor</h3>
+<ol class="pasos">
+  <li><b>Cree la aplicación web.</b> Sistema operativo Linux y pila de ejecución <b>PHP 8.2</b> o superior. Para un piloto con varios participantes use un plan <b>B1</b>; el plan gratuito <b>F1</b> sirve para una demostración, pero duerme tras unos minutos sin uso y tiene cuota diaria de CPU.
+<pre><code>az webapp up --name sim-dgit --runtime "PHP:8.2" --os-type Linux --sku B1 --resource-group rg-simulacion</code></pre></li>
+  <li><b>Suba los archivos del paquete.</b> Azure descomprime el zip dentro de <code>/home/site/wwwroot</code>, así que el zip debe traer los archivos en su raíz, no dentro de una carpeta:
+<pre><code>cd paquete-web
+zip -r ../sitio.zip .
+az webapp deploy --resource-group rg-simulacion --name sim-dgit --src-path ../sitio.zip --type zip</code></pre>
+    <p>También puede usar FTPS o una acción de GitHub. La dirección pública es la de la aplicación, por ejemplo <code>https://sim-dgit.azurewebsites.net/</code>: esa es la que el investigador escribe en su panel.</p></li>
+  <li><b>Guarde las respuestas fuera de la carpeta pública.</b> App Service en Linux sirve con nginx y <b>no lee los archivos <code>.htaccess</code></b>: el que trae el paquete en <code>respuestas/</code> no protege nada allí. Cambie la línea <code>'carpeta'</code> del <code>recibir-config.php</code> que le entregue el investigador por una ruta de <code>/home</code> que no esté bajo <code>wwwroot</code>:
+<pre><code>'carpeta' =&gt; '/home/datos/respuestas',</code></pre>
+    <p><code>/home</code> es almacenamiento persistente de la aplicación: sobrevive a los reinicios y lo comparten todas las instancias si el plan escala. El receptor crea la carpeta la primera vez, con permisos <code>750</code>. Así la carpeta no tiene dirección web y no hace falta tocar nginx.</p></li>
+  <li><b>Exija HTTPS.</b> En la aplicación, «Configuración → General settings»: <b>HTTPS Only</b> activado y versión mínima de TLS 1.2. El certificado de <code>*.azurewebsites.net</code> ya viene incluido.</li>
+  <li><b>Proteja el sitio.</b> App Service no tiene autenticación básica, así que use una de estas:
+    <ul>
+      <li><b>Authentication (Microsoft Entra ID).</b> «Authentication → Add identity provider», y en «Restrict access» elija «Require authentication». Cada participante entra con una cuenta del directorio; a quienes no son de la institución se los invita como usuarios externos. Es la opción más limpia y la que suele aprobar el área de tecnología.</li>
+      <li><b>Access restrictions.</b> «Networking → Access restrictions»: permita solo los rangos de direcciones desde los que participarán. Sirve cuando todos trabajan en la red de la institución.</li>
+    </ul>
+    <p>Sea cual sea, el usuario y la contraseña del simulador siguen haciendo falta: son los que asignan el rol a cada participante.</p></li>
+  <li><b>Pida al investigador que pruebe el receptor</b> desde su panel. Si responde que puede guardar, el receptor está listo.</li>
+  <li><b>Cabeceras (opcional).</b> Como nginx no lee <code>.htaccess</code>, las cabeceras del <a href="#cabeceras">apartado 9</a> se añaden con un archivo de configuración propio y un comando de inicio. Si no las añade, lo esencial ya está cubierto por HTTPS Only y por la etiqueta que pide a los buscadores no indexar.
+<pre><code># /home/site/nginx-sim.conf, cargado con un comando de inicio
+add_header Strict-Transport-Security "max-age=31536000" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-Frame-Options "DENY" always;
+add_header Referrer-Policy "no-referrer" always;
+location ~ ^/(index\.html|configuracion\.js|sw\.js)$ { add_header Cache-Control "no-cache"; }</code></pre></li>
+</ol>
+<div class="nota"><b>Cómo recuperar las respuestas</b>Lo normal es que el investigador las traiga desde su panel («Respuestas → Traer del servidor»), con su clave de administración del servidor. Si hace falta bajarlas a mano, la consola de la aplicación —<code>https://&lt;nombre&gt;.scm.azurewebsites.net</code>— permite descargar <code>/home/datos/respuestas</code>. Son archivos <code>.json.php</code>: el panel los importa tal como están.</div>
+
+<h3>5.2 Static Web Apps, sin receptor</h3>
+<p>Solo si el investigador eligió entrega por archivo. Publique <code>index.html</code>, <code>configuracion.js</code>, <code>sw.js</code> y, si quiere, <code>administrador.html</code>. No hace falta API ni compilación: la ubicación de la aplicación es la carpeta y la de salida queda vacía.</p>
+<pre><code>swa deploy ./paquete-web --env production</code></pre>
+<p>Las cabeceras y el acceso se declaran en un <code>staticwebapp.config.json</code> junto a los archivos:</p>
+<pre><code>{
+  "globalHeaders": {
+    "Strict-Transport-Security": "max-age=31536000",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "no-referrer"
+  },
+  "routes": [
+    { "route": "/.auth/*" },
+    { "route": "/*", "allowedRoles": ["authenticated"] }
+  ]
+}</code></pre>
+<p>Con esa regla de <code>allowedRoles</code>, antes de ver el simulador la persona inicia sesión con el proveedor que usted configure. Si prefiere no pedir ese inicio de sesión, quite las dos líneas de <code>routes</code> y proteja el sitio por otro medio.</p>
+<p>Lo que <b>no</b> puede hacer Static Web Apps es ejecutar <code>recibir.php</code>. Si el investigador quiere entrega por servidor, use App Service.</p>
+
+<h3>5.3 Sitio estático de Storage</h3>
+<p>Es la opción más barata, pero un sitio estático de Storage no tiene control de acceso propio: cualquiera con la dirección entra. Úselo solo detrás de otra protección (por ejemplo Front Door con reglas de acceso) y nunca con entrega por servidor.</p>
+
+<h2 id="estatico">6. Sitios sin PHP</h2>
 <p>En un sitio solo estático publique <code>index.html</code>, <code>configuracion.js</code> y <code>sw.js</code>. El investigador debe elegir «entrega por archivo» en su panel. Al terminar, cada participante descarga un archivo con sus respuestas y se lo envía al investigador.</p>
 <p>Sin receptor, el avance de cada participante se guarda solo en su navegador. Puede pausar y retomar en el mismo equipo. Para continuar en otro equipo debe descargar su archivo de avance y cargarlo allí.</p>
 
-<h2 id="comprobar">6. Comprobación final</h2>
+<h2 id="comprobar">7. Comprobación final</h2>
 <ul class="lista-check">
   <li>La dirección abre por HTTPS y pide la credencial o el acceso que usted definió.</li>
   <li>La pantalla de acceso muestra el título del estudio y <b>no</b> muestra «Cuentas de demostración».</li>
@@ -143,7 +206,7 @@ return [
   <li>Tras una primera visita, la página vuelve a abrir con la red desconectada.</li>
 </ul>
 
-<h2 id="operar">7. Durante el estudio</h2>
+<h2 id="operar">8. Durante el estudio</h2>
 <h3>Cambios en las cuentas</h3>
 <p>Cuando el investigador cree o cambie cuentas le enviará un <code>configuracion.js</code> nuevo. Reemplace el archivo. Si el investigador corre <b>varias sesiones de simulación a la vez</b>, cada una necesita su propia carpeta en el sitio, con su <code>index.html</code> y su <code>configuracion.js</code>; con el receptor, cada carpeta puede compartir el mismo <code>recibir.php</code> o tener el suyo, porque las respuestas se guardan separadas por el identificador del estudio. Si la entrega es por servidor y cambió la clave de envío, reemplace también <code>recibir-config.php</code>. No cambie el identificador del estudio con participantes en curso: el navegador guarda el avance con ese identificador.</p>
 <h3>Copias y cierre</h3>
@@ -155,7 +218,7 @@ return [
 <h3>Registros del servidor</h3>
 <p>El receptor no escribe el contenido de las respuestas en el registro de errores. El registro de accesos del servidor sí guarda direcciones IP y horas: trátelo según la política de la institución.</p>
 
-<h2 id="cabeceras">8. Cabeceras recomendadas</h2>
+<h2 id="cabeceras">9. Cabeceras recomendadas</h2>
 <p>No son obligatorias, pero conviene añadirlas a la carpeta del simulador.</p>
 <pre><code># Apache (.htaccess o configuración del sitio)
 Header always set Strict-Transport-Security "max-age=31536000"
@@ -173,7 +236,7 @@ add_header Referrer-Policy "no-referrer" always;
 location ~ ^/simulacion/(index\.html|configuracion\.js|sw\.js)$ { add_header Cache-Control "no-cache"; }</code></pre>
 <p><code>Cache-Control: no-cache</code> hace que el navegador compruebe si hay una versión nueva de la configuración cada vez que el participante abre el sitio.</p>
 
-<h2 id="contrato">9. Contrato del receptor</h2>
+<h2 id="contrato">10. Contrato del receptor</h2>
 <p>Si prefiere implementar el receptor en otra tecnología, respete este contrato y el investigador solo tendrá que escribir la dirección en su panel. Siempre <code>POST</code>. El cuerpo es JSON enviado como <code>text/plain;charset=UTF-8</code>. La respuesta es JSON: <code>{"ok": true, …}</code> o <code>{"ok": false, "error": "…"}</code> con el código HTTP correspondiente.</p>
 <div class="tabla"><table>
   <thead><tr><th>accion</th><th>Campos</th><th>Respuesta</th></tr></thead>
@@ -188,7 +251,7 @@ location ~ ^/simulacion/(index\.html|configuracion\.js|sw\.js)$ { add_header Cac
 </table></div>
 <p>Dos reglas importantes: el documento debe guardarse y devolverse <b>sin transformarlo</b> (trae una huella de integridad que el panel comprueba), y la llave de reanudación se guarda como huella SHA-256, nunca en claro.</p>
 
-<h2 id="problemas">10. Solución de problemas</h2>
+<h2 id="problemas">11. Solución de problemas</h2>
 <div class="tabla"><table>
   <thead><tr><th>Qué se ve</th><th>Causa probable</th><th>Qué hacer</th></tr></thead>
   <tbody>
