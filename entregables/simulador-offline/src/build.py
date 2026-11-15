@@ -17,7 +17,7 @@ CLAVE_DEMO = "DEMO-2026"
 ACTORES = ["tra", "emp", "ips", "eps", "arl", "afp", "jr", "jn", "mintrabajo", "minsalud", "supersalud", "jueces"]
 PREFIJO = {"tra": "trabajador", "emp": "empleador", "jr": "juntaregional", "jn": "juntanacional"}
 
-SIM = ["nucleo.js", "sim-1-estado.js", "sim-2-vistas.js", "sim-3-eventos.js"]
+SIM = ["nucleo.js", "sim-1-estado.js", "sim-2-vistas.js", "exp-2-estado.js", "exp-3-vistas.js", "sim-3-eventos.js"]
 ADM = ["nucleo.js", "adm-1-proyecto.js", "adm-2-vistas.js", "adm-3-resultados.js", "adm-4-eventos.js"]
 
 
@@ -42,7 +42,8 @@ def config_demo():
         u = "demo-" + PREFIJO.get(a, a)
         sal = hashlib.sha256(("sal-demo:" + u).encode()).hexdigest()[:16]
         cuentas.append({"u": u, "a": a, "s": sal, "h": huella_clave(u, CLAVE_DEMO, sal), "p": True})
-    return {"formato": 1, "demo": {"clave": CLAVE_DEMO}, "estudio": {"id": "demostracion"},
+    return {"formato": 1, "demo": {"clave": CLAVE_DEMO},
+            "estudio": {"id": "demostracion", "instrumento": "expediente", "expediente": "PI-L01"},
             "kdf": {"alg": "PBKDF2-HMAC-SHA256", "iter": ITER}, "envio": None, "cuentas": cuentas, "generado": None}
 
 
@@ -68,6 +69,7 @@ def aplicacion(partes):
     datos = [MESA / "src/datos-blueprint.js", MESA / "src/datos-escenario.js", AQUI / "datos-guion.js"]
     cuerpo = "\n".join(leer(p).rstrip() for p in datos)
     cuerpo += "\n" + perfil_base() + "\n" + leer(AQUI / "datos-ramas.js").rstrip()
+    cuerpo += "\n" + leer(AQUI / "datos-expedientes.js").rstrip() + "\n" + leer(AQUI / "exp-1-motor.js").rstrip()
     cuerpo += "\n" + "\n".join(leer(AQUI / x).rstrip() for x in partes)
     return '(function () {\n"use strict";\n' + cuerpo + "\n})();"
 
@@ -104,6 +106,9 @@ def main():
     print("Simulador (archivo único, con cuentas de demostración):")
     escribir(RAIZ / "simulador.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=demo))
     escribir(RAIZ / "simulador-artefacto.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=demo, doctype=False))
+    # Variante con el otro instrumento: la ruta de incapacidad de once pasos del service blueprint.
+    ruta = json.loads(json.dumps(demo)); ruta["estudio"]["instrumento"] = "ruta"; ruta["estudio"].pop("expediente", None)
+    escribir(RAIZ / "simulador-ruta.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=ruta))
     print("Paquete web:")
     escribir(PAQUETE / "index.html", pagina("head-sim.html", "skel-sim.html", SIM, externa=True))
     escribir(PAQUETE / "configuracion.js", "/* Configuración de demostración. Reemplácela por la que genera el panel del investigador (administrador.html). */\nwindow.SIM_CONFIG = " + json.dumps(demo, ensure_ascii=False, indent=1) + ";\n")

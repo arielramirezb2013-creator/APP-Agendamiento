@@ -33,6 +33,7 @@ const estadoInicial = () => ({
   acc:{ u:"", c:"", ver:false },   // formulario de acceso
   cons:{ decl:{}, anonimo:"si", datos:{}, resumen:false },
   form:{}, val:{}, enc:{}, ctxObs:"", comentario:"", abierto:0,
+  exp:null, actu:{}, h2:{}, h3:{},  // instrumento del expediente: estado por condición y preguntas de cierre
   verTodo:false, zoom:1, confirmar:null, guardado:0,
   retomar:null,                    // null | { origen:"local"|"servidor"|"archivo", t } : pantalla de reanudación
   buscando:false,                  // consultando al servidor si hay un avance guardado
@@ -55,7 +56,7 @@ const ALM = (() => {
 })();
 const claveLocal = u => "simasinc:v1:" + CFG.estudio.id + ":" + u;
 const CLAVE_SESION = "simasinc:v1:" + CFG.estudio.id + ":sesion";
-const PERSISTE = ["etapa", "orient", "cuenta", "yo", "ses", "regs", "consent", "envio", "descargado", "cons", "form", "val", "enc", "ctxObs", "comentario", "abierto", "caso"];
+const PERSISTE = ["etapa", "orient", "cuenta", "yo", "ses", "regs", "consent", "envio", "descargado", "cons", "form", "val", "enc", "exp", "actu", "h2", "h3", "ctxObs", "comentario", "abierto", "caso"];
 let guardadoFallo = false;
 function guardarLocal() {
   if (!S.cuenta || !ALM.datos) return false;
@@ -114,6 +115,10 @@ function documentoRestaurable(doc) {
   if (doc.estudio.id !== CFG.estudio.id) return "el archivo es de otro estudio";
   if (doc.cuenta.usuario !== S.cuenta.u || doc.cuenta.actor !== S.cuenta.a) return "el archivo es de otra cuenta";
   const s = doc.sesion;
+  if (s && s.instrumento === "expediente") {
+    if (!EXPM.casoDe(s.expediente) || !Array.isArray(s.orden) || typeof s.bloque !== "number") return "el archivo no trae un expediente que se pueda continuar";
+    return "";
+  }
   if (!s || !s.rondas || !rondaDef(s.rondaActual) || PIDX[s.pasoActual] == null || !RONDAS.every(r => s.rondas[r.id] && s.rondas[r.id].pasos)) return "el archivo no trae una sesión que se pueda continuar";
   return "";
 }
@@ -126,7 +131,7 @@ function restaurarDe(doc, origen) {
   S.cons = { decl:Object.assign({}, S.consent.declaraciones), anonimo:S.consent.anonimo ? "si" : "no", datos:Object.assign({}, S.consent.datos), resumen:S.consent.resumen };
   S.etapa = S.ses.estado === "cerrada" ? "cierre" : (regsDe({ tipo:"encuesta", participanteId:S.yo.id })[0] ? "simulacion" : "encuesta");
   S.retomar = { origen, t:Date.parse(doc.generado) || ahora() };
-  if (rondaAct().estado === "en_curso") prepararBloque(bloqueActual());
+  if (!esExpediente() && rondaAct().estado === "en_curso") prepararBloque(bloqueActual());
   S.abierto = ahora(); guardarLocal();
 }
 async function buscarEnServidor() {
@@ -152,6 +157,7 @@ function empezarDeNuevo() {
 
 /* ---------- Sesión individual ---------- */
 function nuevaSesion() {
+  if (instrumentoDelEstudio() === "expediente") return nuevaSesionExp();
   const rondas = {}; RONDAS.forEach(r => { rondas[r.id] = { estado:"pendiente", pasos:{} }; });
   return { codigo:S.yo.id, nombre:CFG.estudio.titulo, escenario:ESC.id, modalidad:"asincrona", estado:"en_curso", creada:ahora(), rondaActual:RONDAS[0].id, pasoActual:PASOS[0].id, rondas };
 }
@@ -159,7 +165,7 @@ const vigentes = () => vigentesDe(S.regs);
 const regsDe = f => vigentes().filter(r => cumple(r, f));
 function diaVirtual(ronda) { let d = ESC.dia0; vigentes().forEach(r => { if (r.ronda === ronda && r.tipo === "actividad") d += num(r.payload.dias); }); return d; }
 const pasoActual = () => PASOS[PIDX[S.ses.pasoActual] || 0];
-const rondaAct = () => S.ses.rondas[S.ses.rondaActual];
+const rondaAct = () => (S.ses.rondas || {})[S.ses.rondaActual] || { estado:"en_curso", pasos:{} };
 const modoActual = () => modoDe(S.ses.rondaActual);
 const miActividad = (ronda, pid) => regsDe({ ronda, paso:pid, tipo:"actividad", participanteId:S.yo.id })[0] || null;
 const bloques = ronda => bloquesDe(S.yo.actor, modoDe(ronda || S.ses.rondaActual));
@@ -167,6 +173,7 @@ const bloques = ronda => bloquesDe(S.yo.actor, modoDe(ronda || S.ses.rondaActual
 function posicion() { const bs = bloques(), pid = S.ses.pasoActual; let i = bs.findIndex(b => b.pasos.indexOf(pid) >= 0); if (i < 0) i = 0; return { bs, i, b:bs[i], sig:bs[i + 1] || null }; }
 const bloqueActual = () => posicion().b;
 function minutosEstimados(actor) {
+  if (instrumentoDelEstudio() === "expediente") return EXPM.minutos(casoExp(), actor, (S.cuenta || {}).u);
   const T = GUION.tiempos; let m = T.inicio + T.cierre;
   RONDAS.forEach(r => { bloquesDe(actor, r.modo).forEach(b => { m += b.tipo === "contexto" ? T.contexto * b.pasos.length : T[b.act.tipo]; }); m += T.valoracion; });
   return Math.max(10, Math.round(m / 5) * 5);
@@ -174,6 +181,14 @@ function minutosEstimados(actor) {
 // Avance global del participante: actividades y valoraciones hechas frente a las que le corresponden.
 function avance() {
   let total = 0, hechas = 0;
+  if (esExpediente()) {
+    const bs = bloquesExp();
+    bs.forEach(b => { if (b.tipo === "punto") { total++; if (puntoHecho(b.cond, b.punto)) hechas++; } });
+    total += 2;
+    if (regsDe({ tipo:"h2", participanteId:S.yo.id }).length) hechas++;
+    if (regsDe({ tipo:"h3", participanteId:S.yo.id }).length) hechas++;
+    return { total, hechas, pct:total ? Math.round(hechas * 100 / total) : 0 };
+  }
   RONDAS.forEach(r => {
     bloquesDe(S.yo.actor, r.modo).forEach(b => { if (b.tipo === "actividad") { total++; if (S.ses && miActividad(r.id, b.pasos[0])) hechas++; } });
     total++; if (S.ses && regsDe({ ronda:r.id, tipo:"preguntas", participanteId:S.yo.id }).length) hechas++;
@@ -184,7 +199,11 @@ function avance() {
 /* ---------- Bitácora ---------- */
 function registrar(tipo, payload, extra) {
   const s = S.ses;
-  const reg = Object.assign({ id:uid(), t:ahora(), sesion:s.codigo, escenario:s.escenario, ronda:s.rondaActual, modo:modoDe(s.rondaActual), paso:s.pasoActual, dia:diaVirtual(s.rondaActual), origen:"participante", participanteId:S.yo.id, participanteNombre:S.yo.nombre, actor:S.yo.actor, tipo, payload:payload || {}, reemplaza:null, version:1 }, extra || {});
+  const exp = esExpediente();
+  const base = exp
+    ? { ronda:condActual(), modo:condActual(), paso:"—", dia:null, expediente:s.expediente }
+    : { ronda:s.rondaActual, modo:modoDe(s.rondaActual), paso:s.pasoActual, dia:diaVirtual(s.rondaActual) };
+  const reg = Object.assign({ id:uid(), t:ahora(), sesion:s.codigo, escenario:s.escenario, origen:"participante", participanteId:S.yo.id, participanteNombre:S.yo.nombre, actor:S.yo.actor, tipo, payload:payload || {}, reemplaza:null, version:1 }, base, extra || {});
   S.regs.push(reg);
   return reg;
 }
@@ -202,6 +221,12 @@ function perfilActual() {
   return perfilDe(id);
 }
 function casoActual() { if (!S.caso) recomputarCaso(); return S.caso; }
+/* Qué instrumento recorre este participante: el expediente de pensión del marco DGIT-PENSION-R1 o
+   la ruta de incapacidad del service blueprint. Lo fija el estudio, y una cuenta puede cambiarlo. */
+function instrumentoDelEstudio() {
+  const v = (S.cuenta && S.cuenta.instrumento) || (CFG.estudio && CFG.estudio.instrumento) || "ruta";
+  return v === "expediente" ? "expediente" : "ruta";
+}
 function aplicarPerfil() { resolverGuion(perfilActual()); }
 // Aplica un registro sobre el estado. `r` es una actividad del participante o una decisión del sistema.
 function aplicarRegistro(E, r) {
@@ -454,8 +479,8 @@ function documentoRespuesta() {
     participante:{ id:S.yo.id, anonimo:S.consent.anonimo, datos:S.consent.datos, resumen:S.consent.resumen, perfil:(perfilActual() || {}).id || null, encuesta:(regsDe({ tipo:"encuesta", participanteId:S.yo.id })[0] || { payload:{} }).payload },
     consentimiento:{ aceptado:true, t:S.consent.t, version:S.consent.version, declaraciones:S.consent.declaraciones, texto:S.consent.texto },
     estado:s.estado === "cerrada" ? "completa" : "parcial",
-    avance:{ ronda:s.rondaActual, paso:s.estado === "cerrada" ? null : s.pasoActual, hechas:a.hechas, total:a.total },
-    escenario:ESC.id, sesion:clone(s), registros:clone(S.regs),
+    avance:esExpediente() ? { condicion:condActual(), bloque:s.bloque, de:s.total, hechas:a.hechas, total:a.total } : { ronda:s.rondaActual, paso:s.estado === "cerrada" ? null : s.pasoActual, hechas:a.hechas, total:a.total },
+    escenario:esExpediente() ? EXP.marco.id : ESC.id, expediente:expedienteDoc(), sesion:clone(s), registros:clone(S.regs),
     generado:new Date().toISOString()
   };
   doc.huella = huellaDoc(doc);

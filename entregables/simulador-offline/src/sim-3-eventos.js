@@ -102,6 +102,12 @@ const ACCIONES = {
   "consent-si":() => { if (aceptarConsentimiento()) { guardarLocal(); envioProgresivo(); aviso("Gracias. Su declaración quedó registrada."); } },
   "e":(arg, v) => { S.enc[arg] = S.enc[arg] === v ? null : v; guardarLocal(); render(); },
   "enc-guardar":() => { if (guardarEncuesta()) { guardarLocal(); envioProgresivo(); aviso("Gracias. Puede comenzar el recorrido cuando quiera."); } },
+  /* ---- Instrumento del expediente ---- */
+  "exp-seguir":() => { avanzarExp(); guardarLocal(); envioProgresivo(); render(); },
+  "exp-act":(arg, v) => { if (actuarSobre(arg, v)) render(); },
+  "exp-guardar-punto":() => { const reg = guardarPunto(); if (reg) { guardarLocal(); envioProgresivo(); render(); aviso("Su decisión quedó registrada."); } },
+  "exp-guardar-h2":() => { if (guardarH2()) { guardarLocal(); envioProgresivo(); render(); aviso("Respuestas registradas."); } },
+  "exp-guardar-h3":() => { if (guardarH3()) { guardarLocal(); envioProgresivo(); render(); aviso("Reconstrucción registrada."); } },
   "consent-no":() => { const u = S.cuenta.u; borrarLocal(u); salir(); S.etapa = "rechazo"; render(); },
   "volver-acceso":() => { S.etapa = "acceso"; render(); },
   "ronda-iniciar":() => { iniciarRonda(); guardarLocal(); render(); },
@@ -159,6 +165,7 @@ document.addEventListener("input", ev => {
   else if (k === "c-dato") S.cons.datos[arg] = i.value;
   else if (k.slice(0, 2) === "f-") S.form[k.slice(2)] = i.value;
   else if (k === "e-campo") S.enc[arg] = i.value;
+  else if (k === "u-finalidad") { S.actu = S.actu || {}; S.actu.finalidad = i.value; }
   else if (k === "x-obs") S.ctxObs = i.value; else if (k === "x-comentario") S.comentario = i.value;
   else if (k === "v-ajuste") S.val.ajuste = i.value; else if (k === "v-p") S.val[arg] = i.value;
   else return;
@@ -172,6 +179,9 @@ document.addEventListener("change", ev => {
   if (k === "c-decl") S.cons.decl[arg] = i.checked;
   else if (k === "c-resumen") S.cons.resumen = i.checked;
   else if (k === "f-finalidad" || k === "f-responde") S.form[k.slice(2)] = i.value;
+  else if (k === "u-finalidad") { S.actu = S.actu || {}; S.actu.finalidad = i.value; render(); }
+  else if (k === "h2") { S.h2 = S.h2 || {}; S.h2[arg] = i.value; }
+  else if (k === "h3") { const p = String(arg).split("."); S.h3 = S.h3 || {}; S.h3[p[0]] = S.h3[p[0]] || {}; S.h3[p[0]][p[1]] = i.value; }
   else if (k === "f-falta" || k === "f-notifica") { const key = k.slice(2), a = (S.form[key] || []).slice(), j = a.indexOf(arg); if (i.checked && j < 0) a.push(arg); if (!i.checked && j >= 0) a.splice(j, 1); S.form[key] = a; }
   else return;
   guardarLuego();

@@ -41,7 +41,7 @@ function fraseRegistro(r) {
   return r.tipo;
 }
 function etapasHtml() {
-  const items = ["Orientación", "Declaración", "Su perfil", "Recorrido", "Entrega"];
+  const items = ["Orientación", "Declaración", "Su perfil", instrumentoDelEstudio() === "expediente" ? "Expediente" : "Recorrido", "Entrega"];
   const cur = S.etapa === "orientacion" ? 0 : S.etapa === "consentimiento" ? 1 : S.etapa === "encuesta" ? 2 : S.etapa === "simulacion" ? 3 : items.length - 1;
   return `<ol class="etapas" aria-label="Etapas de su participación">${items.map((t, i) => `<li class="${i < cur ? "hecha" : i === cur ? "actual" : ""}"${i === cur ? ' aria-current="step"' : ""}><span class="n">${i < cur ? ico("estados-completado", "sm") : i + 1}</span><span class="t">${esc(t)}</span></li>`).join("")}</ol>`;
 }
@@ -93,6 +93,13 @@ function vistaAcceso() {
 function dondeQuedo() {
   const s = S.ses; if (!s) return "Orientación";
   if (S.etapa === "cierre" || s.estado === "cerrada") return "Entrega de sus respuestas";
+  if (esExpediente()) {
+    const b = bloqueExp().b;
+    if (!b || b.tipo === "caso") return "El expediente " + esc(s.expediente);
+    if (b.tipo === "h2" || b.tipo === "h3") return "Preguntas de cierre";
+    const c = b.cond ? EXPM.condDe(b.cond).n : "";
+    return b.tipo === "punto" ? c + " · punto " + b.punto : b.tipo === "punto-contexto" ? c + " · contexto" : c;
+  }
   const r = rondaDef(s.rondaActual), rd = rondaAct();
   if (rd.estado === "pendiente") return "Inicio de la " + r.n.charAt(0).toLowerCase() + r.n.slice(1);
   if (rd.estado === "valoracion") return "Cierre de la " + r.n.charAt(0).toLowerCase() + r.n.slice(1);
@@ -152,7 +159,7 @@ function vistaOrientacion() {
     c = `<h1 tabindex="-1">${esc(R.titulo)}</h1><p>${esc(R.intro)}</p>
       ${GUION.roles[a] ? `<div class="qpanel">${esc(GUION.roles[a])}</div>` : ""}
       <div class="ficha-rol"><div class="avatar xl">${icoActor(a)}</div><div><div class="rol-n">${esc(nomL(a))}</div><div class="kv"><b>Función en la ruta</b><span>${esc(A[a].funcion)}</span><b>Tensión conocida</b><span>${esc(A[a].tension)}</span><b>Grupo</b><span>${esc(A[a].grupo)}</span></div></div></div>
-      <h2>${ico("navegacion-blueprint")}${esc(R.intervieneTitulo)}</h2>${intervencionHtml(a)}<p class="mini" style="margin-top:8px">${esc(PASOS.some(p => RONDAS.some(rr => !actividadDe(p, a, rr.modo))) ? R.intervieneNota : R.intervieneNotaTodos)}</p>
+      <h2>${ico("navegacion-blueprint")}${esc(R.intervieneTitulo)}</h2>${instrumentoDelEstudio() === "expediente" ? intervencionExpHtml(a) : intervencionHtml(a)}<p class="mini" style="margin-top:8px">${esc(PASOS.some(p => RONDAS.some(rr => !actividadDe(p, a, rr.modo))) ? R.intervieneNota : R.intervieneNotaTodos)}</p>
       <details data-det="terminos" open><summary>${esc(R.terminosTitulo)}</summary><dl class="info">${BP.terminos.concat(R.terminos || []).map(t => `<dt>${esc(t[0])}</dt><dd>${esc(t[1])}</dd>`).join("")}</dl></details>`;
   }
   const ult = i === O.pasos.length - 1, hecho = !!S.consent;
@@ -469,6 +476,7 @@ function vistaEncuesta() {
 
 /* ---------- Simulación: pantalla ---------- */
 function vistaSimulacion() {
+  if (esExpediente()) return vistaExpediente();
   const s = S.ses, yo = S.yo, rd = rondaAct(), r = rondaDef(s.rondaActual), modo = r.modo, a = avance();
   const side = `<aside class="pside" aria-label="Su rol y su avance"><div class="avatar xl">${icoActor(yo.actor)}</div><div class="pside-actor">${esc(nomL(yo.actor))}</div><div class="pside-name">usuario ${esc(S.cuenta.u)}${S.cuenta.p || CFG.demo ? " · cuenta de prueba" : ""}</div>
     <div class="callouts"><div class="callout"><b>${ico("navegacion-escenario", "sm")}El caso</b>${esc(resumenCaso(perfilActual()))}</div><div class="callout"><b>${ico(ICO.modo[modo], "sm")}Recorrido</b>${esc(r.n)}</div><div class="callout"><b>${ico("capitulos-indicadores", "sm")}Su avance</b>${a.hechas} de ${a.total} respuestas<div class="meter"><span style="width:${a.pct}%"></span></div></div></div>

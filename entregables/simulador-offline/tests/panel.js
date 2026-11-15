@@ -4,7 +4,8 @@
 const L = require("./lib"), M = require("./motor");
 const { clic, hay, texto, w, fs, path } = L;
 const T = L.contador("Panel del investigador");
-const cfgDemo = M.configDemo(), motor = M.crearMotor(cfgDemo);
+const cfgDemo = M.configDemo(); cfgDemo.estudio.instrumento = "ruta";   // esta prueba cubre la ruta de incapacidad
+const motor = M.crearMotor(cfgDemo);
 const CLAVE_PANEL = "clave-de-prueba-2026";
 const VENENO = '<img src=x onerror="window.__roto=1"><script>window.__roto=1<\/script>';
 

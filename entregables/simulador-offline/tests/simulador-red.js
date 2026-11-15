@@ -5,7 +5,8 @@
 const L = require("./lib"), M = require("./motor");
 const { clic, hay, texto, w, fs, path } = L;
 const T = L.contador("Simulador en un sitio web, con receptor simulado");
-const motor = M.crearMotor(M.configDemo());
+const cfgRuta = M.configDemo(); cfgRuta.estudio.instrumento = "ruta";
+const motor = M.crearMotor(cfgRuta);
 const CLAVE = "K7QF-M2XD", ENVIO = "clave-de-envio-de-prueba";
 function configuracion(envio, estudio) {   // `estudio` permite montar varias sesiones de simulación distintas
   const cuentas = [["eps-01", "eps"], ["jn-01", "jn"]].map(([u, a], i) => { const s = "00112233aabbcc0" + i; return { u, a, s, h:motor.huellaClave(u, CLAVE, s, 5000) }; });

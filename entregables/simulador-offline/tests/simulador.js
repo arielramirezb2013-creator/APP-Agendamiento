@@ -5,10 +5,11 @@
 //   node tests/simulador.js accesible  solo teléfono, nombres accesibles, foco y teclado
 const L = require("./lib"), M = require("./motor");
 const { clic, hay, texto, w, fs, path } = L;
-const ARCHIVO = "file://" + path.join(L.RAIZ, "simulador.html");
+const ARCHIVO = "file://" + path.join(L.RAIZ, "simulador-ruta.html");   // esta prueba cubre la ruta de incapacidad
 const cual = process.argv[2] || "todo";
 const T = L.contador("Simulador en archivo local, sin red (" + cual + ")");
-const cfg = M.configDemo(), motor = M.crearMotor(cfg);
+const cfg = M.configDemo(); cfg.estudio.instrumento = "ruta";   // esta prueba cubre la ruta de incapacidad
+const motor = M.crearMotor(cfg);
 const esperadas = actor => motor.bloquesDe(actor, "actual").filter(b => b.tipo === "actividad").length;
 const estado = pg => pg.evaluate(() => { const o = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); o[k] = localStorage.getItem(k); } return o; });
 const guardado = async (pg, u) => { const e = await estado(pg), k = Object.keys(e).filter(x => x.endsWith(":" + u))[0]; return k ? JSON.parse(e[k]) : null; };

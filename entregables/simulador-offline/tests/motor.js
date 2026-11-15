@@ -6,7 +6,7 @@
 const fs = require("fs"), path = require("path"), vm = require("vm"), crypto = require("crypto");
 const RAIZ = path.resolve(__dirname, ".."), MESA = path.resolve(RAIZ, "..", "blueprint-simulacion");
 const leer = f => fs.readFileSync(f, "utf8");
-const FUENTES = [path.join(MESA, "src/datos-blueprint.js"), path.join(MESA, "src/datos-escenario.js"), path.join(RAIZ, "src/datos-guion.js"), "__PERFIL__", path.join(RAIZ, "src/datos-ramas.js"), path.join(RAIZ, "src/nucleo.js"), path.join(RAIZ, "src/sim-1-estado.js")];
+const FUENTES = [path.join(MESA, "src/datos-blueprint.js"), path.join(MESA, "src/datos-escenario.js"), path.join(RAIZ, "src/datos-guion.js"), "__PERFIL__", path.join(RAIZ, "src/datos-ramas.js"), path.join(RAIZ, "src/datos-expedientes.js"), path.join(RAIZ, "src/exp-1-motor.js"), path.join(RAIZ, "src/nucleo.js"), path.join(RAIZ, "src/sim-1-estado.js"), path.join(RAIZ, "src/exp-2-estado.js")];
 // El perfil base del caso, igual que lo incluye build.py.
 const perfilBase = () => "const PERFIL_BASE = " + JSON.stringify(JSON.parse(leer(path.join(RAIZ, "perfiles/perfil-ejemplo-mp.json"))).perfiles[0]) + ";";
 const fuente = f => (f === "__PERFIL__" ? perfilBase() : leer(f));
@@ -25,7 +25,7 @@ function crearMotor(config, opciones) {
   const ctx = { window:ventana, localStorage:local, sessionStorage:sesion, navigator:{ onLine:true }, location:{ protocol:"file:", hash:"" }, document:{ getElementById:() => null, createElement:() => ({}), body:{} },
     crypto:crypto.webcrypto, TextEncoder, URL, Blob:global.Blob, console, setTimeout, clearTimeout, BPIcons:{ ids:[], svg:() => "" }, fetch:opciones.fetch || (async () => { throw new Error("sin red"); }) };
   vm.createContext(ctx);
-  const codigo = FUENTES.map(fuente).join("\n") + "\nfunction render() {}\n;globalThis.__M = { get S() { return S; }, set S(v) { S = v; }, CFG, CONS, ESC, BP, SIM, GUION, PASOS, PIDX, A, EV, ALM, entrar, salir, abrirCuenta, aceptarConsentimiento, iniciarRonda, avanzar, guardarActividad, guardarValoracion, guardarEncuesta, validarEncuesta, encuestaHecha, cerrarRonda, documentoRespuesta, validarRespuesta, validarConfig, huellaDoc, bloques, bloqueActual, posicion, rondaAct, pasoActual, modoActual, miActividad, actividadDe, bloquesDe, vigentes, regsDe, avance, minutosEstimados, guardarLocal, cargarLocal, restaurarDe, documentoRestaurable, cargarAvance, comprobarFinalidad, finalidadDe, vistaDe, RAMAS, casoActual, recomputarCaso, perfilActual, pasoNoOcurre, expedienteHoy, expedienteModulo, camposQueAnade, huellaClave, enviar, retirar, valoracionHecha, diaVirtual, resumenActividad, nombreArchivo, empezarDeNuevo };";
+  const codigo = FUENTES.map(fuente).join("\n") + "\nfunction render() {}\n;globalThis.__M = { get S() { return S; }, set S(v) { S = v; }, CFG, CONS, ESC, BP, SIM, GUION, PASOS, PIDX, A, EV, ALM, entrar, salir, abrirCuenta, aceptarConsentimiento, iniciarRonda, avanzar, guardarActividad, guardarValoracion, guardarEncuesta, validarEncuesta, encuestaHecha, cerrarRonda, documentoRespuesta, validarRespuesta, validarConfig, huellaDoc, bloques, bloqueActual, posicion, rondaAct, pasoActual, modoActual, miActividad, actividadDe, bloquesDe, vigentes, regsDe, avance, minutosEstimados, guardarLocal, cargarLocal, restaurarDe, documentoRestaurable, cargarAvance, comprobarFinalidad, finalidadDe, vistaDe, RAMAS, casoActual, recomputarCaso, perfilActual, pasoNoOcurre, EXP, EXPM, esExpediente, casoExp, bloquesExp, bloqueExp, estadoExp, condActual, avanzarExp, actuarSobre, guardarPunto, guardarH2, guardarH3, puntoHecho, miPunto, expedienteDoc, instrumentoDelEstudio, expedienteHoy, expedienteModulo, camposQueAnade, huellaClave, enviar, retirar, valoracionHecha, diaVirtual, resumenActividad, nombreArchivo, empezarDeNuevo };";
   vm.runInContext(codigo, ctx, { filename:"simulador-motor.js" });
   const M = ctx.__M; M.avisos = avisos; M.local = local; M.sesion = sesion;
   return M;
@@ -91,7 +91,8 @@ function recorrer(M, usuario, clave, opc) {
 module.exports = { crearMotor, configDemo, recorrer, responder, valorar, memoria, RAIZ, MESA };
 
 if (require.main === module) {
-  const cfg = configDemo(), muestras = process.argv.includes("--muestras"), dir = path.join(RAIZ, "tests", "salida", "muestras");
+  const cfg = configDemo(); cfg.estudio.instrumento = "ruta";   // esta prueba cubre la ruta de incapacidad
+  const muestras = process.argv.includes("--muestras"), dir = path.join(RAIZ, "tests", "salida", "muestras");
   if (muestras) fs.mkdirSync(dir, { recursive:true });
   let fallas = 0; const ok = (c, t) => { if (!c) { fallas++; console.log("  FALLA · " + t); } };
   cfg.cuentas.forEach((q, i) => {

@@ -4,7 +4,8 @@ const L = require("./lib"), M = require("./motor");
 const { fs, path } = L, { spawn } = require("child_process"), net = require("net"), crypto = require("crypto");
 const T = L.contador("Receptor PHP de respuestas");
 const ENVIO = "clave-de-envio-123456", ADMIN = "clave-de-administracion-del-servidor-0001", CLAVE = "K7QF-M2XD";
-const cfgDemo = M.configDemo(), motor = M.crearMotor(cfgDemo);
+const cfgDemo = M.configDemo(); cfgDemo.estudio.instrumento = "ruta";
+const motor = M.crearMotor(cfgDemo);
 
 const puertoLibre = () => new Promise(r => { const s = net.createServer(); s.listen(0, "127.0.0.1", () => { const p = s.address().port; s.close(() => r(p)); }); });
 function configPhp(o) {

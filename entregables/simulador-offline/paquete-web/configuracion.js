@@ -5,7 +5,9 @@ window.SIM_CONFIG = {
   "clave": "DEMO-2026"
  },
  "estudio": {
-  "id": "demostracion"
+  "id": "demostracion",
+  "instrumento": "expediente",
+  "expediente": "PI-L01"
  },
  "kdf": {
   "alg": "PBKDF2-HMAC-SHA256",

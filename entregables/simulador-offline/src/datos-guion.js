@@ -186,6 +186,97 @@ const GUION = {
     rechazoTexto:"No se guardó ninguna respuesta. Gracias por su tiempo. Si cambia de opinión, puede volver a entrar con su usuario y su contraseña."
   },
 
+  /* ---------- El instrumento del expediente de pensión (DGIT-PENSION-R1) ----------
+     Un expediente, dos condiciones, y al cierre las seis responsabilidades de H2 y los cuatro
+     accesos de H3. Los textos de cada caso vienen del documento del proyecto; aquí está lo que
+     la herramienta dice alrededor. */
+  exp: {
+    n:"El expediente",
+    titulo:"Va a tramitar un expediente de pensión de invalidez",
+    parrafos:[
+      "Va a recibir un expediente sintético de solicitud de pensión de invalidez por enfermedad laboral y lo va a tramitar desde su rol, punto de decisión por punto de decisión. En cada punto verá qué soportes exige la decisión, en qué estado llegaron y qué dice el criterio de conformidad de cada uno.",
+      "Lo recorrerá dos veces, con el mismo expediente: una vez con los canales del flujo actual —oficio, correo, bandejas documentales y lo que la persona solicitante alcance a aportar— y otra con el módulo de interoperabilidad que propone la investigación, que consulta por finalidad y deja registro de cada acceso. El expediente se reinicia entre las dos.",
+      "Un soporte no pasa a estar conforme porque usted lo pida: tiene que llegar, verificarlo contra su criterio y aceptarlo. Eso es justamente lo que el estudio mide.",
+      "Al final le preguntaremos a quién le corresponde cada responsabilidad del expediente y le pediremos reconstruir cuatro accesos a la evidencia. Son entre 30 y 45 minutos y puede pausar cuando quiera."
+    ],
+    marcoTitulo:"De qué investigación hace parte",
+    hipotesisTitulo:"Lo que este recorrido mide",
+    casoTitulo:"El expediente que le corresponde",
+    fichaTitulo:"Quién solicita la pensión",
+    trayectoriaTitulo:"Trayectoria laboral y exposición",
+    clinicaTitulo:"Antecedentes clínicos y función",
+    cronologiaTitulo:"Cronología del expediente",
+    actoresTitulo:"Quién interviene y qué custodia cada uno",
+    puntosTitulo:"Los puntos de decisión de este expediente",
+    rolTitulo:"Su papel en este expediente",
+    comenzar:"Comenzar el recorrido",
+    nota:"Expediente sintético. Las empresas, las fechas, los porcentajes y los desenlaces se crearon para la investigación; no corresponden a ninguna persona ni a ningún trámite real.",
+    sinPapel:"En este expediente su rol no decide ni custodia ninguno de los soportes que los puntos requieren. Puede recorrerlo como observador y responder igualmente las preguntas de cierre.",
+    /* Finalidades con las que se puede actuar sobre un soporte. El control administrativo no abre
+       piezas clínicas: esa denegación es parte de lo que el estudio observa. */
+    finalidades:[
+      ["verificar_origen", "Verificar el origen definitivo de la enfermedad"],
+      ["verificar_pcl", "Verificar la PCL y la fecha de estructuración"],
+      ["verificar_firmeza", "Confirmar la firmeza del dictamen"],
+      ["verificar_cobertura", "Verificar la afiliación y el período de cobertura"],
+      ["verificar_nexo", "Vincular la exposición al período cubierto"],
+      ["reconstruir", "Reconstruir los antecedentes de la calificación"],
+      ["conciliar", "Conciliar versiones, períodos o alcances"],
+      ["liquidacion", "Verificar la base de liquidación"],
+      ["resolver", "Resolver la solicitud pensional"],
+      ["control_admin", "Control administrativo interno"]
+    ]
+  },
+
+  /* Lo que se ve en cada condición antes de empezar. */
+  condicion: {
+    tituloA:"Primera condición",
+    tituloB:"Segunda condición",
+    reinicio:"El expediente se reinicia: vuelve al estado en que estaba al radicar, con los mismos soportes y los mismos vacíos.",
+    corte:"El piloto trabaja con un corte de 48 horas virtuales. Cada actuación consume horas, y cuántas depende de la condición: es un supuesto de simulación, no un término legal.",
+    comenzar:"Comenzar esta condición"
+  },
+
+  /* La pantalla de un punto de decisión. */
+  punto: {
+    tituloDecide:"Le toca decidir en este punto",
+    tituloAporta:"Le piden evidencia que usted custodia",
+    requiereTitulo:"Lo que esta decisión exige",
+    estadoTitulo:"Cómo llegó cada soporte",
+    criterioTitulo:"Criterio de conformidad",
+    actuarTitulo:"Qué hace con cada soporte",
+    actuarAyuda:"Consultar no cambia el expediente: solo deja registro de que usted miró. Solicitar hace llegar la versión de referencia, que después tiene que verificar y aceptar para que cuente como conforme.",
+    decidirTitulo:"Su decisión en este punto",
+    decidirAyuda:"Decida con lo que tiene ahora, no con lo que debería tener. Si le falta algo, dígalo: que falte es un resultado del estudio.",
+    porQue:"¿Por qué decidió así? Si requiere algo, diga qué y a quién.",
+    completitudTitulo:"Completitud de este punto",
+    completitudAyuda:"Requeridos disponibles y conformes sobre el total de requeridos. Es la medida de H1 y se calcula en el punto que resuelve.",
+    horas:"Horas virtuales consumidas",
+    instantanea:"Instantánea guardada justo antes de la decisión que resuelve, como pide el protocolo.",
+    contextoTitulo:"Lo que ocurre en los puntos donde su rol no actúa",
+    despuesTitulo:"Lo que sigue después de la decisión que resuelve",
+    despuesIntro:"Estos puntos vienen después de la decisión que resuelve el derecho y son ilustrativos: no se le pide decidirlos otra vez en cada condición. Lea en qué quedan con el expediente tal como usted lo deja y, si algo le llama la atención, escríbalo abajo.",
+    sigue:"Cuando quiera, continúe."
+  },
+
+  /* Las preguntas de cierre: H2 y H3. */
+  h2: {
+    titulo:"¿A quién le corresponde cada cosa?",
+    intro:"Seis tareas del expediente. Diga, para cada una, qué actor es el responsable. No se busca la respuesta de un manual: se busca lo que usted, desde su experiencia, entiende que corresponde.",
+    nota:"Es la medida de H2: respuestas correctas sobre responsabilidades evaluadas.",
+    col:"Responsable"
+  },
+  h3: {
+    titulo:"Reconstruya los accesos a la evidencia",
+    intro:"Durante el trámite se intentaron cuatro accesos a soportes del expediente. Reconstruya cada uno con los cinco elementos que el estudio exige: quién accedió, a qué pieza, en qué momento, con qué acción y con qué resultado.",
+    ayuda:"Responda con lo que pueda reconstruir de lo que vio y de lo que quedó registrado. Si no lo sabe, dígalo: no saberlo también es un dato.",
+    nota:"Es la medida de H3: accesos reconstruidos correctamente sobre accesos que debían registrarse.",
+    campos:{ actor:"Quién accedió", pieza:"A qué soporte", momento:"En qué momento", accion:"Con qué acción", resultado:"Con qué resultado" }
+  },
+
+  /* Minutos por pantalla del instrumento de expediente. */
+  tiemposExp: { inicio:10, condIntro:1, decide:4, aporta:2.5, contexto:0.5, h2:4, h3:5, cierre:3 },
+
   /* ---------- Encuesta de perfil del participante ----------
      Va después de la declaración de participación y antes del recorrido. No identifica a nadie:
      describe la experiencia profesional de quien responde, para poder leer sus respuestas. */
