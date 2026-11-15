@@ -1,7 +1,8 @@
 /* ============ Expedientes sintéticos de pensión de invalidez ============
-   Transcripción del documento del proyecto «Expedientes sintéticos de pensión de invalidez ·
-   Cuatro casos para el simulador doctoral en el caso SURA» (Ariel Ramírez, 14 de noviembre de
-   2026), bajo el marco rector DGIT-PENSION-R1 (Proyecto 2, 5 de noviembre de 2026).
+   Transcripción del documento del proyecto «Expedientes sintéticos de pensión de invalidez por
+   enfermedad laboral · Cuatro casos para el simulador doctoral en el caso SURA» (Ariel Ramírez),
+   bajo el marco rector DGIT-PENSION-R1 (Proyecto 2, 5 de noviembre de 2026). Versión final: los
+   cuatro expedientes son de origen laboral.
 
    Nada de este archivo se inventa: los textos, los porcentajes, las fechas, los estados de los
    soportes, las respuestas de referencia de H2 y los intentos de acceso de H3 vienen del
@@ -26,7 +27,7 @@ const EXP = {
     /* Formulación aprobada de las hipótesis, textual. */
     hipotesis:[
       { id:"H1", n:"Completitud de la evidencia", t:"En escenarios equivalentes del proceso de reconocimiento de la pensión de invalidez de origen común o laboral, en el caso SURA, el uso de una solución diseñada mediante la metodología de interoperabilidad clínico-laboral aumenta la proporción de elementos de evidencia requeridos que están disponibles y cumplen los requisitos definidos para cada decisión, frente al flujo actual de información.",
-        variable:"Completitud en P2", regla:"Elementos requeridos disponibles y conformes ÷ total de elementos requeridos. Reportar la diferencia en puntos porcentuales por origen." },
+        variable:"Completitud en P2", regla:"Elementos requeridos disponibles y conformes ÷ total de elementos requeridos. Comparar ambas condiciones del mismo expediente en puntos porcentuales." },
       { id:"H2", n:"Identificación de responsabilidades", t:"En escenarios equivalentes del proceso de reconocimiento de la pensión de invalidez de origen común o laboral, en el caso SURA, los participantes que utilizan el blueprint de gobernanza federada identifican correctamente una mayor proporción de responsabilidades sobre el aporte y la revisión de la evidencia y la toma de decisiones que cuando utilizan la descripción del flujo actual.",
         variable:"Identificación de responsabilidades", regla:"Respuestas correctas ÷ responsabilidades evaluadas. Aplicar individualmente seis tareas por caso. Revisar la pauta con los actores antes del estudio." },
       { id:"H3", n:"Trazabilidad de accesos", t:"En escenarios equivalentes de intercambio de evidencia para el reconocimiento de la pensión de invalidez de origen común o laboral, en el caso SURA, el uso del módulo interoperable definido por la metodología aumenta la proporción de accesos cuyo actor, finalidad, momento, acción y resultado pueden reconstruirse correctamente mediante una revisión independiente de los registros, frente al flujo actual de información.",
@@ -37,6 +38,7 @@ const EXP = {
       { id:"SP2", t:"Convertir los hallazgos en pasos de la metodología, reglas de custodia, permisos por finalidad y criterios de conformidad." },
       { id:"SP3", t:"Registrar completitud, reprocesos, tiempos de simulación y dificultades de viabilidad, con el soporte y el actor afectados." }
     ],
+    conjunto:"Este conjunto de cuatro expedientes aplica la formulación doctoral a las solicitudes de pensión por enfermedad laboral.",
     nota:"Los cocientes iniciales de las fichas describen el estado del guion al radicar. La completitud observada se calcula sobre las ejecuciones. Un expediente completo puede sustentar tanto un reconocimiento como una negativa motivada."
   },
 
@@ -62,11 +64,11 @@ const EXP = {
     FIR: { n:"Constancia de firmeza", sl:"FIR" },
     AFI: { n:"Afiliación y cobertura", sl:"AFI" },
     IBC: { n:"Certificado de IBC", sl:"IBC" },
-    HL:  { n:"Historia laboral consolidada", sl:"HL" },
-    PILA:{ n:"Comprobantes de períodos omitidos", sl:"PILA" },
     APT: { n:"Análisis de puesto", sl:"APT" },
     EXP: { n:"Informe de higiene", sl:"EXP" },
+    NEX: { n:"Anexo de exposición fechado", sl:"NEX" },
     FUN: { n:"Informe de función", sl:"FUN" },
+    AUD: { n:"Extracto audiológico", sl:"AUD" },
     HC:  { n:"Resumen clínico", sl:"HC" }
   },
 
@@ -115,6 +117,7 @@ const EXP = {
       diagnostico:"Trastorno de disco cervical con mielopatía C5–C6 (M50.0)",
       detalle:"Persisten alteración de la marcha y pérdida de destreza manual después de cirugía y rehabilitación. La IPS registró dificultad para subir escaleras, sostener herramientas y manipular cargas. Hipertensión controlada como antecedente común. PCL laboral de 56,80 %, consignada en dictamen sintético.",
       funcion:"Tras una cirugía y rehabilitación ambulatoria conserva limitaciones de marcha, agarre y destreza. El cargo de inventario permite alternar postura y excluye la conducción.",
+      rehabilitacion:"Tras la cirugía cervical del 22/05/2024 se registra una incapacidad de 60 días. Luego realiza 24 sesiones ambulatorias de rehabilitación entre julio y octubre de 2024. El seguimiento de diciembre de 2025 mantiene la restricción de conducción.",
       pcl:56.80, pclOrigen:"laboral", estructuracion:"10/12/2025"
     },
     referenciasTemporales:[
@@ -152,7 +155,7 @@ const EXP = {
     flujoActual:"Mateo adjunta lo que tiene. Prestaciones encuentra el DIC en su bandeja documental, pide la firmeza a medicina laboral y solicita por correo a nómina el mes de IBC faltante. Devuelve el certificado v1 si llega incompleto.",
     flujoPropuesto:"Prestaciones consulta el índice con finalidad pensional, vincula FIR al DIC y solicita a nómina la versión certificada del IBC. Las vistas muestran únicamente los campos autorizados para la decisión.",
     criterio:"Con DIC firme de 56,80 % laboral y cobertura verificada, la pauta prevé reconocimiento al completar P2. Si falta FIR, se requiere ese soporte. Si falta IBC tras resolver el derecho, la liquidación ilustrativa de P3 queda pendiente.",
-    notas:["El análisis de puesto y el resumen clínico explican la calificación previa y puede revisarse en el ejercicio. El punto P2 evalúa el expediente de reconocimiento. La responsabilidad civil del empleador queda fuera de esa decisión."],
+    notas:["El análisis de puesto y el resumen clínico explican la calificación previa y pueden revisarse en el ejercicio. El punto P2 evalúa el expediente de reconocimiento de la prestación."],
     soportes:[
       { k:"SOL", n:"Solicitud e identidad", cust:"tra", custN:"Solicitante", estado:"conforme", ver:"v1", notaEstado:"Radicado e identificación del caso visibles.", verRef:"v1", contenido:"RAD-L01, 21/04/2026. Solicitud de pensión e identificación sintética verificadas.", criterio:"Mismo titular, tipo de prestación y radicado." },
       { k:"ORI", n:"Confirmación del origen", cust:"jn", custN:"Junta Nacional", estado:"conforme", ver:"v1", notaEstado:"Providencia de calificación de origen identificable.", verRef:"v1", contenido:"ORI-L01, 31/03/2025. La Junta Nacional confirma origen laboral de M50.0.", criterio:"Emisor, caso, diagnóstico, sentido y fecha verificables." },
@@ -179,7 +182,7 @@ const EXP = {
       { momento:"+28 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"IBC", accion:"Consultar", finalidad:"Verificar la base de liquidación prevista en P3", resultado:"Vista de doce meses", denegado:false },
       { momento:"+30 h", actor:"emp", actorN:"Empleador · Administración", pieza:"HC", accion:"Consultar", finalidad:"Control administrativo de asistencia", resultado:"Denegado. Se pueden comunicar restricciones funcionales por una finalidad pertinente.", denegado:true }
     ],
-    procedencia:"Se tomó el patrón de exposición a vibración y de calificación en etapas. El porcentaje, el nivel medido, la localización cervical, las fechas y los actores del ejercicio fueron creados para la simulación.",
+    procedencia:"Se tomó el patrón de exposición a vibración y la secuencia de calificación de una enfermedad cervical laboral. Las empresas, las fechas, los valores medidos, los hallazgos específicos y la PCL del expediente fueron creados para la simulación.",
     fuentes:["Tribunal Superior de Medellín, Sala Quinta Laboral, 11 de febrero de 2025. Rad. 05001-31-05-022-2019-00619-01"]
   },
 
@@ -211,6 +214,7 @@ const EXP = {
       diagnostico:"Neumoconiosis debida a otros polvos con sílice (J62.8)",
       detalle:"De origen laboral en todos los dictámenes del caso. Disnea de esfuerzo y menor tolerancia a escaleras. El informe funcional completo describe CVF del 72 % del predicho y DLCO del 65 % del predicho. Hipertensión arterial controlada de origen común.",
       funcion:"Neumología y rehabilitación documentan disnea al caminar en pendiente y necesidad de pausas. Portería reduce su proximidad al polvo y evita desplazamientos por zonas de producción.",
+      rehabilitacion:"La IPS registra una incapacidad de 15 días desde el 17/07/2024 para estudio y ajuste de tareas. En julio de 2025 inicia 12 sesiones de rehabilitación respiratoria. Portería queda como puesto de reubicación desde el 01/07/2025.",
       pcl:44.30, pclOrigen:"laboral", estructuracion:"30/05/2025"
     },
     referenciasTemporales:[
@@ -296,7 +300,7 @@ const EXP = {
       pide:"Solicita que prestaciones confirme cuál de los tres documentos de calificación corresponde a su caso."
     },
     trayectoria:[
-      { periodo:"01/01/1993 a 31/12/2002", dur:"10 a", empresa:"Carbones Cuesta de Niebla", centro:"Sogamoso, patio de acopio", ciiu:"0510", cargo:"Auxiliar de patio", trabajo:"Ordena material, usa herramientas manuales y mueve sacos de 10 a 18 kg. La manipulación ocupa 2 h acumuladas de un turno de 8 h.", vinculo:"Indefinido", arl:"ARL histórica A" },
+      { periodo:"01/01/1993 a 31/12/2002", dur:"10 a", empresa:"Carbones Cuesta de Niebla", centro:"Sogamoso, patio de acopio", ciiu:"0510", cargo:"Auxiliar de patio", trabajo:"Ordena material, usa herramientas manuales y mueve sacos de 10 a 18 kg. La manipulación ocupa 2 h acumuladas de un turno de 8 h.", vinculo:"Indefinido", arl:"ISS y luego ARL histórica A" },
       { periodo:"01/03/2003 a 31/12/2012", dur:"9 a 10 m", empresa:"Carbones Ventana Alta", centro:"Nobsa, frente y patio de carbón", ciiu:"0510", cargo:"Operadora de cargador frontal", trabajo:"Opera palancas 4,5 h efectivas por turno de 8 h. Recorre piso granular irregular y realiza cargas repetidas de material.", vinculo:"Indefinido", arl:"ARL histórica B" },
       { periodo:"01/01/2013 a 31/01/2024", dur:"11 a 1 m", empresa:"Carbones Mesa Umbral", centro:"Tópaga, patio de despacho", ciiu:"0510", cargo:"Operadora de cargador frontal y retroexcavadora", trabajo:"Conduce y opera mandos 5 h por turno de 8 h. Alterna llenado de tolva, reversa y posicionamiento de la máquina en rampas.", vinculo:"Indefinido", arl:"ARL SURA" },
       { periodo:"01/02/2024 a vigente al corte", dur:"2 a 2 m 29 d", empresa:"Carbones Mesa Umbral", centro:"Tópaga, báscula exterior", ciiu:"0510", cargo:"Auxiliar de control de pesaje", trabajo:"Registra guías y lecturas, alterna posiciones y usa escáner de mano con apoyo. Tiene restricciones para conducir maquinaria y levantar peso.", vinculo:"Indefinido · reubicación", arl:"ARL SURA" }
@@ -309,6 +313,7 @@ const EXP = {
       diagnostico:"Síndrome del túnel carpiano bilateral (G56.0) y discopatía lumbar degenerativa (M51.3)",
       detalle:"Túnel carpiano bilateral laboral, con cirugía en mano derecha, residual sensitivo y PCL de 16,20 % en dictamen previo. Discopatía lumbar degenerativa con dolor persistente y limitación para sedestación y desplazamiento. El dictamen integral de origen laboral consigna una PCL del 52,40 %. Gonartrosis leve en seguimiento, documentada como antecedente común. El dictamen final deja identificados el alcance y los antecedentes considerados.",
       funcion:"La cirugía de mano derecha y la rehabilitación de columna dejan limitaciones residuales para prensión, sedestación prolongada y marcha. El control de pesaje reduce las tareas de conducción y levantamiento.",
+      rehabilitacion:"Después de la intervención de mano derecha en 2021 el expediente registra 30 días de incapacidad y 12 sesiones de terapia de mano. En 2024 realiza 16 sesiones de rehabilitación lumbar. La reubicación a báscula se mantiene al radicar.",
       pcl:52.40, pclOrigen:"laboral", estructuracion:"18/06/2025"
     },
     referenciasTemporales:[
@@ -382,102 +387,101 @@ const EXP = {
     ]
   },
 
-  /* ======================= PI-C01 ======================= */
+  /* ======================= PI-L04 ======================= */
   {
-    id:"PI-C01", origen:"comun", titulo:"Auxiliar de laboratorio con aportes omitidos",
-    resumenTabla:"La AFP ve 46 semanas. Debe verificar y consolidar ocho semanas omitidas antes de resolver una solicitud con PCL firme de origen común.",
+    id:"PI-L04", origen:"laboral", titulo:"Operaria de prensas con cobertura histórica incompleta",
+    resumenTabla:"Una exoperaria de prensas tiene PCL laboral en firme. Su solicitud exige verificar la última ARL y vincular la exposición a un período cubierto.",
     persona:{
-      nombre:"Laura Medina Torres", edad:44, edadNota:"44 años al radicar", sexo:"femenino",
-      ciudad:"Medellín, Antioquia", nacimiento:"17/06/1981",
-      formacion:"Técnica laboral como auxiliar de laboratorio clínico", dominancia:"derecha",
-      situacion:"Solicitante y extrabajadora de laboratorio diagnóstico",
-      vinculo:"Sin vínculo vigente desde el cierre del contrato en junio de 2025",
-      convivencia:"Vive con una hermana y realiza trámites por el portal con ayuda para digitalizar documentos",
-      pide:"Señala un contrato de 2023 y pide saber por qué no aparece en el reporte utilizado por la AFP."
+      nombre:"Elena Marín Cuéllar", edad:55, edadNota:"55 años al radicar", sexo:"femenino",
+      ciudad:"Dosquebradas, Risaralda", nacimiento:"12/02/1971",
+      formacion:"Bachiller y técnica laboral en procesos metalmecánicos", dominancia:"derecha",
+      situacion:"Solicitante y exoperaria de prensas",
+      vinculo:"Retirada desde el 01/10/2025",
+      convivencia:"Vive con su hija adulta",
+      ajustes:"Usa audífonos y pide recibir por escrito las solicitudes y decisiones",
+      pide:"Solicita una respuesta escrita. Quiere saber si su fecha de retiro cambia quién debe resolver su pensión."
     },
     trayectoria:[
-      { periodo:"01/02/2004 a 31/01/2011", dur:"7 a", empresa:"Diagnóstico Nexo Prado", centro:"Medellín, procesamiento de muestras", ciiu:"8691", cargo:"Auxiliar de laboratorio", trabajo:"Rotula y alista cerca de 70 tubos por turno de 8 h. Alterna registro, pipeteo, clasificación y uso de centrífuga.", vinculo:"Indefinido", arl:"ARL histórica A" },
-      { periodo:"01/04/2011 a 31/03/2016", dur:"5 a", empresa:"Laboratorio Quicio Valle", centro:"Envigado, sede ambulatoria", ciiu:"8691", cargo:"Auxiliar de toma y registro", trabajo:"Atiende cerca de 30 tomas al día durante 4 h acumuladas. Dedica el resto a ingreso de órdenes y alistamiento.", vinculo:"Indefinido", arl:"ARL histórica B" },
-      { periodo:"06/02/2023 a 02/04/2023", dur:"1 m 28 d", empresa:"Laboratorio Ruta Linde", centro:"Medellín, sede de recepción", ciiu:"8691", cargo:"Auxiliar de recepción de muestras", trabajo:"Recibe, verifica y escanea unas 65 muestras por turno de 8 h. Predomina el registro y el agarre repetido de bandejas livianas.", vinculo:"Término fijo", arl:"ARL SURA" },
-      { periodo:"15/07/2024 a 01/06/2025", dur:"10 m 18 d", empresa:"Diagnóstico Trama Clínica", centro:"Bello, laboratorio ambulatorio", ciiu:"8691", cargo:"Auxiliar de trazabilidad de muestras", trabajo:"Registra cerca de 60 muestras por turno. Desde 01/03/2025 alterna tareas de digitación y llamadas para reducir molestias de manos.", vinculo:"Término fijo", arl:"ARL SURA" }
+      { periodo:"01/01/1996 a 31/12/2003", dur:"8 a", empresa:"Fundición Quebrada Larga", centro:"Pereira, área de acabado", ciiu:"2431", cargo:"Auxiliar de desmoldeo y acabado", trabajo:"Retira arena y rebabas con herramientas neumáticas. Pasa cerca de 4 h por turno de 8 h junto al desmoldeo y esmerilado.", vinculo:"Indefinido", arl:"ARL histórica A" },
+      { periodo:"01/01/2004 a 31/07/2012", dur:"8 a 7 m", empresa:"Mecanizados Nudo Alto", centro:"Pereira, banco de mecanizado", ciiu:"2592", cargo:"Operaria de pulido de piezas", trabajo:"Esmerila y desbarba piezas en cerca de 5 h acumuladas por turno de 8 h. Recibe tapones. El archivo conserva registro parcial de recambios.", vinculo:"Indefinido", arl:"ARL histórica B" },
+      { periodo:"01/09/2012 a 31/12/2024", dur:"12 a 4 m", empresa:"Prensas Umbral del Otún", centro:"Dosquebradas, nave de estampado", ciiu:"2591", cargo:"Operaria de prensa mecánica", trabajo:"Alimenta la prensa, activa el ciclo y verifica la pieza. Opera unas 5 h acumuladas por turno de 8 h. Hay ruido impulsivo en troquelado.", vinculo:"Indefinido", arl:"ARL SURA" },
+      { periodo:"01/01/2025 a 30/09/2025", dur:"9 m", empresa:"Prensas Umbral del Otún", centro:"Dosquebradas, almacén segregado", ciiu:"2591", cargo:"Auxiliar de inventario de repuestos", trabajo:"Registra entradas con lector y usa avisos visuales. Realiza verificaciones de inventario. La orden de reubicación limita el trabajo en la nave.", vinculo:"Indefinido · reubicación", arl:"ARL SURA" }
     ],
-    tiempos:"Diagnóstico Nexo Prado, 7 a · Laboratorio Quicio Valle, 5 a · Laboratorio Ruta Linde, 1 m 28 d · Diagnóstico Trama Clínica, 10 m 18 d. Vínculo acumulado al radicar 4.762 días.",
-    actividad:"8691 actividades de apoyo diagnóstico.",
-    vacios:"Sin vínculo en febrero y marzo de 2011, de abril de 2016 al 05/02/2023 y del 03/04/2023 al 14/07/2024. El guion registra labores de cuidado familiar en las dos interrupciones más largas y carece de aportes durante esos períodos.",
-    exposicion:"La ficha laboral consigna movimientos repetidos de manos y carga estática al procesar y registrar muestras. Se describe a partir de registros de tareas, sin medición instrumental. El origen común de la artritis está consignado en el dictamen del guion. La descripción de exposición se conserva para SP1 y para interpretar el antecedente de mano.",
+    tiempos:"Fundición Quebrada Larga, 8 a · Mecanizados Nudo Alto, 8 a 7 m · Prensas Umbral del Otún, 13 a 1 m. Vínculo acumulado al radicar 10.835 días.",
+    actividad:"2431 fundición de hierro y de acero · 2592 tratamiento y mecanizado de metales · 2591 forja, prensado y estampado.",
+    vacios:"Sin vínculo en agosto de 2012. Finaliza su último contrato el 30/09/2025 por retiro voluntario registrado en el guion. Carece de una afiliación posterior a riesgos laborales.",
+    exposicion:"La dosimetría personal del 22/08/2023 registró 92 dB(A) como nivel equivalente normalizado a 8 h en estampado. El informe identifica equipo, tarea y turno. En 2024 la empresa instaló una barrera parcial y registró el uso de orejeras. El expediente conserva la restricción y fecha de reubicación.",
     clinica:{
-      diagnostico:"Artritis reumatoide seropositiva (M05.9)",
-      detalle:"Con afectación poliarticular, de origen común en el dictamen del ejercicio. Persiste limitación funcional de manos y rodillas pese al tratamiento prescrito y rehabilitación. El síndrome del túnel carpiano (G56.0) figura como antecedente clínico. Reumatología documenta dificultad para pinza fina, apertura de recipientes y marcha sostenida. El guion asigna PCL de 54,10 % de origen común.",
-      funcion:"La IPS registra tratamiento farmacológico y rehabilitación, con persistencia de limitaciones para pinza fina, marcha sostenida y bipedestación. En el último vínculo ajusta sus tareas hasta el retiro.",
-      pcl:54.10, pclOrigen:"común", estructuracion:"02/06/2025"
+      diagnostico:"Pérdida auditiva neurosensorial bilateral inducida por ruido (H83.3)",
+      detalle:"De origen laboral en el escenario, con tinnitus persistente. La audiometría y la valoración funcional documentan afectación en frecuencias conversacionales y agudas. Con ayudas auditivas persisten dificultades para seguir conversaciones, reconocer alarmas y orientarse por sonidos. El dictamen sintético fija una PCL de 51,00 % laboral y recoge el impacto en su rol laboral y en la comunicación cotidiana.",
+      funcion:"La reubicación habilitó señales visuales para tareas de inventario. En el cierre de rehabilitación persisten dificultades para comunicarse en grupo y atender señales sonoras, aun con ayudas auditivas.",
+      rehabilitacion:"La IPS ajusta los audífonos en 2024 y realiza ocho sesiones de entrenamiento auditivo entre enero y marzo de 2025. El 12/09/2025 documenta las limitaciones residuales. En el guion, el último vínculo finaliza por retiro voluntario después de la reubicación.",
+      pcl:51.00, pclOrigen:"laboral", estructuracion:"12/09/2025"
     },
     referenciasTemporales:[
-      ["Primer síntoma registrado", "41 años", "18/08/2022"],
-      ["Diagnóstico inicial", "42 años", "14/02/2024"],
-      ["Estructuración en el dictamen final", "43 años", "02/06/2025"]
+      ["Primer síntoma registrado", "50 años", "11/11/2021"],
+      ["Diagnóstico inicial", "53 años", "05/03/2024"],
+      ["Estructuración en el dictamen final", "54 años", "12/09/2025"]
     ],
     actores:[
-      { a:"arl", n:"ARL SURA", rol:"ARL SURA, antecedente de afiliación ocupacional", custodia:[] },
-      { a:"eps", n:"EPS SURA", rol:"EPS SURA, medicina laboral", custodia:["DIC", "FIR"] },
-      { a:"ips", n:"IPS", rol:"IPS de reumatología y rehabilitación", custodia:["HC"] },
-      { a:"emp", n:"Empleador", rol:"Nómina de los empleadores de 2023 y 2024–2025", custodia:["PILA"] },
-      { a:"afp", n:"AFP", rol:"AFP del ejercicio, historia laboral y prestaciones", custodia:["AFI", "HL"] },
-      { a:"tra", n:"Solicitante", rol:"Laura Medina, solicitante", custodia:["SOL"] }
+      { a:"arl", n:"ARL SURA", rol:"ARL SURA, Afiliaciones, Medicina Laboral y Prestaciones", custodia:["DIC", "FIR", "AFI"] },
+      { a:"eps", n:"EPS SURA", rol:"EPS SURA, Medicina Laboral. Calificó el origen en primera oportunidad", custodia:["ORI"] },
+      { a:"ips", n:"IPS", rol:"IPS de otorrinolaringología y audiología ocupacional", custodia:["AUD"] },
+      { a:"emp", n:"Empleador", rol:"SG-SST de Prensas Umbral del Otún", custodia:["NEX"] },
+      { a:"tra", n:"Solicitante", rol:"Elena Marín, solicitante", custodia:["SOL"] }
     ],
-    perspectiva:"Laura señala un contrato de 2023 y pide saber por qué no aparece en el reporte utilizado por la AFP.",
-    apertura:"Usted recibe una solicitud de pensión y una historia laboral con un período cuestionado. Defina la ventana a revisar y qué soportes acreditan las semanas.",
+    perspectiva:"Elena solicita una respuesta escrita. Quiere saber si su fecha de retiro cambia quién debe resolver su pensión.",
+    apertura:"Usted recibe un dictamen laboral en firme y una consulta de afiliación que muestra estado inactivo. Verifique qué administradora corresponde y qué soportes permiten decidir.",
     cronologia:[
-      ["18/08/2022", "Primera consulta por dolor y rigidez en manos y rodillas."],
-      ["06/02/2023", "Inicia vínculo de ocho semanas con Laboratorio Ruta Linde. Las planillas quedan bajo una referencia de afiliación migrada."],
-      ["14/02/2024", "Reumatología confirma M05.9. Inicia manejo y seguimiento."],
-      ["15/07/2024", "Inicia vínculo con Diagnóstico Trama Clínica. Su historia consolidada refleja 46 semanas de este contrato."],
-      ["01/03/2025", "Se ajustan las tareas por limitación funcional. En mayo se documenta deterioro y el vínculo concluye el 01/06/2025."],
-      ["02/06/2025", "Fecha de estructuración fijada en el dictamen sintético. La ventana de cotización va del 02/06/2022 al 01/06/2025."],
-      ["07/04/2026", "EPS SURA, en el guion, emite dictamen en primera oportunidad de 54,10 %, origen común. Se notifica el 08/04 y queda firme según constancia del 28/04."],
-      ["22/05/2026", "Laura radica solicitud ante su AFP. El reporte visible indica 46 semanas en la ventana. Una carpeta de nómina conserva comprobantes que permiten corregir ocho semanas omitidas."]
+      ["11/11/2021", "Reporta tinnitus y dificultad para seguir instrucciones en la nave durante el control periódico."],
+      ["22/08/2023", "Dosimetría personal en la prensa. SG-SST archiva el informe con el período y la tarea."],
+      ["05/03/2024", "Otorrinolaringología confirma hipoacusia neurosensorial bilateral. Comienza adaptación a ayudas auditivas."],
+      ["01/01/2025", "Se formaliza la reubicación a inventario. La IPS registra terapia auditiva y seguimiento."],
+      ["24/06/2025", "EPS SURA califica el origen laboral en primera oportunidad. Su firmeza consta el 14/07/2025."],
+      ["12/09/2025", "Evaluación funcional de cierre. El dictamen posterior fija su estructuración en esta fecha."],
+      ["30/09/2025", "Finaliza el vínculo. ARL SURA es la última administradora en el expediente."],
+      ["28/04/2026", "ARL SURA fija PCL laboral de 51,00 %. Notifica el 29/04 y certifica firmeza el 15/05."],
+      ["22/05/2026", "Elena radica la pensión. El expediente digital muestra un estado inactivo y carece del anexo que liga la exposición al período de afiliación."]
     ],
     puntos:[
-      { id:"P1", n:"Conciliar las semanas para la fecha de estructuración", decide:"afp", decideN:"AFP", requiere:["DIC", "HL", "PILA"], inicio:"1/3" },
-      { id:"P2", n:"Resolver solicitud pensional", decide:"afp", decideN:"AFP", requiere:["SOL", "DIC", "FIR", "AFI", "HL"], inicio:"4/5", resuelve:true }
+      { id:"P1", n:"Verificar última cobertura y nexo", decide:"arl", decideN:"ARL SURA", requiere:["ORI", "AFI", "NEX"], inicio:"1/3" },
+      { id:"P2", n:"Resolver solicitud pensional", decide:"arl", decideN:"ARL SURA", requiere:["SOL", "ORI", "DIC", "FIR", "AFI", "NEX"], inicio:"4/6", resuelve:true }
     ],
-    flujoActual:"Laura aporta una certificación y pide corrección. Historia laboral coteja las planillas de 2023 con el registro de la AFP. Prestaciones solicita un reporte consolidado que retire la inconsistencia de la ventana.",
-    flujoPropuesto:"El índice vincula la fecha de estructuración a la ventana. Historia laboral accede a las planillas pertinentes, verifica que no se dupliquen días y publica la versión certificada. Prestaciones consulta el total y la constancia del dictamen.",
-    criterio:"Con 54 semanas conciliadas en la ventana, DIC firme de 54,10 % común y afiliación comprobada, la pauta prevé reconocimiento bajo la regla general usada en el caso. Con 46 semanas y una omisión identificada, la tarea es verificar y corregir antes de cerrar. Si no se acreditan las ocho semanas tras verificar, se deja el caso para revisión del fondo conforme al protocolo del estudio.",
-    notas:["El expediente está diseñado con fecha de estructuración fija. El escenario trabaja con aportes anteriores a ella y con la regla general. La inclusión de cotizaciones posteriores o la reasignación de la fecha de estructuración requerirían otro escenario."],
-    conciliacion:[
-      "06/02/2023 al 02/04/2023. 56 días cubiertos por 3 planillas, confirmados al cotejar.",
-      "15/07/2024 al 01/06/2025. 322 días verificados en la historia laboral.",
-      "Ventana del 02/06/2022 al 01/06/2025. La AFP consolida 322 + 56 = 378 días, equivalentes a 54 semanas. El reporte inicial refleja 46 semanas. Las ocho omitidas pertenecen al vínculo de 2023."
-    ],
+    flujoActual:"Prestaciones ve el estado inactivo y pide a Afiliaciones la vigencia histórica. Solicita a SG-SST el anexo citado y coteja la exposición con el origen calificado y la cobertura.",
+    flujoPropuesto:"El índice permite consultar por separado el estado actual y el histórico de afiliación. Prestaciones vincula al dictamen la vista pertinente del anexo de puesto para verificar la cobertura.",
+    criterio:"Con DIC-L04 firme de 51,00 % laboral, última afiliación a ARL SURA y nexo con un período cubierto verificados, la pauta prevé reconocer la pensión. Si falta AFI o NEX, se requiere el soporte y se informa por escrito a Elena.",
+    notas:["La comprobación de cobertura se hace respecto de los períodos pertinentes del caso. El eventual recobro entre administradoras sigue su trámite propio."],
     soportes:[
-      { k:"SOL", n:"Solicitud e identidad", cust:"tra", custN:"Solicitante", estado:"conforme", ver:"v1", notaEstado:"Identificación y radicado visibles.", verRef:"v1", contenido:"RAD-C01, 22/05/2026. Solicitud de pensión e identificación sintética.", criterio:"Mismo titular, tipo de prestación y radicado." },
-      { k:"DIC", n:"Dictamen de origen y PCL", cust:"eps", custN:"EPS SURA", estado:"conforme", ver:"v1", notaEstado:"Dictamen con fecha de estructuración visible.", verRef:"v1", contenido:"DIC-C01, 07/04/2026. Origen común, PCL 54,10 %, estructuración 02/06/2025.", criterio:"Identifica emisor, titular, origen, PCL, estructuración y firma." },
-      { k:"FIR", n:"Constancia de firmeza", cust:"eps", custN:"EPS SURA", estado:"conforme", ver:"v1", notaEstado:"Constancia sobre DIC-C01 disponible.", verRef:"v1", contenido:"FIR-C01, 28/04/2026. Vinculada a DIC-C01, notificado el 08/04.", criterio:"Firmeza trazada a la versión del dictamen." },
-      { k:"AFI", n:"Afiliación pensional", cust:"afp", custN:"AFP", estado:"conforme", ver:"v1", notaEstado:"Identifica a la administradora que tramita.", verRef:"v1", contenido:"AFP del ejercicio. Afiliación iniciada el 01/02/2004 y vigente para la solicitud.", criterio:"Identifica afiliación, período y titular." },
-      { k:"HL", n:"Historia laboral consolidada", cust:"afp", custN:"AFP", estado:"no_conforme", ver:"v1", notaEstado:"46 semanas visibles en la ventana. Falta el período de 2023.", verRef:"v2", contenido:"Ventana 02/06/2022–01/06/2025. 378 días verificados tras conciliación, equivalentes a 54 semanas. Total histórico del guion: 680,29 semanas.", criterio:"Ventana correcta, períodos conciliados sin duplicados y versión certificada." },
-      { k:"PILA", n:"Comprobantes de períodos omitidos", cust:"emp", custN:"Empleador", estado:"ausente", ver:"", notaEstado:"El certificado laboral indica vínculo, pero faltan las planillas y su confirmación.", verRef:"v1", contenido:"Períodos cubiertos del 06/02/2023 al 02/04/2023. Tres planillas pagadas y verificadas en el guion, asociadas a 56 días calendario sin duplicados.", criterio:"Aportes a pensión del mismo titular, empleador identificado, pagos y fechas trazables." },
-      { k:"HC", n:"Resumen clínico pertinente", cust:"ips", custN:"IPS", estado:"conforme", ver:"v1", notaEstado:"Resumen clínico firmado disponible en la IPS.", verRef:"v1", contenido:"M05.9, función de manos y rodillas, evolución y limitaciones al cierre del vínculo.", criterio:"Origen del extracto, firma y fechas. Se usa como antecedente del dictamen." }
+      { k:"SOL", n:"Solicitud e identidad", cust:"tra", custN:"Solicitante", estado:"conforme", ver:"v1", notaEstado:"Identificación, radicado y canal escrito visibles.", verRef:"v1", contenido:"RAD-L04, 22/05/2026. Solicitud de pensión y canal de notificación escrito.", criterio:"Mismo titular, radicado, prestación y canal registrado." },
+      { k:"ORI", n:"Calificación del origen", cust:"eps", custN:"EPS SURA", estado:"conforme", ver:"v1", notaEstado:"Copia firmada con constancia de origen laboral.", verRef:"v1", contenido:"ORI-L04, 24/06/2025. H83.3 laboral. Firmeza de origen 14/07/2025.", criterio:"Titular, diagnóstico, origen, emisor y firmeza identificados." },
+      { k:"DIC", n:"Dictamen de PCL", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v1", notaEstado:"PCL, origen y estructuración verificables.", verRef:"v1", contenido:"DIC-L04, 28/04/2026. PCL 51,00 % laboral. Estructuración 12/09/2025.", criterio:"Firmado y vinculado a ORI-L04. Titular, PCL, origen y fecha verificables." },
+      { k:"FIR", n:"Constancia de firmeza de PCL", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v1", notaEstado:"Constancia vinculada al dictamen de PCL.", verRef:"v1", contenido:"FIR-L04, 15/05/2026. DIC-L04 notificado el 29/04/2026.", criterio:"Identifica el dictamen, la fecha de notificación y el estado en firme." },
+      { k:"AFI", n:"Certificación histórica de cobertura", cust:"arl", custN:"ARL SURA", estado:"no_conforme", ver:"v1", notaEstado:"Consulta «inactiva» sin fechas ni identificación del último vínculo.", verRef:"v2", contenido:"Última afiliación a ARL SURA del 01/09/2012 al 30/09/2025. Historial cotejado sin afiliación posterior.", criterio:"Acredita empleador, última ARL, fechas de inicio y retiro, y titular." },
+      { k:"NEX", n:"Anexo de exposición fechado", cust:"emp", custN:"Empleador", estado:"ausente", ver:"", notaEstado:"El resumen de origen cita el informe. Falta el anexo con puesto y fechas.", verRef:"v1", contenido:"SG-SST. Dosimetría 22/08/2023 en estampado. Vincula tarea y turno a la ficha de puesto de 2012 a 2024.", criterio:"Relaciona el riesgo con el puesto, el período cubierto y ORI-L04." },
+      { k:"AUD", n:"Extracto audiológico", cust:"ips", custN:"IPS", estado:"conforme", ver:"v1", notaEstado:"Valoración clínica y funcional firmada.", verRef:"v1", contenido:"Audiometría seriada y cierre funcional del 12/09/2025. Ayudas auditivas y barreras de comunicación.", criterio:"Emisor, identificación, fechas y pruebas pertinentes autenticadas." }
     ],
-    subsanacion:"Pedir PILA al empleador de 2023. Verificar identidad, períodos y pago, conciliar sin duplicados y emitir HL certificada desde historia laboral de la AFP.",
-    requerimiento:"Verificar quién concilia las planillas, qué datos comparte nómina con la AFP y qué debe ver la solicitante para impugnar o corregir un período omitido.",
+    subsanacion:"Solicitar AFI v2 a Afiliaciones y el anexo NEX v1 a SG-SST. Cotejar el puesto y la fecha del informe con el período cubierto y el origen calificado.",
+    requerimiento:"Precisar quién verifica la afiliación después del retiro, cómo se vincula el informe de exposición al dictamen y qué datos puede consultar cada parte.",
     h2:[
-      { id:"R01", tarea:"Aportar las planillas omitidas de 2023", funcion:"Aporta", ref:"emp", refN:"Empleador · Nómina de 2023" },
-      { id:"R02", tarea:"Emitir el dictamen de origen y PCL del escenario", funcion:"Decide calificación", ref:"eps", refN:"EPS SURA · Medicina laboral" },
-      { id:"R03", tarea:"Certificar la firmeza del dictamen", funcion:"Aporta", ref:"eps", refN:"EPS SURA · Medicina laboral" },
-      { id:"R04", tarea:"Conciliar períodos y certificar la nueva historia laboral", funcion:"Revisa", ref:"afp", refN:"AFP · Historia laboral" },
-      { id:"R05", tarea:"Aportar la solicitud pensional y señalar el período faltante", funcion:"Aporta", ref:"tra", refN:"Solicitante" },
-      { id:"R06", tarea:"Resolver el reconocimiento pensional común", funcion:"Decide prestación", ref:"afp", refN:"AFP · Prestaciones" }
+      { id:"R01", tarea:"Aportar el anexo fechado de exposición a ruido", funcion:"Aporta", ref:"emp", refN:"Empleador · SG-SST" },
+      { id:"R02", tarea:"Aportar la valoración audiológica de cierre", funcion:"Aporta", ref:"ips", refN:"IPS · Audiología" },
+      { id:"R03", tarea:"Emitir la calificación de origen en primera oportunidad", funcion:"Decide calificación", ref:"eps", refN:"EPS SURA · Medicina laboral" },
+      { id:"R04", tarea:"Certificar la última afiliación y el período de cobertura", funcion:"Aporta", ref:"arl", refN:"ARL SURA · Afiliaciones" },
+      { id:"R05", tarea:"Verificar origen calificado, nexo y cobertura histórica", funcion:"Revisa", ref:"arl", refN:"ARL SURA · Prestaciones" },
+      { id:"R06", tarea:"Resolver y comunicar la solicitud de pensión laboral", funcion:"Decide prestación", ref:"arl", refN:"ARL SURA · Prestaciones" }
     ],
     h3:[
-      { momento:"+2 h", actor:"afp", actorN:"AFP · Prestaciones", pieza:"DIC", accion:"Consultar", finalidad:"Fijar ventana de cotización", resultado:"Origen, PCL y estructuración visibles", denegado:false },
-      { momento:"+12 h", actor:"afp", actorN:"AFP · Historia laboral", pieza:"PILA", accion:"Consultar", finalidad:"Conciliar aportes de 2023", resultado:"Comprobantes y períodos disponibles", denegado:false },
-      { momento:"+29 h", actor:"afp", actorN:"AFP · Prestaciones", pieza:"HL", accion:"Consultar", finalidad:"Verificar semanas consolidadas", resultado:"Versión certificada con el total", denegado:false },
-      { momento:"+33 h", actor:"emp", actorN:"Empleador · Administración", pieza:"HC", accion:"Consultar", finalidad:"Verificar planillas omitidas", resultado:"Denegado. La conciliación utiliza soportes de cotización.", denegado:true }
+      { momento:"+3 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"DIC", accion:"Consultar", finalidad:"Verificar PCL y estructuración", resultado:"Dictamen vigente firmado", denegado:false },
+      { momento:"+16 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"AFI", accion:"Consultar", finalidad:"Verificar última ARL y fechas de cobertura", resultado:"Historial certificado con inicio y retiro", denegado:false },
+      { momento:"+24 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"NEX", accion:"Consultar", finalidad:"Vincular la exposición al período cubierto", resultado:"Vista autorizada del anexo fechado", denegado:false },
+      { momento:"+30 h", actor:"emp", actorN:"Empleador · Administración", pieza:"AUD", accion:"Consultar", finalidad:"Actualizar registro de retiro", resultado:"Denegado. El registro de retiro utiliza la constancia laboral.", denegado:true }
     ],
-    procedencia:"El contraste del Tribunal de Medellín informó la coexistencia de trayectoria en laboratorio, calificaciones y trámite común. T-024 informa el problema de corregir un registro de aportes. La artritis, la PCL y el faltante de ocho semanas se diseñaron para el ejercicio.",
+    procedencia:"T-524 de 2020 y STP1368-2023 aportaron el patrón de exposición a ruido, hipoacusia laboral y evidencia audiológica. La dosimetría, la PCL, los datos personales y la solicitud de pensión de este expediente son sintéticos. El caso aplica el criterio de cobertura del artículo 1 de la Ley 776 de 2002.",
     fuentes:[
-      "Tribunal Superior de Medellín, Sala Segunda Laboral, 27 de junio de 2025. Rad. 05001-31-05-008-2023-00254-01",
-      "Corte Constitucional, Sentencia T-024 de 2025, antecedente sobre corrección de historia laboral"
+      "Corte Constitucional, Sentencia T-524 de 2020, antecedentes 2.1.2 y 2.1.6 y análisis del caso",
+      "Corte Suprema de Justicia, Sentencia STP1368-2023, 9 de febrero de 2023, apartados de hechos y trámite",
+      "Ley 776 de 2002, arts. 1, 5, 7, 9 y 10",
+      "Corte Suprema de Justicia, Sala de Casación Laboral, ficha oficial SL1469-2024"
     ]
   }
   ],
@@ -487,14 +491,11 @@ const EXP = {
     nota:"Los valores de PCL se leen de los dictámenes sintéticos. Los criterios de conformidad de las fichas son reglas operativas del ejercicio. La calificación médico-laboral, la decisión sobre la pensión y su liquidación son hitos diferenciados.",
     grupos:[
       { n:"Origen laboral",
-        d:"El umbral de invalidez laboral es una PCL del 50 % o más. La IPP corresponde a una disminución definitiva desde el 5 % y por debajo del 50 %. En los tres casos laborales la afiliación de ARL SURA se mantiene hasta la fecha relevante. El certificado de IBC sirve para la liquidación ilustrativa de los casos que la incluyen.",
-        fuentes:["Ley 776 de 2002, arts. 1, 5, 7, 9 y 10", "Ley 1562 de 2012, arts. 4 y 5", "Corte Suprema de Justicia, Sala de Casación Laboral, ficha oficial SL1469-2024"] },
-      { n:"Origen común",
-        d:"El caso PI-C01 aplica la regla general de PCL del 50 % o más y al menos 50 semanas cotizadas en los tres años anteriores a la fecha de estructuración. Los dos períodos usados en el ejercicio se verifican con días calendario cubiertos y sin duplicados.",
-        fuentes:["Ley 100 de 1993, arts. 38, 39 y 41. Arts. 39 y 41 con sus modificaciones", "Corte Constitucional, Sentencia C-428 de 2009", "Corte Constitucional, Sentencia T-245 de 2026, párrs. 51 a 54", "Corte Suprema de Justicia, Sala de Casación Laboral, Sentencia SL138-2024"] },
+        d:"El umbral de invalidez laboral es una PCL del 50 % o más. La IPP corresponde a una disminución definitiva desde el 5 % y por debajo del 50 %. El certificado de IBC se usa en los casos con liquidación ilustrativa. En PI-L04, con la solicitante desvinculada del sistema de riesgos, se verifica la última ARL y que el origen de la enfermedad sea atribuible a un período cubierto por el sistema.",
+        fuentes:["Ley 776 de 2002, arts. 1, 5, 7, 9 y 10", "Ley 1562 de 2012, arts. 4 y 5", "Corte Suprema de Justicia, Sala de Casación Laboral, ficha oficial SL1469-2024", "Decreto 1477 de 2014, Anexo técnico, agentes físicos y enfermedades asociadas al ruido"] },
       { n:"Calificación y control de versiones",
         d:"La referencia de 540 días se ubica en el supuesto reglamentario de acceso directo a Junta Regional ante ausencia de calificación en primera oportunidad. Las decisiones de las Juntas, la firmeza y el reconocimiento quedan identificados en hitos propios. El ejercicio de patologías concurrentes toma el porcentaje del dictamen integral fijado en el guion.",
-        fuentes:["Decreto 1072 de 2015, arts. 2.2.5.1.25 y 2.2.5.1.28", "Decreto 1507 de 2014, Manual Único para la Calificación de la Pérdida de la Capacidad Laboral y Ocupacional", "Corte Constitucional, Sentencia C-425 de 2005"] },
+        fuentes:["Ley 100 de 1993, art. 41 y sus modificaciones", "Decreto 1072 de 2015, arts. 2.2.5.1.25 y 2.2.5.1.28", "Decreto 1507 de 2014, Manual Único para la Calificación de la Pérdida de la Capacidad Laboral y Ocupacional", "Corte Constitucional, Sentencia C-425 de 2005"] },
       { n:"Fuentes de trabajo",
         d:"",
         fuentes:["Perplexity Computer, Enfermedad laboral y pensión de invalidez. Cinco trabajadores, cinco sentencias. 14 de noviembre de 2026", "DANE, Clasificación Industrial Internacional Uniforme, Rev. 4 A.C., actualización 2022", "Auto cotejado. Corrobora el proceso y la solicitud de prueba para un dictamen. El texto del fallo de consulta de 15 de noviembre de 2024 quedó sin cotejo. Sus porcentajes y su desenlace se excluyeron como datos verificados."] }
