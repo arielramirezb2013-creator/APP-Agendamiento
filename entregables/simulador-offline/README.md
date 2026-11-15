@@ -85,7 +85,7 @@ Decisiones de diseño del recorrido, para que quepa en los 45 minutos del estudi
 - Si la página se recarga o el navegador se cierra de forma inesperada, se restablece el mismo paso con el borrador del formulario.
 - Si se cae la conexión, la simulación continúa. Con receptor, los envíos pendientes salen solos al volver la conexión.
 - En el sitio web, después de la primera visita la página abre aunque no haya conexión.
-- Para continuar en otro dispositivo: con receptor, basta entrar con el mismo usuario y contraseña; sin receptor, se descarga un archivo de avance y se carga en el otro equipo.
+- Para continuar en otro dispositivo: con receptor, basta entrar con el mismo usuario y contraseña; sin receptor, se descarga un archivo de avance y se carga en el otro equipo. Con el instrumento del expediente, el estado del expediente viaja en el documento —lo que cada soporte alcanzó a conseguir, las horas gastadas, los accesos y los puntos cerrados—, así que al retomar vuelve como estaba.
 - Si el navegador no permite guardar, el simulador lo advierte y sigue funcionando mientras la pestaña esté abierta.
 
 ## Varias sesiones de simulación

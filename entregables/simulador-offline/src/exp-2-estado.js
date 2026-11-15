@@ -122,6 +122,36 @@ function guardarH3() {
   return true;
 }
 
+/* ---------- Continuar en otro dispositivo ----------
+   El estado del expediente viaja en el documento de respuestas, así que al retomar desde el receptor o
+   desde un archivo de avance se reconstruye tal como estaba: lo que cada soporte alcanzó a conseguir,
+   las horas gastadas, los accesos registrados, los puntos cerrados y la instantánea del protocolo. */
+const ESTADOS_SOPORTE = ["conforme", "no_conforme", "ausente", "pendiente"];
+function expDesdeDoc(doc) {
+  const caso = casoExp(), X = (doc && doc.expediente) || {}, conds = X.condiciones || {}, out = {};
+  if (!caso || !conds || typeof conds !== "object") return out;
+  Object.keys(conds).forEach(c => {
+    const d = conds[c];
+    if (!d || typeof d !== "object") return;
+    const E = EXPM.inicial(caso);
+    if (typeof d.horas === "number" && isFinite(d.horas) && d.horas >= 0) E.horas = d.horas;
+    if (d.soportes && typeof d.soportes === "object") Object.keys(E.soportes).forEach(k => {
+      const s = d.soportes[k];
+      if (!s || typeof s !== "object") return;
+      const x = E.soportes[k];
+      if (ESTADOS_SOPORTE.indexOf(s.estado) >= 0) x.estado = s.estado;
+      if (typeof s.ver === "string") x.ver = s.ver;
+      x.visto = !!s.visto; x.solicitado = !!s.solicitado; x.llegado = !!s.llegado; x.aceptado = !!s.aceptado;
+      x.verificado = typeof s.verificado === "boolean" ? s.verificado : null;
+    });
+    if (Array.isArray(d.accesos)) E.accesos = clone(d.accesos);
+    if (d.puntos && typeof d.puntos === "object") E.puntos = clone(d.puntos);
+    if (d.instantanea && typeof d.instantanea === "object") E.instantanea = { h:d.instantanea.h, completitud:clone(d.instantanea.completitud), soportes:clone(E.soportes) };
+    out[c] = E;
+  });
+  return out;
+}
+
 /* ---------- Lo que entra en el documento de respuestas ---------- */
 function expedienteDoc() {
   if (!esExpediente()) return null;

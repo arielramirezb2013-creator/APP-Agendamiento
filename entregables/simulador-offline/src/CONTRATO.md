@@ -182,6 +182,10 @@ expediente: {
 }
 ```
 
+Ese bloque es también lo que permite **continuar en otro dispositivo**: `restaurarDe(doc)` reconstruye con él
+el estado de cada condición (`expDesdeDoc`), de modo que al retomar desde el receptor o desde un archivo de
+avance vuelven los soportes conseguidos, las horas gastadas, los accesos y los puntos cerrados.
+
 Un soporte cuenta para la completitud solo si `llegado && aceptado && estado === "conforme"`. El costo en horas
 de cada actuación está en `EXPM.horas` (flujo actual: consultar 2, solicitar 20, devolver 20, verificar 1,
 decidir 1; módulo: 1, 6, 6, 0,5 y 0,5) y el corte de 48 horas no se puede pasar: el simulador rechaza la

@@ -162,6 +162,33 @@ const actividades = d => (d ? d.registros.filter(r => r.tipo === "actividad").le
       "el expediente que viaja trae el contenido del caso cargado, con sus vacíos", visto.slice(0, 160));
     await ctxP.close(); await P.cerrar();
 
+    /* ---------- El instrumento de expediente, con receptor: retomar en otro dispositivo ---------- */
+    const cfgE = configuracion({ url:"recibir.php", clave:ENVIO, modo:"progresivo" }, { id:"estudio-expediente", instrumento:"expediente", expediente:"PI-L01" });
+    const sal = "00112233aabbcc09";
+    cfgE.cuentas.push({ u:"arl-01", a:"arl", s:sal, h:motor.huellaClave("arl-01", CLAVE, sal, 5000) });
+    const E = await sitio(cfgE, true);
+    const ctxExp = await br.newContext({ viewport:{ width:1280, height:900 } }), pgExp = await L.pagina(ctxExp, errores, u => u.startsWith(E.base));
+    await pgExp.goto(E.url); await L.entrarDemo(pgExp, "arl-01", CLAVE);
+    await L.pasarOrientacion(pgExp);
+    await L.aceptarDeclaracion(pgExp, null); await L.llenarEncuesta(pgExp, 0);
+    await clic(pgExp, '[data-act="exp-seguir"]'); await clic(pgExp, '[data-act="exp-seguir"]');
+    await pgExp.selectOption('[data-in="u-finalidad"]', "verificar_firmeza");
+    await clic(pgExp, '[data-act="exp-act"][data-arg="FIR"][data-v="solicitar"]');
+    await clic(pgExp, '[data-act="exp-act"][data-arg="FIR"][data-v="aceptar"]');
+    const antesE = await texto(pgExp, "#vista");
+    T.ok(/4 de 4 requeridos conformes/.test(antesE), "con el instrumento de expediente, conseguir un soporte lo hace contar", antesE.slice(0, 160));
+    T.ok(await esperar(() => { const d = docDe(E.R, "arl-01"); return !!(d && d.expediente && d.expediente.condiciones); }),
+      "y el documento que llega al servidor trae el estado del expediente");
+    const ctxExp2 = await br.newContext({ viewport:{ width:1280, height:900 } }), pgExp2 = await L.pagina(ctxExp2, errores, u => u.startsWith(E.base));
+    await pgExp2.goto(E.url); await L.entrarDemo(pgExp2, "arl-01", CLAVE);
+    T.ok(await esperar(async () => /Bienvenido de nuevo/.test(await texto(pgExp2, "#vista"))) && /servidor del estudio/.test(await texto(pgExp2, "#vista")) && /punto P1/.test(await texto(pgExp2, "#vista")),
+      "en otro dispositivo recupera el expediente desde el servidor, en el punto donde quedó", (await texto(pgExp2, "#vista")).slice(0, 180));
+    await clic(pgExp2, '[data-act="retomar-continuar"]');
+    const trasE = await texto(pgExp2, "#vista");
+    T.ok(/4 de 4 requeridos conformes/.test(trasE) && /Verificado y aceptado|Conforme/.test(trasE),
+      "y el soporte conseguido y las horas gastadas vuelven como estaban", trasE.slice(0, 200));
+    await ctxExp.close(); await ctxExp2.close(); await E.cerrar();
+
     /* ---------- Sitio sin configurar o mal configurado ---------- */
     for (const [cfg, nombre] of [[null, "sin configuracion.js"], ["window.SIM_CONFIG = { formato:1, estudio:{ id:'x' }, cuentas:[] };", "con una configuración sin cuentas"], ["esto no es javascript {", "con un configuracion.js dañado"]]) {
       const N = await sitio(cfg), ctxN = await br.newContext(), pgN = await L.pagina(ctxN, [], u => u.startsWith(N.base));

@@ -131,7 +131,8 @@ function restaurarDe(doc, origen) {
   S.cons = { decl:Object.assign({}, S.consent.declaraciones), anonimo:S.consent.anonimo ? "si" : "no", datos:Object.assign({}, S.consent.datos), resumen:S.consent.resumen };
   S.etapa = S.ses.estado === "cerrada" ? "cierre" : (regsDe({ tipo:"encuesta", participanteId:S.yo.id })[0] ? "simulacion" : "encuesta");
   S.retomar = { origen, t:Date.parse(doc.generado) || ahora() };
-  if (!esExpediente() && rondaAct().estado === "en_curso") prepararBloque(bloqueActual());
+  if (esExpediente()) S.exp = expDesdeDoc(doc);
+  else if (rondaAct().estado === "en_curso") prepararBloque(bloqueActual());
   S.abierto = ahora(); guardarLocal();
 }
 async function buscarEnServidor() {

@@ -122,6 +122,37 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
     "el expediente se reinicia al empezar la otra condición", E2.soportes.FIR.estado + " · " + E2.horas + " h");
 })();
 
+/* ---------- 5b. Continuar en otro dispositivo, a mitad del expediente ---------- */
+(() => {
+  // Primer dispositivo: entra, consigue un soporte y se detiene antes de cerrar el punto.
+  const m1 = M.crearMotor(cfg);
+  m1.S.acc = { u:"demo-arl", c:cfg.demo.clave, ver:false }; m1.entrar();
+  m1.CONS.declaraciones.forEach(d => { m1.S.cons.decl[d.id] = true; }); m1.aceptarConsentimiento();
+  m1.S.enc = { edad:"40-49", formacion:"salud", formacionCual:"x", experiencia:"8", rolActual:"x", trayectoria:"x", frecuencia:"semanal" }; m1.guardarEncuesta();
+  while (m1.bloqueExp().b.tipo !== "punto") m1.avanzarExp();
+  const b1 = m1.bloqueExp().b, E1 = m1.estadoExp(b1.cond);
+  m1.S.actu = { finalidad:"verificar_firmeza" };
+  m1.actuarSobre("FIR", "consultar"); m1.actuarSobre("FIR", "solicitar"); m1.actuarSobre("FIR", "aceptar");
+  const doc = m1.documentoRespuesta();
+  const antes = { horas:E1.horas, estado:E1.soportes.FIR.estado, aceptado:E1.soportes.FIR.aceptado, accesos:E1.accesos.length };
+
+  // Segundo dispositivo: almacenamiento nuevo, entra con la misma cuenta y retoma del documento.
+  const m2 = M.crearMotor(cfg, { local:M.memoria(), sesion:M.memoria() });
+  m2.S.acc = { u:"demo-arl", c:cfg.demo.clave, ver:false }; m2.entrar();
+  const motivo = m2.documentoRestaurable(doc);
+  m2.restaurarDe(doc, "archivo");
+  const b2 = m2.bloqueExp().b, E2 = m2.estadoExp(b2.cond);
+  T.ok(!motivo && b2.tipo === "punto" && b2.punto === b1.punto && b2.cond === b1.cond,
+    "en otro dispositivo, el documento se puede continuar y retoma en el mismo punto y la misma condición", motivo || (b2.tipo + " " + b2.punto));
+  T.ok(E2.horas === antes.horas && E2.soportes.FIR.estado === antes.estado && E2.soportes.FIR.aceptado === antes.aceptado && E2.accesos.length === antes.accesos,
+    "y el expediente vuelve como estaba: el soporte conseguido, las horas gastadas y los accesos registrados",
+    JSON.stringify({ antes:antes, ahora:{ horas:E2.horas, estado:E2.soportes.FIR.estado, aceptado:E2.soportes.FIR.aceptado, accesos:E2.accesos.length } }));
+  // Y puede terminar el recorrido desde allí.
+  const doc2 = M.recorrerExpediente(m2, "demo-arl", cfg.demo.clave, {});
+  T.ok(doc2.estado === "completa" && !m2.validarRespuesta(doc2).length && Object.keys(doc2.expediente.condiciones).length === 2,
+    "y desde allí termina las dos condiciones y entrega un documento válido", m2.validarRespuesta(doc2).join("; "));
+})();
+
 /* ---------- 6. El contraste entre condiciones: lo que mide H1 ---------- */
 (() => {
   // El mismo camino de actuaciones en las dos condiciones, con el corte aplicado como lo aplica la
