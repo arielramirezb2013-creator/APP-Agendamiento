@@ -247,6 +247,52 @@ function documentoExp(usuario, actor, estudioId, caso, opc) {
       JSON.stringify({ cuentas:pVuelta.proyecto.cuentas.length, perfiles:pVuelta.proyecto.perfiles.length, perfil:pVuelta.proyecto.perfil, instrumento:pVuelta.proyecto.instrumento }));
     await ir(pg, "resultados"); await w(pg, 700);
     T.ok(/Respuestas analizadas/.test(await texto(pg, "#informe")), "y el informe de la sesión abierta se vuelve a armar");
+    /* ---------- Los dos perfiles de administración ---------- */
+    const CLAVE_TEC = "clave-del-tecnico-2026";
+    await ir(pg, "estudio");
+    await escribir(pg, '[data-in="tec-c1"]', CLAVE_TEC);
+    await escribir(pg, '[data-in="tec-c2"]', CLAVE_TEC);
+    await clic(pg, '[data-act="tec-definir"]', 500);
+    const idx = (await proyecto(pg)).indice;
+    T.ok(idx.tecnico && /^[0-9a-f]{64}$/.test(idx.tecnico.huella) && !JSON.stringify(idx).includes(CLAVE_TEC),
+      "el investigador crea el perfil técnico y su clave queda como huella, nunca en claro");
+    await clic(pg, '[data-act="bloquear"]', 300);
+    await entrarPanel(pg, CLAVE_TEC);
+    T.ok((await pg.evaluate(() => document.body.getAttribute("data-vista"))) === "estudio" && (await pg.locator(".stepper button").count()) === 2,
+      "con la clave del técnico el panel abre solo «Estudio» y «Publicar»", String(await pg.locator(".stepper button").count()));
+    const vistaTec = await texto(pg, "#vista");
+    const claves = (await proyecto(pg)).proyecto.cuentas.map(q => q.clave);
+    T.ok(/perfil técnico/.test(vistaTec) && /Dirección pública del simulador/.test(vistaTec) && !/Casos de la simulación/.test(vistaTec) && !/Perfiles de administración/.test(vistaTec),
+      "el perfil técnico ve la dirección del sitio y el receptor, y no el resto del estudio");
+    const htmlTec = await pg.locator("body").innerHTML();
+    T.ok(claves.every(c => htmlTec.indexOf(c) < 0) && htmlTec.indexOf(p.proyecto.entrega.claveAdmin) < 0,
+      "y en su pantalla no aparece ninguna contraseña de los participantes ni la clave de administración del servidor");
+    const negado = await pg.evaluate(() => {
+      const b = document.createElement("button");
+      b.setAttribute("data-act", "ir"); b.setAttribute("data-arg", "resultados"); b.className = "btn";
+      document.getElementById("vista").appendChild(b); b.click();
+      return document.body.getAttribute("data-vista");
+    });
+    T.ok(negado === "estudio", "y un intento de saltar a «Resultados» desde su perfil no lo lleva allí", negado);
+    const negado2 = await pg.evaluate(async () => {
+      const b = document.createElement("button");
+      b.setAttribute("data-act", "copia-exportar"); b.className = "btn";
+      document.getElementById("vista").appendChild(b); b.click();
+      await new Promise(r => setTimeout(r, 300));
+      return document.getElementById("top").textContent;
+    });
+    T.ok(/le corresponde al investigador/.test(negado2), "y una acción del investigador se le niega con un motivo", negado2.slice(0, 120));
+    await ir(pg, "publicar");
+    const cfgTec = await L.descargar(pg, '[data-act="bajar-config"]');
+    T.ok(cfgTec.nombre === "configuracion.js" && cfgTec.texto.includes("estudio-de-prueba") && claves.every(c => cfgTec.texto.indexOf(c) < 0),
+      "el perfil técnico puede descargar la configuración del sitio, que no lleva contraseñas");
+    await clic(pg, '[data-act="bloquear"]', 300);
+    await entrarPanel(pg, CLAVE_PANEL);
+    const pasos = await pg.locator(".stepper button").count();
+    await ir(pg, "estudio");
+    T.ok(pasos === 7 && /Perfiles de administración/.test(await texto(pg, "#vista")),
+      "con su propia clave, el investigador vuelve a tener todo el panel", pasos + " momentos");
+
     /* ---------- El otro instrumento: el expediente de pensión de invalidez ---------- */
     await ir(pg, "estudio");
     await clic(pg, '[data-act="instrumento"][data-v="expediente"]', 300);

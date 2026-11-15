@@ -70,6 +70,7 @@ function proyectoNuevo() {
 }
 const uiInicial = () => ({
   abierto:false,                              // panel desbloqueado en esta pestaña
+  perfil:"investigador",                      // perfil que abrió: investigador (todo) o tecnico (montar el sitio)
   acceso:{ c1:"", c2:"", ver:false, pendiente:null },   // pendiente: copia de seguridad leída, a la espera de la clave
   vista:"estudio", ficha:null, fichaDesde:"seguimiento",
   dialogo:null,                               // { id, arg, texto, error, vuelve }
@@ -79,6 +80,7 @@ const uiInicial = () => ({
   alta:{ rol:ROLES[0], n:"1" },               // formulario para añadir cuentas
   nuevoEstudio:"",                            // título de la sesión que se va a crear
   cambio:{ actual:"", c1:"", c2:"" },         // cambio de la clave de administración
+  tecnico:{ c1:"", c2:"", ver:false },        // formulario de la clave del perfil técnico
   importe:null,                               // resultado de la última importación
   servidor:null,                              // { estado, texto, formulario }: «Traer del servidor»
   prueba:null,                                // { estado, texto }: «Probar el receptor»
@@ -88,7 +90,8 @@ const uiInicial = () => ({
 });
 let PROY = proyectoNuevo();   // proyecto en edición
 let RESP = [];                // respuestas importadas: { doc, importado, origen, archivo, recibido, excluida, ausente }
-let ADMIN = null;             // { sal, huella, iter, sesion }: huella de la clave de administración; nunca se exporta
+let ADMIN = null;             // { sal, huella, iter, sesion }: huella de la clave del investigador; nunca se exporta
+let TECNICO = null;           // igual, para el perfil técnico (quien monta el sitio): solo «Estudio» y «Publicar»
 let UI = uiInicial();
 let almacenDanado = false, falloGuardar = "";   // "", "proyecto" o "respuestas": el último intento de guardar no se pudo hacer
 
@@ -105,7 +108,7 @@ let IDX = { v:1, actual:"", estudios:[] };
 const fichaEstudio = () => ({ clave:PROY.clave, id:PROY.estudio.id, titulo:estudioEfectivo().titulo, creado:PROY.creado, modificado:PROY.modificado, cuentas:PROY.cuentas.length, respuestas:RESP.length, completas:RESP.filter(e => e.doc.estado === "completa").length });
 function guardarIndice() {
   if (!ADM_ALM.local || !ADMIN) return false;
-  try { ADM_ALM.local.setItem(ADM_LLAVE, JSON.stringify({ v:1, admin:ADMIN, actual:IDX.actual, estudios:IDX.estudios })); return true; }
+  try { ADM_ALM.local.setItem(ADM_LLAVE, JSON.stringify({ v:1, admin:ADMIN, tecnico:TECNICO, actual:IDX.actual, estudios:IDX.estudios })); return true; }
   catch (e) { falloGuardar = "proyecto"; return false; }
 }
 // Actualiza en el índice la ficha del estudio abierto.
@@ -155,20 +158,22 @@ function leerAlmacen() {
   let j = null; try { j = JSON.parse(crudo); } catch (e) {}
   const a = j && j.admin;
   if (!j || j.v !== 1 || !esObjeto(a) || !/^[0-9a-f]{64}$/.test(String(a.huella || "")) || !/^[0-9a-f]{8,64}$/.test(String(a.sal || ""))) { almacenDanado = true; return null; }
-  const admin = { sal:a.sal, huella:a.huella, iter:parseInt(a.iter, 10) > 0 ? parseInt(a.iter, 10) : KDF.iter, sesion:/^[0-9a-f]{64}$/.test(String(a.sesion || "")) ? a.sesion : "" };
+  const credencial = x => esObjeto(x) && /^[0-9a-f]{64}$/.test(String(x.huella || "")) && /^[0-9a-f]{8,64}$/.test(String(x.sal || ""))
+    ? { sal:x.sal, huella:x.huella, iter:parseInt(x.iter, 10) > 0 ? parseInt(x.iter, 10) : KDF.iter, sesion:/^[0-9a-f]{64}$/.test(String(x.sesion || "")) ? x.sesion : "" } : null;
+  const admin = credencial(a), tecnico = credencial(j.tecnico);
   // Formato anterior: un único proyecto dentro del índice.
   if (esObjeto(j.proyecto)) {
     const proyecto = normalizarProyecto(j.proyecto, true).proyecto;
     if (!RE_CLAVE_EST.test(String(proyecto.clave || ""))) proyecto.clave = claveEstudioNueva();
     let r = null; try { r = JSON.parse(ADM_ALM.local.getItem(ADM_LLAVE_RESP) || "null"); } catch (e) {}
     const respuestas = leerEntradas(r && Array.isArray(r.respuestas) ? r.respuestas : []).entradas;
-    return { admin, indice:{ v:1, actual:proyecto.clave, estudios:[] }, proyecto, respuestas, migrado:true };
+    return { admin, tecnico, indice:{ v:1, actual:proyecto.clave, estudios:[] }, proyecto, respuestas, migrado:true };
   }
   const fichas = (Array.isArray(j.estudios) ? j.estudios : []).map(x => esObjeto(x) && RE_CLAVE_EST.test(String(x.clave || "")) ? { clave:x.clave, id:textoLimpio(x.id, 40), titulo:textoLimpio(x.titulo, 160), creado:+x.creado || 0, modificado:+x.modificado || 0, cuentas:+x.cuentas || 0, respuestas:+x.respuestas || 0, completas:+x.completas || 0 } : null).filter(Boolean);
   const indice = { v:1, actual:RE_CLAVE_EST.test(String(j.actual || "")) ? j.actual : (fichas[0] || {}).clave || "", estudios:fichas };
   const est = indice.actual ? leerEstudio(indice.actual) : null;
-  if (!est && fichas.length) { const otro = fichas.map(f => leerEstudio(f.clave)).filter(Boolean)[0]; if (otro) { indice.actual = otro.proyecto.clave; return { admin, indice, proyecto:otro.proyecto, respuestas:otro.respuestas }; } }
-  return { admin, indice, proyecto:est ? est.proyecto : proyectoNuevo(), respuestas:est ? est.respuestas : [] };
+  if (!est && fichas.length) { const otro = fichas.map(f => leerEstudio(f.clave)).filter(Boolean)[0]; if (otro) { indice.actual = otro.proyecto.clave; return { admin, tecnico, indice, proyecto:otro.proyecto, respuestas:otro.respuestas }; } }
+  return { admin, tecnico, indice, proyecto:est ? est.proyecto : proyectoNuevo(), respuestas:est ? est.respuestas : [] };
 }
 // Entradas guardadas o de una copia de seguridad: cada documento se valida otra vez antes de aceptarlo.
 function leerEntradas(lista) {
@@ -242,17 +247,42 @@ function definirClaveAdmin(c1, c2) {
 }
 const fichaSesion = (clave, sal, iter) => huellaClave("admin", clave, sal + ":sesion", iter);
 const claveAdminCorrecta = c => !!ADMIN && igualSeguro(huellaClave("admin", c, ADMIN.sal, ADMIN.iter), ADMIN.huella);
-function recordarDesbloqueo(clave) {
-  try { if (clave == null) ADM_ALM.sesion.removeItem(ADM_LLAVE_ABIERTO); else ADM_ALM.sesion.setItem(ADM_LLAVE_ABIERTO, fichaSesion(clave, ADMIN.sal, ADMIN.iter)); } catch (e) {}
+const claveTecnicoCorrecta = c => !!TECNICO && igualSeguro(huellaClave("admin", c, TECNICO.sal, TECNICO.iter), TECNICO.huella);
+// Qué perfil abre con esta clave: el investigador manda, de modo que una clave repetida abre el suyo.
+const perfilDeClave = c => claveAdminCorrecta(c) ? "investigador" : claveTecnicoCorrecta(c) ? "tecnico" : "";
+const credencialDe = perfil => perfil === "tecnico" ? TECNICO : ADMIN;
+// Define la clave del perfil técnico. No puede ser la misma del investigador.
+function definirClaveTecnico(c1, c2) {
+  if (normClave(c1).length < 8) return "La clave debe tener al menos 8 caracteres, sin contar espacios ni guiones.";
+  if (normClave(c1) !== normClave(c2)) return "Las dos claves no coinciden.";
+  if (claveAdminCorrecta(c1)) return "Esa es su propia clave. El perfil técnico necesita una distinta.";
+  const sal = hex(azar(8));
+  TECNICO = { sal, huella:huellaClave("admin", c1, sal, KDF.iter), iter:KDF.iter, sesion:SHA.hex(fichaSesion(c1, sal, KDF.iter)) };
+  guardarIndice();
+  return "";
 }
+function quitarClaveTecnico() { TECNICO = null; guardarIndice(); }
+function recordarDesbloqueo(clave, perfil) {
+  const cr = credencialDe(perfil || "investigador");
+  try {
+    if (clave == null || !cr) ADM_ALM.sesion.removeItem(ADM_LLAVE_ABIERTO);
+    else ADM_ALM.sesion.setItem(ADM_LLAVE_ABIERTO, (perfil === "tecnico" ? "t:" : "i:") + fichaSesion(clave, cr.sal, cr.iter));
+  } catch (e) {}
+}
+// Devuelve "" si no hay desbloqueo recordado en esta pestaña, o el perfil que lo dejó.
 function desbloqueoRecordado() {
-  try { const f = ADM_ALM.sesion.getItem(ADM_LLAVE_ABIERTO); return !!(ADMIN && ADMIN.sesion && f && igualSeguro(SHA.hex(f), ADMIN.sesion)); } catch (e) { return false; }
+  try {
+    const f = ADM_ALM.sesion.getItem(ADM_LLAVE_ABIERTO);
+    if (!f) return "";
+    const perfil = f.slice(0, 2) === "t:" ? "tecnico" : "investigador", cr = credencialDe(perfil);
+    return cr && cr.sesion && igualSeguro(SHA.hex(f.slice(2)), cr.sesion) ? perfil : "";
+  } catch (e) { return ""; }
 }
 // Carga lo guardado en este navegador. Devuelve true si había un proyecto.
 function cargarDeAlmacen() {
   const st = leerAlmacen();
-  if (!st) { ADMIN = null; IDX = { v:1, actual:"", estudios:[] }; PROY = proyectoNuevo(); RESP = []; return false; }
-  ADMIN = st.admin; IDX = st.indice; PROY = st.proyecto; RESP = st.respuestas;
+  if (!st) { ADMIN = null; TECNICO = null; IDX = { v:1, actual:"", estudios:[] }; PROY = proyectoNuevo(); RESP = []; return false; }
+  ADMIN = st.admin; TECNICO = st.tecnico || null; IDX = st.indice; PROY = st.proyecto; RESP = st.respuestas;
   if (st.migrado) { guardarProyecto(); guardarRespuestas(); try { ADM_ALM.local.removeItem(ADM_LLAVE_RESP); } catch (e) {} }
   else anotarEnIndice();
   return true;
@@ -268,7 +298,7 @@ function borrarProyecto() {
     }
   } catch (e) {}
   try { if (ADM_ALM.sesion) ADM_ALM.sesion.removeItem(ADM_LLAVE_ABIERTO); } catch (e) {}
-  ADMIN = null; IDX = { v:1, actual:"", estudios:[] }; PROY = proyectoNuevo(); RESP = []; UI = uiInicial(); almacenDanado = false; falloGuardar = "";
+  ADMIN = null; TECNICO = null; IDX = { v:1, actual:"", estudios:[] }; PROY = proyectoNuevo(); RESP = []; UI = uiInicial(); almacenDanado = false; falloGuardar = "";
 }
 
 /* ---------- Varios estudios (sesiones de simulación) ----------

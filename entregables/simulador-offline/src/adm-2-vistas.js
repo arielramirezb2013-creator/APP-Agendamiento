@@ -14,6 +14,16 @@ const guia = (texto, icono) => `<div class="guia">${ico(icono || "navegacion-gui
 const seccion = (titulo, icono, cuerpo, clase) => `<div class="card ${clase || ""}"><h2>${ico(icono)}${esc(titulo)}</h2>${cuerpo}</div>`;
 const nada = t => `<p class="mini">${esc(t)}</p>`;
 const MOMENTOS = [["estudios", "Estudios", "navegacion-sesiones"], ["estudio", "Estudio", "navegacion-configuracion"], ["cuentas", "Cuentas", "actores-participante"], ["publicar", "Publicar", "acciones-compartir-enlace"], ["respuestas", "Respuestas", "acciones-importar"], ["seguimiento", "Seguimiento", "administracion-revisar"], ["resultados", "Resultados", "investigacion-informe"]];
+/* Dos perfiles de administración. El investigador ve todo el panel; el perfil técnico —quien monta el
+   sitio— solo lo necesario para publicarlo: la dirección del sitio, el receptor y los archivos. No ve
+   las contraseñas de los participantes, ni las respuestas, ni el seguimiento, ni los resultados. */
+const MOMENTOS_TECNICO = ["estudio", "publicar"];
+// Lo único que el perfil técnico puede hacer y escribir: publicar el sitio y comprobar el receptor.
+const ACC_TECNICO = ["ir", "bloquear", "recargar", "dlg-no", "probar-receptor", "bajar-config", "bajar-receptor", "unico-elegir"];
+const IN_TECNICO = ["ac-c1", "ac-c2", "ac-ver", "e-url", "en-url", "unico-archivo"];
+const esTecnico = () => UI.perfil === "tecnico";
+const momentosVisibles = () => esTecnico() ? MOMENTOS.filter(m => MOMENTOS_TECNICO.indexOf(m[0]) >= 0) : MOMENTOS;
+const PERFIL_N = { investigador:"Investigador", tecnico:"Perfil técnico" };
 
 /* ---------- Barra superior ---------- */
 function renderTop() {
@@ -24,11 +34,14 @@ function renderTop() {
     return;
   }
   const e = estudioEfectivo();
-  pintar("appright", `<span class="who"><span><b>${esc(e.titulo)}</b><small>${esc(PROY.estudio.id || "sin identificador")} · ${esc(plural(PROY.cuentas.length, "cuenta", "cuentas"))} · ${esc(plural(RESP.length, "respuesta", "respuestas"))}</small></span></span>${btn("bloquear", "", "Bloquear", "sm outline", "gobernanza-autenticacion")}`);
+  const quien = esTecnico()
+    ? esc(PERFIL_N.tecnico) + " · solo montar el sitio"
+    : esc(PROY.estudio.id || "sin identificador") + " · " + esc(plural(PROY.cuentas.length, "cuenta", "cuentas")) + " · " + esc(plural(RESP.length, "respuesta", "respuestas"));
+  pintar("appright", `<span class="who"><span><b>${esc(e.titulo)}</b><small>${quien}</small></span></span>${btn("bloquear", "", "Bloquear", "sm outline", "gobernanza-autenticacion")}`);
   const aviso = !ADM_ALM.local ? `<span class="badge sin-guardado">${ico("estados-advertencia", "sm")}Este navegador no guarda el proyecto: exporte una copia antes de cerrar</span>`
     : falloGuardar ? `<span class="badge sin-guardado">${ico("estados-advertencia", "sm")}No se pudo guardar ${esc(falloGuardar === "proyecto" ? "el proyecto" : "las respuestas")}: el almacenamiento puede estar lleno</span>`
     : PROY.modificado ? `<span class="hm guardado">${ico("estados-guardado", "sm")}Guardado · ${esc(hora(PROY.modificado))}</span>` : "";
-  pintar("top", `<div class="stepper" role="tablist" aria-label="Momentos del panel">${MOMENTOS.map(m => `<button type="button" role="tab" aria-selected="${UI.vista === m[0]}" aria-pressed="${UI.vista === m[0]}" data-act="ir" data-arg="${m[0]}">${ico(m[2], "sm")}${esc(m[1])}</button>`).join("")}</div><span class="sp"></span>${aviso}${msg}`);
+  pintar("top", `<div class="stepper" role="tablist" aria-label="Momentos del panel">${momentosVisibles().map(m => `<button type="button" role="tab" aria-selected="${UI.vista === m[0]}" aria-pressed="${UI.vista === m[0]}" data-act="ir" data-arg="${m[0]}">${ico(m[2], "sm")}${esc(m[1])}</button>`).join("")}</div><span class="sp"></span>${aviso}${msg}`);
 }
 
 /* ---------- Acceso ---------- */
@@ -191,7 +204,31 @@ function perfilDetalleHtml(p) {
     ${p.caso.fuente ? `<p class="mini">Origen del caso: ${esc(p.caso.fuente)}</p>` : ""}</div>`;
 }
 
+// Lo que ve el perfil técnico en «Estudio»: a qué estudio pertenece el sitio, dónde se publica y el receptor.
+function vistaEstudioTecnico() {
+  const e = estudioEfectivo(), en = PROY.entrega;
+  const srv = en.forma === "servidor" ? `
+    <div class="sub">
+      <label class="campo">Dirección del receptor${campoTexto("en-url", "", en.url, 'maxlength="200" autocapitalize="none" spellcheck="false"')}<span class="mini">Normalmente <span class="mono">recibir.php</span>, junto al simulador.${urlReceptor() ? " Dirección completa: " + esc(urlReceptor()) : " Escriba antes la dirección pública del simulador."}</span></label>
+      <div class="row">${btn("probar-receptor", "", "Probar el receptor", "sec", "acciones-sincronizar")}${UI.prueba ? estadoLinea(UI.prueba) : ""}</div>
+      <p class="mini">Para probarlo, el sitio ya debe tener <span class="mono">recibir.php</span> y el <span class="mono">recibir-config.php</span> que descargue en «Publicar». Las claves del receptor las define el investigador: aquí no se muestran.</p>
+    </div>` : `<p class="mini">Este estudio recoge las respuestas por archivo: el participante descarga el suyo al terminar y se lo envía al investigador. El sitio no necesita PHP.</p>`;
+  return `<div class="hoja">
+    ${guia("<b>Usted entró con el perfil técnico.</b> Aquí puede dejar lista la dirección del sitio y comprobar el receptor; en «Publicar» descarga los archivos. Las cuentas de los participantes, sus respuestas y los resultados son del investigador y no se muestran en este perfil.")}
+    ${seccion("Qué va a publicar", "navegacion-escenario", `<div class="kv">
+      <b>Estudio</b><span>${esc(e.titulo)}</span>
+      <b>Identificador</b><span>${esc(PROY.estudio.id || "sin identificador")}</span>
+      <b>Institución</b><span>${esc(e.institucion || "—")}</span>
+      <b>Instrumento</b><span>${esc(esProyectoExpediente() ? "Expediente de pensión de invalidez · " + expedienteDelProyecto() : "Recorrido de la ruta de incapacidad")}</span>
+      <b>Cuentas por publicar</b><span>${esc(plural(PROY.cuentas.length, "cuenta", "cuentas"))}</span>
+      </div><p class="mini">La configuración que descargue lleva la huella de cada contraseña, nunca la contraseña.</p>`)}
+    ${seccion("Dirección del sitio", "acciones-compartir-enlace", `<label class="campo${urlInvalida() ? " mal" : ""}">Dirección pública del simulador${campoTexto("e-url", "", PROY.url, 'maxlength="300" placeholder="https://su-sitio.example/simulacion/" autocapitalize="none" spellcheck="false"')}<span class="mini">La carpeta del sitio donde quedará el simulador.</span>${urlInvalida() ? `<span class="msg err">Escriba una dirección que empiece por https:// o http://</span>` : ""}</label>`)}
+    ${seccion("Cómo le llegan las respuestas al investigador", "acciones-importar", `<p class="mini">${esc(en.forma === "servidor" ? "Este estudio usa el receptor del sitio." : "Este estudio no usa receptor.")} La forma de entrega la decide el investigador.</p>${srv}`)}
+    ${seccion("Guía de despliegue", "navegacion-guia", `<p>El paquete trae <span class="mono">guia-despliegue.html</span> con los pasos para publicar el sitio, incluidos los de Azure, los permisos de la carpeta <span class="mono">respuestas/</span> y qué comprobar al terminar.</p>`)}
+  </div>`;
+}
 function vistaEstudio() {
+  if (esTecnico()) return vistaEstudioTecnico();
   const e = PROY.estudio, en = PROY.entrega, idMal = String(e.id || "").trim() && !idEstudioValido();
   const campo = c => `<label class="campo${c.k === "id" && idMal ? " mal" : ""}">${esc(c.n)}${campoTexto("e-" + c.k, "", e[c.k], `maxlength="${LARGO_ESTUDIO[c.k] || 160}"${c.k === "id" ? ' autocapitalize="none" spellcheck="false"' : ""}`)}${c.ayuda ? `<span class="mini">${esc(c.ayuda)}</span>` : ""}${c.k === "id" && idMal ? `<span class="msg err">Solo letras minúsculas, cifras, punto, guion o guion bajo.</span>` : ""}</label>`;
   const url = `<label class="campo${urlInvalida() ? " mal" : ""}">Dirección pública del simulador${campoTexto("e-url", "", PROY.url, 'maxlength="300" placeholder="https://su-sitio.example/simulacion/" autocapitalize="none" spellcheck="false"')}<span class="mini">La carpeta del sitio donde se publicará el simulador. Se usa para armar las invitaciones y para hablar con el receptor.</span>${urlInvalida() ? `<span class="msg err">Escriba una dirección que empiece por https:// o http://</span>` : ""}</label>`;
@@ -215,11 +252,32 @@ function vistaEstudio() {
     ${seccion("Instrumento y expediente", "navegacion-escenario", instrumentoHtml())}
     ${seccion("Casos de la simulación de la ruta", "documentos-datos-sinteticos", perfilesHtml())}
     ${seccion("Cómo le llegan las respuestas", "acciones-importar", `${optAdm("entrega", "", [["archivo", "Por archivo: el participante me lo envía"], ["servidor", "Por servidor: llegan solas al sitio"]], en.forma)}${srv}`)}
+    ${seccion("Perfiles de administración", "gobernanza-autorizacion", perfilesAdminHtml())}
     ${seccion("Copia de seguridad del proyecto", "gobernanza-custodia", `
       <p>La copia trae esta sesión: el estudio, sus cuentas con las contraseñas, la invitación y las respuestas importadas. <b>Guárdela como un documento confidencial.</b> No incluye la clave de este panel ni la clave de administración del servidor.</p>
       <p class="mini">Al restaurar una copia, si ya hay una sesión con el mismo identificador de estudio se reemplaza; si no, se añade como una sesión más.</p>
       <div class="row">${btn("copia-exportar", "", "Exportar una copia de esta sesión", "sec", "acciones-exportar")}${btn("copia-elegir-panel", "", "Restaurar una copia", "outline", "acciones-importar")}${archivoOculto("copia-archivo-panel", ".json,application/json")}<span class="sp"></span>${btn("clave-cambiar", "", "Cambiar la clave del panel", "outline", "gobernanza-autenticacion")}${btn("proyecto-borrar", "", "Borrar todo el panel de este navegador", "danger", "acciones-eliminar")}</div>`)}
   </div>`;
+}
+/* Los dos perfiles: el suyo, con todo el panel, y el técnico, para quien monta el sitio. */
+function perfilesAdminHtml() {
+  const hay = !!TECNICO, t = UI.tecnico || { c1:"", c2:"", ver:false };
+  const form = `<div class="sub">
+    <div class="campos-grid">
+      <label class="campo">Clave del perfil técnico<input type="${t.ver ? "text" : "password"}" data-in="tec-c1" value="${esc(t.c1)}" autocomplete="new-password" autocapitalize="none" spellcheck="false" maxlength="100"></label>
+      <label class="campo">Repítala<input type="${t.ver ? "text" : "password"}" data-in="tec-c2" value="${esc(t.c2)}" autocomplete="new-password" autocapitalize="none" spellcheck="false" maxlength="100"></label>
+    </div>
+    <label class="check mini"><input type="checkbox" data-in="tec-ver" ${t.ver ? "checked" : ""}>Mostrar las claves</label>
+    <div class="row">${btn("tec-definir", "", hay ? "Cambiar la clave del perfil técnico" : "Crear el perfil técnico", "sec", "gobernanza-autenticacion")}${hay ? btn("tec-quitar", "", "Quitar el perfil técnico", "outline", "acciones-eliminar") : ""}</div>
+    <p class="mini">Escríbala usted y désela a esa persona por un medio aparte. No queda guardada en claro: en este navegador solo queda su huella, y no sale en ninguna exportación ni copia de seguridad.</p>
+  </div>`;
+  return `<p>El panel abre con dos perfiles distintos, según la clave con la que entre:</p>
+    <div class="twrap"><table class="t apila"><thead><tr><th scope="col">Perfil</th><th scope="col">Qué ve y qué puede hacer</th><th scope="col">Estado</th></tr></thead><tbody>
+      <tr><td class="nw"><b>${esc(PERFIL_N.investigador)}</b><div class="mini">su clave</div></td><td>Todo el panel: el estudio, el instrumento, las cuentas con sus contraseñas, la publicación, las respuestas, el seguimiento, los resultados y las copias de seguridad.</td><td class="nw">${chipEstado("ch-teal", "en uso", "estados-completado")}</td></tr>
+      <tr><td class="nw"><b>${esc(PERFIL_N.tecnico)}</b><div class="mini">quien monta el sitio</div></td><td>Solo «Estudio» y «Publicar»: la dirección del sitio, el receptor y los archivos para subirlos. No ve las contraseñas de los participantes, ni las respuestas, ni el seguimiento, ni los resultados, ni las copias.</td><td class="nw">${hay ? chipEstado("ch-teal", "creado", "estados-completado") : chipEstado("ch-grey", "sin crear", "estados-pendiente")}</td></tr>
+    </tbody></table></div>
+    ${form}
+    <p class="mini"><b>Qué separa y qué no.</b> Los dos perfiles separan lo que cada uno ve y puede hacer dentro del panel. No cifran lo que el navegador guarda: quien tenga la sesión del computador abierta podría leerlo por otros medios. Lo habitual es que esa persona trabaje en su propio computador, con un panel sin respuestas; si trabaja en el suyo, acompáñela.</p>`;
 }
 function claveFila(cual, titulo, valor, ayuda) {
   const visible = !!UI.verClave["srv-" + cual];
@@ -435,7 +493,8 @@ const DIALOGOS = {
   "resp-borrar-servidor":{ t:"¿Borrar esta respuesta del servidor?", d:"Se elimina del servidor y del panel. Hágalo cuando la persona pida retirarse. No se puede deshacer.", si:"Borrar del servidor", cls:"danger" },
   "clave-cambiar":{ t:"Cambiar la clave del panel", d:"Escriba la clave actual y la nueva. La clave protege la entrada al panel en este navegador.", si:"Cambiar la clave", cls:"", campos:"clave" },
   "est-eliminar":{ t:"¿Eliminar esta sesión de simulación?", d:"Se borran sus cuentas y las respuestas de sus participantes en este navegador. No se puede deshacer: exporte antes una copia de seguridad.", pide:"ELIMINAR", si:"Sí, eliminar la sesión", cls:"danger" },
-  "invitacion-ver":{ t:"Así queda la invitación", si:"Cerrar", cls:"", soloCerrar:true }
+  "invitacion-ver":{ t:"Así queda la invitación", si:"Cerrar", cls:"", soloCerrar:true },
+  "tec-quitar":{ t:"¿Quitar el perfil técnico?", d:"La clave que le dio a esa persona deja de abrir el panel. Puede volver a crearlo cuando quiera, con otra clave.", si:"Quitar el perfil", cls:"danger" }
 };
 function dialogoHtml() {
   const dl = UI.dialogo; if (!dl) return "";

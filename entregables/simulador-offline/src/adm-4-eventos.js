@@ -81,22 +81,26 @@ function invitacionesHtml() {
 }
 
 /* ---------- Acciones ---------- */
-function entrarPanel(clave) {
-  UI.abierto = true; UI.acceso = { c1:"", c2:"", ver:false, pendiente:null };
-  recordarDesbloqueo(clave);
+function entrarPanel(clave, perfil) {
+  UI.abierto = true; UI.perfil = perfil === "tecnico" ? "tecnico" : "investigador";
+  UI.acceso = { c1:"", c2:"", ver:false, pendiente:null };
+  if (esTecnico() && MOMENTOS_TECNICO.indexOf(UI.vista) < 0) UI.vista = "estudio";
+  recordarDesbloqueo(clave, UI.perfil);
   if (PROY.entrega.forma === "servidor") prepararEntrega();
   render();
 }
 async function accederPanel() {
   const a = UI.acceso;
   if (ADMIN) {
-    if (!claveAdminCorrecta(a.c1)) return aviso("La clave no coincide.", true);
-    entrarPanel(a.c1); aviso("");
+    const perfil = perfilDeClave(a.c1);
+    if (!perfil) return aviso("La clave no coincide.", true);
+    entrarPanel(a.c1, perfil);
+    aviso(perfil === "tecnico" ? "Entró con el perfil técnico: «Estudio» y «Publicar»." : "");
     return;
   }
   const err = definirClaveAdmin(a.c1, a.c2);
   if (err) return aviso(err, true);
-  guardarProyecto(); entrarPanel(a.c1); aviso("Proyecto creado. Empiece por los datos del estudio.");
+  guardarProyecto(); entrarPanel(a.c1, "investigador"); aviso("Proyecto creado. Empiece por los datos del estudio.");
 }
 const COPIAS = {
   "clave-servidor":arg => (arg === "claveAdmin" ? PROY.entrega.claveAdmin : PROY.entrega.clave),
@@ -121,13 +125,21 @@ const ACC = {
     const p = UI.acceso.pendiente; if (!p) return;
     if (!ADMIN) { const err = definirClaveAdmin(UI.acceso.c1, UI.acceso.c2); if (err) return aviso(err, true); }
     aplicarCopia(p); analisisMemo = null;
-    entrarPanel(UI.acceso.c1 || null);
+    entrarPanel(UI.acceso.c1 || null, "investigador");
     aviso("Copia restaurada: " + plural(PROY.cuentas.length, "cuenta", "cuentas") + " y " + plural(RESP.length, "respuesta", "respuestas") + ".");
   },
   "proyecto-nuevo":() => { borrarProyecto(); render(); aviso("Puede empezar un proyecto nuevo."); },
-  "bloquear":() => { recordarDesbloqueo(null); UI.abierto = false; UI.acceso = { c1:"", c2:"", ver:false, pendiente:null }; render(); },
+  "bloquear":() => { recordarDesbloqueo(null); UI.abierto = false; UI.perfil = "investigador"; UI.acceso = { c1:"", c2:"", ver:false, pendiente:null }; render(); },
+  "tec-definir":() => {
+    const t = UI.tecnico || { c1:"", c2:"" }, nuevo = !TECNICO;
+    const err = definirClaveTecnico(t.c1, t.c2);
+    if (err) return aviso(err, true);
+    UI.tecnico = { c1:"", c2:"", ver:false }; render();
+    aviso(nuevo ? "Perfil técnico creado. Entregue la clave a esa persona por un medio aparte." : "Clave del perfil técnico cambiada.");
+  },
+  "tec-quitar":() => { UI.dialogo = { id:"tec-quitar", arg:"", texto:"", error:"" }; render(); },
   "recargar":() => location.reload(),
-  "ir":arg => { if (VISTAS_ADM[arg]) { UI.vista = arg; UI.ficha = null; UI.importe = UI.importe && arg === "respuestas" ? UI.importe : null; render(); } },
+  "ir":arg => { if (VISTAS_ADM[arg] && (!esTecnico() || MOMENTOS_TECNICO.indexOf(arg) >= 0)) { UI.vista = arg; UI.ficha = null; UI.importe = UI.importe && arg === "respuestas" ? UI.importe : null; render(); } },
   /* estudios (sesiones de simulación) */
   "est-abrir":arg => { if (abrirEstudio(arg)) { analisisMemo = null; UI.ficha = null; UI.importe = null; render(); aviso("Abrió «" + estudioEfectivo().titulo + "»."); } else aviso("Esa sesión no se pudo abrir.", true); },
   "est-nuevo":() => { const p = crearEstudio(UI.nuevoEstudio, null); UI.nuevoEstudio = ""; analisisMemo = null; UI.ficha = null; UI.importe = null; UI.vista = "estudio"; render(); aviso("Sesión creada. Complete los datos del estudio."); },
@@ -215,7 +227,7 @@ const ACC = {
       const c = UI.cambio;
       if (!claveAdminCorrecta(c.actual)) { dl.error = "La clave actual no coincide."; return render(); }
       const err = definirClaveAdmin(c.c1, c.c2); if (err) { dl.error = err; return render(); }
-      guardarProyecto(); recordarDesbloqueo(c.c1); UI.cambio = { actual:"", c1:"", c2:"" }; UI.dialogo = null; render(); aviso("Clave cambiada.");
+      guardarProyecto(); recordarDesbloqueo(c.c1, "investigador"); UI.cambio = { actual:"", c1:"", c2:"" }; UI.dialogo = null; render(); aviso("Clave cambiada.");
       return;
     }
     if (dl.id === "est-eliminar") {
@@ -223,6 +235,7 @@ const ACC = {
       eliminarEstudio(dl.arg); analisisMemo = null; UI.ficha = null; UI.importe = null; UI.dialogo = null; render(); aviso("Sesión eliminada.");
       return;
     }
+    if (dl.id === "tec-quitar") { quitarClaveTecnico(); UI.tecnico = { c1:"", c2:"", ver:false }; UI.dialogo = null; render(); aviso("Perfil técnico quitado: esa clave ya no abre el panel."); return; }
     if (dl.id === "cuenta-eliminar") { eliminarCuenta(dl.arg); guardarProyecto(); UI.dialogo = null; render(); aviso("Cuenta quitada."); return; }
     if (dl.id === "resp-eliminar") { eliminarRespuesta(dl.arg); analisisMemo = null; UI.dialogo = null; render(); aviso("Respuesta quitada del panel."); return; }
     if (dl.id === "resp-borrar-servidor") {
@@ -238,7 +251,8 @@ const ACC = {
 /* ---------- Eventos ---------- */
 document.addEventListener("click", async ev => {
   const b = ev.target.closest("[data-act]"); if (!b || b.disabled) return;
-  const fn = ACC[b.getAttribute("data-act")]; if (!fn) return;
+  const act = b.getAttribute("data-act"), fn = ACC[act]; if (!fn) return;
+  if (UI.abierto && esTecnico() && ACC_TECNICO.indexOf(act) < 0) return aviso("Eso le corresponde al investigador: el perfil técnico solo publica el sitio.", true);
   const esBtn = b.classList.contains("btn");
   if (esBtn) { b.classList.add("is-busy"); b.setAttribute("aria-busy", "true"); }
   try { await fn(b.getAttribute("data-arg") || "", b.getAttribute("data-v") || ""); }
@@ -251,6 +265,7 @@ const guardarLuego = () => { clearTimeout(guardarT); guardarT = setTimeout(() =>
 document.addEventListener("input", ev => {
   const i = ev.target.closest("[data-in]"); if (!i || i.type === "checkbox" || i.type === "file") return;
   const k = i.getAttribute("data-in"), arg = i.getAttribute("data-arg") || "", v = i.value;
+  if (UI.abierto && esTecnico() && IN_TECNICO.indexOf(k) < 0) return;
   if (k === "ac-c1") { UI.acceso.c1 = v; return; }
   if (k === "ac-c2") { UI.acceso.c2 = v; return; }
   if (k === "dlg-texto") { if (UI.dialogo) UI.dialogo.texto = v; return; }
@@ -275,6 +290,7 @@ document.addEventListener("input", ev => {
 document.addEventListener("change", async ev => {
   const i = ev.target.closest("[data-in]"); if (!i) return;
   const k = i.getAttribute("data-in"), arg = i.getAttribute("data-arg") || "";
+  if (UI.abierto && esTecnico() && IN_TECNICO.indexOf(k) < 0) return;
   if (k === "ac-ver") { UI.acceso.ver = i.checked; return render(); }
   if (k === "alta-rol") { UI.alta.rol = i.value; return; }
   if (k === "ver-todas") { UI.verTodas = i.checked; return render(); }
@@ -304,6 +320,11 @@ document.addEventListener("change", async ev => {
   if (k === "perfil-activo") { PROY.perfil = i.getAttribute("data-arg") || ""; guardarProyecto(); render(); return; }
   if (k === "exp-activo") { const id = i.getAttribute("data-arg") || ""; if (EXP.casos.some(c => c.id === id)) { PROY.expediente = id; analisisMemo = null; guardarProyecto(); render(); } return; }
   if (k === "buscar-tabla") { UI.buscar = String(i.value || "").slice(0, 120); render(); return; }
+  if (k === "tec-c1" || k === "tec-c2" || k === "tec-ver") {
+    if (!UI.tecnico) UI.tecnico = { c1:"", c2:"", ver:false };
+    if (k === "tec-ver") UI.tecnico.ver = !!i.checked; else UI.tecnico[k === "tec-c1" ? "c1" : "c2"] = i.value;
+    render(); return;
+  }
   if (k === "cuenta-perfil") { const q = PROY.cuentas.filter(x => x.u === i.getAttribute("data-arg"))[0]; if (q) { q.perfil = i.value || ""; guardarProyecto(); render(); } return; }
   if (k === "resp-archivo") { const fs = [].slice.call(i.files); i.value = ""; leerArchivos(fs, out => { importarTextos(out, "archivo"); analisisMemo = null; render(); aviso("Importación terminada."); }); return; }
   if (k === "unico-archivo") {
@@ -344,7 +365,12 @@ document.addEventListener("visibilitychange", () => { if (document.hidden) { cle
 (async function init() {
   if (!document.documentElement.lang) document.documentElement.lang = "es";
   cargarDeAlmacen();
-  if (ADMIN && desbloqueoRecordado()) { UI.abierto = true; if (PROY.entrega.forma === "servidor") prepararEntrega(); }
+  const recordado = ADMIN ? desbloqueoRecordado() : "";
+  if (recordado) {
+    UI.abierto = true; UI.perfil = recordado;
+    if (esTecnico() && MOMENTOS_TECNICO.indexOf(UI.vista) < 0) UI.vista = "estudio";
+    if (PROY.entrega.forma === "servidor") prepararEntrega();
+  }
   render();
   await initDescargas();
 })();
