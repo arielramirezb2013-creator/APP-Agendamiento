@@ -57,6 +57,8 @@ function proyectoNuevo() {
     estudio, consentimiento:{ version:String(GUION.consentimiento.version || "1"), adicional:"" },
     url:"",                                   // dirección pública del simulador, para las invitaciones
     entrega:{ forma:"archivo", url:"recibir.php", modo:"progresivo", clave:"", claveAdmin:"" },
+    instrumento:"expediente",                 // expediente (marco DGIT-PENSION-R1) | ruta (recorrido de once pasos)
+    expediente:(EXP.casos[0] || {}).id || "",  // el expediente sobre el que trabajan todos
     perfiles:[],                              // casos sintéticos cargados (perfiles/FORMATO-PERFILES.md)
     perfil:"",                                // identificador del caso con el que recorren todos, si no se fija por cuenta
     cuentas:[],                               // { u, a, etiqueta, clave, s, p, perfil, creada, h, hd }
@@ -72,6 +74,8 @@ const uiInicial = () => ({
   vista:"estudio", ficha:null, fichaDesde:"seguimiento",
   dialogo:null,                               // { id, arg, texto, error, vuelve }
   verClave:mapaVacio(), verTodas:false,       // contraseñas a la vista
+  expVer:null,                                // expediente del catálogo desplegado en «Estudio»
+  buscar:"",                                  // lo que se busca en la tabla de textos del informe
   alta:{ rol:ROLES[0], n:"1" },               // formulario para añadir cuentas
   nuevoEstudio:"",                            // título de la sesión que se va a crear
   cambio:{ actual:"", c1:"", c2:"" },         // cambio de la clave de administración
@@ -201,6 +205,19 @@ function normalizarProyecto(p, deConfianza) {
   const vistos = mapaVacio(); let malas = 0;
   (Array.isArray(p.cuentas) ? p.cuentas : []).forEach(q => { const c = normalizarCuenta(q, deConfianza); if (!c || vistos[c.u]) { malas++; return; } vistos[c.u] = 1; base.cuentas.push(c); });
   if (malas) avisos.push(plural(malas, "cuenta no se pudo leer y se omitió", "cuentas no se pudieron leer y se omitieron"));
+  base.instrumento = p.instrumento === "ruta" ? "ruta" : "expediente";
+  const exp = textoLimpio(p.expediente, 40);
+  base.expediente = EXP.casos.some(c => c.id === exp) ? exp : base.expediente;
+  let malosPerfiles = 0;
+  (Array.isArray(p.perfiles) ? p.perfiles : []).forEach(x => {
+    if (!esObjeto(x) || revisarPerfil(x).length) { malosPerfiles++; return; }
+    const limpio = perfilLimpio(x);
+    if (base.perfiles.some(y => y.id === limpio.id)) { malosPerfiles++; return; }
+    base.perfiles.push(limpio);
+  });
+  if (malosPerfiles) avisos.push(plural(malosPerfiles, "caso de la simulación no se pudo leer y se omitió", "casos de la simulación no se pudieron leer y se omitieron"));
+  const perf = textoLimpio(p.perfil, 60);
+  base.perfil = base.perfiles.some(x => x.id === perf) ? perf : (base.perfiles[0] ? base.perfiles[0].id : "");
   if (typeof p.invitacion === "string" && p.invitacion.trim()) base.invitacion = textoLimpio(p.invitacion, 4000);
   base.incluirPruebas = p.incluirPruebas === true;
   if (typeof p.creado === "number") base.creado = p.creado;
@@ -467,7 +484,18 @@ const perfilDelProyecto = id => PROY.perfiles.filter(p => p.id === id)[0] || nul
 const nombrePerfil = id => { const p = perfilDelProyecto(id); return p ? (p.persona.nombre || p.id) + (p.caso.diagnostico ? " · " + p.caso.diagnostico : "") : "—"; };
 
 /* ---------- Configuración publicada ---------- */
-function estudioPublicable() { const e = {}; CAMPOS_ESTUDIO.forEach(k => { e[k] = String(PROY.estudio[k] == null ? "" : PROY.estudio[k]).trim(); }); if (PROY.perfil) e.perfil = PROY.perfil; return e; }
+function estudioPublicable() {
+  const e = {}; CAMPOS_ESTUDIO.forEach(k => { e[k] = String(PROY.estudio[k] == null ? "" : PROY.estudio[k]).trim(); });
+  e.instrumento = instrumentoDelProyecto();
+  if (e.instrumento === "expediente") e.expediente = expedienteDelProyecto();
+  else if (PROY.perfil) e.perfil = PROY.perfil;
+  return e;
+}
+// Qué instrumento se aplica y, para el del expediente, sobre cuál de los cuatro trabajan todos.
+const instrumentoDelProyecto = () => PROY.instrumento === "ruta" ? "ruta" : "expediente";
+const expedienteDelProyecto = () => EXP.casos.some(c => c.id === PROY.expediente) ? PROY.expediente : ((EXP.casos[0] || {}).id || "");
+const casoExpDelProyecto = () => EXPM.casoDe(expedienteDelProyecto());
+const esProyectoExpediente = () => instrumentoDelProyecto() === "expediente";
 const consentimientoPublicable = () => ({ version:String(PROY.consentimiento.version || "").trim() || String(GUION.consentimiento.version || "1"), adicional:String(PROY.consentimiento.adicional || "").trim() });
 function envioPublicable(completa) {
   const en = PROY.entrega; if (en.forma !== "servidor") return null;
@@ -498,6 +526,7 @@ function impedimentosPublicar() {
   if (!idEstudioValido()) p.push("El identificador del estudio no es válido.");
   if (!PROY.cuentas.length) p.push("No hay cuentas de participantes.");
   if (PROY.entrega.forma === "servidor" && !RE_CLAVE_SERVIDOR.test(PROY.entrega.clave)) p.push("Falta la clave de envío del receptor.");
+  if (esProyectoExpediente() && !casoExpDelProyecto()) p.push("Elija el expediente sobre el que trabajan todos.");
   return p;
 }
 // Arma la configuración (apartado 5 del contrato). `completa` escribe la dirección completa del receptor: la necesita el simulador de archivo único.
@@ -558,7 +587,13 @@ function estructuraRespuesta(d) {
   const comprobacion = x => x == null || (esObjeto(x) && bolN(x.finalidadAutorizada) && listaN(x.piezasDenegadas) && listaN(x.piezasPropias) && objN(x.piezasPermitidas) && (!x.piezasPermitidas || cada(x.piezasPermitidas, numsN)));
   const CAMPOS = {
     actividad:{ tipo:txtN, obs:txtN, suficiencia:txtN, falta:listaN, finalidad:txtN, decision:txtN, decisionTxt:txtN, responde:txtN, dias:numN, notifica:listaN, respuesta:txtN, piezas:listaN, pide:txtN, sabe:txtN, hizo:listaN, ve:txtN, accion:txtN, comprobacion },
-    valoracion:{ semaforo:txtN, ajuste:txtN, mejora:txtN }, observacion:{ texto:txtN, pasos:listaN, final:bolN },
+    valoracion:{ semaforo:txtN, ajuste:txtN, mejora:txtN }, observacion:{ texto:txtN, pasos:listaN, final:bolN, cond:txtN, puntos:listaN },
+    // Registros del instrumento de expediente (marco DGIT-PENSION-R1).
+    punto:{ cond:txtN, punto:txtN, como:txtN, decision:txtN, decisionTxt:txtN, porQue:txtN, obs:txtN, completitud:objN, horas:numN, resuelve:bolN,
+      soportes:v => v == null || (Array.isArray(v) && v.every(x => esObjeto(x) && txtN(x.k) && txtN(x.estado) && bolN(x.aceptado))) },
+    actuacion:{ cond:txtN, punto:txtN, pieza:txtN, que:txtN, finalidad:txtN, horas:numN, denegado:bolN, texto:txtN, horasTotal:numN },
+    h2:{ expediente:txtN, respuestas:objN, calificacion:objN }, h3:{ expediente:txtN, respuestas:objN, calificacion:objN },
+    inicio_condicion:{ cond:txtN, ronda:numN, expediente:txtN }, cierre_condicion:{ cond:txtN, horas:numN, completitud:objN },
     solicitud:{ de:txtN, a:txtN, piezas:listaN, finalidad:txtN }, consulta:{ de:txtN, a:txtN, pieza:txtN, campos:numsN, motivo:txtN, finalidad:txtN },
     notificacion:{ de:txtN, a:listaN, nota:txtN }, acuse:{ de:txtN, a:txtN, nota:txtN }, respuesta:{ solicitud:txtN, de:txtN, a:txtN, respuesta:txtN, dias:numN }, avance:{ de:listaN, a:txtN, bloque:txtN }
   };
@@ -567,7 +602,7 @@ function estructuraRespuesta(d) {
     if (ok && r.payload) {
       const pl = r.payload, f = esPropia(CAMPOS, r.tipo) ? CAMPOS[r.tipo] : null;
       if (f) ok = Object.keys(f).every(k => f[k](pl[k]));
-      else if (r.tipo === "preguntas") ok = cada(pl, v => (Array.isArray(v) ? lista(v) : txtN(v)));
+      else if (r.tipo === "preguntas" || r.tipo === "encuesta") ok = cada(pl, v => (Array.isArray(v) ? lista(v) : escalarN(v)));
     }
     if (!ok) mal("el registro " + (i + 1) + (esObjeto(r) && txt(r.tipo) ? " (" + r.tipo.slice(0, 24) + ")" : ""));
   });

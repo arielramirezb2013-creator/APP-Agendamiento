@@ -28,6 +28,8 @@ async function entrarPanel(pg, clave, nueva) {
   await w(pg, 120);
 }
 const ir = (pg, v) => clic(pg, '[data-act="ir"][data-arg="' + v + '"]', 200);
+// El enunciado de H1, tomado del catálogo del instrumento: así la prueba compara con la fuente.
+const EXPM_H1 = m => m.EXP.marco.hipotesis.filter(h => h.id === "H1")[0].t.replace(/\s+/g, " ").trim();
 // Documento de respuestas real de un rol, con el usuario y el estudio que use el panel.
 function documento(usuario, actor, estudioId, variante, hasta) {
   const cfg = JSON.parse(JSON.stringify(cfgDemo));
@@ -37,6 +39,16 @@ function documento(usuario, actor, estudioId, variante, hasta) {
   const m = M.crearMotor(cfg);
   const d = M.recorrer(m, usuario, cfgDemo.demo.clave, { variante:variante || 0, hasta, datos:variante === 1 ? { nombre:"Persona Dos " + VENENO, correo:"dos@ejemplo.org" } : null });
   return d;
+}
+
+// Documento del instrumento de expediente, con el usuario y el expediente que use el panel.
+function documentoExp(usuario, actor, estudioId, caso, opc) {
+  const cfg = JSON.parse(JSON.stringify(cfgDemo));
+  cfg.estudio.id = estudioId; cfg.estudio.instrumento = "expediente"; cfg.estudio.expediente = caso; delete cfg.demo;
+  const q = cfg.cuentas.filter(x => x.a === actor)[0];
+  q.u = usuario; q.s = "00112233aabbccdd"; q.h = motor.huellaClave(usuario, cfgDemo.demo.clave, q.s, 5000); delete q.p;
+  const m = M.crearMotor(cfg);
+  return M.recorrerExpediente(m, usuario, cfgDemo.demo.clave, opc || {});
 }
 
 (async () => {
@@ -56,6 +68,15 @@ function documento(usuario, actor, estudioId, variante, hasta) {
     T.ok((await pg.evaluate(() => document.body.getAttribute("data-vista"))) === "estudio", "con una clave válida se crea el proyecto y abre «Estudio»");
     const p0 = await proyecto(pg);
     T.ok(p0 && /^[0-9a-f]{64}$/.test(p0.admin.huella) && !JSON.stringify(p0).includes(CLAVE_PANEL), "la clave se guarda como huella, nunca en claro");
+    /* ---------- Instrumento ---------- */
+    const vistaInstr = await texto(pg, "#vista");
+    T.ok(/Instrumento y expediente/.test(vistaInstr) && /PI-L01/.test(vistaInstr) && /PI-L04/.test(vistaInstr) && (await proyecto(pg)).proyecto.instrumento === "expediente",
+      "el estudio nace con el instrumento del expediente y muestra los cuatro del catálogo");
+    await clic(pg, '[data-act="exp-ver"][data-arg="PI-L02"]', 250);
+    T.ok(/Javier Pardo/.test(await texto(pg, "#vista")) && /Criterio del caso/.test(await texto(pg, "#vista")), "y deja ver la ficha de cada expediente antes de elegirlo");
+    await clic(pg, '[data-act="exp-cerrar"]', 200);
+    await clic(pg, '[data-act="instrumento"][data-v="ruta"]', 300);
+    T.ok((await proyecto(pg)).proyecto.instrumento === "ruta", "el investigador puede cambiar al recorrido de la ruta de incapacidad");
     /* ---------- Estudio ---------- */
     await escribir(pg, '[data-in="e-id"]', "estudio-de-prueba");
     await escribir(pg, '[data-in="e-titulo"]', "Estudio de prueba " + VENENO);
@@ -219,9 +240,53 @@ function documento(usuario, actor, estudioId, variante, hasta) {
     await entrarPanel(pg, "otra-clave-cualquiera");
     T.ok((await pg.evaluate(() => document.body.getAttribute("data-vista"))) === "acceso" && /no coincide/.test(await texto(pg, "#top")), "una clave equivocada no abre el panel");
     await entrarPanel(pg, CLAVE_PANEL);
-    T.ok((await pg.evaluate(() => document.body.getAttribute("data-vista"))) !== "acceso" && (await proyecto(pg)).proyecto.cuentas.length === 13, "con la clave correcta vuelve el proyecto completo");
+    const pVuelta = await proyecto(pg);
+    T.ok((await pg.evaluate(() => document.body.getAttribute("data-vista"))) !== "acceso" && pVuelta.proyecto.cuentas.length === 13
+      && pVuelta.proyecto.perfiles.length === 2 && pVuelta.proyecto.perfil === "ja" && pVuelta.proyecto.instrumento === "ruta",
+      "con la clave correcta vuelve el proyecto completo: cuentas, casos cargados e instrumento",
+      JSON.stringify({ cuentas:pVuelta.proyecto.cuentas.length, perfiles:pVuelta.proyecto.perfiles.length, perfil:pVuelta.proyecto.perfil, instrumento:pVuelta.proyecto.instrumento }));
     await ir(pg, "resultados"); await w(pg, 700);
     T.ok(/Respuestas analizadas/.test(await texto(pg, "#informe")), "y el informe de la sesión abierta se vuelve a armar");
+    /* ---------- El otro instrumento: el expediente de pensión de invalidez ---------- */
+    await ir(pg, "estudio");
+    await clic(pg, '[data-act="instrumento"][data-v="expediente"]', 300);
+    await clic(pg, '[data-in="exp-activo"][data-arg="PI-L02"]', 300);
+    const pExp = await proyecto(pg);
+    T.ok(pExp.proyecto.instrumento === "expediente" && pExp.proyecto.expediente === "PI-L02", "el investigador elige el expediente sobre el que trabajan todos");
+    await ir(pg, "resultados"); await w(pg, 800);
+    T.ok(/corresponden al otro instrumento/.test(await texto(pg, "#informe")), "con el instrumento cambiado, el informe avisa que las respuestas que hay son del otro instrumento", (await texto(pg, "#informe")).slice(0, 200));
+    const arl1 = pExp.proyecto.cuentas.filter(q => q.a === "arl")[0].u, jn1 = pExp.proyecto.cuentas.filter(q => q.a === "jn")[0].u;
+    const docsExp = [documentoExp(arl1, "arl", "estudio-de-prueba", "PI-L02", {}), documentoExp(jn1, "jn", "estudio-de-prueba", "PI-L02", { aciertos:"mitad" })];
+    const rutasExp = docsExp.map((d, i) => { const f = path.join(L.SALIDA, "resp-exp-" + i + ".json"); fs.writeFileSync(f, JSON.stringify(d, null, 1)); return f; });
+    await ir(pg, "respuestas");
+    await pg.setInputFiles("#resp-archivo", rutasExp); await w(pg, 900);
+    T.ok(/2 importada/.test(await texto(pg, ".importe")), "importa las respuestas del expediente", (await texto(pg, ".importe")).slice(0, 200));
+    await ir(pg, "resultados"); await w(pg, 1200);
+    const infE = await texto(pg, "#informe");
+    T.ok(/H1 · Completitud de la evidencia requerida/.test(infE) && /H2 · Identificación de responsabilidades/.test(infE) && /H3 · Trazabilidad de los accesos/.test(infE),
+      "el informe del expediente trae los capítulos de las tres hipótesis");
+    const h1Txt = EXPM_H1(motor);
+    T.ok(infE.indexOf(h1Txt) >= 0, "y la hipótesis H1 aparece textual, sin reescribirla", h1Txt.slice(0, 80));
+    T.ok(/PI-L02/.test(infE) && /Flujo actual/.test(infE) && /Módulo interoperable/.test(infE) && /48 horas virtuales/.test(infE),
+      "con el expediente, las dos condiciones y el corte del piloto");
+    T.ok(/Lo que escribieron los participantes/.test(infE) && (await hay(pg, '[data-in="buscar-tabla"]')), "y la tabla de textos libres con su caja de búsqueda");
+    const filasAntes = await pg.locator('table[data-tabla="textos"] tbody tr').count();
+    await escribir(pg, '[data-in="buscar-tabla"]', "trazabilidad de la versión");
+    const filasDespues = await pg.locator('table[data-tabla="textos"] tbody tr').count();
+    T.ok(filasAntes > filasDespues && filasDespues > 0, "la búsqueda filtra los textos libres (" + filasAntes + " → " + filasDespues + ")");
+    await escribir(pg, '[data-in="buscar-tabla"]', "palabra-que-no-existe-en-ninguna-respuesta");
+    T.ok(/Ninguna fila coincide/.test(await texto(pg, "#informe")), "y lo dice cuando nada coincide");
+    await clic(pg, '[data-act="buscar-limpiar"]', 300);
+    T.ok((await pg.locator('table[data-tabla="textos"] tbody tr').count()) === filasAntes, "«Quitar el filtro» devuelve la tabla completa");
+    const csvExpT = await L.descargar(pg, '[data-act="csv"][data-arg="h1_participacion"]');
+    T.ok(/"Flujo actual: conformes"/.test(csvExpT.texto) && /"Diferencia \(pp\)"/.test(csvExpT.texto) && csvExpT.texto.split("\r\n").length === 3, "cada tabla del informe se exporta a CSV", csvExpT.texto.slice(0, 160));
+    const jsonExpT = await L.descargar(pg, '[data-act="datos-json"]');
+    const dExpT = JSON.parse(jsonExpT.texto);
+    T.ok(dExpT.subtipo === "expediente" && dExpT.marco.id === "DGIT-PENSION-R1" && dExpT.participantes.length === 2
+      && dExpT.participantes.every(x => x.h1 && x.h2 && x.h3) && !jsonExpT.texto.includes(CLAVE_PANEL),
+      "los datos consolidados traen el marco, las medidas de cada participación y ninguna credencial", JSON.stringify(Object.keys(dExpT)));
+    const infExpHtml = await L.descargar(pg, '[data-act="informe-html"]');
+    T.ok(/expedientes sintéticos de pensión de invalidez/.test(infExpHtml.texto) && /Marco del instrumento/.test(infExpHtml.texto), "y el informe descargable es el del expediente");
     /* ---------- Restaurar en un navegador limpio ---------- */
     const ctxB = await br.newContext({ viewport:{ width:1280, height:900 } }), pgB = await L.pagina(ctxB, errores, u => u.startsWith(S.base));
     await pgB.goto(S.base + "/administrador.html");

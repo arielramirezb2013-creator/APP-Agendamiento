@@ -129,10 +129,55 @@ function perfilesHtml() {
     ? `<div class="aviso err"><b>No se pudieron cargar ${err.errores.length === 1 ? "un caso" : err.errores.length + " casos"}:</b><ul class="lista">${err.errores.map(e => `<li><b>${esc(e.id)}</b>: ${esc(e.fallas.join("; "))}</li>`).join("")}</ul></div>`
     : "";
   const detalle = UI.perfilVer ? perfilDetalleHtml(perfilDelProyecto(UI.perfilVer)) : "";
-  return `<p>Cada caso trae una persona —nombre, edad, cargo, antigüedad— y el contenido real de los campos de las cinco piezas de evidencia. Eso es lo que cada actor lee en su pantalla cuando el expediente le llega.</p>
+  const nota = esProyectoExpediente()
+    ? `<div class="guia">${ico("estados-en-curso")}<div>Estos casos son los del <b>recorrido de la ruta de incapacidad</b>. El estudio está aplicando el instrumento del expediente de pensión de invalidez, que trae sus propios cuatro expedientes: los encuentra arriba, en «Instrumento y expediente».</div></div>`
+    : "";
+  return `${nota}<p>Cada caso trae una persona —nombre, edad, cargo, antigüedad— y el contenido real de los campos de las cinco piezas de evidencia. Eso es lo que cada actor lee en su pantalla cuando el expediente le llega.</p>
     <p class="mini">El formato está en <span class="mono">perfiles/FORMATO-PERFILES.md</span>, con un ejemplo completo en <span class="mono">perfiles/perfil-ejemplo-mp.json</span>. El caso marcado es con el que recorren todos los participantes, salvo que en «Cuentas» le fije otro a alguien.</p>
     ${errores}${tabla}${detalle}
     <div class="row">${btn("perfil-elegir", "", "Cargar casos desde un archivo", "sec", "acciones-importar")}${archivoOculto("perfil-archivo", ".json,application/json")}</div>`;
+}
+/* El instrumento que se aplica y, para el del expediente, sobre cuál de los cuatro trabajan todos.
+   El protocolo del marco pide el mismo expediente para todos los participantes, en dos condiciones. */
+function instrumentoHtml() {
+  const esExp = esProyectoExpediente(), elegido = expedienteDelProyecto();
+  const opciones = `<div class="campo"><span class="lbl">Instrumento que se aplica</span>${optAdm("instrumento", "", [
+    ["expediente", "Expediente de pensión de invalidez · marco " + EXP.marco.id],
+    ["ruta", "Recorrido de la ruta de incapacidad · " + PASOS.length + " pasos"]], PROY.instrumento === "ruta" ? "ruta" : "expediente")}
+    <span class="mini">${esc(esExp
+      ? "Cada participante recorre el mismo expediente dos veces —con el flujo actual y con el módulo interoperable—, en el orden que le toca por su cuenta. Mide la completitud de la evidencia en el punto que resuelve (H1), la identificación de responsabilidades (H2) y la reconstrucción de los accesos (H3)."
+      : "Cada participante recorre la ruta de incapacidad paso a paso y compara, en cada paso, lo que haría hoy con lo que haría con el módulo. Usa los casos cargados más abajo.")}</span></div>`;
+  if (!esExp) return opciones + `<p class="mini">Con este instrumento, el expediente de pensión de invalidez no se usa: los participantes trabajan el caso que elija en «Casos de la simulación».</p>`;
+  const fila = c => {
+    const pr = c.puntos.filter(x => x.resuelve)[0] || c.puntos[0], marca = elegido === c.id;
+    const deciden = Object.keys(c.puntos.reduce((o, x) => { o[x.decide] = 1; return o; }, {}));
+    const mins = deciden.map(a => EXPM.minutos(c, a, "orden")), min = Math.min.apply(null, mins), max = Math.max.apply(null, mins);
+    return `<tr${marca ? ' class="abierto"' : ""}>
+      <td><label class="opcion-radio"><input type="radio" name="exp-activo" data-in="exp-activo" data-arg="${esc(c.id)}" ${marca ? "checked" : ""}><span><b>${esc(c.id)} · ${esc(c.persona.nombre)}</b>${marca ? " " + chipEstado("ch-teal", "expediente en uso", "estados-completado") : ""}<div class="mini">${esc([c.persona.edad != null ? c.persona.edad + " años" : "", c.persona.cargoUltimo || c.persona.cargo, c.clinica.diagnostico].filter(Boolean).join(" · "))}</div></span></label></td>
+      <td class="mini">${esc(c.puntos.map(x => x.id).join(" · "))}<div>decide ${esc(deciden.map(nomL).join(", "))}</div></td>
+      <td class="mini nw">${esc(pr.id)} · ${esc(EXPM.inicioDe(c, pr.id))}<div>${esc(pr.requiere.join(" · "))}</div></td>
+      <td class="num">${c.soportes.length}</td>
+      <td class="num nw">${min === max ? min : min + " a " + max}′</td>
+      <td class="nw acc">${btn("exp-ver", c.id, "Ver", "sm outline", "acciones-ver-detalle")}</td></tr>`;
+  };
+  const detalle = UI.expVer ? expedienteDetalleHtml(EXPM.casoDe(UI.expVer)) : "";
+  return `${opciones}
+    <p>Los cuatro expedientes vienen incluidos: son sintéticos y provienen de sentencias reales reescritas, con sus personas, su trayectoria laboral, su evidencia y los vacíos que trae cada uno. Todos los participantes trabajan el que marque aquí.</p>
+    <div class="twrap"><table class="t"><thead><tr><th scope="col">Expediente</th><th scope="col">Puntos de decisión</th><th scope="col">Punto que resuelve · conformes al radicar</th><th scope="col">Soportes</th><th scope="col">Dura</th><th scope="col"></th></tr></thead><tbody>${EXP.casos.map(fila).join("")}</tbody></table></div>
+    ${detalle}
+    <p class="mini">«Conformes al radicar» es cuántos de los soportes que exige esa decisión cumplían su criterio cuando se radicó el expediente: es el punto de partida de los dos recorridos. La duración estimada es la del rol que decide; los demás roles recorren menos.</p>`;
+}
+function expedienteDetalleHtml(c) {
+  if (!c) return "";
+  const soportes = `<div class="twrap"><table class="t apila"><thead><tr><th scope="col">Soporte</th><th scope="col">Custodia</th><th scope="col">Al radicar</th><th scope="col">Criterio de conformidad</th></tr></thead><tbody>${c.soportes.map(s => `<tr><td class="nw"><b>${esc(s.k)}</b> ${esc(s.n)}</td><td class="mini nw">${esc(s.custN)}</td><td class="nw">${esc((EXP.estados[s.estado] || {}).n || s.estado)}</td><td class="mini">${esc(s.criterio)}</td></tr>`).join("")}</tbody></table></div>`;
+  const puntos = `<div class="twrap"><table class="t apila"><thead><tr><th scope="col">Punto</th><th scope="col">Decide</th><th scope="col">Requiere</th><th scope="col">Al radicar</th></tr></thead><tbody>${c.puntos.map(x => `<tr><td><b>${esc(x.id)}</b> ${esc(x.n)}${x.resuelve ? " " + chipEstado("ch-gold", "resuelve", "capitulos-decision-avance") : ""}</td><td class="nw">${esc(x.decideN)}</td><td class="mini">${esc(x.requiere.join(" · "))}</td><td class="nw">${esc(EXPM.inicioDe(c, x.id))}</td></tr>`).join("")}</tbody></table></div>`;
+  return `<div class="panel"><div class="row"><h3 style="margin-right:auto">${esc(c.id)} · ${esc(c.persona.nombre)}</h3>${btn("exp-cerrar", "", "Cerrar", "sm outline", "acciones-cerrar")}</div>
+    <p>${esc(c.perspectiva)}</p>
+    <div class="kv"><b>Diagnóstico</b><span>${esc(c.clinica.diagnostico)}</span><b>PCL del dictamen</b><span>${esc(String(c.clinica.pcl).replace(".", ",") + " % · origen " + c.clinica.pclOrigen)}</span><b>Fecha de estructuración</b><span>${esc(c.clinica.estructuracion)}</span><b>Vínculo laboral</b><span>${esc(c.tiempos)}</span></div>
+    ${puntos}${soportes}
+    <p class="mini"><b>Criterio del caso.</b> ${esc(c.criterio)}</p>
+    <p class="mini"><b>Preguntas de cierre.</b> ${c.h2.length} responsabilidades y ${c.h3.length} accesos para reconstruir.</p>
+    ${c.procedencia ? `<p class="mini">Procedencia: ${esc(c.procedencia)}</p>` : ""}</div>`;
 }
 function perfilDetalleHtml(p) {
   if (!p) return "";
@@ -167,7 +212,8 @@ function vistaEstudio() {
       <div class="campos-grid"><label class="campo">Versión del texto${campoTexto("c-version", "", PROY.consentimiento.version, 'maxlength="20"')}<span class="mini">Queda registrada en cada respuesta.</span></label></div>
       <label class="campo">Párrafo adicional (opcional)<textarea data-in="c-adicional" maxlength="2000" rows="3" placeholder="Por ejemplo, el número de aprobación del comité o una aclaración de su institución.">${esc(PROY.consentimiento.adicional)}</textarea></label>
       <details data-det="cons-vista"><summary>Ver el texto que leerá el participante</summary>${textoConsentimientoHtml()}</details>`)}
-    ${seccion("Casos de la simulación", "documentos-datos-sinteticos", perfilesHtml())}
+    ${seccion("Instrumento y expediente", "navegacion-escenario", instrumentoHtml())}
+    ${seccion("Casos de la simulación de la ruta", "documentos-datos-sinteticos", perfilesHtml())}
     ${seccion("Cómo le llegan las respuestas", "acciones-importar", `${optAdm("entrega", "", [["archivo", "Por archivo: el participante me lo envía"], ["servidor", "Por servidor: llegan solas al sitio"]], en.forma)}${srv}`)}
     ${seccion("Copia de seguridad del proyecto", "gobernanza-custodia", `
       <p>La copia trae esta sesión: el estudio, sus cuentas con las contraseñas, la invitación y las respuestas importadas. <b>Guárdela como un documento confidencial.</b> No incluye la clave de este panel ni la clave de administración del servidor.</p>
@@ -368,8 +414,16 @@ let analisisMemo = null;
 function analisisActual() {
   const docs = docsIncluidos();
   const firma = SHA.hex(docs.map(d => d.huella).join("|") + "|" + PROY.estudio.id + "|" + PROY.cuentas.map(q => q.u + ":" + q.a + ":" + (q.p ? 1 : 0)).join(",") + "|" + canonico(estudioPublicable()));
-  if (!analisisMemo || analisisMemo.firma !== firma) analisisMemo = { firma, an:analizar(docs, { cuentas:PROY.cuentas, estudio:estudioEfectivo() }) };
+  if (!analisisMemo || analisisMemo.firma !== firma) {
+    const opc = { cuentas:PROY.cuentas, estudio:estudioEfectivo() };
+    analisisMemo = { firma, an:esProyectoExpediente() ? analizarExp(docs, opc) : analizar(docs, opc) };
+  }
   return analisisMemo.an;
+}
+// Los datos consolidados que se descargan: del instrumento que esté aplicando el estudio.
+function datosActuales() {
+  const opc = { cuentas:PROY.cuentas, estudio:estudioEfectivo(), analisis:analisisActual() };
+  return esProyectoExpediente() ? datosExpConsolidados(docsIncluidos(), opc) : datosConsolidados(docsIncluidos(), opc);
 }
 const vistaResultadosPanel = () => `<div class="hoja ancha">${guia("<b>El informe se arma solo</b> con las respuestas que están marcadas para analizar. Cada tabla se exporta a CSV; abajo puede descargar el informe completo.")}${vistaResultados(analisisActual())}</div>`;
 

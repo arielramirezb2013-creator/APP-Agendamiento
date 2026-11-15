@@ -111,6 +111,10 @@ const ACC = {
   "perfil-elegir":() => abrirArchivo("perfil-archivo"),
   "perfil-ver":id => { UI.perfilVer = UI.perfilVer === id ? null : id; render(); },
   "perfil-cerrar":() => { UI.perfilVer = null; render(); },
+  "instrumento":(arg, v) => { PROY.instrumento = v === "ruta" ? "ruta" : "expediente"; analisisMemo = null; guardarProyecto(); render(); },
+  "exp-ver":id => { UI.expVer = UI.expVer === id ? null : id; render(); },
+  "exp-cerrar":() => { UI.expVer = null; render(); },
+  "buscar-limpiar":() => { UI.buscar = ""; render(); },
   "perfil-eliminar":id => { borrarPerfil(id); if (UI.perfilVer === id) UI.perfilVer = null; render(); aviso("Caso eliminado."); },
   "copia-cancelar":() => { UI.acceso.pendiente = null; render(); },
   "copia-restaurar":() => {
@@ -197,7 +201,7 @@ const ACC = {
   "csv-todo":() => bajar(nombreArchivoAdm("tablas", "csv"), "﻿" + csvDeTodas(analisisActual()), "text/csv"),
   "informe-html":() => bajar(nombreArchivoAdm("informe", "html"), informeHtml(analisisActual(), estudioEfectivo()), "text/html"),
   "informe-imprimir":() => { imprimirDocumento(informeHtml(analisisActual(), estudioEfectivo())); },
-  "datos-json":() => bajar(nombreArchivoAdm("datos-consolidados", "json"), JSON.stringify(datosConsolidados(docsIncluidos(), { cuentas:PROY.cuentas, estudio:estudioEfectivo() }), null, 1), "application/json"),
+  "datos-json":() => bajar(nombreArchivoAdm("datos-consolidados", "json"), JSON.stringify(datosActuales(), null, 1), "application/json"),
   /* diálogos */
   "dlg-no":() => { UI.dialogo = null; render(); },
   "dlg-si":async () => {
@@ -298,6 +302,8 @@ document.addEventListener("change", async ev => {
     return;
   }
   if (k === "perfil-activo") { PROY.perfil = i.getAttribute("data-arg") || ""; guardarProyecto(); render(); return; }
+  if (k === "exp-activo") { const id = i.getAttribute("data-arg") || ""; if (EXP.casos.some(c => c.id === id)) { PROY.expediente = id; analisisMemo = null; guardarProyecto(); render(); } return; }
+  if (k === "buscar-tabla") { UI.buscar = String(i.value || "").slice(0, 120); render(); return; }
   if (k === "cuenta-perfil") { const q = PROY.cuentas.filter(x => x.u === i.getAttribute("data-arg"))[0]; if (q) { q.perfil = i.value || ""; guardarProyecto(); render(); } return; }
   if (k === "resp-archivo") { const fs = [].slice.call(i.files); i.value = ""; leerArchivos(fs, out => { importarTextos(out, "archivo"); analisisMemo = null; render(); aviso("Importación terminada."); }); return; }
   if (k === "unico-archivo") {

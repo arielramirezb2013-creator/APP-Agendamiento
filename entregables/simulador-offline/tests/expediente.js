@@ -40,49 +40,12 @@ const ordenes = cfg.cuentas.map(q => EXPM.ordenCondiciones(q.u).join(">"));
 T.ok(new Set(ordenes).size === 2, "el orden de las dos condiciones alterna entre participantes", ordenes.join(" "));
 
 /* ---------- 3. Recorrido completo de un rol que decide ---------- */
-// Recorre el instrumento respondiendo de forma determinista. `pedir` dice si subsana lo que falta.
+// Un recorrido completo con respuestas deterministas (el del arnés, en tests/motor.js).
 function recorrerExp(usuario, opc) {
   opc = opc || {};
-  const m = M.crearMotor(cfg);
-  m.S.acc = { u:usuario, c:cfg.demo.clave, ver:false }; m.entrar();
-  if (!m.S.cuenta) throw new Error("no entró: " + usuario);
-  m.CONS.declaraciones.forEach(d => { m.S.cons.decl[d.id] = true; });
-  if (!m.aceptarConsentimiento()) throw new Error("consentimiento");
-  m.S.enc = { edad:"40-49", formacion:"salud", formacionCual:"Medicina del trabajo", experiencia:"8", rolActual:"Analista", trayectoria:"ARL, prestaciones, 8 años", frecuencia:"semanal" };
-  if (!m.guardarEncuesta()) throw new Error("encuesta");
-  const caso = m.casoExp();
-  let guarda = 0;
-  while (m.S.etapa === "simulacion" && guarda++ < 80) {
-    const b = m.bloqueExp().b;
-    if (!b) break;
-    if (b.tipo === "punto" && !m.puntoHecho(b.cond, b.punto)) {
-      const p = EXPM.puntoDe(caso, b.punto), E = m.estadoExp(b.cond);
-      m.S.actu = { finalidad:opc.finalidad || "verificar_firmeza" };
-      (b.como === "decide" ? p.requiere : EXPM.custodiaDe(caso, m.S.yo.actor)).forEach(k => {
-        m.actuarSobre(k, "consultar");
-        if (opc.pedir !== false && E.soportes[k].estado !== "conforme") { m.actuarSobre(k, "solicitar"); m.actuarSobre(k, "aceptar"); }
-      });
-      m.S.form = { decision:(EXPM.opcionesPunto(caso, p)[0] || [])[0], porQue:"Decidí con lo que quedó conforme." };
-      if (!m.guardarPunto()) throw new Error("punto no guardado: " + b.punto + " · " + m.S.msg);
-      continue;
-    }
-    if (b.tipo === "h2" && !m.regsDe({ tipo:"h2", participanteId:m.S.yo.id }).length) {
-      m.S.h2 = {}; caso.h2.forEach(h => { m.S.h2[h.id] = opc.h2mal ? "no_se" : h.ref; });
-      if (!m.guardarH2()) throw new Error("H2 no guardado: " + m.S.msg);
-      continue;
-    }
-    if (b.tipo === "h3" && !m.regsDe({ tipo:"h3", participanteId:m.S.yo.id }).length) {
-      m.S.h3 = {}; caso.h3.forEach((h, i) => {
-        m.S.h3["A" + (i + 1)] = opc.h3mal
-          ? { actor:"no_se", pieza:"no_se", momento:"no_se", accion:"no_se", resultado:"no_se" }
-          : { actor:h.actor, pieza:h.pieza, momento:EXPM.tramoDe(h.momento), accion:String(h.accion).toLowerCase(), resultado:h.denegado ? "denegado" : "entregado" };
-      });
-      if (!m.guardarH3()) throw new Error("H3 no guardado: " + m.S.msg);
-      continue;
-    }
-    m.avanzarExp();
-  }
-  return { m:m, doc:m.documentoRespuesta(), caso:caso };
+  const m = M.crearMotor(opc.cfg || cfg);
+  const doc = M.recorrerExpediente(m, usuario, cfg.demo.clave, opc);
+  return { m:m, doc:doc, caso:m.casoExp() };
 }
 
 const r1 = recorrerExp("demo-arl");
@@ -106,7 +69,7 @@ T.ok(e1.h2 && e1.h2.ok === 6 && e1.h2.total === 6, "H2 se califica contra la res
 T.ok(e1.h3 && e1.h3.ok === 4 && e1.h3.total === 4 && e1.h3.campos === 20, "H3 se califica exigiendo los cinco elementos de cada acceso", JSON.stringify(e1.h3 && [e1.h3.ok, e1.h3.campos]));
 
 /* ---------- 4. Las medidas distinguen a quien no acierta ---------- */
-const r2 = recorrerExp("demo-juntanacional", { h2mal:true, h3mal:true });
+const r2 = recorrerExp("demo-juntanacional", { aciertos:"ninguno" });
 T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
   "quien no identifica responsabilidades ni reconstruye accesos puntúa cero, y el recorrido se completa igual");
 

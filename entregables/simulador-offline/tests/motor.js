@@ -88,7 +88,62 @@ function recorrer(M, usuario, clave, opc) {
   M.guardarLocal();
   return M.documentoRespuesta();
 }
-module.exports = { crearMotor, configDemo, recorrer, responder, valorar, memoria, RAIZ, MESA };
+// Recorre el instrumento de expediente con respuestas deterministas y devuelve el documento.
+//   opc: { pedir, finalidad, aciertos: "todos"|"mitad"|"ninguno", textos, hasta: {cond, punto} }
+function recorrerExpediente(M, usuario, clave, opc) {
+  opc = opc || {};
+  const aciertos = opc.aciertos || "todos";
+  M.S.acc = { u:usuario, c:clave, ver:false }; M.entrar();
+  if (!M.S.cuenta) throw new Error("no entró: " + usuario);
+  if (M.S.retomar) M.S.retomar = null;
+  if (!M.S.consent) { M.CONS.declaraciones.forEach(d => { M.S.cons.decl[d.id] = true; }); if (!M.aceptarConsentimiento()) throw new Error("consentimiento rechazado para " + usuario); }
+  if (M.S.etapa === "encuesta") {
+    M.S.enc = { edad:"40-49", formacion:"salud", formacionCual:"Medicina del trabajo", complementarios:"Especialización en SST",
+      experiencia:"8", rolActual:"Analista de prestaciones", trayectoria:"ARL, prestaciones económicas, 8 años", frecuencia:"semanal", otrosRoles:"Sí, estuve en una IPS" };
+    if (!M.guardarEncuesta()) throw new Error("encuesta no guardada para " + usuario);
+  }
+  const caso = M.casoExp(), EXPM = M.EXPM;
+  const mitad = (i, n) => aciertos === "todos" || (aciertos === "mitad" && i < Math.ceil(n / 2));
+  let guard = 0;
+  while (M.S.etapa === "simulacion" && guard++ < 200) {
+    const b = M.bloqueExp().b;
+    if (!b) break;
+    if (opc.hasta && b.cond === opc.hasta.cond && b.punto === opc.hasta.punto) break;
+    if (b.tipo === "punto" && !M.puntoHecho(b.cond, b.punto)) {
+      const p = EXPM.puntoDe(caso, b.punto), E = M.estadoExp(b.cond);
+      M.S.actu = { finalidad:opc.finalidad || "verificar_firmeza" };
+      (b.como === "decide" ? p.requiere : EXPM.custodiaDe(caso, M.S.yo.actor)).forEach(k => {
+        M.actuarSobre(k, "consultar");
+        if (opc.pedir !== false && E.soportes[k].estado !== "conforme") { M.actuarSobre(k, "solicitar"); M.actuarSobre(k, "aceptar"); }
+      });
+      const ops = EXPM.opcionesPunto(caso, p);
+      M.S.form = { decision:(ops[EXPM.completitud(E, caso, b.punto).faltan.length ? Math.min(2, ops.length - 1) : 0] || ops[0])[0],
+        porQue:"Decidí con lo que quedó conforme en el expediente.",
+        obs:opc.textos === false ? "" : "Lo que echo de menos en este punto es la trazabilidad de la versión." };
+      if (!M.guardarPunto()) throw new Error("punto no guardado: " + b.punto + " · " + (M.S.msg || ""));
+      continue;
+    }
+    if (b.tipo === "punto-contexto" && opc.textos !== false && !M.S.ctxObs) { M.S.ctxObs = "En mi experiencia este tramo se alarga más de lo que dice el expediente."; continue; }
+    if (b.tipo === "h2" && !M.regsDe({ tipo:"h2", participanteId:M.S.yo.id }).length) {
+      M.S.h2 = {}; caso.h2.forEach((h, i) => { M.S.h2[h.id] = mitad(i, caso.h2.length) ? h.ref : "no_se"; });
+      if (!M.guardarH2()) throw new Error("H2 no guardado: " + (M.S.msg || ""));
+      continue;
+    }
+    if (b.tipo === "h3" && !M.regsDe({ tipo:"h3", participanteId:M.S.yo.id }).length) {
+      M.S.h3 = {}; caso.h3.forEach((h, i) => {
+        M.S.h3["A" + (i + 1)] = mitad(i, caso.h3.length)
+          ? { actor:h.actor, pieza:h.pieza, momento:EXPM.tramoDe(h.momento), accion:String(h.accion).toLowerCase(), resultado:h.denegado ? "denegado" : "entregado" }
+          : { actor:"no_se", pieza:"no_se", momento:"no_se", accion:"no_se", resultado:"no_se" };
+      });
+      if (!M.guardarH3()) throw new Error("H3 no guardado: " + (M.S.msg || ""));
+      continue;
+    }
+    M.avanzarExp();
+  }
+  M.guardarLocal();
+  return M.documentoRespuesta();
+}
+module.exports = { crearMotor, configDemo, recorrer, recorrerExpediente, responder, valorar, memoria, RAIZ, MESA };
 
 if (require.main === module) {
   const cfg = configDemo(); cfg.estudio.instrumento = "ruta";   // esta prueba cubre la ruta de incapacidad

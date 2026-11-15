@@ -13,7 +13,7 @@
    · Los archivos importados son datos no confiables: nada de lo que traen se usa como llave de un catálogo
      sin comprobarlo y todo texto pasa por esc() al llegar al HTML.
    · Las hipótesis se copian de ESC.hipotesis sin renombrarlas ni interpretarlas. */
-const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosConsolidados } = (() => {
+const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosConsolidados, COMUN } = (() => {
 
   /* ---------- Datos no confiables, texto y cifras ---------- */
   const lst = x => Array.isArray(x) ? x : [];
@@ -125,6 +125,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
         else if (x.tipo === "valoracion" && RID.indexOf(x.ronda) >= 0) P.val[x.ronda] = x;
         else if (x.tipo === "preguntas" && RID.indexOf(x.ronda) >= 0) P.preg[x.ronda] = x;
         else if (x.tipo === "observacion") P.obs.push(x);
+        else if (x.tipo === "encuesta") P.enc = x;
         else P.ajenos++;
       });
       // Avance como lo cuenta el simulador: las actividades del rol y un cierre (preguntas) por ronda.
@@ -154,6 +155,34 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     if (!own(FIN, fin)) return { autorizada:false, denegadas:piezas.filter(k => EV[k].cust !== rol).length };
     const r = comprobarFinalidad(rol, fin, piezas, o.paso);
     return { autorizada:r.finalidadAutorizada, denegadas:r.piezasDenegadas.length };
+  }
+
+  /* ---------- Encuesta de perfil del participante (los dos instrumentos) ---------- */
+  const CAMPOS_ENC = () => lst(obj(typeof GUION !== "undefined" && GUION ? GUION.encuesta : null).campos);
+  const campoEnc = id => CAMPOS_ENC().filter(c => c.id === id)[0] || null;
+  const etqEnc = (id, v) => { const c = campoEnc(id), o = c && lst(c.ops).filter(x => x[0] === v)[0]; return o ? o[1] : (txt(v, 80) || "—"); };
+  const numEnc = v => { const n2 = typeof v === "number" ? v : parseFloat(String(v == null ? "" : v).replace(",", ".")); return isFinite(n2) && n2 >= 0 ? n2 : null; };
+  // Distribución de los campos de opción y de los años declarados.
+  function filasPerfilResumen(PS) {
+    const con = PS.filter(P => P.enc), pl = P => obj(P.enc.payload), rows = [];
+    ["edad", "formacion", "frecuencia"].forEach(id => { const c = campoEnc(id); if (c) rows.push([c.n, distTxt(lst(c.ops), contar(con.map(P => pl(P)[id])))]); });
+    const e = estad(con.map(P => numEnc(pl(P).experiencia)));
+    rows.push([(campoEnc("experiencia") || { n:"Años en el rol" }).n, e ? "mediana " + fmtN(e.med) + " · rango " + fmtN(e.min) + " a " + fmtN(e.max) + " · n " + e.n : "sin datos"]);
+    rows.push(["Respondieron la encuesta", cuantos(con.length, PS.length)]);
+    return rows;
+  }
+  const COLS_PERFIL = ["Participante", "Rol", "Edad", "Profesión o formación", "Cuál", "Estudios complementarios", "Años en el rol", "Rol actual hoy", "Trayectoria declarada", "Con qué frecuencia participa en la ruta", "Otros roles"];
+  const filasPerfil = PS => PS.filter(P => P.enc).map(P => { const d = obj(P.enc.payload), n2 = numEnc(d.experiencia);
+    return [P.alias, rolL(P.actor), etqEnc("edad", d.edad), etqEnc("formacion", d.formacion), txt(d.formacionCual, 160) || "—", txt(d.complementarios, 300) || "—",
+      n2 == null ? "—" : celN(n2), txt(d.rolActual, 160) || "—", txt(d.trayectoria, 900) || "—", etqEnc("frecuencia", d.frecuencia), txt(d.otrosRoles, 300) || "—"]; });
+  const NOTA_PERFIL = "La responde cada participante antes del recorrido, después de la declaración de participación. No se le pide su nombre ni el de su entidad: la encuesta describe su experiencia profesional para poder leer sus respuestas.";
+
+  /* ---------- Búsqueda en una tabla (la caja que el panel muestra sobre la tabla buscable) ---------- */
+  const sinTildes = x => String(x == null ? "" : x).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  function filtrarFilas(rows, q) {
+    const ws = sinTildes(q).split(/\s+/).filter(Boolean);
+    if (!ws.length) return rows;
+    return rows.filter(r => { const t = sinTildes(lst(r).join(" ")); return ws.every(w => t.indexOf(w) >= 0); });
   }
 
   /* ---------- Registro completo: una línea legible por registro ---------- */
@@ -249,10 +278,12 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
       ctas.map(q => { const ps = PS.filter(P => P.usuario === q.u); return [q.u, rolL(q.a), q.p ? "De prueba" : "Invitada", ps.length, mejorEstado(ps)]; })
         .concat(ctas.length ? Object.keys(usuariosCon).filter(u => !ctas.some(q => q.u === u)).sort().map(u => { const ps = PS.filter(P => P.usuario === u); return [u, rolL(ps[0].actor), "No figura en las cuentas del proyecto", ps.length, mejorEstado(ps)]; }) : []),
       "Cuentas del proyecto que entregó el panel, con las respuestas recibidas de cada usuario. El estado es el de la respuesta más avanzada. Si la tabla está vacía, el panel no entregó la lista de cuentas.");
+    T("perfil", "Perfil profesional de quienes respondieron", ["Dato", "Lo que declararon"], filasPerfilResumen(PS), NOTA_PERFIL);
+    T("perfil_detalle", "Perfil declarado, participación por participación", COLS_PERFIL, filasPerfil(PS), NOTA_PERFIL + " Cada fila es una participación, con el usuario de su cuenta.");
     cap("participacion", "Qué se examinó y quiénes participaron", "actores-participante",
       "Se examinó el recorrido de la ruta de incapacidad (" + PASOS.length + " pasos en " + SB.fases.length + " fases) en " + R.length + " rondas: " + R.map(r => r.n).join(" y ") + ". Cada persona entró sola con la cuenta de su rol. Los demás actores fueron simulados por el sistema.\n"
       + "Se analizaron " + plural(PS.length, "respuesta", "respuestas") + ": " + nComp + " " + (nComp === 1 ? "completa" : "completas") + " y " + (PS.length - nComp) + " " + (PS.length - nComp === 1 ? "parcial" : "parciales") + ", de " + rolesCon + " de los " + BP.actores.length + " roles. " + (nDatos === 1 ? "1 participante dio" : nDatos + " participantes dieron") + " datos personales; este informe solo muestra el usuario de cada cuenta.\n" + ESC.nota,
-      ["estudio", "participacion_rol", "participantes", "cuentas"]);
+      ["estudio", "participacion_rol", "participantes", "cuentas", "perfil", "perfil_detalle"]);
 
     /* 2. Cobertura por rol */
     function estadoRol(a) {
@@ -532,7 +563,11 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     const celda = (v, j) => { const s = String(v == null ? "" : v); return `<td${num[j] ? ' class="num"' : s.length <= 14 && !/\s/.test(s) ? ' class="nw"' : ""}>${esc(s)}</td>`; };
     const titulo = `<h3 id="inf-t-${esc(id)}">Tabla ${esc(ref)} · ${esc(t.titulo)}${t.simulado ? chipSim() : ""}</h3>`;
     const cab = pantalla ? `<div class="row inf-cab">${titulo}<span class="sp"></span><button type="button" class="btn sm sec" data-act="csv" data-arg="${esc(id)}" aria-label="Exportar a CSV la tabla ${esc(ref)}: ${esc(t.titulo)}">${ico("investigacion-archivo-csv", "sm")}Exportar CSV</button></div>` : titulo;
-    return `${cab}<div class="twrap"><table class="t" data-tabla="${esc(id)}" aria-labelledby="inf-t-${esc(id)}"><thead><tr>${cols.map((c, j) => `<th scope="col"${num[j] ? ' class="num"' : ""}>${esc(c)}</th>`).join("")}</tr></thead><tbody>${rows.length ? rows.map(r => `<tr>${lst(r).map(celda).join("")}</tr>`).join("") : `<tr><td colspan="${cols.length}" class="mini">Sin datos</td></tr>`}</tbody></table></div>${t.nota ? `<p class="mini inf-nota"><b>Cómo se calcula.</b> ${esc(t.nota)}</p>` : ""}`;
+    // La tabla buscable (lo que escribieron los participantes) lleva su caja de búsqueda en pantalla.
+    const busca = pantalla && obj(an).buscable === id, q = busca ? String((typeof UI !== "undefined" && UI ? UI.buscar : "") || "") : "";
+    const fs = busca ? filtrarFilas(rows, q) : rows;
+    const caja = busca ? `<div class="row busca-tabla"><label class="campo" style="flex:1;min-width:240px;margin:0">Buscar en esta tabla<input type="search" data-in="buscar-tabla" value="${esc(q)}" placeholder="palabras de la respuesta, el rol, el expediente o el punto" aria-label="Buscar en la tabla ${esc(t.titulo)}"></label><span class="mini">${fs.length} de ${rows.length} ${rows.length === 1 ? "fila" : "filas"}${q ? "" : " · escriba para filtrar"}</span>${q ? `<button type="button" class="btn sm outline" data-act="buscar-limpiar">Quitar el filtro</button>` : ""}</div>` : "";
+    return `${cab}${caja}<div class="twrap"><table class="t" data-tabla="${esc(id)}" aria-labelledby="inf-t-${esc(id)}"><thead><tr>${cols.map((c, j) => `<th scope="col"${num[j] ? ' class="num"' : ""}>${esc(c)}</th>`).join("")}</tr></thead><tbody>${fs.length ? fs.map(r => `<tr>${lst(r).map(celda).join("")}</tr>`).join("") : `<tr><td colspan="${cols.length}" class="mini">${busca && rows.length ? "Ninguna fila coincide con lo que buscó." : "Sin datos"}</td></tr>`}</tbody></table></div>${t.nota ? `<p class="mini inf-nota"><b>Cómo se calcula.</b> ${esc(t.nota)}</p>` : ""}`;
   }
   const parrafos = t => String(t || "").split("\n").filter(Boolean).map(p => `<p>${esc(p)}</p>`).join("");
   function capituloHtml(an, c, pantalla) {
@@ -544,6 +579,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     return `<h2 id="inf-c-${esc(c.id)}">${ico(c.icono)}${esc(c.n)}. ${esc(c.titulo)}</h2>${parrafos(c.intro)}${c.aviso ? `<div class="guia">${ico("estados-advertencia")}<div>${esc(c.aviso)}</div></div>` : ""}${cuerpo}`;
   }
   function cifrasHtml(r) {
+    if (lst(r.cifras).length) return `<dl class="inf-cifras">${lst(r.cifras).map(x => `<div><dt>${esc(x[0])}</dt><dd>${esc(x[1])}</dd></div>`).join("")}</dl>`;
     const c = [["Respuestas analizadas", r.participaciones], ["Completas", r.completas], ["Parciales", r.parciales], ["Roles con respuesta", r.roles.conRespuesta + " de " + r.roles.total],
       ["Roles requeridos con respuesta completa", r.requeridos.conEvidencia + " de " + r.requeridos.total], ["Actividades respondidas", r.actividades.respondidas + " de " + r.actividades.esperadas],
       ["Registros de los participantes", r.registros.deParticipantes], ["Registros simulados por el sistema", r.registros.simulados]];
@@ -552,7 +588,12 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
   const avisosHtml = r => lst(r.avisos).length ? `<div class="guia inf-avisos">${ico("estados-advertencia")}<div><b>Tenga presente</b><ul class="lista">${r.avisos.map(a => `<li>${esc(a)}</li>`).join("")}</ul></div></div>` : "";
   const indiceHtml = (an, clase) => `<nav class="${clase}" aria-label="Contenido del informe"><h2>Contenido</h2><ol>${lst(an.capitulos).map(c => `<li><a href="#inf-c-${esc(c.id)}">${esc(c.titulo)}</a></li>`).join("")}</ol></nav>`;
   function vacioHtml(r) {
-    const ileg = r && r.documentos && r.documentos.recibidos ? `<p>Se ${r.documentos.recibidos === 1 ? "recibió 1 documento, pero no se pudo leer" : "recibieron " + esc(r.documentos.recibidos) + " documentos, pero ninguno se pudo leer"}. Revíselos en «Respuestas».</p>` : "";
+    const d = obj(r && r.documentos);
+    // Respuestas del otro instrumento: se leen bien, pero este informe no las mide.
+    const otro = d.otroInstrumento ? `<p>${esc(plural(d.otroInstrumento, "respuesta corresponde", "respuestas corresponden"))} al otro instrumento del simulador y no ${d.otroInstrumento === 1 ? "entra" : "entran"} en este informe. En «Estudio» puede cambiar el instrumento que se aplica.</p>` : "";
+    const fuera = d.sinCatalogo ? `<p>${esc(plural(d.sinCatalogo, "respuesta trae", "respuestas traen"))} un expediente que no está en el catálogo del instrumento.</p>` : "";
+    const malos = d.ilegibles ? `<p>Se ${d.ilegibles === 1 ? "recibió 1 documento, pero no se pudo leer" : "recibieron " + esc(d.ilegibles) + " documentos, pero ninguno se pudo leer"}. Revíselos en «Respuestas».</p>` : "";
+    const ileg = malos + otro + fuera;
     return `<div class="card informe" id="informe"><h2 style="margin-top:0">${ico("investigacion-informe")}Informe consolidado</h2>
       <div class="qpanel">${ico("estados-pendiente")}Todavía no hay respuestas para analizar.</div>${ileg}
       <p>Para ver el informe:</p>
@@ -604,8 +645,10 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     const hoja = typeof document !== "undefined" && document && typeof document.querySelector === "function" ? document.querySelector("style") : null;
     // La hoja de estilos es la de la propia página; se evita que un cierre de etiqueta corte el bloque.
     const css = (hoja && typeof hoja.textContent === "string" ? hoja.textContent : "").replace(/<\/(style)/gi, "<\\/$1");
-    const ficha = [["Estudio", e.titulo], ["Programa", e.programa], ["Institución", e.institucion], ["Investigador responsable", e.investigador], ["Director de la investigación", e.director], ["Comité de ética", e.comite],
-      ["Escenario", obj(r.escenario).n || ESC.n], ["Rondas", R.map(x => x.n).join(" · ")], ["Análisis generado", fechaSegura(Date.parse(r.generado))]].filter(x => x[1]);
+    const ficha = [["Estudio", e.titulo], ["Programa", e.programa], ["Institución", e.institucion], ["Investigador responsable", e.investigador], ["Director de la investigación", e.director], ["Comité de ética", e.comite]]
+      .concat(lst(r.ficha).length ? lst(r.ficha) : [["Escenario", obj(r.escenario).n || ESC.n], ["Rondas", R.map(x => x.n).join(" · ")]], [["Análisis generado", fechaSegura(Date.parse(r.generado))]]).filter(x => x[1]);
+    const kicker = txt(r.kicker, 160) || "Simulación de la ruta de incapacidad · informe consolidado";
+    const pie = txt(r.pie, 900) || (ESC.nota + " Lo marcado como «simulado» lo genera el sistema para representar a los actores que no estaban conectados y al módulo propuesto; no es una integración real. Los participantes aparecen con el usuario de su cuenta, sin nombres ni correos.");
     return `<!doctype html>
 <html lang="es">
 <head>
@@ -618,11 +661,11 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
 </head>
 <body class="print-doc">
 <div class="wrap">
-<header class="doc-cover"><div class="doc-kicker">Simulación de la ruta de incapacidad · informe consolidado</div><h1>${esc(e.titulo)}</h1><p class="doc-sub">${esc([e.subtitulo, e.programa, e.institucion].filter(Boolean).join(" · "))}</p>${hay ? cifrasHtml(r) : `<p>No hay respuestas analizadas.</p>`}</header>
+<header class="doc-cover"><div class="doc-kicker">${esc(kicker)}</div><h1>${esc(e.titulo)}</h1><p class="doc-sub">${esc([e.subtitulo, e.programa, e.institucion].filter(Boolean).join(" · "))}</p>${hay ? cifrasHtml(r) : `<p>No hay respuestas analizadas.</p>`}</header>
 <section class="doc-ficha"><h2>Ficha del estudio</h2><div class="kv">${ficha.map(x => `<b>${esc(x[0])}</b><span>${esc(x[1])}</span>`).join("")}</div>${hay ? avisosHtml(r) : ""}</section>
 ${indiceHtml(an, "doc-toc")}
 <main class="card informe">${lst(an.capitulos).map(c => capituloHtml(an, c, false)).join("")}</main>
-<footer class="doc-foot">${esc(ESC.nota)} Lo marcado como «simulado» lo genera el sistema para representar a los actores que no estaban conectados y al módulo propuesto; no es una integración real. Los participantes aparecen con el usuario de su cuenta, sin nombres ni correos.</footer>
+<footer class="doc-foot">${esc(pie)}</footer>
 </div>
 </body>
 </html>
@@ -638,7 +681,7 @@ ${indiceHtml(an, "doc-toc")}
   }
   // Objeto para exportar como JSON: participantes sin datos personales, registros vigentes y tablas. Sin credenciales.
   function datosConsolidados(docs, opciones) {
-    const an = analizar(docs, opciones), L = leer(docs, cuentasLimpias(obj(opciones).cuentas));
+    const an = obj(opciones).analisis || analizar(docs, opciones), L = leer(docs, cuentasLimpias(obj(opciones).cuentas));
     return {
       instrumento:INSTRUMENTO, formato:FORMATO, version:VERSION, tipo:"consolidado", fecha:an.resumen.generado,
       estudio:an.resumen.estudio, escenario:{ id:ESC.id, n:ESC.n, nota:ESC.nota, rondas:R.map(r => ({ id:r.id, modo:r.modo, n:r.n })) },
@@ -651,5 +694,9 @@ ${indiceHtml(an, "doc-toc")}
     };
   }
 
-  return { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosConsolidados };
+  // Utilidades que comparte el informe del otro instrumento (adm-5-expediente.js).
+  const COMUN = { lst, obj, own, txt, fmtN, celN, deN, cuantos, estad, contar, distTxt, fechaSegura, sinTildes,
+    estudioLimpio, cuentasLimpias, vigentesDoc, rolL, rolC, esRol, origenTxt,
+    filasPerfilResumen, COLS_PERFIL, filasPerfil, NOTA_PERFIL };
+  return { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosConsolidados, COMUN };
 })();

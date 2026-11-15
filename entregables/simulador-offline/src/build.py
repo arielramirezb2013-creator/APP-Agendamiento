@@ -18,7 +18,7 @@ ACTORES = ["tra", "emp", "ips", "eps", "arl", "afp", "jr", "jn", "mintrabajo", "
 PREFIJO = {"tra": "trabajador", "emp": "empleador", "jr": "juntaregional", "jn": "juntanacional"}
 
 SIM = ["nucleo.js", "sim-1-estado.js", "sim-2-vistas.js", "exp-2-estado.js", "exp-3-vistas.js", "sim-3-eventos.js"]
-ADM = ["nucleo.js", "adm-1-proyecto.js", "adm-2-vistas.js", "adm-3-resultados.js", "adm-4-eventos.js"]
+ADM = ["nucleo.js", "adm-1-proyecto.js", "adm-2-vistas.js", "adm-3-resultados.js", "adm-5-expediente.js", "adm-4-eventos.js"]
 
 
 def leer(p):
