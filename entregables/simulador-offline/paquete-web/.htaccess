@@ -1,0 +1,12 @@
+# Cabeceras del sitio del simulador, para servidores Apache (Azure App Service en Linux no lee este archivo:
+# allí van en la configuración de nginx; vea guia-despliegue.html, apartados 5 y 9).
+# index.html, configuracion.js y sw.js se reemplazan durante el estudio: el navegador debe comprobar siempre
+# si hay una versión nueva, para que nadie se quede con la plantilla o con unas cuentas viejas.
+<IfModule mod_headers.c>
+  <FilesMatch "^(index\.html|configuracion\.js|sw\.js)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "no-referrer"
+</IfModule>

@@ -147,7 +147,7 @@ function recorrerExpediente(M, usuario, clave, opc) {
 module.exports = { crearMotor, configDemo, configDe, recorrer, recorrerExpediente, responder, valorar, memoria, RAIZ, MESA };
 
 if (require.main === module) {
-  const cfg = configDemo(); cfg.estudio.instrumento = "ruta";   // esta prueba cubre la ruta de incapacidad
+  const cfg = configDe("simulador-ruta-demo.html");   // esta prueba cubre la ruta de incapacidad, con sus doce cuentas
   const muestras = process.argv.includes("--muestras"), dir = path.join(RAIZ, "tests", "salida", "muestras");
   if (muestras) fs.mkdirSync(dir, { recursive:true });
   let fallas = 0; const ok = (c, t) => { if (!c) { fallas++; console.log("  FALLA · " + t); } };

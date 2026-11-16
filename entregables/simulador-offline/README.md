@@ -18,7 +18,8 @@ Las **cuentas de demostración** (usuarios `demo-…`, contraseña pública `DEM
 | Entregable | Archivo | Para qué |
 |---|---|---|
 | **Demostración** | `simulador-demo.html` | Abre con doble clic, sin conexión. Trae los cuatro expedientes sintéticos y quince cuentas de demostración: una por rol en PI-L01 y el ARL en PI-L02, PI-L03 y PI-L04. Sirve para conocer la herramienta, mostrarla y ensayar. Sus respuestas quedan marcadas y no entran al análisis. **No se publica para el estudio.** |
-| Demostración del otro instrumento | `simulador-ruta-demo.html` | Igual, con el recorrido de la ruta de incapacidad y una cuenta de demostración por rol. |
+| Demostración del otro instrumento | `simulador-ruta-demo.html` | Igual, con el recorrido de la ruta de incapacidad y una cuenta de demostración por rol. Guarda su avance aparte de la otra demostración. |
+| Demostración para artefacto | `simulador-demo-artefacto.html` | La misma demostración del expediente, sin la envoltura del documento, para publicarla como artefacto de consulta. No se publica para el estudio. |
 | **Uso real · sitio web** | `paquete-web.zip` (carpeta `paquete-web/`) | Lo que se publica en Azure: simulador, panel del investigador, receptor opcional y guías. Su `configuracion.js` es una **plantilla sin estudio y sin cuentas**: hasta que se reemplaza por la que genera el panel, el sitio dice que no está configurado y no deja entrar a nadie. |
 | **Uso real · archivo único** | `simulador.html` | El mismo simulador, **sin cuentas**. Es la base que el panel convierte en «simulador en un solo archivo» con las cuentas del estudio (momento «Publicar»). Abierto tal cual, explica eso y no deja entrar. |
 
@@ -90,6 +91,7 @@ Decisiones de diseño del recorrido, para que quepa en los 45 minutos del estudi
 - En el sitio web, después de la primera visita la página abre aunque no haya conexión.
 - Para continuar en otro dispositivo: con receptor, basta entrar con el mismo usuario y contraseña; sin receptor, se descarga un archivo de avance y se carga en el otro equipo. Con el instrumento del expediente, el estado del expediente viaja en el documento —lo que cada soporte alcanzó a conseguir, las horas gastadas, los accesos y los puntos cerrados—, así que al retomar vuelve como estaba.
 - Si el navegador no permite guardar, el simulador lo advierte y sigue funcionando mientras la pestaña esté abierta.
+- Cuando el investigador sube una configuración nueva —la primera, sobre la plantilla del paquete, o una con cuentas cambiadas—, el simulador la vuelve a pedir al abrirse y, si cambió y la persona todavía no ha entrado, se recarga una vez. El servidor debe mandar `Cache-Control: no-cache` para `index.html`, `configuracion.js` y `sw.js`; en Apache ya lo hace el `.htaccess` del paquete.
 
 ## Varias sesiones de simulación
 
@@ -179,7 +181,7 @@ python3 src/build.py
 | `guias/` | Guías del paquete |
 | `estilos*.css`, `head-*.html`, `skel-*.html` | Estilos propios y esqueletos de página |
 
-`build.py` escribe por separado lo de demostración y lo de uso real. Demostración: `simulador-demo.html`, `simulador-ruta-demo.html` y `simulador-artefacto.html` (la demostración sin la envoltura del documento, para publicarla como artefacto). Uso real: `simulador.html` sin configuración y el paquete web con la plantilla de `configuracion.js`. Las cuentas de demostración solo se generan para los archivos de demostración (`config_demo()`); la plantilla del paquete es `PLANTILLA_CONFIG`.
+`build.py` escribe por separado lo de demostración y lo de uso real. Demostración: `simulador-demo.html`, `simulador-ruta-demo.html` y `simulador-demo-artefacto.html` (la demostración sin la envoltura del documento, para publicarla como artefacto). Todo archivo con cuentas de demostración lleva «demo» en el nombre. Uso real: `simulador.html` sin configuración y el paquete web con la plantilla de `configuracion.js`. Las cuentas de demostración solo se generan para los archivos de demostración (`config_demo()`); la plantilla del paquete es `PLANTILLA_CONFIG`.
 
 ## Pruebas
 
@@ -197,7 +199,7 @@ Requieren Node, Playwright con Chromium y, para el receptor, PHP. Las pruebas se
 
 | Prueba | Qué comprueba |
 |---|---|
-| `entregables.js` | Que `simulador.html`, el `index.html` y el `configuracion.js` del paquete —y el propio `paquete-web.zip`— no traigan ninguna cuenta de demostración ni su contraseña; que digan con claridad qué falta y no dejen entrar; que la demostración no viaje en el paquete; y que `simulador-demo.html` traiga sus quince cuentas y deje recorrer los cuatro expedientes. |
+| `entregables.js` | Que `simulador.html` y **todos** los archivos de `paquete-web.zip` —incluidas las guías y el LEEME— no traigan ninguna cuenta de demostración, ni sus usuarios, ni su contraseña; que todo archivo que sí las trae lleve «demo» en el nombre; que digan con claridad qué falta y no dejen entrar; que la demostración no viaje en el paquete; y que `simulador-demo.html` traiga sus quince cuentas y deje recorrer los cuatro expedientes. |
 | `motor.js` | Cada rol recorre la ruta y entrega un documento válido y sin credenciales. Con `--muestras` escribe doce documentos de ejemplo. |
 | `expediente.js` | El cociente «Inicio n/m» del documento frente al que se calcula de la tabla de soportes en los diez puntos; custodios, responsabilidades y accesos coherentes; el orden alternado de las condiciones; los doce roles completan el instrumento dentro de los 45 minutos; el corte de 48 horas; un soporte pedido no cuenta hasta verificarlo y aceptarlo; la denegación de lo clínico a una finalidad de control administrativo; el reinicio entre condiciones; el contraste de horas y de completitud entre las dos condiciones; y la pausa y el regreso a mitad del expediente. |
 | `simulador.js` | Los 12 roles por la interfaz desde `file://`; acceso, declaración, rechazo, recarga con borrador, pausa, cierre inesperado, corrección de respuestas, respaldo, archivo de avance, retiro, navegador sin almacenamiento; teléfono (390, 360 y 320 px), nombres accesibles, foco y teclado. |

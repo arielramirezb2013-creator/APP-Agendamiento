@@ -90,7 +90,10 @@ function sesionRecordada() { try { return ALM.sesion.getItem(CLAVE_SESION) || ""
 function aplicarGuardado(d) { PERSISTE.forEach(k => { if (d[k] !== undefined) S[k] = d[k]; }); S.guardado = d.t || 0; }
 // Abre la cuenta. Si hay avance guardado en este dispositivo, lo restablece y muestra la pantalla de reanudación.
 function abrirCuenta(q, reanudar) {
-  const d = cargarLocal(q.u), previo = d && d.cuenta.a === q.a ? d : null;
+  const d = cargarLocal(q.u);
+  // Un avance de otro instrumento (por ejemplo, de la otra demostración) no se continúa en este.
+  const mismoInstr = !d || !d.ses || ((d.ses.instrumento === "expediente") === (instrumentoDelEstudio() === "expediente"));
+  const previo = d && d.cuenta.a === q.a && mismoInstr ? d : null;
   // `expediente`: el de esta cuenta, si la configuración le fija uno propio (lo usa la demostración para los cuatro casos).
   const cuenta = { u:q.u, a:q.a, p:!!q.p, perfil:q.perfil || null, expediente:EXPM.casoExacto(q.expediente) ? q.expediente : null, r:reanudar || (previo && previo.cuenta.r) || "" };
   S = estadoInicial(); S.cuenta = cuenta; aplicarPerfil();

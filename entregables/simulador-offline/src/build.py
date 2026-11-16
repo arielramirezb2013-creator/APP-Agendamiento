@@ -131,14 +131,15 @@ def main():
     demo = config_demo()
     print("Demostración (archivo único, con cuentas de demostración y los cuatro expedientes):")
     escribir(RAIZ / "simulador-demo.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=demo))
-    escribir(RAIZ / "simulador-artefacto.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=demo, doctype=False))
+    escribir(RAIZ / "simulador-demo-artefacto.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=demo, doctype=False))
     # Variante con el otro instrumento: la ruta de incapacidad de once pasos del service blueprint.
-    ruta = config_demo(con_otros_expedientes=False); ruta["estudio"]["instrumento"] = "ruta"; ruta["estudio"].pop("expediente", None)
+    # Su propio estudio: así su avance no se mezcla con el de la otra demostración en el mismo navegador.
+    ruta = config_demo(con_otros_expedientes=False); ruta["estudio"].update({"id": "demostracion-ruta", "instrumento": "ruta"}); ruta["estudio"].pop("expediente", None)
     escribir(RAIZ / "simulador-ruta-demo.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=ruta))
     print("Uso real (sin cuentas de demostración):")
     # Archivo único sin configuración: el panel le pone las cuentas del estudio («Publicar → Simulador en un solo archivo»).
     escribir(RAIZ / "simulador.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=None))
-    for viejo in ("simulador-ruta.html",):   # nombre anterior de la demostración de la ruta
+    for viejo in ("simulador-ruta.html", "simulador-artefacto.html"):   # nombres anteriores de las demostraciones
         if (RAIZ / viejo).exists(): (RAIZ / viejo).unlink(); print("  (se retiró " + viejo + ")")
     print("Paquete web (uso real):")
     escribir(PAQUETE / "index.html", pagina("head-sim.html", "skel-sim.html", SIM, externa=True))
@@ -146,7 +147,7 @@ def main():
     faltan = [x for x in ADM if not (AQUI / x).exists()]
     if faltan: print("  (panel del investigador pendiente: faltan " + ", ".join(faltan) + ")")
     else: escribir(PAQUETE / "administrador.html", pagina("head-adm.html", "skel-adm.html", ADM, rol="admin", con_config=False))
-    for origen, destino in [("servidor/sw.js", "sw.js"), ("servidor/recibir.php", "recibir.php"), ("servidor/recibir-config.php", "recibir-config.php"), ("servidor/htaccess-respuestas.txt", "respuestas/.htaccess"), ("servidor/index-respuestas.html", "respuestas/index.html"),
+    for origen, destino in [("servidor/sw.js", "sw.js"), ("servidor/recibir.php", "recibir.php"), ("servidor/recibir-config.php", "recibir-config.php"), ("servidor/htaccess-respuestas.txt", "respuestas/.htaccess"), ("servidor/htaccess-sitio.txt", ".htaccess"), ("servidor/index-respuestas.html", "respuestas/index.html"),
                             ("guias/LEEME.txt", "LEEME.txt"), ("guias/guia-despliegue.html", "guia-despliegue.html"), ("guias/guia-investigador.html", "guia-investigador.html")]:
         if (AQUI / origen).exists(): escribir(PAQUETE / destino, leer(AQUI / origen))
         else: print("  (falta la fuente " + origen + ")")

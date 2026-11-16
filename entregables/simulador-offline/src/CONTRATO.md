@@ -19,7 +19,8 @@ mismas: cambian el recorrido del participante y el informe del panel.
 
 | Pieza | Archivo construido | Quién la usa |
 |---|---|---|
-| Demostración, con cuentas de demostración y los cuatro expedientes | `simulador-demo.html` (expediente) y `simulador-ruta-demo.html` (ruta) | investigador, para conocer, mostrar y ensayar; **nunca se publica para el estudio** |
+| Demostración del expediente: quince cuentas de demostración y los cuatro expedientes | `simulador-demo.html` y, sin envoltura de documento, `simulador-demo-artefacto.html` | investigador, para conocer, mostrar y ensayar; **nunca se publica para el estudio** |
+| Demostración de la ruta: una cuenta de demostración por rol | `simulador-ruta-demo.html` | ídem |
 | Simulador de uso real en un solo archivo, sin cuentas | `simulador.html` | base que el panel convierte en el archivo único con las cuentas del estudio |
 | Simulador del sitio | `paquete-web/index.html` + `configuracion.js` + `sw.js` | participantes |
 | Panel del investigador | `paquete-web/administrador.html` | investigador (desde su equipo o desde el sitio) |
@@ -54,8 +55,10 @@ src/
 y los módulos de la página. Dentro de esa función todos los módulos comparten ámbito.
 
 `build.py` separa lo de demostración de lo de uso real. **Demostración**: `simulador-demo.html` (expediente, quince
-cuentas `demo-…`: una por rol en PI-L01 y el ARL en PI-L02, PI-L03 y PI-L04), `simulador-artefacto.html` (el mismo
-sin envoltura de documento) y `simulador-ruta-demo.html` (el otro instrumento, una cuenta por rol). **Uso real**:
+cuentas `demo-…`: una por rol en PI-L01 y el ARL en PI-L02, PI-L03 y PI-L04), `simulador-demo-artefacto.html` (el mismo
+sin envoltura de documento) y `simulador-ruta-demo.html` (el otro instrumento, una cuenta por rol, con su propio
+`estudio.id` = `demostracion-ruta` para que su avance no se mezcle con el de la otra demostración). Todo archivo con
+cuentas de demostración lleva «demo» en el nombre. **Uso real**:
 `simulador.html` con `SIM_CONFIG_INCLUIDA=null` y el paquete web, cuyo `configuracion.js` es la plantilla
 `window.SIM_CONFIG = null;` sin estudio ni cuentas. Todas las páginas llevan el mismo código; lo único que cambia es
 la configuración incluida. Las cuentas de demostración solo las genera `config_demo()` y solo para la demostración;
@@ -126,13 +129,19 @@ window.SIM_CONFIG = {
   distintas no se pisan en el mismo navegador. No se cambia con el estudio en marcha. Los campos vacíos de `estudio` toman el valor de `GUION.estudio`.
 - La configuración **nunca** contiene contraseñas en claro, ni las claves de administración (ni la del
   investigador ni la del perfil técnico), ni etiquetas privadas de las cuentas.
+- `configuracion.js` se reemplaza en el servidor sin reconstruir la página. Al abrir, el simulador lo vuelve a
+  pedir con `cache: "no-cache"` (`revisarConfiguracion()` en `sim-3-eventos.js`); si cambió y la persona todavía
+  no ha entrado, recarga una vez (marca en `sessionStorage` con la huella del texto, para no entrar en bucle). Así
+  un navegador que guardó la plantilla o unas cuentas viejas por frescura heurística se pone al día solo. El
+  servidor debe además mandar `Cache-Control: no-cache` para `index.html`, `configuracion.js` y `sw.js`.
 - `estudio.instrumento` y `estudio.expediente` entran en la firma de la configuración: si el investigador los
   cambia, el panel marca la publicada como desactualizada.
 - El simulador de archivo único trae la configuración dentro del HTML, en esta línea exacta:
   `<script>/*CONFIG:INICIO*/window.SIM_CONFIG_INCLUIDA=<JSON|null>;/*CONFIG:FIN*/</script>`.
   Si `SIM_CONFIG_INCLUIDA` no es `null`, manda sobre `configuracion.js`. Para producir un simulador de archivo
   único con cuentas reales se reemplaza lo que hay entre los dos marcadores por
-  `window.SIM_CONFIG_INCLUIDA=<JSON>;` con `<` escrito como `<`.
+  `window.SIM_CONFIG_INCLUIDA=<JSON>;` con `<` escrito como `\u003c` y U+2028/U+2029 como `\u2028`/`\u2029`, como
+  hacen `json_seguro()` en `build.py` y `jsonEnScript()` en el panel, para que el JSON no cierre la etiqueta.
 
 ## 6. Documento de respuestas
 
@@ -368,7 +377,7 @@ Acciones que el informe pone en sus botones y que atiende `adm-4-eventos.js`:
 
 | Prueba | Qué cubre |
 |---|---|
-| `node tests/entregables.js` | qué archivo es para qué: nada de uso real (archivo único, `index.html`, `configuracion.js` y el zip) lleva cuentas de demostración ni su contraseña, y lo dice al abrirse; la demostración trae sus quince cuentas y los cuatro expedientes |
+| `node tests/entregables.js` | qué archivo es para qué: ni `simulador.html` ni ningún archivo del zip (guías incluidas) lleva cuentas de demostración, sus usuarios o su contraseña; todo archivo que las lleva tiene «demo» en el nombre; lo de uso real lo dice al abrirse y se pone al día cuando cambia `configuracion.js` en el servidor; la demostración trae sus quince cuentas, sus cuatro expedientes y su propia orientación |
 | `node tests/motor.js` | motor sin navegador: los 12 roles completan el recorrido de la ruta; con `--muestras` escribe doce documentos de respuestas en `tests/salida/muestras/` |
 | `node tests/expediente.js` | instrumento de expediente: el catálogo frente al documento, el orden alternado, los 12 roles dentro de los 45 minutos, el corte de 48 horas, la conformidad que solo cuenta al verificar y aceptar, el acceso por finalidad, el reinicio entre condiciones, el contraste entre las dos y la pausa a mitad del expediente |
 | `node tests/simulador.js` | navegador, archivo local sin red: los 12 roles por la interfaz, acceso, declaración, pausa, reanudación, cierre inesperado, respaldo, archivo de avance, retiro, teléfono y teclado |

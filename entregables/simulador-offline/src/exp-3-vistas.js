@@ -45,9 +45,11 @@ function expFichaHtml(caso, compacta) {
 function intervencionExpHtml(actor) {
   const caso = casoExp(), a = EXPM.actorDe(caso, actor);
   if (!a) return `<p class="mini">${esc(GUION.exp.sinPapel)}</p>`;
-  const filas = caso.puntos.map(p => {
-    const como = EXPM.participa(caso, actor, p);
-    return `<tr><td class="nw"><b>${esc(p.id)}</b></td><td>${esc(p.n)}</td><td>${esc(como === "decide" ? "Decide" : como === "aporta" ? "Aporta la evidencia que custodia" : "No interviene")}</td></tr>`;
+  // Misma regla que EXPM.bloques: lo que viene después de la decisión que resuelve es tramo ilustrativo.
+  let iRes = -1; caso.puntos.forEach((p, j) => { if (p.resuelve) iRes = j; });
+  const filas = caso.puntos.map((p, j) => {
+    const como = iRes >= 0 && j > iRes ? "ilustra" : EXPM.participa(caso, actor, p);
+    return `<tr><td class="nw"><b>${esc(p.id)}</b></td><td>${esc(p.n)}</td><td>${esc(como === "decide" ? "Decide" : como === "aporta" ? "Aporta la evidencia que custodia" : como === "ilustra" ? "Lo lee como tramo ilustrativo" : "No interviene")}</td></tr>`;
   }).join("");
   return `<div class="twrap"><table class="t apila"><thead><tr><th scope="col">Punto</th><th scope="col">Decisión</th><th scope="col">Qué hace usted</th></tr></thead><tbody>${filas}</tbody></table></div>
     <p class="mini">${esc(a.rol)}${(a.custodia || []).length ? " · custodia " + esc(a.custodia.join(", ")) : ""}</p>`;

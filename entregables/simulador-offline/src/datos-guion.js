@@ -8,7 +8,7 @@ const GUION = {
   estudio: {
     id:"ruta-incapacidad-p2",
     titulo:"Simulación de la ruta de incapacidad laboral",
-    subtitulo:"Interoperabilidad clínico-laboral · caso sintético {persona} · organización ancla SURA",
+    subtitulo:"Interoperabilidad clínico-laboral · casos sintéticos · organización ancla SURA",
     programa:"Proyecto 2 · DGIT 6202",
     institucion:"Universidad de los Andes",
     investigador:"", director:"", contacto:"", comite:"", cierre:""
@@ -229,6 +229,35 @@ const GUION = {
   },
 
   /* Lo que se ve en cada condición antes de empezar. */
+  /* La orientación cuando el estudio aplica el expediente: el caso, la mecánica y el rol son otros. */
+  orientacionExp: {
+    estudio: {
+      busca:[
+        "Conocer, punto por punto, con qué evidencia cuenta su rol para decidir, qué le falta, cómo la consigue y cuánto le cuesta conseguirla.",
+        "Comparar el mismo expediente tramitado con los canales de hoy y con el módulo de interoperabilidad que propone la investigación.",
+        "Saber a quién le atribuye usted cada responsabilidad del trámite y qué alcanza a reconstruir de quién consultó qué, cuándo y para qué."
+      ]
+    },
+    caso: {
+      titulo:"El expediente con el que va a trabajar",
+      intro:"Es un expediente sintético de solicitud de pensión de invalidez de origen laboral, construido a partir de sentencias reales reescritas: ninguna persona es identificable. Aquí ve lo esencial; al empezar el recorrido tendrá la ficha completa a la mano en todo momento."
+    },
+    mecanica: {
+      puntos:[
+        { t:"Un expediente, dos condiciones", d:"Recorre el mismo expediente dos veces: una con los canales del flujo actual —oficio, correo, bandejas documentales— y otra con el módulo de interoperabilidad, que consulta por finalidad y deja registro de cada acceso. El orden se lo asigna la herramienta, y al empezar la segunda el expediente vuelve a como estaba al radicar." },
+        { t:"En cada punto de decisión", d:"Ve los soportes que esa decisión exige, en qué estado llegaron y con qué criterio se consideran conformes. Antes de consultar declara para qué lo hace. Puede consultar, pedir o devolver lo que no cumple; un soporte pedido solo cuenta cuando llega, usted lo verifica y lo acepta." },
+        { t:"El tiempo cuenta", d:"Cada actuación consume horas virtuales, y no las mismas en las dos condiciones. Hay un corte de 48 horas por condición: si una actuación ya no cabe, la herramienta se lo dice y usted decide con lo que tenga." },
+        { t:"Usted decide y explica", d:"En cada punto decide, dice por qué y tiene un espacio en blanco para todo lo que quiera añadir. Los demás actores están simulados: responden a lo que usted pide con los datos del expediente." },
+        { t:"Al final", d:"Dos preguntas de cierre: a quién le corresponde cada tarea del expediente, y qué alcanza a reconstruir de algunos accesos —quién consultó qué pieza, cuándo, para qué y con qué resultado—." }
+      ]
+    },
+    rol: {
+      papelTitulo:"Su papel en este expediente",
+      funcion:"Función en el sistema",
+      nota:"Los puntos que su rol no decide los verá como contexto, con un espacio para dejar observaciones. Los que vienen después de la decisión que resuelve el derecho se leen como tramo ilustrativo: no se le pide decidirlos en cada condición."
+    }
+  },
+
   condicion: {
     tituloA:"Primera condición",
     tituloB:"Segunda condición",

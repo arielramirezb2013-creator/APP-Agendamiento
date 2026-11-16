@@ -208,6 +208,30 @@ window.addEventListener("error", () => { try { guardarLocal(); } catch (e) {} })
 window.addEventListener("unhandledrejection", () => { try { guardarLocal(); } catch (e) {} });
 document.addEventListener("visibilitychange", () => { if (document.hidden) { clearTimeout(guardarT); guardarLocal(); } });
 
+/* ---------- La configuración del sitio, siempre la publicada ----------
+   configuracion.js se reemplaza en el servidor sin reconstruir la página: al subir la del investigador sobre la
+   plantilla del paquete, o al cambiar las cuentas. Si el servidor no manda Cache-Control, el navegador puede
+   seguir usando la copia que guardó semanas atrás (frescura heurística) y el sitio diría «no configurado» o
+   rechazaría una cuenta nueva. Al abrir, se pide de nuevo al servidor; si cambió y la persona todavía no ha
+   entrado, la página se recarga una vez para usar la nueva. A mitad de un recorrido no se interrumpe: la copia
+   fresca ya queda guardada para la próxima vez que abra. */
+const MARCA_RECARGA_CFG = "simasinc:v1:recarga-config";
+async function revisarConfiguracion() {
+  if (!CFG.enSitio || !/^https?:$/.test(location.protocol) || typeof fetch !== "function") return;
+  let texto = null;
+  try { const r = await fetch("configuracion.js", { cache:"no-cache", credentials:"same-origin" }); if (r.ok) texto = await r.text(); } catch (e) { return; }
+  if (texto == null) return;
+  // El comentario de cabecera va antes de la asignación: se lee desde ella, sin tocar el contenido del JSON.
+  const i = texto.indexOf("window.SIM_CONFIG"), m = i < 0 ? null : /^window\.SIM_CONFIG\s*=\s*([\s\S]*?);?\s*$/.exec(texto.slice(i).trim());
+  let fresca;
+  try { fresca = m ? JSON.parse(m[1]) : undefined; } catch (e) { return; }   // un archivo dañado lo explica la pantalla
+  if (fresca === undefined || canonico(fresca) === canonico(window.SIM_CONFIG == null ? null : window.SIM_CONFIG)) return;
+  if (S.cuenta && CFG.ok) return;                            // ya entró: no se le interrumpe
+  const huella = SHA.hex(texto);
+  try { if (ALM.sesion && ALM.sesion.getItem(MARCA_RECARGA_CFG) === huella) return; if (ALM.sesion) ALM.sesion.setItem(MARCA_RECARGA_CFG, huella); } catch (e) { return; }
+  location.reload();
+}
+
 (async function init() {
   if (!document.documentElement.lang) document.documentElement.lang = "es";
   const m = /[#&]u=([^&]+)/.exec(location.hash || ""); if (m) { try { S.acc.u = decodeURIComponent(m[1]); } catch (e) {} }
@@ -218,5 +242,6 @@ document.addEventListener("visibilitychange", () => { if (document.hidden) { cle
   reintentarEnvio();
   // En el sitio web, un service worker deja abrir la página sin conexión después de la primera visita.
   if (CFG.origen === "externa" && "serviceWorker" in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register("sw.js").catch(() => {});
+  revisarConfiguracion();
   await initDescargas();
 })();

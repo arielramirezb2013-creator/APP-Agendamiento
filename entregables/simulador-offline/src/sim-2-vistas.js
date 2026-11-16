@@ -70,6 +70,8 @@ function confirmarHtml() {
 }
 
 /* ---------- Acceso ---------- */
+// Un texto de la configuración puede traer marcas del guion ({persona}…) que en el acceso todavía no se resuelven.
+const sinMarcas = t => String(t == null ? "" : t).replace(/\s*\{[a-zA-Z]+\}/g, "").replace(/\s{2,}/g, " ").trim();
 function vistaAcceso() {
   if (!CFG.ok) {
     const como = CFG.plantilla || CFG.enSitio
@@ -80,12 +82,12 @@ function vistaAcceso() {
   const a = S.acc;
   // En la demostración, una cuenta puede traer su propio expediente: se dice cuál, para poder recorrer los cuatro.
   const expDe = q => { const c = EXPM.casoExacto(q.expediente); return c ? `<small>${esc(c.id)} · ${esc(c.persona.nombre)}</small>` : ""; };
-  const demo = CFG.demo ? `<div class="hoja"><details class="card demo" data-det="demo" open><summary>Cuentas de demostración</summary><p>Este archivo es solo para conocer la herramienta: trae una cuenta por rol y la contraseña de todas es <b class="mono">${esc(CFG.demo.clave)}</b>. Elija un rol para entrar. Las respuestas de estas cuentas quedan marcadas como demostración y no entran al análisis del estudio.${instrumentoDelEstudio() === "expediente" ? ` Las cuentas sin expediente indicado trabajan ${esc(CFG.estudio.expediente || "PI-L01")}; las que lo indican, ese otro expediente sintético.` : ""}</p><div class="demo-grid">${CFG.cuentas.map(q => `<button type="button" class="demo-cta" data-act="demo-usar" data-arg="${esc(q.u)}"><span class="avatar">${icoActor(q.a)}</span><span><b>${esc(nomL(q.a))}</b><small class="mono">${esc(q.u)}</small>${expDe(q)}</span></button>`).join("")}</div></details></div>` : "";
+  const demo = CFG.demo ? `<div class="hoja"><details class="card demo" data-det="demo" open><summary>Cuentas de demostración</summary><p>Este archivo es solo para conocer la herramienta. ${CFG.cuentas.some(q => q.expediente) ? `Trae ${CFG.cuentas.length} cuentas: una por rol en el expediente ${esc(CFG.estudio.expediente || "PI-L01")} y otras para recorrer los demás expedientes sintéticos, que se indican en cada una.` : "Trae una cuenta por rol."} La contraseña de todas es <b class="mono">${esc(CFG.demo.clave)}</b>. Elija una para entrar. Las respuestas de estas cuentas quedan marcadas como demostración y no entran al análisis del estudio.</p><div class="demo-grid">${CFG.cuentas.map(q => `<button type="button" class="demo-cta" data-act="demo-usar" data-arg="${esc(q.u)}"><span class="avatar">${icoActor(q.a)}</span><span><b>${esc(nomL(q.a))}</b><small class="mono">${esc(q.u)}</small>${expDe(q)}</span></button>`).join("")}</div></details></div>` : "";
   return `<div class="auth-wrap"><form class="auth acceso" data-form="acceso" novalidate>
     <div class="auth-body">
       <div class="avatar xl">${ico("actores-participante")}</div>
       <h1 class="acceso-titulo" tabindex="-1">${esc(CFG.estudio.titulo)}</h1>
-      <p class="mini centro">${esc(CFG.estudio.subtitulo)}</p>
+      <p class="mini centro">${esc(sinMarcas(CFG.estudio.subtitulo))}</p>
       <label>Usuario<input type="text" data-in="a-u" value="${esc(a.u)}" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
       <label>Contraseña<input type="${a.ver ? "text" : "password"}" data-in="a-c" value="${esc(a.c)}" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false"></label>
       <label class="check"><input type="checkbox" data-in="a-ver" ${a.ver ? "checked" : ""}>Mostrar la contraseña</label>
@@ -136,13 +138,23 @@ function intervencionHtml(actor) {
 }
 function vistaOrientacion() {
   const O = GUION.orientacion, i = Math.max(0, Math.min(S.orient, O.pasos.length - 1)), id = O.pasos[i].id, a = S.cuenta.a;
+  const exp = instrumentoDelEstudio() === "expediente", OX = GUION.orientacionExp;
   let c = "";
   if (id === "estudio") {
-    const E = O.estudio;
+    const E = O.estudio, busca = exp ? OX.estudio.busca : E.busca;
+    const subs = exp ? EXP.marco.subpreguntas.map(x => `<li><b>${esc(x.id)}.</b> ${esc(x.t)}</li>`).join("")
+      : Object.keys(ESC.subpreguntas).map(k => `<li>${ico(ICO.sub[k], "sm")}${esc(ESC.subpreguntas[k])}</li>`).join("");
     c = `<h1 tabindex="-1">${esc(E.titulo)}</h1>${E.parrafos.map(p => `<p>${esc(p)}</p>`).join("")}
-      <h2>${ico("investigacion-pregunta-investigacion")}${esc(E.buscaTitulo)}</h2><ol class="lista">${E.busca.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
-      <h2>${ico("investigacion-hipotesis")}${esc(E.subTitulo)}</h2><ul class="lista limpia">${Object.keys(ESC.subpreguntas).map(k => `<li>${ico(ICO.sub[k], "sm")}${esc(ESC.subpreguntas[k])}</li>`).join("")}</ul>
+      <h2>${ico("investigacion-pregunta-investigacion")}${esc(E.buscaTitulo)}</h2><ol class="lista">${busca.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
+      <h2>${ico("investigacion-hipotesis")}${esc(E.subTitulo)}</h2><ul class="lista limpia">${subs}</ul>
       <div class="guia">${ico("gobernanza-etica")}<div><b>${esc(E.aclaraTitulo)}</b><ul class="lista">${E.aclara.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div></div>${S.consent ? "" : cargarAvanceHtml()}`;
+  } else if (id === "caso" && exp) {
+    // El expediente de esta cuenta: el mismo que verá al empezar, con su ficha resumida.
+    const caso = casoExp();
+    c = `<div class="eyebrow">${esc(caso.id)} · ${esc(caso.origen === "laboral" ? "origen laboral" : "origen común")}</div><h1 tabindex="-1">${esc(OX.caso.titulo)}</h1><p>${esc(OX.caso.intro)}</p>
+      <h2>${ico("navegacion-escenario")}${esc(caso.titulo)}</h2>
+      <div class="qpanel">${esc(caso.apertura)}</div>
+      ${expFichaHtml(caso, true)}`;
   } else if (id === "caso") {
     const C = O.caso;
     const K = GUION.caso, perfil = perfilActual();
@@ -159,14 +171,23 @@ function vistaOrientacion() {
       <p class="mini" style="margin-top:10px">${esc(GUION.caso.nota)}</p>`;
   } else if (id === "mecanica") {
     const M = O.mecanica, canal = CFG.envio ? M.envio[CFG.envio.modo] : M.envio.archivo;
-    c = `<h1 tabindex="-1">${esc(M.titulo)}</h1><ol class="puntos">${M.puntos.concat([canal]).map(x => `<li><b>${esc(x.t)}</b><span>${esc(x.d)}</span></li>`).join("")}</ol>
+    // Con el expediente, la mecánica es otra; las pausas y la entrega son las mismas.
+    const pausas = M.puntos.filter(x => /pausa/i.test(x.t));
+    const puntos = exp ? OX.mecanica.puntos.concat(pausas) : M.puntos;
+    c = `<h1 tabindex="-1">${esc(M.titulo)}</h1><ol class="puntos">${puntos.concat([canal]).map(x => `<li><b>${esc(x.t)}</b><span>${esc(x.d)}</span></li>`).join("")}</ol>
       <div class="guia">${ico("investigacion-tiempo")}<div>${esc(plantilla(M.tiempo))}</div></div>`;
   } else {
     const R = O.rol;
+    // Con el expediente, el relato del rol es su papel en ESE expediente, no el de la ruta de incapacidad.
+    const caso = exp ? casoExp() : null, papel = caso ? EXPM.actorDe(caso, a) : null;
+    const relato = exp
+      ? (papel ? `<div class="qpanel"><b>${esc(OX.rol.papelTitulo)}.</b> ${esc(papel.n)}: ${esc(papel.rol)}${(papel.custodia || []).length ? " Custodia " + esc(listaFrase(papel.custodia.map(k => k + " · " + (EXPM.soporteDe(caso, k) || {}).n))) + "." : ""}</div>` : `<div class="qpanel">${esc(GUION.exp.sinPapel)}</div>`)
+      : (GUION.roles[a] ? `<div class="qpanel">${esc(GUION.roles[a])}</div>` : "");
+    const nota = exp ? OX.rol.nota : PASOS.some(p => RONDAS.some(rr => !actividadDe(p, a, rr.modo))) ? R.intervieneNota : R.intervieneNotaTodos;
     c = `<h1 tabindex="-1">${esc(R.titulo)}</h1><p>${esc(R.intro)}</p>
-      ${GUION.roles[a] ? `<div class="qpanel">${esc(GUION.roles[a])}</div>` : ""}
-      <div class="ficha-rol"><div class="avatar xl">${icoActor(a)}</div><div><div class="rol-n">${esc(nomL(a))}</div><div class="kv"><b>Función en la ruta</b><span>${esc(A[a].funcion)}</span><b>Tensión conocida</b><span>${esc(A[a].tension)}</span><b>Grupo</b><span>${esc(A[a].grupo)}</span></div></div></div>
-      <h2>${ico("navegacion-blueprint")}${esc(R.intervieneTitulo)}</h2>${instrumentoDelEstudio() === "expediente" ? intervencionExpHtml(a) : intervencionHtml(a)}<p class="mini" style="margin-top:8px">${esc(PASOS.some(p => RONDAS.some(rr => !actividadDe(p, a, rr.modo))) ? R.intervieneNota : R.intervieneNotaTodos)}</p>
+      ${relato}
+      <div class="ficha-rol"><div class="avatar xl">${icoActor(a)}</div><div><div class="rol-n">${esc(nomL(a))}</div><div class="kv"><b>${esc(exp ? OX.rol.funcion : "Función en la ruta")}</b><span>${esc(A[a].funcion)}</span><b>Tensión conocida</b><span>${esc(A[a].tension)}</span><b>Grupo</b><span>${esc(A[a].grupo)}</span></div></div></div>
+      <h2>${ico("navegacion-blueprint")}${esc(R.intervieneTitulo)}</h2>${exp ? intervencionExpHtml(a) : intervencionHtml(a)}<p class="mini" style="margin-top:8px">${esc(nota)}</p>
       <details data-det="terminos" open><summary>${esc(R.terminosTitulo)}</summary><dl class="info">${BP.terminos.concat(R.terminos || []).map(t => `<dt>${esc(t[0])}</dt><dd>${esc(t[1])}</dd>`).join("")}</dl></details>`;
   }
   const ult = i === O.pasos.length - 1, hecho = !!S.consent;

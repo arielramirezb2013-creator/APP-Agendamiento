@@ -58,9 +58,9 @@ ESTE PAQUETE ES PARA USO REAL
 
   No trae cuentas de demostración. Para conocer la herramienta antes de
   configurarla use simulador-demo.html, que se entrega aparte: abre con
-  doble clic y trae cuentas de demostración (usuarios demo-…, contraseña
-  DEMO-2026) con los cuatro expedientes sintéticos. Ese archivo no se
-  publica para el estudio.
+  doble clic, trae los cuatro expedientes sintéticos y muestra en su
+  propia pantalla de acceso las cuentas de demostración y su contraseña.
+  Ese archivo no se publica para el estudio.
 
 IMPORTANTE
 

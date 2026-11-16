@@ -96,6 +96,7 @@
   </li>
   <li><b>Reemplace <code>configuracion.js</code> por el archivo que le entregue el investigador.</b>
     <p>El paquete es la versión para uso real y su <code>configuracion.js</code> es una <b>plantilla sin estudio y sin cuentas</b>: no trae cuentas de demostración. Mientras siga esa plantilla, el sitio dice «El simulador todavía no está configurado» y no deja entrar a nadie; al desplegar «Detalle para quien administra el sitio» lo explica. Para comprobar el sitio, pídale al investigador una cuenta de prueba. Si quiere ver la herramienta funcionando antes, use <code>simulador-demo.html</code>, que se entrega aparte y no se publica.</p>
+    <p>Cuando reemplace la plantilla —o cada vez que el investigador le mande una configuración nueva—, el simulador vuelve a pedir <code>configuracion.js</code> al abrirse y, si cambió y la persona todavía no ha entrado, se recarga solo una vez. Aun así, configure el servidor para que <b>no guarde en caché</b> <code>index.html</code>, <code>configuracion.js</code> ni <code>sw.js</code> (<a href="#cabeceras">apartado 9</a>): sin esa cabecera, un navegador que ya abrió el sitio puede seguir usando la copia vieja durante semanas.</p>
   </li>
   <li><b>Si la entrega es por servidor, instale el receptor.</b> Siga el <a href="#receptor">apartado 4</a>. Si es por archivo, puede borrar <code>recibir.php</code>, <code>recibir-config.php</code> y <code>respuestas/</code>.</li>
   <li><b>Decida si publica <code>administrador.html</code>.</b> El investigador puede usar el panel desde su computador, sin publicarlo. Publicarlo es útil con entrega por servidor: desde el mismo sitio el panel trae las respuestas con un clic. Queda bajo la misma protección del sitio y además pide una clave de administración: el panel abre con dos perfiles —el del investigador, que ve todo, y el <b>perfil técnico</b>, pensado para usted, que solo muestra «Estudio» y «Publicar». Pídale al investigador la clave del perfil técnico si quiere usar el panel para descargar los archivos o probar el receptor. El panel no guarda nada en el servidor: los datos del proyecto viven en el navegador del investigador.</li>
@@ -160,7 +161,7 @@ az webapp deploy --resource-group rg-simulacion --name sim-dgit --src-path ../si
     </ul>
     <p>Sea cual sea, el usuario y la contraseña del simulador siguen haciendo falta: son los que asignan el rol a cada participante.</p></li>
   <li><b>Pida al investigador que pruebe el receptor</b> desde su panel. Si responde que puede guardar, el receptor está listo.</li>
-  <li><b>Cabeceras (opcional).</b> Como nginx no lee <code>.htaccess</code>, las cabeceras del <a href="#cabeceras">apartado 9</a> se añaden con un archivo de configuración propio y un comando de inicio. Si no las añade, lo esencial ya está cubierto por HTTPS Only y por la etiqueta que pide a los buscadores no indexar.
+  <li><b>Cabeceras.</b> Como nginx no lee <code>.htaccess</code>, las cabeceras del <a href="#cabeceras">apartado 9</a> se añaden con un archivo de configuración propio y un comando de inicio. La de <code>Cache-Control: no-cache</code> para <code>index.html</code>, <code>configuracion.js</code> y <code>sw.js</code> es la que no debe faltar: sin ella, quien abrió el sitio antes de que usted subiera la configuración del investigador puede seguir viendo la anterior. Las demás son recomendables.
 <pre><code># /home/site/nginx-sim.conf, cargado con un comando de inicio
 add_header Strict-Transport-Security "max-age=31536000" always;
 add_header X-Content-Type-Options "nosniff" always;
@@ -183,10 +184,13 @@ location ~ ^/(index\.html|configuracion\.js|sw\.js)$ { add_header Cache-Control 
   },
   "routes": [
     { "route": "/.auth/*" },
+    { "route": "/index.html", "headers": { "Cache-Control": "no-cache" }, "allowedRoles": ["authenticated"] },
+    { "route": "/configuracion.js", "headers": { "Cache-Control": "no-cache" }, "allowedRoles": ["authenticated"] },
+    { "route": "/sw.js", "headers": { "Cache-Control": "no-cache" }, "allowedRoles": ["authenticated"] },
     { "route": "/*", "allowedRoles": ["authenticated"] }
   ]
 }</code></pre>
-<p>Con esa regla de <code>allowedRoles</code>, antes de ver el simulador la persona inicia sesión con el proveedor que usted configure. Si prefiere no pedir ese inicio de sesión, quite las dos líneas de <code>routes</code> y proteja el sitio por otro medio.</p>
+<p>Con esa regla de <code>allowedRoles</code>, antes de ver el simulador la persona inicia sesión con el proveedor que usted configure. Si prefiere no pedir ese inicio de sesión, quite <code>allowedRoles</code> de las rutas —deje las tres de <code>Cache-Control</code>— y proteja el sitio por otro medio.</p>
 <p>Lo que <b>no</b> puede hacer Static Web Apps es ejecutar <code>recibir.php</code>. Si el investigador quiere entrega por servidor, use App Service.</p>
 
 <h3>5.3 Sitio estático de Storage</h3>
@@ -219,7 +223,8 @@ location ~ ^/(index\.html|configuracion\.js|sw\.js)$ { add_header Cache-Control 
 <p>El receptor no escribe el contenido de las respuestas en el registro de errores. El registro de accesos del servidor sí guarda direcciones IP y horas: trátelo según la política de la institución.</p>
 
 <h2 id="cabeceras">9. Cabeceras recomendadas</h2>
-<p>No son obligatorias, pero conviene añadirlas a la carpeta del simulador.</p>
+<p><b>La de <code>Cache-Control: no-cache</code> para <code>index.html</code>, <code>configuracion.js</code> y <code>sw.js</code> es obligatoria</b>: esos archivos se reemplazan en el servidor durante el estudio y el navegador tiene que comprobar si hay una versión nueva cada vez. Las demás son recomendables.</p>
+<p>En Apache el paquete ya trae un <code>.htaccess</code> en la raíz con la de caché y las de seguridad básicas (necesita <code>mod_headers</code>; si el módulo no está, el archivo no hace nada y no rompe el sitio). En nginx, y en Azure App Service, hay que añadirlas a la configuración del servidor.</p>
 <pre><code># Apache (.htaccess o configuración del sitio)
 Header always set Strict-Transport-Security "max-age=31536000"
 Header always set X-Content-Type-Options "nosniff"
@@ -255,7 +260,7 @@ location ~ ^/simulacion/(index\.html|configuracion\.js|sw\.js)$ { add_header Cac
 <div class="tabla"><table>
   <thead><tr><th>Qué se ve</th><th>Causa probable</th><th>Qué hacer</th></tr></thead>
   <tbody>
-    <tr><td>«El simulador todavía no está configurado» y el detalle habla de la plantilla del paquete</td><td>Sigue publicada la plantilla sin cuentas del paquete.</td><td>Reemplace <code>configuracion.js</code> por el que genera el investigador en su panel.</td></tr>
+    <tr><td>«El simulador todavía no está configurado» y el detalle habla de la plantilla del paquete</td><td>Sigue publicada la plantilla sin cuentas del paquete, o el navegador conserva la copia de antes.</td><td>Reemplace <code>configuracion.js</code> por el que genera el investigador en su panel. Si ya lo reemplazó, abra la página de nuevo: el simulador comprueba la configuración al abrirse. Si persiste, recargue sin caché (Ctrl+Mayús+R) y revise que el servidor mande <code>Cache-Control: no-cache</code> para ese archivo.</td></tr>
     <tr><td>«El simulador todavía no está configurado» por otro motivo</td><td>Falta <code>configuracion.js</code>, está en otra carpeta o está dañado.</td><td>Súbalo junto a <code>index.html</code>. El detalle aparece al desplegar «Detalle para quien administra el sitio».</td></tr>
     <tr><td>La pantalla de acceso muestra «Cuentas de demostración»</td><td>Se publicó por error <code>simulador-demo.html</code> o una configuración de demostración.</td><td>Quítelo del sitio y publique el paquete con la configuración del investigador. La demostración nunca va en el sitio del estudio.</td></tr>
     <tr><td>«El usuario o la contraseña no coinciden» con datos correctos</td><td>El sitio tiene una configuración anterior o el navegador conserva una copia vieja.</td><td>Confirme que subió la última configuración y recargue sin caché.</td></tr>
