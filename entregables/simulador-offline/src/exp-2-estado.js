@@ -5,9 +5,11 @@
 
 const esExpediente = () => !!(S.ses && S.ses.instrumento === "expediente");
 // El expediente con el que recorre este participante: el de su cuenta, o el que el estudio fijó.
+// Una vez empezado el recorrido manda el de la sesión: si el investigador cambia el expediente del estudio con
+// participantes en curso, quien ya empezó termina el suyo en lugar de ver cambiar el caso a mitad de camino.
 function casoExp() {
-  const id = (S.cuenta && S.cuenta.expediente) || (CFG.estudio && CFG.estudio.expediente) || (EXP.casos[0] || {}).id;
-  return EXPM.casoDe(id);
+  return EXPM.casoExacto(S.ses && S.ses.instrumento === "expediente" ? S.ses.expediente : null)
+    || EXPM.casoExacto(S.cuenta && S.cuenta.expediente) || EXPM.casoExacto(CFG.estudio && CFG.estudio.expediente) || EXP.casos[0];
 }
 function nuevaSesionExp() {
   const caso = casoExp(), orden = EXPM.ordenCondiciones(S.cuenta.u);

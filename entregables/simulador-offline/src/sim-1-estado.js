@@ -5,12 +5,19 @@
    como archivo único funciona sin nada más. */
 const CFG = (() => {
   const c = window.SIM_CONFIG_INCLUIDA || window.SIM_CONFIG || null;
-  const errores = c ? validarConfig(c) : ["no se encontró la configuración del estudio (configuracion.js)"];
+  // Sin configuración hay tres situaciones: el sitio todavía tiene la plantilla sin cuentas del paquete, al
+  // sitio le falta configuracion.js, o es el archivo único de uso real, que no trae cuentas a propósito.
+  const enSitio = !!(typeof document !== "undefined" && document && typeof document.querySelector === "function" && document.querySelector('script[src="configuracion.js"]'));
+  const plantilla = !c && window.SIM_CONFIG === null && enSitio;
+  const errores = c ? validarConfig(c)
+    : plantilla ? ["el configuracion.js de este sitio es la plantilla del paquete: no trae el estudio ni cuentas"]
+    : enSitio ? ["no se encontró la configuración del estudio (configuracion.js)"]
+    : ["este archivo es la versión para uso real y no trae el estudio ni cuentas"];
   const estudio = Object.assign({}, GUION.estudio);
   Object.keys((c && c.estudio) || {}).forEach(k => { if (c.estudio[k] != null && c.estudio[k] !== "") estudio[k] = String(c.estudio[k]); });
   const envio = c && c.envio && typeof c.envio.url === "string" && c.envio.url.trim() ? { url:c.envio.url.trim(), clave:String(c.envio.clave || ""), modo:c.envio.modo === "final" ? "final" : "progresivo" } : null;
   return {
-    ok:!errores.length, errores, origen:window.SIM_CONFIG_INCLUIDA ? "incluida" : c ? "externa" : null,
+    ok:!errores.length, errores, origen:window.SIM_CONFIG_INCLUIDA ? "incluida" : c ? "externa" : null, enSitio, plantilla,
     demo:c && c.demo ? { clave:String(c.demo.clave || "") } : null,
     estudio, kdf:Object.assign({}, KDF, (c && c.kdf) || {}), envio,
     cuentas:errores.length ? [] : c.cuentas, consentimiento:(c && c.consentimiento) || {},
@@ -84,7 +91,8 @@ function aplicarGuardado(d) { PERSISTE.forEach(k => { if (d[k] !== undefined) S[
 // Abre la cuenta. Si hay avance guardado en este dispositivo, lo restablece y muestra la pantalla de reanudación.
 function abrirCuenta(q, reanudar) {
   const d = cargarLocal(q.u), previo = d && d.cuenta.a === q.a ? d : null;
-  const cuenta = { u:q.u, a:q.a, p:!!q.p, perfil:q.perfil || null, r:reanudar || (previo && previo.cuenta.r) || "" };
+  // `expediente`: el de esta cuenta, si la configuración le fija uno propio (lo usa la demostración para los cuatro casos).
+  const cuenta = { u:q.u, a:q.a, p:!!q.p, perfil:q.perfil || null, expediente:EXPM.casoExacto(q.expediente) ? q.expediente : null, r:reanudar || (previo && previo.cuenta.r) || "" };
   S = estadoInicial(); S.cuenta = cuenta; aplicarPerfil();
   if (previo) {
     aplicarGuardado(previo); S.cuenta = cuenta;
@@ -116,7 +124,7 @@ function documentoRestaurable(doc) {
   if (doc.cuenta.usuario !== S.cuenta.u || doc.cuenta.actor !== S.cuenta.a) return "el archivo es de otra cuenta";
   const s = doc.sesion;
   if (s && s.instrumento === "expediente") {
-    if (!EXPM.casoDe(s.expediente) || !Array.isArray(s.orden) || typeof s.bloque !== "number") return "el archivo no trae un expediente que se pueda continuar";
+    if (!EXPM.casoExacto(s.expediente) || !Array.isArray(s.orden) || typeof s.bloque !== "number") return "el archivo no trae un expediente que se pueda continuar";
     return "";
   }
   if (!s || !s.rondas || !rondaDef(s.rondaActual) || PIDX[s.pasoActual] == null || !RONDAS.every(r => s.rondas[r.id] && s.rondas[r.id].pasos)) return "el archivo no trae una sesión que se pueda continuar";

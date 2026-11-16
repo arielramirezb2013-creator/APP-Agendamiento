@@ -13,11 +13,12 @@ const fuente = f => (f === "__PERFIL__" ? perfilBase() : leer(f));
 
 function memoria() { const m = new Map(); return { getItem:k => (m.has(k) ? m.get(k) : null), setItem:(k, v) => { m.set(k, String(v)); }, removeItem:k => { m.delete(k); }, get length() { return m.size; }, _m:m }; }
 
-// Configuración de demostración igual a la que escribe build.py (se lee del simulador construido).
-function configDemo() {
-  const h = leer(path.join(RAIZ, "simulador.html")), m = /\/\*CONFIG:INICIO\*\/window\.SIM_CONFIG_INCLUIDA=(.*?);\/\*CONFIG:FIN\*\//s.exec(h);
+// Configuración incluida en un archivo construido: por omisión, la de la demostración del expediente.
+function configDe(archivo) {
+  const h = leer(path.join(RAIZ, archivo)), m = /\/\*CONFIG:INICIO\*\/window\.SIM_CONFIG_INCLUIDA=(.*?);\/\*CONFIG:FIN\*\//s.exec(h);
   return JSON.parse(m[1]);
 }
+const configDemo = () => configDe("simulador-demo.html");
 function crearMotor(config, opciones) {
   opciones = opciones || {};
   const local = opciones.local || memoria(), sesion = opciones.sesion || memoria(), avisos = [];
@@ -143,7 +144,7 @@ function recorrerExpediente(M, usuario, clave, opc) {
   M.guardarLocal();
   return M.documentoRespuesta();
 }
-module.exports = { crearMotor, configDemo, recorrer, recorrerExpediente, responder, valorar, memoria, RAIZ, MESA };
+module.exports = { crearMotor, configDemo, configDe, recorrer, recorrerExpediente, responder, valorar, memoria, RAIZ, MESA };
 
 if (require.main === module) {
   const cfg = configDemo(); cfg.estudio.instrumento = "ruta";   // esta prueba cubre la ruta de incapacidad

@@ -13,7 +13,7 @@ const { analizarExp, datosExpConsolidados } = (() => {
   /* ---------- El marco, las condiciones y las etiquetas del expediente ---------- */
   const COND = lst(EXP.protocolo.condiciones), CID = COND.map(c => c.id), CORTE = EXP.protocolo.corteHoras;
   const condN = id => { const c = COND.filter(x => x.id === id)[0]; return c ? c.n : (txt(id, 40) || "—"); };
-  const casoDe = id => EXPM.casoDe(id);
+  const casoDe = id => EXPM.casoExacto(id);
   const casoN = id => { const c = casoDe(id); return c ? c.id + " · " + c.persona.nombre : (txt(id, 40) || "—"); };
   const puntoN = (caso, pid) => { const p = caso && EXPM.puntoDe(caso, pid); return p ? p.id + " · " + p.n : (txt(pid, 40) || "—"); };
   const piezaN = (caso, k) => { const s = caso && EXPM.soporteDe(caso, k); return s ? k + " · " + s.n : (txt(k, 20) || "—"); };

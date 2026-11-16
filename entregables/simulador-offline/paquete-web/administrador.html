@@ -2119,6 +2119,8 @@ const EXPM = {
   },
 
   casoDe: function (id) { return EXP.casos.filter(c => c.id === id)[0] || EXP.casos[0] || null; },
+  // Igual, pero sin caer al primero: null si el id no está en el catálogo.
+  casoExacto: function (id) { return EXP.casos.filter(c => c.id === id)[0] || null; },
   puntoDe: function (caso, id) { return caso.puntos.filter(p => p.id === id)[0] || null; },
   soporteDe: function (caso, k) { return caso.soportes.filter(s => s.k === k)[0] || null; },
   actorDe: function (caso, a) { return caso.actores.filter(x => x.a === a)[0] || null; },
@@ -3906,7 +3908,7 @@ function vistaPublicar() {
       </ol>`)}
     ${seccion("Simulador en un solo archivo", "investigacion-informe", `
       <p>Un único HTML con sus cuentas, que abre con doble clic. Sirve para enviarlo por correo a alguien que lo abrirá en un computador. En teléfonos use la dirección del sitio.</p>
-      <p class="mini">Elija el archivo base: <span class="mono">simulador.html</span> o el <span class="mono">index.html</span> del paquete.</p>
+      <p class="mini">Elija el archivo base: <span class="mono">simulador.html</span>, que es la versión de uso real y no trae cuentas, o el <span class="mono">index.html</span> del paquete. Sea cual sea la base, el archivo que se genera lleva solo las cuentas de su estudio: nunca las de demostración.</p>
       <div class="row">${btn("unico-elegir", "", "Elegir el archivo base y generar", imp.length ? "sec" : "", "acciones-importar", imp.length ? " disabled" : "")}${archivoOculto("unico-archivo", ".html,text/html")}${UI.unico ? estadoLinea(UI.unico) : ""}</div>
       ${pub && pub.unico ? `<p class="mini">Último generado: ${esc(fecha(pub.unico))}.</p>` : ""}`)}
     ${srv ? seccion("Comprobar el receptor", "acciones-sincronizar", `<p class="mini">Cuando el sitio ya esté publicado con <span class="mono">recibir.php</span> y su <span class="mono">recibir-config.php</span>.</p><div class="row">${btn("probar-receptor", "", "Probar el receptor", "sec", "acciones-sincronizar")}${UI.prueba ? estadoLinea(UI.prueba) : ""}</div>`) : ""}
@@ -4776,7 +4778,7 @@ const { analizarExp, datosExpConsolidados } = (() => {
   /* ---------- El marco, las condiciones y las etiquetas del expediente ---------- */
   const COND = lst(EXP.protocolo.condiciones), CID = COND.map(c => c.id), CORTE = EXP.protocolo.corteHoras;
   const condN = id => { const c = COND.filter(x => x.id === id)[0]; return c ? c.n : (txt(id, 40) || "—"); };
-  const casoDe = id => EXPM.casoDe(id);
+  const casoDe = id => EXPM.casoExacto(id);
   const casoN = id => { const c = casoDe(id); return c ? c.id + " · " + c.persona.nombre : (txt(id, 40) || "—"); };
   const puntoN = (caso, pid) => { const p = caso && EXPM.puntoDe(caso, pid); return p ? p.id + " · " + p.n : (txt(pid, 40) || "—"); };
   const piezaN = (caso, k) => { const s = caso && EXPM.soporteDe(caso, k); return s ? k + " · " + s.n : (txt(k, 20) || "—"); };

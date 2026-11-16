@@ -25,6 +25,8 @@ const EXPM = {
   },
 
   casoDe: function (id) { return EXP.casos.filter(c => c.id === id)[0] || EXP.casos[0] || null; },
+  // Igual, pero sin caer al primero: null si el id no está en el catálogo.
+  casoExacto: function (id) { return EXP.casos.filter(c => c.id === id)[0] || null; },
   puntoDe: function (caso, id) { return caso.puntos.filter(p => p.id === id)[0] || null; },
   soporteDe: function (caso, k) { return caso.soportes.filter(s => s.k === k)[0] || null; },
   actorDe: function (caso, a) { return caso.actores.filter(x => x.a === a)[0] || null; },

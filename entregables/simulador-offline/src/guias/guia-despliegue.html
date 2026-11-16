@@ -66,7 +66,7 @@
   <thead><tr><th>Archivo</th><th>Para qué sirve</th><th>¿Se publica?</th></tr></thead>
   <tbody>
     <tr><td><code>index.html</code></td><td>El simulador. Es lo que abre el participante.</td><td>Sí</td></tr>
-    <tr><td><code>configuracion.js</code></td><td>Datos del estudio y cuentas (usuario, rol y huella de la contraseña; nunca la contraseña). La que viene en el paquete es de demostración.</td><td>Sí, la que le entregue el investigador</td></tr>
+    <tr><td><code>configuracion.js</code></td><td>Datos del estudio y cuentas (usuario, rol y huella de la contraseña; nunca la contraseña). La del paquete es una plantilla sin estudio y sin cuentas: se reemplaza por la que genera el investigador.</td><td>Sí, la que le entregue el investigador</td></tr>
     <tr><td><code>sw.js</code></td><td>Permite reabrir el simulador sin conexión después de la primera visita.</td><td>Sí, junto a <code>index.html</code></td></tr>
     <tr><td><code>administrador.html</code></td><td>Panel del investigador: sesiones de simulación, cuentas, publicación, respuestas y resultados. También funciona abierto desde el computador del investigador.</td><td>Opcional</td></tr>
     <tr><td><code>recibir.php</code>, <code>recibir-config.php</code>, carpeta <code>respuestas/</code></td><td>Receptor opcional: guarda en el servidor las respuestas que envía el simulador.</td><td>Solo si el investigador eligió entrega por servidor</td></tr>
@@ -95,7 +95,7 @@
     <p>Las páginas ya piden a los buscadores que no las indexen.</p>
   </li>
   <li><b>Reemplace <code>configuracion.js</code> por el archivo que le entregue el investigador.</b>
-    <p>El paquete trae una configuración de demostración con una cuenta por rol (usuarios <code>demo-…</code>, contraseña <code>DEMO-2026</code>). Sirve para comprobar que el sitio funciona. No la deje en un sitio en uso: mientras esté, la pantalla de acceso muestra esas cuentas.</p>
+    <p>El paquete es la versión para uso real y su <code>configuracion.js</code> es una <b>plantilla sin estudio y sin cuentas</b>: no trae cuentas de demostración. Mientras siga esa plantilla, el sitio dice «El simulador todavía no está configurado» y no deja entrar a nadie; al desplegar «Detalle para quien administra el sitio» lo explica. Para comprobar el sitio, pídale al investigador una cuenta de prueba. Si quiere ver la herramienta funcionando antes, use <code>simulador-demo.html</code>, que se entrega aparte y no se publica.</p>
   </li>
   <li><b>Si la entrega es por servidor, instale el receptor.</b> Siga el <a href="#receptor">apartado 4</a>. Si es por archivo, puede borrar <code>recibir.php</code>, <code>recibir-config.php</code> y <code>respuestas/</code>.</li>
   <li><b>Decida si publica <code>administrador.html</code>.</b> El investigador puede usar el panel desde su computador, sin publicarlo. Publicarlo es útil con entrega por servidor: desde el mismo sitio el panel trae las respuestas con un clic. Queda bajo la misma protección del sitio y además pide una clave de administración: el panel abre con dos perfiles —el del investigador, que ve todo, y el <b>perfil técnico</b>, pensado para usted, que solo muestra «Estudio» y «Publicar». Pídale al investigador la clave del perfil técnico si quiere usar el panel para descargar los archivos o probar el receptor. El panel no guarda nada en el servidor: los datos del proyecto viven en el navegador del investigador.</li>
@@ -199,7 +199,7 @@ location ~ ^/(index\.html|configuracion\.js|sw\.js)$ { add_header Cache-Control 
 <h2 id="comprobar">7. Comprobación final</h2>
 <ul class="lista-check">
   <li>La dirección abre por HTTPS y pide la credencial o el acceso que usted definió.</li>
-  <li>La pantalla de acceso muestra el título del estudio y <b>no</b> muestra «Cuentas de demostración».</li>
+  <li>La pantalla de acceso muestra el título del estudio, no dice «todavía no está configurado» y <b>no</b> muestra «Cuentas de demostración».</li>
   <li>Con una cuenta de prueba entregada por el investigador se puede entrar, ver la orientación y la declaración.</li>
   <li>Con entrega por servidor: «Probar el receptor» responde bien y, después de aceptar la declaración con la cuenta de prueba, aparece un archivo en <code>respuestas/</code>.</li>
   <li>La dirección <code>…/respuestas/</code> y la de cualquier archivo dentro de ella responden 403 o 404.</li>
@@ -255,8 +255,9 @@ location ~ ^/simulacion/(index\.html|configuracion\.js|sw\.js)$ { add_header Cac
 <div class="tabla"><table>
   <thead><tr><th>Qué se ve</th><th>Causa probable</th><th>Qué hacer</th></tr></thead>
   <tbody>
-    <tr><td>«El simulador todavía no está configurado»</td><td>Falta <code>configuracion.js</code>, está en otra carpeta o está dañado.</td><td>Súbalo junto a <code>index.html</code>. El detalle aparece al desplegar «Detalle para quien administra el sitio».</td></tr>
-    <tr><td>La pantalla de acceso muestra «Cuentas de demostración»</td><td>Sigue publicada la configuración de demostración.</td><td>Reemplace <code>configuracion.js</code> por la del investigador.</td></tr>
+    <tr><td>«El simulador todavía no está configurado» y el detalle habla de la plantilla del paquete</td><td>Sigue publicada la plantilla sin cuentas del paquete.</td><td>Reemplace <code>configuracion.js</code> por el que genera el investigador en su panel.</td></tr>
+    <tr><td>«El simulador todavía no está configurado» por otro motivo</td><td>Falta <code>configuracion.js</code>, está en otra carpeta o está dañado.</td><td>Súbalo junto a <code>index.html</code>. El detalle aparece al desplegar «Detalle para quien administra el sitio».</td></tr>
+    <tr><td>La pantalla de acceso muestra «Cuentas de demostración»</td><td>Se publicó por error <code>simulador-demo.html</code> o una configuración de demostración.</td><td>Quítelo del sitio y publique el paquete con la configuración del investigador. La demostración nunca va en el sitio del estudio.</td></tr>
     <tr><td>«El usuario o la contraseña no coinciden» con datos correctos</td><td>El sitio tiene una configuración anterior o el navegador conserva una copia vieja.</td><td>Confirme que subió la última configuración y recargue sin caché.</td></tr>
     <tr><td>«Probar el receptor» responde 403</td><td><code>recibir-config.php</code> sin claves, o las claves no coinciden con las del panel.</td><td>Suba el <code>recibir-config.php</code> y el <code>configuracion.js</code> generados en la misma descarga.</td></tr>
     <tr><td>El receptor responde 500 y habla de permisos</td><td>PHP no puede escribir en la carpeta de respuestas.</td><td>Ajuste el dueño y los permisos de la carpeta.</td></tr>

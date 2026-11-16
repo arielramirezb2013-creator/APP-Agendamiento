@@ -17,9 +17,11 @@ da igual: son los mismos archivos.
 QUÉ HAY EN ESTA CARPETA
 
   index.html              El simulador. Es lo que abre el participante.
-  configuracion.js        Datos del estudio y cuentas. La que viene aquí es
-                          de demostración: reemplácela por la que genera el
-                          panel del investigador.
+  configuracion.js        Plantilla SIN estudio y SIN cuentas. Reemplácela
+                          por la que genera el panel del investigador
+                          (momento «Publicar»). Mientras siga la plantilla,
+                          el simulador dice que no está configurado y no
+                          deja entrar a nadie.
   sw.js                   Deja reabrir el simulador sin conexión.
   administrador.html      Panel del investigador: estudios (varias sesiones
                           de simulación), instrumento y expediente, cuentas,
@@ -52,10 +54,13 @@ LO MÍNIMO
   4. Las respuestas llegan al investigador por archivo o por el receptor.
      El investigador las importa en el panel y obtiene los resultados.
 
-PARA PROBAR SIN PUBLICAR NADA
+ESTE PAQUETE ES PARA USO REAL
 
-  Abra index.html con doble clic. Use un usuario de demostración, por
-  ejemplo demo-eps, con la contraseña DEMO-2026.
+  No trae cuentas de demostración. Para conocer la herramienta antes de
+  configurarla use simulador-demo.html, que se entrega aparte: abre con
+  doble clic y trae cuentas de demostración (usuarios demo-…, contraseña
+  DEMO-2026) con los cuatro expedientes sintéticos. Ese archivo no se
+  publica para el estudio.
 
 IMPORTANTE
 

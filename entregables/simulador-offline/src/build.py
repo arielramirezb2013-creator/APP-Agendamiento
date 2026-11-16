@@ -35,16 +35,42 @@ def huella_clave(usuario, clave, sal, iteraciones=ITER):
     return hashlib.pbkdf2_hmac("sha256", (usuario.strip().lower() + "\n" + norm_clave(clave)).encode(), sal.encode(), iteraciones).hex()
 
 
-def config_demo():
-    """Una cuenta de demostración por rol. La sal se deriva del usuario para que la construcción sea reproducible."""
-    cuentas = []
-    for a in ACTORES:
-        u = "demo-" + PREFIJO.get(a, a)
-        sal = hashlib.sha256(("sal-demo:" + u).encode()).hexdigest()[:16]
-        cuentas.append({"u": u, "a": a, "s": sal, "h": huella_clave(u, CLAVE_DEMO, sal), "p": True})
+# Los otros tres expedientes del catálogo, cada uno con una cuenta de demostración del rol que lo decide,
+# para que el archivo de demostración deje recorrer los cuatro casos sintéticos.
+OTROS_EXPEDIENTES = [("PI-L02", "arl"), ("PI-L03", "arl"), ("PI-L04", "arl")]
+
+
+def cuenta_demo(u, a, **extra):
+    """La sal se deriva del usuario para que la construcción sea reproducible."""
+    sal = hashlib.sha256(("sal-demo:" + u).encode()).hexdigest()[:16]
+    c = {"u": u, "a": a, "s": sal, "h": huella_clave(u, CLAVE_DEMO, sal), "p": True}
+    c.update(extra)
+    return c
+
+
+def config_demo(con_otros_expedientes=True):
+    """Configuración SOLO para los archivos de demostración: una cuenta por rol, todas con la contraseña
+    pública DEMO-2026. Nunca va en lo que se publica para uso real."""
+    cuentas = [cuenta_demo("demo-" + PREFIJO.get(a, a), a) for a in ACTORES]
+    if con_otros_expedientes:
+        cuentas += [cuenta_demo("demo-" + PREFIJO.get(a, a) + "-" + e.split("-")[1].lower(), a, expediente=e) for e, a in OTROS_EXPEDIENTES]
     return {"formato": 1, "demo": {"clave": CLAVE_DEMO},
             "estudio": {"id": "demostracion", "instrumento": "expediente", "expediente": "PI-L01"},
             "kdf": {"alg": "PBKDF2-HMAC-SHA256", "iter": ITER}, "envio": None, "cuentas": cuentas, "generado": None}
+
+
+# Plantilla de configuracion.js para el paquete de uso real: sin estudio y sin cuentas. El sitio dice que no
+# está configurado hasta que se sube el configuracion.js que genera el panel del investigador.
+PLANTILLA_CONFIG = """/* configuracion.js · PLANTILLA SIN CUENTAS
+
+   Este paquete es la versión para uso real: no trae cuentas de demostración ni de ningún participante.
+   Reemplace este archivo por el configuracion.js que genera el panel del investigador
+   (administrador.html, momento «Publicar»). Mientras siga esta plantilla, el simulador dice que todavía
+   no está configurado y no deja entrar a nadie.
+
+   Para ver cómo funciona la herramienta sin configurar nada, use simulador-demo.html, que se entrega aparte. */
+window.SIM_CONFIG = null;
+"""
 
 
 def json_seguro(o):
@@ -103,15 +129,20 @@ def comprimir(carpeta, destino):
 
 def main():
     demo = config_demo()
-    print("Simulador (archivo único, con cuentas de demostración):")
-    escribir(RAIZ / "simulador.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=demo))
+    print("Demostración (archivo único, con cuentas de demostración y los cuatro expedientes):")
+    escribir(RAIZ / "simulador-demo.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=demo))
     escribir(RAIZ / "simulador-artefacto.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=demo, doctype=False))
     # Variante con el otro instrumento: la ruta de incapacidad de once pasos del service blueprint.
-    ruta = json.loads(json.dumps(demo)); ruta["estudio"]["instrumento"] = "ruta"; ruta["estudio"].pop("expediente", None)
-    escribir(RAIZ / "simulador-ruta.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=ruta))
-    print("Paquete web:")
+    ruta = config_demo(con_otros_expedientes=False); ruta["estudio"]["instrumento"] = "ruta"; ruta["estudio"].pop("expediente", None)
+    escribir(RAIZ / "simulador-ruta-demo.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=ruta))
+    print("Uso real (sin cuentas de demostración):")
+    # Archivo único sin configuración: el panel le pone las cuentas del estudio («Publicar → Simulador en un solo archivo»).
+    escribir(RAIZ / "simulador.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=None))
+    for viejo in ("simulador-ruta.html",):   # nombre anterior de la demostración de la ruta
+        if (RAIZ / viejo).exists(): (RAIZ / viejo).unlink(); print("  (se retiró " + viejo + ")")
+    print("Paquete web (uso real):")
     escribir(PAQUETE / "index.html", pagina("head-sim.html", "skel-sim.html", SIM, externa=True))
-    escribir(PAQUETE / "configuracion.js", "/* Configuración de demostración. Reemplácela por la que genera el panel del investigador (administrador.html). */\nwindow.SIM_CONFIG = " + json.dumps(demo, ensure_ascii=False, indent=1) + ";\n")
+    escribir(PAQUETE / "configuracion.js", PLANTILLA_CONFIG)
     faltan = [x for x in ADM if not (AQUI / x).exists()]
     if faltan: print("  (panel del investigador pendiente: faltan " + ", ".join(faltan) + ")")
     else: escribir(PAQUETE / "administrador.html", pagina("head-adm.html", "skel-adm.html", ADM, rol="admin", con_config=False))

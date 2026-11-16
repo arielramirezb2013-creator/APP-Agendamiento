@@ -7,7 +7,7 @@ const path = require("path");
 const M = require("./motor.js");
 const L = require("./lib.js");
 const T = L.contador("Expediente de pensión de invalidez (DGIT-PENSION-R1)");
-const ARCHIVO = "file://" + path.join(L.RAIZ, "simulador.html");
+const ARCHIVO = "file://" + path.join(L.RAIZ, "simulador-demo.html");
 // Se trabajan los puntos hasta el que resuelve, inclusive; los posteriores son ilustrativos.
 const hastaResuelve = caso => caso.puntos.findIndex(p => p.resuelve) + 1;
 
@@ -73,7 +73,7 @@ const r2 = recorrerExp("demo-juntanacional", { aciertos:"ninguno" });
 T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
   "quien no identifica responsabilidades ni reconstruye accesos puntúa cero, y el recorrido se completa igual");
 
-/* ---------- 4b. Los doce roles completan el instrumento dentro del tiempo declarado ---------- */
+/* ---------- 4b. Todas las cuentas de demostración completan el instrumento dentro del tiempo declarado ---------- */
 (() => {
   const malos = [], tiempos = [];
   cfg.cuentas.forEach(q => {
@@ -87,7 +87,7 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
     if (min < 25 || min > 45) malos.push(q.u + ": " + min + " minutos estimados");
     tiempos.push(q.u.replace("demo-", "") + " " + min + "′");
   });
-  T.ok(!malos.length, "los doce roles completan el expediente, entregan un documento válido y caben en los 45 minutos", malos.join(" · "));
+  T.ok(!malos.length && cfg.cuentas.length === 15, "las quince cuentas de demostración —los doce roles y el ARL en los otros tres expedientes— completan su expediente, entregan un documento válido y caben en los 45 minutos", malos.join(" · ") || cfg.cuentas.length + " cuentas");
   console.log("       " + tiempos.join(" · "));
 })();
 

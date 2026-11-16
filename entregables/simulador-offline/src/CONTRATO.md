@@ -19,7 +19,8 @@ mismas: cambian el recorrido del participante y el informe del panel.
 
 | Pieza | Archivo construido | Quién la usa |
 |---|---|---|
-| Simulador en un solo archivo, con cuentas de demostración | `simulador.html` (expediente) y `simulador-ruta.html` (ruta) | investigador, para probar o enviar tal cual |
+| Demostración, con cuentas de demostración y los cuatro expedientes | `simulador-demo.html` (expediente) y `simulador-ruta-demo.html` (ruta) | investigador, para conocer, mostrar y ensayar; **nunca se publica para el estudio** |
+| Simulador de uso real en un solo archivo, sin cuentas | `simulador.html` | base que el panel convierte en el archivo único con las cuentas del estudio |
 | Simulador del sitio | `paquete-web/index.html` + `configuracion.js` + `sw.js` | participantes |
 | Panel del investigador | `paquete-web/administrador.html` | investigador (desde su equipo o desde el sitio) |
 | Receptor opcional | `paquete-web/recibir.php` + `recibir-config.php` + `respuestas/` | servidor |
@@ -52,9 +53,16 @@ src/
 `<script>` con todo el código dentro de una función anónima en modo estricto, en este orden: datos, `nucleo.js`
 y los módulos de la página. Dentro de esa función todos los módulos comparten ámbito.
 
-`build.py` escribe `simulador.html` (instrumento de expediente, PI-L01), `simulador-artefacto.html` (el mismo sin
-envoltura de documento) y `simulador-ruta.html` (el otro instrumento), además del paquete web. Las tres páginas
-llevan el mismo código: lo único que cambia es `estudio.instrumento` de la configuración incluida.
+`build.py` separa lo de demostración de lo de uso real. **Demostración**: `simulador-demo.html` (expediente, quince
+cuentas `demo-…`: una por rol en PI-L01 y el ARL en PI-L02, PI-L03 y PI-L04), `simulador-artefacto.html` (el mismo
+sin envoltura de documento) y `simulador-ruta-demo.html` (el otro instrumento, una cuenta por rol). **Uso real**:
+`simulador.html` con `SIM_CONFIG_INCLUIDA=null` y el paquete web, cuyo `configuracion.js` es la plantilla
+`window.SIM_CONFIG = null;` sin estudio ni cuentas. Todas las páginas llevan el mismo código; lo único que cambia es
+la configuración incluida. Las cuentas de demostración solo las genera `config_demo()` y solo para la demostración;
+`tests/entregables.js` comprueba que no aparezcan en nada de uso real.
+
+Sin configuración válida el simulador no deja entrar y explica el caso: el sitio con la plantilla del paquete
+(`CFG.plantilla`), el sitio sin `configuracion.js` (`CFG.enSitio`) o el archivo único de uso real.
 
 ## 3. Núcleo común (`nucleo.js`)
 
@@ -97,7 +105,7 @@ proteger información: el caso es sintético. La protección real del sitio es d
 ```js
 window.SIM_CONFIG = {
   formato: 1,
-  demo: { clave: "DEMO-2026" },        // solo en la configuración de demostración; si no, se omite o es null
+  demo: { clave: "DEMO-2026" },        // SOLO en la demostración; la configuración del panel nunca lo lleva
   estudio: { id, titulo, subtitulo, programa, institucion, investigador, director, contacto, comite, cierre,
              instrumento: "expediente" | "ruta",     // cuál se aplica; si falta, "ruta"
              expediente: "PI-L01"…"PI-L04",          // solo con instrumento "expediente": sobre cuál trabajan todos
@@ -106,7 +114,9 @@ window.SIM_CONFIG = {
   kdf: { alg: "PBKDF2-HMAC-SHA256", iter: 5000 },
   envio: null,                         // o { url: "recibir.php", clave: "<clave de envío>", modo: "progresivo" | "final" }
   perfiles: [ … ],                     // casos cargados para el instrumento "ruta" (perfiles/FORMATO-PERFILES.md)
-  cuentas: [ { u: "eps-01", a: "eps", s: "<sal>", h: "<huella>", p: true, perfil: "<id>" } ],   // p: cuenta de prueba; perfil: caso propio de esa cuenta
+  cuentas: [ { u: "eps-01", a: "eps", s: "<sal>", h: "<huella>", p: true, perfil: "<id>", expediente: "PI-L02" } ],
+           // p: cuenta de prueba; perfil: caso propio (ruta); expediente: expediente propio (lo usa la demostración;
+           // el panel no lo escribe, porque el protocolo pide el mismo expediente para todos)
   generado: "2026-11-12T19:00:00.000Z"
 };
 ```
@@ -358,6 +368,7 @@ Acciones que el informe pone en sus botones y que atiende `adm-4-eventos.js`:
 
 | Prueba | Qué cubre |
 |---|---|
+| `node tests/entregables.js` | qué archivo es para qué: nada de uso real (archivo único, `index.html`, `configuracion.js` y el zip) lleva cuentas de demostración ni su contraseña, y lo dice al abrirse; la demostración trae sus quince cuentas y los cuatro expedientes |
 | `node tests/motor.js` | motor sin navegador: los 12 roles completan el recorrido de la ruta; con `--muestras` escribe doce documentos de respuestas en `tests/salida/muestras/` |
 | `node tests/expediente.js` | instrumento de expediente: el catálogo frente al documento, el orden alternado, los 12 roles dentro de los 45 minutos, el corte de 48 horas, la conformidad que solo cuenta al verificar y aceptar, el acceso por finalidad, el reinicio entre condiciones, el contraste entre las dos y la pausa a mitad del expediente |
 | `node tests/simulador.js` | navegador, archivo local sin red: los 12 roles por la interfaz, acceso, declaración, pausa, reanudación, cierre inesperado, respaldo, archivo de avance, retiro, teléfono y teclado |

@@ -2121,6 +2121,8 @@ const EXPM = {
   },
 
   casoDe: function (id) { return EXP.casos.filter(c => c.id === id)[0] || EXP.casos[0] || null; },
+  // Igual, pero sin caer al primero: null si el id no está en el catálogo.
+  casoExacto: function (id) { return EXP.casos.filter(c => c.id === id)[0] || null; },
   puntoDe: function (caso, id) { return caso.puntos.filter(p => p.id === id)[0] || null; },
   soporteDe: function (caso, k) { return caso.soportes.filter(s => s.k === k)[0] || null; },
   actorDe: function (caso, a) { return caso.actores.filter(x => x.a === a)[0] || null; },
@@ -2724,12 +2726,19 @@ const csvTabla = (cols, rows) => [cols.map(csvCelda).join(";")].concat(rows.map(
    como archivo único funciona sin nada más. */
 const CFG = (() => {
   const c = window.SIM_CONFIG_INCLUIDA || window.SIM_CONFIG || null;
-  const errores = c ? validarConfig(c) : ["no se encontró la configuración del estudio (configuracion.js)"];
+  // Sin configuración hay tres situaciones: el sitio todavía tiene la plantilla sin cuentas del paquete, al
+  // sitio le falta configuracion.js, o es el archivo único de uso real, que no trae cuentas a propósito.
+  const enSitio = !!(typeof document !== "undefined" && document && typeof document.querySelector === "function" && document.querySelector('script[src="configuracion.js"]'));
+  const plantilla = !c && window.SIM_CONFIG === null && enSitio;
+  const errores = c ? validarConfig(c)
+    : plantilla ? ["el configuracion.js de este sitio es la plantilla del paquete: no trae el estudio ni cuentas"]
+    : enSitio ? ["no se encontró la configuración del estudio (configuracion.js)"]
+    : ["este archivo es la versión para uso real y no trae el estudio ni cuentas"];
   const estudio = Object.assign({}, GUION.estudio);
   Object.keys((c && c.estudio) || {}).forEach(k => { if (c.estudio[k] != null && c.estudio[k] !== "") estudio[k] = String(c.estudio[k]); });
   const envio = c && c.envio && typeof c.envio.url === "string" && c.envio.url.trim() ? { url:c.envio.url.trim(), clave:String(c.envio.clave || ""), modo:c.envio.modo === "final" ? "final" : "progresivo" } : null;
   return {
-    ok:!errores.length, errores, origen:window.SIM_CONFIG_INCLUIDA ? "incluida" : c ? "externa" : null,
+    ok:!errores.length, errores, origen:window.SIM_CONFIG_INCLUIDA ? "incluida" : c ? "externa" : null, enSitio, plantilla,
     demo:c && c.demo ? { clave:String(c.demo.clave || "") } : null,
     estudio, kdf:Object.assign({}, KDF, (c && c.kdf) || {}), envio,
     cuentas:errores.length ? [] : c.cuentas, consentimiento:(c && c.consentimiento) || {},
@@ -2803,7 +2812,8 @@ function aplicarGuardado(d) { PERSISTE.forEach(k => { if (d[k] !== undefined) S[
 // Abre la cuenta. Si hay avance guardado en este dispositivo, lo restablece y muestra la pantalla de reanudación.
 function abrirCuenta(q, reanudar) {
   const d = cargarLocal(q.u), previo = d && d.cuenta.a === q.a ? d : null;
-  const cuenta = { u:q.u, a:q.a, p:!!q.p, perfil:q.perfil || null, r:reanudar || (previo && previo.cuenta.r) || "" };
+  // `expediente`: el de esta cuenta, si la configuración le fija uno propio (lo usa la demostración para los cuatro casos).
+  const cuenta = { u:q.u, a:q.a, p:!!q.p, perfil:q.perfil || null, expediente:EXPM.casoExacto(q.expediente) ? q.expediente : null, r:reanudar || (previo && previo.cuenta.r) || "" };
   S = estadoInicial(); S.cuenta = cuenta; aplicarPerfil();
   if (previo) {
     aplicarGuardado(previo); S.cuenta = cuenta;
@@ -2835,7 +2845,7 @@ function documentoRestaurable(doc) {
   if (doc.cuenta.usuario !== S.cuenta.u || doc.cuenta.actor !== S.cuenta.a) return "el archivo es de otra cuenta";
   const s = doc.sesion;
   if (s && s.instrumento === "expediente") {
-    if (!EXPM.casoDe(s.expediente) || !Array.isArray(s.orden) || typeof s.bloque !== "number") return "el archivo no trae un expediente que se pueda continuar";
+    if (!EXPM.casoExacto(s.expediente) || !Array.isArray(s.orden) || typeof s.bloque !== "number") return "el archivo no trae un expediente que se pueda continuar";
     return "";
   }
   if (!s || !s.rondas || !rondaDef(s.rondaActual) || PIDX[s.pasoActual] == null || !RONDAS.every(r => s.rondas[r.id] && s.rondas[r.id].pasos)) return "el archivo no trae una sesión que se pueda continuar";
@@ -3326,9 +3336,16 @@ function confirmarHtml() {
 
 /* ---------- Acceso ---------- */
 function vistaAcceso() {
-  if (!CFG.ok) return `<div class="hoja"><div class="card"><h1 tabindex="-1">${ico("estados-advertencia")}El simulador todavía no está configurado</h1><p>Avise a la persona que le envió este enlace.</p><details data-det="cfg"><summary>Detalle para quien administra el sitio</summary><ul class="lista">${CFG.errores.map(e => `<li>${esc(e)}</li>`).join("")}</ul><p class="mini">El archivo <span class="mono">configuracion.js</span> debe estar en la misma carpeta que esta página. Se genera en el panel del investigador.</p></details></div></div>`;
+  if (!CFG.ok) {
+    const como = CFG.plantilla || CFG.enSitio
+      ? `Suba a la misma carpeta que esta página el <span class="mono">configuracion.js</span> que genera el panel del investigador (momento «Publicar»). El paquete trae una plantilla sin cuentas a propósito: la versión de uso real no lleva cuentas de demostración.`
+      : `Este archivo es la versión para uso real y no trae cuentas a propósito. El investigador genera en su panel (momento «Publicar» → «Simulador en un solo archivo») la copia con las cuentas del estudio, a partir de este mismo archivo.`;
+    return `<div class="hoja"><div class="card"><h1 tabindex="-1">${ico("estados-advertencia")}El simulador todavía no está configurado</h1><p>Avise a la persona que le envió este enlace.</p><details data-det="cfg"><summary>Detalle para quien administra el sitio</summary><ul class="lista">${CFG.errores.map(e => `<li>${esc(e)}</li>`).join("")}</ul><p class="mini">${como}</p><p class="mini">Para ver cómo funciona sin configurar nada, abra <span class="mono">simulador-demo.html</span>, que trae cuentas de demostración.</p></details></div></div>`;
+  }
   const a = S.acc;
-  const demo = CFG.demo ? `<div class="hoja"><details class="card demo" data-det="demo" open><summary>Cuentas de demostración</summary><p>Este archivo trae una cuenta de prueba por rol. La contraseña de todas es <b class="mono">${esc(CFG.demo.clave)}</b>. Elija un rol para entrar. Las respuestas de estas cuentas quedan marcadas como demostración.</p><div class="demo-grid">${CFG.cuentas.map(q => `<button type="button" class="demo-cta" data-act="demo-usar" data-arg="${esc(q.u)}"><span class="avatar">${icoActor(q.a)}</span><span><b>${esc(nomL(q.a))}</b><small class="mono">${esc(q.u)}</small></span></button>`).join("")}</div></details></div>` : "";
+  // En la demostración, una cuenta puede traer su propio expediente: se dice cuál, para poder recorrer los cuatro.
+  const expDe = q => { const c = EXPM.casoExacto(q.expediente); return c ? `<small>${esc(c.id)} · ${esc(c.persona.nombre)}</small>` : ""; };
+  const demo = CFG.demo ? `<div class="hoja"><details class="card demo" data-det="demo" open><summary>Cuentas de demostración</summary><p>Este archivo es solo para conocer la herramienta: trae una cuenta por rol y la contraseña de todas es <b class="mono">${esc(CFG.demo.clave)}</b>. Elija un rol para entrar. Las respuestas de estas cuentas quedan marcadas como demostración y no entran al análisis del estudio.${instrumentoDelEstudio() === "expediente" ? ` Las cuentas sin expediente indicado trabajan ${esc(CFG.estudio.expediente || "PI-L01")}; las que lo indican, ese otro expediente sintético.` : ""}</p><div class="demo-grid">${CFG.cuentas.map(q => `<button type="button" class="demo-cta" data-act="demo-usar" data-arg="${esc(q.u)}"><span class="avatar">${icoActor(q.a)}</span><span><b>${esc(nomL(q.a))}</b><small class="mono">${esc(q.u)}</small>${expDe(q)}</span></button>`).join("")}</div></details></div>` : "";
   return `<div class="auth-wrap"><form class="auth acceso" data-form="acceso" novalidate>
     <div class="auth-body">
       <div class="avatar xl">${ico("actores-participante")}</div>
@@ -3811,9 +3828,11 @@ function puedeCompartir() {
 
 const esExpediente = () => !!(S.ses && S.ses.instrumento === "expediente");
 // El expediente con el que recorre este participante: el de su cuenta, o el que el estudio fijó.
+// Una vez empezado el recorrido manda el de la sesión: si el investigador cambia el expediente del estudio con
+// participantes en curso, quien ya empezó termina el suyo en lugar de ver cambiar el caso a mitad de camino.
 function casoExp() {
-  const id = (S.cuenta && S.cuenta.expediente) || (CFG.estudio && CFG.estudio.expediente) || (EXP.casos[0] || {}).id;
-  return EXPM.casoDe(id);
+  return EXPM.casoExacto(S.ses && S.ses.instrumento === "expediente" ? S.ses.expediente : null)
+    || EXPM.casoExacto(S.cuenta && S.cuenta.expediente) || EXPM.casoExacto(CFG.estudio && CFG.estudio.expediente) || EXP.casos[0];
 }
 function nuevaSesionExp() {
   const caso = casoExp(), orden = EXPM.ordenCondiciones(S.cuenta.u);

@@ -355,7 +355,7 @@ function vistaPublicar() {
       </ol>`)}
     ${seccion("Simulador en un solo archivo", "investigacion-informe", `
       <p>Un único HTML con sus cuentas, que abre con doble clic. Sirve para enviarlo por correo a alguien que lo abrirá en un computador. En teléfonos use la dirección del sitio.</p>
-      <p class="mini">Elija el archivo base: <span class="mono">simulador.html</span> o el <span class="mono">index.html</span> del paquete.</p>
+      <p class="mini">Elija el archivo base: <span class="mono">simulador.html</span>, que es la versión de uso real y no trae cuentas, o el <span class="mono">index.html</span> del paquete. Sea cual sea la base, el archivo que se genera lleva solo las cuentas de su estudio: nunca las de demostración.</p>
       <div class="row">${btn("unico-elegir", "", "Elegir el archivo base y generar", imp.length ? "sec" : "", "acciones-importar", imp.length ? " disabled" : "")}${archivoOculto("unico-archivo", ".html,text/html")}${UI.unico ? estadoLinea(UI.unico) : ""}</div>
       ${pub && pub.unico ? `<p class="mini">Último generado: ${esc(fecha(pub.unico))}.</p>` : ""}`)}
     ${srv ? seccion("Comprobar el receptor", "acciones-sincronizar", `<p class="mini">Cuando el sitio ya esté publicado con <span class="mono">recibir.php</span> y su <span class="mono">recibir-config.php</span>.</p><div class="row">${btn("probar-receptor", "", "Probar el receptor", "sec", "acciones-sincronizar")}${UI.prueba ? estadoLinea(UI.prueba) : ""}</div>`) : ""}

@@ -13,13 +13,16 @@ El investigador elige en el panel cuál se aplica. Los dos usan las mismas cuent
 
 ## Los entregables
 
+Las **cuentas de demostración** (usuarios `demo-…`, contraseña pública `DEMO-2026`) existen **solo en los archivos de demostración**. Lo que se publica para uso real no lleva ninguna: las cuentas del estudio las crea el investigador en su panel.
+
 | Entregable | Archivo | Para qué |
 |---|---|---|
-| 1. Simulador en un solo archivo | `simulador.html` | Abre con doble clic, sin conexión. Aplica el instrumento del expediente (PI-L01) y trae una cuenta de demostración por rol (usuarios `demo-…`, contraseña `DEMO-2026`). Sirve para probar y para enviar tal cual. |
-| 2. El mismo, con el otro instrumento | `simulador-ruta.html` | Igual, con el recorrido de la ruta de incapacidad. |
-| 3. Paquete para el sitio web | `paquete-web.zip` (carpeta `paquete-web/`) | Lo que se le entrega a quien publica: simulador, configuración, panel del investigador, receptor opcional y guías. El instrumento y el expediente los fija la configuración que genera el panel. |
+| **Demostración** | `simulador-demo.html` | Abre con doble clic, sin conexión. Trae los cuatro expedientes sintéticos y quince cuentas de demostración: una por rol en PI-L01 y el ARL en PI-L02, PI-L03 y PI-L04. Sirve para conocer la herramienta, mostrarla y ensayar. Sus respuestas quedan marcadas y no entran al análisis. **No se publica para el estudio.** |
+| Demostración del otro instrumento | `simulador-ruta-demo.html` | Igual, con el recorrido de la ruta de incapacidad y una cuenta de demostración por rol. |
+| **Uso real · sitio web** | `paquete-web.zip` (carpeta `paquete-web/`) | Lo que se publica en Azure: simulador, panel del investigador, receptor opcional y guías. Su `configuracion.js` es una **plantilla sin estudio y sin cuentas**: hasta que se reemplaza por la que genera el panel, el sitio dice que no está configurado y no deja entrar a nadie. |
+| **Uso real · archivo único** | `simulador.html` | El mismo simulador, **sin cuentas**. Es la base que el panel convierte en «simulador en un solo archivo» con las cuentas del estudio (momento «Publicar»). Abierto tal cual, explica eso y no deja entrar. |
 
-Contenido del paquete: `index.html` (simulador), `configuracion.js` (estudio y cuentas), `sw.js` (reapertura sin conexión), `administrador.html` (panel del investigador), `recibir.php` con `recibir-config.php` y `respuestas/` (receptor opcional), `guia-investigador.html`, `guia-despliegue.html` y `LEEME.txt`.
+Contenido del paquete: `index.html` (simulador), `configuracion.js` (plantilla sin cuentas, que se reemplaza por la del panel), `sw.js` (reapertura sin conexión), `administrador.html` (panel del investigador), `recibir.php` con `recibir-config.php` y `respuestas/` (receptor opcional), `guia-investigador.html`, `guia-despliegue.html` y `LEEME.txt`. La demostración no viaja dentro del paquete.
 
 ## Qué hace el participante
 
@@ -147,7 +150,7 @@ Capítulos: quiénes participaron y su perfil profesional; **H1** con la complet
 - **Sin ejemplos de respuesta.** Las actividades no muestran ejemplos, para no inducir las respuestas.
 - **El relato y el rol de M.P.** El relato describe por dónde viaja la evidencia, y en algunos pasos eso incluye la gestión que hoy recae sobre la trabajadora (en A3, que es ella quien tiene que pedirle la matriz al empleador). Es contenido del blueprint y es el hecho que el módulo pretende cambiar, pero para el rol de M.P. queda escrito encima de la pregunta «¿qué le tocó hacer por su cuenta?». Al leer ese indicador conviene tenerlo presente.
 - **Hipótesis.** El instrumento del expediente trae las tres del documento del marco (H1 completitud, H2 identificación de responsabilidades, H3 trazabilidad de los accesos), textuales y con su regla de medida. El recorrido de la ruta conserva las cuatro de `datos-escenario.js` con su formulación «pendiente de confirmar». Ninguna se reescribe ni se renombra.
-- **El recorrido de la ruta se conserva** como segundo instrumento, no se reemplaza: `simulador-ruta.html` y todas sus pruebas siguen en verde.
+- **El recorrido de la ruta se conserva** como segundo instrumento, no se reemplaza: `simulador-ruta-demo.html` y todas sus pruebas siguen en verde.
 
 ## Construcción
 
@@ -176,11 +179,12 @@ python3 src/build.py
 | `guias/` | Guías del paquete |
 | `estilos*.css`, `head-*.html`, `skel-*.html` | Estilos propios y esqueletos de página |
 
-`simulador-artefacto.html` es el mismo simulador sin la envoltura del documento, para publicarlo como artefacto. `simulador-ruta.html` es la misma construcción con el otro instrumento.
+`build.py` escribe por separado lo de demostración y lo de uso real. Demostración: `simulador-demo.html`, `simulador-ruta-demo.html` y `simulador-artefacto.html` (la demostración sin la envoltura del documento, para publicarla como artefacto). Uso real: `simulador.html` sin configuración y el paquete web con la plantilla de `configuracion.js`. Las cuentas de demostración solo se generan para los archivos de demostración (`config_demo()`); la plantilla del paquete es `PLANTILLA_CONFIG`.
 
 ## Pruebas
 
 ```
+node tests/entregables.js      # qué archivo es para qué: demostración con cuentas, uso real sin ellas
 node tests/motor.js            # sin navegador: los 12 roles completan el recorrido de la ruta
 node tests/expediente.js       # el instrumento del expediente: catálogo, condiciones, corte y medidas
 node tests/simulador.js        # navegador, archivo local sin red
@@ -193,6 +197,7 @@ Requieren Node, Playwright con Chromium y, para el receptor, PHP. Las pruebas se
 
 | Prueba | Qué comprueba |
 |---|---|
+| `entregables.js` | Que `simulador.html`, el `index.html` y el `configuracion.js` del paquete —y el propio `paquete-web.zip`— no traigan ninguna cuenta de demostración ni su contraseña; que digan con claridad qué falta y no dejen entrar; que la demostración no viaje en el paquete; y que `simulador-demo.html` traiga sus quince cuentas y deje recorrer los cuatro expedientes. |
 | `motor.js` | Cada rol recorre la ruta y entrega un documento válido y sin credenciales. Con `--muestras` escribe doce documentos de ejemplo. |
 | `expediente.js` | El cociente «Inicio n/m» del documento frente al que se calcula de la tabla de soportes en los diez puntos; custodios, responsabilidades y accesos coherentes; el orden alternado de las condiciones; los doce roles completan el instrumento dentro de los 45 minutos; el corte de 48 horas; un soporte pedido no cuenta hasta verificarlo y aceptarlo; la denegación de lo clínico a una finalidad de control administrativo; el reinicio entre condiciones; el contraste de horas y de completitud entre las dos condiciones; y la pausa y el regreso a mitad del expediente. |
 | `simulador.js` | Los 12 roles por la interfaz desde `file://`; acceso, declaración, rechazo, recarga con borrador, pausa, cierre inesperado, corrección de respuestas, respaldo, archivo de avance, retiro, navegador sin almacenamiento; teléfono (390, 360 y 320 px), nombres accesibles, foco y teclado. |
