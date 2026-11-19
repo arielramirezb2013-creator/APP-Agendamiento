@@ -17,6 +17,8 @@ const nomPaso = p => llanoRuta(p.n);
 const NOMF = { tra:"M.P.", emp:"el empleador", ips:"la IPS", eps:"la EPS", arl:"la ARL", afp:"la administradora de pensiones", jr:"la Junta Regional", jn:"la Junta Nacional", mintrabajo:"el Ministerio del Trabajo", minsalud:"el Ministerio de Salud", supersalud:"la Superintendencia de Salud", jueces:"el despacho judicial", modulo:"el módulo", sistema:"el sistema" };
 const PIEZAF = { hc:"el resumen clínico estructurado", apt:"la matriz de exposición", inc:"los certificados de incapacidad", hl:"la historia laboral y las semanas cotizadas", dic:"el dictamen de primera instancia" };
 const nomF = id => NOMF[id] || nom(id);
+// Con el expediente, quien entra como trabajador es la persona solicitante, no M.P. de la ruta.
+const nomRol = a => a === "tra" && instrumentoDelEstudio() === "expediente" ? "Solicitante" : nomL(a);
 const piezaF = k => PIEZAF[k] || EV[k].n.toLowerCase();
 const piezasLargo = ks => (ks || []).length ? listaFrase(ks.map(piezaF)) : "información sobre el estado del trámite";
 const mayus = t => t.charAt(0).toUpperCase() + t.slice(1);
@@ -40,7 +42,7 @@ function fraseRegistro(r) {
     : `La decisión se notificó como se hace hoy, por correo, y nadie firmó un acuse de recibo: no queda registro de quién la recibió.`;
   if (r.tipo === "acuse") return `${ini(pl.de)} confirmó que recibió la notificación.`;
   if (r.tipo === "respuesta") return `Su respuesta quedó enlazada a la solicitud que le hizo ${med(pl.a)}.`;
-  return r.tipo;
+  return "";   // un tipo sin frase no se le muestra al participante con su nombre interno
 }
 function etapasHtml() {
   const items = ["Orientación", "Declaración", "Su perfil", instrumentoDelEstudio() === "expediente" ? "Expediente" : "Recorrido", "Entrega"];
@@ -55,7 +57,7 @@ function renderTop() {
     return;
   }
   const enCurso = !!S.consent && S.etapa !== "cierre";
-  pintar("appright", `<span class="who"><span class="avatar">${icoActor(S.cuenta.a)}</span><span><b>${esc(nomL(S.cuenta.a))}</b><small>usuario ${esc(S.cuenta.u)}</small></span></span><button type="button" class="btn sm outline" data-act="salir">${ico(enCurso ? "acciones-pausar" : "acciones-salir", "sm")}${enCurso ? "Pausar" : "Salir"}</button>`);
+  pintar("appright", `<span class="who"><span class="avatar">${icoActor(S.cuenta.a)}</span><span><b>${esc(nomRol(S.cuenta.a))}</b><small>usuario ${esc(S.cuenta.u)}</small></span></span><button type="button" class="btn sm outline" data-act="salir">${ico(enCurso ? "acciones-pausar" : "acciones-salir", "sm")}${enCurso ? "Pausar" : "Salir"}</button>`);
   const guardado = ALM.tipo === "memoria" || guardadoFallo ? `<span class="badge sin-guardado">${ico("estados-advertencia", "sm")}Este navegador no guarda el avance: no cierre la pestaña</span>` : ALM.tipo === "pestana" ? `<span class="badge sin-guardado">${ico("estados-advertencia", "sm")}El avance se guarda solo mientras esta pestaña siga abierta</span>` : S.guardado ? `<span class="hm guardado">${ico("estados-guardado", "sm")}Guardado en este dispositivo · ${esc(hora(S.guardado))}</span>` : "";
   const red = !enLinea && (CFG.envio || /^https?:$/.test(location.protocol)) ? `<span class="badge sin-guardado">${ico("estados-sin-conexion", "sm")}Sin conexión: su avance sigue guardado en este dispositivo${CFG.envio ? " y se enviará al volver la conexión" : ""}</span>` : "";
   const conEtapas = ["orientacion", "consentimiento", "simulacion", "cierre"].indexOf(S.etapa) >= 0 && !S.retomar && !S.buscando && !falloGrave;
@@ -97,7 +99,7 @@ function vistaAcceso() {
     </div>
     <div class="auth-foot"><p class="mini">Use el usuario y la contraseña que le envió el investigador. Cada usuario corresponde a un rol de la ruta.</p></div>
   </form></div>
-  <p class="intro claro">Simulación individual de la ruta de incapacidad con un caso sintético. Usted representa un rol, recorre la ruta dos veces y sus respuestas se usan en una investigación doctoral. Los demás actores están simulados.</p>${demo}`;
+  <p class="intro claro">${instrumentoDelEstudio() === "expediente" ? "Simulación individual con un expediente sintético de pensión de invalidez. Usted representa un rol, recorre el mismo expediente en dos condiciones y sus respuestas se usan en una investigación doctoral." : "Simulación individual de la ruta de incapacidad con un caso sintético. Usted representa un rol, recorre la ruta una vez, paso a paso, y sus respuestas se usan en una investigación doctoral."} Los demás actores están simulados.</p>${demo}`;
 }
 
 /* ---------- Reanudación ---------- */
@@ -113,15 +115,16 @@ function dondeQuedo() {
     return b.tipo === "punto" ? c + " · punto " + numPunto(caso, b.punto) + " de " + caso.puntos.length : b.tipo === "punto-contexto" ? c + " · contexto" : c;
   }
   const r = rondaDef(s.rondaActual), rd = rondaAct();
-  if (rd.estado === "pendiente") return "Inicio de la " + r.n.charAt(0).toLowerCase() + r.n.slice(1);
-  if (rd.estado === "valoracion") return "Cierre de la " + r.n.charAt(0).toLowerCase() + r.n.slice(1);
+  const rn = r.n.charAt(0).toLowerCase() + r.n.slice(1);
+  if (rd.estado === "pendiente") return "Inicio " + conDe(rn);
+  if (rd.estado === "valoracion") return "Cierre " + conDe(rn);
   return r.n + " · paso " + numPaso(s.pasoActual) + " · " + nomPaso(PASOS[PIDX[s.pasoActual]]);
 }
 function vistaRetomar() {
   const r = S.retomar, a = avance(), origen = { local:"en este dispositivo", servidor:"en el servidor del estudio", archivo:"en su archivo de avance" }[r.origen];
   return `<div class="hoja"><div class="card retomar"><h1 tabindex="-1">${ico("acciones-iniciar")}Bienvenido de nuevo</h1>
-    <p>Su avance estaba guardado ${origen}. Último guardado: <b>${esc(fecha(r.t))}</b>. Puede continuar donde quedó.</p>
-    <div class="ficha-rol"><div class="avatar xl">${icoActor(S.cuenta.a)}</div><div><div class="rol-n">${esc(nomL(S.cuenta.a))}</div><div class="kv"><b>Quedó en</b><span>${esc(dondeQuedo())}</span><b>Respuestas</b><span>${a.hechas} de ${a.total}<div class="meter"><span style="width:${a.pct}%"></span></div></span></div></div></div>
+    <p>Su avance estaba guardado ${origen}. Último guardado: <b>${esc(fecha(r.t))}</b>${/\.$/.test(fecha(r.t)) ? "" : "."} Puede continuar donde quedó.</p>
+    <div class="ficha-rol"><div class="avatar xl">${icoActor(S.cuenta.a)}</div><div><div class="rol-n">${esc(nomRol(S.cuenta.a))}</div><div class="kv"><b>Quedó en</b><span>${esc(dondeQuedo())}</span><b>Respuestas</b><span>${a.hechas} de ${a.total}<div class="meter"><span style="width:${a.pct}%"></span></div></span></div></div></div>
     <div class="nav-row">${r.origen !== "local" ? `<button type="button" class="enlace" data-act="retomar-nuevo">No es mi avance: empezar de nuevo</button>` : ""}<span class="sp"></span><button type="button" class="btn outline" data-act="orient-ver">${ico("navegacion-guia")}Ver la orientación</button><button type="button" class="btn green" data-act="retomar-continuar">Continuar donde quedé${ico("acciones-siguiente")}</button></div></div></div>`;
 }
 const vistaBuscando = () => `<div class="hoja"><div class="card"><p role="status"><span class="spinner"></span>Buscando si tiene un avance guardado…</p></div></div>`;
@@ -184,14 +187,14 @@ function vistaOrientacion() {
     // Con el expediente, el relato del rol es su papel en ESE expediente, no el de la ruta de incapacidad.
     const caso = exp ? casoVista() : null, papel = caso ? EXPM.actorDe(caso, a) : null;
     const relato = exp
-      ? (papel ? `<div class="qpanel"><b>${esc(OX.rol.papelTitulo)}.</b> ${esc(papel.n)}: ${esc(papel.rol)}${(papel.custodia || []).length ? " Custodia " + esc(listaFrase(papel.custodia.map(k => soporteF(caso, k)))) + "." : ""}</div>` : `<div class="qpanel">${esc(GUION.exp.sinPapel)}</div>`)
+      ? (papel ? `<div class="qpanel"><b>${esc(OX.rol.papelTitulo)}.</b> ${esc(papelTxt(caso, papel))}</div>` : "")   // sin papel: lo dice «Dónde interviene»
       : (GUION.roles[a] ? `<div class="qpanel">${esc(GUION.roles[a])}</div>` : "");
     const nota = exp ? OX.rol.nota : PASOS.some(p => RONDAS.some(rr => !actividadDe(p, a, rr.modo))) ? R.intervieneNota : R.intervieneNotaTodos;
     c = `<h1 tabindex="-1">${esc(R.titulo)}</h1><p>${esc(R.intro)}</p>
       ${relato}
-      <div class="ficha-rol"><div class="avatar xl">${icoActor(a)}</div><div><div class="rol-n">${esc(nomL(a))}</div><div class="kv"><b>${esc(exp ? OX.rol.funcion : "Función en la ruta")}</b><span>${esc(A[a].funcion)}</span><b>Tensión conocida</b><span>${esc(A[a].tension)}</span><b>Grupo</b><span>${esc(A[a].grupo)}</span></div></div></div>
+      <div class="ficha-rol"><div class="avatar xl">${icoActor(a)}</div><div><div class="rol-n">${esc(nomRol(a))}</div><div class="kv"><b>${esc(exp ? OX.rol.funcion : "Función en la ruta")}</b><span>${esc(A[a].funcion)}</span>${exp ? "" : `<b>Tensión conocida</b><span>${esc(A[a].tension)}</span>`}<b>Grupo</b><span>${esc(A[a].grupo)}</span></div></div></div>
       <h2>${ico("navegacion-blueprint")}${esc(R.intervieneTitulo)}</h2>${exp ? intervencionExpHtml(a) : intervencionHtml(a)}<p class="mini" style="margin-top:8px">${esc(nota)}</p>
-      <details data-det="terminos" open><summary>${esc(R.terminosTitulo)}</summary><dl class="info">${BP.terminos.concat(R.terminos || []).map(t => `<dt>${esc(t[0])}</dt><dd>${esc(t[1])}</dd>`).join("")}</dl></details>`;
+      <details data-det="terminos" open><summary>${esc(R.terminosTitulo)}</summary><dl class="info">${BP.terminos.concat(exp ? [] : R.terminos || []).map(t => `<dt>${esc(t[0])}</dt><dd>${esc(t[1])}</dd>`).join("")}</dl></details>`;
   }
   const ult = i === O.pasos.length - 1, hecho = !!S.consent;
   return `<div class="hoja"><div class="card orient">
@@ -242,13 +245,13 @@ function pasoTarjeta(p, modo, actor, compacto) {
   const fila = (n, x, cid) => `<div class="paso-fila lane-${cid}"><b>${ico(ICO.carril[cid], "sm")}${esc(n)}</b><span>${x && x.a ? `<span class="chip ${x.a === "modulo" ? "ch-teal" : x.a === actor ? "ch-navy" : "ch-grey"}">${icoActor(x.a, "sm")}${esc(nom(x.a))}</span> ` : ""}${esc(llanoRuta(typeof x === "string" ? x : (x ? x.t : "—")))}</span></div>`;
   const propio = (o.otros || {})[actor] ? fila("Su entidad", { a:actor, t:o.otros[actor] }, "front") : "";
   const resto = fila("Contacto", o.contacto, "contacto") + fila("Custodia", o.back, "back") + fila("Soporte", o.soporte, "soporte");
-  return `<div class="paso-card"><div class="step-banner"><span class="step-tag">${numPaso(p.id)}</span><span class="step-name">${esc(nomPaso(p))}</span><span class="step-day">${esc(fase.n)} · ${esc(p.dia)}</span></div>${fila("M.P.", o.mp, "mp")}${fila("Decide", o.front, "front")}${propio}${compacto ? `<details data-det="paso-${esc(p.id)}"><summary>Ver contacto, custodia y soporte</summary>${resto}</details>` : resto}</div>`;
+  return `<div class="paso-card"><div class="step-banner"><span class="step-tag">${numPaso(p.id)}</span><span class="step-name">${esc(nomPaso(p))}</span><span class="step-day">${esc(fase.n)} · ${esc(rotLlano(p.dia))}</span></div>${fila("M.P.", o.mp, "mp")}${fila("Decide", o.front, "front")}${propio}${compacto ? `<details data-det="paso-${esc(p.id)}"><summary>Ver contacto, custodia y soporte</summary>${resto}</details>` : resto}</div>`;
 }
 function recorridoHtml(resaltar) {
   const s = S.ses, modo = modoActual(), v = vModo(modo), r0 = s.rondaActual, b = rondaAct().estado === "en_curso" ? bloqueActual() : null;
   const esCur = pid => !!(b && b.pasos.indexOf(pid) >= 0);
   const LANE = { mp:"M.P.", contacto:"Contacto", front:"Decide", back:"Custodia", soporte:"Soporte" };
-  let h = `<div class="twrap sb-wrap" style="zoom:${S.zoom || 1}"><table class="sb"><thead><tr><th class="sb-lane sb-corner"><span class="sr-only">Carriles en filas, pasos en columnas</span></th>${SB.fases.map(f => `<th scope="colgroup" class="sb-fase sb-${f.id}" colspan="${PASOS.filter(p => p.fase === f.id).length}">${ico(ICO.fase[f.id])}<b>${esc(f.n)}</b><span class="mini">${esc(f.sub)}</span><span class="fase-chev"></span></th>`).join("")}</tr><tr><th class="sb-lane sb-corner2"></th>${PASOS.map(p => `<th scope="col" class="sb-paso ${esCur(p.id) ? "actual" : ""}"><span class="step-tag sm">${numPaso(p.id)}</span>${ico(ICO.paso[p.id], "sm")}${esc(nomPaso(p))}<span class="mini">${esc(p.dia)}</span>${esCur(p.id) ? `<span class="chip ch-navy">${ico("estados-en-curso", "sm")}paso actual</span>` : ""}</th>`).join("")}</tr></thead><tbody>`;
+  let h = `<div class="twrap sb-wrap" style="zoom:${S.zoom || 1}"><table class="sb"><thead><tr><th class="sb-lane sb-corner"><span class="sr-only">Carriles en filas, pasos en columnas</span></th>${SB.fases.map(f => `<th scope="colgroup" class="sb-fase sb-${f.id}" colspan="${PASOS.filter(p => p.fase === f.id).length}">${ico(ICO.fase[f.id])}<b>${esc(f.n)}</b><span class="mini">${esc(f.sub)}</span><span class="fase-chev"></span></th>`).join("")}</tr><tr><th class="sb-lane sb-corner2"></th>${PASOS.map(p => `<th scope="col" class="sb-paso ${esCur(p.id) ? "actual" : ""}"><span class="step-tag sm">${numPaso(p.id)}</span>${ico(ICO.paso[p.id], "sm")}${esc(nomPaso(p))}<span class="mini">${esc(rotLlano(p.dia))}</span>${esCur(p.id) ? `<span class="chip ch-navy">${ico("estados-en-curso", "sm")}paso actual</span>` : ""}</th>`).join("")}</tr></thead><tbody>`;
   SB.carriles.forEach(c => {
     if (SB.lineas[c.id]) h += `<tr class="sb-line"><td colspan="${PASOS.length + 1}"><span>${ico(ICO.linea[c.id], "sm")}${esc(SB.lineas[c.id])}</span></td></tr>`;
     h += `<tr class="sb-row-${c.id}"><th scope="row" class="sb-lane" title="${esc(c.n)} · ${esc(c.sub)}"><span class="lane-v">${ico(ICO.carril[c.id])}<b>${esc(LANE[c.id] || c.n)}</b></span></th>`;
@@ -303,8 +306,8 @@ function competenciaHtml(p, actor, modo) {
   const reto = SIM.retos.filter(x => x.actor === actor && (x.etapa === p.id || x.etapa === "*") && GUION.retosOmitidos.indexOf(x.id) < 0)[0], c = celdaDe(p, actor, modo);
   if (!reto && !c) return "";
   return `<div class="situacion"><div class="lbl">${ico("navegacion-escenario", "sm")}${esc(C.titulo)}</div>
-    ${reto ? `<p><b>${esc(llanoRuta(reto.titulo))}.</b> ${esc(llanoRuta(reto[vModo(modo)]))}</p>` : ""}
-    ${c ? `<div class="kv"><b>${esc(C.plazoTitulo)}</b><span>${esc(llanoRuta(c.r))}</span><b>Registro que debería quedar</b><span>${esc(llanoRuta(c.tz))}</span></div>` : ""}
+    ${reto ? `<p><b>${esc(llanoRuta(reto.titulo))}${/[.?!]$/.test(reto.titulo) ? "" : "."}</b> ${esc(llanoRuta(reto[vModo(modo)]))}</p>` : ""}
+    ${c ? `<div class="kv"><b>${esc(C.plazoTitulo)}</b><span>${esc(llanoRuta(c.r).replace(/^responde —\s*(·\s*)?/, "Nadie responde con claridad" + (/^responde —\s*·/.test(c.r) ? " · " : "")))}</span><b>Registro que debería quedar</b><span>${esc(llanoRuta(c.tz))}</span></div>` : ""}
     ${reto && reto.base && reto.base.length ? `<div class="normas"><div class="lbl mini">${ico("gobernanza-etica", "sm")}${esc(C.normasTitulo)}</div><ul class="lista">${reto.base.map(k => `<li>${esc(SIM.normas[k] || k)}</li>`).join("")}</ul></div>` : ""}
     ${(ac.prec || []).length ? `<p class="mini">${esc(C.precedentesTitulo)}: ${esc(ac.prec.join(" · "))}.</p>` : ""}
     <p class="mini">${esc(C.nota)}</p></div>`;
@@ -337,7 +340,7 @@ function comparacionHtml(p, actor) {
   return `<div class="sep-bloque"></div><div class="modulo">
     <div class="lbl">${ico("actores-modulo", "sm")}${esc(X.tituloMod)}</div><p class="mini">${esc(X.introMod)}</p>
     ${anade.length
-      ? `<div class="lbl mini">${esc(X.anade)}</div><dl class="info">${anade.map(a => `<dt>${esc(a.n)} <span class="mini">· ${esc(pzN(a.pieza))}</span></dt><dd>${esc(a.v)}</dd>`).join("")}</dl>`
+      ? `<div class="lbl mini">${esc(X.anade)}</div><dl class="info">${anade.map(a => `<dt>${esc(a.n)} <span class="mini">· ${esc(pzN(a.pieza))}</span></dt><dd>${esc(llanoRuta(a.v))}</dd>`).join("")}</dl>`
       : `<p class="mini">${esc(X.anadeNada)}</p>`}
     <fieldset><legend>${ico("investigacion-cambio-observado", "sm")}${esc(C.pregunta)}</legend><p class="mini ayuda">${esc(C.intro)}</p>${opt("f", "cmp", C.ops, f.cmp)}${f.cmp === "otra" ? `<input type="text" data-in="f-cmpCual" aria-label="${esc(C.cual)}" value="${esc(f.cmpCual || "")}" maxlength="600" class="ancho" placeholder="${esc(C.cual)}">` : ""}</fieldset>
     <fieldset><legend>${ico("investigacion-tiempo", "sm")}${esc(C.dias)}</legend><p class="mini ayuda">${esc(C.diasAyuda)}</p><label class="sr-only" for="f-cmpdias">${esc(C.dias)}</label><input id="f-cmpdias" type="number" min="0" max="3650" step="1" inputmode="numeric" data-in="f-cmpDias" value="${esc(f.cmpDias == null ? "" : f.cmpDias)}" style="width:110px"></fieldset>
@@ -345,6 +348,7 @@ function comparacionHtml(p, actor) {
   </div>`;
 }
 function simuladosHtml(regs, titulo) {
+  regs = regs.filter(r => fraseRegistro(r));
   if (!regs.length) return "";
   return `<div class="simulados"><div class="lbl">${ico("actores-modulo", "sm")}${esc(titulo)}</div><ul class="lista limpia">${regs.map(r => `<li>${ico(ICO.tipo[r.tipo], "sm")}<span>${esc(fraseRegistro(r))}${r.tipo === "consulta" && !r.payload.denegada && !r.payload.metadatos && r.payload.campos.length < EV[r.payload.pieza].campos.length ? ` <span class="mini">Quedó retenido en origen: ${esc(retenidosTxt(r.payload.pieza, r.payload.campos))}.</span>` : ""}</span> ${r.payload.simulado ? chipSim : ""}</li>`).join("")}</ul></div>`;
 }
@@ -353,7 +357,7 @@ function formActividad(p, act, modo) {
   const dias = `<input type="number" min="0" max="3650" step="1" inputmode="numeric" data-in="f-dias" value="${esc(f.dias == null ? "" : f.dias)}" style="width:110px">`;
   let h = "";
   if (act.tipo === "decide") {
-    h += `<fieldset><legend>${ico("investigacion-completitud", "sm")}1. Con lo que tiene ahora, ¿puede actuar?</legend><p class="mini ayuda">Piense en la evidencia que le llegaría de verdad en este punto de la ruta, no en la que debería llegarle.</p>${opt("f", "suficiencia", ESC.suficiencia, f.suficiencia)}${f.suficiencia && f.suficiencia !== "suficiente" ? `<div class="campos"><span class="mini">¿Qué le haría falta? Marque las piezas que echa de menos.</span><br>${Object.keys(EV).map(k => `<label><input type="checkbox" data-in="f-falta" data-arg="${k}" ${(f.falta || []).indexOf(k) >= 0 ? "checked" : ""}>${esc(EV[k].sl)} · ${esc(EV[k].n)}</label>`).join("")}</div>` : ""}</fieldset>`;
+    h += `<fieldset><legend>${ico("investigacion-completitud", "sm")}1. Con lo que tiene ahora, ¿puede actuar?</legend><p class="mini ayuda">Piense en la evidencia que le llegaría de verdad en este punto de la ruta, no en la que debería llegarle.</p>${opt("f", "suficiencia", ESC.suficiencia, f.suficiencia)}${f.suficiencia && f.suficiencia !== "suficiente" ? `<div class="campos"><span class="mini">¿Qué le haría falta? Marque las piezas que echa de menos.</span><br>${Object.keys(EV).map(k => `<label><input type="checkbox" data-in="f-falta" data-arg="${k}" ${(f.falta || []).indexOf(k) >= 0 ? "checked" : ""}>${esc(EV[k].n)}</label>`).join("")}</div>` : ""}</fieldset>`;
     const conEnt = (ESC.entradas[p.id] || []).length > 0;
     const leg2 = conEnt ? "2. ¿Para qué consultaría esa evidencia?" : "2. Si para este paso necesitara pedir evidencia, ¿con qué finalidad la pediría?";
     const ay2 = conEnt
@@ -410,13 +414,13 @@ function respuestaKv(pl, yo) {
 }
 function resultadoHtml(p, modo, reg) {
   const pl = reg.payload, c = pl.comprobacion, yo = S.yo.actor, sig = posicion().sig, G = GUION.guardado;
-  const efectos = vigentes().filter(x => x.payload && x.payload.origenActividad === reg.id);
+  const efectos = vigentes().filter(x => x.payload && x.payload.origenActividad === reg.id && x.tipo !== "decision");
   let comp = "";
   if (c) {
     const perm = Object.keys(c.piezasPermitidas).map(k => pzN(k) + " " + c.piezasPermitidas[k].length + " de " + EV[k].campos.length).join(" · ");
     const esHoy = modo === "actual";
-    const vSi = esHoy ? "está entre las previstas para " + nom(yo) + " en ese contrato" : "autorizada para " + nom(yo);
-    const vNo = esHoy ? "no está entre las previstas para " + nom(yo) + " en ese contrato" : "no autorizada para " + nom(yo);
+    const vSi = esHoy ? "está entre las previstas para " + nomF(yo) + " en ese contrato" : "autorizada para " + nomF(yo);
+    const vNo = esHoy ? "no está entre las previstas para " + nomF(yo) + " en ese contrato" : "no autorizada para " + nomF(yo);
     const marca = (ok, t) => esHoy ? "<b>" + esc(t) + "</b>" : '<span class="regla-' + (ok ? "ok" : "no") + '">' + esc(t) + "</span>";
     comp = `<div class="comprobacion"><div class="lbl">${ico("gobernanza-contrato-datos", "sm")}${esc(esHoy ? G.comprobacionTituloHoy : G.comprobacionTituloMod)}</div><p>Finalidad declarada «${esc(finTxt(pl.finalidad))}»: ${c.finalidadAutorizada ? marca(true, vSi) : marca(false, vNo)}.${perm ? " Vista mínima: " + esc(perm) + "." : ""}${c.piezasDenegadas.length ? ` ${esc(esHoy ? "Quedaría fuera de ese contrato" : "Fuera de su contrato")}: ${marca(false, listaFrase(c.piezasDenegadas.map(pzN)))}.` : ""}${c.piezasPropias.length ? " Evidencia propia: " + esc(listaFrase(c.piezasPropias.map(pzN))) + "." : ""}</p><p class="mini">${esc(esHoy ? G.comprobacionHoy : G.comprobacionMod)}</p></div>`;
   }
@@ -436,7 +440,8 @@ function consecuenciaHtml(p, reg, efectos) {
   const dec = vigentes().filter(x => x.tipo === "decision" && x.paso === p.id && x.payload.origenActividad === reg.id);
   const otros = dec.map(x => {
     const t = textoOpcion(p.id, x.payload.cual, x.payload.valor, E);
-    return `<li>${ico("actores-modulo", "sm")}<span><b>${esc(mayus(nomF(x.payload.de)))}.</b> ${esc(t)}${x.payload.forzado ? ` <span class="mini">${esc(K.forzado)}</span>` : ""}</span> ${chipSim}</li>`;
+    const lab = mayus(nomF(x.payload.de));
+    return `<li>${ico("actores-modulo", "sm")}<span>${t.indexOf(lab) === 0 ? "" : `<b>${esc(lab)}.</b> `}${esc(t)}${x.payload.forzado ? ` <span class="mini">${esc(K.forzado)}</span>` : ""}</span> ${chipSim}</li>`;
   }).join("");
   const est = RAMAS.resumenEstado(E);
   return `<div class="consecuencia"><div class="lbl">${ico("capitulos-decision-avance", "sm")}${esc(K.titulo)}</div>
@@ -455,7 +460,7 @@ function contratoHtml(a) {
   const ac = A[a];
   const consulta = (ac.consulta || []).length ? ac.consulta.map(c => pzN(c[0]) + ": " + camposTxt(c[0], c[1]) + " (" + c[1].length + " de " + EV[c[0]].campos.length + ")").join(" · ") + (ac.consultaNota ? " · " + ac.consultaNota : "") : (ac.consultaTxt || "—");
   const entrega = ac.entrega ? pzN(ac.entrega.p) + ": " + camposTxt(ac.entrega.p, ac.entrega.ent) + (ac.entrega.ret.length ? " · retiene en origen: " + camposTxt(ac.entrega.p, ac.entrega.ret) : "") + (ac.entrega.nota ? " · " + ac.entrega.nota : "") : (ac.entregaTxt || "—");
-  return `<div class="kv"><b>Contrato</b><span>${esc(ac.contrato)}</span><b>Finalidad autorizada</b><span>«${esc(ac.fin)}»</span><b>Qué consulta</b><span>${esc(consulta)}</span><b>Qué entrega</b><span>${esc(entrega)}</span><b>Responsable y plazo</b><span>${esc(ac.resp)} · ${esc(ac.plazo)}</span><b>Notifica a</b><span>${esc(ac.notifica)}</span><b>Registro</b><span>${esc(ac.traza)}</span></div>`;
+  return `<div class="kv"><b>Contrato</b><span>${esc(llanoRuta(ac.contrato))}</span><b>Finalidad autorizada</b><span>«${esc(ac.fin)}»</span><b>Qué consulta</b><span>${esc(consulta)}</span><b>Qué entrega</b><span>${esc(entrega)}</span><b>Responsable y plazo</b><span>${esc(rotLlano(ac.resp))} · ${esc(rotLlano(ac.plazo))}</span><b>Notifica a</b><span>${esc(llanoRuta(ac.notifica))}</span><b>Registro</b><span>${esc(llanoRuta(ac.traza))}</span></div>`;
 }
 function rondaIntroHtml(r) {
   const G = GUION.ronda, bs = bloques(r.id), acts = bs.filter(b => b.tipo === "actividad");
@@ -556,7 +561,7 @@ function misRespuestasExpHtml() {
     const pl = r.payload, cond = r.ronda && EXPM.condDe(r.ronda) ? EXPM.condDe(r.ronda).n : "—";
     const donde = r.tipo === "punto" || r.tipo === "actuacion" ? nomPunto(caso, pl.punto) : r.tipo === "observacion" ? (pl.final ? "Al terminar" : "Contexto") : "Preguntas de cierre";
     const que = r.tipo === "punto" ? "Decidió: " + (pl.decisionTxt || pl.decision) + (pl.porQue ? " · «" + pl.porQue + "»" : "") + (pl.obs ? " · «" + pl.obs + "»" : "")
-      : r.tipo === "actuacion" ? (QUE_HIZO[pl.que] || pl.que) + " " + nomSop(caso, pl.pieza).toLowerCase() + (pl.denegado ? " (no se le dio acceso)" : "")
+      : r.tipo === "actuacion" ? (QUE_HIZO[pl.que] || pl.que) + " " + soporteF(caso, pl.pieza) + (pl.denegado ? " (no se le dio acceso)" : "")
       : r.tipo === "h2" ? "Dijo a quién le corresponde cada una de las seis tareas"
       : r.tipo === "h3" ? "Reconstruyó los accesos a la evidencia"
       : r.tipo === "observacion" ? "«" + pl.texto + "»" : "";
@@ -566,7 +571,7 @@ function misRespuestasExpHtml() {
 }
 function misRespuestasHtml() {
   if (esExpediente()) return misRespuestasExpHtml();
-  const filas = vigentes().filter(r => r.origen === "participante").map(r => {
+  const filas = vigentes().filter(r => r.origen === "participante" && r.tipo !== "encuesta").map(r => {
     const pl = r.payload, txt = r.tipo === "actividad" ? resumenActividad(pl) + (pl.obs ? " · «" + pl.obs + "»" : "") : r.tipo === "valoracion" ? etiqueta(ESC.valoracion.semaforo, pl.semaforo) + " · " + etiqueta(ESC.valoracion.mejora, pl.mejora) : r.tipo === "preguntas" ? ESC.preguntas.map(q => q.t + " " + (q.tipo === "multi" ? (pl[q.id] || []).map(x => etiqueta(q.ops, x)).join(", ") : q.tipo === "texto" ? (pl[q.id] || "") : etiqueta(q.ops, pl[q.id])) + (pl[q.id + "cual"] ? " (" + pl[q.id + "cual"] + ")" : "")).join(" · ") : pl.texto || "";
     const TIPO_R = { actividad:"Su respuesta", valoracion:"Valoración del contrato", preguntas:"Preguntas de cierre", observacion:"Observación" };
     return `<tr><td class="nw">${PIDX[r.paso] == null ? "—" : "Paso " + numPaso(r.paso)}</td><td class="nw">${esc(TIPO_R[r.tipo] || "Registro")}</td><td>${esc(txt)}</td></tr>`;

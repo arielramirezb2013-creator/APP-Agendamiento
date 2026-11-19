@@ -307,6 +307,16 @@ function documentoExp(usuario, actor, estudioId, caso, opc) {
     await ir(pg, "respuestas");
     await pg.setInputFiles("#resp-archivo", rutasExp); await w(pg, 900);
     T.ok(/2 importada/.test(await texto(pg, ".importe")), "importa las respuestas del expediente", (await texto(pg, ".importe")).slice(0, 200));
+    // El seguimiento del expediente habla de condiciones y puntos, no de los pasos de la ruta.
+    await ir(pg, "seguimiento");
+    const segE = await pg.evaluate(id => { const b = document.querySelector('[data-act="seg-ficha"][data-arg="' + id + '"]'), tr = b && b.closest("tr"); return tr ? tr.innerText : ""; }, docsExp[0].participante.id);
+    T.ok(/Terminó el expediente/.test(segE) && /\bP1\b/.test(segE) && /\bP2\b/.test(segE) && !/\bE3\b|\bA1\b/.test(segE) && /H[23] · |Decidió|Verificó|Consultó|Solicitó/.test(segE),
+      "el seguimiento del expediente muestra las condiciones con sus puntos y lo último que hizo la persona", segE.replace(/\s+/g, " ").slice(0, 400));
+    await clic(pg, '[data-act="seg-ficha"][data-arg="' + docsExp[0].participante.id + '"]', 400);
+    const fichaE = await texto(pg, "#vista");
+    T.ok(/Qué decidió, punto por punto/.test(fichaE) && /PI-L02/.test(fichaE) && /H2 · responsabilidades/.test(fichaE) && /H3 · accesos completos/.test(fichaE) && /en regla/.test(fichaE) && !(await roto(pg)),
+      "la ficha de un participante del expediente trae su decisión en cada punto de las dos condiciones y su resultado en H2 y H3", fichaE.slice(0, 240));
+    await clic(pg, '[data-act="ficha-cerrar"]', 300);
     await ir(pg, "resultados"); await w(pg, 1200);
     const infE = await texto(pg, "#informe");
     T.ok(/H1 · Completitud de la evidencia requerida/.test(infE) && /H2 · Identificación de responsabilidades/.test(infE) && /H3 · Trazabilidad de los accesos/.test(infE),

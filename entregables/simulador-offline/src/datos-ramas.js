@@ -315,7 +315,7 @@ const RAMAS = {
   },
   faltaTxt: function (E, pasoId) {
     const f = RAMAS.piezasDe(pasoId || "E3").filter(k => !E.piezas[k].llego);
-    return f.length ? listaFrase(f.map(k => EV[k].n.toLowerCase())) : "nada";
+    return f.length ? listaFrase(f.map(pzN)) : "nada";
   },
   // ¿Llegó un campo concreto de una pieza?
   campoLlego: function (E, pieza, i) {
@@ -349,7 +349,7 @@ const RAMAS = {
     if (E.apelacion != null) out.push(["Apelación", E.apelacion ? "radicada" : "no hubo"]);
     if (E.pago) out.push(["Quién paga desde el día 181", PAGO[E.pago] || E.pago]);
     if (E.reintegro) out.push(["Reintegro", E.reintegro]);
-    if (E.prestacion) out.push(["Prestación", E.prestacion === "resuelta" ? "resuelta" : E.prestacion]);
+    if (E.prestacion) out.push(["Prestación", E.prestacion === "arl" ? "remitida a la ARL" : E.prestacion]);
     if (E.queja) out.push(["Queja", E.queja]);
     out.push(["Gestiones que le tocaron a la trabajadora", String(E.gestionesMP)]);
     out.push(["Acuses que quedaron", String(E.acuses)]);

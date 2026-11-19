@@ -138,7 +138,7 @@ const GUION = {
       terminosTitulo:"Términos que verá en la simulación",
       /* Dos términos que la simulación usa y que la lista del blueprint no trae. */
       terminos:[
-        ["contrato de datos", "qué puede consultar un rol, qué tiene que entregar, quién responde y en qué plazo; es lo que usted valora al cerrar cada ronda."],
+        ["contrato de datos", "qué puede consultar un rol, qué tiene que entregar, quién responde y en qué plazo; es lo que usted valora al cerrar el recorrido."],
         ["vista de estado", "lo que {persona} alcanza a ver de su propio caso: etapa, responsable, plazo y acuses, sin campos clínicos."],
         ["administradora de pensiones", "la entidad donde {persona} cotiza, que custodia su historia laboral; en las tablas y los menús aparece con la etiqueta del documento del proyecto, «AFP / Colpensiones»."]
       ]

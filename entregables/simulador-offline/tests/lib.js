@@ -120,12 +120,19 @@ async function llenarEncuesta(pg, n) {
   for (const k of Object.keys(txt)) { const sel = '[data-in="e-campo"][data-arg="' + k + '"]'; if (await hay(pg, sel)) await pg.fill(sel, txt[k]); }
   await clic(pg, '[data-act="enc-guardar"]');
 }
-async function pantalla(pg, n) {
+async function pantalla(pg, n, mirar) {
   if (await hay(pg, "#titulo-cierre")) return "cierre";
-  if (await hay(pg, '[data-act="enc-guardar"]')) { await llenarEncuesta(pg, n); return "encuesta"; }
+  if (await hay(pg, '[data-act="enc-guardar"]')) { if (mirar) { await clic(pg, '[data-act="enc-guardar"]'); await mirar("encuesta vacía"); } await llenarEncuesta(pg, n); return "encuesta"; }
   if (await hay(pg, '[data-act="ronda-iniciar"]')) { await clic(pg, '[data-act="ronda-iniciar"]'); return "inicio"; }
-  if (await hay(pg, '[data-act="guardar"]')) { await llenarActividad(pg, n); await clic(pg, '[data-act="guardar"]'); return "actividad"; }
-  if (await hay(pg, '[data-act="guardar-val"]')) { await llenarValoracion(pg, n); await clic(pg, '[data-act="guardar-val"]'); return "valoracion"; }
+  if (await hay(pg, '[data-act="guardar"]')) {
+    if (mirar) { await clic(pg, '[data-act="guardar"]'); await mirar("actividad guardada vacía"); }
+    await llenarActividad(pg, n); if (mirar) await mirar("actividad llena");
+    await clic(pg, '[data-act="guardar"]'); return "actividad";
+  }
+  if (await hay(pg, '[data-act="guardar-val"]')) {
+    if (mirar) { await clic(pg, '[data-act="guardar-val"]'); await mirar("valoración guardada vacía"); }
+    await llenarValoracion(pg, n); await clic(pg, '[data-act="guardar-val"]'); return "valoracion";
+  }
   if (await hay(pg, '[data-act="ronda-cerrar"]')) { await clic(pg, '[data-act="ronda-cerrar"]'); return "cierre-ronda"; }
   if (await hay(pg, '[data-act="continuar"]')) { await clic(pg, '[data-act="continuar"]'); return "continuar"; }
   throw new Error("pantalla desconocida: " + (await texto(pg, "#vista")).slice(0, 200));
@@ -144,9 +151,10 @@ async function recorrerInterfaz(pg, variante, parar) {
 /* Los códigos con que el investigador asocia y analiza los resultados no se le muestran al participante:
    hipótesis (H1–H3), subpreguntas (SP), preguntas de cierre (P1–P4, R01…), pasos de la ruta (A1, E3, D2),
    rupturas (r1–r5) y reglas (①–⑤), piezas y soportes (HC, APT, FIR, DIC…), puntos (P1…) e identificadores
-   del caso y del marco (PI-L01, DGIT-…). Se busca en todo el texto de la página, también en lo plegado,
-   en las opciones de las listas y en los títulos y etiquetas accesibles. Devuelve cada código con su contexto. */
-const COD_ANALISIS = /(?<![\w-])(?:H[1-3]|SP\d|R\d{2}|P\d{1,2}|r[1-5]|[AED]\d|PI-L\d+|DGIT-[\w-]+|SOL|ORI|REG|CAR|FIR|AFI|APT|EXP|NEX|FUN|AUD|HC|INC|HL|DIC|SL)(?![\w-])|[①②③④⑤]/g;
+   del caso y del marco (PI-L01, DGIT-…), abreviaturas de plazo («10 d.h.», «4 d.») y nombres internos de los
+   registros («decision», «no_conforme»). Se busca en todo el texto de la página, también en lo plegado, en las
+   opciones de las listas y en los títulos y etiquetas accesibles. Devuelve cada código con su contexto. */
+const COD_ANALISIS = /(?<![\w-])(?:H[1-3]|SP\d|[Rr]\d{2}|P\d{1,2}|r[1-5]|[AED]\d|PI-L\d+|DGIT-[\w-]+|SOL|ORI|REG|CAR|FIR|AFI|APT|EXP|NEX|FUN|AUD|HC|INC|HL|DIC|SL)(?![\w-])|[①②③④⑤]|\d+ d\.(?:h\.)?(?=\s|$|[,;)·])|(?<![\wáéíóúñ])(?:decision|actuacion|valoracion|observacion|no_conforme|origenActividad)(?![\wáéíóúñ])/g;
 const codigosVisibles = pg => pg.evaluate(src => {
   const re = new RegExp(src, "g"), out = [], visto = {};
   const mirar = (t, donde) => { String(t || "").replace(re, (m, pos) => { const k = m + "|" + donde; if (!visto[k]) { visto[k] = 1; out.push(m + " en «" + String(t).slice(Math.max(0, pos - 40), pos + 30).replace(/\s+/g, " ").trim() + "»"); } return m; }); };

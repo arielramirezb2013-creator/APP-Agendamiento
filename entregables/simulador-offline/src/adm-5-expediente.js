@@ -141,6 +141,10 @@ const { analizarExp, datosExpConsolidados } = (() => {
       ["Participantes que dieron datos personales", nDatos + " de " + PS.length],
       ["Análisis generado", fechaSegura(t0)]
     ]), "Los datos del estudio son los que el investigador definió en el panel. El marco, la pregunta y las condiciones son los del documento del instrumento. Los conteos salen de los documentos de respuestas analizados: uno por participación.");
+    // Las hipótesis tal como las formula el documento del instrumento, con su código: así viajan también en el CSV.
+    T("hipotesis", "Hipótesis del marco, tal como están formuladas", ["Código", "Nombre", "Formulación", "Variable", "Regla de medida"],
+      EXP.marco.hipotesis.map(h => [h.id, h.n || "", h.t, h.variable || "—", h.regla || "—"]),
+      "Textuales, del documento del instrumento (" + EXP.marco.id + "). Los códigos H1, H2 y H3 son los que usan las tablas de este informe; el participante no los ve.");
     T("participacion_rol", "Respuestas recibidas por rol", ["Rol", "Grupo", "Cuentas invitadas", "Respuestas recibidas", "Completas", "Parciales", "De cuentas de prueba", "Expedientes"],
       BP.actores.map(a => { const ps = porRol[a.id];
         return [rolL(a.id), a.grupo, ctas.length ? invitadas.filter(q => q.a === a.id).length : "—", ps.length, ps.filter(P => P.completa).length, ps.filter(P => !P.completa).length, ps.filter(P => P.prueba).length,
@@ -157,7 +161,7 @@ const { analizarExp, datosExpConsolidados } = (() => {
     cap("participacion", "Qué se examinó y quiénes participaron", "actores-participante",
       "Cada participante recorrió el mismo expediente dos veces: una con los canales reconstruidos del flujo actual y otra con el módulo interoperable, en el orden que le tocó por su cuenta y con el expediente reiniciado al empezar cada condición. En cada punto de decisión vio los soportes requeridos con su estado y su criterio de conformidad, declaró con qué finalidad consultaba y pudo consultar, solicitar o devolver, con un corte de " + CORTE + " horas virtuales.\n"
       + "Se analizaron " + plural(PS.length, "respuesta", "respuestas") + ": " + nComp + " " + (nComp === 1 ? "completa" : "completas") + " y " + (PS.length - nComp) + " " + (PS.length - nComp === 1 ? "parcial" : "parciales") + ", de " + rolesCon + " de los " + BP.actores.length + " roles, sobre " + plural(casos.length, "expediente", "expedientes") + ".\n" + EXP.marco.nota,
-      ["estudio", "participacion_rol", "participantes", "perfil", "perfil_detalle"]);
+      ["estudio", "hipotesis", "participacion_rol", "participantes", "perfil", "perfil_detalle"]);
 
     /* 2. H1 · Completitud de la evidencia */
     const h1 = EXP.marco.hipotesis.filter(h => h.id === "H1")[0] || {};
@@ -237,11 +241,11 @@ const { analizarExp, datosExpConsolidados } = (() => {
       BP.actores.filter(a => porRol[a.id].some(P => P.h2)).map(a => { const xs = porRol[a.id].filter(P => P.h2).map(P => obj(obj(P.h2.payload).calificacion).ok), e = estad(xs);
         return [rolL(a.id), xs.length, fmtN(media(xs)), pctTxt(media(xs) * 100 / 6), e ? e.min : "—", e ? e.max : "—"]; }),
       "Promedio de aciertos de las seis preguntas, por el rol que representó cada participante.");
-    T("h2_item", "Tarea por tarea: quién creen que responde", ["Expediente", "Tarea", "Función", "Responsable de referencia", "Aciertos", "Respondieron", "Respuesta equivocada más frecuente"],
+    T("h2_item", "Tarea por tarea: quién creen que responde", ["Expediente", "Id", "Tarea", "Función", "Responsable de referencia", "Aciertos", "Respondieron", "Respuesta equivocada más frecuente"],
       [].concat(...casos.map(c => c.h2.map(h => { const ds = [].concat(...PS.filter(P => P.caso.id === c.id && P.h2).map(P => lst(obj(P.h2.payload).calificacion.detalle).filter(d => d.id === h.id)));
         const malas = contar(ds.filter(d => !d.correcta).map(d => d.dada)), ks = Object.keys(malas).sort((x, y) => malas[y] - malas[x]);
-        return [c.id, h.tarea, h.funcion, ACTOR_H2(c, h.ref), ds.filter(d => d.correcta).length, ds.length,
-          ks.length ? ACTOR_H2(c, ks[0]) + " (" + malas[ks[0]] + ")" : "—"]; }))).filter(r => r[5] > 0),
+        return [c.id, h.id, h.tarea, h.funcion, ACTOR_H2(c, h.ref), ds.filter(d => d.correcta).length, ds.length,
+          ks.length ? ACTOR_H2(c, ks[0]) + " (" + malas[ks[0]] + ")" : "—"]; }))).filter(r => r[6] > 0),
       "Una fila por tarea de cada expediente. La última columna dice a quién se le atribuye la tarea con más frecuencia cuando la respuesta no coincide con la de referencia: es donde la responsabilidad se desdibuja.");
     cap("h2", "H2 · Identificación de responsabilidades", "gobernanza-responsable-plazo",
       txt(h2h.t, 1200) + "\nVariable: " + txt(h2h.variable, 200) + ". Regla de medida: " + txt(h2h.regla, 400),

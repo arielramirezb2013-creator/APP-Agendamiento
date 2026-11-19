@@ -153,14 +153,18 @@ que el simulador envía al receptor. Un documento parcial sirve además para con
   instrumento: "simulador_blueprint_asincrono", formato: 1, version: "1.0",
   estudio: { id, titulo, configuracion },             // configuracion = `generado` de la configuración usada
   cuenta: { usuario, actor, prueba, demo },           // nunca la contraseña ni su huella
-  participante: { id, anonimo, datos: { nombre?, entidad?, cargo?, experiencia?, correo?, telefono? }, resumen },
+  participante: { id, anonimo, datos: { nombre?, entidad?, cargo?, experiencia?, correo?, telefono? }, resumen,
+                  perfil,                             // id del perfil sintético del caso de la ruta (p. ej. "mp") o null
+                  encuesta },                         // la última encuesta de perfil profesional (payload del registro `encuesta`)
   consentimiento: { aceptado: true, t, version, declaraciones: { orientacion, voluntaria, academico, uso, datos? }, texto: [ … ] },
   estado: "completa" | "parcial",
   avance: { ronda, paso, hechas, total },
   escenario: "mp_sura",                               // con el expediente: "DGIT-PENSION-R1"
   sesion: { codigo, nombre, escenario, modalidad: "asincrona", estado: "en_curso" | "cerrada", creada, cerrada?,
             // instrumento "ruta":
-            rondaActual, pasoActual, rondas: { R1: { estado, iniciada?, cerrada?, pasos: { A1: { estado, iniciado?, completado? } } }, R2: … },
+            rondaActual, pasoActual, rondas: { R1: { estado, iniciada?, cerrada?, pasos: { A1: { estado, iniciado?, completado? } } } },
+            // en esta versión la ruta se recorre una sola vez (R1, modo "actual"); la comparación con el módulo
+            // se responde dentro de cada paso (`cmp`, `cmpDias`, `cmpSeg` de la actividad), no en una segunda ronda
             // instrumento "expediente":
             instrumento: "expediente", expediente: "PI-L01", orden: ["modulo", "actual"], bloque, total,
             condiciones: { actual: { cerrada, horas, completitud }, modulo: … } },
@@ -207,15 +211,17 @@ avance vuelven los soportes conseguidos, las horas gastadas, los accesos y los p
 
 Un soporte cuenta para la completitud solo si `llegado && aceptado && estado === "conforme"`. El costo en horas
 de cada actuación está en `EXPM.horas` (flujo actual: consultar 2, solicitar 20, devolver 20, verificar 1,
-decidir 1; módulo: 1, 6, 6, 0,5 y 0,5) y el corte de 48 horas no se puede pasar: el simulador rechaza la
-actuación que no alcance y dice cuántas horas quedan.
+decidir 1; módulo: 1, 6, 6, 0,5 y 0,5); «Verificar y aceptar» y «Verificar y rechazar» cuestan lo que
+verificar (`EXPM.costo`). El corte de 48 horas no se puede pasar: el simulador rechaza la actuación que no
+alcance y dice cuántas horas quedan. Verificar lo que ya llegó y decidir el punto se permiten con el corte
+agotado, pero las horas se quedan en 48 (`EXPM.sumarHoras`).
 
 ### Registros
 
 Bitácora de solo anexar. Una corrección es un registro nuevo con `reemplaza` y `version + 1`.
 
 ```js
-{ id, t, sesion, escenario, ronda: "R1" | "R2", modo: "actual" | "propuesto", paso: "A1"…"D3" | "—", dia,
+{ id, t, sesion, escenario, ronda: "R1", modo: "actual", paso: "A1"…"D3" | "—", dia,
   origen: "participante" | "sistema", participanteId, participanteNombre, actor, tipo, payload, reemplaza, version }
 ```
 
@@ -237,6 +243,7 @@ de un registro reemplazado (`payload.origenActividad`).
 | `notificacion` | sistema | `simulado`, `de`, `a[]`, `acuse`, `nota`, `origenActividad` |
 | `acuse` | sistema | `simulado`, `de`, `a`, `nota`, `origenActividad` |
 | `respuesta` | sistema | `solicitud`, `de`, `a`, `respuesta`, `dias`, `origenActividad` (enlaza la respuesta del custodio) |
+| `decision` | sistema | `simulado`, `de` (el actor no conectado que decide), `paso`, `cual`, `valor`, `forzado`, `por: "sistema"`, `origenActividad`. Es lo que decide un actor simulado a raíz de la respuesta del participante; el participante lo lee como frase en «Lo que hicieron los actores que no están conectados» |
 | `inicio_ronda`, `avance`, `cierre_ronda` | sistema | conducción automática: `ronda`; `de[]`, `a`, `bloque` |
 | `punto` | participante | **expediente**: `cond`, `punto`, `como` (`decide` \| `aporta`), `decision`, `decisionTxt`, `porQue`, `obs`, `completitud { ok, total, conformes[], faltan[], pct }`, `horas`, `resuelve`, `soportes [{ k, estado, aceptado }]` |
 | `actuacion` | participante | **expediente**: `cond`, `punto`, `pieza`, `que` (`consultar` \| `solicitar` \| `devolver` \| `aceptar` \| `rechazar`), `finalidad`, `horas`, `denegado`, `texto`, `horasTotal` |
@@ -248,9 +255,9 @@ Todo lo que el sistema hace en nombre de un actor no conectado lleva `payload.si
 indicadores lo simulado se cuenta y se rotula aparte de lo que respondieron los participantes.
 
 Qué actividad tiene cada rol en cada paso lo decide `actividadDe(paso, actor, modo)`; el recorrido completo de
-un rol en una ronda lo da `bloquesDe(actor, modo)`. Actividades esperadas por rol (suma de las dos rondas):
-trabajador 22, empleador 14, IPS 12, EPS 14, ARL 8, AFP 6, Junta Regional 8, Junta Nacional 2, MinTrabajo 7,
-MinSalud 4, SuperSalud 4, Jueces 4. Además, por ronda, una `valoracion` y un registro `preguntas`.
+un rol lo da `bloquesDe(actor, modo)`. Actividades esperadas por rol en el recorrido: trabajador 11,
+empleador 7, IPS 6, EPS 7, ARL 4, AFP 3, Junta Regional 4, Junta Nacional 1, MinTrabajo 4, MinSalud 2,
+SuperSalud 2, Jueces 2. Además, al cerrar, una `valoracion` y un registro `preguntas`.
 
 ## 7. Receptor del servidor (opcional)
 

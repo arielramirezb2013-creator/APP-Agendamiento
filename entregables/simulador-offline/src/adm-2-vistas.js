@@ -421,7 +421,7 @@ function vistaSeguimiento() {
       <td class="nw"><span class="avatar sm">${icoActor(d.cuenta.actor)}</span></td>
       <td><b>${esc(nomL(d.cuenta.actor))}</b><div class="mini mono">${esc(d.cuenta.usuario)}${q && q.etiqueta ? " · " + esc(q.etiqueta) : ""}</div>${esDePrueba(e) ? `<span class="chip ch-grey">${esc(d.cuenta.demo ? "demostración" : "prueba")}</span>` : ""}</td>
       <td><div class="donde">${g.completa ? ico("estados-completado", "sm") : ico("estados-en-curso", "sm")}${esc(g.donde.texto)}</div><div class="meter"><span style="width:${g.pct}%"></span></div><div class="mini">${g.hechas} de ${g.total} respuestas</div>${tira(g)}</td>
-      <td>${ult ? `<div class="mini">${esc(ult.ronda)} · ${esc(ult.paso)}</div><div>${esc(resumenActividad(ult.payload))}</div>${ult.payload.obs ? `<div class="mini">«${esc(ult.payload.obs)}»</div>` : ""}` : nada("Sin actividades todavía")}</td>
+      <td>${ult ? (g.exp ? `<div class="mini">${esc(g.ultDonde)}</div><div>${esc(g.ultTexto)}</div>` : `<div class="mini">${esc(ult.ronda)} · ${esc(ult.paso)}</div><div>${esc(resumenActividad(ult.payload))}</div>`) + (ult.payload.obs ? `<div class="mini">«${esc(ult.payload.obs)}»</div>` : "") : nada("Sin actividades todavía")}</td>
       <td>${Object.keys(probl).length ? `<ul class="lista mini">${Object.keys(probl).map(k => `<li>${esc(k)}${probl[k] > 1 ? " ×" + probl[k] : ""}</li>`).join("")}</ul>` : `<span class="mini">—</span>`}${g.observaciones.length ? `<div class="mini">${esc(plural(g.observaciones.length, "observación", "observaciones"))}</div>` : ""}</td>
       <td class="nw">${btn("seg-ficha", d.participante.id, "Ver ficha", "sm sec", "acciones-ver-detalle")}<div class="mini">${esc(fecha(fechaIso(d.generado)))}</div></td></tr>`;
   };
@@ -429,10 +429,39 @@ function vistaSeguimiento() {
   const total = cuentas.length, conResp = cuentas.filter(q => respuestasDeCuenta(q.u).length).length;
   const completas = respuestasOrdenadas().filter(e => seguimientoDe(e.doc).completa).length;
   return `<div class="hoja">
-    ${guia("<b>En qué va cada participante.</b> La tira de once casillas muestra los pasos de cada ronda: verde los respondidos, azul el actual y gris los que su rol no recorre.")}
+    ${guia(instrumentoDelProyecto() === "expediente"
+      ? "<b>En qué va cada participante.</b> Cada tira es una condición, en el orden que le tocó, con los puntos del expediente: verde los que decidió o en los que aportó, azul el actual y gris los que su rol no recorre o que se leen como tramo ilustrativo."
+      : "<b>En qué va cada participante.</b> La tira de once casillas muestra los pasos de cada ronda: verde los respondidos, azul el actual y gris los que su rol no recorre.")}
     ${seccion("Resumen", "capitulos-indicadores", `<dl class="cifras"><div><dt>Cuentas</dt><dd>${total}</dd></div><div><dt>Con alguna respuesta</dt><dd>${conResp}</dd></div><div><dt>Participaciones completas</dt><dd>${completas}</dd></div><div><dt>Sin respuesta</dt><dd>${total - conResp}</dd></div></dl>`)}
     ${seccion("Participantes", "actores-participante", `<div class="twrap"><table class="t seguimiento"><thead><tr><th><span class="sr-only">Rol</span></th><th scope="col">Cuenta</th><th scope="col">En qué va</th><th scope="col">Lo último que respondió</th><th scope="col">Qué problemas registró</th><th scope="col"><span class="sr-only">Acciones</span></th></tr></thead><tbody>${cuentas.map(filaCuenta).join("")}${sueltas.length ? `<tr class="sep"><td colspan="6" class="mini">Respuestas de cuentas que no están en este proyecto</td></tr>${sueltas.map(e => filaSeg(e, null)).join("")}` : ""}</tbody></table></div>`)}
   </div>`;
+}
+
+/* ---------- Ficha de un participante del expediente ---------- */
+function fichaExpediente(e, g) {
+  const d = e.doc, pid = d.participante.id, dt = d.participante.datos || {}, caso = g.caso;
+  const campos = GUION.consentimiento.datos.filter(c => dt[c.id]);
+  const celda = x => {
+    if (!x.act) return `<td class="na"><span class="mini">${x.ilustra ? "tramo ilustrativo" : "no interviene"}</span></td>`;
+    if (!x.reg) return `<td class="pend"><span class="mini">sin responder</span></td>`;
+    const pl = x.reg.payload, c = esObjeto(pl.completitud) ? pl.completitud : null;
+    return `<td><b>${esc(pl.decisionTxt || pl.decision)}</b>${c ? `<div class="mini">${c.ok} de ${c.total} en regla${(c.faltan || []).length ? " · faltó " + esc(c.faltan.join(", ")) : ""}</div>` : ""}${pl.porQue ? `<div class="mini">«${esc(pl.porQue)}»</div>` : ""}${typeof pl.horas === "number" ? `<div class="mini">${esc(String(pl.horas).replace(".", ","))} h</div>` : ""}</td>`;
+  };
+  const filas = caso.puntos.map((p, j) => `<tr><td class="nw"><span class="step-tag sm">${esc(p.id)}</span></td><td class="mini">${esc(p.n)}${p.resuelve ? " · resuelve" : ""}</td>${g.rondas.map(r => celda(r.pasos[j])).join("")}</tr>`).join("");
+  const cal = (rec, et) => rec && esObjeto(rec.payload.calificacion) ? `<b>${esc(et)}</b><span>${rec.payload.calificacion.ok} de ${rec.payload.calificacion.total}${typeof rec.payload.calificacion.campos === "number" ? " · " + rec.payload.calificacion.campos + " elementos de " + (4 * 5) : ""}</span>` : `<b>${esc(et)}</b><span class="mini">sin responder</span>`;
+  return `<div class="hoja"><div class="card ficha-part">
+    <div class="row"><button type="button" class="btn sm outline" data-act="ficha-cerrar">${ico("acciones-anterior", "sm")}Volver</button><span class="sp"></span>${btn("resp-ficha-json", pid, "Descargar esta respuesta", "sm sec", "investigacion-archivo-json")}</div>
+    <div class="ficha-cab"><div class="avatar xl">${icoActor(d.cuenta.actor)}</div><div><h1 tabindex="-1">${esc(nomL(d.cuenta.actor))}</h1>
+      <div class="kv"><b>Cuenta</b><span class="mono">${esc(d.cuenta.usuario)}</span><b>Participación</b><span class="mono">${esc(pid)}</span><b>Expediente</b><span>${esc(caso.id)} · ${esc(caso.persona.nombre)}</span><b>Estado</b><span>${esc(g.completa ? "completa" : "parcial")} · ${g.hechas} de ${g.total} respuestas · ${esc(g.donde.texto)}</span><b>Declaración</b><span>aceptada el ${esc(fecha(d.consentimiento.t))} (versión ${esc(d.consentimiento.version)})</span><b>Documento</b><span>${esc(fecha(fechaIso(d.generado)))} · ${esc(e.origen === "servidor" ? "recibido por el servidor" : "importado de un archivo")}</span></div></div></div>
+    ${campos.length ? `<details data-det="ficha-datos"><summary>Datos personales que esta persona decidió dar</summary><div class="kv">${campos.map(c => `<b>${esc(c.n)}</b><span>${esc(dt[c.id])}</span>`).join("")}</div><p class="mini">Úselos solo para contactarle sobre el estudio. No aparecen en el informe.</p></details>` : `<p class="mini">${ico("gobernanza-etica", "sm")}Participó sin dar sus datos personales.</p>`}
+    <h2>${ico("navegacion-blueprint")}Qué decidió, punto por punto</h2>
+    <div class="twrap"><table class="t ficha-tabla"><thead><tr><th scope="col">Punto</th><th scope="col">Nombre</th>${g.rondas.map(r => `<th scope="col">${ico(ICO.modo[r.r.modo], "sm")}${esc(r.r.id)}${r.i === 0 ? " · primera" : " · segunda"}</th>`).join("")}</tr></thead><tbody>${filas}</tbody></table></div>
+    <h2>${ico("capitulos-validacion-contratos")}Preguntas de cierre</h2><div class="kv">${cal(g.h2, "H2 · responsabilidades")}${cal(g.h3, "H3 · accesos completos")}</div>
+    ${g.problemas.length ? `<h2>${ico("investigacion-barreras")}Qué problemas registró</h2><div class="twrap"><table class="t"><thead><tr><th scope="col">Condición</th><th scope="col">Punto</th><th scope="col">Qué ocurrió</th></tr></thead><tbody>${g.problemas.map(p => `<tr><td class="nw">${esc(p.ronda)}</td><td class="nw">${esc(p.paso)}</td><td>${esc(p.t)}</td></tr>`).join("")}</tbody></table></div>` : ""}
+    ${g.observaciones.length ? `<h2>${ico("acciones-observar")}Sus observaciones</h2><ul class="lista obs-lista">${g.observaciones.map(o => `<li><span class="mini">${esc(o.ronda || "")} ${esc(o.paso || "")}</span> «${esc(o.texto)}»</li>`).join("")}</ul>` : ""}
+    <h2>${ico("documentos-evidencia")}Registros</h2>
+    <p class="mini">${g.nParticipante} de la persona · ${g.nSistema} del sistema${g.corregidas ? " · " + g.corregidas + " reemplazados por una corrección" : ""}.</p>
+  </div></div>`;
 }
 
 /* ---------- Ficha de un participante ---------- */
@@ -447,6 +476,7 @@ function fichaParticipante(pid) {
     const pl = x.reg.payload;
     return `<td><b>${esc(resumenActividad(pl))}</b>${pl.obs ? `<div class="mini">«${esc(pl.obs)}»</div>` : ""}${pl.comprobacion && !pl.comprobacion.finalidadAutorizada ? `<div class="mini regla-no">finalidad no autorizada</div>` : ""}${num(x.reg.version) > 1 ? `<div class="mini">corregida</div>` : ""}</td>`;
   };
+  if (g.exp) return fichaExpediente(e, g);
   const filasPasos = PASOS.map(p => {
     const porRonda = g.rondas.map(r => r.pasos.filter(x => x.p.id === p.id)[0]);
     if (!porRonda.some(x => x && x.act)) return "";

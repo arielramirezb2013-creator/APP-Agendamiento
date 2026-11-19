@@ -48,6 +48,10 @@ function avanzarExp() {
 const puntoHecho = (cond, pid) => !!regsDe({ tipo:"punto", ronda:cond, paso:pid, participanteId:S.yo.id })[0];
 const miPunto = (cond, pid) => regsDe({ tipo:"punto", ronda:cond, paso:pid, participanteId:S.yo.id })[0] || null;
 
+// Horas virtuales con coma decimal, como el resto de cifras: «48,5 h», «quedan 2,5 horas».
+const decimalCo = h => String(Math.round(h * 10) / 10).replace(".", ",");
+const horasN = h => decimalCo(h) + (Math.round(h * 10) / 10 === 1 ? " hora" : " horas");
+
 /* ---------- Actuaciones sobre los soportes ---------- */
 function actuarSobre(k, que) {
   const pos = bloqueExp(), b = pos.b;
@@ -55,11 +59,11 @@ function actuarSobre(k, que) {
   const caso = casoExp(), E = estadoExp(b.cond), p = EXPM.puntoDe(caso, b.punto);
   if (puntoHecho(b.cond, b.punto)) return false;
   // El corte del piloto no se puede pasar: verificar y aceptar lo que ya llegó sí se permite.
-  const H = EXPM.horas[b.cond] || EXPM.horas.actual, cuesta = H[que] || 0, queda = EXP.protocolo.corteHoras - E.horas;
+  const cuesta = EXPM.costo(b.cond, que), queda = EXP.protocolo.corteHoras - E.horas;
   if (que !== "aceptar" && que !== "rechazar" && cuesta > queda) {
     aviso(queda <= 0
       ? "Se agotó el corte de " + EXP.protocolo.corteHoras + " horas virtuales del piloto. Cierre el punto con lo que tenga."
-      : "Esa actuación cuesta " + cuesta + " horas y solo quedan " + (Math.round(queda * 10) / 10) + " del corte de " + EXP.protocolo.corteHoras + ". Cierre el punto con lo que tenga o elija otra actuación.", true);
+      : "Esa actuación cuesta " + horasN(cuesta) + " y " + (queda === 1 ? "solo queda 1 hora" : "solo quedan " + horasN(queda)) + " del corte de " + EXP.protocolo.corteHoras + " horas. Cierre el punto con lo que tenga o elija otra actuación.", true);
     return false;
   }
   const fin = (S.actu && S.actu.finalidad) || "";
@@ -98,11 +102,11 @@ function guardarPunto() {
 /* ---------- H2 y H3 ---------- */
 function validarH2() {
   const caso = casoExp(), v = S.h2 || {};
-  return caso.h2.filter(h => !v[h.id]).map(h => h.id.toLowerCase());
+  return caso.h2.map((h, i) => v[h.id] ? 0 : i + 1).filter(Boolean);   // el participante ve las tareas numeradas
 }
 function guardarH2() {
   const falta = validarH2();
-  if (falta.length) { aviso("Falta decir a quién le corresponde " + listaFrase(falta) + ".", true); return false; }
+  if (falta.length) { aviso("Falta elegir a quién le corresponde " + (falta.length > 1 ? "las tareas " + listaFrase(falta) : "la tarea " + falta[0]) + ".", true); return false; }
   const caso = casoExp(), cal = EXPM.calificarH2(caso, S.h2);
   registrar("h2", { expediente:caso.id, respuestas:clone(S.h2), calificacion:cal }, { paso:"—" });
   return true;
@@ -112,13 +116,13 @@ function validarH3() {
   caso.h3.forEach((h, i) => {
     const id = "A" + (i + 1), d = v[id] || {};
     const sin = EXPM.camposH3.filter(k => !d[k]);
-    if (sin.length) falta.push("el acceso " + (i + 1));
+    if (sin.length) falta.push(i + 1);
   });
   return falta.filter((x, i, a) => a.indexOf(x) === i);
 }
 function guardarH3() {
   const falta = validarH3();
-  if (falta.length) { aviso("Falta completar los cinco elementos de " + listaFrase(falta) + ".", true); return false; }
+  if (falta.length) { aviso("Falta completar los cinco elementos " + (falta.length > 1 ? "de los accesos " + listaFrase(falta) : "del acceso " + falta[0]) + ".", true); return false; }
   const caso = casoExp(), cal = EXPM.calificarH3(caso, S.h3);
   registrar("h3", { expediente:caso.id, respuestas:clone(S.h3), calificacion:cal }, { paso:"—" });
   return true;

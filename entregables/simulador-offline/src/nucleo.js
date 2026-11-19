@@ -42,7 +42,7 @@ const A = {}; BP.actores.forEach(a => { A[a.id] = a; });
 const EV = BP.evidencia;
 /* Lo que ve el participante nombra piezas y pasos en lenguaje llano. Los códigos del blueprint (HC, APT, A1,
    E4…) siguen en los datos y en el panel del investigador, que los usa para asociar los resultados. */
-const PZN = { hc:"historia clínica", apt:"matriz de exposición", inc:"certificados de incapacidad", hl:"historia laboral", dic:"dictamen" };
+const PZN = { hc:"resumen clínico estructurado", apt:"matriz de exposición", inc:"certificados de incapacidad", hl:"historia laboral y semanas cotizadas", dic:"dictamen de primera instancia" };
 const pzN = k => PZN[k] || (EV[k] ? EV[k].n.toLowerCase() : String(k));
 const PZ_COD = { HC:"hc", APT:"apt", INC:"inc", HL:"hl", DIC:"dic" };
 /* Lo que lee el participante de la ruta va sin siglas de piezas ni abreviaturas de plazo: «la APT» se lee
@@ -58,6 +58,8 @@ const llanoRuta = t => typeof t !== "string" ? t : t
     const n = pzN(PZ_COD[c]), antes = (todo.slice(0, pos) + a).trim();
     return a + (!antes || /[.!?¿¡]$/.test(antes) ? n.charAt(0).toUpperCase() + n.slice(1) : n);
   });
+// Para rótulos y celdas cortas («EPS · 10 d.h.»): la misma traducción, sin el punto final de frase.
+const rotLlano = t => typeof t !== "string" ? t : llanoRuta(t).replace(/\.$/, "");
 const FIN = {}; ESC.finalidades.forEach(f => { FIN[f.id] = f; });
 const nom = id => id === "modulo" ? "Módulo" : id === "sistema" ? "Sistema" : A[id] ? A[id].corto : (id || "—");
 const nomL = id => id === "modulo" ? "Índice + reglas + logs" : A[id] ? A[id].n : nom(id);
@@ -281,7 +283,7 @@ function resolverGuion(perfil) {
   const p = (perfil && perfil.persona) || {}, c = (perfil && perfil.caso) || {};
   const ac = p.acompanaCorto || "quien la acompaña";
   const M = { persona:p.nombre || "la trabajadora", acompana:ac, acompanaMayus:ac.charAt(0).toUpperCase() + ac.slice(1),
-    edad:p.edad == null ? "—" : String(p.edad), cargo:p.cargo || "—", empresa:p.empresa || "—",
+    edad:p.edad == null ? "—" : String(p.edad), cargo:p.cargo ? String(p.cargo).charAt(0).toLowerCase() + String(p.cargo).slice(1) : "—", empresa:p.empresa || "—",
     dia:c.diaRuta == null ? "—" : String(c.diaRuta), diagnostico:c.diagnostico || "—" };
   const sub = t => t.replace(/\{(persona|acompanaMayus|acompana|edad|cargo|empresa|dia|diagnostico)\}/g, (m, k) => M[k]);
   const walk = (dst, src) => { Object.keys(src).forEach(k => { const v = src[k]; dst[k] = typeof v === "string" ? sub(v) : (v && typeof v === "object") ? walk(Array.isArray(v) ? [] : {}, v) : v; }); return dst; };
@@ -339,7 +341,7 @@ const cumple = (r, f) => Object.keys(f).every(k => f[k] == null || r[k] === f[k]
 function resumenActividad(pl) {
   if (!pl) return "";
   if (pl.tipo === "decide") return (pl.decisionTxt || pl.decision || "") + " · información " + (pl.suficiencia || "—");
-  if (pl.tipo === "custodia") return etiqueta(ESC.respCustodia, pl.respuesta) + " · " + num(pl.dias) + " d.";
+  if (pl.tipo === "custodia") return etiqueta(ESC.respCustodia, pl.respuesta) + " · " + plural(num(pl.dias), "día", "días");
   if (pl.tipo === "focal") return etiqueta(ESC.focal.sabe, pl.sabe);
   if (pl.tipo === "soporte") return etiqueta(ESC.soporte.ve, pl.ve) + " · " + etiqueta(ESC.soporte.accion, pl.accion);
   return "";

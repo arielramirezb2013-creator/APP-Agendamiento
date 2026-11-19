@@ -24,6 +24,10 @@ const EXPM = {
     modulo: { consultar:1, solicitar:6,  devolver:6,  verificar:0.5, decidir:0.5 }
   },
 
+  // Lo que cuesta una actuación: «Verificar y aceptar» y «Verificar y rechazar» cuestan lo que verificar.
+  costo: function (cond, que) { const H = EXPM.horas[cond] || EXPM.horas.actual; return H[que === "aceptar" || que === "rechazar" ? "verificar" : que] || 0; },
+  // Verificar y decidir se permiten aun con el corte agotado, pero las horas no pasan del corte.
+  sumarHoras: function (E, h) { E.horas = Math.min(EXP.protocolo.corteHoras, E.horas + h); },
   casoDe: function (id) { return EXP.casos.filter(c => c.id === id)[0] || EXP.casos[0] || null; },
   // Igual, pero sin caer al primero: null si el id no está en el catálogo.
   casoExacto: function (id) { return EXP.casos.filter(c => c.id === id)[0] || null; },
@@ -34,6 +38,11 @@ const EXPM = {
 
   /* ---------- Estado del expediente en una condición ----------
      Se reinicia al empezar cada condición, como pide el protocolo. */
+  // «a la IPS», «al empleador», «a ARL SURA»: el custodio tal como entra en una frase.
+  aCustodio: function (n) {
+    const art = { "Junta Nacional":"la", "Junta Regional":"la", "Empleador":"el", "IPS":"la", "Solicitante":"el" }[n];
+    return art === "el" ? "al " + n.toLowerCase() : art === "la" ? "a la " + n : "a " + n;
+  },
   inicial: function (caso) {
     const E = { soportes:{}, puntos:{}, accesos:[], horas:0, historia:[], instantanea:null };
     caso.soportes.forEach(s => {
@@ -91,8 +100,9 @@ const EXPM = {
      solo hecho de pedirlo: tiene que llegar, verificarse y aceptarse. */
   actuar: function (E, caso, cond, actor, puntoId, k, que, finalidad) {
     const s = EXPM.soporteDe(caso, k), x = E.soportes[k], H = EXPM.horas[cond] || EXPM.horas.actual;
+    const aCust = EXPM.aCustodio(s ? s.custN : "");
     if (!s || !x) return null;
-    const esMod = cond === "modulo", r = { pieza:k, que:que, horas:H[que] || 0, denegado:false };
+    const esMod = cond === "modulo", r = { pieza:k, que:que, horas:EXPM.costo(cond, que), denegado:false };
 
     if (que === "consultar") {
       const puede = EXPM.puedeVer(caso, actor, k, puntoId, finalidad);
@@ -100,30 +110,30 @@ const EXPM = {
       r.denegado = !puede;
       r.texto = puede
         ? (x.llegado
-          ? "Consulta atendida. " + (x.estado === "conforme" ? "El soporte está en el expediente: " + s.contenido : "Lo que hay en el expediente no cumple el criterio: " + s.notaEstado)
+          ? "Consulta atendida. " + (x.estado === "conforme" ? "El soporte está en el expediente: " + s.contenido : "Lo que hay en el expediente no cumple el criterio. " + s.notaEstado)
           : (esMod
             ? "El índice registra que el soporte existe y quién lo custodia (" + s.custN + "), pero todavía no está en el expediente: hay que solicitarlo."
-            : "No está en el expediente y no hay forma de verlo desde aquí: hay que pedirlo a " + s.custN + "."))
+            : "No está en el expediente y no hay forma de verlo desde aquí: hay que pedirlo " + aCust + "."))
         : "Consulta denegada: la finalidad declarada no autoriza esta pieza. La denegación queda registrada.";
       if (esMod && puede && x.llegado && x.estado !== "conforme") r.texto += " El índice muestra además qué versión es la de referencia: " + s.verRef + ".";
     } else if (que === "solicitar") {
       x.solicitado = true; x.llegado = true; x.ver = s.verRef; x.verificado = null; x.aceptado = false; x.estado = "pendiente";
-      r.texto = "Solicitud enviada a " + s.custN + ". Llega la versión de referencia " + s.verRef + ": " + s.contenido + " Falta verificarla contra el criterio de conformidad y aceptarla.";
+      r.texto = "Se envió la solicitud " + aCust + ". Llega la versión de referencia " + s.verRef + ". " + s.contenido + " Falta verificarla contra el criterio de conformidad y aceptarla.";
       if (esMod) r.texto += " La solicitud queda enlazada al índice, con su finalidad y su responsable.";
     } else if (que === "devolver") {
       x.solicitado = true; x.llegado = false; x.aceptado = false; x.verificado = false; x.estado = "ausente";
-      r.texto = "Devuelto a " + s.custN + " por no cumplir el criterio. Mientras no llegue la versión correcta, el soporte no está en el expediente.";
+      r.texto = "Se devolvió " + aCust + " porque no cumple el criterio. Mientras no llegue la versión correcta, el soporte no está en el expediente.";
     } else if (que === "aceptar") {
       if (!x.llegado) { r.texto = "No se puede aceptar un soporte que no ha llegado."; r.horas = 0; return r; }
       x.verificado = true; x.aceptado = true; x.estado = "conforme";
-      r.texto = "Verificado contra el criterio —" + s.criterio + "— y aceptado como conforme.";
+      r.texto = "Se verificó contra el criterio («" + String(s.criterio || "").replace(/\.$/, "") + "») y se aceptó como conforme.";
     } else if (que === "rechazar") {
       x.verificado = false; x.aceptado = false;
       if (x.estado === "pendiente") x.estado = "no_conforme";
-      r.texto = "Verificado y rechazado: no cumple el criterio. Queda la constancia y hay que pedir la versión que corresponde.";
+      r.texto = "Se verificó y se rechazó: no cumple el criterio. Queda la constancia y hay que pedir la versión que corresponde.";
     } else return null;
 
-    E.horas += r.horas;
+    const antes = E.horas; EXPM.sumarHoras(E, r.horas); r.horas = Math.round((E.horas - antes) * 10) / 10;
     E.accesos.push({ h:E.horas, actor:actor, pieza:k, finalidad:finalidad || "", accion:que, denegado:!!r.denegado, cond:cond });
     E.historia.push({ punto:puntoId, pieza:k, que:que, texto:r.texto, horas:r.horas });
     return r;
@@ -146,10 +156,10 @@ const EXPM = {
     const p = EXPM.puntoDe(caso, puntoId), H = EXPM.horas[cond] || EXPM.horas.actual;
     if (!p) return null;
     const c = EXPM.completitud(E, caso, puntoId);
-    E.horas += H.decidir;
+    const antes = E.horas; EXPM.sumarHoras(E, H.decidir); const hDec = Math.round((E.horas - antes) * 10) / 10;
     if (p.resuelve && !E.instantanea) E.instantanea = { h:E.horas, completitud:c, soportes:clone(E.soportes) };
     E.puntos[puntoId] = { cerrado:true, decision:decision, cual:textoLimpio(cual, 600) || "", completitud:c, horas:E.horas };
-    E.historia.push({ punto:puntoId, que:"decidir", texto:"Decisión registrada", horas:H.decidir });
+    E.historia.push({ punto:puntoId, que:"decidir", texto:"Decisión registrada", horas:hDec });
     return { completitud:c, horas:E.horas };
   },
 

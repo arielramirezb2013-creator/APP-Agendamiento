@@ -183,9 +183,31 @@ async function accesible(br, errores) {
   await ctx.close();
 }
 
+/* El participante no ve los códigos de análisis en ningún estado de la pantalla: con el formulario vacío
+   guardado (los avisos), lleno (la comparación con el módulo, las casillas de lo que falta), con la respuesta
+   guardada (lo que hicieron los actores simulados), con la ruta completa abierta y en el cierre. */
+async function sinCodigos(br, errores) {
+  const codigos = []; let estados = 0;
+  for (const [u, n] of [["demo-afp", 1], ["demo-eps", 2], ["demo-juntaregional", 0], ["demo-trabajador", 1]]) {
+    const ctx = await br.newContext({ viewport:{ width:1280, height:900 } }), pg = await L.pagina(ctx, errores);
+    const mirar = async donde => { estados++; (await L.codigosVisibles(pg)).forEach(c => codigos.push(u + " " + donde + ": " + c)); };
+    await pg.goto(ARCHIVO); await L.entrarDemo(pg, u); await L.pasarOrientacion(pg); await L.aceptarDeclaracion(pg, null);
+    let rutaVista = false;
+    for (let i = 0; i < 200; i++) {
+      await mirar("pantalla " + i);
+      if (!rutaVista && await hay(pg, '[data-act="ver-todo"]')) { await clic(pg, '[data-act="ver-todo"]'); await mirar("ruta completa"); await clic(pg, '[data-act="ver-todo"]'); rutaVista = true; }
+      const h = await L.pantalla(pg, i + n, mirar); if (h === "cierre") break;
+    }
+    await mirar("cierre");
+    await ctx.close();
+  }
+  T.ok(!codigos.length && estados > 100, "en " + estados + " estados de la ruta (formularios vacíos y llenos, avisos, resultados, ruta completa y cierre) el participante no ve códigos ni nombres internos", codigos.slice(0, 6).join(" | "));
+}
+
 (async () => {
   const br = await L.lanzar(), errores = [];
   try {
+    if (cual === "todo" || cual === "codigos") await sinCodigos(br, errores);
     if (cual === "todo" || cual === "roles") await roles(br, errores);
     if (cual === "todo" || cual === "sesion") await sesion(br, errores);
     if (cual === "todo" || cual === "accesible") await accesible(br, errores);

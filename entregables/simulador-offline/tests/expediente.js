@@ -224,7 +224,7 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
     await pg.selectOption('[data-in="u-finalidad"]', "verificar_firmeza");
     await L.clic(pg, '[data-act="exp-act"][data-arg="FIR"][data-v="solicitar"]');
     const trasPedir = await L.texto(pg, "#vista");
-    T.ok(/Solicitud enviada/.test(trasPedir) && /Verificar y aceptar/.test(trasPedir), "pedir un soporte lo hace llegar y queda por verificar");
+    T.ok(/Se envió la solicitud a ARL SURA/.test(trasPedir) && /Llegó, sin verificar/.test(trasPedir) && /Verificar y aceptar/.test(trasPedir), "pedir un soporte lo hace llegar y queda por verificar");
     await L.clic(pg, '[data-act="exp-act"][data-arg="FIR"][data-v="aceptar"]');
     T.ok(/4 de 4 en regla/.test(await L.texto(pg, "#vista")), "aceptarlo lo hace contar para la completitud del punto");
     // Pausa y regreso a mitad del expediente.
@@ -249,12 +249,23 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
         if (await L.hay(pq, '[data-act="exp-guardar-punto"]')) {
           await pq.selectOption('[data-in="u-finalidad"]', { index:1 }).catch(() => {});
           const pide = await pq.evaluate(() => Array.from(document.querySelectorAll('[data-act="exp-act"][data-v="solicitar"]')).map(b => b.getAttribute("data-arg")));
-          if (pide.length) { await L.clic(pq, '[data-act="exp-act"][data-arg="' + pide[0] + '"][data-v="solicitar"]'); await mirar("pantalla " + n + " tras pedir"); }
+          if (pide.length) {
+            await L.clic(pq, '[data-act="exp-act"][data-arg="' + pide[0] + '"][data-v="solicitar"]'); await mirar("pantalla " + n + " tras pedir");
+            if (await L.hay(pq, '[data-act="exp-act"][data-arg="' + pide[0] + '"][data-v="aceptar"]')) { await L.clic(pq, '[data-act="exp-act"][data-arg="' + pide[0] + '"][data-v="aceptar"]'); await mirar("pantalla " + n + " tras aceptar"); }
+          }
+          const devolver = await pq.evaluate(() => Array.from(document.querySelectorAll('[data-act="exp-act"][data-v="devolver"]')).map(b => b.getAttribute("data-arg")));
+          if (devolver.length) { await L.clic(pq, '[data-act="exp-act"][data-arg="' + devolver[0] + '"][data-v="devolver"]'); await mirar("pantalla " + n + " tras devolver"); }
+          await L.clic(pq, '[data-act="exp-guardar-punto"]'); await mirar("pantalla " + n + " punto guardado sin decidir");
           if (await L.hay(pq, '[data-act="f"][data-arg="decision"]')) await L.clic(pq, '[data-act="f"][data-arg="decision"]');
           if (await L.hay(pq, '[data-in="f-porQue"]')) await pq.fill('[data-in="f-porQue"]', "Con lo que hay en el expediente.");
           await L.clic(pq, '[data-act="exp-guardar-punto"]');
-        } else if (await L.hay(pq, '[data-act="exp-guardar-h2"]')) { await elegirTodas("h2"); await L.clic(pq, '[data-act="exp-guardar-h2"]'); }
-        else if (await L.hay(pq, '[data-act="exp-guardar-h3"]')) { await elegirTodas("h3"); await L.clic(pq, '[data-act="exp-guardar-h3"]'); }
+        } else if (await L.hay(pq, '[data-act="exp-guardar-h2"]')) {
+          await L.clic(pq, '[data-act="exp-guardar-h2"]'); await mirar("pantalla " + n + " guardada vacía");   // el aviso nombra las tareas por su número
+          await elegirTodas("h2"); await L.clic(pq, '[data-act="exp-guardar-h2"]');
+        } else if (await L.hay(pq, '[data-act="exp-guardar-h3"]')) {
+          await L.clic(pq, '[data-act="exp-guardar-h3"]'); await mirar("pantalla " + n + " guardada vacía");
+          await elegirTodas("h3"); await L.clic(pq, '[data-act="exp-guardar-h3"]');
+        }
         else if (await L.hay(pq, '[data-act="exp-seguir"]')) await L.clic(pq, '[data-act="exp-seguir"]');
         else break;
       }

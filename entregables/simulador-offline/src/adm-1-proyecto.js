@@ -754,8 +754,63 @@ function vigentesDoc(d) {
   return vigentesDe(d.registros).filter(x => !(x.payload && typeof x.payload.origenActividad === "string" && fuera[x.payload.origenActividad]));
 }
 const memoSeguimiento = new Map();   // por huella del documento
+/* El seguimiento del expediente: en qué condición y en qué punto va, qué decidió en cada punto de cada
+   condición y qué respondió en H2 y H3. El investigador ve los códigos (P1, H2, ORI…) para asociar. */
+const QUE_EXP = { consultar:"Consultó", solicitar:"Solicitó", devolver:"Devolvió", aceptar:"Verificó y aceptó", rechazar:"Verificó y rechazó" };
+function seguimientoExpDe(d) {
+  const s = esObjeto(d.sesion) ? d.sesion : {}, actor = d.cuenta.actor, completa = d.estado === "completa";
+  const regs = vigentesDoc(d), mios = regs.filter(r => r.origen === "participante" && esObjeto(r.payload));
+  const caso = EXPM.casoExacto(s.expediente || (esObjeto(d.expediente) ? d.expediente.caso : "")) || EXPM.casoDe("");
+  const orden = Array.isArray(s.orden) && s.orden.length ? s.orden.filter(k => typeof k === "string") : EXPM.ordenCondiciones(d.cuenta.usuario);
+  const bs = EXPM.bloques(caso, actor, d.cuenta.usuario), b = typeof s.bloque === "number" ? bs[s.bloque] : null;
+  const condN = id => EXPM.condDe(id).n, finN = f => (GUION.exp.finalidades.filter(o => o[0] === f)[0] || [f, f || "sin declarar"])[1];
+  let iRes = -1; caso.puntos.forEach((p, j) => { if (p.resuelve) iRes = j; });
+  const puntoReg = (cid, pid) => mios.filter(r => r.tipo === "punto" && r.payload.cond === cid && r.payload.punto === pid).pop() || null;
+  let donde;
+  if (completa) donde = { etapa:"Entrega", texto:"Terminó el expediente" };
+  else if (!b) donde = { etapa:"Simulación", texto:"Aceptó la declaración" };
+  else donde = { etapa:"Simulación", texto:
+    b.tipo === "caso" ? "Presentación del expediente " + caso.id
+    : b.tipo === "cond-intro" ? "Inicio · " + condN(b.cond)
+    : b.tipo === "punto" ? condN(b.cond) + " · " + b.punto + " · " + (EXPM.puntoDe(caso, b.punto) || {}).n
+    : b.tipo === "punto-contexto" ? condN(b.cond) + " · contexto " + b.puntos.join(", ")
+    : b.tipo === "cond-cierre" ? "Cierre · " + condN(b.cond)
+    : b.tipo === "h2" ? "Preguntas de cierre · H2" : b.tipo === "h3" ? "Preguntas de cierre · H3" : "En curso" };
+  const rondas = orden.map((cid, i) => {
+    const pasos = caso.puntos.map((p, j) => {
+      const despues = iRes >= 0 && j > iRes, como = despues ? null : EXPM.participa(caso, actor, p), reg = como ? puntoReg(cid, p.id) : null;
+      const cur = !completa && b && b.tipo === "punto" && b.cond === cid && b.punto === p.id;
+      return { p, ilustra:despues, act:como ? { titulo:como === "decide" ? "decide" : "aporta la evidencia que custodia" } : null, reg, estado:reg ? (num(reg.version) > 1 ? "rect" : "ok") : cur ? "cur" : como ? "" : "na" };
+    });
+    return { r:{ id:condN(cid), modo:cid === "modulo" ? "propuesto" : "actual", cond:cid }, i, pasos, esperadas:pasos.filter(x => x.act).length, hechas:pasos.filter(x => x.act && x.reg).length, val:null, pre:null, estado:"" };
+  });
+  const de = t => mios.filter(r => r.tipo === t).pop() || null, h2 = de("h2"), h3 = de("h3");
+  const av = esObjeto(d.avance) ? d.avance : {};
+  const total = typeof av.total === "number" ? av.total : rondas.reduce((n, x) => n + x.esperadas, 0) + 2;
+  const hechas = typeof av.hechas === "number" ? av.hechas : rondas.reduce((n, x) => n + x.hechas, 0) + (h2 ? 1 : 0) + (h3 ? 1 : 0);
+  const problemas = [], observaciones = [];
+  mios.forEach(x => {
+    const pl = x.payload, cn = pl.cond ? condN(pl.cond) : "";
+    if (x.tipo === "actuacion" && pl.denegado) problemas.push({ ronda:cn, paso:pl.punto, k:"denegada", n:"consulta denegada", t:"consulta denegada de " + pl.pieza + " con la finalidad «" + finN(pl.finalidad) + "»" });
+    if (x.tipo === "punto" && esObjeto(pl.completitud) && (pl.completitud.faltan || []).length) problemas.push({ ronda:cn, paso:pl.punto, k:"incompleto", n:"decidió sin todo en regla", t:"decidió con " + pl.completitud.ok + " de " + pl.completitud.total + " en regla; faltaba " + pl.completitud.faltan.join(", ") });
+    if (x.tipo === "punto" && pl.obs) observaciones.push({ ronda:cn, paso:pl.punto, texto:pl.obs, t:x.t });
+    if (x.tipo === "observacion" && pl.texto) observaciones.push({ ronda:cn, paso:pl.final ? "cierre" : (pl.puntos || []).join(", ") || x.paso, texto:pl.texto, final:!!pl.final, t:x.t });
+  });
+  const ult = mios.filter(r => ["punto", "actuacion", "h2", "h3"].indexOf(r.tipo) >= 0).pop() || null, up = ult ? ult.payload : {};
+  const ultTexto = !ult ? "" : ult.tipo === "punto" ? "Decidió: " + (up.decisionTxt || up.decision) + (esObjeto(up.completitud) ? " · " + up.completitud.ok + " de " + up.completitud.total + " en regla" : "")
+    : ult.tipo === "actuacion" ? (QUE_EXP[up.que] || up.que) + " " + up.pieza + (up.denegado ? " · denegada" : "") + " · " + up.horas + " h"
+    : (ult.tipo === "h2" ? "H2 · responsabilidades: " : "H3 · accesos: ") + (esObjeto(up.calificacion) ? up.calificacion.ok + " de " + up.calificacion.total : "respondida");
+  return { exp:true, caso, completa, donde, rondas, total, hechas, pct:total ? Math.round(hechas * 100 / total) : 0, problemas, observaciones, regs, mios, h2, h3,
+    ultAct:ult, ultTexto, ultDonde:ult ? (up.cond ? condN(up.cond) + " · " : "") + (up.punto || (ult.tipo === "h2" || ult.tipo === "h3" ? "cierre" : "")) : "", ult:mios[mios.length - 1] || null,
+    nParticipante:mios.length, nSistema:regs.length - mios.length, nSimulados:regs.filter(r => r.payload && r.payload.simulado === true).length, corregidas:d.registros.length - vigentesDe(d.registros).length };
+}
 function seguimientoDe(d) {
   if (memoSeguimiento.has(d.huella)) return memoSeguimiento.get(d.huella);
+  if (d.instrumento === "expediente" || (esObjeto(d.sesion) && d.sesion.instrumento === "expediente")) {
+    const g = seguimientoExpDe(d); memoSeguimiento.set(d.huella, g);
+    if (memoSeguimiento.size > 600) memoSeguimiento.delete(memoSeguimiento.keys().next().value);
+    return g;
+  }
   const actor = d.cuenta.actor, s = d.sesion, regs = vigentesDoc(d), mios = regs.filter(r => r.origen === "participante");
   const acts = mios.filter(r => r.tipo === "actividad" && r.payload), completa = d.estado === "completa";
   const ids = RONDAS.map(r => r.id), iR = ids.indexOf(s.rondaActual), rondasSes = s.rondas || {};

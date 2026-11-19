@@ -465,7 +465,7 @@ function validarEncuesta() {
     if (!c.req) return;
     if (c.id === "formacionCual" && S.enc.formacion !== "otra") return;
     const v = S.enc[c.id];
-    if (v == null || String(v).trim() === "") falta.push(c.n.toLowerCase());
+    if (v == null || String(v).trim() === "") falta.push(c.n.toLowerCase().replace(/^¿|\?$/g, ""));
   });
   return falta;
 }
