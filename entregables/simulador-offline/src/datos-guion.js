@@ -258,7 +258,7 @@ const GUION = {
     rol: {
       papelTitulo:"Su papel en este expediente",
       funcion:"Función en el sistema",
-      nota:"Los puntos que su rol no decide los verá como contexto, con un espacio para dejar observaciones. Los que vienen después de la decisión que resuelve el derecho se leen como tramo ilustrativo: no se le pide decidirlos en cada condición."
+      nota:"Los puntos que su rol no decide los verá como contexto, con un espacio para dejar observaciones. Los que vienen después del punto que decide sobre la pensión se leen como tramo ilustrativo: no se le pide decidirlos en cada condición."
     }
   },
 
@@ -291,8 +291,8 @@ const GUION = {
     horas:"Horas virtuales consumidas",
     instantanea:"Instantánea guardada justo antes de la decisión que resuelve, como pide el protocolo.",
     contextoTitulo:"Lo que ocurre en los puntos donde su rol no actúa",
-    despuesTitulo:"Lo que sigue después de la decisión que resuelve",
-    despuesIntro:"Estos puntos vienen después de la decisión que resuelve el derecho y son ilustrativos: no se le pide decidirlos otra vez en cada condición. Lea en qué quedan con el expediente tal como usted lo deja y, si algo le llama la atención, escríbalo abajo.",
+    despuesTitulo:"Lo que sigue después del punto que decide sobre la pensión",
+    despuesIntro:"Estos puntos vienen después del punto que decide sobre la pensión, sea cual sea la decisión, y son ilustrativos: no se le pide decidirlos otra vez en cada condición. Lea en qué quedan con el expediente tal como usted lo deja y, si algo le llama la atención, escríbalo abajo.",
     sigue:"Cuando quiera, continúe."
   },
 

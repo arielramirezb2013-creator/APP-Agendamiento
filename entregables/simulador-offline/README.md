@@ -85,10 +85,10 @@ El catálogo está en `src/datos-expedientes.js`, transcrito del documento del i
 |---|---|---|---|---|---|
 | PI-L01 | Mateo Roldán Vega, montacarguista | P1 · P2 · P3 | P2 | 4 de 5 | 56,80 % sin firmeza: él objetó la fecha de estructuración y el caso está en la Junta Regional |
 | PI-L02 | Javier Pardo Navas | P1 · P2 | P2 | 2 de 4 | 44,30 % en firme: la Junta Nacional redujo el 51,40 % de la Junta Regional |
-| PI-L03 | Mónica Beltrán Rivas | P1 · P2 · P3 | P2 | 2 de 4 | 52,40 % de la Junta Regional, apelado por ARL SURA y sin decisión de la Junta Nacional |
+| PI-L03 | Mónica Beltrán Rivas | P1 · P2 · P3 | P2 | 3 de 5 | 52,40 % de la Junta Regional, apelado por ARL SURA y sin decisión de la Junta Nacional |
 | PI-L04 | Elena Marín Cuéllar | P1 · P2 | P2 | 3 de 6 | 51,00 % sin firmeza: radica mientras corre el término de inconformidad |
 
-**Ningún caso llega con un dictamen de 50 % o más en firme.** Ese dictamen daría por sí solo el derecho a la pensión y la simulación perdería su objeto. Por decisión del investigador, en PI-L01, PI-L03 y PI-L04 la calificación de 50 % o más todavía no está en firme cuando se radica la solicitud: si hay pensión depende de la evidencia y de la instancia, y con el expediente completo la pauta prevé dejar pendiente el reconocimiento. El ajuste está anotado en la cabecera de `src/datos-expedientes.js`.
+**Ningún caso llega con un dictamen de 50 % o más en firme.** Ese dictamen daría por sí solo el derecho a la pensión y la simulación perdería su objeto. Por decisión del investigador, en PI-L01, PI-L03 y PI-L04 la calificación de 50 % o más todavía no está en firme cuando se radica la solicitud: si hay pensión depende de la evidencia y de la instancia. Con el expediente completo, la pauta prevé dejar pendiente el reconocimiento en PI-L01, PI-L03 y PI-L04, y negarlo en PI-L02, informando la ruta separada de incapacidad permanente parcial. El ajuste está anotado en la cabecera de `src/datos-expedientes.js`.
 
 Cómo se miden las tres hipótesis:
 

@@ -604,7 +604,7 @@ DOCS.exp["PI-L03"] = {
             ] } },
             { h: "Constancia" },
             { p: "La Secretaría Técnica hace constar que, a la fecha, la Junta Nacional de Calificación de Invalidez no ha emitido dictamen sobre el recurso de apelación interpuesto por ARL SURA contra el dictamen REG-L03 del 16/09/2025 de la Junta Regional de Calificación de Invalidez de Boyacá. El recurso se encuentra en trámite." },
-            { p: "Mientras la Junta Nacional no resuelva el recurso y su decisión no se notifique y comunique a todos los interesados, el dictamen REG-L03 no está en firme. La decisión se notificará a la persona calificada y se comunicará a ARL SURA, a EPS SURA, a Cordillera Pensiones y Cesantías, a Carbones Mesa Umbral y a la Junta Regional de Calificación de Invalidez de Boyacá." },
+            { p: "La decisión se notificará a la persona calificada y se comunicará a ARL SURA, a EPS SURA, a Cordillera Pensiones y Cesantías, a Carbones Mesa Umbral y a la Junta Regional de Calificación de Invalidez de Boyacá. La constancia sobre la firmeza del dictamen REG-L03 corresponde a la Junta Regional que lo emitió." },
             { p: "Esta constancia certifica el estado del trámite en la fecha de expedición. No anticipa el sentido de la decisión ni se pronuncia sobre prestaciones económicas." },
             { h: "Fundamento" },
             { p: "Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015: competencia de la Junta Nacional de Calificación de Invalidez para resolver los recursos de apelación contra los dictámenes de las juntas regionales." },
@@ -748,7 +748,7 @@ DOCS.exp["PI-L03"] = {
         titulo: "Certificado de afiliación y cobertura en riesgos laborales",
         emisor: { n: "ARL SURA", area: "Afiliaciones y novedades", ciudad: "Medellín", id: "NIT SIM-800.256.433-1" },
         numero: "SIM-ARL-CA-2026-10214",
-        fecha: "30/04/2026",
+        fecha: "29/04/2026",
         version: "v2",
         estadoNota: "Segunda versión del certificado: actualiza la expedida el 12/08/2024 para la controversia del origen y certifica la vigencia en la fecha de estructuración de la calificación integral y en la de radicación.",
         paginas: [
@@ -769,7 +769,7 @@ DOCS.exp["PI-L03"] = {
             { h: "Períodos de cobertura" },
             { tabla: { cols: ["Desde", "Hasta", "Empleador", "Cargo reportado", "Clase", "Estado"], filas: [
               ["01/01/2013", "31/01/2024", "Carbones Mesa Umbral", "Operadora de cargador frontal y retroexcavadora", "V", "Cubierto sin interrupción"],
-              ["01/02/2024", "Vigente al 30/04/2026", "Carbones Mesa Umbral", "Auxiliar de control de pesaje (reubicación, mismo contrato)", "V", "Cubierto sin interrupción"]
+              ["01/02/2024", "Vigente al 29/04/2026", "Carbones Mesa Umbral", "Auxiliar de control de pesaje (reubicación, mismo contrato)", "V", "Cubierto sin interrupción"]
             ], nota: "La reubicación del 01/02/2024 se reportó como novedad de cargo dentro del mismo contrato y no interrumpió la cobertura. El empleador conserva la clase de riesgo del centro de trabajo." } },
             { h: "Vigencia en las fechas relevantes" },
             { tabla: { cols: ["Fecha", "Hecho", "Cobertura de ARL SURA"], filas: [
@@ -782,7 +782,7 @@ DOCS.exp["PI-L03"] = {
             { h: "Antecedentes con otras administradoras" },
             { p: "ARL SURA no registra afiliaciones de esta persona anteriores al 01/01/2013. Los períodos laborados entre 1993 y 2012 corresponden al Instituto de Seguros Sociales y a otras administradoras de riesgos laborales, y deben certificarse por ellas." },
             { p: "Se expide a solicitud de Prestaciones económicas de ARL SURA para el trámite de la solicitud RAD-L03. Este certificado no contiene información clínica." },
-            { firma: { nombre: "Sandra Liliana Montaña Pérez", cargo: "Analista de afiliaciones y novedades · ARL SURA", fecha: "30/04/2026" } },
+            { firma: { nombre: "Sandra Liliana Montaña Pérez", cargo: "Analista de afiliaciones y novedades · ARL SURA", fecha: "29/04/2026" } },
             { nota: "Certificado expedido electrónicamente. Código de verificación SIM-VER-8M2T-2026." }
           ] },
           { titulo: "Anexo · Estado de los aportes recientes", bloques: [

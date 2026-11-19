@@ -25,7 +25,7 @@ DOCS.exp["PI-L01"] = {
     nitArl: "NIT SIM-800.256.433-1",
     nitEps: "NIT SIM-811.040.215-6",
     nitIps: "NIT SIM-901.227.604-0",
-    nitJuntaNacional: "NIT SIM-830.026.324-5",
+    nitJuntaNacional: "NIT SIM-830.512.447-0",
     nitHigiene: "NIT SIM-901.554.208-3",
     dictamenOrigenEps: "SIM-EPS-ML-2024-08812",
     dictamenJuntaRegional: "SIM-JRCIA-2025-01173",
@@ -144,7 +144,7 @@ DOCS.exp["PI-L01"] = {
       v1: {
         tipo: "dictamen",
         titulo: "Dictamen de calificación del origen · Recurso de apelación",
-        emisor: { n: "Junta Nacional de Calificación de Invalidez", area: "Sala de decisión n.º 2", ciudad: "Bogotá D.C.", id: "NIT SIM-830.026.324-5" },
+        emisor: { n: "Junta Nacional de Calificación de Invalidez", area: "Sala de decisión n.º 2", ciudad: "Bogotá D.C.", id: "NIT SIM-830.512.447-0" },
         numero: "ORI-L01",
         fecha: "31/03/2025",
         version: "v1",

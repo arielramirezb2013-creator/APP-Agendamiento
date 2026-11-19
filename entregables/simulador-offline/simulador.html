@@ -1153,7 +1153,7 @@ const GUION = {
     rol: {
       papelTitulo:"Su papel en este expediente",
       funcion:"Función en el sistema",
-      nota:"Los puntos que su rol no decide los verá como contexto, con un espacio para dejar observaciones. Los que vienen después de la decisión que resuelve el derecho se leen como tramo ilustrativo: no se le pide decidirlos en cada condición."
+      nota:"Los puntos que su rol no decide los verá como contexto, con un espacio para dejar observaciones. Los que vienen después del punto que decide sobre la pensión se leen como tramo ilustrativo: no se le pide decidirlos en cada condición."
     }
   },
 
@@ -1186,8 +1186,8 @@ const GUION = {
     horas:"Horas virtuales consumidas",
     instantanea:"Instantánea guardada justo antes de la decisión que resuelve, como pide el protocolo.",
     contextoTitulo:"Lo que ocurre en los puntos donde su rol no actúa",
-    despuesTitulo:"Lo que sigue después de la decisión que resuelve",
-    despuesIntro:"Estos puntos vienen después de la decisión que resuelve el derecho y son ilustrativos: no se le pide decidirlos otra vez en cada condición. Lea en qué quedan con el expediente tal como usted lo deja y, si algo le llama la atención, escríbalo abajo.",
+    despuesTitulo:"Lo que sigue después del punto que decide sobre la pensión",
+    despuesIntro:"Estos puntos vienen después del punto que decide sobre la pensión, sea cual sea la decisión, y son ilustrativos: no se le pide decidirlos otra vez en cada condición. Lea en qué quedan con el expediente tal como usted lo deja y, si algo le llama la atención, escríbalo abajo.",
     sigue:"Cuando quiera, continúe."
   },
 
@@ -1917,7 +1917,7 @@ const EXP = {
     referenciasTemporales:[
       ["Primer síntoma registrado", "49 años", "18/05/2023"],
       ["Diagnóstico inicial", "50 años", "14/03/2024"],
-      ["Estructuración en el dictamen final", "52 años", "10/12/2025"]
+      ["Estructuración en el dictamen de ARL SURA", "52 años", "10/12/2025"]
     ],
     actores:[
       { a:"arl", n:"ARL SURA", rol:"ARL SURA, medicina laboral y prestaciones", custodia:["DIC", "FIR", "AFI"] },
@@ -1948,21 +1948,21 @@ const EXP = {
       { id:"P3", n:"Preparar liquidación ilustrativa", decide:"arl", decideN:"ARL SURA", requiere:["DIC", "FIR", "IBC"], inicio:"1/3" }
     ],
     flujoActual:"Mateo adjunta lo que tiene. Prestaciones encuentra el DIC en su bandeja documental, pide a medicina laboral la constancia de firmeza —y así confirma, con soporte, que el dictamen está en la Junta Regional, como dice Mateo en su carta— y solicita por correo a nómina el mes de IBC faltante. Devuelve el certificado v1 si llega incompleto.",
-    flujoPropuesto:"Prestaciones consulta el índice con finalidad pensional y ve que DIC-L01 está en recurso ante la Junta Regional, con la fecha de remisión. Solicita a nómina la versión certificada del IBC. Las vistas muestran únicamente los campos autorizados para la decisión.",
-    criterio:"Con el expediente completo, DIC-L01 (56,80 % laboral) no está en firme: la inconformidad sobre la fecha de estructuración está en la Junta Regional. La pauta prevé dejar pendiente el reconocimiento hasta el dictamen de la Junta y comunicárselo a Mateo. Reconocer con un dictamen sin firmeza sería un error, y negar también, porque la PCL supera el umbral. Si falta la constancia del estado del dictamen, se requiere. Si falta IBC, la liquidación ilustrativa de P3 queda pendiente.",
+    flujoPropuesto:"Prestaciones consulta el índice con finalidad pensional, ve qué soportes están registrados y quién los custodia, y pide a medicina laboral la constancia del estado de DIC-L01. Solicita a nómina la versión certificada del IBC. Las vistas muestran únicamente los campos autorizados para la decisión.",
+    criterio:"Con el expediente completo, DIC-L01 (56,80 % laboral) no está en firme: la inconformidad sobre la fecha de estructuración está en la Junta Regional. La pauta prevé dejar pendiente el reconocimiento hasta el dictamen de la Junta y comunicárselo a Mateo. Reconocer con un dictamen sin firmeza sería un error, y negar también: no hay calificación en firme, la única disponible (56,80 %) supera el umbral, y la PCL y la fecha que rijan serán las del dictamen que quede en firme. Si falta la constancia del estado del dictamen, se requiere. Si falta IBC, la liquidación ilustrativa de P3 queda pendiente.",
     notas:["El análisis de puesto y el resumen clínico explican la calificación previa y pueden revisarse en el ejercicio. El punto P2 evalúa el expediente de reconocimiento de la prestación."],
     soportes:[
       { k:"SOL", n:"Solicitud e identidad", cust:"tra", custN:"Solicitante", estado:"conforme", ver:"v1", notaEstado:"Radicado e identificación del caso visibles.", verRef:"v1", contenido:"RAD-L01, 21/04/2026. Solicitud de pensión e identificación sintética verificadas.", criterio:"Mismo titular, tipo de prestación y radicado." },
       { k:"ORI", n:"Confirmación del origen", cust:"jn", custN:"Junta Nacional", estado:"conforme", ver:"v1", notaEstado:"Providencia de calificación de origen identificable.", verRef:"v1", contenido:"ORI-L01, 31/03/2025. La Junta Nacional confirma origen laboral de M50.0.", criterio:"Emisor, caso, diagnóstico, sentido y fecha verificables." },
       { k:"DIC", n:"Dictamen de PCL", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v1", notaEstado:"Constan PCL, fecha de estructuración y emisor.", verRef:"v1", contenido:"DIC-L01, 18/03/2026. PCL 56,80 %, origen laboral, estructuración 10/12/2025.", criterio:"Documento firmado, trazado al ORI y con origen, PCL y estructuración." },
-      { k:"FIR", n:"Constancia del estado de firmeza", cust:"arl", custN:"ARL SURA", estado:"ausente", ver:"", notaEstado:"En el paquete solo está el dictamen.", verRef:"v1", contenido:"FIR-L01, 08/04/2026. DIC-L01 no está en firme: inconformidad del 31/03/2026 sobre la fecha de estructuración, remitida a la Junta Regional de Antioquia el 07/04/2026.", criterio:"Estado de firmeza de DIC-L01 verificable: en firme, o recurso con instancia y fecha." },
+      { k:"FIR", n:"Constancia del estado de firmeza", cust:"arl", custN:"ARL SURA", estado:"ausente", ver:"", notaEstado:"En el paquete solo está el dictamen.", verRef:"v1", contenido:"FIR-L01, 08/04/2026. DIC-L01 no está en firme: inconformidad del 31/03/2026 sobre la fecha de estructuración, remitida a la Junta Regional de Antioquia el 07/04/2026.", criterio:"Estado de firmeza de DIC-L01 verificable: en firme, o en controversia (inconformidad o recurso) con instancia y fecha." },
       { k:"AFI", n:"Afiliación y cobertura", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v2", notaEstado:"Certificado que identifica la ARL a la fecha de exigibilidad del caso.", verRef:"v2", contenido:"Cobertura ARL SURA desde 01/02/2013. Vigente a la fecha de estructuración y al radicar.", criterio:"Identifica titular, ARL y vigencia en fecha relevante." },
       { k:"IBC", n:"Certificado de IBC", cust:"emp", custN:"Empleador", estado:"no_conforme", ver:"v1", notaEstado:"Falta septiembre de 2024.", verRef:"v2", contenido:"Período 01/10/2023–30/09/2024. Oct.–dic. de 2023: $3.280.000 mensuales. Ene.–sep. de 2024: $3.460.000 mensuales.", criterio:"Doce meses del escenario, legibles y certificados para verificar la base de liquidación." },
       { k:"APT", n:"Análisis de puesto y vibración", cust:"emp", custN:"Empleador", estado:"conforme", ver:"v2", notaEstado:"Informe técnico disponible en SG-SST.", verRef:"v2", contenido:"Medición 30/08/2023. Montacargas retráctil. A(8) 0,58 m/s². Factor de cresta 10,2.", criterio:"Identifica tarea, equipo, período observado y origen del dato." },
       { k:"HC", n:"Resumen clínico de columna", cust:"ips", custN:"IPS", estado:"conforme", ver:"v2", notaEstado:"Resumen clínico firmado en la IPS.", verRef:"v2", contenido:"M50.0. Resonancia 14/03/2024, cirugía 22/05/2024 y seguimiento funcional.", criterio:"Evolución y pruebas pertinentes con fecha y firma." }
     ],
-    subsanacion:"Solicitar a medicina laboral la constancia del estado de DIC-L01, que está en recurso ante la Junta Regional, y dejar pendiente el reconocimiento. Para la liquidación ilustrativa, devolver el IBC incompleto a nómina indicando el mes faltante.",
-    requerimiento:"Verificar con los actores cómo se traspasa a prestaciones una calificación generada en medicina laboral, cómo conoce prestaciones que el dictamen está en recurso y quién corrige los períodos de IBC.",
+    subsanacion:"Solicitar a medicina laboral la constancia del estado de DIC-L01, en trámite por inconformidad ante la Junta Regional, y dejar pendiente el reconocimiento. Para la liquidación ilustrativa, devolver el IBC incompleto a nómina indicando el mes faltante.",
+    requerimiento:"Verificar con los actores cómo se traspasa a prestaciones una calificación generada en medicina laboral, cómo conoce prestaciones que el dictamen está en controversia ante la Junta Regional y quién corrige los períodos de IBC.",
     h2:[
       { id:"R01", tarea:"Aportar la solicitud e identificar el radicado", funcion:"Aporta", ref:"tra", refN:"Solicitante" },
       { id:"R02", tarea:"Suministrar y certificar los 12 meses de IBC", funcion:"Aporta", ref:"emp", refN:"Empleador · Nómina" },
@@ -1973,7 +1973,7 @@ const EXP = {
     ],
     h3:[
       { momento:"+2 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"ORI", accion:"Consultar", finalidad:"Verificar origen definitivo", resultado:"Entrega de origen y fecha", denegado:false },
-      { momento:"+8 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"FIR", accion:"Consultar", finalidad:"Confirmar firmeza del dictamen", resultado:"Constancia: dictamen en recurso ante la Junta Regional", denegado:false },
+      { momento:"+8 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"FIR", accion:"Consultar", finalidad:"Confirmar firmeza del dictamen", resultado:"Constancia: dictamen en trámite por inconformidad ante la Junta Regional", denegado:false },
       { momento:"+28 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"IBC", accion:"Consultar", finalidad:"Verificar la base de liquidación prevista en P3", resultado:"Vista de doce meses", denegado:false },
       { momento:"+30 h", actor:"emp", actorN:"Empleador · Administración", pieza:"HC", accion:"Consultar", finalidad:"Control administrativo de asistencia", resultado:"Denegado. Se pueden comunicar restricciones funcionales por una finalidad pertinente.", denegado:true }
     ],
@@ -2139,8 +2139,8 @@ const EXP = {
     ],
     puntos:[
       { id:"P1", n:"Distinguir alcances y versiones de dictamen", decide:"arl", decideN:"ARL SURA", requiere:["CAR", "REG", "DIC", "FIR"], inicio:"2/4" },
-      { id:"P2", n:"Resolver solicitud pensional", decide:"arl", decideN:"ARL SURA", requiere:["SOL", "DIC", "FIR", "AFI"], inicio:"2/4", resuelve:true },
-      { id:"P3", n:"Preparar liquidación ilustrativa", decide:"arl", decideN:"ARL SURA", requiere:["DIC", "FIR", "IBC"], inicio:"0/3" }
+      { id:"P2", n:"Resolver solicitud pensional", decide:"arl", decideN:"ARL SURA", requiere:["SOL", "REG", "DIC", "FIR", "AFI"], inicio:"3/5", resuelve:true },
+      { id:"P3", n:"Preparar liquidación ilustrativa", decide:"arl", decideN:"ARL SURA", requiere:["REG", "FIR", "IBC"], inicio:"1/3" }
     ],
     flujoActual:"Prestaciones encuentra CAR y REG en distintas carpetas y recibe una constancia asociada al dictamen de 2022. Pide a la Junta Regional la constancia del estado de REG-L03 y a la Junta Nacional el estado del recurso, que sigue sin decisión. Nómina verifica el período del IBC solicitado.",
     flujoPropuesto:"El índice enlaza cada calificación con su alcance, etapa, recurso y firmeza. Prestaciones ve que REG-L03 está en recurso ante la Junta Nacional, rechaza la firmeza mal asociada y solicita el certificado de IBC del período previsto.",
@@ -2149,15 +2149,15 @@ const EXP = {
     soportes:[
       { k:"SOL", n:"Solicitud e identidad", cust:"tra", custN:"Solicitante", estado:"conforme", ver:"v1", notaEstado:"Radicado registrado.", verRef:"v1", contenido:"RAD-L03, 29/04/2026. Solicitud de pensión e identificación sintética.", criterio:"Titular, prestación y radicado inequívocos." },
       { k:"CAR", n:"Dictamen previo de túnel carpiano", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v1", notaEstado:"Está disponible como antecedente.", verRef:"v1", contenido:"CAR-L03, 19/04/2022. G56.0 laboral, PCL 16,20 %, estructuración 19/01/2022. Firme el 06/05/2022.", criterio:"Identifica patología, alcance, decisión previa y su estado." },
-      { k:"REG", n:"Dictamen integral regional", cust:"jr", custN:"Junta Regional", estado:"conforme", ver:"v1", notaEstado:"Copia auténtica de la calificación apelada.", verRef:"v1", contenido:"REG-L03, 16/09/2025. PCL integral laboral 52,40 %, estructuración 18/06/2025. Apelado por ARL SURA el 22/09/2025.", criterio:"Emisor, fecha, alcance integral, PCL, estructuración y recurso identificables." },
-      { k:"DIC", n:"Estado del recurso ante la Junta Nacional", cust:"jn", custN:"Junta Nacional", estado:"ausente", ver:"", notaEstado:"En la bandeja de prestaciones no hay noticia de la segunda instancia.", verRef:"v1", contenido:"JN-L03, 30/04/2026. Recurso de ARL SURA contra REG-L03 recibido el 07/10/2025, en trámite y sin dictamen nacional a la fecha.", criterio:"Constancia de la Junta Nacional sobre el recurso: radicado, fecha y estado, decidido o en trámite." },
-      { k:"FIR", n:"Constancia del estado de firmeza", cust:"jr", custN:"Junta Regional", estado:"no_conforme", ver:"v0", notaEstado:"Constancia que corresponde a CAR-L03 de 2022.", verRef:"v1", contenido:"FIR-L03, 30/04/2026. REG-L03 no está en firme: recurso de apelación de ARL SURA concedido el 03/10/2025 y remitido a la Junta Nacional el 07/10/2025, sin decisión a la fecha.", criterio:"Debe referirse a REG-L03, con su estado de firmeza, el recurso, la instancia y las fechas." },
+      { k:"REG", n:"Dictamen integral regional", cust:"jr", custN:"Junta Regional", estado:"conforme", ver:"v1", notaEstado:"Copia auténtica de la calificación apelada, con la constancia de su estado al 08/10/2025.", verRef:"v1", contenido:"REG-L03, 16/09/2025. PCL integral laboral 52,40 %, estructuración 18/06/2025. Apelado por ARL SURA el 22/09/2025.", criterio:"Emisor, fecha, alcance integral, PCL, estructuración y recurso identificables." },
+      { k:"DIC", n:"Estado del recurso ante la Junta Nacional", cust:"jn", custN:"Junta Nacional", estado:"ausente", ver:"", notaEstado:"No hay constancia de la Junta Nacional sobre el estado del recurso.", verRef:"v1", contenido:"JN-L03, 30/04/2026. Recurso de ARL SURA contra REG-L03 recibido el 07/10/2025, en trámite y sin dictamen nacional a la fecha.", criterio:"Constancia de la Junta Nacional sobre el recurso: radicado, fecha y estado, decidido o en trámite." },
+      { k:"FIR", n:"Constancia del estado de firmeza", cust:"jr", custN:"Junta Regional", estado:"no_conforme", ver:"v0", notaEstado:"La solicitante aportó la constancia que ARL SURA expidió en 2022 para CAR-L03; no corresponde a la calificación regional.", verRef:"v1", contenido:"FIR-L03, 30/04/2026. REG-L03 no está en firme: recurso de apelación de ARL SURA concedido el 03/10/2025 y remitido a la Junta Nacional el 07/10/2025, sin decisión a la fecha.", criterio:"Debe referirse a REG-L03 y certificar su estado a la fecha del trámite, con el recurso, la instancia y las fechas." },
       { k:"AFI", n:"Afiliación y cobertura", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v2", notaEstado:"Certificado vigente.", verRef:"v2", contenido:"ARL SURA desde 01/01/2013. Cubre la fecha de estructuración y la de radicación.", criterio:"Titular y vigencia trazados al último vínculo." },
-      { k:"IBC", n:"Certificado histórico de IBC", cust:"emp", custN:"Empleador", estado:"no_conforme", ver:"v1", notaEstado:"Exportación reciente con corte de 2026.", verRef:"v2", contenido:"Período 01/08/2023–31/07/2024, corte previo a primera calificación de origen lumbar según el guion. Ago. 2023–ene. 2024: $3.040.000 mensuales. Feb.–jul. 2024: $3.200.000 mensuales.", criterio:"Serie del período fijado para la liquidación ilustrativa, con firma y desglose mensual." },
+      { k:"IBC", n:"Certificado histórico de IBC", cust:"emp", custN:"Empleador", estado:"no_conforme", ver:"v1", notaEstado:"Exportación reciente con corte de 2026.", verRef:"v2", contenido:"Período 01/08/2023–31/07/2024, corte previo a la primera calificación de origen lumbar. Ago. 2023–ene. 2024: $3.040.000 mensuales. Feb.–jul. 2024: $3.200.000 mensuales.", criterio:"Serie del período fijado para la liquidación ilustrativa, con firma y desglose mensual." },
       { k:"APT", n:"Análisis del puesto y reubicación", cust:"emp", custN:"Empleador", estado:"conforme", ver:"v2", notaEstado:"Versión con cronología del cambio.", verRef:"v2", contenido:"Vibración A(8) 0,61 m/s² en 2023 y constancia de paso a báscula desde 01/02/2024.", criterio:"Documenta condiciones medidas y fecha de reubicación." },
       { k:"FUN", n:"Resumen funcional de mano y columna", cust:"ips", custN:"IPS", estado:"conforme", ver:"v2", notaEstado:"Extracto firmado en la IPS.", verRef:"v2", contenido:"Constan secuelas de mano, restricción de sedestación prolongada, marcha con pausas e informe funcional usado en el recurso.", criterio:"Indica procedencia, fecha y alcance de las evaluaciones." }
     ],
-    subsanacion:"Marcar CAR como antecedente de distinto alcance y REG como calificación apelada. Devolver la constancia de 2022 y pedir a la Junta Regional la del estado de REG-L03 y a la Junta Nacional la del estado del recurso; para P3, solicitar la serie IBC del período correcto.",
+    subsanacion:"Marcar CAR como antecedente de distinto alcance y REG como calificación apelada. Apartar la constancia de 2022, que corresponde a otro dictamen, y pedir a la Junta Regional la del estado de REG-L03 y a la Junta Nacional la del estado del recurso; para P3, solicitar la serie IBC del período correcto.",
     requerimiento:"Verificar cómo se identifican patologías, versiones y recursos, quién autoriza el extracto funcional y qué referencias preserva el motor para impedir el uso de una constancia del dictamen equivocado.",
     h2:[
       { id:"R01", tarea:"Aportar el análisis de puesto y la fecha de reubicación", funcion:"Aporta", ref:"emp", refN:"Empleador · SG-SST" },
@@ -2203,19 +2203,19 @@ const EXP = {
     ],
     tiempos:"Fundición Quebrada Larga, 8 a · Mecanizados Nudo Alto, 8 a 7 m · Prensas Umbral del Otún, 13 a 1 m. Vínculo acumulado al radicar 10.835 días.",
     actividad:"2431 fundición de hierro y de acero · 2592 tratamiento y mecanizado de metales · 2591 forja, prensado y estampado.",
-    vacios:"Sin vínculo en agosto de 2012. Finaliza su último contrato el 30/09/2025 por retiro voluntario registrado en el guion. Carece de una afiliación posterior a riesgos laborales.",
+    vacios:"Sin vínculo en agosto de 2012. Finaliza su último contrato el 30/09/2025 por retiro voluntario. Carece de una afiliación posterior a riesgos laborales.",
     exposicion:"La dosimetría personal del 22/08/2023 registró 92 dB(A) como nivel equivalente normalizado a 8 h en estampado. El informe identifica equipo, tarea y turno. En 2024 la empresa instaló una barrera parcial y registró el uso de orejeras. El expediente conserva la restricción y fecha de reubicación.",
     clinica:{
       diagnostico:"Pérdida auditiva neurosensorial bilateral inducida por ruido (H83.3)",
       detalle:"De origen laboral en el escenario, con tinnitus persistente. La audiometría y la valoración funcional documentan afectación en frecuencias conversacionales y agudas. Con ayudas auditivas persisten dificultades para seguir conversaciones, reconocer alarmas y orientarse por sonidos. El dictamen sintético fija una PCL de 51,00 % laboral y recoge el impacto en su rol laboral y en la comunicación cotidiana.",
       funcion:"La reubicación habilitó señales visuales para tareas de inventario. En el cierre de rehabilitación persisten dificultades para comunicarse en grupo y atender señales sonoras, aun con ayudas auditivas.",
-      rehabilitacion:"La IPS ajusta los audífonos en 2024 y realiza ocho sesiones de entrenamiento auditivo entre enero y marzo de 2025. El 12/09/2025 documenta las limitaciones residuales. En el guion, el último vínculo finaliza por retiro voluntario después de la reubicación.",
+      rehabilitacion:"La IPS ajusta los audífonos en 2024 y realiza ocho sesiones de entrenamiento auditivo entre enero y marzo de 2025. El 12/09/2025 documenta las limitaciones residuales. El último vínculo finaliza por retiro voluntario después de la reubicación.",
       pcl:51.00, pclOrigen:"laboral", estructuracion:"12/09/2025"
     },
     referenciasTemporales:[
       ["Primer síntoma registrado", "50 años", "11/11/2021"],
       ["Diagnóstico inicial", "53 años", "05/03/2024"],
-      ["Estructuración en el dictamen final", "54 años", "12/09/2025"]
+      ["Estructuración en el dictamen de ARL SURA", "54 años", "12/09/2025"]
     ],
     actores:[
       { a:"arl", n:"ARL SURA", rol:"ARL SURA, Afiliaciones, Medicina Laboral y Prestaciones", custodia:["DIC", "FIR", "AFI"] },
@@ -2242,8 +2242,8 @@ const EXP = {
       { id:"P2", n:"Resolver solicitud pensional", decide:"arl", decideN:"ARL SURA", requiere:["SOL", "ORI", "DIC", "FIR", "AFI", "NEX"], inicio:"3/6", resuelve:true }
     ],
     flujoActual:"Prestaciones ve el estado inactivo y pide a Afiliaciones la vigencia histórica. Pide a medicina laboral la constancia de firmeza y encuentra que el término sigue corriendo. Solicita a SG-SST el anexo citado y coteja la exposición con el origen calificado y la cobertura.",
-    flujoPropuesto:"El índice permite consultar por separado el estado actual y el histórico de afiliación, y muestra que DIC-L04 está en término de inconformidad. Prestaciones vincula al dictamen la vista pertinente del anexo de puesto para verificar la cobertura.",
-    criterio:"Con el expediente completo, DIC-L04 (51,00 % laboral) todavía no está en firme: el término de inconformidad corre hasta el 14/05/2026. La pauta prevé dejar pendiente la decisión, pedir la constancia de firmeza cuando venza el término e informar por escrito a Elena; con firmeza, última afiliación a ARL SURA y nexo con un período cubierto verificados, procedería el reconocimiento. Reconocer antes de la firmeza, o negar por el estado «inactivo», serían errores. Si falta AFI o NEX, se requiere el soporte.",
+    flujoPropuesto:"El índice permite consultar por separado el estado actual y el histórico de afiliación, y registra quién custodia la constancia del estado de DIC-L04. Prestaciones vincula al dictamen la vista pertinente del anexo de puesto para verificar la cobertura.",
+    criterio:"Con el expediente completo, DIC-L04 (51,00 % laboral) todavía no está en firme: el término de inconformidad corre hasta el 14/05/2026. La pauta prevé dejar pendiente la decisión, pedir la constancia de firmeza cuando venza el término e informar por escrito a Elena; con firmeza, última afiliación a ARL SURA y nexo con un período cubierto verificados, procedería el reconocimiento. Reconocer antes de la firmeza, o negar por el estado «inactivo», serían errores. Si falta AFI o NEX, se requiere el soporte. Si pregunta desde cuándo se pagaría, se le informa que depende de la fecha de estructuración que quede en firme; la regla de inicio del pago se valida con los actores antes del piloto.",
     notas:["La comprobación de cobertura se hace respecto de los períodos pertinentes del caso. El eventual recobro entre administradoras sigue su trámite propio."],
     soportes:[
       { k:"SOL", n:"Solicitud e identidad", cust:"tra", custN:"Solicitante", estado:"conforme", ver:"v1", notaEstado:"Identificación, radicado y canal escrito visibles.", verRef:"v1", contenido:"RAD-L04, 06/05/2026. Solicitud de pensión y canal de notificación escrito.", criterio:"Mismo titular, radicado, prestación y canal registrado." },
@@ -2423,7 +2423,7 @@ const EXPM = {
       if (esMod) r.texto += " La solicitud queda enlazada al índice, con su finalidad y su responsable.";
     } else if (que === "devolver") {
       x.solicitado = true; x.llegado = false; x.aceptado = false; x.verificado = false; x.estado = "ausente";
-      r.texto = "Se devolvió " + aCust + " porque no cumple el criterio. Mientras no llegue la versión correcta, el soporte no está en el expediente.";
+      r.texto = "Se devolvió por no conforme: no cumple el criterio. La versión correcta hay que pedirla " + aCust + ". Mientras no llegue, el soporte no está en el expediente.";
     } else if (que === "aceptar") {
       if (!x.llegado) { r.texto = "No se puede aceptar un soporte que no ha llegado."; r.horas = 0; return r; }
       x.verificado = true; x.aceptado = true; x.estado = "conforme";
@@ -2450,7 +2450,7 @@ const EXPM = {
     if (punto.resuelve) return [
       ["reconocer", "Reconocer la pensión"],
       ["negar", "Negar con decisión motivada"],
-      ["pendiente", "Dejar pendiente de verificación y requerir lo que falta"]
+      ["pendiente", "Dejar pendiente el reconocimiento e informar el motivo"]
     ];
     return [
       ["cerrado", "Cerrar el punto: tengo lo que necesito"],
@@ -2484,7 +2484,7 @@ const EXPM = {
      actor, finalidad, momento, acción y resultado. */
   camposH3: ["actor", "pieza", "momento", "accion", "resultado"],
   opcionesH3: function (caso) {
-    const momentos = [["0-8", "En las primeras 8 horas"], ["8-24", "Entre 8 y 24 horas"], ["24-48", "Entre 24 y 48 horas"], ["no_se", "No lo sé"]];
+    const momentos = [["0-8", "Hasta 8 horas"], ["8-24", "Más de 8 y hasta 24 horas"], ["24-48", "Más de 24 y hasta 48 horas"], ["no_se", "No lo sé"]];
     return {
       actor:caso.actores.map(a => [a.a, a.n]).concat([["no_se", "No lo sé"]]),
       pieza:caso.soportes.map(s => [s.k, s.n]).concat([["no_se", "No lo sé"]]),
@@ -2589,7 +2589,7 @@ DOCS.exp["PI-L01"] = {
     nitArl: "NIT SIM-800.256.433-1",
     nitEps: "NIT SIM-811.040.215-6",
     nitIps: "NIT SIM-901.227.604-0",
-    nitJuntaNacional: "NIT SIM-830.026.324-5",
+    nitJuntaNacional: "NIT SIM-830.512.447-0",
     nitHigiene: "NIT SIM-901.554.208-3",
     dictamenOrigenEps: "SIM-EPS-ML-2024-08812",
     dictamenJuntaRegional: "SIM-JRCIA-2025-01173",
@@ -2708,7 +2708,7 @@ DOCS.exp["PI-L01"] = {
       v1: {
         tipo: "dictamen",
         titulo: "Dictamen de calificación del origen · Recurso de apelación",
-        emisor: { n: "Junta Nacional de Calificación de Invalidez", area: "Sala de decisión n.º 2", ciudad: "Bogotá D.C.", id: "NIT SIM-830.026.324-5" },
+        emisor: { n: "Junta Nacional de Calificación de Invalidez", area: "Sala de decisión n.º 2", ciudad: "Bogotá D.C.", id: "NIT SIM-830.512.447-0" },
         numero: "ORI-L01",
         fecha: "31/03/2025",
         version: "v1",
@@ -3901,7 +3901,7 @@ DOCS.exp["PI-L02"] = {
     ips: "IPS Laboratorio Pulmonar Vientoalto · NIT SIM-900.731.226-4",
     juntaRegional: "NIT SIM-807.006.214-3",
     juntaNacional: "NIT SIM-830.512.447-0",
-    arl: "ARL SURA · NIT SIM-860.555.214-1",
+    arl: "ARL SURA · NIT SIM-800.256.433-1",
     expedienteRegional: "SIM-JRNS-2025-1487",
     expedienteNacional: "SIM-JNCI-2025-09316",
     calificacionArl: "SIM-ARL-CPO-2025-11853",
@@ -4386,7 +4386,7 @@ DOCS.exp["PI-L02"] = {
       v1: {
         tipo: "certificado",
         titulo: "Certificado de afiliación y cobertura en riesgos laborales",
-        emisor: { n: "ARL SURA", area: "Afiliaciones y novedades", ciudad: "Medellín", id: "NIT SIM-860.555.214-1" },
+        emisor: { n: "ARL SURA", area: "Afiliaciones y novedades", ciudad: "Medellín", id: "NIT SIM-800.256.433-1" },
         numero: "SIM-ARL-CA-2026-08812",
         fecha: "24/04/2026",
         version: "v1",
@@ -5394,7 +5394,7 @@ DOCS.exp["PI-L03"] = {
             ] } },
             { h: "Constancia" },
             { p: "La Secretaría Técnica hace constar que, a la fecha, la Junta Nacional de Calificación de Invalidez no ha emitido dictamen sobre el recurso de apelación interpuesto por ARL SURA contra el dictamen REG-L03 del 16/09/2025 de la Junta Regional de Calificación de Invalidez de Boyacá. El recurso se encuentra en trámite." },
-            { p: "Mientras la Junta Nacional no resuelva el recurso y su decisión no se notifique y comunique a todos los interesados, el dictamen REG-L03 no está en firme. La decisión se notificará a la persona calificada y se comunicará a ARL SURA, a EPS SURA, a Cordillera Pensiones y Cesantías, a Carbones Mesa Umbral y a la Junta Regional de Calificación de Invalidez de Boyacá." },
+            { p: "La decisión se notificará a la persona calificada y se comunicará a ARL SURA, a EPS SURA, a Cordillera Pensiones y Cesantías, a Carbones Mesa Umbral y a la Junta Regional de Calificación de Invalidez de Boyacá. La constancia sobre la firmeza del dictamen REG-L03 corresponde a la Junta Regional que lo emitió." },
             { p: "Esta constancia certifica el estado del trámite en la fecha de expedición. No anticipa el sentido de la decisión ni se pronuncia sobre prestaciones económicas." },
             { h: "Fundamento" },
             { p: "Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015: competencia de la Junta Nacional de Calificación de Invalidez para resolver los recursos de apelación contra los dictámenes de las juntas regionales." },
@@ -5538,7 +5538,7 @@ DOCS.exp["PI-L03"] = {
         titulo: "Certificado de afiliación y cobertura en riesgos laborales",
         emisor: { n: "ARL SURA", area: "Afiliaciones y novedades", ciudad: "Medellín", id: "NIT SIM-800.256.433-1" },
         numero: "SIM-ARL-CA-2026-10214",
-        fecha: "30/04/2026",
+        fecha: "29/04/2026",
         version: "v2",
         estadoNota: "Segunda versión del certificado: actualiza la expedida el 12/08/2024 para la controversia del origen y certifica la vigencia en la fecha de estructuración de la calificación integral y en la de radicación.",
         paginas: [
@@ -5559,7 +5559,7 @@ DOCS.exp["PI-L03"] = {
             { h: "Períodos de cobertura" },
             { tabla: { cols: ["Desde", "Hasta", "Empleador", "Cargo reportado", "Clase", "Estado"], filas: [
               ["01/01/2013", "31/01/2024", "Carbones Mesa Umbral", "Operadora de cargador frontal y retroexcavadora", "V", "Cubierto sin interrupción"],
-              ["01/02/2024", "Vigente al 30/04/2026", "Carbones Mesa Umbral", "Auxiliar de control de pesaje (reubicación, mismo contrato)", "V", "Cubierto sin interrupción"]
+              ["01/02/2024", "Vigente al 29/04/2026", "Carbones Mesa Umbral", "Auxiliar de control de pesaje (reubicación, mismo contrato)", "V", "Cubierto sin interrupción"]
             ], nota: "La reubicación del 01/02/2024 se reportó como novedad de cargo dentro del mismo contrato y no interrumpió la cobertura. El empleador conserva la clase de riesgo del centro de trabajo." } },
             { h: "Vigencia en las fechas relevantes" },
             { tabla: { cols: ["Fecha", "Hecho", "Cobertura de ARL SURA"], filas: [
@@ -5572,7 +5572,7 @@ DOCS.exp["PI-L03"] = {
             { h: "Antecedentes con otras administradoras" },
             { p: "ARL SURA no registra afiliaciones de esta persona anteriores al 01/01/2013. Los períodos laborados entre 1993 y 2012 corresponden al Instituto de Seguros Sociales y a otras administradoras de riesgos laborales, y deben certificarse por ellas." },
             { p: "Se expide a solicitud de Prestaciones económicas de ARL SURA para el trámite de la solicitud RAD-L03. Este certificado no contiene información clínica." },
-            { firma: { nombre: "Sandra Liliana Montaña Pérez", cargo: "Analista de afiliaciones y novedades · ARL SURA", fecha: "30/04/2026" } },
+            { firma: { nombre: "Sandra Liliana Montaña Pérez", cargo: "Analista de afiliaciones y novedades · ARL SURA", fecha: "29/04/2026" } },
             { nota: "Certificado expedido electrónicamente. Código de verificación SIM-VER-8M2T-2026." }
           ] },
           { titulo: "Anexo · Estado de los aportes recientes", bloques: [
@@ -7681,7 +7681,7 @@ DOCS.ruta.mp = {
     afiliacionArl: "SIM-ARL-624177-0",
     afiliacionAfp: "SIM-AFP-305566-4",
     nitEmpleador: "NIT SIM-900.584.112-7",
-    nitEps: "NIT SIM-811.402.773-4",
+    nitEps: "NIT SIM-811.040.215-6",
     nitIps: "NIT SIM-901.338.250-1",
     nitImagenes: "NIT SIM-901.472.086-5",
     nitAfp: "NIT SIM-830.517.904-6",
@@ -8040,7 +8040,7 @@ DOCS.ruta.mp = {
     inc: {
       tipo: "incapacidad",
       titulo: "Certificado de incapacidades",
-      emisor: { n: "EPS SURA", area: "Prestaciones económicas", ciudad: "Ciudad sintética", id: "NIT SIM-811.402.773-4" },
+      emisor: { n: "EPS SURA", area: "Prestaciones económicas", ciudad: "Ciudad sintética", id: "NIT SIM-811.040.215-6" },
       numero: "SIM-EPS-PE-2026-05518",
       fecha: "17/04/2026",
       version: "corte día 150",
@@ -10798,7 +10798,7 @@ function expFichaHtml(caso, compacta) {
   const ficha = [["Quién", p.nombre], ["Edad", p.edadNota || (p.edad + " años")], ["Dónde", p.ciudad],
     ["Formación", p.formacion], ["Situación", p.situacion], ["Vínculo", p.vinculo]]
     .concat(p.convivencia ? [["Hogar", p.convivencia]] : [], p.ajustes ? [["Ajustes que pide", p.ajustes]] : [],
-      [["Diagnóstico", c.diagnostico], ["PCL del dictamen", String(c.pcl).replace(".", ",") + " % · origen " + c.pclOrigen], ["Fecha de estructuración", c.estructuracion]]);
+      [["Diagnóstico", c.diagnostico], ["PCL del dictamen", Number(c.pcl).toFixed(2).replace(".", ",") + " % · origen " + c.pclOrigen], ["Fecha de estructuración", c.estructuracion]]);
   const tray = `<div class="twrap"><table class="t apila"><thead><tr><th scope="col">Período</th><th scope="col">Empresa y centro</th><th scope="col">Cargo y trabajo real</th><th scope="col">Vínculo y ARL</th></tr></thead><tbody>${caso.trayectoria.map(t => `<tr><td class="nw">${esc(t.periodo)}<div class="mini">${esc(t.dur)}</div></td><td>${esc(t.empresa)}<div class="mini">${esc(t.centro)} · CIIU ${esc(t.ciiu)}</div></td><td><b>${esc(t.cargo)}</b><div class="mini">${esc(t.trabajo)}</div></td><td class="mini">${esc(t.vinculo)}<div>${esc(t.arl)}</div></td></tr>`).join("")}</tbody></table></div>
     <p class="mini">${esc(caso.tiempos)} ${esc(caso.actividad)}${caso.vacios ? " " + esc(caso.vacios) : ""}</p>
     <p><b>Exposición y controles.</b> ${esc(caso.exposicion)}</p>`;
@@ -10882,18 +10882,18 @@ function expSoporteHtml(caso, E, cond, k, puedeActuar, puntoId) {
     acciones.push(["consultar", "Consultar"]);
     if (!x.llegado || x.estado === "no_conforme") acciones.push(["solicitar", x.llegado ? "Solicitar la versión correcta" : "Solicitar el soporte"]);
     if (x.llegado && x.verificado === null && x.estado !== "conforme") { acciones.push(["aceptar", "Verificar y aceptar"]); acciones.push(["rechazar", "Verificar y rechazar"]); }
-    if (x.llegado && x.estado === "no_conforme") acciones.push(["devolver", "Devolver al custodio"]);
+    if (x.llegado && x.estado === "no_conforme") acciones.push(["devolver", "Devolver por no conforme"]);
   }
   return `<details data-det="sop-${esc(cond)}-${esc(puntoId)}-${esc(k)}"${x.estado !== "conforme" ? " open" : ""}>
     <summary><b>${esc(s.n)}</b> ${chipSoporte(x.estado)} <span class="mini">custodia ${esc(s.custN)}${x.ver && x.llegado ? " · " + esc(x.ver) : ""}</span></summary>
     <p class="mini">${esc(x.estado === "pendiente" ? "Llegó la versión " + s.verRef + ". Falta verificarla y aceptarla."
       : x.estado === "conforme" && (x.solicitado || x.verificado) ? "Se verificó contra el criterio y se aceptó como conforme" + (x.ver ? " (versión " + x.ver + ")" : "") + "."
       : x.verificado === false && x.llegado ? "Se verificó y se rechazó: no cumple el criterio."
-      : x.estado === "ausente" && x.solicitado ? "Se devolvió al custodio: mientras no llegue la versión correcta, no está en el expediente."
+      : x.estado === "ausente" && x.solicitado ? "Se devolvió por no conforme: mientras no llegue la versión correcta, no está en el expediente."
       : s.notaEstado)}</p>
     <div class="kv"><b>${esc(X.criterioTitulo)}</b><span>${esc(s.criterio)}</span>${x.llegado && (visible || x.estado === "conforme") ? `<b>Contenido</b><span>${esc(contenido)}</span>` : ""}</div>
     ${x.llegado && x.ver && (visible || x.estado === "conforme" || x.estado === "pendiente") && docDe({ fuente:"exp", k, ver:x.ver }) ? docBoton("exp|" + k + "|" + x.ver) : ""}
-    ${acciones.length ? `<div class="optrow">${acciones.map(a => { const h = Math.min(EXPM.costo(cond, a[0]), Math.max(0, EXP.protocolo.corteHoras - E.horas)); return `<button type="button" class="btn sm ${a[0] === "aceptar" ? "green" : a[0] === "devolver" || a[0] === "rechazar" ? "outline" : "sec"}" data-act="exp-act" data-arg="${esc(k)}" data-v="${esc(a[0])}">${esc(a[1])}${h ? " · " + esc(horasTxt(h)) : ""}</button>`; }).join("")}</div>` : ""}
+    ${acciones.length ? `<div class="optrow">${acciones.map(a => { const costo = EXPM.costo(cond, a[0]), resta = Math.max(0, EXP.protocolo.corteHoras - E.horas), alCorte = a[0] === "aceptar" || a[0] === "rechazar", h = alCorte ? Math.min(costo, resta) : costo; return `<button type="button" class="btn sm ${a[0] === "aceptar" ? "green" : a[0] === "devolver" || a[0] === "rechazar" ? "outline" : "sec"}" data-act="exp-act" data-arg="${esc(k)}" data-v="${esc(a[0])}">${esc(a[1])}${h ? " · " + esc(horasTxt(h)) : ""}${!alCorte && costo > resta ? " · no cabe en el corte" : ""}</button>`; }).join("")}</div>` : ""}
   </details>`;
 }
 function expPuntoHtml(b) {
@@ -10932,8 +10932,7 @@ function expPuntoResultadoHtml(b, reg) {
       <b>${esc(X.completitudTitulo)}</b><span>${esc(listosTxt(caso, c, true))}</span>
       <b>${esc(X.horas)}</b><span>${esc(horasTxt(pl.horas || E.horas))}</span></div>
     <div class="consecuencia"><div class="lbl">${ico("capitulos-decision-avance", "sm")}Cómo queda el expediente</div>
-      <div class="kv">${p.requiere.map(k => `<b>${esc(nomSop(caso, k))}</b><span>${esc(estadoN(E.soportes[k].estado))}</span>`).join("")}</div>
-      <p class="mini">${esc(caso.criterio)}</p></div>
+      <div class="kv">${p.requiere.map(k => `<b>${esc(nomSop(caso, k))}</b><span>${esc(estadoN(E.soportes[k].estado))}</span>`).join("")}</div></div>
     <p class="mini sigue">${ico("acciones-siguiente", "sm")}${esc(X.sigue)}</p>
     <div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="exp-seguir">Continuar${ico("acciones-siguiente")}</button></div>`;
 }
@@ -10943,7 +10942,6 @@ function expContextoHtml(b) {
     ${b.despues ? `<div class="qpanel">${esc(X.despuesIntro)}</div>` : ""}
     ${b.puntos.map(pid => { const p = EXPM.puntoDe(caso, pid), c = EXPM.completitud(E, caso, pid);
       return `<div class="relato"><div class="lbl">${esc(nomPunto(caso, pid))}</div><p>Lo decide ${esc(p.decideN)} con ${esc(listaFrase(p.requiere.map(k => soporteF(caso, k))))}. Cuando se radicó el expediente, ${esc(enReglaRad(caso, pid))}.${b.despues ? " Con el expediente tal como lo deja ahora, estarían en regla " + c.ok + " de " + c.total + (c.faltan.length ? ": " + (c.faltan.length > 1 ? "faltan " : "falta ") + listaFrase(c.faltan.map(k => soporteF(caso, k))) + "." : ".") : ""}</p></div>`; }).join("")}
-    ${b.despues ? `<p class="mini">${esc(caso.criterio)}</p>` : ""}
     <fieldset class="bloque"><legend>${ico("acciones-observar", "sm")}${esc(GUION.observacionExp.titulo)} <span class="mini">(${esc(GUION.observacionExp.marca)})</span></legend><p class="mini ayuda">${esc(GUION.observacionExp.ayuda)}</p><textarea data-in="x-obs" aria-label="${esc(GUION.observacionExp.titulo)}" maxlength="2000" rows="3">${esc(S.ctxObs || "")}</textarea></fieldset>
     <div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="exp-seguir">Continuar${ico("acciones-siguiente")}</button></div>`;
 }

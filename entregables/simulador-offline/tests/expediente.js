@@ -244,10 +244,12 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
     T.ok(/4 de 4 en regla/.test(await L.texto(pg, "#vista")), "y conserva lo que ya había conseguido del expediente");
     await ctx.close();
     // Recorrido completo de tres cuentas (dos expedientes y un observador): el participante no ve los códigos de análisis.
-    const codigos = []; let pantallas = 0, docsAbiertos = 0;
+    const codigos = [], pautas = []; let pantallas = 0, docsAbiertos = 0;
     for (const u of ["demo-arl", "demo-arl-l03", "demo-trabajador"]) {
       const cx = await br.newContext({ viewport:{ width:1280, height:900 } }), pq = await L.pagina(cx, errores);
-      const mirar = async donde => { pantallas++; (await L.codigosVisibles(pq)).forEach(c => codigos.push(u + " " + donde + ": " + c)); };
+      const mirar = async donde => { pantallas++; (await L.codigosVisibles(pq)).forEach(c => codigos.push(u + " " + donde + ": " + c));
+        if (await pq.evaluate(() => { const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode:n => n.parentElement && /^(SCRIPT|STYLE)$/.test(n.parentElement.tagName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+          let n, t = ""; while ((n = tw.nextNode())) t += n.nodeValue + " "; return /pauta prev[ée]/i.test(t); })) pautas.push(u + " " + donde); };
       await pq.goto(ARCHIVO); await L.entrarDemo(pq, u);
       for (let i = 1; i <= 4; i++) { await mirar("orientación " + i); await L.clic(pq, '[data-act="orient"][data-arg="' + i + '"]'); }
       await L.aceptarDeclaracion(pq, null); await L.llenarEncuesta(pq, 0);
@@ -286,6 +288,7 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
       await cx.close();
     }
     T.ok(!codigos.length && pantallas > 40 && docsAbiertos > 5, "en " + pantallas + " pantallas del expediente, con " + docsAbiertos + " documentos abiertos, el participante no ve códigos de análisis (hipótesis, puntos, soportes, caso, marco), ni siquiera en lo plegado", codigos.slice(0, 6).join(" | "));
+    T.ok(!pautas.length && pantallas > 40, "la pauta del caso, que anticipa la decisión que se mide, no aparece en ninguna pantalla del participante", pautas.slice(0, 6).join(" | "));
   } catch (e) { T.ok(false, "la prueba de interfaz se interrumpió", e.stack || e); }
   await br.close();
   T.ok(!errores.length, "sin errores de consola ni excepciones", errores.slice(0, 4).join(" | "));

@@ -16,7 +16,7 @@ DOCS.exp["PI-L02"] = {
     ips: "IPS Laboratorio Pulmonar Vientoalto · NIT SIM-900.731.226-4",
     juntaRegional: "NIT SIM-807.006.214-3",
     juntaNacional: "NIT SIM-830.512.447-0",
-    arl: "ARL SURA · NIT SIM-860.555.214-1",
+    arl: "ARL SURA · NIT SIM-800.256.433-1",
     expedienteRegional: "SIM-JRNS-2025-1487",
     expedienteNacional: "SIM-JNCI-2025-09316",
     calificacionArl: "SIM-ARL-CPO-2025-11853",
@@ -501,7 +501,7 @@ DOCS.exp["PI-L02"] = {
       v1: {
         tipo: "certificado",
         titulo: "Certificado de afiliación y cobertura en riesgos laborales",
-        emisor: { n: "ARL SURA", area: "Afiliaciones y novedades", ciudad: "Medellín", id: "NIT SIM-860.555.214-1" },
+        emisor: { n: "ARL SURA", area: "Afiliaciones y novedades", ciudad: "Medellín", id: "NIT SIM-800.256.433-1" },
         numero: "SIM-ARL-CA-2026-08812",
         fecha: "24/04/2026",
         version: "v1",

@@ -39,7 +39,7 @@ DOCS.ruta.mp = {
     afiliacionArl: "SIM-ARL-624177-0",
     afiliacionAfp: "SIM-AFP-305566-4",
     nitEmpleador: "NIT SIM-900.584.112-7",
-    nitEps: "NIT SIM-811.402.773-4",
+    nitEps: "NIT SIM-811.040.215-6",
     nitIps: "NIT SIM-901.338.250-1",
     nitImagenes: "NIT SIM-901.472.086-5",
     nitAfp: "NIT SIM-830.517.904-6",
@@ -398,7 +398,7 @@ DOCS.ruta.mp = {
     inc: {
       tipo: "incapacidad",
       titulo: "Certificado de incapacidades",
-      emisor: { n: "EPS SURA", area: "Prestaciones económicas", ciudad: "Ciudad sintética", id: "NIT SIM-811.402.773-4" },
+      emisor: { n: "EPS SURA", area: "Prestaciones económicas", ciudad: "Ciudad sintética", id: "NIT SIM-811.040.215-6" },
       numero: "SIM-EPS-PE-2026-05518",
       fecha: "17/04/2026",
       version: "corte día 150",

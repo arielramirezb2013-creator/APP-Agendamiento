@@ -122,7 +122,7 @@ const EXPM = {
       if (esMod) r.texto += " La solicitud queda enlazada al índice, con su finalidad y su responsable.";
     } else if (que === "devolver") {
       x.solicitado = true; x.llegado = false; x.aceptado = false; x.verificado = false; x.estado = "ausente";
-      r.texto = "Se devolvió " + aCust + " porque no cumple el criterio. Mientras no llegue la versión correcta, el soporte no está en el expediente.";
+      r.texto = "Se devolvió por no conforme: no cumple el criterio. La versión correcta hay que pedirla " + aCust + ". Mientras no llegue, el soporte no está en el expediente.";
     } else if (que === "aceptar") {
       if (!x.llegado) { r.texto = "No se puede aceptar un soporte que no ha llegado."; r.horas = 0; return r; }
       x.verificado = true; x.aceptado = true; x.estado = "conforme";
@@ -149,7 +149,7 @@ const EXPM = {
     if (punto.resuelve) return [
       ["reconocer", "Reconocer la pensión"],
       ["negar", "Negar con decisión motivada"],
-      ["pendiente", "Dejar pendiente de verificación y requerir lo que falta"]
+      ["pendiente", "Dejar pendiente el reconocimiento e informar el motivo"]
     ];
     return [
       ["cerrado", "Cerrar el punto: tengo lo que necesito"],
@@ -183,7 +183,7 @@ const EXPM = {
      actor, finalidad, momento, acción y resultado. */
   camposH3: ["actor", "pieza", "momento", "accion", "resultado"],
   opcionesH3: function (caso) {
-    const momentos = [["0-8", "En las primeras 8 horas"], ["8-24", "Entre 8 y 24 horas"], ["24-48", "Entre 24 y 48 horas"], ["no_se", "No lo sé"]];
+    const momentos = [["0-8", "Hasta 8 horas"], ["8-24", "Más de 8 y hasta 24 horas"], ["24-48", "Más de 24 y hasta 48 horas"], ["no_se", "No lo sé"]];
     return {
       actor:caso.actores.map(a => [a.a, a.n]).concat([["no_se", "No lo sé"]]),
       pieza:caso.soportes.map(s => [s.k, s.n]).concat([["no_se", "No lo sé"]]),

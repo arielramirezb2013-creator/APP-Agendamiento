@@ -11,7 +11,7 @@
         <p class="mini">${esc(s.notaEstado)} Criterio: ${esc(s.criterio)}</p>
         ${vs.map(v => `<details data-det="anexo-${esc(c.id)}-${esc(s.k)}-${esc(v)}"><summary><b>${esc(v)}</b> ${esc(D.soportes[s.k][v].titulo)} <span class="mini">· ${esc(v === s.verRef ? (v === s.ver ? "llega al radicar y es la de referencia" : "versión de referencia, cuando se pide") : "llega al radicar")}</span></summary>${docHtml(D.soportes[s.k][v], {})}</details>`).join("")}</div>`;
     }).join("");
-    return `<section class="panel anexo-caso" id="caso-${esc(c.id)}"><h2>${esc(c.id)} · ${esc(c.persona.nombre)}</h2><p>${esc(c.titulo)}. ${esc(c.clinica.diagnostico)} · PCL ${esc(String(c.clinica.pcl).replace(".", ","))} %.</p>${sops}</section>`;
+    return `<section class="panel anexo-caso" id="caso-${esc(c.id)}"><h2>${esc(c.id)} · ${esc(c.persona.nombre)}</h2><p>${esc(c.titulo)}. ${esc(c.clinica.diagnostico)} · PCL ${esc(Number(c.clinica.pcl).toFixed(2).replace(".", ","))} %.</p>${sops}</section>`;
   };
   const rutaHtml = () => {
     const out = [];

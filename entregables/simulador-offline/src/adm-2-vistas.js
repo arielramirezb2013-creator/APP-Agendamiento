@@ -186,7 +186,7 @@ function expedienteDetalleHtml(c) {
   const puntos = `<div class="twrap"><table class="t apila"><thead><tr><th scope="col">Punto</th><th scope="col">Decide</th><th scope="col">Requiere</th><th scope="col">Al radicar</th></tr></thead><tbody>${c.puntos.map(x => `<tr><td><b>${esc(x.id)}</b> ${esc(x.n)}${x.resuelve ? " " + chipEstado("ch-gold", "resuelve", "capitulos-decision-avance") : ""}</td><td class="nw">${esc(x.decideN)}</td><td class="mini">${esc(x.requiere.join(" · "))}</td><td class="nw">${esc(EXPM.inicioDe(c, x.id))}</td></tr>`).join("")}</tbody></table></div>`;
   return `<div class="panel"><div class="row"><h3 style="margin-right:auto">${esc(c.id)} · ${esc(c.persona.nombre)}</h3>${btn("exp-cerrar", "", "Cerrar", "sm outline", "acciones-cerrar")}</div>
     <p>${esc(c.perspectiva)}</p>
-    <div class="kv"><b>Diagnóstico</b><span>${esc(c.clinica.diagnostico)}</span><b>PCL del dictamen</b><span>${esc(String(c.clinica.pcl).replace(".", ",") + " % · origen " + c.clinica.pclOrigen)}</span><b>Fecha de estructuración</b><span>${esc(c.clinica.estructuracion)}</span><b>Vínculo laboral</b><span>${esc(c.tiempos)}</span></div>
+    <div class="kv"><b>Diagnóstico</b><span>${esc(c.clinica.diagnostico)}</span><b>PCL del dictamen</b><span>${esc(Number(c.clinica.pcl).toFixed(2).replace(".", ",") + " % · origen " + c.clinica.pclOrigen)}</span><b>Fecha de estructuración</b><span>${esc(c.clinica.estructuracion)}</span><b>Vínculo laboral</b><span>${esc(c.tiempos)}</span></div>
     ${puntos}${soportes}
     <p class="mini"><b>Criterio del caso.</b> ${esc(c.criterio)}</p>
     <p class="mini"><b>Preguntas de cierre.</b> ${c.h2.length} responsabilidades y ${c.h3.length} accesos para reconstruir.</p>

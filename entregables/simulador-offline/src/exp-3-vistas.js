@@ -90,7 +90,7 @@ function expFichaHtml(caso, compacta) {
   const ficha = [["Quién", p.nombre], ["Edad", p.edadNota || (p.edad + " años")], ["Dónde", p.ciudad],
     ["Formación", p.formacion], ["Situación", p.situacion], ["Vínculo", p.vinculo]]
     .concat(p.convivencia ? [["Hogar", p.convivencia]] : [], p.ajustes ? [["Ajustes que pide", p.ajustes]] : [],
-      [["Diagnóstico", c.diagnostico], ["PCL del dictamen", String(c.pcl).replace(".", ",") + " % · origen " + c.pclOrigen], ["Fecha de estructuración", c.estructuracion]]);
+      [["Diagnóstico", c.diagnostico], ["PCL del dictamen", Number(c.pcl).toFixed(2).replace(".", ",") + " % · origen " + c.pclOrigen], ["Fecha de estructuración", c.estructuracion]]);
   const tray = `<div class="twrap"><table class="t apila"><thead><tr><th scope="col">Período</th><th scope="col">Empresa y centro</th><th scope="col">Cargo y trabajo real</th><th scope="col">Vínculo y ARL</th></tr></thead><tbody>${caso.trayectoria.map(t => `<tr><td class="nw">${esc(t.periodo)}<div class="mini">${esc(t.dur)}</div></td><td>${esc(t.empresa)}<div class="mini">${esc(t.centro)} · CIIU ${esc(t.ciiu)}</div></td><td><b>${esc(t.cargo)}</b><div class="mini">${esc(t.trabajo)}</div></td><td class="mini">${esc(t.vinculo)}<div>${esc(t.arl)}</div></td></tr>`).join("")}</tbody></table></div>
     <p class="mini">${esc(caso.tiempos)} ${esc(caso.actividad)}${caso.vacios ? " " + esc(caso.vacios) : ""}</p>
     <p><b>Exposición y controles.</b> ${esc(caso.exposicion)}</p>`;
@@ -174,18 +174,18 @@ function expSoporteHtml(caso, E, cond, k, puedeActuar, puntoId) {
     acciones.push(["consultar", "Consultar"]);
     if (!x.llegado || x.estado === "no_conforme") acciones.push(["solicitar", x.llegado ? "Solicitar la versión correcta" : "Solicitar el soporte"]);
     if (x.llegado && x.verificado === null && x.estado !== "conforme") { acciones.push(["aceptar", "Verificar y aceptar"]); acciones.push(["rechazar", "Verificar y rechazar"]); }
-    if (x.llegado && x.estado === "no_conforme") acciones.push(["devolver", "Devolver al custodio"]);
+    if (x.llegado && x.estado === "no_conforme") acciones.push(["devolver", "Devolver por no conforme"]);
   }
   return `<details data-det="sop-${esc(cond)}-${esc(puntoId)}-${esc(k)}"${x.estado !== "conforme" ? " open" : ""}>
     <summary><b>${esc(s.n)}</b> ${chipSoporte(x.estado)} <span class="mini">custodia ${esc(s.custN)}${x.ver && x.llegado ? " · " + esc(x.ver) : ""}</span></summary>
     <p class="mini">${esc(x.estado === "pendiente" ? "Llegó la versión " + s.verRef + ". Falta verificarla y aceptarla."
       : x.estado === "conforme" && (x.solicitado || x.verificado) ? "Se verificó contra el criterio y se aceptó como conforme" + (x.ver ? " (versión " + x.ver + ")" : "") + "."
       : x.verificado === false && x.llegado ? "Se verificó y se rechazó: no cumple el criterio."
-      : x.estado === "ausente" && x.solicitado ? "Se devolvió al custodio: mientras no llegue la versión correcta, no está en el expediente."
+      : x.estado === "ausente" && x.solicitado ? "Se devolvió por no conforme: mientras no llegue la versión correcta, no está en el expediente."
       : s.notaEstado)}</p>
     <div class="kv"><b>${esc(X.criterioTitulo)}</b><span>${esc(s.criterio)}</span>${x.llegado && (visible || x.estado === "conforme") ? `<b>Contenido</b><span>${esc(contenido)}</span>` : ""}</div>
     ${x.llegado && x.ver && (visible || x.estado === "conforme" || x.estado === "pendiente") && docDe({ fuente:"exp", k, ver:x.ver }) ? docBoton("exp|" + k + "|" + x.ver) : ""}
-    ${acciones.length ? `<div class="optrow">${acciones.map(a => { const h = Math.min(EXPM.costo(cond, a[0]), Math.max(0, EXP.protocolo.corteHoras - E.horas)); return `<button type="button" class="btn sm ${a[0] === "aceptar" ? "green" : a[0] === "devolver" || a[0] === "rechazar" ? "outline" : "sec"}" data-act="exp-act" data-arg="${esc(k)}" data-v="${esc(a[0])}">${esc(a[1])}${h ? " · " + esc(horasTxt(h)) : ""}</button>`; }).join("")}</div>` : ""}
+    ${acciones.length ? `<div class="optrow">${acciones.map(a => { const costo = EXPM.costo(cond, a[0]), resta = Math.max(0, EXP.protocolo.corteHoras - E.horas), alCorte = a[0] === "aceptar" || a[0] === "rechazar", h = alCorte ? Math.min(costo, resta) : costo; return `<button type="button" class="btn sm ${a[0] === "aceptar" ? "green" : a[0] === "devolver" || a[0] === "rechazar" ? "outline" : "sec"}" data-act="exp-act" data-arg="${esc(k)}" data-v="${esc(a[0])}">${esc(a[1])}${h ? " · " + esc(horasTxt(h)) : ""}${!alCorte && costo > resta ? " · no cabe en el corte" : ""}</button>`; }).join("")}</div>` : ""}
   </details>`;
 }
 function expPuntoHtml(b) {
@@ -224,8 +224,7 @@ function expPuntoResultadoHtml(b, reg) {
       <b>${esc(X.completitudTitulo)}</b><span>${esc(listosTxt(caso, c, true))}</span>
       <b>${esc(X.horas)}</b><span>${esc(horasTxt(pl.horas || E.horas))}</span></div>
     <div class="consecuencia"><div class="lbl">${ico("capitulos-decision-avance", "sm")}Cómo queda el expediente</div>
-      <div class="kv">${p.requiere.map(k => `<b>${esc(nomSop(caso, k))}</b><span>${esc(estadoN(E.soportes[k].estado))}</span>`).join("")}</div>
-      <p class="mini">${esc(caso.criterio)}</p></div>
+      <div class="kv">${p.requiere.map(k => `<b>${esc(nomSop(caso, k))}</b><span>${esc(estadoN(E.soportes[k].estado))}</span>`).join("")}</div></div>
     <p class="mini sigue">${ico("acciones-siguiente", "sm")}${esc(X.sigue)}</p>
     <div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="exp-seguir">Continuar${ico("acciones-siguiente")}</button></div>`;
 }
@@ -235,7 +234,6 @@ function expContextoHtml(b) {
     ${b.despues ? `<div class="qpanel">${esc(X.despuesIntro)}</div>` : ""}
     ${b.puntos.map(pid => { const p = EXPM.puntoDe(caso, pid), c = EXPM.completitud(E, caso, pid);
       return `<div class="relato"><div class="lbl">${esc(nomPunto(caso, pid))}</div><p>Lo decide ${esc(p.decideN)} con ${esc(listaFrase(p.requiere.map(k => soporteF(caso, k))))}. Cuando se radicó el expediente, ${esc(enReglaRad(caso, pid))}.${b.despues ? " Con el expediente tal como lo deja ahora, estarían en regla " + c.ok + " de " + c.total + (c.faltan.length ? ": " + (c.faltan.length > 1 ? "faltan " : "falta ") + listaFrase(c.faltan.map(k => soporteF(caso, k))) + "." : ".") : ""}</p></div>`; }).join("")}
-    ${b.despues ? `<p class="mini">${esc(caso.criterio)}</p>` : ""}
     <fieldset class="bloque"><legend>${ico("acciones-observar", "sm")}${esc(GUION.observacionExp.titulo)} <span class="mini">(${esc(GUION.observacionExp.marca)})</span></legend><p class="mini ayuda">${esc(GUION.observacionExp.ayuda)}</p><textarea data-in="x-obs" aria-label="${esc(GUION.observacionExp.titulo)}" maxlength="2000" rows="3">${esc(S.ctxObs || "")}</textarea></fieldset>
     <div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="exp-seguir">Continuar${ico("acciones-siguiente")}</button></div>`;
 }
