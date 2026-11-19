@@ -6,14 +6,15 @@
    Solicitud radicada el 22/05/2026 (RAD-L04). La consulta de afiliación inicial solo dice «inactiva»; la
    certificación histórica acredita ARL SURA del 01/09/2012 al 30/09/2025. El anexo de exposición del SG-SST liga
    la dosimetría del 22/08/2023 (LAeq,8h 92,0 dB(A)) al puesto de 2012 a 2024.
-   Aritmética del dictamen (Decreto 1507 de 2014):
-     Audiometría de cierre 12/09/2025, suma de umbrales en 500, 1.000, 2.000 y 3.000 Hz:
-       oído derecho 40 + 55 + 75 + 80 = 250 → promedio 62,5 dB → (62,5 − 25) × 1,5 = 56,25 %
-       oído izquierdo 45 + 60 + 80 + 85 = 270 → promedio 67,5 dB → (67,5 − 25) × 1,5 = 63,75 %
-       binaural (5 × 56,25 + 63,75) / 6 = 57,50 % + tinnitus 5,00 = 62,50 % → global 0,35 × 62,50 = 21,875 → 22 %
-     Título I ponderado al 50 % = 11,00. Título II: rol laboral 25,00 + 2,50 + 2,00 = 29,50; otras áreas
-     1,80 + 3,40 + 1,60 + 1,40 + 2,30 = 10,50; total 40,00. PCL = 11,00 + 40,00 = 51,00 %.
-   Dosimetría: LAeq,T 92,1 dB(A) en 470 min → LAeq,8h = 92,1 + 10·log(470/480) = 92,0 dB(A); dosis 508 %.
+   Aritmética del dictamen (Decreto 1507 de 2014, capítulo 9, tablas 9.1 a 9.3):
+     Tres audiometrías de cierre (29/08, 05/09 y 12/09/2025), suma de umbrales en 500, 1.000, 2.000 y 3.000 Hz:
+       oído derecho 255, 245 y 250 → promedio de las sumas 250 (promedio 62,5 dB) → (62,5 − 25) × 1,5 = 56,25 %
+       oído izquierdo 275, 265 y 270 → promedio de las sumas 270 (promedio 67,5 dB) → (67,5 − 25) × 1,5 = 63,75 %
+       binaural (5 × 56,25 + 63,75) / 6 = 57,50 % → tabla 9.3: 57,50 × 0,35 = 20,1 → 20 %
+       tinnitus subjetivo 3 % (el Manual da 5 % solo al objetivo), suma aritmética → deficiencia 23,00 %
+     Título I ponderado al 50 % = 11,50. Título II: rol laboral 25,00 + 2,50 + 2,00 = 29,50; otras áreas
+     2,00 + 3,00 + 1,30 + 1,20 + 2,50 = 10,00; total 39,50. PCL = 11,50 + 39,50 = 51,00 %.
+   Dosimetría: LAeq,T 92,1 dB(A) en 470 min → LAeq,8h = 92,1 + 10·log(470/480) = 92,0 dB(A); dosis 505 %.
    Todo es sintético: ninguna persona, número, profesional ni documento es real. */
 DOCS.exp["PI-L04"] = {
   identidad: {
@@ -249,9 +250,9 @@ DOCS.exp["PI-L04"] = {
             { lista: [
               "Diagnóstico: pérdida auditiva neurosensorial bilateral inducida por ruido (H83.3), confirmada por otorrinolaringología con audiometría tonal, logoaudiometría, inmitancia y otoemisiones, con tinnitus persistente (H93.1).",
               "Exposición: casi 29 años en oficios metalmecánicos con ruido, los últimos 12 años y 4 meses como operaria de prensa mecánica, con 92 dB(A) en la dosimetría personal del 22/08/2023 y ruido impulsivo.",
-              "Patrón audiométrico: compromiso bilateral y simétrico, con máximo en 4.000 Hz y recuperación parcial en 8.000 Hz, característico del daño coclear por ruido.",
+              "Patrón audiométrico: compromiso bilateral y simétrico, con máximo en 4.000 Hz y recuperación parcial en 8.000 Hz, característico del daño coclear por ruido. El compromiso de 500 y 1.000 Hz es mayor que el habitual en la pérdida inducida por ruido; es concordante con casi 29 años de exposición, con el componente impulsivo del troquelado y con una protección auditiva cuyo uso no se verificó hasta 2024.",
               "Temporalidad: la audiometría de ingreso de 2012 muestra una muesca leve en 4.000 Hz y la progresión ocurre durante la exposición en la nave de estampado; los síntomas se registran el 11/11/2021, con la trabajadora expuesta.",
-              "Factores extralaborales: no se identifican causas otológicas, tóxicas, traumáticas ni hereditarias que expliquen el cuadro."
+              "Factores extralaborales: no se identifican causas otológicas, tóxicas, traumáticas ni hereditarias que expliquen el cuadro. Glucemia, perfil lipídico y función tiroidea normales en el estudio de otorrinolaringología del 05/03/2024."
             ] },
             { p: "La pérdida auditiva inducida por ruido figura en la tabla de enfermedades laborales del Decreto 1477 de 2014, con el ruido como agente de riesgo. Se cumplen los criterios de la Guía de Atención Integral Basada en la Evidencia para Hipoacusia Neurosensorial Inducida por Ruido en el Lugar de Trabajo (Resolución 2844 de 2007): exposición ocupacional significativa, patrón audiométrico compatible y exclusión de otras causas." }
           ] },
@@ -302,7 +303,7 @@ DOCS.exp["PI-L04"] = {
                 ["Prensas Umbral del Otún S.A.S., empleador", "Comunicación electrónica con acuse de recibo", "26/06/2025", "No presentó"],
                 ["Cordillera Pensiones y Cesantías", "Comunicación electrónica con acuse de recibo", "26/06/2025", "No presentó"]
               ],
-              nota: "El término de 10 días hábiles corrió del 27/06/2025 al 11/07/2025, contado desde la última comunicación. No se cuenta el festivo del 30/06/2025."
+              nota: "Cada interesado tuvo 10 días hábiles desde su notificación: para la persona calificada y ARL SURA el término venció el 10/07/2025; para el empleador y el fondo de pensiones corrió del 27/06/2025 al 11/07/2025. No se cuenta el festivo del 30/06/2025."
             } },
             { p: "Medicina laboral de EPS SURA hace constar que, vencido el término sin que ninguno de los interesados manifestara inconformidad, el dictamen ORI-L04 quedó en firme. La firmeza se registra el 14/07/2025, primer día hábil siguiente al vencimiento del término." },
             { kv: [["Fecha de firmeza del origen", "14/07/2025"]] },
@@ -393,40 +394,40 @@ DOCS.exp["PI-L04"] = {
               cols: ["CIE-10", "Diagnóstico", "Origen", "Se califica"],
               filas: [
                 ["H83.3", "Pérdida auditiva neurosensorial bilateral inducida por ruido", "Laboral (ORI-L04)", "Sí"],
-                ["H93.1", "Tinnitus persistente, asociado a la pérdida auditiva", "Laboral (ORI-L04)", "Sí, como adición a la deficiencia auditiva"],
+                ["H93.1", "Tinnitus persistente, asociado a la pérdida auditiva", "Laboral (ORI-L04)", "Sí, como deficiencia que se suma a la auditiva"],
                 ["Z97.4", "Usuaria de audífonos externos", "No aplica", "No. Condición que se tiene en cuenta en el Título II"]
               ],
               nota: ""
             } }
           ] },
           { titulo: "Título I · Valoración de las deficiencias", bloques: [
-            { p: "Capítulo de deficiencias por alteraciones del oído, nariz, garganta y estructuras relacionadas, sección de audición. Se califica con la audiometría tonal de cierre del 12/09/2025 (extracto SIM-AUD-EX-2025-0912), por vía aérea y sin audífonos. Coincide con la audiometría de diagnóstico del 05/03/2024 y con la acumetría de la valoración presencial: la pérdida es neurosensorial y estable desde el retiro de la exposición." },
-            { h: "Umbrales de vía aérea que se usan para la calificación (dB)" },
+            { p: "Capítulo 9 del Manual, deficiencias por alteraciones del oído, nariz, garganta y estructuras relacionadas, sección de audición. Se califica con las tres audiometrías tonales del protocolo de cierre de la IPS Audiológica Cauce Claro (29/08/2025, 05/09/2025 y 12/09/2025; extracto SIM-AUD-EX-2025-0912), por vía aérea y sin audífonos, separadas por una semana, con reposo auditivo y sin exposición a ruido laboral desde el 01/01/2025. Son concordantes entre sí, con la audiometría de diagnóstico del 05/03/2024, con la logoaudiometría y con la acumetría de la valoración presencial: la pérdida es neurosensorial y no progresó después del retiro de la exposición." },
+            { h: "Suma de los umbrales de vía aérea en 500, 1.000, 2.000 y 3.000 Hz (dB)" },
             { tabla: {
-              cols: ["Oído", "500 Hz", "1.000 Hz", "2.000 Hz", "3.000 Hz", "Suma", "Promedio"],
+              cols: ["Oído", "29/08/2025", "05/09/2025", "12/09/2025", "Promedio de las sumas", "Promedio por frecuencia"],
               filas: [
-                ["Derecho", "40", "55", "75", "80", "250", "62,5"],
-                ["Izquierdo", "45", "60", "80", "85", "270", "67,5"]
+                ["Derecho", "255", "245", "250", "250", "62,5"],
+                ["Izquierdo", "275", "265", "270", "270", "67,5"]
               ],
-              nota: "Logoaudiometría concordante: umbral de recepción del habla de 60 dB en el oído derecho y de 65 dB en el izquierdo."
+              nota: "Umbrales del 12/09/2025: oído derecho 40, 55, 75 y 80 dB; oído izquierdo 45, 60, 80 y 85 dB. Logoaudiometría concordante: umbral de recepción del habla de 60 dB en el oído derecho y de 65 dB en el izquierdo."
             } },
             { h: "Cálculo de la deficiencia auditiva" },
             { tabla: {
               cols: ["Paso", "Cálculo", "Resultado"],
               filas: [
-                ["Deficiencia monoaural, oído derecho", "(62,5 − 25) × 1,5", "56,25 %"],
-                ["Deficiencia monoaural, oído izquierdo", "(67,5 − 25) × 1,5", "63,75 %"],
-                ["Deficiencia auditiva binaural", "(5 × 56,25 + 63,75) / 6; el oído mejor pesa cinco veces", "57,50 %"],
-                ["Adición por tinnitus", "Tinnitus persistente bilateral que altera el sueño, la concentración y la comunicación (índice de discapacidad por tinnitus de 62 puntos); se adiciona el máximo previsto", "5,00 %"],
-                ["Deficiencia binaural con tinnitus", "57,50 + 5,00", "62,50 %"],
-                ["Deficiencia global de la persona", "Conversión de la deficiencia binaural a la persona total: 62,50 × 0,35 = 21,875, que la tabla de conversión lleva a 22", "22,00 %"]
+                ["Deficiencia monoaural, oído derecho", "Tabla 9.1, suma de 250 dB: (62,5 − 25) × 1,5", "56,25 %"],
+                ["Deficiencia monoaural, oído izquierdo", "Tabla 9.1, suma de 270 dB: (67,5 − 25) × 1,5", "63,75 %"],
+                ["Deficiencia auditiva binaural", "Tabla 9.2, cruce del oído con menor pérdida (250 dB) y del oído con mayor pérdida (270 dB): (5 × 56,25 + 63,75) / 6", "57,50 %"],
+                ["Deficiencia global por la pérdida auditiva", "Tabla 9.3, conversión de la deficiencia binaural a la persona total: 57,50 × 0,35 = 20,1", "20,00 %"],
+                ["Tinnitus", "Tinnitus subjetivo persistente, documentado por otorrinolaringología desde el 05/03/2024, que altera el sueño y la concentración (índice de discapacidad por tinnitus de 62 puntos). El Manual asigna 3 % al tinnitus subjetivo y 5 % solo al objetivo, y su valor se suma aritméticamente a la otra deficiencia", "3,00 %"],
+                ["Valor final de las deficiencias", "20,00 + 3,00", "23,00 %"]
               ],
-              nota: "La deficiencia monoaural parte del promedio de los umbrales de vía aérea en 500, 1.000, 2.000 y 3.000 Hz: se descuentan 25 dB y cada decibel adicional vale 1,5 %."
+              nota: "Se promedian las sumas de las tres audiometrías; con menos de tres, el Manual toma la mejor. Una suma de 100 dB o menos en un oído corresponde a 0 %."
             } },
             { p: "No se identifican otras deficiencias: el equilibrio es normal en la valoración clínica (Romberg y marcha en tándem normales, sin nistagmo espontáneo) y no hay alteraciones de la voz, el habla ni la deglución." },
             { kv: [
-              ["Valor final de las deficiencias", "22,00 %"],
-              ["Título I ponderado al 50 %", "11,00 %"]
+              ["Valor final de las deficiencias", "23,00 %"],
+              ["Título I ponderado al 50 %", "11,50 %"]
             ] }
           ] },
           { titulo: "Título II y concepto final", bloques: [
@@ -435,32 +436,32 @@ DOCS.exp["PI-L04"] = {
             { tabla: {
               cols: ["Rol laboral", "Criterio aplicado", "Valor (%)", "Máximo (%)"],
               filas: [
-                ["Restricciones del rol laboral", "No puede volver a su rol laboral habitual de operaria de prensa ni a otro oficio de su formación metalmecánica: restricción permanente de exposición a ruido, de trabajo junto a maquinaria en movimiento y de tareas que dependan de alarmas sonoras o de comunicación verbal continua. En el cargo de reubicación solo pudo trabajar con avisos visuales y con un compañero que le advertía del paso de montacargas, de los llamados por altavoz y de la alarma de evacuación. Sin vínculo laboral desde el 01/10/2025", "25,00", "25,00"],
-                ["Autosuficiencia económica", "No autosuficiente: sin ingresos propios desde el retiro; depende económicamente de su hija", "2,50", "2,50"],
-                ["Edad", "55 años", "2,00", "2,50"],
+                ["Restricciones del rol laboral", "Rol laboral posible solo en condiciones especiales, con restricciones completas para su oficio: no puede volver a operar prensas ni a otro oficio de su formación metalmecánica (restricción permanente de ruido de 80 dB(A) o más, de trabajo junto a maquinaria en movimiento y de tareas que dependan de alarmas sonoras o de comunicación verbal continua). Ya en la valoración funcional de cierre del 12/09/2025, en el cargo de reubicación solo podía trabajar con avisos visuales y con un compañero que le transmitía los llamados por altavoz, el paso de montacargas y la alarma de evacuación", "25,00", "25,00"],
+                ["Autosuficiencia económica", "No autosuficiente: sin ingresos propios desde el retiro del 30/09/2025; depende económicamente de su hija", "2,50", "2,50"],
+                ["Edad", "55 años a la fecha de la calificación (54 a la fecha de estructuración, en el mismo rango de la tabla)", "2,00", "2,50"],
                 ["Subtotal", "", "29,50", "30,00"]
               ],
               nota: ""
             } },
             { tabla: {
-              cols: ["Otras áreas ocupacionales", "Actividades con dificultad, con las ayudas auditivas", "Valor (%)", "Máximo (%)"],
+              cols: ["Otras áreas ocupacionales", "Actividades con dificultad en su desempeño habitual con audífonos (grado de dificultad)", "Valor (%)", "Máximo (%)"],
               filas: [
-                ["Aprendizaje y aplicación del conocimiento", "Escuchar (dificultad severa); aprender con instrucciones orales; centrar la atención y pensar con el tinnitus; seguir explicaciones en grupo", "1,80", "4,00"],
-                ["Comunicación", "Recibir mensajes hablados; conversar con más de una persona; participar en discusiones; usar el teléfono; regular el volumen de la voz; comunicarse en lugares con ruido", "3,40", "4,00"],
-                ["Movilidad", "Desplazarse por la calle y cruzar vías sin localizar por el sonido vehículos ni bocinas; usar el transporte público sin oír los anuncios; no conduce", "1,60", "4,00"],
-                ["Autocuidado personal", "Cuidado de la propia salud (citas y orientaciones por teléfono o de viva voz); cuidado de la propia seguridad (alarmas de humo y de gas); descanso alterado por el tinnitus; cuidado diario de los audífonos", "1,40", "4,00"],
-                ["Vida doméstica", "Atender la puerta, el teléfono y los avisos sonoros de los electrodomésticos; hacer compras y trámites con atención verbal; participar en reuniones de la comunidad", "2,30", "4,00"],
-                ["Subtotal", "", "10,50", "20,00"]
+                ["Aprendizaje y aplicación del conocimiento", "Escuchar (severa); aprender con instrucciones orales (severa); adquirir habilidades en capacitaciones de grupo (severa); centrar la atención con el tinnitus (severa); pensar (moderada); resolver problemas con información hablada (moderada); tomar decisiones con información hablada (moderada); seguir instrucciones verbales de varios pasos (moderada)", "2,00", "4,00"],
+                ["Comunicación", "Recibir mensajes hablados (severa); recibir mensajes sonoros no verbales, como timbres, alarmas y bocinas (severa); conversar con una persona (moderada); conversar con varias personas (completa); participar en discusiones (completa); usar el teléfono (severa); usar altavoces e intercomunicadores (completa); comunicarse en lugares con ruido (completa); tomar la palabra en reuniones (moderada); regular el volumen de la propia voz (leve)", "3,00", "4,00"],
+                ["Movilidad", "Desplazarse por la calle y cruzar vías sin localizar por el sonido vehículos ni bocinas (severa); desplazarse por lugares concurridos (severa); usar el transporte público sin oír los anuncios (severa); desplazarse por zonas con maquinaria o vehículos en movimiento (completa)", "1,30", "4,00"],
+                ["Autocuidado personal", "Cuidar de la propia salud, con citas y orientaciones de viva voz o por teléfono (severa); cuidar de la propia seguridad ante alarmas de humo y de gas (completa); descansar y conciliar el sueño con el tinnitus (severa); cuidado diario de los audífonos (moderada)", "1,20", "4,00"],
+                ["Vida doméstica", "Hacer compras con atención verbal (severa); hacer trámites en ventanillas (severa); atender la puerta y el timbre (completa); atender el teléfono de la casa (severa); atender los avisos sonoros de los electrodomésticos (severa); oír los llamados de otros miembros del hogar desde otra habitación (severa); recibir visitas y atender a varias personas a la vez (severa); participar en reuniones de la comunidad (severa)", "2,50", "4,00"],
+                ["Subtotal", "", "10,00", "20,00"]
               ],
-              nota: "Cada área suma diez actividades calificadas de 0 a 0,4 según el grado de dificultad."
+              nota: "Cada área suma diez actividades calificadas de 0 a 0,4: dificultad leve 0,1, moderada 0,2, severa 0,3 y completa 0,4. Las actividades que no se mencionan no tienen dificultad."
             } },
-            { kv: [["Total Título II", "40,00 %"]] },
+            { kv: [["Total Título II", "39,50 %"]] },
             { h: "Concepto final" },
             { tabla: {
               cols: ["Componente", "Valor (%)"],
               filas: [
-                ["Título I · Deficiencias, ponderado al 50 %", "11,00"],
-                ["Título II · Rol laboral, rol ocupacional y otras áreas ocupacionales", "40,00"],
+                ["Título I · Deficiencias, ponderado al 50 %", "11,50"],
+                ["Título II · Rol laboral, rol ocupacional y otras áreas ocupacionales", "39,50"],
                 ["Pérdida de capacidad laboral y ocupacional", "51,00"]
               ],
               nota: ""
@@ -475,7 +476,7 @@ DOCS.exp["PI-L04"] = {
               ["Requiere ayuda de otra persona para tomar decisiones", "No"]
             ] },
             { h: "Fundamento de la fecha de estructuración" },
-            { p: "Se fija el 12/09/2025, fecha de la valoración funcional de cierre de la IPS Audiológica Cauce Claro, que documenta, terminados la adaptación de audífonos y el entrenamiento auditivo, las limitaciones residuales que sustentan la pérdida calificada (Decreto 1507 de 2014, art. 3). La audiometría de esa fecha es igual a la del 05/03/2024: la pérdida auditiva está estable desde el retiro de la exposición. Antes del cierre la persona estaba en rehabilitación y la historia clínica no permitía establecer las limitaciones que persistían con las ayudas auditivas." },
+            { p: "Se fija el 12/09/2025, fecha de la valoración funcional de cierre de la IPS Audiológica Cauce Claro. En esa fecha, terminados la adaptación de audífonos y el entrenamiento auditivo, quedaron establecidas y documentadas en la historia clínica las secuelas que sustentan la pérdida calificada: la deficiencia auditiva definitiva, con tres audiometrías de cierre concordantes; el tinnitus persistente; y las limitaciones residuales que le impiden su oficio y solo le permiten trabajar en condiciones especiales (Decreto 1507 de 2014, art. 3: la fecha de estructuración se determina con base en la evolución de las secuelas y se soporta en la historia clínica). Las audiometrías de cierre son iguales, dentro de 5 dB, a la del 05/03/2024: la pérdida no progresó con la doble protección auditiva ni después del retiro de la exposición. Antes del cierre la persona estaba en rehabilitación y la historia clínica no permitía establecer las limitaciones que persistían con las ayudas auditivas. La valoración presencial del 07/04/2026 no encontró cambios en la audición ni en la función." },
             { h: "Fundamentos de derecho" },
             { lista: [
               "Ley 100 de 1993, art. 41, modificado por el Decreto Ley 019 de 2012, art. 142.",
@@ -497,8 +498,8 @@ DOCS.exp["PI-L04"] = {
               filas: [
                 ["Dictamen de origen ORI-L04, con constancia de firmeza", "24/06/2025 · firme el 14/07/2025", "EPS SURA, Medicina laboral", "Origen laboral de H83.3"],
                 ["Extracto audiológico y valoración funcional de cierre SIM-AUD-EX-2025-0912", "12/09/2025", "IPS Audiológica Cauce Claro", "Audiometrías de 2012 a 2025, logoaudiometría, inmitancia, otoemisiones, audífonos, entrenamiento auditivo y limitaciones residuales"],
-                ["Audiometría tonal de cierre", "12/09/2025", "IPS Audiológica Cauce Claro", "Promedio de 62,5 dB en el oído derecho y de 67,5 dB en el izquierdo; máximo en 4.000 Hz"],
-                ["Consulta de otorrinolaringología", "05/03/2024", "IPS Audiológica Cauce Claro", "Diagnóstico de hipoacusia neurosensorial bilateral inducida por ruido"],
+                ["Audiometrías tonales del protocolo de cierre", "29/08/2025, 05/09/2025 y 12/09/2025", "IPS Audiológica Cauce Claro", "Concordantes entre sí; promedio de las sumas de 250 dB en el oído derecho y de 270 dB en el izquierdo (promedios de 62,5 y 67,5 dB); máximo en 4.000 Hz"],
+                ["Consulta de otorrinolaringología", "05/03/2024", "IPS Audiológica Cauce Claro", "Diagnóstico de hipoacusia neurosensorial bilateral inducida por ruido; glucemia, perfil lipídico y función tiroidea normales"],
                 ["Recomendaciones médico-laborales", "18/11/2024", "IPS Audiológica Cauce Claro, medicina del trabajo", "Retiro definitivo de la nave de estampado y avisos visuales en el puesto"],
                 ["Certificado laboral", "30/09/2025", "Prensas Umbral del Otún S.A.S., gestión humana", "Cargos y fechas del 01/09/2012 al 30/09/2025; terminación por retiro voluntario"],
                 ["Valoración presencial y de terapia ocupacional", "07/04/2026", "ARL SURA, Medicina laboral", "Examen otológico, acumetría, pruebas de comunicación y entrevista ocupacional (anexo 2)"]
@@ -686,7 +687,7 @@ DOCS.exp["PI-L04"] = {
             { kv: [
               ["Consulta del registro único de afiliados", "25/05/2026: no registra afiliación a riesgos laborales posterior al 30/09/2025 en ninguna administradora"],
               ["Historial interno de ARL SURA", "Sin afiliaciones de la persona distintas de la certificada"],
-              ["Períodos anteriores al 01/09/2012", "Corresponden a otras administradoras de riesgos (ARL histórica A, 1996 a 2003; ARL histórica B, 2004 a julio de 2012), según la historia laboral aportada. ARL SURA no los certifica"],
+              ["Períodos anteriores al 01/09/2012", "Corresponden a otras administradoras, entonces de riesgos profesionales (ARL histórica A, 1996 a 2003; ARL histórica B, 2004 a julio de 2012), según la historia laboral aportada. ARL SURA no los certifica"],
               ["Agosto de 2012", "Sin afiliación registrada"]
             ] },
             { p: "En consecuencia, ARL SURA es la última administradora de riesgos laborales a la que estuvo afiliada la persona, con cobertura continua del 01/09/2012 al 30/09/2025 por medio de Prensas Umbral del Otún S.A.S." },
@@ -831,7 +832,7 @@ DOCS.exp["PI-L04"] = {
               ["Trabajadora medida", "Elena Marín Cuéllar, operaria de prensa mecánica"],
               ["Equipo de trabajo", "Prensa excéntrica de 100 toneladas SIM-PR-04, troquel progresivo de soportes"],
               ["Turno", "06:00 a 14:00; producción de 9.400 piezas, dentro de lo habitual"],
-              ["Instrumento", "Dosímetro personal de ruido conforme a IEC 61252, serie SIM-DS-4471, con el micrófono en el hombro del lado de la prensa"],
+              ["Instrumento", "Dosímetro personal de ruido conforme a IEC 61252, serie SIM-DS-4471, con el micrófono en el hombro izquierdo, del lado de la prensa"],
               ["Calibración", "Certificado SIM-CAL-2023-0377 del 12/05/2023; verificación en campo con calibrador acústico clase 1 a 94 dB y 1.000 Hz: diferencia de 0,1 dB entre el inicio y el final"],
               ["Método", "ISO 9612:2009, estrategia de medición de jornada completa"],
               ["Configuración", "Ponderación A y respuesta lenta. Canal 1: criterio 85 dB(A), intercambio de 3 dB, umbral 80 dB(A). Canal 2: criterio 85 dB(A), intercambio de 5 dB. Pico con ponderación C"],
@@ -844,10 +845,11 @@ DOCS.exp["PI-L04"] = {
               filas: [
                 ["Nivel equivalente en el tiempo medido (LAeq,T)", "92,1 dB(A) en 470 min", "No aplica", "No aplica"],
                 ["Nivel equivalente normalizado a 8 horas (LAeq,8h)", "92,0 dB(A)", "85 dB(A) en 8 horas (Resolución 1792 de 1990)", "Supera el valor límite en 7 dB"],
-                ["Dosis con intercambio de 3 dB", "508 %", "100 %", "Supera"],
-                ["Dosis con intercambio de 5 dB", "256 %", "100 %", "Supera"],
-                ["Nivel pico máximo (LCpeak)", "132,6 dB(C)", "140 dB(C)", "No supera"],
-                ["Tiempo permitido con 92,0 dB(A) e intercambio de 3 dB", "95 minutos", "8 horas con 85 dB(A)", "Excedido"]
+                ["Dosis con intercambio de 5 dB", "256 %", "100 % (tabla de la Resolución 1792 de 1990)", "Supera"],
+                ["Tiempo máximo diario con 92 dB(A) según la tabla de la Resolución 1792 de 1990", "Unas 3 horas", "8 horas con 85 dB(A)", "Excedido: la jornada es de 8 horas"],
+                ["Dosis con intercambio de 3 dB", "505 %", "100 % (criterio de 85 dB(A) e intercambio de 3 dB que recomienda la guía de atención integral)", "Supera"],
+                ["Tiempo permitido con 92,0 dB(A) e intercambio de 3 dB", "95 minutos", "8 horas con 85 dB(A)", "Excedido"],
+                ["Nivel pico máximo (LCpeak)", "132,6 dB(C)", "140 dB(C), valor máximo para ruido de impacto", "No supera"]
               ],
               nota: "LAeq,8h = LAeq,T + 10 · log(T / 8 h) = 92,1 + 10 · log(470 / 480) = 92,0 dB(A)."
             } },
@@ -880,14 +882,14 @@ DOCS.exp["PI-L04"] = {
             { h: "Interpretación" },
             { lista: [
               "La exposición diaria de la operaria de prensa (92,0 dB(A) en 8 horas) supera el valor límite permisible y el nivel de acción. La exposición no es aceptable sin controles.",
-              "El ruido tiene un componente impulsivo por el impacto del troquel, con picos de hasta 132,6 dB(C), por debajo del límite de 140 dB(C).",
+              "El ruido tiene un componente impulsivo por el impacto del troquel: unos 9.400 golpes en la jornada, con picos máximos por intervalo de 127,5 a 132,6 dB(C), por debajo del límite de 140 dB(C). El ruido de impacto repetido sobre un ruido continuo alto es más lesivo para el oído que un ruido continuo del mismo nivel equivalente.",
               "Con tapones de inserción bien colocados, la exposición efectiva estimada sería de unos 81 dB(A). El registro de uso no permite confirmar que se usaran durante toda la jornada.",
               "El resultado representa el puesto, la tarea, la prensa SIM-PR-04 y el turno medidos, con producción normal."
             ] },
             { h: "Recomendaciones" },
             { lista: [
               "Encerrar o apantallar las prensas y aislar la expulsión de piezas con aire comprimido.",
-              "Doble protección auditiva (tapones y orejeras) mientras los controles de ingeniería no bajen la exposición por debajo de 85 dB(A), con registro de uso.",
+              "Mientras los controles de ingeniería no bajen la exposición por debajo de 85 dB(A), protección auditiva seleccionada por su atenuación, con prueba de ajuste y registro de uso; doble protección (tapones y orejeras) para las operarias con pérdida auditiva ya documentada.",
               "Mantener a las operarias en el programa de vigilancia epidemiológica de conservación auditiva, con audiometría anual, según la guía de atención integral para hipoacusia neurosensorial inducida por ruido.",
               "Repetir la evaluación después de instalar los controles."
             ] },
@@ -960,11 +962,11 @@ DOCS.exp["PI-L04"] = {
             { h: "Motivo de consulta y evolución" },
             { p: "Mujer de 54 años que trabajó casi 29 años en oficios metalmecánicos con ruido, los últimos 12 años y 4 meses como operaria de prensa mecánica en una nave de estampado. En el control periódico ocupacional del 11/11/2021 refirió tinnitus bilateral de predominio nocturno y dificultad para seguir las instrucciones del supervisor en la nave; la audiometría mostró descenso bilateral de los umbrales con máximo en 4.000 Hz y se remitió a su EPS." },
             { p: "El 05/03/2024 otorrinolaringología confirmó hipoacusia neurosensorial bilateral, simétrica, inducida por ruido, con compromiso de frecuencias conversacionales, timpanometría normal y otoemisiones ausentes, y ordenó audífonos. Se adaptaron audífonos binaurales el 22/04/2024, con ajustes el 15/07/2024 y el 28/10/2024. El 18/11/2024 medicina del trabajo recomendó el retiro definitivo de la exposición a ruido; la empresa la reubicó en el almacén desde el 01/01/2025." },
-            { p: "Entre el 15/01/2025 y el 26/03/2025 cumplió ocho sesiones de entrenamiento auditivo. En la valoración funcional de cierre del 12/09/2025 los umbrales son iguales a los de marzo de 2024 y, con los audífonos, persisten dificultades para seguir conversaciones, reconocer alarmas y orientarse por los sonidos." },
+            { p: "Entre el 15/01/2025 y el 26/03/2025 cumplió ocho sesiones de entrenamiento auditivo. Las tres audiometrías del protocolo de cierre (29/08/2025, 05/09/2025 y 12/09/2025) son concordantes entre sí e iguales, dentro de 5 dB, a la de marzo de 2024. En la valoración funcional de cierre del 12/09/2025, con los audífonos, persisten dificultades para seguir conversaciones, reconocer alarmas y orientarse por los sonidos." },
             { h: "Antecedentes" },
             { kv: [
               ["Ocupacionales", "Desmoldeo y acabado de fundición con herramientas neumáticas (1996 a 2003); pulido y esmerilado de piezas (2004 a julio de 2012); operaria de prensa mecánica (septiembre de 2012 a 2024)"],
-              ["Patológicos", "Niega otitis crónica, trauma craneal, enfermedades metabólicas y autoinmunes"],
+              ["Patológicos", "Niega otitis crónica, trauma craneal, enfermedades metabólicas y autoinmunes. Glucemia, perfil lipídico y función tiroidea normales (05/03/2024)"],
               ["Farmacológicos", "Niega uso de aminoglucósidos, quimioterapia, diuréticos de asa o dosis altas de ácido acetilsalicílico"],
               ["Tóxicos", "No fuma"],
               ["Extralaborales", "Sin actividades recreativas ruidosas ni uso de armas de fuego"],
@@ -977,7 +979,7 @@ DOCS.exp["PI-L04"] = {
               filas: [
                 ["H83.3", "Pérdida auditiva neurosensorial bilateral inducida por ruido (efectos del ruido sobre el oído interno)", "Principal", "Estable desde el retiro de la exposición"],
                 ["H90.3", "Hipoacusia neurosensorial bilateral", "Relacionado", "Grado moderadamente severo en el promedio conversacional"],
-                ["H93.1", "Tinnitus", "Relacionado", "Persistente; grado severo en el índice de discapacidad"],
+                ["H93.1", "Tinnitus", "Relacionado", "Subjetivo y persistente; grado severo en el índice de discapacidad"],
                 ["Z97.4", "Usuaria de audífonos externos", "Condición", "Adaptación binaural desde el 22/04/2024"]
               ],
               nota: ""
@@ -992,12 +994,14 @@ DOCS.exp["PI-L04"] = {
                 ["11/11/2021", "Control periódico; refiere tinnitus", "52,5", "57,5", "80 / 85"],
                 ["07/11/2023", "Control periódico", "57,5", "62,5", "85 / 90"],
                 ["05/03/2024", "Otorrinolaringología, diagnóstico", "62,5", "67,5", "85 / 90"],
-                ["12/09/2025", "Cierre de la rehabilitación", "62,5", "67,5", "85 / 90"]
+                ["29/08/2025", "Protocolo de cierre, primera audiometría", "63,8", "68,8", "85 / 90"],
+                ["05/09/2025", "Protocolo de cierre, segunda audiometría", "61,3", "66,3", "85 / 90"],
+                ["12/09/2025", "Protocolo de cierre, tercera audiometría", "62,5", "67,5", "85 / 90"]
               ],
-              nota: "Detalle por frecuencia en el anexo 3."
+              nota: "Detalle por frecuencia en los anexos 1 y 3."
             } },
             { h: "Concepto de cierre" },
-            { p: "Pérdida auditiva neurosensorial bilateral inducida por ruido, simétrica, de grado moderadamente severo en las frecuencias conversacionales y severo en las agudas, con tinnitus persistente. La pérdida progresó durante la exposición en la nave de estampado y está estable desde la reubicación. Terminadas la adaptación de audífonos y el entrenamiento auditivo, se alcanzó la mejoría máxima esperable." },
+            { p: "Pérdida auditiva neurosensorial bilateral inducida por ruido, simétrica, de grado moderadamente severo en las frecuencias conversacionales y severo en las agudas, con tinnitus persistente. La pérdida progresó durante la exposición en la nave de estampado y no ha cambiado desde marzo de 2024, con doble protección auditiva desde abril de 2024 y fuera de la nave desde el 01/01/2025. El compromiso de 500 y 1.000 Hz es mayor que el habitual en la pérdida inducida por ruido; se explica por la exposición prolongada, con componente impulsivo y con protección de uso no verificado hasta 2024, y no se encontró otra causa. Terminadas la adaptación de audífonos y el entrenamiento auditivo, se alcanzó la mejoría máxima esperable." },
             { h: "Limitaciones residuales, con audífonos" },
             { lista: [
               "Seguir conversaciones en grupo o con ruido de fondo.",
@@ -1018,16 +1022,31 @@ DOCS.exp["PI-L04"] = {
             { firma: { nombre: "Lina Marcela Arango Bedoya", cargo: "Fonoaudióloga, especialista en audiología", registro: "Tarjeta profesional SIM-FON-3317", fecha: "12/09/2025" } },
             { nota: "Extracto expedido con autorización de la paciente y solo para la finalidad indicada (Resolución 1995 de 1999, art. 14). Las pruebas anexas son copia fiel de los registros de la historia clínica SIM-OTO-2021-03318, que permanece bajo custodia de la IPS." }
           ] },
-          { titulo: "Anexo 1 · Audiometría tonal de cierre (12/09/2025)", bloques: [
+          { titulo: "Anexo 1 · Audiometrías tonales del protocolo de cierre (29/08, 05/09 y 12/09/2025)", bloques: [
             { kv: [
               ["Equipo", "Audiómetro clínico de dos canales, serie SIM-AU-2210, calibrado según la norma ISO 389 el 03/03/2025"],
               ["Transductores", "Auriculares supraaurales y vibrador óseo"],
-              ["Lugar", "Cabina sonoamortiguada con ruido de fondo verificado"],
-              ["Condiciones", "Sin exposición a ruido laboral desde el 01/01/2025; sin audífonos durante la prueba"],
+              ["Lugar", "Cabina sonoamortiguada con ruido de fondo verificado; la misma cabina y el mismo audiómetro en las tres pruebas"],
+              ["Condiciones", "Tres audiometrías con una semana de intervalo; sin exposición a ruido laboral desde el 01/01/2025 y reposo auditivo de más de 12 horas antes de cada prueba; sin audífonos durante la prueba"],
               ["Enmascaramiento", "Ruido de banda estrecha en la vía ósea"],
-              ["Confiabilidad", "Buena; respuestas consistentes"]
+              ["Confiabilidad", "Buena; diferencia de 5 dB o menos entre las tres pruebas en cada frecuencia"]
             ] },
-            { h: "Vía aérea (dB)" },
+            { h: "Umbrales de vía aérea de 500 a 3.000 Hz en las tres audiometrías (dB)" },
+            { tabla: {
+              cols: ["Fecha", "Oído", "500", "1.000", "2.000", "3.000", "Suma", "Promedio"],
+              filas: [
+                ["29/08/2025", "Derecho", "40", "55", "80", "80", "255", "63,8"],
+                ["29/08/2025", "Izquierdo", "50", "60", "80", "85", "275", "68,8"],
+                ["05/09/2025", "Derecho", "40", "50", "75", "80", "245", "61,3"],
+                ["05/09/2025", "Izquierdo", "45", "55", "80", "85", "265", "66,3"],
+                ["12/09/2025", "Derecho", "40", "55", "75", "80", "250", "62,5"],
+                ["12/09/2025", "Izquierdo", "45", "60", "80", "85", "270", "67,5"],
+                ["Promedio de las tres", "Derecho", "", "", "", "", "250", "62,5"],
+                ["Promedio de las tres", "Izquierdo", "", "", "", "", "270", "67,5"]
+              ],
+              nota: "Frecuencias en hercios. Detalle completo de las dos primeras audiometrías en el anexo 3."
+            } },
+            { h: "Audiometría del 12/09/2025 · vía aérea (dB)" },
             { tabla: {
               cols: ["Oído", "250", "500", "1.000", "2.000", "3.000", "4.000", "6.000", "8.000"],
               filas: [
@@ -1058,7 +1077,7 @@ DOCS.exp["PI-L04"] = {
               ["Promedio de 500, 1.000, 2.000 y 3.000 Hz", "Oído derecho 62,5 dB · oído izquierdo 67,5 dB"],
               ["Promedio de 500, 1.000 y 2.000 Hz", "Oído derecho 56,7 dB · oído izquierdo 61,7 dB"]
             ] },
-            { p: "Interpretación: hipoacusia neurosensorial bilateral, simétrica (diferencia de 5 dB entre los oídos en cada frecuencia), de grado moderadamente severo en el promedio conversacional, con pendiente hacia los agudos, máximo en 4.000 Hz y recuperación de 20 dB en 8.000 Hz. Sin brecha aéreo-ósea mayor de 10 dB en las frecuencias medibles. Sin cambios frente a la audiometría del 05/03/2024." },
+            { p: "Interpretación: hipoacusia neurosensorial bilateral, simétrica (el oído izquierdo, del lado de la prensa, es 5 dB peor en cada frecuencia), de grado moderadamente severo en el promedio conversacional, con pendiente hacia los agudos, máximo en 4.000 Hz y recuperación de 20 dB en 8.000 Hz. Sin brecha aéreo-ósea mayor de 10 dB en las frecuencias medibles. Las tres audiometrías del protocolo son concordantes y no muestran cambios frente a la del 05/03/2024." },
             { firma: { nombre: "Lina Marcela Arango Bedoya", cargo: "Fonoaudióloga, especialista en audiología", registro: "Tarjeta profesional SIM-FON-3317", fecha: "12/09/2025" } }
           ] },
           { titulo: "Anexo 2 · Logoaudiometría, inmitancia y otoemisiones (12/09/2025)", bloques: [
@@ -1107,7 +1126,9 @@ DOCS.exp["PI-L04"] = {
                 ["11/11/2021", "Control periódico", "25", "30", "45", "65", "70", "80", "70", "55"],
                 ["07/11/2023", "Control periódico", "30", "35", "50", "70", "75", "85", "75", "60"],
                 ["05/03/2024", "Otorrinolaringología", "30", "40", "55", "75", "80", "85", "75", "65"],
-                ["12/09/2025", "Cierre", "30", "40", "55", "75", "80", "85", "75", "65"]
+                ["29/08/2025", "Cierre, primera", "30", "40", "55", "80", "80", "85", "75", "65"],
+                ["05/09/2025", "Cierre, segunda", "30", "40", "50", "75", "80", "85", "75", "65"],
+                ["12/09/2025", "Cierre, tercera", "30", "40", "55", "75", "80", "85", "75", "65"]
               ],
               nota: ""
             } },
@@ -1121,9 +1142,11 @@ DOCS.exp["PI-L04"] = {
                 ["11/11/2021", "Control periódico", "30", "35", "50", "70", "75", "85", "75", "60"],
                 ["07/11/2023", "Control periódico", "35", "40", "55", "75", "80", "90", "80", "65"],
                 ["05/03/2024", "Otorrinolaringología", "35", "45", "60", "80", "85", "90", "80", "70"],
-                ["12/09/2025", "Cierre", "35", "45", "60", "80", "85", "90", "80", "70"]
+                ["29/08/2025", "Cierre, primera", "35", "50", "60", "80", "85", "90", "80", "70"],
+                ["05/09/2025", "Cierre, segunda", "35", "45", "55", "80", "85", "90", "80", "70"],
+                ["12/09/2025", "Cierre, tercera", "35", "45", "60", "80", "85", "90", "80", "70"]
               ],
-              nota: "Audiometrías de 2012 a 2023 hechas para el programa de vigilancia del empleador, en cabina y con 14 horas de reposo auditivo; las de 2024 y 2025, en la consulta clínica."
+              nota: "Audiometrías de 2012 a 2023 hechas para el programa de vigilancia del empleador, en cabina y con 14 horas de reposo auditivo; las de 2024 y 2025, en la consulta clínica, en cabina y con reposo auditivo."
             } },
             { figura: {
               tipo: "audiograma",
@@ -1164,13 +1187,14 @@ DOCS.exp["PI-L04"] = {
                 ["09/10/2018", "Audiología, control periódico", "Progresión bilateral: promedio de 41,3 dB en el oído derecho y de 46,3 dB en el izquierdo. Caso sospechoso en el programa de conservación auditiva; refuerzo del uso de tapones."],
                 ["11/11/2021", "Medicina del trabajo y audiología, control periódico", "Tinnitus bilateral de predominio nocturno y dificultad para seguir las instrucciones del supervisor en la nave. Máximo en 4.000 Hz (80 y 85 dB). Remisión a la EPS para otorrinolaringología; recomienda doble protección auditiva."],
                 ["07/11/2023", "Audiología, control periódico", "Progresión en las frecuencias conversacionales. Se reitera la remisión a otorrinolaringología."],
-                ["05/03/2024", "Otorrinolaringología", "Otoscopia normal. Audiometría, logoaudiometría, inmitancia y otoemisiones. Diagnóstico: pérdida auditiva neurosensorial bilateral inducida por ruido (H83.3) con tinnitus (H93.1). Ordena audífonos binaurales y reporta el caso a la EPS como posible enfermedad laboral."],
+                ["05/03/2024", "Otorrinolaringología", "Otoscopia normal. Audiometría, logoaudiometría, inmitancia y otoemisiones. Glucemia, perfil lipídico y función tiroidea normales. Diagnóstico: pérdida auditiva neurosensorial bilateral inducida por ruido (H83.3) con tinnitus subjetivo persistente (H93.1). Ordena audífonos binaurales y reporta el caso a la EPS como posible enfermedad laboral."],
                 ["22/04/2024", "Audiología, adaptación de audífonos", "Adaptación binaural (anexo 5)."],
                 ["15/07/2024", "Audiología, control", "Usa los audífonos 10 horas al día; en la nave se los retira para usar la doble protección. Ajuste de la reducción de ruido."],
                 ["28/10/2024", "Audiología, control", "Ajuste de la ganancia en 2.000 y 3.000 Hz y programa para conversación en grupo. Ordena entrenamiento auditivo."],
                 ["18/11/2024", "Medicina del trabajo", "Recomendaciones médico-laborales: retiro definitivo de la exposición a ruido de 80 dB(A) o más; avisos visuales o vibratorios; instrucciones críticas por escrito. Copia al empleador."],
                 ["15/01/2025 a 26/03/2025", "Audiología, entrenamiento auditivo", "Ocho sesiones (anexo 6)."],
-                ["12/09/2025", "Otorrinolaringología y audiología, cierre", "Valoración funcional de cierre (anexo 7). Umbrales estables. Cierre de la rehabilitación con limitaciones residuales."]
+                ["29/08/2025 y 05/09/2025", "Audiología, protocolo de cierre", "Primera y segunda audiometrías tonales, con reposo auditivo (anexo 1)."],
+                ["12/09/2025", "Otorrinolaringología y audiología, cierre", "Tercera audiometría (anexo 1), logoaudiometría, inmitancia y otoemisiones (anexo 2) y valoración funcional de cierre (anexo 7). Umbrales estables. Cierre de la rehabilitación con limitaciones residuales."]
               ],
               nota: "Transcripción de los registros de la historia clínica SIM-OTO-2021-03318 y de las audiometrías del programa de vigilancia."
             } },
@@ -1198,7 +1222,7 @@ DOCS.exp["PI-L04"] = {
               ],
               nota: "Umbrales binaurales en campo libre con tonos modulados."
             } },
-            { p: "Con los audífonos, los sonidos del habla a intensidad de conversación quedan audibles hasta 2.000 Hz; los componentes de 3.000 y 4.000 Hz siguen por debajo del umbral. La comprensión con ruido de fondo no mejora en la misma proporción que la audibilidad." },
+            { p: "Con los audífonos, los sonidos del habla a intensidad de conversación quedan audibles en 500 y 1.000 Hz y solo en parte en 2.000 Hz; los componentes de 3.000 y 4.000 Hz siguen por debajo del umbral. La comprensión con ruido de fondo no mejora en la misma proporción que la audibilidad." },
             { firma: { nombre: "Lina Marcela Arango Bedoya", cargo: "Fonoaudióloga, especialista en audiología", registro: "Tarjeta profesional SIM-FON-3317", fecha: "28/10/2024" } }
           ] },
           { titulo: "Anexo 6 · Entrenamiento auditivo (enero a marzo de 2025)", bloques: [
