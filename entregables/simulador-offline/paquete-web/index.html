@@ -280,6 +280,15 @@
   .demo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; margin-top:10px; }
   .demo-cta { display:flex; align-items:center; gap:10px; text-align:left; background:var(--surface); border:1px solid var(--line-2); border-radius:8px; padding:8px 12px; color:var(--text); } .demo-cta:hover { background:var(--tint); border-color:var(--tint-border); }
   .demo-cta b { display:block; font-size:14px; line-height:18px; } .demo-cta small { display:block; color:var(--muted); font-size:12px; }
+  .demo h2 { display:flex; align-items:center; gap:8px; } .demo > .mini { margin-top:12px; }
+  .demo .demo-paso { margin:16px 0 0; text-transform:none; letter-spacing:.02em; font-size:13px; color:var(--text-2); }
+  .demo-casos { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px; margin:12px 0 4px; }
+  .demo-casos button { display:flex; flex-direction:column; gap:2px; text-align:left; min-height:44px; padding:8px 12px; border:1px solid var(--line-2); border-radius:8px; background:var(--surface); color:var(--text); }
+  .demo-casos button b { font-size:14px; line-height:18px; } .demo-casos button small { font-size:12px; line-height:16px; color:var(--muted); }
+  .demo-casos button:hover { background:var(--surface-2); } .demo-casos button[aria-pressed="true"] { background:var(--tint); border-color:var(--tint-border); box-shadow:inset 0 0 0 1px var(--tint-border); }
+  .demo-casos button[aria-pressed="true"] small { color:var(--text-2); }
+  .demo-atajo { display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; background:var(--gold-soft); color:var(--gold-ink); border-radius:8px; padding:10px 14px; margin:8px 0 0; font-size:14px; line-height:20px; }
+  .demo-atajo p { margin:0; flex:1 1 280px; min-width:0; } .demo-atajo b { color:var(--gold-ink); }
 
   /* Orientación */
   .orient-pasos { display:flex; flex-wrap:wrap; gap:6px 18px; font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:12px; margin-bottom:18px; }
@@ -9377,7 +9386,7 @@ const estadoInicial = () => ({
   consent:null,                    // declaración aceptada
   envio:{ estado:"pendiente" },    // pendiente | enviando | enviado | error
   descargado:0,
-  acc:{ u:"", c:"", ver:false },   // formulario de acceso
+  acc:{ u:"", c:"", ver:false, caso:"" },   // formulario de acceso
   cons:{ decl:{}, anonimo:"si", datos:{}, resumen:false },
   form:{}, val:{}, enc:{}, ctxObs:"", comentario:"", abierto:0,
   exp:null, actu:{}, h2:{}, h3:{},  // instrumento del expediente: estado por condición y preguntas de cierre
@@ -9949,7 +9958,7 @@ function renderTop() {
     return;
   }
   const enCurso = !!S.consent && S.etapa !== "cierre";
-  pintar("appright", `<span class="who"><span class="avatar">${icoActor(S.cuenta.a)}</span><span><b>${esc(nomRol(S.cuenta.a))}</b><small>usuario ${esc(S.cuenta.u)}</small></span></span><button type="button" class="btn sm outline" data-act="salir">${ico(enCurso ? "acciones-pausar" : "acciones-salir", "sm")}${enCurso ? "Pausar" : "Salir"}</button>`);
+  pintar("appright", `<span class="who"><span class="avatar">${icoActor(S.cuenta.a)}</span><span><b>${esc(nomRol(S.cuenta.a))}</b><small>usuario ${esc(S.cuenta.u)}</small></span></span>${CFG.demo ? `<button type="button" class="btn sm outline" data-act="demo-cambiar">${ico("actores-participante", "sm")}Cambiar de perfil</button>` : ""}<button type="button" class="btn sm outline" data-act="salir">${ico(enCurso ? "acciones-pausar" : "acciones-salir", "sm")}${enCurso ? "Pausar" : "Salir"}</button>`);
   const guardado = ALM.tipo === "memoria" || guardadoFallo ? `<span class="badge sin-guardado">${ico("estados-advertencia", "sm")}Este navegador no guarda el avance: no cierre la pestaña</span>` : ALM.tipo === "pestana" ? `<span class="badge sin-guardado">${ico("estados-advertencia", "sm")}El avance se guarda solo mientras esta pestaña siga abierta</span>` : S.guardado ? `<span class="hm guardado">${ico("estados-guardado", "sm")}Guardado en este dispositivo · ${esc(hora(S.guardado))}</span>` : "";
   const red = !enLinea && (CFG.envio || /^https?:$/.test(location.protocol)) ? `<span class="badge sin-guardado">${ico("estados-sin-conexion", "sm")}Sin conexión: su avance sigue guardado en este dispositivo${CFG.envio ? " y se enviará al volver la conexión" : ""}</span>` : "";
   const conEtapas = ["orientacion", "consentimiento", "simulacion", "cierre"].indexOf(S.etapa) >= 0 && !S.retomar && !S.buscando && !falloGrave;
@@ -10003,10 +10012,15 @@ function vistaAcceso() {
     return `<div class="hoja"><div class="card"><h1 tabindex="-1">${ico("estados-advertencia")}El simulador todavía no está configurado</h1><p>Avise a la persona que le envió este enlace.</p><details data-det="cfg"><summary>Detalle para quien administra el sitio</summary><ul class="lista">${CFG.errores.map(e => `<li>${esc(e)}</li>`).join("")}</ul><p class="mini">${como}</p><p class="mini">Para ver cómo funciona sin configurar nada, abra <span class="mono">simulador-demo.html</span>, que trae cuentas de demostración.</p></details></div></div>`;
   }
   const a = S.acc;
-  // En la demostración, una cuenta puede traer su propio expediente: se dice cuál, para poder recorrer los cuatro.
-  const expDe = q => { const c = EXPM.casoExacto(q.expediente); return c ? `<small>expediente de ${esc(c.persona.nombre)}</small>` : ""; };
-  const demo = CFG.demo ? `<div class="hoja"><details class="card demo" data-det="demo" open><summary>Cuentas de demostración</summary><p>Este archivo es solo para conocer la herramienta. ${CFG.cuentas.some(q => q.expediente) ? `Trae ${CFG.cuentas.length} cuentas: una por rol en el expediente de ${esc((EXPM.casoExacto(CFG.estudio.expediente) || EXP.casos[0]).persona.nombre)} y otras para recorrer los demás expedientes sintéticos, que se indican en cada una.` : "Trae una cuenta por rol."} La contraseña de todas es <b class="mono">${esc(CFG.demo.clave)}</b>. Elija una para entrar. Las respuestas de estas cuentas quedan marcadas como demostración y no entran al análisis del estudio.</p><div class="demo-grid">${CFG.cuentas.map(q => `<button type="button" class="demo-cta" data-act="demo-usar" data-arg="${esc(q.u)}"><span class="avatar">${icoActor(q.a)}</span><span><b>${esc(nomRol(q.a))}</b><small class="mono">${esc(q.u)}</small>${expDe(q)}</span></button>`).join("")}</div></details></div>` : "";
-  return `<div class="auth-wrap"><form class="auth acceso" data-form="acceso" novalidate>
+  // En la demostración las cuentas se agrupan por expediente: primero se elige el expediente y luego el perfil.
+  const grupos = [];
+  (CFG.demo ? CFG.cuentas : []).forEach(q => { const k = q.expediente || CFG.estudio.expediente || ""; let g = grupos.filter(x => x.k === k)[0]; if (!g) grupos.push(g = { k, cuentas:[] }); g.cuentas.push(q); });
+  const elegido = grupos.filter(g => g.k === a.caso)[0] || grupos[0];
+  const casoN = k => EXPM.casoExacto(k);
+  const selectorCasos = grupos.length > 1 ? `<p class="lbl demo-paso">1 · El expediente</p><div class="demo-casos" role="group" aria-label="Expediente">${grupos.map(g => { const c = casoN(g.k); return `<button type="button" data-act="demo-caso" data-arg="${esc(g.k)}" aria-pressed="${g === elegido ? "true" : "false"}"><b>${esc(c ? c.persona.nombre : "Expediente")}</b>${c ? `<small>${esc(c.titulo)}</small>` : ""}</button>`; }).join("")}</div>` : "";
+  const nRoles = grupos.length ? Math.max.apply(null, grupos.map(g => g.cuentas.length)) : 0;
+  const demo = CFG.demo ? `<div class="hoja"><section class="card demo" aria-labelledby="demo-t"><h2 id="demo-t">${ico("actores-participante")}Entre sin contraseña: elija un perfil</h2><p>Este archivo es solo para conocer la herramienta. ${grupos.length > 1 ? `Trae ${CFG.cuentas.length} cuentas: los ${nRoles} roles en cada uno de los ${grupos.length} expedientes sintéticos. Elija primero el expediente y luego el perfil con el que quiere recorrerlo.` : `Trae ${CFG.cuentas.length} cuentas, una por rol. Elija el perfil con el que quiere recorrer la ruta.`} Las respuestas de estas cuentas quedan marcadas como demostración y no entran al análisis del estudio.</p>${selectorCasos}${grupos.length > 1 ? `<p class="lbl demo-paso">2 · El perfil${elegido && casoN(elegido.k) ? " en el expediente de " + esc(casoN(elegido.k).persona.nombre) : ""}</p>` : ""}<div class="demo-grid">${(elegido ? elegido.cuentas : []).map(q => `<button type="button" class="demo-cta" data-act="demo-usar" data-arg="${esc(q.u)}"><span class="avatar">${icoActor(q.a)}</span><span><b>${esc(nomRol(q.a))}</b><small class="mono">${esc(q.u)}</small></span></button>`).join("")}</div><p class="mini">Si prefiere escribirlos en el formulario de abajo, el usuario aparece bajo cada perfil y la contraseña de todos es <b class="mono">${esc(CFG.demo.clave)}</b>. Para probar otro perfil, use «Cambiar de perfil» arriba a la derecha.</p></section></div>` : "";
+  return `${demo}<div class="auth-wrap"><form class="auth acceso" data-form="acceso" novalidate>
     <div class="auth-body">
       <div class="avatar xl">${ico("actores-participante")}</div>
       <h1 class="acceso-titulo" tabindex="-1">${esc(CFG.estudio.titulo)}</h1>
@@ -10016,9 +10030,9 @@ function vistaAcceso() {
       <label class="check"><input type="checkbox" data-in="a-ver" ${a.ver ? "checked" : ""}>Mostrar la contraseña</label>
       ${errHtml()}<button type="submit" class="btn" id="btn-entrar">${ico("acciones-entrar")}Entrar</button>
     </div>
-    <div class="auth-foot"><p class="mini">Use el usuario y la contraseña que le envió el investigador. Cada usuario corresponde a un rol${instrumentoDelEstudio() === "expediente" ? " del trámite" : " de la ruta"}.</p></div>
+    <div class="auth-foot"><p class="mini">${CFG.demo ? "En esta demostración no hace falta escribirlos: elija un perfil arriba." : "Use el usuario y la contraseña que le envió el investigador."} Cada usuario corresponde a un rol${instrumentoDelEstudio() === "expediente" ? " del trámite" : " de la ruta"}.</p></div>
   </form></div>
-  <p class="intro claro">${instrumentoDelEstudio() === "expediente" ? "Simulación individual con un expediente sintético de pensión de invalidez. Usted representa un rol, recorre el mismo expediente en dos condiciones y sus respuestas se usan en una investigación doctoral." : "Simulación individual de la ruta de incapacidad con un caso sintético. Usted representa un rol, recorre la ruta una vez, paso a paso, y sus respuestas se usan en una investigación doctoral."} Los demás actores están simulados.</p>${demo}`;
+  <p class="intro claro">${instrumentoDelEstudio() === "expediente" ? "Simulación individual con un expediente sintético de pensión de invalidez. Usted representa un rol, recorre el mismo expediente en dos condiciones y sus respuestas se usan en una investigación doctoral." : "Simulación individual de la ruta de incapacidad con un caso sintético. Usted representa un rol, recorre la ruta una vez, paso a paso, y sus respuestas se usan en una investigación doctoral."} Los demás actores están simulados.</p>`;
 }
 
 /* ---------- Reanudación ---------- */
@@ -11020,6 +11034,11 @@ function tituloVentana() {
   const donde = S.retomar ? "Bienvenido de nuevo" : S.etapa === "orientacion" ? "Orientación" : S.etapa === "consentimiento" ? "Declaración" : S.etapa === "encuesta" ? "Su perfil" : S.etapa === "cierre" ? "Entrega" : S.etapa === "simulacion" && S.ses ? dondeQuedo() : "";
   return (donde ? donde + " · " : "") + base;
 }
+// En la demostración, las pantallas previas al trabajo del rol se pueden saltar con datos de ejemplo.
+function demoAtajoHtml() {
+  if (!CFG.demo || !S.cuenta || falloGrave || S.buscando || S.retomar || ["orientacion", "consentimiento", "encuesta"].indexOf(S.etapa) < 0) return "";
+  return `<div class="hoja"><div class="demo-atajo">${ico("acciones-siguiente")}<p><b>Demostración.</b> Puede leer la orientación, la declaración y el perfil profesional, o saltarlos: se llenan con datos de ejemplo y se pasa directo al trabajo del rol.</p><button type="button" class="btn sm" data-act="demo-saltar">Ir directo a la simulación</button></div></div>`;
+}
 function render() {
   document.title = tituloVentana();
   document.body.setAttribute("data-rol", "participante");
@@ -11032,7 +11051,7 @@ function render() {
   pendiente = false;
   const primera = vkActual === null;
   let html;
-  try { html = (falloGrave ? vistaFallo : S.buscando ? vistaBuscando : S.retomar ? vistaRetomar : VISTAS[S.etapa] || vistaAcceso)() + confirmarHtml() + docVisorHtml(); }
+  try { html = demoAtajoHtml() + (falloGrave ? vistaFallo : S.buscando ? vistaBuscando : S.retomar ? vistaRetomar : VISTAS[S.etapa] || vistaAcceso)() + confirmarHtml() + docVisorHtml(); }
   catch (e) { guardarLocal(); falloGrave = String((e && e.stack) || e); vkActual = "fallo"; html = vistaFallo(); }
   pintar("vista", html, !cambio);
   if (!cambio) return;
@@ -11092,6 +11111,26 @@ async function copiarTexto(t) {
 const jsonRespuesta = () => JSON.stringify(documentoRespuesta(), null, 2);
 const ACCIONES = {
   "demo-usar":arg => { if (!CFG.demo) return; S.acc.u = arg; S.acc.c = CFG.demo.clave; acceder(); },
+  "demo-caso":arg => { if (!CFG.demo) return; S.acc.caso = arg; render(); },
+  // Cambiar de perfil: el avance de este perfil queda guardado en el dispositivo y se vuelve a la lista de perfiles.
+  "demo-cambiar":() => { if (!CFG.demo) return; const caso = (S.cuenta && S.cuenta.expediente) || S.acc.caso; guardarLocal(); salir(); S.acc.caso = caso || ""; render(); },
+  // Atajo de la demostración: declaración y perfil profesional con datos de ejemplo, para ir directo al trabajo del rol.
+  "demo-saltar":() => {
+    if (!CFG.demo || !S.cuenta) return;
+    if (!S.consent) {
+      CONS.declaraciones.forEach(d => { if (d.req) S.cons.decl[d.id] = true; });
+      S.cons.anonimo = "si"; S.cons.resumen = false;
+      if (!aceptarConsentimiento()) return;
+    }
+    if (!encuestaHecha()) {
+      GUION.encuesta.campos.forEach(c => {
+        if (!c.req || (S.enc[c.id] != null && String(S.enc[c.id]).trim() !== "")) return;
+        S.enc[c.id] = c.tipo === "ops" ? c.ops[0][0] : c.tipo === "numero" ? "5" : "Respuesta de ejemplo de la demostración";
+      });
+      if (!guardarEncuesta()) return;
+    }
+    S.etapa = "simulacion"; S.abierto = ahora(); guardarLocal(); render();
+  },
   "orient":arg => {
     const n = parseInt(arg, 10) || 0;
     if (n >= GUION.orientacion.pasos.length) S.etapa = S.consent ? (S.ses && S.ses.estado === "cerrada" ? "cierre" : "simulacion") : "consentimiento";

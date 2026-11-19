@@ -58,9 +58,9 @@ T.ok(!fs.existsSync(path.join(L.RAIZ, "paquete-web", "simulador-demo.html")) && 
 const demo = incluida(leer("simulador-demo.html"));
 const cats = M.crearMotor(demo).EXP.casos.map(c => c.id);
 const porExp = {}; demo.cuentas.forEach(q => { const e = q.expediente || demo.estudio.expediente; (porExp[e] = porExp[e] || []).push(q.u); });
-T.ok(demo.demo && demo.demo.clave === "DEMO-2026" && demo.cuentas.length === 15 && demo.cuentas.every(q => /^demo-/.test(q.u) && q.p === true),
+T.ok(demo.demo && demo.demo.clave === "DEMO-2026" && demo.cuentas.length === 48 && demo.cuentas.every(q => /^demo-/.test(q.u) && q.p === true),
   "simulador-demo.html trae las cuentas de demostración, marcadas como tales", demo.cuentas.length + " cuentas");
-T.ok(cats.every(id => (porExp[id] || []).length > 0), "y con ellas se pueden recorrer los cuatro expedientes sintéticos", JSON.stringify(porExp));
+T.ok(cats.every(id => (porExp[id] || []).length === 12), "y con ellas se pueden recorrer los cuatro expedientes sintéticos con los doce roles", JSON.stringify(Object.keys(porExp).map(k => k + ":" + porExp[k].length)));
 const rutaDemo = incluida(leer("simulador-ruta-demo.html"));
 T.ok(rutaDemo.demo && rutaDemo.estudio.instrumento === "ruta" && rutaDemo.cuentas.length === 12 && rutaDemo.cuentas.every(q => !q.expediente),
   "simulador-ruta-demo.html es la demostración del otro instrumento, con una cuenta por rol");
@@ -73,7 +73,7 @@ demo.cuentas.filter(q => q.expediente).forEach(q => {
   m.S.acc = { u:q.u, c:demo.demo.clave, ver:false }; m.entrar();
   casos[q.u] = m.S.cuenta ? m.casoExp().id : "no entró";
 });
-T.ok(Object.keys(casos).length === 3 && Object.keys(casos).every(u => casos[u] === demo.cuentas.filter(q => q.u === u)[0].expediente),
+T.ok(Object.keys(casos).length === 36 && Object.keys(casos).every(u => casos[u] === demo.cuentas.filter(q => q.u === u)[0].expediente),
   "cada cuenta de demostración con expediente propio trabaja ese expediente", JSON.stringify(casos));
 
 /* ---------- 3. Por la interfaz ---------- */
@@ -136,10 +136,29 @@ T.ok(Object.keys(casos).length === 3 && Object.keys(casos).every(u => casos[u] =
     const pgD = await L.pagina(ctx, errores);
     await pgD.goto("file://" + path.join(L.RAIZ, "simulador-demo.html"));
     const v3 = await texto(pgD, "#vista");
-    T.ok(/Cuentas de demostración/.test(v3) && /DEMO-2026/.test(v3) && (await pgD.locator(".demo-cta").count()) === 15
+    // Los perfiles van antes del formulario: se ve primero cómo entrar sin contraseña.
+    const antes = await pgD.evaluate(() => { const d = document.querySelector(".demo"), f = document.querySelector("form.acceso"); return !!(d && f && (d.compareDocumentPosition(f) & Node.DOCUMENT_POSITION_FOLLOWING)); });
+    T.ok(/Entre sin contraseña/.test(v3) && /DEMO-2026/.test(v3) && antes && (await pgD.locator(".demo-casos [data-act=\"demo-caso\"]").count()) === 4 && (await pgD.locator(".demo-cta").count()) === 12
       && /Javier Pardo Navas/.test(v3) && /Mónica Beltrán Rivas/.test(v3) && /Elena Marín Cuéllar/.test(v3) && !/PI-L0\d/.test(v3) && /no entran al análisis/.test(v3),
-      "la demostración muestra sus quince cuentas, el expediente de las que tienen uno propio y que no cuentan para el estudio");
-    T.ok(!/\{[a-z]+\}/i.test(await texto(pgD, ".acceso")) && /Trae 15 cuentas/.test(v3), "el acceso no muestra marcas sin resolver y dice cuántas cuentas trae");
+      "la demostración muestra primero los perfiles: los cuatro expedientes y los doce roles del elegido, sin códigos, y que no cuentan para el estudio");
+    T.ok(!/\{[a-z]+\}/i.test(await texto(pgD, ".acceso")) && /Trae 48 cuentas/.test(v3), "el acceso no muestra marcas sin resolver y dice cuántas cuentas trae");
+    await clic(pgD, '[data-act="demo-caso"][data-arg="PI-L03"]');
+    const roles3 = await pgD.evaluate(() => Array.from(document.querySelectorAll(".demo-cta")).map(b => b.getAttribute("data-arg")));
+    T.ok(roles3.length === 12 && roles3.every(u => /-l03$/.test(u)) && (await pgD.getAttribute('[data-act="demo-caso"][data-arg="PI-L03"]', "aria-pressed")) === "true",
+      "al elegir otro expediente aparecen sus doce perfiles", roles3.slice(0, 3).join(" "));
+    // Un clic en un perfil entra sin contraseña; el atajo salta la parte introductoria y «Cambiar de perfil» vuelve a la lista.
+    const pgP = await L.pagina(ctx, errores);
+    await pgP.goto("file://" + path.join(L.RAIZ, "simulador-demo.html"));
+    await clic(pgP, '[data-act="demo-caso"][data-arg="PI-L04"]'); await clic(pgP, '[data-act="demo-usar"][data-arg="demo-eps-l04"]'); await w(pgP, 300);
+    const etapa1 = await pgP.evaluate(() => document.body.getAttribute("data-etapa"));
+    await clic(pgP, '[data-act="demo-saltar"]'); await w(pgP, 200);
+    const etapa2 = await pgP.evaluate(() => document.body.getAttribute("data-etapa")), sim = await texto(pgP, "#vista");
+    await clic(pgP, '[data-act="demo-cambiar"]'); await w(pgP, 200);
+    const etapa3 = await pgP.evaluate(() => document.body.getAttribute("data-etapa"));
+    T.ok(etapa1 === "orientacion" && etapa2 === "simulacion" && /Elena Marín Cuéllar/.test(sim) && etapa3 === "acceso"
+      && (await pgP.getAttribute('[data-act="demo-caso"][data-arg="PI-L04"]', "aria-pressed")) === "true",
+      "un clic en un perfil entra sin contraseña, el atajo lleva directo a la simulación y «Cambiar de perfil» vuelve a los perfiles del mismo expediente", [etapa1, etapa2, etapa3].join(" → "));
+    await pgP.close();
     await L.entrarDemo(pgD, "demo-arl-l03", "DEMO-2026");
     await clic(pgD, '[data-act="orient"][data-arg="1"]');
     const o2 = await texto(pgD, "#vista");

@@ -35,9 +35,9 @@ def huella_clave(usuario, clave, sal, iteraciones=ITER):
     return hashlib.pbkdf2_hmac("sha256", (usuario.strip().lower() + "\n" + norm_clave(clave)).encode(), sal.encode(), iteraciones).hex()
 
 
-# Los otros tres expedientes del catálogo, cada uno con una cuenta de demostración del rol que lo decide,
-# para que el archivo de demostración deje recorrer los cuatro casos sintéticos.
-OTROS_EXPEDIENTES = [("PI-L02", "arl"), ("PI-L03", "arl"), ("PI-L04", "arl")]
+# Los otros tres expedientes del catálogo, con una cuenta de demostración por rol en cada uno,
+# para que el archivo de demostración deje recorrer los cuatro casos sintéticos con todos los perfiles.
+OTROS_EXPEDIENTES = [(e, a) for e in ("PI-L02", "PI-L03", "PI-L04") for a in ACTORES]
 
 
 def cuenta_demo(u, a, **extra):

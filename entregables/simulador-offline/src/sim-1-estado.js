@@ -37,7 +37,7 @@ const estadoInicial = () => ({
   consent:null,                    // declaración aceptada
   envio:{ estado:"pendiente" },    // pendiente | enviando | enviado | error
   descargado:0,
-  acc:{ u:"", c:"", ver:false },   // formulario de acceso
+  acc:{ u:"", c:"", ver:false, caso:"" },   // formulario de acceso
   cons:{ decl:{}, anonimo:"si", datos:{}, resumen:false },
   form:{}, val:{}, enc:{}, ctxObs:"", comentario:"", abierto:0,
   exp:null, actu:{}, h2:{}, h3:{},  // instrumento del expediente: estado por condición y preguntas de cierre

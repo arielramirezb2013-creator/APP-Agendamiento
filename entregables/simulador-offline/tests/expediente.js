@@ -87,7 +87,7 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
     if (min < 25 || min > 45) malos.push(q.u + ": " + min + " minutos estimados");
     tiempos.push(q.u.replace("demo-", "") + " " + min + "′");
   });
-  T.ok(!malos.length && cfg.cuentas.length === 15, "las quince cuentas de demostración —los doce roles y el ARL en los otros tres expedientes— completan su expediente, entregan un documento válido y caben en los 45 minutos", malos.join(" · ") || cfg.cuentas.length + " cuentas");
+  T.ok(!malos.length && cfg.cuentas.length === 48, "las 48 cuentas de demostración —los doce roles en cada uno de los cuatro expedientes— completan su expediente, entregan un documento válido y caben en los 45 minutos", malos.join(" · ") || cfg.cuentas.length + " cuentas");
   console.log("       " + tiempos.join(" · "));
 })();
 

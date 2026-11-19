@@ -20,6 +20,11 @@ function tituloVentana() {
   const donde = S.retomar ? "Bienvenido de nuevo" : S.etapa === "orientacion" ? "Orientación" : S.etapa === "consentimiento" ? "Declaración" : S.etapa === "encuesta" ? "Su perfil" : S.etapa === "cierre" ? "Entrega" : S.etapa === "simulacion" && S.ses ? dondeQuedo() : "";
   return (donde ? donde + " · " : "") + base;
 }
+// En la demostración, las pantallas previas al trabajo del rol se pueden saltar con datos de ejemplo.
+function demoAtajoHtml() {
+  if (!CFG.demo || !S.cuenta || falloGrave || S.buscando || S.retomar || ["orientacion", "consentimiento", "encuesta"].indexOf(S.etapa) < 0) return "";
+  return `<div class="hoja"><div class="demo-atajo">${ico("acciones-siguiente")}<p><b>Demostración.</b> Puede leer la orientación, la declaración y el perfil profesional, o saltarlos: se llenan con datos de ejemplo y se pasa directo al trabajo del rol.</p><button type="button" class="btn sm" data-act="demo-saltar">Ir directo a la simulación</button></div></div>`;
+}
 function render() {
   document.title = tituloVentana();
   document.body.setAttribute("data-rol", "participante");
@@ -32,7 +37,7 @@ function render() {
   pendiente = false;
   const primera = vkActual === null;
   let html;
-  try { html = (falloGrave ? vistaFallo : S.buscando ? vistaBuscando : S.retomar ? vistaRetomar : VISTAS[S.etapa] || vistaAcceso)() + confirmarHtml() + docVisorHtml(); }
+  try { html = demoAtajoHtml() + (falloGrave ? vistaFallo : S.buscando ? vistaBuscando : S.retomar ? vistaRetomar : VISTAS[S.etapa] || vistaAcceso)() + confirmarHtml() + docVisorHtml(); }
   catch (e) { guardarLocal(); falloGrave = String((e && e.stack) || e); vkActual = "fallo"; html = vistaFallo(); }
   pintar("vista", html, !cambio);
   if (!cambio) return;
@@ -92,6 +97,26 @@ async function copiarTexto(t) {
 const jsonRespuesta = () => JSON.stringify(documentoRespuesta(), null, 2);
 const ACCIONES = {
   "demo-usar":arg => { if (!CFG.demo) return; S.acc.u = arg; S.acc.c = CFG.demo.clave; acceder(); },
+  "demo-caso":arg => { if (!CFG.demo) return; S.acc.caso = arg; render(); },
+  // Cambiar de perfil: el avance de este perfil queda guardado en el dispositivo y se vuelve a la lista de perfiles.
+  "demo-cambiar":() => { if (!CFG.demo) return; const caso = (S.cuenta && S.cuenta.expediente) || S.acc.caso; guardarLocal(); salir(); S.acc.caso = caso || ""; render(); },
+  // Atajo de la demostración: declaración y perfil profesional con datos de ejemplo, para ir directo al trabajo del rol.
+  "demo-saltar":() => {
+    if (!CFG.demo || !S.cuenta) return;
+    if (!S.consent) {
+      CONS.declaraciones.forEach(d => { if (d.req) S.cons.decl[d.id] = true; });
+      S.cons.anonimo = "si"; S.cons.resumen = false;
+      if (!aceptarConsentimiento()) return;
+    }
+    if (!encuestaHecha()) {
+      GUION.encuesta.campos.forEach(c => {
+        if (!c.req || (S.enc[c.id] != null && String(S.enc[c.id]).trim() !== "")) return;
+        S.enc[c.id] = c.tipo === "ops" ? c.ops[0][0] : c.tipo === "numero" ? "5" : "Respuesta de ejemplo de la demostración";
+      });
+      if (!guardarEncuesta()) return;
+    }
+    S.etapa = "simulacion"; S.abierto = ahora(); guardarLocal(); render();
+  },
   "orient":arg => {
     const n = parseInt(arg, 10) || 0;
     if (n >= GUION.orientacion.pasos.length) S.etapa = S.consent ? (S.ses && S.ses.estado === "cerrada" ? "cierre" : "simulacion") : "consentimiento";
