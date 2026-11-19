@@ -451,6 +451,7 @@
   .doc-kv dt { padding:4px 8px; background:#f1f3f6; border-right:1px solid #b9c0ca; font-weight:700; color:#3a4150; }
   .doc-kv dd { min-width:0; margin:0; padding:4px 8px; color:#1d2330; }
   .doc-tabla { max-width:100%; margin:4px 0 12px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .doc-tabla:focus { outline:none; } .doc-tabla:focus-visible { outline:2px solid #4b82b8; outline-offset:2px; }
   .doc-tabla table { width:100%; border-collapse:collapse; background:#ffffff; font-size:12px; line-height:1.4; }
   .doc-tabla th, .doc-tabla td { padding:4px 6px; border:1px solid #9aa3ae; text-align:left; vertical-align:top; color:#1d2330; }
   .doc-tabla th { background:#e6eaf0; font-weight:700; }
@@ -477,7 +478,7 @@
   .doc .doc-fig-t { margin:0 0 8px; font-size:12px; font-weight:700; color:#1d2330; }
   .doc-figura figcaption { margin-top:8px; font-size:11.5px; line-height:1.45; font-style:italic; color:#4a5260; }
   .doc-svg { display:block; width:100%; height:auto; margin:0 auto; }
-  .doc-svg-audiograma { max-width:440px; } .doc-svg-imagen { max-width:420px; } .doc-svg-mitad { max-width:420px; }
+  .doc-svg-audiograma { max-width:400px; } .doc-svg-imagen { max-width:420px; } .doc-svg-mitad { max-width:420px; }
   .doc-svg-ancho { max-width:680px; } .doc-svg-angosto { display:none; max-width:420px; }
   .doc-fig-par { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap:10px; }
   .doc-fig-tarjetas { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap:8px; }
@@ -488,9 +489,10 @@
   .doc-sw { display:inline-block; width:12px; height:8px; margin:0 4px 0 10px; } .doc-sw:first-child { margin-left:0; }
   .doc-sw-ok { background:#3d6aa6; } .doc-sw-mal { background:#c0392b; } .doc-sw-rango { background:#dcefe2; outline:1px solid #b9d9c3; } .doc-sw-linea { width:14px; height:0; border-top:1.5px dashed #1d2330; vertical-align:3px; }
   .doc-tabla-fig { max-width:640px; margin:10px auto 0; } .doc-tabla-fig table { font-size:11.5px; }
-  .doc-tabla-fig tbody th { background:#f1f3f6; font-weight:700; white-space:nowrap; }
+  .doc-tabla-fig tbody th { background:#f1f3f6; font-weight:700; }
   .doc-t-num td { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
-  .doc-t-num thead th:not(:first-child) { text-align:right; white-space:nowrap; }
+  .doc-t-num thead th:not(:first-child) { text-align:right; }
+  .doc-tabla-angosta { display:none; }
 
   .doc .doc-pie { position:relative; margin-top:18px; padding-top:7px; border-top:1px solid #c3c9d1; font-size:10.5px; line-height:1.4; color:#5b6472; text-align:center; }
 
@@ -504,7 +506,7 @@
     .doc-kv-f { grid-template-columns:minmax(0,1fr); }
     .doc-kv dt { border-right:0; padding-bottom:2px; }
     .doc .doc-p { text-align:left; }
-    .doc-svg-ancho { display:none; } .doc-svg-angosto { display:block; }
+    .doc-svg-ancho, .doc-tabla-ancha { display:none; } .doc-svg-angosto, .doc-tabla-angosta { display:block; }
   }
   @media (max-width:600px) {
     .doc { padding:8px; }
@@ -518,11 +520,14 @@
     .doc-kv dt { border-right:0; padding-bottom:2px; }
     .doc .doc-p { text-align:left; }
     .doc-figura { padding:8px; }
-    .doc-svg-ancho { display:none; } .doc-svg-angosto { display:block; }
+    .doc-svg-ancho, .doc-tabla-ancha { display:none; } .doc-svg-angosto, .doc-tabla-angosta { display:block; }
   }
 
   /* Visor: capa a pantalla completa con barra fija y las hojas desplazables. */
   body.doc-abierto { overflow:hidden; }
+  /* La animación de entrada de la vista (#vista.enter, con transform) no alcanza al visor: un antepasado
+     transformado haría que la capa fija se ubicara respecto de él y no de la ventana, y la barra no quedaría arriba. */
+  body.doc-abierto #vista.enter, body.doc-abierto #vista.enter > * { animation:none !important; }
   .doc-visor { position:fixed; inset:0; z-index:65; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; background:#1e222a; }
   .doc-visor-barra { position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; padding:10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); background:var(--surface, #ffffff); border-bottom:1px solid var(--line, #dcdfe5); box-shadow:0 2px 12px rgba(0,0,0,.3); }
   .doc-visor-barra h2 { flex:1 1 260px; min-width:0; margin:0; font-size:16px; line-height:22px; color:var(--text, #2d313f); overflow-wrap:anywhere; }
@@ -8584,9 +8589,12 @@ const docR = (function () {
     const bruto = rango / (n || 5), e = Math.pow(10, Math.floor(Math.log10(bruto || 1))), f = bruto / e;
     return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e;
   }
+  // Contenedor de una tabla: si en una hoja angosta hay que desplazarla a lo ancho, se alcanza con el teclado
+  // (región con nombre y tabindex, que la trampa de foco del visor incluye).
+  const cajaTabla = (cls, nombre) => `<div class="doc-tabla${cls ? " " + cls : ""}" role="region" tabindex="0" aria-label="${esc(nombre)}">`;
   // Tabla de valores de una figura (celdas ya escapadas): la primera columna rotula cada fila.
-  function tablaFig(cols, filas, cls) {
-    return `<div class="doc-tabla doc-tabla-fig"><table${cls ? ` class="${cls}"` : ""}><thead><tr>${cols.map(c => `<th scope="col">${c}</th>`).join("")}</tr></thead><tbody>${filas.map(f => `<tr>${f.map((c, i) => i ? `<td>${c}</td>` : `<th scope="row">${c}</th>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  function tablaFig(cols, filas, cls, nombre, extra) {
+    return `${cajaTabla("doc-tabla-fig" + (extra ? " " + extra : ""), nombre)}<table${cls ? ` class="${cls}"` : ""}><thead><tr>${cols.map(c => `<th scope="col">${c}</th>`).join("")}</tr></thead><tbody>${filas.map(f => `<tr>${f.map((c, i) => i ? `<td>${c}</td>` : `<th scope="row">${c}</th>`).join("")}</tr>`).join("")}</tbody></table></div>`;
   }
 
   /* =====================================================================================================
@@ -8611,7 +8619,7 @@ const docR = (function () {
     [250, 500, 1000, 2000, 3000, 4000, 6000, 8000].forEach(f => {
       const media = f === 3000 || f === 6000;
       g += ln(fx(f), T, fx(f), B, media ? "#c3c9d1" : "#bfc6ce", media ? 0.8 : 1, media ? 'stroke-dasharray="3 3"' : "");
-      g += media ? tx(fx(f), T - 5, String(f), 'font-size="8.5" text-anchor="middle" fill="#6a717b"') : tx(fx(f), T - 16, String(f), 'font-size="10.5" text-anchor="middle" fill="#39404a"');
+      g += media ? tx(fx(f), T - 5, fmt(f), 'font-size="8.5" text-anchor="middle" fill="#6a717b"') : tx(fx(f), T - 16, fmt(f), 'font-size="10.5" text-anchor="middle" fill="#39404a"');
     });
     g += `<rect x="${L}" y="${T}" width="${R - L}" height="${r1(B - T)}" fill="none" stroke="#59616c" stroke-width="1"/>`;
     g += tx((L + R) / 2, 13, "Frecuencia (Hz)", 'font-size="10.5" text-anchor="middle" font-weight="bold" fill="#2a3039"');
@@ -8630,11 +8638,15 @@ const docR = (function () {
     g += simbolo(L + 128, ly - 4, "oi") + tx(L + 140, ly, "Oído izquierdo", 'font-size="10.5" fill="#2a3039"');
     g += tx(R, ly, via.charAt(0).toUpperCase() + via.slice(1), 'font-size="10.5" text-anchor="end" fill="#59616c"');
     g += `<rect x="${L + 2}" y="${ly + 12}" width="12" height="9" fill="#e2f1e6" stroke="#9fcfae" stroke-width="0.8"/>` + tx(L + 20, ly + 20, "Audición normal: hasta 25 dB HL", 'font-size="10.5" fill="#2e6b45"');
-    const lista = o => frecs(d[o]).map(f => f + " Hz " + fmt(d[o][f]) + " dB").join(", ");
+    const lista = o => frecs(d[o]).map(f => fmt(f) + " Hz " + fmt(d[o][f]) + " dB").join(", ");
     const etiqueta = "Audiograma, " + via + ", umbrales en dB HL. Oído derecho: " + (lista("od") || "sin datos") + ". Oído izquierdo: " + (lista("oi") || "sin datos") + ". Franja de audición normal hasta 25 dB HL.";
     const todas = frecs(d.od).concat(frecs(d.oi)).filter((f, i, a) => a.indexOf(f) === i).sort((a, b) => a - b);
     const celda = (o, f) => esNum((d[o] || {})[f]) ? esc(fmt(d[o][f])) : "—";
-    const tabla = tablaFig(["Umbral (dB HL)"].concat(todas.map(f => esc(String(f)) + " Hz")), [["Oído derecho"].concat(todas.map(f => celda("od", f))), ["Oído izquierdo"].concat(todas.map(f => celda("oi", f)))], "doc-t-num");
+    // Dos formas de la misma tabla: una fila por oído (hoja ancha) o una fila por frecuencia (hoja angosta);
+    // el CSS muestra solo una, así que el lector de pantalla tampoco la oye dos veces.
+    const nombreT = "Umbrales del audiograma, " + via + ", en dB HL";
+    const tabla = tablaFig(["Umbral (dB HL)"].concat(todas.map(f => esc(fmt(f)) + " Hz")), [["Oído derecho"].concat(todas.map(f => celda("od", f))), ["Oído izquierdo"].concat(todas.map(f => celda("oi", f)))], "doc-t-num", nombreT, "doc-tabla-ancha")
+      + tablaFig(["Frecuencia", "Oído derecho (dB HL)", "Oído izquierdo (dB HL)"], todas.map(f => [esc(fmt(f)) + " Hz", celda("od", f), celda("oi", f)]), "doc-t-num", nombreT, "doc-tabla-angosta");
     return { titulo:"Audiograma tonal · " + via, html:svg(W, H, etiqueta, "doc-svg-audiograma", g) + tabla };
   }
 
@@ -8720,7 +8732,7 @@ const docR = (function () {
       ["VEF<sub>1</sub>/CVF", fmt(Math.round(ratio * 100), 0) + " %", fmt(Math.round(ratioP * 100), 0) + " %", pct(ratio, ratioP)]
     ];
     if (hayPef) filas.push(["FEP (L/s)", fmt(d.pef), hayPefP ? fmt(pefP) : "—", hayPefP ? pct(pef, pefP) : "—"]);
-    const tabla = tablaFig(["Parámetro", "Medido", "Predicho", "% del predicho"], filas.map(f => [f[0], esc(f[1]), esc(f[2]), esc(f[3])]), "doc-t-num");
+    const tabla = tablaFig(["Parámetro", "Medido", "Predicho", "% del predicho"], filas.map(f => [f[0], esc(f[1]), esc(f[2]), esc(f[3])]), "doc-t-num", "Valores de la espirometría");
     return { titulo:"Espirometría forzada · curvas flujo-volumen y volumen-tiempo", html:`<div class="doc-fig-par">${fv}${vt}</div>` + tabla };
   }
 
@@ -9007,11 +9019,24 @@ const docR = (function () {
      Serie: barras o línea con ejes rotulados, cifras en formato colombiano y línea de límite opcional.
      Se dibuja dos veces, ancha y angosta: la hoja muestra la que cabe (consulta de contenedor en el CSS).
      ===================================================================================================== */
+  // Parte un rótulo en líneas de hasta `max` caracteres, tan parejas como se pueda («Recuperación / 2 min», no
+  // «Recuperación 2 / min»). null si una palabra sola no cabe.
   function partir(s, max) {
-    const ps = String(s).split(/\s+/), out = []; let l = "";
-    for (const p of ps) { if (p.length > max) return null; if (!l) l = p; else if ((l + " " + p).length <= max) l += " " + p; else { out.push(l); l = p; } }
-    if (l) out.push(l);
-    return out;
+    const ps = String(s).split(/\s+/).filter(Boolean);
+    if (!ps.length) return [""];
+    if (ps.some(p => p.length > max)) return null;
+    let n = 1, l = "";
+    for (const p of ps) { if (!l) l = p; else if ((l + " " + p).length <= max) l += " " + p; else { n++; l = p; } }
+    let mejor = null;
+    const repartir = (i, k, hechas) => {
+      if (k === 1) { const u = ps.slice(i).join(" "); if (u.length > max) return; const r = hechas.concat([u]), m = Math.max(...r.map(x => x.length)); if (!mejor || m < mejor.m) mejor = { r, m }; return; }
+      for (let j = i + 1; j <= ps.length - k + 1; j++) { const u = ps.slice(i, j).join(" "); if (u.length > max) break; repartir(j, k - 1, hechas.concat([u])); }
+    };
+    if (n <= 4 && ps.length <= 12) repartir(0, n, []);
+    if (mejor) return mejor.r;
+    const out = []; l = "";
+    for (const p of ps) { if (!l) l = p; else if ((l + " " + p).length <= max) l += " " + p; else { out.push(l); l = p; } }
+    return out.concat(l ? [l] : []);
   }
   function serieSvg(d, W, cls) {
     const pts = (Array.isArray(d.puntos) ? d.puntos : []).filter(p => Array.isArray(p) && esNum(p[1]));
@@ -9032,25 +9057,41 @@ const docR = (function () {
     const lineas = pts.map(p => partir(p[0], Math.max(3, Math.floor(ranura / (fx * 0.56)))));
     const girar = lineas.some(l => !l || l.length > 3);
     const altoEt = girar ? Math.min(96, Math.max(...pts.map(p => ancho(p[0], fx))) * 0.62 + 14) : 8 + Math.max(1, ...lineas.map(l => l.length)) * (fx + 1.5);
-    const PH = W < 420 ? 170 : 160, B = T + PH, H = B + altoEt + 6;
+    const PH = W < 420 ? 170 : 160, B = T + PH;
+    let H = B + altoEt + 6;
     const Y = v => B - (v - lo) / (hi - lo) * PH, X = i => L + ranura * (i + 0.5);
-    let g = `<rect x="0" y="0" width="${W}" height="${r1(H)}" fill="#ffffff"/>`;
+    let g = "";
     marcas.forEach(v => { g += ln(L, Y(v), R, Y(v), Math.abs(v) < st * 1e-6 ? "#59616c" : "#e1e5ea", Math.abs(v) < st * 1e-6 ? 1.1 : 0.8) + tx(L - 5, Y(v) + 3.5, tf(v), `font-size="${fs}" text-anchor="end" fill="#39404a"`); });
     g += ln(L, T, L, B, "#59616c", 1);
     g += tx(4, 13, dinero ? "Pesos" : unidad, `font-size="${fs}" font-weight="bold" fill="#2a3039"`);
+    // Lo que ya ocupa el área del gráfico (barras, puntos, tramos de la línea y cifras), para no rotular encima.
     const valores = [], cajas = [], halo = 'stroke="#ffffff" stroke-width="3" paint-order="stroke"';
+    const cajaTexto = (x, y, s) => { const w = ancho(s, fx); return [x - w / 2 - 1, y - fx, x + w / 2 + 1, y + 2]; };
+    // Una cifra no se escribe sobre la línea del límite: si la cruzaría, pasa al otro lado (encima en las
+    // barras; debajo del punto en la línea).
+    const yLim = lim ? Y(lim.valor) : null, cruza = y => yLim != null && y - fx - 1 < yLim && y + 3 > yLim;
     if (linea) {
-      pts.forEach((p, i) => { cajas.push([X(i) - 9, Y(p[1]) - 19, X(i) + 9, Y(p[1]) + 5]); });
-      g += `<polyline points="${poli(pts.map((p, i) => [X(i), Y(p[1])]))}" fill="none" stroke="#2f5d8a" stroke-width="2"/>`;
-      pts.forEach((p, i) => { g += `<circle cx="${r1(X(i))}" cy="${r1(Y(p[1]))}" r="3.4" fill="#ffffff" stroke="#2f5d8a" stroke-width="1.8"/>`; });
-      pts.forEach((p, i) => { if (ancho(f(p[1]), fx) < ranura - 2) valores.push(tx(X(i), Y(p[1]) - 7, f(p[1]), `font-size="${fx}" text-anchor="middle" fill="#1d2330" ${halo}`)); });
+      const xy = pts.map((p, i) => [X(i), Y(p[1])]);
+      xy.forEach((q, i) => {
+        cajas.push([q[0] - 5, q[1] - 5, q[0] + 5, q[1] + 5]);
+        if (!i) return;
+        const a = xy[i - 1], k = Math.max(2, Math.ceil(Math.hypot(q[0] - a[0], q[1] - a[1]) / 3));
+        for (let j = 1; j < k; j++) { const x = a[0] + (q[0] - a[0]) * j / k, y = a[1] + (q[1] - a[1]) * j / k; cajas.push([x - 2, y - 2, x + 2, y + 2]); }
+      });
+      g += `<polyline points="${poli(xy)}" fill="none" stroke="#2f5d8a" stroke-width="2"/>`;
+      xy.forEach(q => { g += `<circle cx="${r1(q[0])}" cy="${r1(q[1])}" r="3.4" fill="#ffffff" stroke="#2f5d8a" stroke-width="1.8"/>`; });
+      pts.forEach((p, i) => {
+        const et = f(p[1]); if (ancho(et, fx) >= ranura - 2) return;
+        let y = Y(p[1]) - 7; if (cruza(y) && Y(p[1]) + 7 + fx <= B - 2) y = Y(p[1]) + 7 + fx;
+        valores.push(tx(X(i), y, et, `font-size="${fx}" text-anchor="middle" fill="#1d2330" ${halo}`)); cajas.push(cajaTexto(X(i), y, et));
+      });
     } else {
       const bwid = Math.min(46, ranura * 0.68);
       pts.forEach((p, i) => {
         const y = Y(Math.max(p[1], lo)), y0 = Y(Math.max(0, lo)), top = Math.min(y, y0), alto = Math.abs(y0 - y), et = f(p[1]);
         g += `<rect x="${r1(X(i) - bwid / 2)}" y="${r1(top)}" width="${r1(bwid)}" height="${r1(Math.max(0.5, alto))}" fill="#2f5d8a"/>`;
-        cajas.push([X(i) - bwid / 2, top - 16, X(i) + bwid / 2, top + alto]);
-        if (ancho(et, fx) < ranura - 2) valores.push(tx(X(i), top - 4, et, `font-size="${fx}" text-anchor="middle" fill="#1d2330" ${halo}`));
+        cajas.push([X(i) - bwid / 2 - 1, top - 1, X(i) + bwid / 2 + 1, top + alto]);
+        if (ancho(et, fx) < ranura - 2) { const ye = cruza(top - 4) && yLim - 4 - fx >= T - 6 ? yLim - 4 : top - 4; valores.push(tx(X(i), ye, et, `font-size="${fx}" text-anchor="middle" fill="#1d2330" ${halo}`)); cajas.push(cajaTexto(X(i), ye, et)); }
         else if (alto > ancho(et, fx - 0.5) + 10 && bwid >= fx + 1) valores.push(`<text transform="translate(${r1(X(i) + (fx - 0.5) * 0.36)} ${r1(top + alto - 5)}) rotate(-90)" font-size="${fx - 0.5}" fill="#ffffff">${esc(et)}</text>`);
         else if (alto <= 0.5) valores.push(tx(X(i), top - 4, et.length > 5 ? "0" : et, `font-size="${fx}" text-anchor="middle" fill="#1d2330"`));
       });
@@ -9058,17 +9099,30 @@ const docR = (function () {
     if (lim) {
       const yl = Y(lim.valor), et = String(lim.etiqueta || ("Límite " + f(lim.valor))), we = ancho(et, fx) * 1.08;
       g += ln(L, yl, R, yl, "#b3261e", 1.4, 'stroke-dasharray="6 4"');
-      // La etiqueta va donde menos estorbe: a la derecha o a la izquierda, encima o debajo de la línea.
-      const opciones = [[R - 2 - we, yl - 5, "end"], [R - 2 - we, yl + 13, "end"], [L + 4, yl - 5, "start"], [L + 4, yl + 13, "start"]];
-      const choques = o => cajas.filter(c => c[0] < o[0] + we && c[2] > o[0] && c[1] < o[1] + 2 && c[3] > o[1] - fx).length + (o[1] + 2 > B || o[1] - fx < T - 4 ? 9 : 0);
-      const mejor = opciones.reduce((a, o) => choques(o) < choques(a) ? o : a, opciones[0]);
-      g += tx(mejor[2] === "end" ? R - 2 : L + 4, mejor[1], et, `font-size="${fx}" font-weight="bold" text-anchor="${mejor[2]}" fill="#b3261e" ${halo}`);
+      // La etiqueta va junto a la línea donde no tape nada: a la derecha, a la izquierda o en el primer hueco
+      // libre, encima o debajo. Si no hay hueco (las barras o la curva la cruzan en todo el ancho), va como
+      // leyenda debajo del gráfico, con su muestra de línea.
+      const choca = c => cajas.some(k => k[0] < c[2] && k[2] > c[0] && k[1] < c[3] && k[3] > c[1]);
+      const xs = [R - 2 - we, L + 4]; for (let x = R - 2 - we - 10; x > L + 4; x -= 10) xs.push(x);
+      let sitio = null;
+      for (const x of xs) {
+        for (const y of [yl - 5, yl + fx + 3]) { if (y - fx >= T - 2 && y + 2 <= B - 1 && !choca([x - 2, y - fx - 1, x + we + 2, y + 3])) { sitio = [x, y]; break; } }
+        if (sitio) break;
+      }
+      if (sitio) g += tx(sitio[0], sitio[1], et, `font-size="${fx}" font-weight="bold" fill="#b3261e" ${halo}`);
+      else {
+        const filas = partir(et, Math.max(8, Math.floor((W - L - 34) / (fx * 0.6)))) || [et], y0 = H + 8;
+        g += ln(L, y0 - 3.5, L + 22, y0 - 3.5, "#b3261e", 1.4, 'stroke-dasharray="6 4"');
+        filas.forEach((l, k) => { g += tx(L + 28, y0 + k * (fx + 3), l, `font-size="${fx}" font-weight="bold" fill="#b3261e"`); });
+        H = y0 + (filas.length - 1) * (fx + 3) + 8;
+      }
     }
     g += valores.join("");
     pts.forEach((p, i) => {
       if (girar) g += `<text transform="translate(${r1(X(i) + 3)} ${B + 11}) rotate(-38)" font-size="${fx}" text-anchor="end" fill="#39404a">${esc(p[0])}</text>`;
       else lineas[i].forEach((l, k) => { g += tx(X(i), B + 14 + k * (fx + 1.5), l, `font-size="${fx}" text-anchor="middle" fill="#39404a"`); });
     });
+    g = `<rect x="0" y="0" width="${W}" height="${r1(H)}" fill="#ffffff"/>` + g;
     const etiqueta = String(d.titulo || "Serie") + (unidad ? " (" + unidad + ")" : "") + ". " + pts.map(p => String(p[0]) + ": " + f(p[1]) + (dinero || !unidad ? "" : " " + unidad)).join("; ") + "." + (lim ? " " + String(lim.etiqueta || "Límite") + " (" + f(lim.valor) + ")." : "");
     return svg(W, r1(H), etiqueta, "doc-svg-serie " + cls, g);
   }
@@ -9081,7 +9135,10 @@ const docR = (function () {
     if (!fig || typeof fig !== "object") return "";
     let r = null;
     try { r = FIGURAS[fig.tipo] ? FIGURAS[fig.tipo](fig.datos || {}) : null; } catch (e) { r = null; }
-    const cuerpo = r ? (r.titulo ? `<p class="doc-fig-t">${esc(r.titulo)}</p>` : "") + r.html + (r.imagen ? `<p class="doc-fig-rotulo">${esc(ROTULO_IMG)}</p>` : "") : `<p class="doc-fig-falta">La figura no se puede mostrar.</p>`;
+    // Las imágenes diagnósticas siempre se rotulan como esquema sintético; si el pie del documento ya lo dice,
+    // no se repite.
+    const rotulo = r && r.imagen && !/esquema sint[ée]tico/i.test(String(fig.pie || ""));
+    const cuerpo = r ? (r.titulo ? `<p class="doc-fig-t">${esc(r.titulo)}</p>` : "") + r.html + (rotulo ? `<p class="doc-fig-rotulo">${esc(ROTULO_IMG)}</p>` : "") : `<p class="doc-fig-falta">La figura no se puede mostrar.</p>`;
     return `<figure class="doc-figura${r && r.imagen ? " doc-fig-imagen" : ""}">${cuerpo}${fig.pie ? `<figcaption>${esc(fig.pie)}</figcaption>` : ""}</figure>`;
   }
 
@@ -9111,13 +9168,16 @@ const docR = (function () {
     // y de la propia firma: nunca del cuerpo, que puede ir tachado. Así el código, que se calcula con este mismo
     // archivo, no deja averiguar por tanteo ningún valor oculto.
     const huella = String(hash([doc.tipo, doc.numero, doc.fecha, doc.version, titulo, em.n, em.area, em.id, em.ciudad].map(x => x == null ? "" : String(x)).join("|"), 3));
-    const bloque = b => {
+    // `rotulo`: el último subtítulo a la vista en la hoja, que da nombre a la región de una tabla (si el subtítulo
+    // está tachado no se usa: su texto no puede viajar en una etiqueta accesible).
+    const bloque = (b, rotulo) => {
       if ("h" in b) return `<h4 class="doc-h">${txt(b.h)}</h4>`;
       if ("p" in b) return `<p class="doc-p">${txt(b.p)}</p>`;
       if ("kv" in b) return `<dl class="doc-kv">${(Array.isArray(b.kv) ? b.kv : []).filter(Array.isArray).map(r => `<div class="doc-kv-f"><dt>${txt(r[0])}</dt><dd>${visible(r[2]) ? txt(r[1]) : tachado}</dd></div>`).join("")}</dl>`;
       if ("tabla" in b) {
         const t = b.tabla || {}, cols = Array.isArray(t.cols) ? t.cols : [], filas = Array.isArray(t.filas) ? t.filas : [];
-        return `<div class="doc-tabla"><table><thead><tr>${cols.map(c => `<th scope="col">${txt(c)}</th>`).join("")}</tr></thead><tbody>${filas.map(f => `<tr>${(Array.isArray(f) ? f : [f]).map(c => `<td>${txt(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${t.nota ? `<p class="doc-tabla-nota">${txt(t.nota)}</p>` : ""}`;
+        const nombre = "Tabla" + (rotulo ? ": " + rotulo : cols.length ? ": " + cols.slice(0, 3).map(c => val(c)).join(", ") + (cols.length > 3 ? "…" : "") : "");
+        return `${cajaTabla("", nombre)}<table><thead><tr>${cols.map(c => `<th scope="col">${txt(c)}</th>`).join("")}</tr></thead><tbody>${filas.map(f => `<tr>${(Array.isArray(f) ? f : [f]).map(c => `<td>${txt(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${t.nota ? `<p class="doc-tabla-nota">${txt(t.nota)}</p>` : ""}`;
       }
       if ("lista" in b) return `<ul class="doc-lista">${(Array.isArray(b.lista) ? b.lista : [b.lista]).map(x => `<li>${txt(x)}</li>`).join("")}</ul>`;
       if ("figura" in b) return figura(b.figura);
@@ -9133,13 +9193,14 @@ const docR = (function () {
     const hoja = (pg, i) => {
       pg = pg || {};
       const bloques = (Array.isArray(pg.bloques) ? pg.bloques : []).filter(b => b && typeof b === "object");
-      let cuerpo = "", firmas = [];
+      let cuerpo = "", firmas = [], rotulo = "";
       const cerrar = () => { if (firmas.length) { cuerpo += `<div class="doc-firmas">${firmas.join("")}</div>`; firmas = []; } };
       bloques.forEach(b => {
         const oculto = typeof b.campo === "number" && !visible(b.campo);
         if ("firma" in b) { firmas.push(oculto ? tachadoB : firma(b.firma)); return; }
         cerrar();
-        cuerpo += oculto ? tachadoB : bloque(b);
+        if ("h" in b) rotulo = oculto ? "" : val(b.h);
+        cuerpo += oculto ? tachadoB : bloque(b, rotulo);
       });
       cerrar();
       const sub = pg.titulo && titulo.toLowerCase().indexOf(String(pg.titulo).toLowerCase()) < 0 ? `<p class="doc-subtitulo">${txt(pg.titulo)}</p>` : "";
@@ -9801,7 +9862,8 @@ function docOpcRuta(r) {
   if (propia) return { aviso:"Es evidencia que custodia su entidad: la ve completa." };
   const x = expedienteHoy(casoActual(), perfilActual(), r.paso).filter(y => y.k === r.k)[0];
   const ok = {}; ((x && x.campos) || []).forEach(c => { if (c.v) ok[c.i] = true; });
-  return { visible:i => !!ok[i], motivo:"No llegó a su entidad", aviso:"Lo tachado no llegó a su entidad en este punto del caso." };
+  const algoTachado = (EV[r.k] ? EV[r.k].campos : []).some((c, i) => !ok[i]);
+  return { visible:i => !!ok[i], motivo:"No llegó a su entidad", aviso:algoTachado ? "Lo tachado no llegó a su entidad en este punto del caso." : "" };
 }
 function docVisorHtml() {
   const r = S.docVer, doc = docDe(r); if (!doc) return "";

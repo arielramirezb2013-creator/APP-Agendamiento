@@ -91,7 +91,8 @@ function docOpcRuta(r) {
   if (propia) return { aviso:"Es evidencia que custodia su entidad: la ve completa." };
   const x = expedienteHoy(casoActual(), perfilActual(), r.paso).filter(y => y.k === r.k)[0];
   const ok = {}; ((x && x.campos) || []).forEach(c => { if (c.v) ok[c.i] = true; });
-  return { visible:i => !!ok[i], motivo:"No llegó a su entidad", aviso:"Lo tachado no llegó a su entidad en este punto del caso." };
+  const algoTachado = (EV[r.k] ? EV[r.k].campos : []).some((c, i) => !ok[i]);
+  return { visible:i => !!ok[i], motivo:"No llegó a su entidad", aviso:algoTachado ? "Lo tachado no llegó a su entidad en este punto del caso." : "" };
 }
 function docVisorHtml() {
   const r = S.docVer, doc = docDe(r); if (!doc) return "";
