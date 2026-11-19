@@ -1,8 +1,14 @@
-/* ============ Documentos sintéticos · expediente «Montacarguista con firmeza sin verificar» ============
+/* ============ Documentos sintéticos · expediente «Montacarguista con dictamen aún sin firmeza» ============
    Mateo Roldán Vega, operador de montacargas reubicado a inventario. Trastorno de disco cervical con
    mielopatía C5–C6 (M50.0), origen laboral confirmado por la Junta Nacional (ORI-L01, 31/03/2025), PCL de
-   56,80 % con estructuración el 10/12/2025 (DIC-L01, 18/03/2026), firmeza del 08/04/2026 (FIR-L01),
-   solicitud radicada el 21/04/2026 (RAD-L01).
+   56,80 % con estructuración el 10/12/2025 (DIC-L01, 18/03/2026), notificado el 19/03/2026. El 31/03/2026
+   Mateo manifestó inconformidad solo con la fecha de estructuración (pide el 22/05/2024, día de la cirugía);
+   ARL SURA, que mantiene el 10/12/2025, remitió el expediente a la Junta Regional de Antioquia el 07/04/2026
+   (radicado SIM-JRCIA-2026-00894), sin decisión. La constancia FIR-L01 del 08/04/2026 certifica que DIC-L01
+   no está en firme. Solicitud radicada el 21/04/2026 (RAD-L01).
+   Términos en días hábiles, sin sábados, domingos ni festivos (23/03/2026, San José trasladado; 02/04 y
+   03/04/2026, jueves y viernes santos): la inconformidad corrió del 20/03 al 07/04/2026; la del 31/03 es del
+   séptimo día; la remisión del 07/04 cae en el tercero de los 5 días siguientes.
    Aritmética del dictamen (Decreto 1507 de 2014): deficiencias 25, 20, 10 y 10 combinadas = 51,40 %;
    ponderadas al 50 % = 25,70; rol laboral 23,00 + otras áreas ocupacionales 8,10 = 31,10; PCL = 56,80 %.
    IBC: oct.–dic. de 2023 a $3.280.000 y ene.–sep. de 2024 a $3.460.000; suma $40.980.000; promedio $3.415.000.
@@ -25,6 +31,10 @@ DOCS.exp["PI-L01"] = {
     dictamenJuntaRegional: "SIM-JRCIA-2025-01173",
     radicadoJuntaNacional: "SIM-JNCI-2025-02417",
     actaNotificacion: "SIM-NOT-2026-03311",
+    radicadoInconformidad: "SIM-ARL-INC-2026-01942",
+    comprobanteHonorarios: "SIM-HON-2026-0377",
+    oficioRemision: "SIM-ARL-ML-OF-2026-0611",
+    radicadoJuntaRegional: "SIM-JRCIA-2026-00894",
     informeVibracion: "SIM-HI-2023-0877",
     analisisPuesto: "SIM-SST-APT-2024-031",
     resumenClinico: "SIM-IPS-RC-2026-0047",
@@ -76,12 +86,13 @@ DOCS.exp["PI-L01"] = {
               "Me diagnosticaron un trastorno de disco cervical con mielopatía (M50.0). El 22/05/2024 me operaron de la columna cervical y después hice 24 sesiones de rehabilitación.",
               "Desde el 01/02/2024 trabajo como auxiliar de inventario en la misma empresa, con restricciones médicas. No puedo conducir.",
               "La Junta Nacional de Calificación de Invalidez confirmó el 31/03/2025 que la enfermedad es de origen laboral (dictamen ORI-L01).",
-              "ARL SURA me calificó una pérdida de capacidad laboral del 56,80 %, de origen laboral, con fecha de estructuración del 10/12/2025 (dictamen DIC-L01 del 18/03/2026). Me lo notificaron el 19/03/2026 y no presenté inconformidad.",
+              "ARL SURA me calificó una pérdida de capacidad laboral del 56,80 %, de origen laboral, con fecha de estructuración del 10/12/2025 (dictamen DIC-L01 del 18/03/2026). Me lo notificaron el 19/03/2026.",
+              "El 31/03/2026 presenté ante ARL SURA inconformidad solo con la fecha de estructuración, porque considero que debe ser la de mi cirugía, el 22/05/2024. No discuto el porcentaje ni el origen. Cuando pregunté en la oficina de atención, me informaron que ARL SURA envió el expediente a la Junta Regional de Calificación de Invalidez de Antioquia el 07/04/2026. La Junta todavía no me ha citado ni ha decidido.",
               "Estoy afiliado a ARL SURA por mi empleador desde el 01/02/2013."
             ] },
             { h: "Petición" },
-            { p: "Solicito que ARL SURA reconozca y pague la pensión de invalidez de origen laboral, de acuerdo con los artículos 9 y 10 de la Ley 776 de 2002, desde la fecha que corresponda según el dictamen." },
-            { p: "Pido también que me informen a quién le corresponde el siguiente paso del trámite y si falta algún documento. No tengo la constancia de firmeza del dictamen: ARL SURA no me la ha entregado." },
+            { p: "Solicito que ARL SURA reconozca y pague la pensión de invalidez de origen laboral, de acuerdo con los artículos 9 y 10 de la Ley 776 de 2002, desde la fecha de estructuración que quede en firme." },
+            { p: "Pido también que me informen a quién le corresponde el siguiente paso del trámite, si falta algún documento y si mi inconformidad con la fecha de estructuración detiene el reconocimiento de la pensión, ya que la pérdida es de más del 50 % y ese porcentaje no lo estoy discutiendo. No tengo ningún documento sobre el estado del dictamen ni sobre su envío a la Junta." },
             { h: "Documentos que adjunto" },
             { tabla: {
               cols: ["N.º", "Documento", "Folios"],
@@ -459,11 +470,11 @@ DOCS.exp["PI-L01"] = {
       }
     },
 
-    /* ---------------------------------------------------------------- Constancia de firmeza */
+    /* ---------------------------------------------------------------- Constancia del estado de firmeza */
     FIR: {
       v1: {
         tipo: "constancia",
-        titulo: "Constancia de firmeza del dictamen de pérdida de capacidad laboral",
+        titulo: "Constancia del estado de firmeza del dictamen de pérdida de capacidad laboral",
         emisor: { n: "ARL SURA", area: "Medicina laboral", ciudad: "Medellín", id: "NIT SIM-800.256.433-1" },
         numero: "FIR-L01",
         fecha: "08/04/2026",
@@ -474,34 +485,58 @@ DOCS.exp["PI-L01"] = {
             { kv: [
               ["Constancia", "FIR-L01"],
               ["Fecha", "08/04/2026"],
-              ["Dictamen al que se refiere", "DIC-L01, versión v1, del 18/03/2026"],
+              ["Dictamen al que se refiere", "DIC-L01, versión v1, del 18/03/2026 · calificación en primera oportunidad"],
               ["Código de verificación del dictamen", "SIM-VER-7F3A-21C9"],
               ["Persona calificada", "Mateo Roldán Vega · C.C. SIM-71.384.226"],
+              ["Diagnóstico", "M50.0 · Trastorno de disco cervical con mielopatía"],
               ["Pérdida de capacidad laboral", "56,80 %"],
-              ["Origen", "Laboral"],
-              ["Fecha de estructuración", "10/12/2025"],
-              ["Diagnóstico", "M50.0 · Trastorno de disco cervical con mielopatía"]
+              ["Origen", "Laboral, definido por la Junta Nacional en el dictamen ORI-L01 del 31/03/2025"],
+              ["Fecha de estructuración", "10/12/2025 · controvertida por la persona calificada"],
+              ["Estado del dictamen", "No está en firme. Inconformidad de la persona calificada en trámite ante la Junta Regional de Calificación de Invalidez de Antioquia"]
             ] },
             { h: "Notificaciones y términos" },
             { tabla: {
-              cols: ["Interesado", "Medio", "Fecha de notificación", "Término", "Vencimiento", "Inconformidad"],
+              cols: ["Interesado", "Medio", "Notificación o comunicación", "Término", "Vencimiento", "Inconformidad"],
               filas: [
-                ["Mateo Roldán Vega, persona calificada", "Notificación personal, acta SIM-NOT-2026-03311", "19/03/2026", "10 días hábiles", "07/04/2026", "No presentó"],
+                ["Mateo Roldán Vega, persona calificada", "Notificación personal, acta SIM-NOT-2026-03311 (anexo 1)", "19/03/2026", "10 días hábiles", "07/04/2026", "Sí: 31/03/2026, sobre la fecha de estructuración"],
                 ["Depósitos Andén Umbral, empleador", "Comunicación electrónica con acuse de recibo", "19/03/2026", "10 días hábiles", "07/04/2026", "No presentó"],
                 ["EPS SURA", "Comunicación electrónica con acuse de recibo", "19/03/2026", "10 días hábiles", "07/04/2026", "No presentó"],
                 ["Cordillera Pensiones y Cesantías", "Comunicación electrónica con acuse de recibo", "19/03/2026", "10 días hábiles", "07/04/2026", "No presentó"]
               ],
-              nota: "El término corrió del 20/03/2026 al 07/04/2026. No se cuentan el festivo del 23/03/2026 ni el jueves y el viernes santos (02/04/2026 y 03/04/2026)."
+              nota: "Los términos se cuentan en días hábiles, sin sábados, domingos ni festivos. El de inconformidad corrió del 20/03/2026 al 07/04/2026: no se cuentan el festivo de San José, trasladado al lunes 23/03/2026, ni el jueves y el viernes santos (02/04/2026 y 03/04/2026)."
             } },
+            { h: "Inconformidad" },
+            { kv: [
+              ["Presentada por", "Mateo Roldán Vega, persona calificada"],
+              ["Fecha y radicado", "31/03/2026 · SIM-ARL-INC-2026-01942, escrito presentado en la oficina de atención de ARL SURA en Medellín (anexo 2)"],
+              ["Oportunidad", "Dentro del término: séptimo de los 10 días hábiles"],
+              ["Aspecto que controvierte", "La fecha de estructuración del 10/12/2025"],
+              ["Lo que pide", "Que la fecha de estructuración sea el 22/05/2024, día de la cirugía cervical (discectomía y artrodesis C5–C6)"],
+              ["Lo que no controvierte", "El porcentaje de pérdida de capacidad laboral (56,80 %) ni el origen laboral, que definió la Junta Nacional en el dictamen ORI-L01 del 31/03/2025"]
+            ] },
+            { h: "Remisión a la Junta Regional" },
+            { kv: [
+              ["Junta", "Junta Regional de Calificación de Invalidez de Antioquia"],
+              ["Pago anticipado de honorarios", "ARL SURA, 06/04/2026 · comprobante SIM-HON-2026-0377"],
+              ["Remisión del expediente", "07/04/2026 · oficio SIM-ARL-ML-OF-2026-0611 (anexo 3), tercer día hábil de los 5 siguientes a la inconformidad"],
+              ["Radicado en la Junta", "SIM-JRCIA-2026-00894 del 07/04/2026"],
+              ["Estado del trámite en la Junta", "Expediente recibido. Sin dictamen a la fecha de esta constancia"]
+            ] },
             { h: "Constancia" },
-            { p: "ARL SURA, medicina laboral, hace constar que el dictamen DIC-L01, versión v1, emitido el 18/03/2026, fue notificado a todos los interesados el 19/03/2026 y que dentro de los 10 días hábiles siguientes ninguno manifestó inconformidad. En consecuencia, el dictamen quedó en firme el 08/04/2026, con una pérdida de capacidad laboral del 56,80 %, de origen laboral y con fecha de estructuración del 10/12/2025." },
-            { p: "Esta constancia corresponde únicamente a la versión v1 del dictamen DIC-L01, identificada con el código de verificación SIM-VER-7F3A-21C9. Cualquier otra versión o copia con un código distinto no está cubierta por ella." },
+            { p: "ARL SURA, medicina laboral, hace constar que el dictamen DIC-L01, versión v1, emitido el 18/03/2026, no se encuentra en firme. El dictamen fue notificado a la persona calificada y comunicado a los demás interesados el 19/03/2026. Dentro del término de 10 días hábiles, el 31/03/2026, la persona calificada manifestó inconformidad con la fecha de estructuración, y ARL SURA remitió el expediente a la Junta Regional de Calificación de Invalidez de Antioquia el 07/04/2026. Los demás interesados no manifestaron inconformidad." },
+            { p: "La controversia la decide la Junta Regional. ARL SURA no modificó el dictamen y mantiene la fecha de estructuración del 10/12/2025 por las razones que expuso en el oficio de remisión (anexo 3). El dictamen de la Junta Regional se notificará a los interesados, que podrán interponer contra él los recursos de reposición y de apelación dentro de los 10 días hábiles siguientes; la apelación la resuelve la Junta Nacional de Calificación de Invalidez. La pérdida de capacidad laboral y la fecha de estructuración que rijan serán las del dictamen que quede en firme al terminar ese trámite." },
+            { p: "Esta constancia se refiere únicamente a la versión v1 del dictamen DIC-L01, identificada con el código de verificación SIM-VER-7F3A-21C9, y certifica su estado a la fecha de expedición. ARL SURA expedirá una nueva constancia cuando la Junta Regional notifique su dictamen o cuando la calificación quede en firme." },
             { h: "Fundamento" },
-            { p: "Ley 100 de 1993, art. 41, modificado por el Decreto Ley 019 de 2012, art. 142: término de 10 días para manifestar inconformidad con la calificación en primera oportunidad; vencido sin inconformidad, el dictamen queda en firme." },
-            { p: "Se expide para el expediente de calificación y para los trámites de prestaciones económicas que se deriven del dictamen." },
+            { lista: [
+              "Ley 100 de 1993, art. 41, modificado por el Decreto Ley 019 de 2012, art. 142: contra la calificación en primera oportunidad cabe manifestar inconformidad dentro de los 10 días siguientes a su notificación; la entidad remite el expediente a la Junta Regional dentro de los 5 días siguientes, y la decisión de la Junta Regional es apelable ante la Junta Nacional.",
+              "Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015 (Libro 2, Parte 2, Título 5, Capítulo 1): trámite ante las juntas de calificación de invalidez, expediente que se remite, notificación de sus dictámenes, recursos y firmeza.",
+              "Ley 1562 de 2012, art. 17: la administradora de riesgos laborales paga de manera anticipada los honorarios de la junta cuando la calificación del origen en primera oportunidad fue laboral.",
+              "Ley 4 de 1913, art. 62: en los plazos de días que señalan la ley y los actos oficiales no se cuentan los feriados. Ley 51 de 1983: traslado del festivo de San José al lunes siguiente."
+            ] },
+            { p: "Se expide el 08/04/2026, primer día hábil siguiente al vencimiento del término de inconformidad, para el expediente de calificación y para los trámites de prestaciones económicas que dependan del dictamen." },
             { firma: { nombre: "Paula Andrea Cárdenas Villegas", cargo: "Coordinadora de medicina laboral, ARL SURA", registro: "Registro médico SIM-05-198342", fecha: "08/04/2026" } }
           ] },
-          { titulo: "Anexo · Acta de notificación personal", bloques: [
+          { titulo: "Anexo 1 · Acta de notificación personal", bloques: [
             { kv: [
               ["Acta", "SIM-NOT-2026-03311"],
               ["Fecha y hora", "19/03/2026, 09:15"],
@@ -512,6 +547,74 @@ DOCS.exp["PI-L01"] = {
             { p: "Se entregó a la persona calificada copia íntegra del dictamen y se le informó que puede manifestar su inconformidad ante ARL SURA dentro de los 10 días hábiles siguientes a esta notificación, para que el expediente se remita a la Junta Regional de Calificación de Invalidez de Antioquia." },
             { firma: { nombre: "Mateo Roldán Vega", cargo: "Persona notificada", registro: "C.C. SIM-71.384.226", fecha: "19/03/2026" } },
             { firma: { nombre: "Yesenia Marcela Toro Giraldo", cargo: "Gestora de notificaciones, ARL SURA", registro: "", fecha: "19/03/2026" } }
+          ] },
+          { titulo: "Anexo 2 · Escrito de inconformidad (31/03/2026)", bloques: [
+            { kv: [
+              ["Radicado", "SIM-ARL-INC-2026-01942"],
+              ["Fecha y hora", "31/03/2026, 11:05"],
+              ["Canal", "Escrito presentado en la oficina de atención de ARL SURA en Medellín"],
+              ["Presentado por", "Mateo Roldán Vega · C.C. SIM-71.384.226, persona calificada"],
+              ["Dictamen", "DIC-L01 del 18/03/2026, notificado el 19/03/2026"],
+              ["Folios", "2"]
+            ] },
+            { h: "Texto del escrito" },
+            { p: "Yo, Mateo Roldán Vega, manifiesto que no estoy de acuerdo con la fecha de estructuración del 10/12/2025 que fijó el dictamen DIC-L01. Estoy de acuerdo con el porcentaje de 56,80 % y con el origen laboral. Mis razones son estas:" },
+            { lista: [
+              "Desde la cirugía del 22/05/2024 quedé con las limitaciones que tengo hoy. Con la rehabilitación mejoré un poco, pero sigo caminando con dificultad, no tengo fuerza ni habilidad en las manos y no he vuelto a conducir.",
+              "El mismo dictamen dice que las mediciones de octubre de 2024 ya eran parecidas a las de diciembre de 2025, y la IPS escribió que mi función está estable desde octubre de 2024.",
+              "La resonancia del 14/03/2024, antes de la cirugía, ya mostraba la lesión en la médula.",
+              "Desde el 01/02/2024 no trabajo en mi oficio de montacarguista, porque la empresa me reubicó por las recomendaciones médicas. Seguí trabajando en inventario, pero el Decreto 1507 de 2014 dice que la fecha de estructuración puede ser anterior a la calificación y que no depende de que la persona siga trabajando y cotizando."
+            ] },
+            { p: "Pido que la fecha de estructuración sea el 22/05/2024, día de mi cirugía, y que el expediente se envíe a la Junta Regional de Calificación de Invalidez de Antioquia para que decida." },
+            { firma: { nombre: "Mateo Roldán Vega", cargo: "Persona calificada", registro: "C.C. SIM-71.384.226", fecha: "31/03/2026" } },
+            { nota: "Recibido en la oficina de atención el 31/03/2026, dentro del término de inconformidad, y trasladado el mismo día a medicina laboral." }
+          ] },
+          { titulo: "Anexo 3 · Oficio de remisión a la Junta Regional (07/04/2026)", bloques: [
+            { kv: [
+              ["Oficio", "SIM-ARL-ML-OF-2026-0611"],
+              ["Fecha", "07/04/2026"],
+              ["Destinataria", "Junta Regional de Calificación de Invalidez de Antioquia"],
+              ["Asunto", "Remisión del expediente de calificación por inconformidad con el dictamen DIC-L01"],
+              ["Persona calificada", "Mateo Roldán Vega · C.C. SIM-71.384.226"],
+              ["Quién manifiesta la inconformidad", "La persona calificada, el 31/03/2026 (radicado SIM-ARL-INC-2026-01942)"],
+              ["Aspecto controvertido", "Fecha de estructuración: el dictamen fija el 10/12/2025; la persona calificada pide el 22/05/2024"],
+              ["Honorarios", "Pagados de manera anticipada por ARL SURA el 06/04/2026 · comprobante SIM-HON-2026-0377"]
+            ] },
+            { h: "Posición de ARL SURA sobre la fecha de estructuración" },
+            { p: "ARL SURA no modifica el dictamen y mantiene la fecha del 10/12/2025, por estas razones:" },
+            { lista: [
+              "El Decreto 1507 de 2014 (art. 3) define la fecha de estructuración como aquella en que la persona pierde el grado de capacidad laboral calificado —para el estado de invalidez, cuando alcanza el 50 %—, determinada por la evolución de las secuelas y soportada en la historia clínica. Puede ser anterior a la calificación, pero debe corresponder a secuelas ya establecidas.",
+              "El 22/05/2024 es la fecha de la descompresión quirúrgica: el comienzo del tratamiento que buscaba recuperar la función, no el momento en que quedaron establecidas las secuelas. Siguieron 60 días de incapacidad y 24 sesiones de rehabilitación.",
+              "Después de la cirugía la función mejoró: la escala mJOA pasó de 11 sobre 18 antes de la cirugía (02/04/2024) a 12 al ingresar a rehabilitación (18/07/2024) y a 13 al terminarla (10/10/2024). En la fecha de la cirugía, las deficiencias no eran las que se calificaron.",
+              "La señal intramedular de la resonancia del 14/03/2024, sin alteración en T1, correspondía a mielopatía compresiva, que puede mejorar con la descompresión. La lesión permanente, mielomalacia con hipointensidad en T1, se documentó en la resonancia de control del 18/11/2025.",
+              "Aunque la función estaba estable desde octubre de 2024, entonces no podía establecerse que las secuelas fueran permanentes: la recuperación neurológica después de la descompresión medular puede continuar durante uno a dos años, y el 21/01/2025 la artrodesis seguía en consolidación. Esa estabilidad, además, no apoyaría la fecha de la cirugía, sino una posterior a la rehabilitación.",
+              "La reubicación del 01/02/2024 obedeció a las recomendaciones médicas del 25/01/2024, dadas mientras se estudiaba y se trataba la enfermedad. Las restricciones se declararon permanentes en la valoración por fisiatría del 10/12/2025, que establece la mejoría médica máxima.",
+              "La fecha no se fijó en razón de que el calificado siguiera trabajando o cotizando, sino de la evolución clínica descrita."
+            ] },
+            { h: "Documentos remitidos" },
+            { tabla: {
+              cols: ["N.º", "Documento", "Folios"],
+              filas: [
+                ["1", "Escrito de inconformidad del 31/03/2026", "2"],
+                ["2", "Dictamen DIC-L01, versión v1, del 18/03/2026, con sus anexos", "5"],
+                ["3", "Acta de notificación SIM-NOT-2026-03311 y constancias de comunicación a los demás interesados", "4"],
+                ["4", "Dictamen de origen ORI-L01 de la Junta Nacional, del 31/03/2025", "3"],
+                ["5", "Resumen de historia clínica SIM-IPS-RC-2026-0047 de la IPS Eje Raquídeo Aburrá, con sus anexos: estudios, descripción quirúrgica, incapacidades, informe de rehabilitación y valoración por fisiatría de mejoría médica máxima", "8"],
+                ["6", "Análisis de puesto de trabajo SIM-SST-APT-2024-031, con el informe de vibración SIM-HI-2023-0877", "3"],
+                ["7", "Copia de la cédula de ciudadanía de la persona calificada", "1"],
+                ["8", "Comprobante de pago de honorarios SIM-HON-2026-0377", "1"]
+              ],
+              nota: "Con este oficio (2 folios), el expediente remitido suma 29 folios."
+            } },
+            { firma: { nombre: "Paula Andrea Cárdenas Villegas", cargo: "Coordinadora de medicina laboral, ARL SURA", registro: "Registro médico SIM-05-198342", fecha: "07/04/2026" } },
+            { h: "Recibo de la Junta Regional" },
+            { kv: [
+              ["Radicado", "SIM-JRCIA-2026-00894"],
+              ["Fecha y hora", "07/04/2026, 15:20"],
+              ["Canal", "Radicación electrónica del expediente"],
+              ["Folios recibidos", "29"]
+            ] },
+            { nota: "Recibo expedido por la ventanilla de radicación de la Junta Regional de Calificación de Invalidez de Antioquia. La radicación no implica reparto ni decisión." }
           ] }
         ]
       }
@@ -526,7 +629,7 @@ DOCS.exp["PI-L01"] = {
         numero: "SIM-CAF-2026-04187",
         fecha: "21/04/2026",
         version: "v2",
-        estadoNota: "Segunda versión del certificado: reemplaza la expedida el 04/06/2024 para la calificación del origen y certifica la vigencia en las fechas del dictamen y de la radicación.",
+        estadoNota: "Segunda versión del certificado: reemplaza la expedida el 04/06/2024 para la calificación del origen y certifica la vigencia a la fecha de estructuración y a la de radicación.",
         paginas: [
           { titulo: "Certificado", bloques: [
             { p: "ARL SURA certifica que la persona identificada a continuación está afiliada al Sistema General de Riesgos Laborales por medio de esta administradora, con los siguientes datos:" },
@@ -557,12 +660,11 @@ DOCS.exp["PI-L01"] = {
               filas: [
                 ["01/10/2024", "Calificación del origen en primera oportunidad", "Vigente"],
                 ["31/03/2025", "Dictamen de origen de la Junta Nacional ORI-L01", "Vigente"],
-                ["10/12/2025", "Fecha de estructuración", "Vigente"],
+                ["10/12/2025", "Fecha de estructuración consignada en el dictamen DIC-L01", "Vigente"],
                 ["18/03/2026", "Dictamen de pérdida de capacidad laboral DIC-L01", "Vigente"],
-                ["08/04/2026", "Firmeza del dictamen DIC-L01 registrada por medicina laboral", "Vigente"],
                 ["21/04/2026", "Radicación de la solicitud RAD-L01", "Vigente"]
               ],
-              nota: ""
+              nota: "La cobertura de ARL SURA es continua desde el 01/02/2013: cualquier fecha comprendida entre el 01/02/2013 y el 21/04/2026 está cubierta por esta administradora."
             } },
             { nota: "Antes del 01/02/2013 la persona estuvo afiliada a otras administradoras de riesgos laborales por medio de empleadores anteriores. ARL SURA no certifica esos períodos." },
             { p: "Se expide a solicitud de prestaciones económicas de ARL SURA para el trámite de la solicitud RAD-L01. Este certificado no contiene información clínica." },
