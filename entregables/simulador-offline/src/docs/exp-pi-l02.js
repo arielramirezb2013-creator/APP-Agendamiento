@@ -62,7 +62,7 @@ DOCS.exp["PI-L02"] = {
             { h: "Hechos" },
             { lista: [
               "Trabajé más de 28 años en minería de carbón y en perforación y trituración de piedra: 11 años en Minería Socavón de Bruma (Sardinata), 10 años en Cantera Delta de Arcilla (El Zulia) y, desde el 01/03/2018, en Agregados Ladera Bruma S.A.S. (El Zulia).",
-              "Desde febrero de 2024 me falta el aire al subir pendientes y escaleras. En julio de 2024 neumología me diagnosticó neumoconiosis por polvo con sílice y ordenó retirarme de la exposición al polvo.",
+              "En febrero de 2024 consulté porque me faltaba el aire al subir pendientes y escaleras. En julio de 2024 neumología me diagnosticó neumoconiosis por polvo con sílice y ordenó retirarme de la exposición al polvo.",
               "Desde el 01/07/2025 trabajo en la portería del predio, separada de la planta de trituración.",
               "ARL SURA me calificó el 02/09/2025 con 40,80 % de pérdida de capacidad laboral de origen laboral. No estuve de acuerdo y presenté inconformidad el 05/09/2025.",
               "La Junta Regional de Calificación de Invalidez de Norte de Santander me calificó el 19/11/2025 con 51,40 % de origen laboral. Anexo la copia auténtica de ese dictamen.",
@@ -143,7 +143,7 @@ DOCS.exp["PI-L02"] = {
               ["Instancia", "Junta Regional · controversia de la calificación en primera oportunidad"],
               ["Motivo", "Inconformidad de la persona calificada, del 05/09/2025, contra el dictamen SIM-ARL-CPO-2025-11853 de ARL SURA, del 02/09/2025"],
               ["Entidad que remite", "ARL SURA · Medicina laboral"],
-              ["Fecha de radicación en la Junta", "15/09/2025"],
+              ["Fecha de radicación en la Junta", "11/09/2025"],
               ["Valoración presencial", "28/10/2025, Cúcuta"]
             ] },
             { h: "Datos de la persona calificada" },
@@ -191,11 +191,11 @@ DOCS.exp["PI-L02"] = {
             { h: "Valoración presencial del 28/10/2025" },
             { kv: [
               ["Síntomas", "Disnea al caminar en pendiente y al subir dos pisos, con pausas; refiere detenerse tras caminar unos 100 m a paso rápido. Tos seca ocasional"],
-              ["Signos vitales", "PA 128/80 mmHg · FC 78 lpm · FR 18 rpm · SpO2 94 % al aire ambiente"],
+              ["Signos vitales", "PA 128/80 mmHg · FC 78 lpm · FR 18 rpm · SpO2 95 % al aire ambiente"],
               ["Antropometría", "Peso 74 kg · talla 168 cm · IMC 26,2"],
               ["Tórax", "Murmullo vesicular conservado, sin ruidos agregados. Sin acropaquias, sin edemas, sin ingurgitación yugular"],
               ["Marcha en el pasillo", "Desaturación a 89 % tras 3 minutos de marcha, con disnea"],
-              ["Funcionalidad referida", "Independiente para el autocuidado, con pausas. Refiere apoyo de su esposa en tareas domésticas pesadas y desplazamientos largos"]
+              ["Funcionalidad referida", "Refiere que se baña y se viste con pausas y que su esposa le ayuda a calzarse y lo acompaña a los controles. No realiza tareas domésticas pesadas ni desplazamientos largos"]
             ] }
           ] },
           { titulo: "Calificación · Título I · Deficiencias", bloques: [
@@ -234,7 +234,7 @@ DOCS.exp["PI-L02"] = {
               ["Aprendizaje y aplicación del conocimiento", "Dificultad leve para sostener la atención en tareas prolongadas por fatiga", "0,50 %"],
               ["Comunicación", "Interrumpe conversaciones largas al caminar", "0,60 %"],
               ["Movilidad", "Dificultad severa para caminar distancias largas, subir escaleras, cargar objetos y andar por terreno irregular", "3,80 %"],
-              ["Autocuidado", "Requiere pausas para bañarse y vestirse; dificultad para acudir solo a controles", "3,20 %"],
+              ["Autocuidado", "Requiere pausas y ayuda de su esposa para bañarse, vestirse y calzarse; no acude solo a controles", "3,20 %"],
               ["Vida doméstica", "No realiza tareas domésticas pesadas, compras con carga ni mantenimiento de la vivienda", "3,80 %"],
               ["Total otras áreas ocupacionales", "Suma de las cinco áreas", "11,90 %"]
             ] } },
@@ -340,17 +340,17 @@ DOCS.exp["PI-L02"] = {
             ] },
             { p: "La persona calificada no interpuso recurso. El empleador no se pronunció." },
             { h: "Pruebas solicitadas por la Sala" },
-            { p: "El 20/01/2026 la Sala pidió a la IPS Laboratorio Pulmonar Vientoalto el informe de función pulmonar del 09/07/2025 con su anexo firmado de DLCO y las notas de rehabilitación respiratoria. La IPS los allegó el 03/02/2026 y se incorporaron al expediente." }
+            { p: "El 20/01/2026 la Sala pidió a la IPS Laboratorio Pulmonar Vientoalto el informe de función pulmonar del 09/07/2025 con su anexo firmado de DLCO. La IPS lo allegó con sus anexos el 03/02/2026 y se incorporó al expediente." }
           ] },
           { titulo: "Consideraciones de la Sala", bloques: [
             { h: "Diagnóstico y origen" },
             { p: "La tomografía de alta resolución del 19/07/2024 y la radiografía del 09/07/2025, con lectura de profusión 2/1 y opacidades pequeñas redondeadas en zonas superiores y medias según la clasificación de la OIT, confirman la neumoconiosis debida a otros polvos que contienen sílice (J62.8). Hay exposición a polvo con sílice cristalina en perforación de roca y trituración durante más de 28 años y una muestra personal de 8 h, del 17/05/2023, de 0,07 mg/m³, por encima del valor límite de referencia de 0,025 mg/m³. La enfermedad figura en la tabla del Decreto 1477 de 2014. Se confirma el origen laboral, que no fue objeto del recurso." },
             { h: "Deficiencia" },
             { p: "El informe firmado del 09/07/2025 registra CVF del 72 % y DLCO del 65 % del predicho, con calidad grado A en ambas pruebas; ambos parámetros corresponden a la clase 1. La prueba de ejercicio cardiopulmonar del 30/05/2025 registra un consumo pico de 16,8 mL/kg/min, que corresponde a la clase 3 y es la prueba objetiva más comprometida: la clase 3 se mantiene." },
-            { p: "La Sala acoge el recurso en cuanto al examen físico: no hay hipoxemia en reposo (SpO2 94 % al aire ambiente) ni signos de hipertensión pulmonar o de insuficiencia cardiaca derecha, y la desaturación al esfuerzo ya está incorporada en el factor principal; contarla de nuevo como modificador duplica el hallazgo. El modificador del examen físico corresponde a la clase 2. Se mantiene el modificador de la historia clínica en clase 3. El ajuste neto es de −1 y la deficiencia queda en el grado B (28,00 %)." },
+            { p: "La Sala acoge el recurso en cuanto al examen físico: no hay hipoxemia en reposo (SpO2 95 % al aire ambiente) ni signos de hipertensión pulmonar o de insuficiencia cardiaca derecha, y la desaturación al esfuerzo ya está incorporada en el factor principal; contarla de nuevo como modificador duplica el hallazgo. El modificador del examen físico corresponde a la clase 2. Se mantiene el modificador de la historia clínica en clase 3. El ajuste neto es de −1 y la deficiencia queda en el grado B (28,00 %)." },
             { h: "Rol laboral y otras áreas ocupacionales" },
             { p: "Se confirman las restricciones del rol laboral (20,00 %), la autosuficiencia económica (1,50 %) y la edad (2,00 %): no puede volver a su oficio y conserva el empleo por la reubicación en portería." },
-            { p: "Las notas de rehabilitación de julio y agosto de 2025 registran independencia para bañarse y vestirse, marcha en plano a su propio paso, uso de transporte público para acudir a las sesiones y conversación sin interrupciones en reposo. La Sala ajusta las otras áreas ocupacionales a 6,80 %: conserva las dificultades de movilidad en pendientes, escaleras y cargas y las de vida doméstica en tareas pesadas, y retira las de aprendizaje y aplicación del conocimiento, que no tienen soporte clínico." },
+            { p: "Las notas de rehabilitación de julio y agosto de 2025 registran independencia para bañarse y vestirse, marcha en plano a su propio paso, uso de transporte público para acudir a las sesiones y conversación sin interrupciones en reposo. La Sala ajusta las otras áreas ocupacionales a 6,80 %: conserva, con menor severidad, las dificultades de movilidad en pendientes, escaleras y cargas y las de vida doméstica en tareas pesadas; reduce las de comunicación y autocuidado, y retira las de aprendizaje y aplicación del conocimiento, que no tienen soporte clínico." },
             { h: "Fecha de estructuración" },
             { p: "Se mantiene el 30/05/2025: la prueba de ejercicio cardiopulmonar de esa fecha documenta la limitación que determina la clase de la deficiencia, y los estudios posteriores no muestran un cambio que justifique otra fecha." }
           ] },
@@ -365,13 +365,13 @@ DOCS.exp["PI-L02"] = {
               ["CVF (espirometría)", "09/07/2025", "2,95 L · 72 % del predicho", "1"],
               ["VEF1 (espirometría)", "09/07/2025", "2,30 L · 71 % del predicho", "1"],
               ["Relación VEF1/CVF", "09/07/2025", "0,78 · conservada", "0"],
-              ["DLCO (anexo firmado)", "09/07/2025", "16,8 mL/min/mmHg · 65 % del predicho", "1"],
+              ["DLCO (anexo firmado)", "09/07/2025", "17,3 mL/min/mmHg · 65 % del predicho", "1"],
               ["Consumo pico de oxígeno", "30/05/2025", "16,8 mL/kg/min · 60 % del predicho", "3"]
             ], nota: "La clase se asigna con la prueba objetiva más comprometida: clase 3." } },
             { h: "Factores moduladores" },
             { tabla: { cols: ["Factor", "Hallazgo", "Clase"], filas: [
               ["Historia clínica y funcional", "Disnea que obliga a detenerse al caminar en pendiente y al subir escaleras, documentada por neumología y rehabilitación", "3"],
-              ["Examen físico", "SpO2 94 % en reposo; sin acropaquias, sin signos de hipertensión pulmonar ni de insuficiencia cardiaca derecha", "2"]
+              ["Examen físico", "SpO2 95 % en reposo; sin acropaquias, sin signos de hipertensión pulmonar ni de insuficiencia cardiaca derecha", "2"]
             ], nota: "Ajuste neto: (3 − 3) + (2 − 3) = −1. Grado B de la clase 3." } },
             { kv: [
               ["Deficiencia global (Título I)", "28,00 %"],
@@ -390,7 +390,7 @@ DOCS.exp["PI-L02"] = {
               ["Aprendizaje y aplicación del conocimiento", "Sin dificultad documentada", "0,00 %"],
               ["Comunicación", "Dificultad leve para conversar mientras camina en pendiente", "0,20 %"],
               ["Movilidad", "Dificultad moderada a severa para subir escaleras, caminar en pendiente, cargar objetos y recorrer distancias largas", "2,80 %"],
-              ["Autocuidado", "Dificultad leve: se baña y se viste solo, con pausas; los desplazamientos a controles le exigen descansos", "1,20 %"],
+              ["Autocuidado", "Dificultad leve a moderada: se baña y se viste solo, con pausas; los desplazamientos a controles le exigen descansos", "1,20 %"],
               ["Vida doméstica", "No realiza tareas domésticas pesadas ni mantenimiento de la vivienda; hace compras livianas", "2,60 %"],
               ["Total otras áreas ocupacionales", "Suma de las cinco áreas", "6,80 %"]
             ] } },
@@ -429,7 +429,7 @@ DOCS.exp["PI-L02"] = {
             { h: "Resuelve" },
             { p: "Primero. Modificar el dictamen REG-L02 del 19/11/2025 de la Junta Regional de Calificación de Invalidez de Norte de Santander en cuanto al porcentaje: la pérdida de capacidad laboral y ocupacional de Javier Pardo Navas se fija en 44,30 %." },
             { p: "Segundo. Confirmar el origen laboral del diagnóstico J62.8 y la fecha de estructuración del 30/05/2025." },
-            { p: "Tercero. Notificar este dictamen a la persona calificada, comunicarlo a ARL SURA y al empleador, y devolver el expediente a la Junta Regional." },
+            { p: "Tercero. Notificar este dictamen a la persona calificada y comunicarlo a ARL SURA, al empleador y a la Junta Regional de Calificación de Invalidez de Norte de Santander." },
             { p: "Contra este dictamen no procede recurso en vía administrativa. Las controversias sobre el dictamen en firme corresponden a la justicia laboral ordinaria." },
             { firma: { nombre: "Gustavo Adolfo Peñaranda Mejía", cargo: "Médico ponente · Sala de Decisión Dos", registro: "Registro médico SIM-RM-11-2290", fecha: "24/03/2026" } },
             { firma: { nombre: "Ángela Patricia Rubiano Silva", cargo: "Médica integrante · Sala de Decisión Dos", registro: "Registro médico SIM-RM-11-3104", fecha: "24/03/2026" } },
@@ -468,7 +468,7 @@ DOCS.exp["PI-L02"] = {
               ["Javier Pardo Navas", "Persona calificada", "Notificación electrónica con acuse de recibo", "25/03/2026", "25/03/2026"],
               ["ARL SURA", "Entidad recurrente", "Comunicación electrónica", "25/03/2026", "25/03/2026"],
               ["Agregados Ladera Bruma S.A.S.", "Empleador", "Correo certificado", "25/03/2026", "09/04/2026"],
-              ["Junta Regional de Calificación de Invalidez de Norte de Santander", "Instancia que profirió el dictamen apelado", "Comunicación y devolución del expediente", "26/03/2026", "27/03/2026"]
+              ["Junta Regional de Calificación de Invalidez de Norte de Santander", "Instancia que profirió el dictamen apelado", "Comunicación electrónica del dictamen", "26/03/2026", "27/03/2026"]
             ] } },
             { p: "Contra los dictámenes de la Junta Nacional no procede recurso en vía administrativa. Acreditadas la notificación y las comunicaciones a las partes interesadas, el dictamen DIC-L02 quedó en firme el 09/04/2026." },
             { p: "El dictamen REG-L02 de la Junta Regional fue modificado por el dictamen DIC-L02 y no adquirió firmeza. Esta constancia se refiere solo al dictamen DIC-L02." },
@@ -521,10 +521,10 @@ DOCS.exp["PI-L02"] = {
               ["Fecha de corte de la información", "24/04/2026"]
             ] },
             { h: "Centro de trabajo y clase de riesgo" },
-            { tabla: { cols: ["Desde", "Hasta", "Centro de trabajo", "Cargo reportado", "Clase de riesgo"], filas: [
+            { tabla: { cols: ["Desde", "Hasta", "Sitio de trabajo reportado", "Cargo reportado", "Clase de riesgo"], filas: [
               ["01/03/2018", "30/06/2025", "El Zulia, planta de trituración", "Operador de trituración y cribado", "V"],
               ["01/07/2025", "Vigente", "El Zulia, portería del predio", "Auxiliar de control de accesos", "V"]
-            ], nota: "El cambio de cargo del 01/07/2025 se reportó como novedad del mismo vínculo laboral. El empleador conserva la clase de riesgo del predio." } },
+            ], nota: "La planta y la portería pertenecen al mismo centro de trabajo registrado por el empleador en el predio de El Zulia, con clase de riesgo V. El cambio de cargo del 01/07/2025 se reportó como novedad del mismo vínculo laboral." } },
             { h: "Cobertura por año" },
             { tabla: { cols: ["Año", "Meses cubiertos", "Meses con aporte registrado", "Novedades"], filas: [
               ["2018", "10 (marzo a diciembre)", "10", "Ingreso el 01/03/2018"],
@@ -533,7 +533,7 @@ DOCS.exp["PI-L02"] = {
               ["2021", "12", "12", "Ninguna"],
               ["2022", "12", "12", "Ninguna"],
               ["2023", "12", "12", "Ninguna"],
-              ["2024", "12", "12", "Incapacidad temporal de 15 días en julio"],
+              ["2024", "12", "12", "Novedad de incapacidad por enfermedad general de 15 días en julio, reportada en la planilla"],
               ["2025", "12", "12", "Cambio de cargo por reubicación desde el 01/07/2025"],
               ["2026", "4 (enero a abril)", "3", "Abril es el periodo en curso; su aporte se liquida en la planilla siguiente"]
             ], nota: "Sin interrupciones de cobertura desde el 01/03/2018." } },
@@ -623,14 +623,14 @@ DOCS.exp["PI-L02"] = {
               ["VEF1 (L)", "2,30", "3,25", "71 %", "2,58", "−2,33"],
               ["VEF1/CVF", "0,78", "0,79", "No aplica", "0,69", "−0,16"],
               ["FEP (L/s)", "6,9", "8,9", "78 %", "No aplica", "No aplica"],
-              ["DLCO (mL/min/mmHg)", "16,8", "25,8", "65 %", "19,4", "−2,31"],
+              ["DLCO (mL/min/mmHg)", "17,3", "26,6", "65 %", "20,2", "−2,39"],
               ["VA (L)", "4,50", "6,05", "74 %", "No aplica", "No aplica"],
-              ["KCO (mL/min/mmHg/L)", "3,73", "4,26", "88 %", "No aplica", "No aplica"]
+              ["KCO (mL/min/mmHg/L)", "3,84", "4,40", "87 %", "No aplica", "No aplica"]
             ] } },
             { h: "Calidad de las pruebas" },
             { kv: [
               ["Espirometría", "Grado A (ATS/ERS 2019): tres maniobras aceptables; repetibilidad de CVF 0,04 L y de VEF1 0,03 L"],
-              ["DLCO", "Grado A (ERS/ATS 2017): dos maniobras aceptables con diferencia de 0,3 mL/min/mmHg; volumen inspirado del 95 % de la capacidad vital; apnea de 10,2 y 10,4 s"],
+              ["DLCO", "Grado A (ERS/ATS 2017): dos maniobras aceptables con diferencia de 0,4 mL/min/mmHg; volumen inspirado del 95 % de la capacidad vital; apnea de 10,2 y 10,4 s"],
               ["Hemoglobina", "14,6 g/dL (11/06/2025); no requiere corrección de la DLCO"]
             ] },
             { h: "Interpretación" },
@@ -673,14 +673,14 @@ DOCS.exp["PI-L02"] = {
               ["Presión barométrica", "732 mmHg"]
             ] },
             { tabla: { cols: ["Maniobra", "DLCO (mL/min/mmHg)", "VA (L)", "Volumen inspirado (L)", "Apnea (s)", "Aceptable"], filas: [
-              ["1", "16,9", "4,52", "2,82", "10,2", "Sí"],
-              ["2", "16,6", "4,47", "2,79", "10,4", "Sí"],
-              ["Promedio", "16,8", "4,50", "No aplica", "No aplica", "No aplica"]
+              ["1", "17,5", "4,52", "2,82", "10,2", "Sí"],
+              ["2", "17,1", "4,47", "2,79", "10,4", "Sí"],
+              ["Promedio", "17,3", "4,50", "No aplica", "No aplica", "No aplica"]
             ] } },
             { kv: [
-              ["DLCO", "16,8 mL/min/mmHg · 65 % del predicho (predicho 25,8; límite inferior 19,4)"],
+              ["DLCO", "17,3 mL/min/mmHg · 65 % del predicho (predicho 26,6; límite inferior 20,2)"],
               ["VA", "4,50 L · 74 % del predicho"],
-              ["KCO", "3,73 mL/min/mmHg/L · 88 % del predicho"],
+              ["KCO", "3,84 mL/min/mmHg/L · 87 % del predicho"],
               ["Calidad", "Grado A"]
             ] },
             { p: "Difusión disminuida en grado leve, con volumen alveolar reducido y KCO conservada." },
@@ -698,7 +698,7 @@ DOCS.exp["PI-L02"] = {
               ["Profusión", "2/1"],
               ["Opacidades grandes", "0 (ausentes)"],
               ["Anomalías pleurales", "No"],
-              ["Símbolos", "hi (aumento de los ganglios hiliares) · es (calcificación en cáscara de huevo)"]
+              ["Símbolos", "es (calcificación en cáscara de huevo de los ganglios hiliares y mediastínicos)"]
             ] },
             { figura: { tipo: "rx_torax", datos: { profusion: "2/1", forma: "q/p", zonas: ["sd", "si", "md", "mi"], grandes: "0" }, pie: "Esquema sintético de la lectura OIT: opacidades pequeñas redondeadas en zonas superiores y medias de ambos campos. No es la imagen radiográfica." } },
             { p: "Conclusión: hallazgos compatibles con silicosis nodular simple, sin opacidades grandes. Concuerda con la tomografía del 19/07/2024." },
@@ -729,7 +729,7 @@ DOCS.exp["PI-L02"] = {
             { tabla: { cols: ["Fecha", "Atención", "Hallazgos", "Conducta"], filas: [
               ["05/02/2024", "Neumología · consulta de primera vez", "Disnea al subir pendientes, de varios meses. Tos seca ocasional. No fumador. Hipertensión arterial controlada con losartán. 27 años en minería, perforación y trituración. Radiografía de la EPS con opacidades nodulares en campos superiores", "Abre estudio: tomografía de alta resolución y pruebas de función pulmonar. Pide al empleador la información de exposición. Recomienda protección respiratoria"],
               ["17/07/2024", "Neumología · control", "Persiste la disnea de esfuerzo. Tomografía programada para el 19/07/2024", "Incapacidad de 15 días, del 17/07/2024 al 31/07/2024, para estudio y ajuste de tareas (anexo 6)"],
-              ["19/07/2024", "Tomografía de tórax de alta resolución y neumología", "Micronódulos centrolobulillares y perilinfáticos de 2 a 5 mm de predominio en lóbulos superiores y segmentos posteriores, algunos calcificados. Adenopatías hiliares y mediastinales con calcificación en cáscara de huevo. Sin masas conglomeradas ni panal de abejas", "Diagnóstico: neumoconiosis debida a otros polvos que contienen sílice (J62.8). Seguimiento por neumología y retiro de la exposición. Reporte de enfermedad laboral diligenciado"],
+              ["19/07/2024", "Tomografía de tórax de alta resolución y neumología", "Micronódulos centrolobulillares y perilinfáticos de 1 a 3 mm de predominio en lóbulos superiores y segmentos posteriores, algunos calcificados. Adenopatías hiliares y mediastinales con calcificación en cáscara de huevo. Sin masas conglomeradas ni panal de abejas", "Diagnóstico: neumoconiosis debida a otros polvos que contienen sílice (J62.8). Seguimiento por neumología y retiro de la exposición. Reporte de enfermedad laboral diligenciado"],
               ["12/08/2024", "Laboratorio clínico", "Prueba de liberación de interferón gamma negativa", "Sin infección tuberculosa latente. Control anual"],
               ["30/05/2025", "Neumología y laboratorio pulmonar", "Disnea al caminar en pendiente, con necesidad de pausas. Prueba de ejercicio cardiopulmonar: consumo pico de 16,8 mL/kg/min (60 %), desaturación a 88 % (anexo 4)", "Pide informe funcional completo con espirometría y DLCO. Recomienda reubicación definitiva sin exposición a polvo"],
               ["09/07/2025", "Laboratorio pulmonar y neumología", "CVF 72 % y DLCO 65 % del predicho. Radiografía con profusión 2/1", "Informe firmado. Orden de rehabilitación respiratoria (anexo 7)"]
@@ -833,7 +833,7 @@ DOCS.exp["PI-L02"] = {
               ["M-03", "Ayudante de patio y despacho (trabajador 3)", "475", "0,808", "0,24", "17", "0,021", "0,84"],
               ["M-04", "Operador de cargador frontal, cabina cerrada (trabajador 4)", "480", "0,816", "0,11", "7", "0,009", "0,36"],
               ["B-01 y B-02", "Blancos de campo", "No aplica", "No aplica", "Menor que el límite de detección", "Menor de 5", "No aplica", "No aplica"]
-            ], nota: "Concentraciones ponderadas a 8 h, suponiendo exposición nula en el tiempo no muestreado. Cristobalita por debajo del límite de detección en todas las muestras. M-04 está entre los límites de detección (5 µg) y de cuantificación (15 µg): valor estimado." } },
+            ], nota: "Concentraciones ponderadas a 8 h, suponiendo exposición nula en el tiempo no muestreado; la fracción del valor límite se calcula con la concentración informada. Cristobalita por debajo del límite de detección en todas las muestras. M-04 está entre los límites de detección (5 µg) y de cuantificación (15 µg): valor estimado." } },
             { figura: { tipo: "serie", datos: { titulo: "Sílice cristalina respirable por muestra personal, 17/05/2023", unidad: "mg/m³", puntos: [["M-01 Trituración y cribado", 0.070], ["M-02 Cribas y bandas", 0.050], ["M-03 Patio y despacho", 0.021], ["M-04 Cargador frontal", 0.009]], limite: { valor: 0.025, etiqueta: "TLV-TWA ACGIH 0,025 mg/m³" }, forma: "barras" }, pie: "Concentración ponderada a 8 h frente al valor límite permisible de referencia." } },
             { h: "6. Interpretación" },
             { p: "La muestra personal M-01, del operador de trituración y cribado, registra 0,070 mg/m³ de sílice cristalina respirable en 8 h: 2,8 veces el valor límite de referencia. La exposición no es aceptable. M-02 también supera el valor límite; M-03 supera el nivel de acción." },

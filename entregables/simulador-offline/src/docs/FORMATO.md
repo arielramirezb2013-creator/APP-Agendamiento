@@ -100,7 +100,7 @@ Cualquier bloque puede llevar `campo: i` (ruta) para tacharlo entero cuando ese 
 | `audiograma` | `{ od: {250:15, 500:20, 1000:25, 2000:40, 3000:55, 4000:70, 6000:65, 8000:50}, oi: {…}, via: "aérea" }` (dB HL) |
 | `espirometria` | `{ fvc: 3.10, fvcPred: 4.25, fev1: 2.20, fev1Pred: 3.40, pef: 6.1, pefPred: 8.9, patron: "restrictivo" | "obstructivo" | "mixto" | "normal" }` (L, L/s) |
 | `rm_columna` | `{ region: "cervical" | "lumbar", secuencia: "T2 sagital", hallazgos: [{ nivel: "C5-C6", tipo: "hernia" | "protrusion" | "estenosis" | "artrodesis" | "mielopatia" }] }` |
-| `rx_torax` | `{ profusion: "2/1", forma: "q/r", zonas: ["sd", "sm", "si", "id", "im", "ii"], grandes: "0" }` (clasificación OIT) |
+| `rx_torax` | `{ profusion: "2/1", forma: "q/r", zonas: ["sd", "si", "md", "mi", "id", "ii"], grandes: "0" }` (clasificación OIT; cada zona es altura + lado: `s` superior, `m` media, `i` inferior; `d` derecha, `i` izquierda — `sd` es la zona superior derecha, `ii` la inferior izquierda) |
 | `neuroconduccion` | `{ filas: [{ nervio: "Mediano derecho", tipo: "sensitivo" | "motor", latencia: 4.9, latRef: 3.5, amplitud: 8, ampRef: 20, velocidad: 38, velRef: 50 }] }` |
 | `serie` | `{ titulo, unidad, puntos: [["Oct. 2023", 3280000], …], limite: { valor, etiqueta }, forma: "barras" | "linea" }` |
 
