@@ -341,7 +341,7 @@ const EXP = {
       { a:"jn", n:"Junta Nacional", rol:"Junta Nacional", custodia:["DIC"] },
       { a:"tra", n:"Solicitante", rol:"Mónica Beltrán, solicitante", custodia:["SOL"] }
     ],
-    perspectiva:"Mónica pide que le indiquen la versión que decide su pensión y qué pasa con la calificación anterior de la mano.",
+    perspectiva:"Mónica pide que le indiquen qué calificación decide su pensión, si la apelación de la ARL la detiene y qué pasa con la calificación anterior de la mano.",
     apertura:"Usted recibe una solicitud con dictámenes de distinto alcance. Identifique el antecedente, la versión pertinente al trámite de pensión y la constancia que le corresponde.",
     cronologia:[
       ["12/11/2020", "Consulta por parestesias en ambas manos. Electromiografía confirma G56.0 el 09/02/2021."],
@@ -440,7 +440,7 @@ const EXP = {
       { a:"emp", n:"Empleador", rol:"SG-SST de Prensas Umbral del Otún", custodia:["NEX"] },
       { a:"tra", n:"Solicitante", rol:"Elena Marín, solicitante", custodia:["SOL"] }
     ],
-    perspectiva:"Elena solicita una respuesta escrita. Quiere saber si su fecha de retiro cambia quién debe resolver su pensión.",
+    perspectiva:"Elena solicita una respuesta escrita. Quiere saber si su fecha de retiro cambia quién debe resolver su pensión y desde cuándo se la pagarían.",
     apertura:"Usted recibe un dictamen laboral de 51 % notificado hace una semana y una consulta de afiliación que muestra estado inactivo. Verifique en qué estado está el dictamen, qué administradora corresponde y qué soportes permiten decidir.",
     cronologia:[
       ["11/11/2021", "Reporta tinnitus y dificultad para seguir instrucciones en la nave durante el control periódico."],

@@ -1,11 +1,19 @@
-/* ============ Documentos sintéticos · operaria de prensas con cobertura histórica incompleta ============
+/* ===== Documentos sintéticos · operaria de prensas con dictamen sin firmeza y cobertura histórica incompleta =====
    Expediente de Elena Marín Cuéllar, exoperaria de prensa mecánica en Dosquebradas (Risaralda), retirada desde el
    01/10/2025. Pérdida auditiva neurosensorial bilateral inducida por ruido (H83.3) con tinnitus persistente.
    Origen laboral calificado por EPS SURA (ORI-L04, 24/06/2025, en firme el 14/07/2025). PCL 51,00 % laboral con
-   estructuración el 12/09/2025 (DIC-L04, 28/04/2026, notificado el 29/04/2026, en firme el 15/05/2026, FIR-L04).
-   Solicitud radicada el 22/05/2026 (RAD-L04). La consulta de afiliación inicial solo dice «inactiva»; la
-   certificación histórica acredita ARL SURA del 01/09/2012 al 30/09/2025. El anexo de exposición del SG-SST liga
-   la dosimetría del 22/08/2023 (LAeq,8h 92,0 dB(A)) al puesto de 2012 a 2024.
+   estructuración el 12/09/2025 (DIC-L04, 28/04/2026), notificado el miércoles 29/04/2026 a la persona y a los
+   demás interesados. El término de 10 días hábiles para manifestar inconformidad corre del 30/04/2026 al
+   14/05/2026 (no se cuentan el festivo del viernes 01/05/2026 ni los fines de semana; la Ascensión se traslada al
+   lunes 18/05/2026, fuera del término). Elena radica la solicitud el miércoles 06/05/2026 (RAD-L04), cuando han
+   transcurrido 4 de los 10 días hábiles: el dictamen no está en firme. Al radicar no hay constancia sobre su
+   estado; la de referencia (FIR-L04, viernes 08/05/2026, con 6 días hábiles transcurridos) dice que no hay
+   inconformidades a esa fecha y que el dictamen no está en firme.
+   Cronología después de la radicación: impresión de la consulta de estado «inactiva» en la ventanilla (06/05/2026,
+   09:52); requerimientos de Prestaciones económicas (07/05/2026) a Medicina laboral, a Afiliaciones y novedades y
+   al SG-SST del último empleador; constancia del estado del dictamen (08/05/2026); certificación histórica de
+   cobertura (11/05/2026), que acredita ARL SURA del 01/09/2012 al 30/09/2025; anexo de exposición del SG-SST
+   (12/05/2026), que liga la dosimetría del 22/08/2023 (LAeq,8h 92,0 dB(A)) al puesto de 2012 a 2024.
    Aritmética del dictamen (Decreto 1507 de 2014, capítulo 9, tablas 9.1 a 9.3):
      Tres audiometrías de cierre (29/08, 05/09 y 12/09/2025), suma de umbrales en 500, 1.000, 2.000 y 3.000 Hz:
        oído derecho 255, 245 y 250 → promedio de las sumas 250 (promedio 62,5 dB) → (62,5 − 25) × 1,5 = 56,25 %
@@ -31,9 +39,9 @@ DOCS.exp["PI-L04"] = {
     dictamenOrigenInterno: "SIM-EPS-ML-2025-06241",
     expedienteMedicinaLaboralArl: "SIM-ARL-ML-2025-10342",
     actaNotificacionDictamen: "SIM-NOT-2026-04417",
-    consultaAfiliacion: "SIM-CON-2026-0522-0952",
-    certificacionHistorica: "SIM-ARL-CH-2026-02215",
-    anexoExposicion: "SIM-SST-NEX-2026-007",
+    consultaAfiliacion: "SIM-CON-2026-0506-0952",
+    certificacionHistorica: "SIM-ARL-CH-2026-02009",
+    anexoExposicion: "SIM-SST-NEX-2026-006",
     informeDosimetria: "SIM-HI-2023-0918",
     ordenReubicacion: "SIM-SST-REU-2024-019",
     extractoAudiologico: "SIM-AUD-EX-2025-0912"
@@ -48,7 +56,7 @@ DOCS.exp["PI-L04"] = {
         titulo: "Solicitud de reconocimiento de pensión de invalidez de origen laboral",
         emisor: { n: "Elena Marín Cuéllar", area: "Solicitante · dirigida a ARL SURA, Prestaciones económicas", ciudad: "Dosquebradas, Risaralda", id: "C.C. SIM-42.118.637" },
         numero: "RAD-L04",
-        fecha: "22/05/2026",
+        fecha: "06/05/2026",
         version: "v1",
         estadoNota: "Ejemplar radicado en la oficina de ARL SURA en Pereira, con el formato de canal de notificación escrito firmado por la solicitante.",
         paginas: [
@@ -56,7 +64,7 @@ DOCS.exp["PI-L04"] = {
             { kv: [
               ["Dirigida a", "ARL SURA · Prestaciones económicas"],
               ["Radicado", "RAD-L04"],
-              ["Fecha de radicación", "22/05/2026"],
+              ["Fecha de radicación", "06/05/2026"],
               ["Oficina", "Oficina de atención de ARL SURA en Pereira, de forma presencial"],
               ["Prestación solicitada", "Pensión de invalidez de origen laboral"],
               ["Canal de notificación", "Escrito, según el formato de autorización anexo (no recibe notificaciones por llamada telefónica)"]
@@ -82,13 +90,15 @@ DOCS.exp["PI-L04"] = {
               "En el control periódico del 11/11/2021 informé que tenía zumbido en los oídos y que no entendía las instrucciones en la nave. El 05/03/2024 otorrinolaringología confirmó que tengo hipoacusia neurosensorial bilateral. Uso audífonos en los dos oídos desde abril de 2024.",
               "Desde el 01/01/2025 la empresa me reubicó en el almacén como auxiliar de inventario de repuestos. El 30/09/2025 terminé mi contrato por retiro voluntario. Desde entonces no trabajo y no estoy afiliada a ninguna ARL.",
               "EPS SURA calificó el origen laboral de mi enfermedad el 24/06/2025 (dictamen ORI-L04). Ese dictamen quedó en firme el 14/07/2025.",
-              "ARL SURA me calificó con una pérdida de capacidad laboral de 51,00 %, de origen laboral, con fecha de estructuración del 12/09/2025 (dictamen DIC-L04 del 28/04/2026). Me lo notificaron por escrito el 29/04/2026 y no presenté inconformidad.",
+              "ARL SURA me calificó con una pérdida de capacidad laboral de 51,00 %, de origen laboral, con fecha de estructuración del 12/09/2025 (dictamen DIC-L04 del 28/04/2026). Me lo notificaron por escrito el 29/04/2026, y ese mismo día se lo comunicaron a EPS SURA, a mi fondo de pensiones y a la empresa.",
+              "En el acta de notificación me explicaron por escrito que tengo 10 días hábiles para manifestar inconformidad, es decir, hasta el 14/05/2026. No he presentado inconformidad. Sé que el término todavía está corriendo, pero radico desde ahora porque desde mi retiro no tengo ingresos y dependo de mi hija.",
               "ARL SURA fue la última ARL a la que estuve afiliada. Con mis empleadores anteriores estuve afiliada a otras administradoras. Entre el 01/08/2012 y el 31/08/2012 no trabajé."
             ] },
             { h: "Peticiones" },
             { lista: [
               "Que ARL SURA reconozca y pague la pensión de invalidez de origen laboral a que tengo derecho, de acuerdo con los artículos 9 y 10 de la Ley 776 de 2002.",
               "Que me informen por escrito si el hecho de haberme retirado el 30/09/2025 cambia la entidad que debe resolver mi pensión y, si falta algún documento, quién debe aportarlo.",
+              "Que me informen por escrito desde qué fecha me pagarían la pensión si me la reconocen.",
               "Que todas las comunicaciones, citaciones, requerimientos y decisiones me lleguen por escrito, por el canal que autorizo en el formato anexo, porque uso audífonos y no entiendo bien por teléfono."
             ] },
             { h: "Documentos que adjunto" },
@@ -104,7 +114,7 @@ DOCS.exp["PI-L04"] = {
               nota: "Con el formulario de solicitud (2 folios), la radicación suma 17 folios."
             } },
             { p: "Declaro que la información es cierta. Autorizo a ARL SURA a consultar mi historia clínica, mi historia laboral y mis afiliaciones, y a pedir a otras entidades y a mi último empleador los soportes necesarios, solo para resolver esta solicitud." },
-            { firma: { nombre: "Elena Marín Cuéllar", cargo: "Solicitante", registro: "C.C. SIM-42.118.637", fecha: "22/05/2026" } }
+            { firma: { nombre: "Elena Marín Cuéllar", cargo: "Solicitante", registro: "C.C. SIM-42.118.637", fecha: "06/05/2026" } }
           ] },
           { titulo: "Autorización del canal de notificación escrito", bloques: [
             { p: "Yo, Elena Marín Cuéllar, identificada con C.C. SIM-42.118.637, solicito que ARL SURA me comunique por escrito todas las actuaciones del trámite RAD-L04, como ajuste razonable por mi pérdida auditiva (Ley 1618 de 2013), y autorizo el siguiente canal de notificación (Ley 1437 de 2011, artículos 56 y 67):" },
@@ -116,14 +126,14 @@ DOCS.exp["PI-L04"] = {
               ["Atención presencial", "Con apoyo escrito y en un lugar sin ruido de fondo; puede asistir acompañada de su hija, sin que esta decida por ella"],
               ["Ayudas que usa", "Audífonos retroauriculares en ambos oídos; apoyo en la lectura de labios"]
             ] },
-            { firma: { nombre: "Elena Marín Cuéllar", cargo: "Solicitante", registro: "C.C. SIM-42.118.637", fecha: "22/05/2026" } },
+            { firma: { nombre: "Elena Marín Cuéllar", cargo: "Solicitante", registro: "C.C. SIM-42.118.637", fecha: "06/05/2026" } },
             { nota: "Formato registrado en el expediente RAD-L04. La dirección y la cuenta de correo constan en el original y no se reproducen en las copias." }
           ] },
           { titulo: "Constancia de radicación", bloques: [
             { kv: [
               ["Entidad que recibe", "ARL SURA · Prestaciones económicas, oficina de Pereira"],
               ["Radicado", "RAD-L04"],
-              ["Fecha y hora", "22/05/2026, 09:48"],
+              ["Fecha y hora de radicación", "06/05/2026, 09:48"],
               ["Trámite", "Pensión de invalidez de origen laboral"],
               ["Titular", "Elena Marín Cuéllar · C.C. SIM-42.118.637"],
               ["Verificación de identidad", "Documento original exhibido en ventanilla. Coincide con la titular del dictamen DIC-L04 y de la afiliación SIM-ARL-2012-48113"],
@@ -136,10 +146,10 @@ DOCS.exp["PI-L04"] = {
               filas: [
                 ["Solicitud firmada", "Recibida", "Mismo titular del documento de identidad"],
                 ["Documento de identidad", "Recibido", "Copia simple cotejada con el original"],
-                ["Dictamen de pérdida de capacidad laboral", "Recibida copia", "DIC-L04 del 28/04/2026; el original reposa en Medicina laboral de ARL SURA"],
-                ["Constancia de firmeza del dictamen", "No aportada", "La expide Medicina laboral de ARL SURA; se incorpora de oficio"],
+                ["Dictamen de pérdida de capacidad laboral", "Recibida copia", "DIC-L04 del 28/04/2026, con el acta de notificación del 29/04/2026; el original reposa en Medicina laboral de ARL SURA"],
+                ["Constancia del estado de firmeza del dictamen", "No aportada", "La expide Medicina laboral de ARL SURA a solicitud de Prestaciones económicas; la ventanilla no verifica el estado del dictamen"],
                 ["Dictamen de origen", "Recibida copia", "ORI-L04 de EPS SURA del 24/06/2025, con constancia de firmeza"],
-                ["Certificación de afiliación y cobertura", "No aportada", "La consulta de estado del sistema (SIM-CON-2026-0522-0952) muestra la afiliación como inactiva, sin fechas; Prestaciones económicas verificará la cobertura"],
+                ["Certificación de afiliación y cobertura", "No aportada", "La consulta de estado del sistema (SIM-CON-2026-0506-0952) muestra la afiliación como inactiva, sin fechas; Prestaciones económicas verificará la cobertura"],
                 ["Soporte de la exposición en el puesto", "No aportado", "Sin observación de la ventanilla"],
                 ["Certificado laboral", "Recibido", "Prensas Umbral del Otún S.A.S., 30/09/2025"],
                 ["Canal de notificación escrito", "Recibido", "Formato firmado por la solicitante"]
@@ -147,7 +157,7 @@ DOCS.exp["PI-L04"] = {
               nota: "La verificación de la afiliación, de la cobertura y de los soportes corresponde a Prestaciones económicas. Esta lista no es una decisión sobre la solicitud."
             } },
             { p: "La radicación no implica que la solicitud haya sido aceptada. Prestaciones económicas revisará el expediente y, si falta algún soporte, lo pedirá a la dependencia o a la entidad que lo custodia, o a la solicitante, y se lo informará por escrito." },
-            { firma: { nombre: "Kevin Alexis Arias Montoya", cargo: "Auxiliar de atención y radicación, ARL SURA, Pereira", fecha: "22/05/2026" } }
+            { firma: { nombre: "Kevin Alexis Arias Montoya", cargo: "Auxiliar de atención y radicación, ARL SURA, Pereira", fecha: "06/05/2026" } }
           ] },
           { titulo: "Anexo 1 · Copia del documento de identidad", bloques: [
             { kv: [
@@ -538,60 +548,110 @@ DOCS.exp["PI-L04"] = {
       }
     },
 
-    /* ---------------------------------------------------------------- Constancia de firmeza */
+    /* ---------------------------------------------------------------- Constancia del estado de firmeza */
     FIR: {
       v1: {
         tipo: "constancia",
-        titulo: "Constancia de firmeza del dictamen de pérdida de capacidad laboral",
+        titulo: "Constancia del estado de firmeza del dictamen de pérdida de capacidad laboral",
         emisor: { n: "ARL SURA", area: "Medicina laboral, regional Eje Cafetero", ciudad: "Pereira", id: "NIT SIM-800.256.433-1" },
         numero: "FIR-L04",
-        fecha: "15/05/2026",
+        fecha: "08/05/2026",
         version: "v1",
-        estadoNota: "Constancia vinculada al dictamen DIC-L04 por su número, su versión y su código de verificación.",
+        estadoNota: "Constancia expedida a solicitud de Prestaciones económicas para el trámite RAD-L04 y vinculada al dictamen DIC-L04 por su número, su versión y su código de verificación. Dictamen notificado el 29/04/2026; el término de inconformidad corre hasta el 14/05/2026; sin inconformidades al 08/05/2026: no está en firme.",
         paginas: [
           { titulo: "Constancia", bloques: [
             { kv: [
               ["Constancia", "FIR-L04"],
-              ["Fecha", "15/05/2026"],
+              ["Fecha de expedición", "08/05/2026"],
+              ["Solicitada por", "ARL SURA · Prestaciones económicas, el 07/05/2026, para el trámite de la solicitud de pensión RAD-L04 del 06/05/2026"],
               ["Dictamen al que se refiere", "DIC-L04, versión v1, del 28/04/2026"],
               ["Código de verificación del dictamen", "SIM-VER-6K2T-94QX"],
               ["Expediente de medicina laboral", "SIM-ARL-ML-2025-10342"],
+              ["Tipo de calificación", "Pérdida de capacidad laboral y ocupacional, primera oportunidad"],
               ["Persona calificada", "Elena Marín Cuéllar · C.C. SIM-42.118.637"],
               ["Pérdida de capacidad laboral", "51,00 %"],
               ["Origen", "Laboral (ORI-L04 de EPS SURA, en firme el 14/07/2025)"],
               ["Fecha de estructuración", "12/09/2025"],
-              ["Diagnóstico", "H83.3 · Pérdida auditiva neurosensorial bilateral inducida por ruido"]
+              ["Diagnóstico", "H83.3 · Pérdida auditiva neurosensorial bilateral inducida por ruido"],
+              ["Estado del dictamen al 08/05/2026", "No está en firme: el término para manifestar inconformidad corre hasta el 14/05/2026"]
             ] },
-            { h: "Notificaciones y términos" },
+            { h: "Notificación y término para manifestar inconformidad" },
             { tabla: {
-              cols: ["Interesado", "Medio", "Fecha de notificación", "Término", "Vencimiento", "Inconformidad"],
+              cols: ["Interesado", "Medio", "Fecha de notificación", "Término", "Vence", "Inconformidad al 08/05/2026"],
               filas: [
-                ["Elena Marín Cuéllar, persona calificada", "Notificación personal por escrito, acta SIM-NOT-2026-04417", "29/04/2026", "10 días hábiles", "14/05/2026", "No presentó"],
-                ["EPS SURA", "Comunicación electrónica con acuse de recibo", "29/04/2026", "10 días hábiles", "14/05/2026", "No presentó"],
-                ["Cordillera Pensiones y Cesantías", "Comunicación electrónica con acuse de recibo", "29/04/2026", "10 días hábiles", "14/05/2026", "No presentó"],
-                ["Prensas Umbral del Otún S.A.S., último empleador", "Comunicación electrónica con acuse de recibo", "29/04/2026", "10 días hábiles", "14/05/2026", "No presentó"]
+                ["Elena Marín Cuéllar, persona calificada", "Notificación personal por escrito, acta SIM-NOT-2026-04417", "29/04/2026", "10 días hábiles", "14/05/2026", "No ha presentado"],
+                ["EPS SURA", "Comunicación electrónica con acuse de recibo", "29/04/2026", "10 días hábiles", "14/05/2026", "No ha presentado"],
+                ["Cordillera Pensiones y Cesantías", "Comunicación electrónica con acuse de recibo", "29/04/2026", "10 días hábiles", "14/05/2026", "No ha presentado"],
+                ["Prensas Umbral del Otún S.A.S., último empleador", "Comunicación electrónica con acuse de recibo", "29/04/2026", "10 días hábiles", "14/05/2026", "No ha presentado"]
               ],
-              nota: "El término corrió del 30/04/2026 al 14/05/2026. No se cuenta el festivo del 01/05/2026."
+              nota: "Todos los interesados quedaron notificados el mismo día, de modo que para todos el término corre del 30/04/2026 al 14/05/2026, ambos días incluidos."
             } },
+            { h: "Cómputo del término en días hábiles" },
+            { tabla: {
+              cols: ["Día del término", "Fecha", "Observación"],
+              filas: [
+                ["No se cuenta", "29/04/2026 (miércoles)", "Día de la notificación y de las comunicaciones"],
+                ["1", "30/04/2026 (jueves)", ""],
+                ["No se cuenta", "01/05/2026 (viernes)", "Festivo, Día del Trabajo"],
+                ["2", "04/05/2026 (lunes)", ""],
+                ["3", "05/05/2026 (martes)", ""],
+                ["4", "06/05/2026 (miércoles)", ""],
+                ["5", "07/05/2026 (jueves)", "Solicitud de esta constancia"],
+                ["6", "08/05/2026 (viernes)", "Expedición de esta constancia"],
+                ["7", "11/05/2026 (lunes)", "Por transcurrir"],
+                ["8", "12/05/2026 (martes)", "Por transcurrir"],
+                ["9", "13/05/2026 (miércoles)", "Por transcurrir"],
+                ["10", "14/05/2026 (jueves)", "Último día del término; por transcurrir"]
+              ],
+              nota: "No se cuentan sábados, domingos ni festivos. El jueves 14/05/2026 es día hábil: el festivo de la Ascensión del Señor se traslada al lunes 18/05/2026. Al 08/05/2026 han transcurrido 6 de los 10 días hábiles y faltan 4."
+            } },
+            { h: "Verificación de inconformidades" },
+            { kv: [
+              ["Corte de la verificación", "08/05/2026, 12:00"],
+              ["Radicación de correspondencia de ARL SURA, todas las oficinas y canales escritos", "Sin escritos de inconformidad sobre el dictamen DIC-L04"],
+              ["Expediente de medicina laboral SIM-ARL-ML-2025-10342", "Sin actuaciones de los interesados después de la notificación del 29/04/2026"],
+              ["Remisión a la Junta Regional de Calificación de Invalidez de Risaralda", "No se ha hecho: no hay inconformidad que tramitar"]
+            ] },
             { h: "Constancia" },
-            { p: "Medicina laboral de ARL SURA hace constar que el dictamen DIC-L04, versión v1, emitido el 28/04/2026, fue notificado a la persona calificada y comunicado a los demás interesados el 29/04/2026, y que dentro de los 10 días hábiles siguientes ninguno manifestó inconformidad. En consecuencia, el dictamen quedó en firme el 15/05/2026, con una pérdida de capacidad laboral del 51,00 %, de origen laboral y con fecha de estructuración del 12/09/2025." },
-            { p: "Esta constancia corresponde únicamente a la versión v1 del dictamen DIC-L04, identificada con el código de verificación SIM-VER-6K2T-94QX." },
+            { p: "Medicina laboral de ARL SURA hace constar que el dictamen DIC-L04, versión v1, emitido el 28/04/2026, fue notificado por escrito y en forma personal a la persona calificada el 29/04/2026 y comunicado ese mismo día a EPS SURA, a Cordillera Pensiones y Cesantías y a Prensas Umbral del Otún S.A.S.; que el término de 10 días hábiles para manifestar inconformidad corre hasta el 14/05/2026; y que, al corte de esta verificación, ninguno de los interesados ha manifestado inconformidad." },
+            { p: "En consecuencia, a la fecha de expedición de esta constancia el dictamen DIC-L04 no está en firme." },
+            { p: "Si el término vence sin que ningún interesado manifieste inconformidad, el dictamen quedará en firme y Medicina laboral expedirá la constancia de firmeza a solicitud de la dependencia interesada. Si dentro del término algún interesado manifiesta inconformidad, ARL SURA remitirá el expediente a la Junta Regional de Calificación de Invalidez de Risaralda dentro de los 5 días siguientes, y la calificación se definirá ante las juntas de calificación de invalidez." },
+            { p: "Esta constancia corresponde únicamente a la versión v1 del dictamen DIC-L04, identificada con el código de verificación SIM-VER-6K2T-94QX, y refleja su estado en la fecha y hora del corte. No acredita la firmeza del dictamen." },
             { h: "Fundamento" },
-            { p: "Ley 100 de 1993, art. 41, modificado por el Decreto Ley 019 de 2012, art. 142: término de 10 días para manifestar inconformidad con la calificación en primera oportunidad; vencido sin inconformidad, el dictamen queda en firme." },
-            { p: "Se expide para el expediente de calificación y para el trámite de prestaciones económicas que se derive del dictamen." },
-            { firma: { nombre: "Juliana María Tobón Agudelo", cargo: "Coordinadora de medicina laboral, ARL SURA, regional Eje Cafetero", registro: "Registro médico SIM-66-173058", fecha: "15/05/2026" } }
+            { lista: [
+              "Ley 100 de 1993, art. 41, modificado por el Decreto Ley 019 de 2012, art. 142: quien no esté de acuerdo con la calificación en primera oportunidad debe manifestar su inconformidad dentro de los 10 días siguientes a la notificación, y la entidad remite el expediente a la junta regional de calificación de invalidez dentro de los 5 días siguientes; vencido el término sin inconformidad, el dictamen queda en firme.",
+              "Ley 4 de 1913, art. 62: en los plazos de días que señalan las leyes no se cuentan los feriados ni los de vacancia; por eso los 10 días se cuentan como días hábiles.",
+              "Ley 51 de 1983: traslado de algunos festivos, entre ellos la Ascensión del Señor, al lunes siguiente.",
+              "Decreto 1072 de 2015, Libro 2, Parte 2, Título 5, que compiló el Decreto 1352 de 2013: trámite ante las juntas de calificación de invalidez."
+            ] },
+            { p: "Se expide a solicitud de Prestaciones económicas de ARL SURA, para el trámite RAD-L04." },
+            { firma: { nombre: "Juliana María Tobón Agudelo", cargo: "Coordinadora de medicina laboral, ARL SURA, regional Eje Cafetero", registro: "Registro médico SIM-66-173058", fecha: "08/05/2026" } },
+            { nota: "Constancia verificable con el número FIR-L04 y el código SIM-VER-8W4D-37LT." }
           ] },
-          { titulo: "Anexo · Acta de notificación personal", bloques: [
+          { titulo: "Anexo 1 · Acta de notificación personal", bloques: [
             { kv: [
               ["Acta", "SIM-NOT-2026-04417"],
               ["Fecha y hora", "29/04/2026, 10:20"],
               ["Lugar", "Oficina de atención de ARL SURA en Pereira, sala sin ruido de fondo"],
               ["Persona notificada", "Elena Marín Cuéllar · C.C. SIM-42.118.637"],
               ["Documento notificado", "Dictamen DIC-L04, versión v1, del 28/04/2026 (6 folios)"],
-              ["Forma de la notificación", "Escrita: entrega de copia íntegra del dictamen y de una hoja con la explicación de los recursos; la persona usa audífonos y pidió la información por escrito"]
+              ["Forma de la notificación", "Escrita: entrega de copia íntegra del dictamen y de una hoja con la explicación de los recursos; la persona usa audífonos y pidió la información por escrito"],
+              ["Término informado", "10 días hábiles siguientes a esta notificación, hasta el 14/05/2026"]
             ] },
-            { p: "Se entregó a la persona calificada copia íntegra del dictamen y se le informó por escrito que puede manifestar su inconformidad ante ARL SURA dentro de los 10 días hábiles siguientes a esta notificación, para que el expediente se remita a la Junta Regional de Calificación de Invalidez de Risaralda." },
+            { p: "Se entregó a la persona calificada copia íntegra del dictamen y se le informó por escrito que puede manifestar su inconformidad ante ARL SURA dentro de los 10 días hábiles siguientes a esta notificación, es decir, hasta el 14/05/2026, para que el expediente se remita a la Junta Regional de Calificación de Invalidez de Risaralda; que el dictamen también se comunica a EPS SURA, al fondo de pensiones y al último empleador, que tienen el mismo término; y que el dictamen no queda en firme mientras ese término no haya vencido." },
             { firma: { nombre: "Elena Marín Cuéllar", cargo: "Persona notificada", registro: "C.C. SIM-42.118.637", fecha: "29/04/2026" } },
+            { firma: { nombre: "Yurany Andrea Castaño Loaiza", cargo: "Gestora de notificaciones, ARL SURA, Pereira", registro: "", fecha: "29/04/2026" } }
+          ] },
+          { titulo: "Anexo 2 · Comunicación del dictamen a los demás interesados", bloques: [
+            { tabla: {
+              cols: ["Interesado", "Calidad", "Medio", "Envío", "Acuse de recibo"],
+              filas: [
+                ["EPS SURA · Medicina laboral", "Entidad promotora de salud", "Comunicación electrónica al buzón de notificaciones registrado", "29/04/2026, 15:06", "29/04/2026, 15:09"],
+                ["Cordillera Pensiones y Cesantías", "Administradora de fondos de pensiones", "Comunicación electrónica al buzón de notificaciones registrado", "29/04/2026, 15:07", "29/04/2026, 15:31"],
+                ["Prensas Umbral del Otún S.A.S.", "Último empleador", "Comunicación electrónica al buzón de notificaciones judiciales del registro mercantil", "29/04/2026, 15:08", "29/04/2026, 16:02"]
+              ],
+              nota: "Cada comunicación llevó copia íntegra del dictamen y la indicación del término de 10 días hábiles para manifestar inconformidad ante ARL SURA. Los buzones constan en el expediente y no se reproducen en esta copia."
+            } },
             { firma: { nombre: "Yurany Andrea Castaño Loaiza", cargo: "Gestora de notificaciones, ARL SURA, Pereira", registro: "", fecha: "29/04/2026" } }
           ] }
         ]
@@ -604,15 +664,15 @@ DOCS.exp["PI-L04"] = {
         tipo: "constancia",
         titulo: "Consulta de estado de afiliación · impresión de la pantalla",
         emisor: { n: "ARL SURA", area: "Consulta de afiliados · vista de estado actual", ciudad: "Pereira", id: "NIT SIM-800.256.433-1" },
-        numero: "SIM-CON-2026-0522-0952",
-        fecha: "22/05/2026",
+        numero: "SIM-CON-2026-0506-0952",
+        fecha: "06/05/2026",
         version: "v1",
         estadoNota: "Impresión de la consulta de estado actual hecha al radicar: dice «inactiva», sin fechas de cobertura ni identificación del último vínculo. No es una certificación.",
         paginas: [
           { titulo: "Resultado de la consulta", bloques: [
             { kv: [
               ["Sistema", "Consulta de afiliados a riesgos laborales · vista de estado actual"],
-              ["Fecha y hora de la consulta", "22/05/2026, 09:52"],
+              ["Fecha y hora de la consulta", "06/05/2026, 09:52"],
               ["Dependencia que consulta", "Prestaciones económicas · radicación, oficina de Pereira"],
               ["Usuario", "SIM-USR-PRE-0417"],
               ["Motivo registrado", "Radicación RAD-L04"],
@@ -631,7 +691,7 @@ DOCS.exp["PI-L04"] = {
             { vacio: "Motivo de la inactivación: sin dato en esta vista." },
             { vacio: "Historial de afiliaciones y novedades: no se incluye en la consulta de estado actual." },
             { nota: "La consulta muestra el estado a la fecha y hora indicadas. No certifica períodos de cobertura, no identifica empleadores y no reemplaza la certificación que expide Afiliaciones y novedades." },
-            { nota: "Impreso por el usuario SIM-USR-PRE-0417 el 22/05/2026 a las 09:53. Sin firma." }
+            { nota: "Impreso por el usuario SIM-USR-PRE-0417 el 06/05/2026 a las 09:53. Sin firma." }
           ] }
         ]
       },
@@ -639,10 +699,10 @@ DOCS.exp["PI-L04"] = {
         tipo: "certificado",
         titulo: "Certificación histórica de afiliación y cobertura en riesgos laborales",
         emisor: { n: "ARL SURA", area: "Afiliaciones y novedades", ciudad: "Medellín", id: "NIT SIM-800.256.433-1" },
-        numero: "SIM-ARL-CH-2026-02215",
-        fecha: "25/05/2026",
+        numero: "SIM-ARL-CH-2026-02009",
+        fecha: "11/05/2026",
         version: "v2",
-        estadoNota: "Certificación expedida por Afiliaciones y novedades a solicitud de Prestaciones económicas para el trámite RAD-L04, con el historial cotejado y sin afiliación posterior al retiro.",
+        estadoNota: "Certificación expedida por Afiliaciones y novedades a solicitud de Prestaciones económicas del 07/05/2026 para el trámite RAD-L04, con el historial cotejado y sin afiliación posterior al retiro.",
         paginas: [
           { titulo: "Certificación", bloques: [
             { p: "ARL SURA certifica que la persona identificada a continuación estuvo afiliada al Sistema General de Riesgos Laborales por medio de esta administradora, con los siguientes datos:" },
@@ -679,21 +739,21 @@ DOCS.exp["PI-L04"] = {
                 ["12/09/2025", "Fecha de estructuración", "Vigente"],
                 ["30/09/2025", "Retiro", "Último día de cobertura"],
                 ["28/04/2026", "Dictamen de pérdida de capacidad laboral DIC-L04", "Sin afiliación vigente; ARL SURA es la última administradora"],
-                ["22/05/2026", "Radicación de la solicitud RAD-L04", "Sin afiliación vigente; ARL SURA es la última administradora"]
+                ["06/05/2026", "Radicación de la solicitud RAD-L04", "Sin afiliación vigente; ARL SURA es la última administradora"]
               ],
-              nota: "Fechas indicadas por Prestaciones económicas en la solicitud de certificación."
+              nota: "Fechas indicadas por Prestaciones económicas en la solicitud de certificación del 07/05/2026."
             } },
             { h: "Cotejo de afiliaciones posteriores y anteriores" },
             { kv: [
-              ["Consulta del registro único de afiliados", "25/05/2026: no registra afiliación a riesgos laborales posterior al 30/09/2025 en ninguna administradora"],
+              ["Consulta del registro único de afiliados", "11/05/2026: no registra afiliación a riesgos laborales posterior al 30/09/2025 en ninguna administradora"],
               ["Historial interno de ARL SURA", "Sin afiliaciones de la persona distintas de la certificada"],
               ["Períodos anteriores al 01/09/2012", "Corresponden a otras administradoras, entonces de riesgos profesionales (ARL histórica A, 1996 a 2003; ARL histórica B, 2004 a julio de 2012), según la historia laboral aportada. ARL SURA no los certifica"],
               ["Agosto de 2012", "Sin afiliación registrada"]
             ] },
             { p: "En consecuencia, ARL SURA es la última administradora de riesgos laborales a la que estuvo afiliada la persona, con cobertura continua del 01/09/2012 al 30/09/2025 por medio de Prensas Umbral del Otún S.A.S." },
             { p: "Se expide a solicitud de Prestaciones económicas de ARL SURA para el trámite RAD-L04. Esta certificación no contiene información clínica." },
-            { firma: { nombre: "Natalia Andrea Grajales Toro", cargo: "Analista de afiliaciones y novedades, ARL SURA", registro: "", fecha: "25/05/2026" } },
-            { nota: "Certificación verificable con el número SIM-ARL-CH-2026-02215 y el código SIM-VER-2H7M-51QA." }
+            { firma: { nombre: "Natalia Andrea Grajales Toro", cargo: "Analista de afiliaciones y novedades, ARL SURA", registro: "", fecha: "11/05/2026" } },
+            { nota: "Certificación verificable con el número SIM-ARL-CH-2026-02009 y el código SIM-VER-2H7M-51QA." }
           ] },
           { titulo: "Anexo · Historial de novedades y aportes", bloques: [
             { h: "Novedades registradas" },
@@ -740,15 +800,15 @@ DOCS.exp["PI-L04"] = {
         tipo: "informe",
         titulo: "Anexo de exposición ocupacional a ruido · puesto de operaria de prensa mecánica (2012 a 2024)",
         emisor: { n: "Prensas Umbral del Otún S.A.S.", area: "Sistema de gestión de seguridad y salud en el trabajo", ciudad: "Dosquebradas, Risaralda", id: "NIT SIM-900.587.214-9" },
-        numero: "SIM-SST-NEX-2026-007",
-        fecha: "26/05/2026",
+        numero: "SIM-SST-NEX-2026-006",
+        fecha: "12/05/2026",
         version: "v1",
-        estadoNota: "Anexo fechado remitido por el SG-SST a Prestaciones económicas de ARL SURA el 26/05/2026. Incorpora el informe de dosimetría del 22/08/2023 y la ficha del puesto de 2012 a 2024.",
+        estadoNota: "Anexo fechado remitido por el SG-SST a Prestaciones económicas de ARL SURA el 12/05/2026. Incorpora el informe de dosimetría del 22/08/2023 y la ficha del puesto de 2012 a 2024.",
         paginas: [
           { titulo: "Anexo de exposición", bloques: [
             { kv: [
               ["Remitido a", "ARL SURA · Prestaciones económicas"],
-              ["Solicitud", "Requerimiento del 22/05/2026 para el trámite RAD-L04"],
+              ["Solicitud", "Requerimiento de ARL SURA, Prestaciones económicas, del 07/05/2026, para el trámite RAD-L04"],
               ["Trabajadora", "Elena Marín Cuéllar · C.C. SIM-42.118.637 (retirada el 30/09/2025)"],
               ["Cargo evaluado", "Operaria de prensa mecánica"],
               ["Período en el cargo", "01/09/2012 a 31/12/2024"],
@@ -777,8 +837,8 @@ DOCS.exp["PI-L04"] = {
             { h: "Conclusión" },
             { p: "La exposición a ruido por encima del valor límite permisible de 85 dB(A) para 8 horas ocurrió en el puesto de operaria de prensa mecánica durante todo el período del 01/09/2012 al 31/12/2024, que está comprendido íntegramente en la afiliación a ARL SURA. La dosimetría del 22/08/2023 que cita el dictamen ORI-L04 corresponde a ese puesto, a esa tarea y al turno de 06:00 a 14:00, y es representativa del período según la ficha del puesto y las mediciones anteriores." },
             { p: "Se remite solo la información de exposición necesaria para la finalidad indicada. Este anexo no contiene datos clínicos de la trabajadora." },
-            { firma: { nombre: "Wilson Arley Rendón Gallego", cargo: "Coordinador del SG-SST, Prensas Umbral del Otún S.A.S.", registro: "Licencia en seguridad y salud en el trabajo SIM-LSST-2015-3381", fecha: "26/05/2026" } },
-            { firma: { nombre: "Héctor Fabio Morales Quintero", cargo: "Jefe de producción, nave de estampado · certifica las tareas y los equipos asignados", registro: "", fecha: "26/05/2026" } }
+            { firma: { nombre: "Wilson Arley Rendón Gallego", cargo: "Coordinador del SG-SST, Prensas Umbral del Otún S.A.S.", registro: "Licencia en seguridad y salud en el trabajo SIM-LSST-2015-3381", fecha: "12/05/2026" } },
+            { firma: { nombre: "Héctor Fabio Morales Quintero", cargo: "Jefe de producción, nave de estampado · certifica las tareas y los equipos asignados", registro: "", fecha: "12/05/2026" } }
           ] },
           { titulo: "Hoja 2 · Ficha del puesto de operaria de prensa mecánica (2012 a 2024)", bloques: [
             { kv: [
@@ -821,7 +881,7 @@ DOCS.exp["PI-L04"] = {
               ["Fecha de la reubicación", "01/01/2025"],
               ["Nuevo puesto", "Auxiliar de inventario de repuestos, almacén segregado: 64,0 dB(A) en la sonometría del 20/01/2025"]
             ] },
-            { firma: { nombre: "Wilson Arley Rendón Gallego", cargo: "Coordinador del SG-SST, Prensas Umbral del Otún S.A.S.", registro: "Licencia en seguridad y salud en el trabajo SIM-LSST-2015-3381", fecha: "26/05/2026" } }
+            { firma: { nombre: "Wilson Arley Rendón Gallego", cargo: "Coordinador del SG-SST, Prensas Umbral del Otún S.A.S.", registro: "Licencia en seguridad y salud en el trabajo SIM-LSST-2015-3381", fecha: "12/05/2026" } }
           ] },
           { titulo: "Hoja 3 · Informe de dosimetría personal de ruido (22/08/2023)", bloques: [
             { kv: [
@@ -928,7 +988,7 @@ DOCS.exp["PI-L04"] = {
               pie: "Entre 2013 y 2024 el puesto de prensa superó el valor límite en todas las mediciones, aun después de la barrera parcial. El último punto corresponde al almacén, después de la reubicación."
             } },
             { p: "Los registros originales se conservan en el archivo del sistema de gestión de seguridad y salud en el trabajo, conforme al artículo 2.2.4.6.13 del Decreto 1072 de 2015." },
-            { firma: { nombre: "Wilson Arley Rendón Gallego", cargo: "Coordinador del SG-SST, Prensas Umbral del Otún S.A.S.", registro: "Licencia en seguridad y salud en el trabajo SIM-LSST-2015-3381", fecha: "26/05/2026" } }
+            { firma: { nombre: "Wilson Arley Rendón Gallego", cargo: "Coordinador del SG-SST, Prensas Umbral del Otún S.A.S.", registro: "Licencia en seguridad y salud en el trabajo SIM-LSST-2015-3381", fecha: "12/05/2026" } }
           ] }
         ]
       }
