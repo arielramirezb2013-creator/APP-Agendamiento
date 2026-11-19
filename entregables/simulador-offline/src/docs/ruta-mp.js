@@ -106,13 +106,13 @@ DOCS.ruta.mp = {
           ] },
 
           { h: "Evolución clínica" },
-          { p: "Doce consultas entre el 19/11/2025 y el 17/04/2026, en medicina general y ortopedia; dos remisiones a fisioterapia, con 20 sesiones en total, y analgesia escalonada. Mejoría parcial con cada ciclo de fisioterapia. El 16/03/2026 (día 118), en el intento de reintegro, la prueba de trabajo en el puesto se suspendió a los 40 minutos por recaída del dolor irradiado y no se hizo el reintegro. En el último control persisten el dolor lumbar con irradiación a la pierna izquierda y los signos de compromiso de la raíz S1 izquierda, sin déficit motor progresivo (anexos 2 y 3).", campo: 4 },
+          { p: "Doce consultas entre el 19/11/2025 y el 17/04/2026, en medicina general y ortopedia; dos remisiones a fisioterapia, con 20 sesiones en total, y analgesia escalonada. Mejoría parcial con cada ciclo de fisioterapia. El 16/03/2026 (día 118), en el intento de reintegro, la prueba de trabajo en el puesto se suspendió a los 40 minutos por recaída del dolor irradiado y no se hizo el reintegro. En el último control persisten el dolor lumbar con irradiación a la pierna izquierda, el Lasègue izquierdo positivo, la disminución del reflejo aquiliano y la hipoestesia del borde lateral del pie izquierdo, sin déficit motor progresivo (anexos 2 y 3).", campo: 4 },
           { tabla: {
             cols: ["Escalón", "Medicamento", "Desde", "Hasta", "Motivo"],
             filas: [
               ["Primer escalón", "Acetaminofén 1 g cada 8 horas", "19/11/2025", "Continúa", "Dolor lumbar"],
               ["Primer escalón", "Naproxeno 250 mg cada 12 horas", "19/11/2025", "14/01/2026", "Se suspende por uso prolongado"],
-              ["Coadyuvante", "Pregabalina 75 mg cada 12 horas; 150 mg cada 12 horas desde el 18/03/2026", "26/11/2025", "Continúa", "Dolor neuropático radicular"],
+              ["Coadyuvante", "Pregabalina 75 mg cada 12 horas; 150 mg cada 12 horas desde el 18/03/2026", "26/11/2025", "Continúa", "Dolor neuropático irradiado a la pierna"],
               ["Segundo escalón", "Tramadol 50 mg cada 8 horas", "29/01/2026", "Continúa", "Dolor persistente a pesar del primer escalón"]
             ],
             nota: "Analgesia escalonada según la escalera analgésica de la Organización Mundial de la Salud."
@@ -126,13 +126,13 @@ DOCS.ruta.mp = {
           ] },
 
           { h: "Antecedentes psicosociales" },
-          { p: "Jefa de hogar, con dos hijos menores a cargo, de 13 y 9 años. Refiere ansiedad por la pérdida de ingreso durante la incapacidad. Su hermana la acompaña a las citas.", campo: 5 },
+          { p: "Jefa de hogar, con dos hijos menores a cargo, de 13 y 9 años. Refiere ansiedad por la pérdida de ingreso. Su hermana la acompaña a las citas.", campo: 5 },
 
           { firma: { nombre: "Paula Andrea Giraldo Cárdenas", cargo: "Médica general tratante, IPS Salud Integral Los Cerezos", registro: "Registro médico SIM-05-311478", fecha: "17/04/2026" } },
           { nota: "Resumen estructurado de la historia clínica (Resolución 1995 de 1999), expedido con autorización de la paciente y tratado conforme a la Ley 1581 de 2012. La historia clínica completa permanece bajo custodia de la IPS; cada campo se entrega solo a quien declare una finalidad que lo requiera." }
         ] },
 
-        { titulo: "Anexo 1 · Informe de resonancia magnética", bloques: [
+        { titulo: "Anexo 1 · Imagen diagnóstica", bloques: [
           { kv: [
             ["Estudio", "Resonancia magnética de columna lumbosacra simple", 0],
             ["Informe", "SIM-RM-2026-0388", 0],
@@ -176,7 +176,7 @@ DOCS.ruta.mp = {
             cols: ["Ciclo", "Fechas", "Sesiones", "Intervención", "Al inicio", "Al final"],
             filas: [
               ["Primero", "22/12/2025 a 13/01/2026", "10", "Educación en higiene postural y protección lumbar; calor superficial; electroanalgesia; movilidad lumbopélvica; control motor del tronco", "Dolor 6/10 · Oswestry 52 % · Lasègue izquierdo a 45°", "Dolor 4/10 · Oswestry 40 % · Lasègue izquierdo a 60°"],
-              ["Segundo", "03/03/2026 a 14/03/2026", "10", "Estabilización lumbopélvica; movilización neural del ciático; fortalecimiento de tronco y miembros inferiores; entrenamiento de tareas de empaque sin carga y con cajas de hasta 5 kg; tolerancia de pie", "Dolor 6/10 · Oswestry 46 % · de pie 20 minutos", "Dolor 3/10 · Oswestry 30 % · de pie 45 minutos"]
+              ["Segundo", "03/03/2026 a 14/03/2026", "10", "Estabilización lumbopélvica; movilización neural del miembro inferior izquierdo; fortalecimiento de tronco y miembros inferiores; entrenamiento de tareas de empaque sin carga y con cajas livianas; tolerancia de pie", "Dolor 6/10 · Oswestry 46 % · de pie 20 minutos", "Dolor 3/10 · Oswestry 30 % · de pie 45 minutos"]
             ],
             nota: "Dolor medido con la escala visual análoga de 0 a 10. Índice de discapacidad de Oswestry: 0 a 20 % mínima, 21 a 40 % moderada, 41 a 60 % grave."
           }, campo: 4 },

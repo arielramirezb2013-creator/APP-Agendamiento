@@ -25,7 +25,8 @@ const docR = (function () {
     return (v < 0 && Number(s.join(".")) !== 0 ? "−" : "") + s[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".") + (s[1] ? "," + s[1] : "");
   }
   const pesos = v => "$" + fmt(Math.round(v), 0);
-  const val = v => esNum(v) ? fmt(v) : String(v == null ? "" : v);
+  // Un número suelto en el texto: coma decimal; sin punto de miles por debajo de 10.000 (años, códigos).
+  const val = v => esNum(v) ? (Number.isInteger(v) && Math.abs(v) < 10000 ? String(v) : fmt(v)) : String(v == null ? "" : v);
   const txt = v => esc(val(v)).replace(/\n/g, "<br>");
   const r1 = v => Math.round(v * 10) / 10;
   const ancho = (s, f) => String(s).length * f * 0.56;   // ancho aproximado de un texto en Arial
@@ -442,6 +443,8 @@ const docR = (function () {
     // Escala común a todos los nervios para cada medida (la amplitud, por tipo de fibra).
     const maxDe = (m, f) => filas.filter(x => m.k !== "amplitud" || /motor/i.test(x.tipo || "") === /motor/i.test(f.tipo || "")).reduce((a, x) => Math.max(a, esNum(x[m.k]) ? x[m.k] : 0, esNum(x[m.ref]) ? x[m.ref] : 0), 0) * 1.15 || 1;
     const fuera = (m, f) => esNum(f[m.k]) && esNum(f[m.ref]) && (m.alto ? f[m.k] > f[m.ref] : f[m.k] < f[m.ref]);
+    // Decimales iguales en cada medida (y, en la amplitud, en cada tipo de fibra), como en el informe del equipo.
+    const dec = (m, f) => Math.max(m.k === "latencia" ? 1 : 0, decsDe(filas.filter(x => m.k !== "amplitud" || /motor/i.test(x.tipo || "") === /motor/i.test(f.tipo || "")).reduce((a, x) => a.concat([x[m.k], x[m.ref]]), []).filter(esNum)));
     const W = 340, X0 = 72, X1 = 236;
     const tarjetas = filas.map(f => {
       const tipo = /motor/i.test(f.tipo || "") ? "motor" : "sensitivo", alguna = MET.some(m => fuera(m, f)), nervio = String(f.nervio || "Nervio");
@@ -457,11 +460,12 @@ const docR = (function () {
         if (esNum(ref)) g += m.alto ? `<rect x="${X0}" y="${y - 6}" width="${r1(X(ref) - X0)}" height="12" fill="#dcefe2"/>` : `<rect x="${r1(X(ref))}" y="${y - 6}" width="${r1(X1 - X(ref))}" height="12" fill="#dcefe2"/>`;
         if (esNum(v)) g += `<rect x="${X0}" y="${y - 3.5}" width="${r1(Math.max(1, X(v) - X0))}" height="7" fill="${malo ? "#c0392b" : "#3d6aa6"}"/>`;
         if (esNum(ref)) g += ln(X(ref), y - 8, X(ref), y + 8, "#1d2330", 1.3, 'stroke-dasharray="2 1.5"');
-        g += tx(X1 + 6, y + 4, esNum(v) ? fmt(v) + " " + u : "—", `font-size="10.5" font-weight="bold" fill="${malo ? "#a3221c" : "#1d2330"}"`);
-        if (esNum(ref)) g += tx(W - 8, y + 4, (m.alto ? "≤ " : "≥ ") + fmt(ref), 'font-size="9" text-anchor="end" fill="#6a717b"');
-        partes.push(m.n.toLowerCase() + " " + (esNum(v) ? fmt(v) + " " + u : "sin dato") + (esNum(ref) ? " (referencia " + (m.alto ? "hasta " : "desde ") + fmt(ref) + ")" + (malo ? ", fuera de referencia" : "") : ""));
+        const fv = x => fmt(x, dec(m, f));
+        g += tx(X1 + 6, y + 4, esNum(v) ? fv(v) + " " + u : "—", `font-size="10.5" font-weight="bold" fill="${malo ? "#a3221c" : "#1d2330"}"`);
+        if (esNum(ref)) g += tx(W - 8, y + 4, (m.alto ? "≤ " : "≥ ") + fv(ref), 'font-size="9" text-anchor="end" fill="#6a717b"');
+        partes.push(m.n.toLowerCase() + " " + (esNum(v) ? fv(v) + " " + u : "sin dato") + (esNum(ref) ? " (referencia " + (m.alto ? "hasta " : "desde ") + fv(ref) + ")" + (malo ? ", fuera de referencia" : "") : ""));
       });
-      return svg(W, 101, nervio + ", " + tipo + ": " + partes.join("; ") + ".", "doc-svg-tarjeta", g);
+      return svg(W, 102, nervio + ", " + tipo + ": " + partes.join("; ") + ".", "doc-svg-tarjeta", g);
     });
     const ley = `<p class="doc-fig-leyenda"><span class="doc-sw doc-sw-ok"></span>Dentro de la referencia <span class="doc-sw doc-sw-mal"></span>Fuera de la referencia <span class="doc-sw doc-sw-rango"></span>Rango normal <span class="doc-sw doc-sw-linea"></span>Límite de referencia (latencia: máximo; amplitud y velocidad: mínimo)</p>`;
     const resumen = "Neuroconducción de " + filas.length + " nervio" + (filas.length === 1 ? "" : "s") + ": " + filas.map(f => String(f.nervio || "Nervio") + " " + (/motor/i.test(f.tipo || "") ? "motor" : "sensitivo") + (MET.some(m => fuera(m, f)) ? ", con valores fuera de referencia" : ", dentro de referencia")).join("; ") + ".";
@@ -553,11 +557,13 @@ const docR = (function () {
   /* =====================================================================================================
      Documento: una hoja por página, con encabezado de control, bloques, marca de agua y pie.
      ===================================================================================================== */
-  function peso(b) {
+  // Cuánto ocupa un bloque, para repartir la marca de agua a lo largo de la hoja (lo tachado cuenta como una barra).
+  function peso(b, oculto) {
+    if (oculto) return 0.7;
     if (b.p) return 1 + String(b.p).length / 260;
-    if (b.kv) return 0.3 + b.kv.length * 0.55;
-    if (b.tabla) return 1 + ((b.tabla.filas || []).length) * 0.6;
-    if (b.lista) return b.lista.reduce((a, x) => a + 0.6 + String(x).length / 300, 0);
+    if (Array.isArray(b.kv)) return 0.3 + b.kv.length * 0.55;
+    if (b.tabla) return 1 + (Array.isArray(b.tabla.filas) ? b.tabla.filas.length : 0) * 0.6;
+    if (Array.isArray(b.lista)) return b.lista.reduce((a, x) => a + 0.6 + String(x).length / 300, 0);
     if (b.figura) return 8;
     if (b.firma) return 2;
     return 0.7;
@@ -605,7 +611,7 @@ const docR = (function () {
       const sub = pg.titulo && titulo.toLowerCase().indexOf(String(pg.titulo).toLowerCase()) < 0 ? `<p class="doc-subtitulo">${txt(pg.titulo)}</p>` : "";
       const meta = [doc.numero ? ["N.º", doc.numero] : null, doc.fecha ? ["Fecha", doc.fecha] : null, doc.version ? ["Versión", doc.version] : null, ["Hoja", (i + 1) + " de " + n]].filter(Boolean)
         .map(m => `<span class="doc-meta-i"><span class="doc-meta-k">${m[0]}</span> ${txt(m[1])}</span>`).join(`<span class="doc-meta-sep" aria-hidden="true"> · </span>`);
-      const marcas = Math.max(1, Math.min(14, Math.round(bloques.reduce((a, b) => a + peso(b), 0) / 7)));
+      const marcas = Math.max(1, Math.min(14, Math.round(bloques.reduce((a, b) => a + peso(b, typeof b.campo === "number" && !visible(b.campo)), 0) / 7)));
       return `<section class="doc-hoja"><div class="doc-marca" aria-hidden="true">${new Array(marcas).fill(`<span>${MARCA}</span>`).join("")}</div>
 <header class="doc-cab"><div class="doc-emisor"><p class="doc-emisor-n">${txt(em.n || "Emisor sin nombre")}</p>${em.area ? `<p>${txt(em.area)}</p>` : ""}${em.id ? `<p>${txt(em.id)}</p>` : ""}${em.ciudad ? `<p>${txt(em.ciudad)}</p>` : ""}</div><div class="doc-cab-t"><h3 class="doc-titulo">${txt(titulo)}</h3>${sub}</div><p class="doc-meta">${meta}</p></header>
 ${i === 0 && doc.estadoNota ? `<p class="doc-estado"><b>Sobre este ejemplar:</b> ${txt(doc.estadoNota)}</p>` : ""}<div class="doc-cuerpo">${cuerpo}</div>

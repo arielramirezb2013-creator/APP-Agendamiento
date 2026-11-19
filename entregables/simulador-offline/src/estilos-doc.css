@@ -48,7 +48,7 @@
   .doc-b-tachado { margin:6px 0 12px; } .doc-b-tachado .doc-tachado { display:block; padding:7px 10px; }
 
   /* Firmas electrónicas sintéticas */
-  .doc-firmas { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:18px 28px; margin:22px 0 12px; }
+  .doc-firmas { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap:18px 28px; margin:22px 0 12px; }
   .doc-firma { font-size:11.5px; line-height:1.4; color:#3a4150; break-inside:avoid; }
   .doc .doc-firma p { margin:0; }
   .doc .doc-firma .doc-firma-sello { display:inline-block; margin:0 0 8px 6px; padding:3px 8px; border:1.5px solid #1f4e8c; border-radius:3px; color:#1f4e8c; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; transform:rotate(-2deg); }
@@ -105,7 +105,7 @@
 
   /* Visor: capa a pantalla completa con barra fija y las hojas desplazables. */
   body.doc-abierto { overflow:hidden; }
-  .doc-visor { position:fixed; inset:0; z-index:65; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; background:rgba(30,34,42,.95); }
+  .doc-visor { position:fixed; inset:0; z-index:65; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; background:#1e222a; }
   .doc-visor-barra { position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; padding:10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); background:var(--surface, #ffffff); border-bottom:1px solid var(--line, #dcdfe5); box-shadow:0 2px 12px rgba(0,0,0,.3); }
   .doc-visor-barra h2 { flex:1 1 260px; min-width:0; margin:0; font-size:16px; line-height:22px; color:var(--text, #2d313f); overflow-wrap:anywhere; }
   .doc-visor-barra h2:focus { outline:none; } .doc-visor-barra h2:focus-visible { outline:2px solid var(--tint-border, #4b82b8); outline-offset:3px; border-radius:3px; }
