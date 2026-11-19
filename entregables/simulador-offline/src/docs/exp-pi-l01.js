@@ -3,8 +3,8 @@
    mielopatía C5–C6 (M50.0), origen laboral confirmado por la Junta Nacional (ORI-L01, 31/03/2025), PCL de
    56,80 % con estructuración el 10/12/2025 (DIC-L01, 18/03/2026), firmeza del 08/04/2026 (FIR-L01),
    solicitud radicada el 21/04/2026 (RAD-L01).
-   Aritmética del dictamen (Decreto 1507 de 2014): deficiencias 25, 20, 20 y 15 combinadas = 59,20 %;
-   ponderadas al 50 % = 29,60; rol laboral 18,00 + otras áreas ocupacionales 9,20 = 27,20; PCL = 56,80 %.
+   Aritmética del dictamen (Decreto 1507 de 2014): deficiencias 25, 20, 10 y 10 combinadas = 51,40 %;
+   ponderadas al 50 % = 25,70; rol laboral 23,00 + otras áreas ocupacionales 8,10 = 31,10; PCL = 56,80 %.
    IBC: oct.–dic. de 2023 a $3.280.000 y ene.–sep. de 2024 a $3.460.000; suma $40.980.000; promedio $3.415.000.
    Vibración (ISO 2631-1): a_w,z 0,73 m/s² durante 5 h → A(8) = 0,73 × √(5/8) = 0,58 m/s².
    Todo es sintético: ninguna persona, número, profesional ni documento es real. */
@@ -81,7 +81,7 @@ DOCS.exp["PI-L01"] = {
             ] },
             { h: "Petición" },
             { p: "Solicito que ARL SURA reconozca y pague la pensión de invalidez de origen laboral, de acuerdo con los artículos 9 y 10 de la Ley 776 de 2002, desde la fecha que corresponda según el dictamen." },
-            { p: "Pido también que me informen a quién le corresponde el siguiente paso del trámite y si falta algún documento. No tengo la constancia de firmeza del dictamen porque no me la entregaron con la notificación." },
+            { p: "Pido también que me informen a quién le corresponde el siguiente paso del trámite y si falta algún documento. No tengo la constancia de firmeza del dictamen: ARL SURA no me la ha entregado." },
             { h: "Documentos que adjunto" },
             { tabla: {
               cols: ["N.º", "Documento", "Folios"],
@@ -208,7 +208,7 @@ DOCS.exp["PI-L01"] = {
               "Factores extralaborales: sin antecedente de trauma cervical; no fuma; no practica deportes de contacto. La hipertensión arterial, controlada, no se relaciona con la patología discal."
             ] },
             { h: "Respuesta a los argumentos del recurso" },
-            { p: "Sobre el primer argumento: el informe identifica equipo, operador, turno y recorrido, y el empleador certificó que el trabajador operó ese modelo de equipo por las mismas rutas durante todo el período en el cargo, con unas 5 horas diarias de conducción según el registro de operación. La reparación parcial del piso ocurrió en 2024, después del período de exposición evaluado." },
+            { p: "Sobre el primer argumento: el informe identifica equipo, operador, turno y recorrido, y el empleador certificó que el trabajador operó ese modelo de equipo por las mismas rutas durante todo el período en el cargo, y el registro de horas de operación, disponible desde 2018, muestra unas 5 horas diarias de conducción. La reparación parcial del piso ocurrió en 2024, después del período de exposición evaluado." },
             { p: "Sobre el segundo: el valor de acción marca el nivel desde el cual la exposición supone un riesgo para la salud que obliga a adoptar medidas; el valor límite no es un umbral por debajo del cual la exposición sea inocua. Con un factor de cresta superior a 9, la norma ISO 2631-1 advierte que el método básico subestima el efecto de los impactos; por eso el informe calcula el valor de dosis de vibración, que también supera el valor de acción." },
             { p: "Sobre el tercero: la Sala reconoce el componente degenerativo, presente en varios niveles. Sin embargo, la lesión que comprime la médula está en C5–C6, el segmento más solicitado por la extensión y la rotación cervical forzadas que exigía la tarea, sumadas a la carga transmitida por los impactos. La calificación del origen exige establecer la relación de causalidad entre la enfermedad y los factores de riesgo del trabajo (Ley 1562 de 2012, art. 4), y la Sala la encuentra demostrada aun con cambios degenerativos asociados a la edad." },
             { h: "Decisión" },
@@ -324,28 +324,28 @@ DOCS.exp["PI-L01"] = {
           ] },
           { titulo: "Título I · Valoración de las deficiencias", bloques: [
             { tabla: {
-              cols: ["Capítulo y tabla", "Deficiencia", "Clase", "Factores de ajuste", "Valor (%)"],
+              cols: ["Capítulo y criterio", "Deficiencia", "Clase", "Factores de ajuste", "Valor (%)"],
               filas: [
-                ["Capítulo 12 · Uso de las extremidades superiores", "Extremidad superior derecha (dominante): pérdida de destreza digital y agarre débil; dificultad para sostener herramientas y escribir", "Clase 2", "No aplican en este capítulo", "25,00"],
-                ["Capítulo 12 · Estación y marcha", "Marcha con base ampliada, tándem no logrado; sube escaleras paso a paso con apoyo en el pasamanos", "Clase 2", "No aplican en este capítulo", "20,00"],
-                ["Capítulo 12 · Uso de las extremidades superiores", "Extremidad superior izquierda (no dominante): torpeza digital con agarre disminuido", "Clase 2", "No aplican en este capítulo", "20,00"],
-                ["Capítulo 15 · Columna cervical", "Trastorno de disco C5–C6 operado: discectomía y artrodesis instrumentada de un nivel; la secuela neurológica se califica en el capítulo 12", "Clase 2", "Factor principal 2; historia funcional 3; examen físico y estudios clínicos usados para asignar la clase; ajuste neto +1", "15,00"]
+                ["Capítulo 12 · Uso de las extremidades superiores", "Extremidad superior derecha (dominante): usa la extremidad, pero con dificultad para el autocuidado (abotonarse, cortar alimentos duros); pérdida de destreza digital y agarre débil; dificultad para sostener herramientas y escribir", "Clase 3", "No aplican en este capítulo", "25,00"],
+                ["Capítulo 12 · Estación y marcha", "Se levanta y camina sin ayudas técnicas, con dificultad y por distancias cortas; base ampliada, tándem no logrado; en escaleras y desniveles necesita el pasamanos", "Clase 2", "No aplican en este capítulo", "20,00"],
+                ["Capítulo 12 · Uso de las extremidades superiores", "Extremidad superior izquierda (no dominante): agarre disminuido y torpeza digital; sostiene objetos con dificultad", "Clase 2", "No aplican en este capítulo", "10,00"],
+                ["Capítulo 15 · Columna cervical", "Hernia discal C5–C6 operada (discectomía y artrodesis instrumentada de un nivel), con radiculopatía C6 derecha residual documentada; la mielopatía se califica en el capítulo 12", "Clase 2", "Factor principal: clase 2. Historia funcional: grado 1, dolor cervical intermitente con los esfuerzos (ajuste −1); la limitación funcional por la mielopatía ya se valora en el capítulo 12. Examen físico y estudios clínicos usados para asignar la clase. Ajuste neto −1", "10,00"]
               ],
-              nota: "Las deficiencias neurológicas se califican por la mielopatía residual y la de columna por la lesión estructural, sin contar dos veces el mismo hallazgo."
+              nota: "Las deficiencias neurológicas se califican por la mielopatía residual; la de columna, por la lesión estructural y la radiculopatía C6 residual. Ningún hallazgo se cuenta dos veces."
             } },
             { h: "Combinación de las deficiencias" },
             { tabla: {
               cols: ["Paso", "Valores que se combinan", "Cálculo", "Resultado (%)"],
               filas: [
                 ["1", "25,00 y 20,00", "25,00 + 20,00 × (100 − 25,00) / 100", "40,00"],
-                ["2", "40,00 y 20,00", "40,00 + 20,00 × (100 − 40,00) / 100", "52,00"],
-                ["3", "52,00 y 15,00", "52,00 + 15,00 × (100 − 52,00) / 100", "59,20"]
+                ["2", "40,00 y 10,00", "40,00 + 10,00 × (100 − 40,00) / 100", "46,00"],
+                ["3", "46,00 y 10,00", "46,00 + 10,00 × (100 − 46,00) / 100", "51,40"]
               ],
               nota: "Fórmula de combinación del Decreto 1507 de 2014: A + B × (100 − A) / 100, de mayor a menor valor."
             } },
             { kv: [
-              ["Valor final de las deficiencias", "59,20 %"],
-              ["Título I ponderado al 50 %", "29,60 %"]
+              ["Valor final de las deficiencias", "51,40 %"],
+              ["Título I ponderado al 50 %", "25,70 %"]
             ] },
             { nota: "La hipertensión arterial, de origen común y controlada, no hace parte de esta calificación." }
           ] },
@@ -355,10 +355,10 @@ DOCS.exp["PI-L01"] = {
             { tabla: {
               cols: ["Rol laboral", "Criterio aplicado", "Valor (%)", "Máximo (%)"],
               filas: [
-                ["Restricciones del rol laboral", "Reubicado de forma permanente en un cargo distinto dentro de la misma empresa. No puede conducir montacargas ni manipular cargas.", "15,00", "25,00"],
+                ["Restricciones del rol laboral", "Restricciones completas para el rol laboral habitual: no puede conducir montacargas ni manipular cargas. Reubicación laboral definitiva en un cargo distinto dentro de la misma empresa.", "20,00", "25,00"],
                 ["Autosuficiencia económica", "Reajustado: conserva el salario, con gastos adicionales derivados de la enfermedad", "1,00", "2,50"],
                 ["Edad", "52 años", "2,00", "2,50"],
-                ["Subtotal", "", "18,00", "30,00"]
+                ["Subtotal", "", "23,00", "30,00"]
               ],
               nota: ""
             } },
@@ -367,20 +367,20 @@ DOCS.exp["PI-L01"] = {
               filas: [
                 ["Aprendizaje y aplicación del conocimiento", "Escritura manual lenta y poco legible", "0,40", "4,00"],
                 ["Comunicación", "Producción de mensajes escritos; uso de dispositivos con teclado pequeño", "0,60", "4,00"],
-                ["Movilidad", "Andar distancias largas, subir escaleras, levantar y llevar objetos, uso fino de la mano, conducir", "3,40", "4,00"],
-                ["Autocuidado personal", "Vestirse (botones y cordones), cortar los alimentos, cuidado de partes del cuerpo", "2,20", "4,00"],
-                ["Vida doméstica", "Preparar comidas, quehaceres de la casa, cuidado de los objetos del hogar", "2,60", "4,00"],
-                ["Subtotal", "", "9,20", "20,00"]
+                ["Movilidad", "Andar distancias largas, subir escaleras, levantar y llevar objetos, uso fino de la mano, conducir", "3,00", "4,00"],
+                ["Autocuidado personal", "Vestirse (botones y cordones), cortar los alimentos, cuidado de partes del cuerpo", "1,80", "4,00"],
+                ["Vida doméstica", "Preparar comidas, quehaceres de la casa, cuidado de los objetos del hogar", "2,30", "4,00"],
+                ["Subtotal", "", "8,10", "20,00"]
               ],
               nota: "Cada área suma diez actividades calificadas de 0 a 0,4 según el grado de dificultad."
             } },
-            { kv: [["Total Título II", "27,20 %"]] },
+            { kv: [["Total Título II", "31,10 %"]] },
             { h: "Concepto final" },
             { tabla: {
               cols: ["Componente", "Valor (%)"],
               filas: [
-                ["Título I · Deficiencias, ponderado al 50 %", "29,60"],
-                ["Título II · Rol laboral, rol ocupacional y otras áreas ocupacionales", "27,20"],
+                ["Título I · Deficiencias, ponderado al 50 %", "25,70"],
+                ["Título II · Rol laboral, rol ocupacional y otras áreas ocupacionales", "31,10"],
                 ["Pérdida de capacidad laboral y ocupacional", "56,80"]
               ],
               nota: ""
@@ -390,11 +390,12 @@ DOCS.exp["PI-L01"] = {
               ["Origen", "Laboral · enfermedad laboral (ORI-L01 del 31/03/2025)"],
               ["Diagnóstico calificado", "M50.0 · Trastorno de disco cervical con mielopatía"],
               ["Fecha de estructuración", "10/12/2025"],
-              ["Requiere ayuda de otra persona para las actividades básicas", "No"],
-              ["Requiere ayuda de otra persona para tomar decisiones", "No"]
+              ["Requiere de terceras personas para las actividades de la vida diaria", "No. Necesita ayuda ocasional para abotonarse y cortar alimentos duros"],
+              ["Requiere de terceras personas para tomar decisiones", "No"]
             ] },
             { h: "Fundamento de la fecha de estructuración" },
-            { p: "Se fija el 10/12/2025, fecha de la valoración por fisiatría que documenta la mejoría médica máxima y las secuelas que sustentan la pérdida calificada (Decreto 1507 de 2014, art. 3). Antes de esa fecha el paciente estaba en recuperación y la historia clínica no permite establecer que hubiera alcanzado el 50 % de pérdida." },
+            { p: "Se fija el 10/12/2025, fecha de la valoración por fisiatría que documenta la mejoría médica máxima y las secuelas que sustentan la pérdida calificada (Decreto 1507 de 2014, art. 3)." },
+            { p: "Las mediciones de octubre de 2024 ya eran parecidas, pero entonces no podía establecerse que las secuelas fueran permanentes: la recuperación neurológica después de la descompresión medular puede continuar durante uno a dos años, la artrodesis seguía en consolidación en el control del 21/01/2025 y la lesión medular permanente (mielomalacia) solo se documentó en la resonancia de control del 18/11/2025. La valoración del 10/12/2025, a más de 18 meses de la cirugía y tras más de un año sin cambios, es la primera que establece la mejoría médica máxima y las restricciones permanentes; antes de ella la historia clínica no permite fijar el momento en que se alcanzó el 50 % de pérdida." },
             { h: "Fundamentos de derecho" },
             { lista: [
               "Ley 100 de 1993, art. 41, modificado por el Decreto Ley 019 de 2012, art. 142.",
@@ -433,22 +434,22 @@ DOCS.exp["PI-L01"] = {
             { lista: [
               "Columna cervical: cicatriz anterior derecha sana. Flexión 30°, extensión 20°, rotación 50° a cada lado, con dolor al final del arco.",
               "Fuerza: 4/5 en los músculos intrínsecos de ambas manos y en los flexores de los dedos de la mano derecha; 5/5 en el resto de los grupos.",
-              "Reflejos: braquiorradial invertido a la derecha; tricipitales y rotulianos aumentados; Hoffmann positivo bilateral; clonus aquíleo agotable bilateral.",
-              "Sensibilidad: hipoestesia en guante en ambas manos, de predominio derecho.",
+              "Reflejos: bicipital disminuido y braquiorradial invertido a la derecha; tricipitales y rotulianos aumentados; Hoffmann positivo bilateral; clonus aquíleo agotable bilateral.",
+              "Sensibilidad: hipoestesia en guante en ambas manos, de predominio derecho, e hipoestesia en la cara lateral del antebrazo y el pulgar derechos (dermatoma C6).",
               "Marcha: base ampliada; tándem no logrado; Romberg con oscilación, sin caída. Sube y baja escaleras paso a paso con apoyo en el pasamanos."
             ] },
             { h: "Pruebas funcionales" },
             { tabla: {
               cols: ["Prueba", "Resultado", "Referencia"],
               filas: [
-                ["Dinamometría de agarre", "Derecha 22 kg · izquierda 27 kg", "Cerca de 45 kg para hombres de su edad"],
-                ["Prueba de las nueve clavijas", "Derecha 31 s · izquierda 27 s", "Cerca de 19 s"],
+                ["Dinamometría de agarre", "Derecha 22 kg · izquierda 27 kg", "Cerca de 45 kg (derecha) y 42 kg (izquierda) para hombres de su edad"],
+                ["Prueba de las nueve clavijas", "Derecha 31 s · izquierda 27 s", "Cerca de 19 s (derecha) y 20 s (izquierda)"],
                 ["Escala mJOA de mielopatía cervical", "13 de 18 (mielopatía moderada)", "18"],
                 ["Velocidad de marcha en 10 metros", "0,88 m/s", "1,2 m/s o más"],
                 ["Escala de equilibrio de Berg", "48 de 56", "56"],
                 ["Índice de discapacidad cervical", "36 %", "0 %"]
               ],
-              nota: "Los valores coinciden con la valoración por fisiatría del 10/12/2025, lo que confirma que la función está estable."
+              nota: "Los valores son similares a los de la valoración por fisiatría del 10/12/2025, lo que confirma que la función está estable."
             } },
             { h: "Entrevista ocupacional" },
             { p: "Trabaja como auxiliar de inventario: concilia referencias y conteos en tableta, alterna sentado y de pie y tiene pausas programadas. Tarda más que sus compañeros en digitar y en contar unidades pequeñas. No conduce vehículos desde enero de 2024. En casa necesita ayuda para cortar alimentos duros, abotonarse y hacer arreglos domésticos; usa el pasamanos en las escaleras." },
@@ -525,7 +526,7 @@ DOCS.exp["PI-L01"] = {
         numero: "SIM-CAF-2026-04187",
         fecha: "21/04/2026",
         version: "v2",
-        estadoNota: "Segunda versión del certificado: reemplaza la expedida el 04/06/2024 para el trámite de incapacidad y certifica la vigencia en las fechas del dictamen y de la radicación.",
+        estadoNota: "Segunda versión del certificado: reemplaza la expedida el 04/06/2024 para la calificación del origen y certifica la vigencia en las fechas del dictamen y de la radicación.",
         paginas: [
           { titulo: "Certificado", bloques: [
             { p: "ARL SURA certifica que la persona identificada a continuación está afiliada al Sistema General de Riesgos Laborales por medio de esta administradora, con los siguientes datos:" },
@@ -949,8 +950,8 @@ DOCS.exp["PI-L01"] = {
               cols: ["Prueba", "Resultado", "Referencia"],
               filas: [
                 ["Escala mJOA de mielopatía cervical", "13 de 18 (mielopatía moderada)", "18"],
-                ["Dinamometría de agarre", "Derecha 22 kg · izquierda 26 kg", "Cerca de 45 kg para su edad y sexo"],
-                ["Prueba de las nueve clavijas", "Derecha 32 s · izquierda 28 s", "Cerca de 19 s"],
+                ["Dinamometría de agarre", "Derecha 22 kg · izquierda 26 kg", "Cerca de 45 kg (derecha) y 42 kg (izquierda) para su edad y sexo"],
+                ["Prueba de las nueve clavijas", "Derecha 32 s · izquierda 28 s", "Cerca de 19 s (derecha) y 20 s (izquierda)"],
                 ["Velocidad de marcha en 10 metros", "0,86 m/s", "1,2 m/s o más"],
                 ["Escala de equilibrio de Berg", "48 de 56", "56"],
                 ["Índice de discapacidad cervical", "36 %", "0 %"]
@@ -1207,7 +1208,7 @@ DOCS.exp["PI-L01"] = {
             { p: "Conclusión: artrodesis C5–C6 sin compresión residual. Mielomalacia focal C5–C6, secuela de la mielopatía compresiva." },
             { firma: { nombre: "Adriana Lucía Pérez Soler", cargo: "Médica radióloga", registro: "Registro médico SIM-05-201174", fecha: "18/11/2025" } },
             { h: "Valoración por fisiatría · 10/12/2025" },
-            { p: "Refiere estabilidad desde la rehabilitación. Trabaja como auxiliar de inventario con las adaptaciones indicadas. Al examen: braquiorradial invertido derecho, Hoffmann positivo bilateral, clonus aquíleo agotable, hipoestesia en guante de predominio derecho, fuerza 4/5 en los músculos intrínsecos de las manos, marcha con base ampliada y tándem no logrado. Mediciones del anexo 6, sin cambios significativos frente a octubre de 2024." },
+            { p: "Refiere estabilidad desde la rehabilitación. Trabaja como auxiliar de inventario con las adaptaciones indicadas. Al examen: bicipital disminuido y braquiorradial invertido a la derecha, Hoffmann positivo bilateral, clonus aquíleo agotable, hipoestesia en guante de predominio derecho y en el dermatoma C6 derecho, fuerza 4/5 en los músculos intrínsecos de las manos, marcha con base ampliada y tándem no logrado. Mediciones del anexo 6, sin cambios significativos frente a octubre de 2024." },
             { p: "Concepto: mielopatía cervical operada con secuelas neurológicas estables durante más de un año. Se considera alcanzada la mejoría médica máxima. Se mantienen la restricción de conducción y las demás restricciones de forma permanente." },
             { firma: { nombre: "Natalia Ceballos Duque", cargo: "Médica fisiatra", registro: "Registro médico SIM-05-208815", fecha: "10/12/2025" } }
           ] }
