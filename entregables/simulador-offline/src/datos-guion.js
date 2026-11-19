@@ -8,7 +8,7 @@ const GUION = {
   estudio: {
     id:"ruta-incapacidad-p2",
     titulo:"Simulación de la ruta de incapacidad laboral",
-    subtitulo:"Interoperabilidad clínico-laboral · casos sintéticos · organización ancla SURA",
+    subtitulo:"Interoperabilidad clínico-laboral · casos sintéticos · caso de estudio SURA",
     programa:"Proyecto 2 · DGIT 6202",
     institucion:"Universidad de los Andes",
     investigador:"", director:"", contacto:"", comite:"", cierre:""
@@ -197,7 +197,7 @@ const GUION = {
       "Va a recibir un expediente sintético de solicitud de pensión de invalidez por enfermedad laboral y lo va a tramitar desde su rol, punto de decisión por punto de decisión. En cada punto verá qué soportes exige la decisión, en qué estado llegaron y qué dice el criterio de conformidad de cada uno.",
       "Lo recorrerá dos veces, con el mismo expediente: una vez con los canales del flujo actual —oficio, correo, bandejas documentales y lo que la persona solicitante alcance a aportar— y otra con el módulo de interoperabilidad que propone la investigación, que consulta por finalidad y deja registro de cada acceso. El expediente se reinicia entre las dos.",
       "Un soporte no pasa a estar conforme porque usted lo pida: tiene que llegar, verificarlo contra su criterio y aceptarlo. Eso es justamente lo que el estudio mide.",
-      "Al final le preguntaremos a quién le corresponde cada responsabilidad del expediente y le pediremos reconstruir cuatro accesos a la evidencia. Son entre 30 y 45 minutos y puede pausar cuando quiera."
+      "Al final le preguntaremos a quién le corresponde cada responsabilidad del expediente y le pediremos reconstruir cuatro accesos a la evidencia. Le tomará unos {minutos} minutos y puede pausar cuando quiera."
     ],
     marcoTitulo:"De qué investigación hace parte",
     hipotesisTitulo:"Lo que este recorrido mide",
@@ -232,6 +232,10 @@ const GUION = {
   /* La orientación cuando el estudio aplica el expediente: el caso, la mecánica y el rol son otros. */
   orientacionExp: {
     estudio: {
+      parrafos:[
+        "Esta simulación hace parte de una investigación doctoral sobre interoperabilidad clínico-laboral: cómo circula la evidencia clínica y laboral entre las entidades que intervienen cuando una persona solicita la pensión de invalidez por una enfermedad de origen laboral.",
+        "Usted participa porque conoce uno de esos roles. Va a tramitar un expediente sintético punto de decisión por punto de decisión, haciendo lo que le corresponde a su entidad, una vez con los canales de hoy y otra con el módulo de interoperabilidad que propone la investigación."
+      ],
       busca:[
         "Conocer, punto por punto, con qué evidencia cuenta su rol para decidir, qué le falta, cómo la consigue y cuánto le cuesta conseguirla.",
         "Comparar el mismo expediente tramitado con los canales de hoy y con el módulo de interoperabilidad que propone la investigación.",
@@ -274,6 +278,10 @@ const GUION = {
     estadoTitulo:"Cómo llegó cada soporte",
     criterioTitulo:"Criterio de conformidad",
     actuarTitulo:"Qué hace con cada soporte",
+    aperturaAporta:"En este punto decide {decide}. Le piden la evidencia que usted custodia: revise lo que tiene, consulte si lo necesita y diga qué entrega.",
+    actuarAyudaAporta:"Consultar no cambia el expediente: solo deja registro de que usted miró lo que custodia.",
+    aportaTitulo:"Qué entrega en este punto",
+    aportaAyuda:"Responda con lo que haría hoy su entidad con esta solicitud, no con lo que debería hacer.",
     actuarAyuda:"Consultar no cambia el expediente: solo deja registro de que usted miró. Solicitar hace llegar la versión de referencia, que después tiene que verificar y aceptar para que cuente como conforme.",
     decidirTitulo:"Su decisión en este punto",
     decidirAyuda:"Decida con lo que tiene ahora, no con lo que debería tener. Si le falta algo, dígalo: que falte es un resultado del estudio.",
@@ -317,13 +325,13 @@ const GUION = {
     campos:[
       { id:"edad", n:"Edad", tipo:"ops", req:true, ops:[["18-29","18 a 29"],["30-39","30 a 39"],["40-49","40 a 49"],["50-59","50 a 59"],["60+","60 o más"]] },
       { id:"formacion", n:"Profesión o formación de base", tipo:"ops", req:true, ops:[["salud","Área de la salud"],["derecho","Derecho"],["administracion","Administración o economía"],["ingenieria","Ingeniería o tecnología"],["sst","Seguridad y salud en el trabajo"],["otra","Otra"]] },
-      { id:"formacionCual", n:"¿Cuál?", tipo:"texto", ayuda:"Su título o su formación principal.", req:true },
+      { id:"formacionCual", n:"¿Cuál?", falta:"cuál es su profesión o formación", tipo:"texto", ayuda:"Su título o su formación principal.", req:true },
       { id:"complementarios", n:"Estudios complementarios", tipo:"texto", ayuda:"Especializaciones, maestrías, diplomados o certificaciones pertinentes a este trabajo. Si no tiene, escriba «ninguno»." },
       { id:"experiencia", n:"Años de experiencia en este tipo de trámites", tipo:"numero", req:true, ayuda:"Años trabajando con incapacidades, calificación de origen, prestaciones o seguridad y salud en el trabajo." },
       { id:"rolActual", n:"Cargo o función que desempeña hoy", tipo:"texto", req:true },
       { id:"trayectoria", n:"Entidades o empresas donde ha trabajado y el rol que tuvo en cada una", tipo:"largo", req:true, ayuda:"Una por renglón, sin nombres de personas. Por ejemplo: «EPS, analista de incapacidades, 4 años» o «empresa del sector alimentos, responsable de SG-SST, 3 años»." },
       { id:"frecuencia", n:"¿Con qué frecuencia atiende casos como este?", tipo:"ops", req:true, ops:[["diario","A diario"],["semanal","Varias veces por semana"],["mensual","Algunas veces al mes"],["rara","Rara vez"],["nunca","Nunca, pero conozco el trámite"]] },
-      { id:"otrosRoles", n:"¿Ha trabajado en alguno de los otros roles de esta ruta?", tipo:"texto", ayuda:"Por ejemplo, si hoy está en una ARL pero antes estuvo en una EPS o en una IPS. Si no, escriba «no»." }
+      { id:"otrosRoles", n:"¿Ha trabajado en alguno de los otros roles de este trámite?", tipo:"texto", ayuda:"Por ejemplo, si hoy está en una ARL pero antes estuvo en una EPS o en una IPS. Si no, escriba «no»." }
     ]
   },
 
@@ -416,6 +424,7 @@ const GUION = {
   /* ---------- Lo que ocurre después de responder ---------- */
   consecuencia: {
     titulo:"Qué pasó en el caso con su respuesta",
+    tituloSinRespuesta:"Qué pasó en el caso",
     sistema:"Lo que hicieron los actores que no están conectados",
     estado:"Cómo queda el caso después de este paso",
     forzado:"El sistema tomó este curso para que su rol alcance a intervenir más adelante en la ruta.",
@@ -426,6 +435,11 @@ const GUION = {
   observacion: {
     titulo:"Lo que quiera añadir sobre este paso",
     ayuda:"Aquí escriba lo que la pregunta no alcanza a recoger: lo que en su experiencia no ocurre así, lo que falta, lo que le va a complicar el paso siguiente, la norma que usted aplicaría, el dato que echó de menos. Es opcional, pero es donde suelen estar los hallazgos.",
+    marca:"opcional"
+  },
+  observacionExp: {
+    titulo:"Lo que quiera añadir sobre este punto",
+    ayuda:"Aquí escriba lo que la pregunta no alcanza a recoger: lo que en su experiencia no ocurre así, lo que falta, lo que le va a complicar el punto siguiente, la norma que usted aplicaría, el dato que echó de menos. Es opcional, pero es donde suelen estar los hallazgos.",
     marca:"opcional"
   },
 

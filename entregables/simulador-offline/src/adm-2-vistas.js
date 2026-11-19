@@ -190,7 +190,16 @@ function expedienteDetalleHtml(c) {
     ${puntos}${soportes}
     <p class="mini"><b>Criterio del caso.</b> ${esc(c.criterio)}</p>
     <p class="mini"><b>Preguntas de cierre.</b> ${c.h2.length} responsabilidades y ${c.h3.length} accesos para reconstruir.</p>
-    ${c.procedencia ? `<p class="mini">Procedencia: ${esc(c.procedencia)}</p>` : ""}</div>`;
+    ${c.procedencia ? `<p class="mini">Procedencia: ${esc(c.procedencia)}</p>` : ""}
+    ${docsExpedienteHtml(c)}</div>`;
+}
+// Los documentos sintéticos del expediente, por soporte y versión: lo que el participante abre con «Ver el documento».
+function docsExpedienteHtml(c) {
+  const D = typeof DOCS !== "undefined" && DOCS.exp[c.id]; if (!D) return "";
+  const filas = c.soportes.map(s => Object.keys((D.soportes || {})[s.k] || {}).map(v => {
+    const doc = D.soportes[s.k][v], papel = v === s.verRef ? (v === s.ver ? "la que llega al radicar y la de referencia" : "la de referencia, cuando se pide") : "la que llega al radicar: " + s.notaEstado;
+    return `<details data-det="doc-${esc(c.id)}-${esc(s.k)}-${esc(v)}"><summary><b>${esc(s.k)} · ${esc(v)}</b> ${esc(doc.titulo)} <span class="mini">· ${esc(papel)}</span></summary>${docHtml(doc, {})}</details>`; }).join("")).join("");
+  return `<h4>${ico("documentos-expediente", "sm")}Documentos sintéticos del expediente</h4><p class="mini">Lo que el participante abre con «Ver el documento» desde cada soporte, en la versión que tenga en la mano. También están todos juntos en documentos-sinteticos.html.</p>${filas}`;
 }
 function perfilDetalleHtml(p) {
   if (!p) return "";
@@ -201,7 +210,8 @@ function perfilDetalleHtml(p) {
   }).join("");
   return `<div class="panel"><div class="row"><h3 style="margin-right:auto">${esc(p.persona.nombre || p.id)}</h3>${btn("perfil-cerrar", "", "Cerrar", "sm outline", "acciones-cerrar")}</div>
     <p>${esc(p.caso.resumen || "")}</p><div class="kv">${fichas}</div>${piezas}
-    ${p.caso.fuente ? `<p class="mini">Origen del caso: ${esc(p.caso.fuente)}</p>` : ""}</div>`;
+    ${p.caso.fuente ? `<p class="mini">Origen del caso: ${esc(p.caso.fuente)}</p>` : ""}
+    ${typeof DOCS !== "undefined" && DOCS.ruta[p.id] ? `<h4>${ico("documentos-expediente", "sm")}Documentos sintéticos del caso</h4><p class="mini">Lo que el participante abre desde cada pieza que llegó a su entidad; lo que no llegó aparece tachado.</p>${Object.keys(DOCS.ruta[p.id].piezas || {}).map(k => `<details data-det="doc-ruta-${esc(p.id)}-${esc(k)}"><summary><b>${esc(EV[k] ? EV[k].sl : k)}</b> ${esc(DOCS.ruta[p.id].piezas[k].titulo)}</summary>${docHtml(DOCS.ruta[p.id].piezas[k], {})}</details>`).join("")}` : ""}</div>`;
 }
 
 // Lo que ve el perfil técnico en «Estudio»: a qué estudio pertenece el sitio, dónde se publica y el receptor.

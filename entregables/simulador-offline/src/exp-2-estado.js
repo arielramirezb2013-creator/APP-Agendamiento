@@ -90,7 +90,7 @@ function guardarPunto() {
   const caso = casoExp(), E = estadoExp(b.cond), f = S.form;
   const r = EXPM.cerrarPunto(E, caso, b.cond, b.punto, f.decision, f.porQue);
   const reg = registrar("punto", { cond:b.cond, punto:b.punto, como:b.como, decision:f.decision,
-    decisionTxt:etiqueta(EXPM.opcionesPunto(caso, EXPM.puntoDe(caso, b.punto)), f.decision),
+    decisionTxt:etiqueta(EXPM.opcionesPunto(caso, EXPM.puntoDe(caso, b.punto), b.como), f.decision),
     porQue:textoLimpio(f.porQue, 2000), obs:textoLimpio(f.obs, 2000) || null,
     completitud:r.completitud, horas:r.horas, resuelve:!!EXPM.puntoDe(caso, b.punto).resuelve,
     soportes:EXPM.puntoDe(caso, b.punto).requiere.map(k => ({ k:k, estado:E.soportes[k].estado, aceptado:!!E.soportes[k].aceptado })) },
@@ -106,7 +106,7 @@ function validarH2() {
 }
 function guardarH2() {
   const falta = validarH2();
-  if (falta.length) { aviso("Falta elegir a quién le corresponde " + (falta.length > 1 ? "las tareas " + listaFrase(falta) : "la tarea " + falta[0]) + ".", true); return false; }
+  if (falta.length) { aviso("Falta elegir a quién le " + (falta.length > 1 ? "corresponden las tareas " + listaFrase(falta) : "corresponde la tarea " + falta[0]) + ".", true); return false; }
   const caso = casoExp(), cal = EXPM.calificarH2(caso, S.h2);
   registrar("h2", { expediente:caso.id, respuestas:clone(S.h2), calificacion:cal }, { paso:"—" });
   return true;
@@ -140,7 +140,7 @@ function expDesdeDoc(doc) {
     const d = conds[c];
     if (!d || typeof d !== "object") return;
     const E = EXPM.inicial(caso);
-    if (typeof d.horas === "number" && isFinite(d.horas) && d.horas >= 0) E.horas = d.horas;
+    if (typeof d.horas === "number" && isFinite(d.horas) && d.horas >= 0) E.horas = Math.min(EXP.protocolo.corteHoras, d.horas);
     if (d.soportes && typeof d.soportes === "object") Object.keys(E.soportes).forEach(k => {
       const s = d.soportes[k];
       if (!s || typeof s !== "object") return;
@@ -172,5 +172,7 @@ function expedienteDoc() {
   const h2 = regsDe({ tipo:"h2", participanteId:S.yo.id })[0], h3 = regsDe({ tipo:"h3", participanteId:S.yo.id })[0];
   return { marco:EXP.marco.id, caso:caso.id, origen:caso.origen, orden:(S.ses.orden || []).slice(),
     corteHoras:EXP.protocolo.corteHoras, condiciones:conds,
+    // La regla de horas con que se respondió: verificar cuesta lo de «verificar» y las horas no pasan del corte.
+    reglaHoras:{ costos:clone(EXPM.horas), verificarCobra:true, tope:EXP.protocolo.corteHoras },
     h2:h2 ? h2.payload.calificacion : null, h3:h3 ? h3.payload.calificacion : null };
 }

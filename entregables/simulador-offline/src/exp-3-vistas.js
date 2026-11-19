@@ -63,7 +63,7 @@ function casoVista() {
   (c.trayectoria || []).forEach(todo);
   (c.trayectoria || []).forEach(t => { if (typeof t.dur === "string") t.dur = durLlano(t.dur); });
   if (typeof c.tiempos === "string") c.tiempos = durLlano(c.tiempos);
-  ["cronologia", "referenciasTemporales"].forEach(k => { c[k] = (c[k] || []).map(f => Array.isArray(f) ? f.map(L) : f); });
+  ["cronologia", "referenciasTemporales"].forEach(k => { c[k] = (c[k] || []).map(f => Array.isArray(f) ? f.map(x => typeof x === "string" ? L(x).replace(/\bdel guion\b/g, "del expediente") : x) : f); });
   (c.actores || []).forEach(a => { a.n = L(a.n); a.rol = L(a.rol); });
   (c.puntos || []).forEach(p => { p.n = L(p.n); p.decideN = L(p.decideN); });
   (c.soportes || []).forEach(x => { ["custN", "notaEstado", "contenido", "criterio"].forEach(k => { x[k] = L(x[k]); }); });
@@ -121,7 +121,7 @@ function intervencionExpHtml(actor) {
     return `<tr><td class="nw"><b>${j + 1}</b></td><td>${esc(p.n)}</td><td>${esc(como === "decide" ? "Decide" : como === "aporta" ? "Aporta la evidencia que custodia" : como === "ilustra" ? "Lo lee como tramo ilustrativo" : "No interviene")}</td></tr>`;
   }).join("");
   return `<div class="twrap"><table class="t apila"><thead><tr><th scope="col">Punto</th><th scope="col">Decisión</th><th scope="col">Qué hace usted</th></tr></thead><tbody>${filas}</tbody></table></div>
-    <p class="mini">${esc(papelTxt(caso, a))}</p>`;
+    `;
 }
 
 /* ---------- Presentación del expediente ---------- */
@@ -136,7 +136,7 @@ function expCasoHtml() {
     : "Su rol no actúa en los puntos de este expediente: lo recorrerá como observador.";
   return `<div class="pmain-head"><div><div class="eyebrow">${esc(nomExp(caso))} · ${esc(caso.origen === "laboral" ? "origen laboral" : "origen común")}</div><h1 class="h1" tabindex="-1">${ico("navegacion-escenario")}${esc(caso.titulo)}</h1></div></div>
     <div class="qpanel">${esc(caso.apertura)}</div>
-    ${X.parrafos.map(p => `<p>${esc(p)}</p>`).join("")}
+    ${X.parrafos.map(p => `<p>${esc(plantilla(p))}</p>`).join("")}
     ${papel}
     ${expFichaHtml(caso, false)}
     <div class="guia">${ico("navegacion-blueprint")}<div><b>${esc(X.rolTitulo)}.</b> ${recorrido} Cada condición empieza con el expediente reiniciado. Al final responderá las preguntas de cierre.</div></div>
@@ -157,7 +157,7 @@ function expCondCierreHtml(b) {
   const pr = caso.puntos.filter(p => p.resuelve)[0], c = pr ? EXPM.completitud(E, caso, pr.id) : null;
   const hechos = caso.puntos.filter(p => E.puntos[p.id] && E.puntos[p.id].cerrado);
   return `<div class="pmain-head"><div><div class="eyebrow">${esc(cond.n)}</div><h1 class="h1" tabindex="-1">${ico("estados-cerrado")}Terminó esta condición</h1></div></div>
-    <div class="kv">${hechos.map(p => `<b>${esc(nomPunto(caso, p.id))}</b><span>${esc(etiqueta(EXPM.opcionesPunto(caso, p), E.puntos[p.id].decision))}</span>`).join("")}
+    <div class="kv">${hechos.map(p => `<b>${esc(nomPunto(caso, p.id))}</b><span>${esc(etiqueta(EXPM.opcionesPunto(caso, p, EXPM.participa(caso, S.yo.actor, p)), E.puntos[p.id].decision))}</span>`).join("")}
       ${c ? `<b>${esc(GUION.punto.completitudTitulo)} al resolver</b><span>${esc(listosTxt(caso, c))}</span>` : ""}
       <b>Horas virtuales</b><span>${esc(horasTxt(E.horas))} de ${EXP.protocolo.corteHoras}</span></div>
     <button type="button" class="btn big" data-act="exp-seguir" style="margin-top:18px">${ico("acciones-siguiente")}Continuar</button>`;
@@ -167,7 +167,8 @@ function expCondCierreHtml(b) {
 function expSoporteHtml(caso, E, cond, k, puedeActuar, puntoId) {
   const s = EXPM.soporteDe(caso, k), x = E.soportes[k], X = GUION.punto;
   const fin = (S.actu && S.actu.finalidad) || "";
-  const visible = x.visto && EXPM.puedeVer(caso, S.yo.actor, k, puntoId, fin);
+  const visible = x.visto && x.llegado && x.estado !== "ausente" && EXPM.puedeVer(caso, S.yo.actor, k, puntoId, fin);
+  const contenido = !s.verRef || x.ver === s.verRef ? s.contenido : s.notaEstado;
   const acciones = [];
   if (puedeActuar) {
     acciones.push(["consultar", "Consultar"]);
@@ -176,14 +177,15 @@ function expSoporteHtml(caso, E, cond, k, puedeActuar, puntoId) {
     if (x.llegado && x.estado === "no_conforme") acciones.push(["devolver", "Devolver al custodio"]);
   }
   return `<details data-det="sop-${esc(cond)}-${esc(puntoId)}-${esc(k)}"${x.estado !== "conforme" ? " open" : ""}>
-    <summary><b>${esc(s.n)}</b> ${chipSoporte(x.estado)} <span class="mini">custodia ${esc(s.custN)}${x.ver ? " · " + esc(x.ver) : ""}</span></summary>
+    <summary><b>${esc(s.n)}</b> ${chipSoporte(x.estado)} <span class="mini">custodia ${esc(s.custN)}${x.ver && x.llegado ? " · " + esc(x.ver) : ""}</span></summary>
     <p class="mini">${esc(x.estado === "pendiente" ? "Llegó la versión " + s.verRef + ". Falta verificarla y aceptarla."
       : x.estado === "conforme" && (x.solicitado || x.verificado) ? "Se verificó contra el criterio y se aceptó como conforme" + (x.ver ? " (versión " + x.ver + ")" : "") + "."
       : x.verificado === false && x.llegado ? "Se verificó y se rechazó: no cumple el criterio."
       : x.estado === "ausente" && x.solicitado ? "Se devolvió al custodio: mientras no llegue la versión correcta, no está en el expediente."
       : s.notaEstado)}</p>
-    <div class="kv"><b>${esc(X.criterioTitulo)}</b><span>${esc(s.criterio)}</span>${visible || x.estado === "conforme" ? `<b>Contenido</b><span>${esc(s.contenido)}</span>` : ""}</div>
-    ${acciones.length ? `<div class="optrow">${acciones.map(a => { const h = EXPM.costo(cond, a[0]); return `<button type="button" class="btn sm ${a[0] === "aceptar" ? "green" : a[0] === "devolver" || a[0] === "rechazar" ? "outline" : "sec"}" data-act="exp-act" data-arg="${esc(k)}" data-v="${esc(a[0])}">${esc(a[1])}${h ? " · " + esc(horasTxt(h)) : ""}</button>`; }).join("")}</div>` : ""}
+    <div class="kv"><b>${esc(X.criterioTitulo)}</b><span>${esc(s.criterio)}</span>${x.llegado && (visible || x.estado === "conforme") ? `<b>Contenido</b><span>${esc(contenido)}</span>` : ""}</div>
+    ${x.llegado && x.ver && (visible || x.estado === "conforme" || x.estado === "pendiente") && docDe({ fuente:"exp", k, ver:x.ver }) ? docBoton("exp|" + k + "|" + x.ver) : ""}
+    ${acciones.length ? `<div class="optrow">${acciones.map(a => { const h = Math.min(EXPM.costo(cond, a[0]), Math.max(0, EXP.protocolo.corteHoras - E.horas)); return `<button type="button" class="btn sm ${a[0] === "aceptar" ? "green" : a[0] === "devolver" || a[0] === "rechazar" ? "outline" : "sec"}" data-act="exp-act" data-arg="${esc(k)}" data-v="${esc(a[0])}">${esc(a[1])}${h ? " · " + esc(horasTxt(h)) : ""}</button>`; }).join("")}</div>` : ""}
   </details>`;
 }
 function expPuntoHtml(b) {
@@ -195,7 +197,7 @@ function expPuntoHtml(b) {
   if (hecho) return cab + expPuntoResultadoHtml(b, hecho);
   const finalidades = GUION.exp.finalidades;
   return `${cab}
-    <div class="qpanel"><b>${esc(nomPunto(caso, p.id))}.</b> ${esc(caso.apertura)}</div>
+    <div class="qpanel"><b>${esc(nomPunto(caso, p.id))}.</b> ${esc(decide ? caso.apertura : X.aperturaAporta.replace("{decide}", p.decideN))}</div>
     <details data-det="exp-ficha-corta"><summary>${ico("documentos-datos-sinteticos", "sm")}Ver la ficha del expediente</summary>${expFichaHtml(caso, true)}</details>
     <div class="situacion"><div class="lbl">${ico("investigacion-completitud", "sm")}${esc(X.requiereTitulo)}</div>
       <p>${esc(listaSop(caso, p.requiere))}. Cuando se radicó el expediente, ${esc(enReglaRad(caso, p.id))}.</p>
@@ -204,14 +206,14 @@ function expPuntoHtml(b) {
     <div class="expediente"><div class="lbl">${ico("documentos-evidencia", "sm")}${esc(X.estadoTitulo)}</div>
       ${piezas.map(k => expSoporteHtml(caso, E, b.cond, k, true, b.punto)).join("")}</div>
     <div class="modulo"><div class="lbl">${ico("gobernanza-finalidad", "sm")}${esc(X.actuarTitulo)}</div>
-      <p class="mini">${esc(X.actuarAyuda)}</p>
+      <p class="mini">${esc(decide ? X.actuarAyuda : X.actuarAyudaAporta)}</p>
       <label class="campo">Finalidad con la que actúa<select data-in="u-finalidad" aria-label="Finalidad de la actuación"><option value="">Elija una finalidad…</option>${finalidades.map(o => `<option value="${esc(o[0])}" ${(S.actu && S.actu.finalidad) === o[0] ? "selected" : ""}>${esc(o[1])}</option>`).join("")}</select></label>
       ${E.historia.filter(h => h.punto === b.punto).length ? `<div class="lbl mini">Lo que ha hecho en este punto</div><ul class="lista limpia">${E.historia.filter(h => h.punto === b.punto).map(h => `<li>${ico("estados-guardado", "sm")}<span>${h.pieza ? `<b>${esc(nomSop(caso, h.pieza))}.</b> ` : ""}${esc(llano(caso, h.texto))} <span class="mini">(${esc(horasTxt(h.horas))})</span></span></li>`).join("")}</ul>` : ""}</div>
     <div class="sep-bloque"></div>
     <div class="actividad">
-      <fieldset><legend>${ico("acciones-decidir", "sm")}${esc(X.decidirTitulo)}</legend><p class="mini ayuda">${esc(X.decidirAyuda)}</p>${opt("f", "decision", EXPM.opcionesPunto(caso, p), f.decision)}</fieldset>
+      <fieldset><legend>${ico("acciones-decidir", "sm")}${esc(decide ? X.decidirTitulo : X.aportaTitulo)}</legend><p class="mini ayuda">${esc(decide ? X.decidirAyuda : X.aportaAyuda)}</p>${opt("f", "decision", EXPM.opcionesPunto(caso, p, b.como), f.decision)}</fieldset>
       <fieldset><legend>${ico("acciones-observar", "sm")}${esc(X.porQue)}</legend><textarea data-in="f-porQue" aria-label="${esc(X.porQue)}" maxlength="2000" rows="3">${esc(f.porQue || "")}</textarea></fieldset>
-      <fieldset><legend>${ico("acciones-observar", "sm")}${esc(GUION.observacion.titulo)} <span class="mini">(${esc(GUION.observacion.marca)})</span></legend><p class="mini ayuda">${esc(GUION.observacion.ayuda)}</p><textarea data-in="f-obs" aria-label="${esc(GUION.observacion.titulo)}" maxlength="2000" rows="3">${esc(f.obs || "")}</textarea></fieldset>
+      <fieldset><legend>${ico("acciones-observar", "sm")}${esc(GUION.observacionExp.titulo)} <span class="mini">(${esc(GUION.observacionExp.marca)})</span></legend><p class="mini ayuda">${esc(GUION.observacionExp.ayuda)}</p><textarea data-in="f-obs" aria-label="${esc(GUION.observacionExp.titulo)}" maxlength="2000" rows="3">${esc(f.obs || "")}</textarea></fieldset>
       ${errHtml()}<button type="button" class="btn big" data-act="exp-guardar-punto" style="margin-top:18px">${ico("acciones-guardar")}Guardar y ver qué pasa</button></div>`;
 }
 function expPuntoResultadoHtml(b, reg) {
@@ -234,7 +236,7 @@ function expContextoHtml(b) {
     ${b.puntos.map(pid => { const p = EXPM.puntoDe(caso, pid), c = EXPM.completitud(E, caso, pid);
       return `<div class="relato"><div class="lbl">${esc(nomPunto(caso, pid))}</div><p>Lo decide ${esc(p.decideN)} con ${esc(listaFrase(p.requiere.map(k => soporteF(caso, k))))}. Cuando se radicó el expediente, ${esc(enReglaRad(caso, pid))}.${b.despues ? " Con el expediente tal como lo deja ahora, estarían en regla " + c.ok + " de " + c.total + (c.faltan.length ? ": " + (c.faltan.length > 1 ? "faltan " : "falta ") + listaFrase(c.faltan.map(k => soporteF(caso, k))) + "." : ".") : ""}</p></div>`; }).join("")}
     ${b.despues ? `<p class="mini">${esc(caso.criterio)}</p>` : ""}
-    <fieldset class="bloque"><legend>${ico("acciones-observar", "sm")}${esc(GUION.observacion.titulo)} <span class="mini">(${esc(GUION.observacion.marca)})</span></legend><p class="mini ayuda">${esc(GUION.observacion.ayuda)}</p><textarea data-in="x-obs" aria-label="${esc(GUION.observacion.titulo)}" maxlength="2000" rows="3">${esc(S.ctxObs || "")}</textarea></fieldset>
+    <fieldset class="bloque"><legend>${ico("acciones-observar", "sm")}${esc(GUION.observacionExp.titulo)} <span class="mini">(${esc(GUION.observacionExp.marca)})</span></legend><p class="mini ayuda">${esc(GUION.observacionExp.ayuda)}</p><textarea data-in="x-obs" aria-label="${esc(GUION.observacionExp.titulo)}" maxlength="2000" rows="3">${esc(S.ctxObs || "")}</textarea></fieldset>
     <div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="exp-seguir">Continuar${ico("acciones-siguiente")}</button></div>`;
 }
 
@@ -245,7 +247,7 @@ function expH2Html() {
   return `<div class="pmain-head"><div><div class="eyebrow">Preguntas de cierre · 1 de 2</div><h1 class="h1" tabindex="-1">${ico("gobernanza-responsable-plazo")}${esc(Q.titulo)}</h1></div></div>
     <div class="qpanel">${esc(Q.intro)}</div>
     ${hecho ? `<div class="qpanel ok">${ico("estados-guardado")}Sus respuestas quedaron guardadas.</div>` : ""}
-    <div class="actividad">${caso.h2.map((h, i) => `<fieldset><legend>${i + 1}. ${esc(h.tarea)} <span class="mini">(${esc(h.funcion)})</span></legend><select data-in="h2" data-arg="${esc(h.id)}" aria-label="${esc(h.tarea)}"><option value="">Elija el responsable…</option>${ops.map(o => `<option value="${esc(o[0])}" ${v[h.id] === o[0] ? "selected" : ""}>${esc(o[1])}</option>`).join("")}</select></fieldset>`).join("")}
+    <div class="actividad">${caso.h2.map((h, i) => `<fieldset><legend>${i + 1}. ${esc(h.tarea)}</legend><select data-in="h2"${hecho ? " disabled" : ""} data-arg="${esc(h.id)}" aria-label="${esc(h.tarea)}"><option value="">Elija el responsable…</option>${ops.map(o => `<option value="${esc(o[0])}" ${v[h.id] === o[0] ? "selected" : ""}>${esc(o[1])}</option>`).join("")}</select></fieldset>`).join("")}
       ${hecho ? "" : errHtml() + `<button type="button" class="btn big" data-act="exp-guardar-h2" style="margin-top:18px">${ico("acciones-guardar")}Guardar</button>`}</div>
     ${hecho ? `<div class="nav-row"><span class="sp"></span><button type="button" class="btn" data-act="exp-seguir">Continuar${ico("acciones-siguiente")}</button></div>` : ""}`;
 }
@@ -254,7 +256,7 @@ function expH3Html() {
   const hecho = regsDe({ tipo:"h3", participanteId:S.yo.id })[0];
   const fila = (h, i) => {
     const id = "A" + (i + 1), d = v[id] || {};
-    const campo = k => `<label class="campo">${esc(Q.campos[k])}<select data-in="h3" data-arg="${esc(id)}.${esc(k)}" aria-label="${esc(Q.campos[k])} del acceso ${i + 1}"><option value="">Elija…</option>${ops[k].map(o => `<option value="${esc(o[0])}" ${d[k] === o[0] ? "selected" : ""}>${esc(o[1])}</option>`).join("")}</select></label>`;
+    const campo = k => `<label class="campo">${esc(Q.campos[k])}<select data-in="h3"${hecho ? " disabled" : ""} data-arg="${esc(id)}.${esc(k)}" aria-label="${esc(Q.campos[k])} del acceso ${i + 1}"><option value="">Elija…</option>${ops[k].map(o => `<option value="${esc(o[0])}" ${d[k] === o[0] ? "selected" : ""}>${esc(o[1])}</option>`).join("")}</select></label>`;
     return `<fieldset><legend>${ico("gobernanza-trazabilidad", "sm")}Acceso ${i + 1}</legend><div class="campos-grid">${EXPM.camposH3.map(campo).join("")}</div></fieldset>`;
   };
   return `<div class="pmain-head"><div><div class="eyebrow">Preguntas de cierre · 2 de 2</div><h1 class="h1" tabindex="-1">${ico("gobernanza-trazabilidad")}${esc(Q.titulo)}</h1></div></div>
@@ -269,13 +271,12 @@ function expH3Html() {
 function vistaExpediente() {
   const caso = casoVista(), yo = S.yo, pos = bloqueExp(), b = pos.b;
   const E = b && b.cond ? estadoExp(b.cond) : null;
-  const hechos = bloquesExp().filter(x => x.tipo === "punto").length;
-  const resp = regsDe({ tipo:"punto", participanteId:S.yo.id }).length;
+  const av = avance();
   const side = `<aside class="pside" aria-label="Su rol y su avance"><div class="avatar xl">${icoActor(yo.actor)}</div><div class="pside-actor">${esc(nomRol(yo.actor))}</div><div class="pside-name">usuario ${esc(S.cuenta.u)}${S.cuenta.p || CFG.demo ? " · cuenta de prueba" : ""}</div>
     <div class="callouts"><div class="callout"><b>${ico("navegacion-escenario", "sm")}El expediente</b>${esc(caso.persona.nombre)}<div class="mini">${esc(caso.clinica.diagnostico)}</div></div>
       ${b && b.cond ? `<div class="callout"><b>${ico(b.cond === "modulo" ? "actores-modulo" : "capitulos-tensiones-rupturas", "sm")}Condición</b>${esc(EXPM.condDe(b.cond).n)}</div>` : ""}
       ${E ? `<div class="callout"><b>${ico("investigacion-tiempo", "sm")}Horas virtuales</b>${esc(horasTxt(E.horas))} de ${EXP.protocolo.corteHoras}<div class="meter"><span style="width:${Math.min(100, Math.round(E.horas * 100 / EXP.protocolo.corteHoras))}%"></span></div></div>` : ""}
-      <div class="callout"><b>${ico("capitulos-indicadores", "sm")}Su avance</b>${resp} de ${hechos} decisiones<div class="meter"><span style="width:${hechos ? Math.round(resp * 100 / hechos) : 0}%"></span></div></div></div>
+      <div class="callout"><b>${ico("capitulos-indicadores", "sm")}Su avance</b>${av.hechas} de ${av.total} respuestas<div class="meter"><span style="width:${av.pct}%"></span></div></div></div>
     <button type="button" class="btn outline sm" data-act="orient-ver">${ico("navegacion-guia", "sm")}Ver la orientación</button>
     <button type="button" class="enlace" data-act="retirar">Retirarme del estudio</button></aside>`;
   let main;

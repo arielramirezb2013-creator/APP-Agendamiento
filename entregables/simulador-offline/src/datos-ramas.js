@@ -350,7 +350,7 @@ const RAMAS = {
     if (E.pago) out.push(["Quién paga desde el día 181", PAGO[E.pago] || E.pago]);
     if (E.reintegro) out.push(["Reintegro", E.reintegro]);
     if (E.prestacion) out.push(["Prestación", E.prestacion === "arl" ? "remitida a la ARL" : E.prestacion]);
-    if (E.queja) out.push(["Queja", E.queja]);
+    if (E.queja) out.push(["Queja", { enrutada:"enrutada, con responsable y plazo", informes:"con informes pedidos a la EPS por oficio", archivada:"archivada por falta de competencia" }[E.queja] || E.queja]);
     out.push(["Gestiones que le tocaron a la trabajadora", String(E.gestionesMP)]);
     out.push(["Acuses que quedaron", String(E.acuses)]);
     if (E.devoluciones) out.push(["Devoluciones del expediente", String(E.devoluciones)]);

@@ -25,24 +25,30 @@ function render() {
   document.body.setAttribute("data-rol", "participante");
   document.body.setAttribute("data-etapa", S.etapa);
   renderTop();
-  const vk = claveVista() + (S.confirmar ? "?" + S.confirmar : ""), cambio = vk !== vkActual, ae = document.activeElement, vista = $("vista");
+  const vk = claveVista() + (S.confirmar ? "?" + S.confirmar : "") + (S.docVer ? "#doc:" + S.docVer.arg : ""), cambio = vk !== vkActual, ae = document.activeElement, vista = $("vista");
+  document.body.classList.toggle("doc-abierto", !!S.docVer);
   // Mientras se escribe no se repinta la pantalla: se espera a que el campo pierda el foco.
   if (!cambio && esCampoTexto(ae) && vista.contains(ae)) { pendiente = true; return; }
   pendiente = false;
   const primera = vkActual === null;
   let html;
-  try { html = (falloGrave ? vistaFallo : S.buscando ? vistaBuscando : S.retomar ? vistaRetomar : VISTAS[S.etapa] || vistaAcceso)() + confirmarHtml(); }
+  try { html = (falloGrave ? vistaFallo : S.buscando ? vistaBuscando : S.retomar ? vistaRetomar : VISTAS[S.etapa] || vistaAcceso)() + confirmarHtml() + docVisorHtml(); }
   catch (e) { guardarLocal(); falloGrave = String((e && e.stack) || e); vkActual = "fallo"; html = vistaFallo(); }
   pintar("vista", html, !cambio);
   if (!cambio) return;
   vkActual = vk;
   if (S.confirmar) { const b = vista.querySelector(".modal-caja .btn"); if (b) b.focus(); return; }
+  // El visor de documentos toma el foco al abrirse y, al cerrarse, lo devuelve al botón que lo abrió.
+  if (S.docVer) { const t = $("doc-visor-t"); if (t) { try { t.focus({ preventScroll:true }); } catch (e) {} } return; }
+  if (docVolver) { const b = vista.querySelector('[data-act="doc-ver"][data-arg="' + docVolver.replace(/"/g, "") + '"]'); docVolver = null; if (b) { try { b.focus({ preventScroll:true }); } catch (e) {} return; } }
   if (primera) return;
   window.scrollTo(0, 0);
   const t = vista.querySelector("h1[tabindex='-1'], #titulo-cierre"); if (t) { try { t.focus({ preventScroll:true }); } catch (e) {} }
   vista.classList.add("enter"); clearTimeout(render.t); render.t = setTimeout(() => vista.classList.remove("enter"), 700);
 }
 document.addEventListener("focusout", () => { if (pendiente) setTimeout(() => { if (pendiente && !esCampoTexto(document.activeElement)) render(); }, 120); });
+
+let docVolver = null;
 
 /* ---------- Acciones ---------- */
 let guardarT = null;
@@ -147,7 +153,10 @@ const ACCIONES = {
   "retirar-si":async () => { await retirar(); render(); },
   "borrar":() => { S.confirmar = "borrar"; render(); },
   "borrar-si":() => { borrarLocal(S.cuenta.u); salir(); render(); aviso("Sus datos se borraron de este dispositivo."); },
-  "confirmar-no":() => { S.confirmar = null; render(); }
+  "confirmar-no":() => { S.confirmar = null; render(); },
+  "doc-ver":arg => { const [fuente, k, x] = String(arg).split("|"); S.docVer = { arg, fuente, k, ver:fuente === "exp" ? x : null, paso:fuente === "ruta" ? x : null }; render(); },
+  "doc-cerrar":() => { docVolver = S.docVer ? S.docVer.arg : null; S.docVer = null; render(); },
+  "doc-imprimir":() => { window.print(); }
 };
 document.addEventListener("click", async ev => {
   const b = ev.target.closest("[data-act]"); if (!b) return;
@@ -188,6 +197,11 @@ document.addEventListener("change", ev => {
 });
 document.addEventListener("submit", ev => { ev.preventDefault(); if (ev.target.getAttribute("data-form") === "acceso") acceder(); });
 document.addEventListener("keydown", ev => {
+  if (S.docVer && !S.confirmar) {
+    if (ev.key === "Escape") { ev.preventDefault(); ACCIONES["doc-cerrar"](); return; }
+    if (ev.key === "Tab") { const bs = [...document.querySelectorAll(".doc-visor button, .doc-visor [tabindex='0']")]; if (!bs.length) return; const i = bs.indexOf(document.activeElement), n = ev.shiftKey ? (i <= 0 ? bs.length - 1 : i - 1) : (i === bs.length - 1 ? 0 : i + 1); ev.preventDefault(); bs[n].focus(); }
+    return;
+  }
   if (!S.confirmar) return;
   if (ev.key === "Escape") { S.confirmar = null; render(); return; }
   if (ev.key === "Tab") { const bs = [...document.querySelectorAll(".modal-caja button")]; if (!bs.length) return; const i = bs.indexOf(document.activeElement), n = ev.shiftKey ? (i <= 0 ? bs.length - 1 : i - 1) : (i === bs.length - 1 ? 0 : i + 1); ev.preventDefault(); bs[n].focus(); }

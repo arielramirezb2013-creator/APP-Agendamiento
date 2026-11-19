@@ -187,7 +187,7 @@ async function accesible(br, errores) {
    guardado (los avisos), lleno (la comparación con el módulo, las casillas de lo que falta), con la respuesta
    guardada (lo que hicieron los actores simulados), con la ruta completa abierta y en el cierre. */
 async function sinCodigos(br, errores) {
-  const codigos = []; let estados = 0;
+  const codigos = [], vistos = new Set(); let estados = 0, docs = 0, tachadoVisto = false;
   for (const [u, n] of [["demo-afp", 1], ["demo-eps", 2], ["demo-juntaregional", 0], ["demo-trabajador", 1]]) {
     const ctx = await br.newContext({ viewport:{ width:1280, height:900 } }), pg = await L.pagina(ctx, errores);
     const mirar = async donde => { estados++; (await L.codigosVisibles(pg)).forEach(c => codigos.push(u + " " + donde + ": " + c)); };
@@ -195,13 +195,24 @@ async function sinCodigos(br, errores) {
     let rutaVista = false;
     for (let i = 0; i < 200; i++) {
       await mirar("pantalla " + i);
+      // Cada documento de las piezas que llegaron a su entidad: sin códigos, y tachado lo que no llegó.
+      for (const arg of await pg.evaluate(() => Array.from(document.querySelectorAll('[data-act="doc-ver"]')).map(b => b.getAttribute("data-arg")))) {
+        if (vistos.has(u + arg.split("|")[1])) continue; vistos.add(u + arg.split("|")[1]);
+        await clic(pg, '[data-act="doc-ver"][data-arg="' + arg + '"]'); docs++; await mirar("documento " + arg.split("|")[1]);
+        const t = await texto(pg, ".doc-visor");
+        if (!/sint[ée]tic/i.test(t)) codigos.push(u + " documento " + arg + ": sin la marca de sintético");
+        if (arg.split("|")[1] === "hc" && u !== "demo-ips" && /fisiatría está programada/.test(t)) codigos.push(u + ": el resumen clínico muestra la valoración de fisiatría, que no llegó a su entidad");
+        if (arg.split("|")[1] === "hc" && u !== "demo-ips") tachadoVisto = tachadoVisto || /No llegó a su entidad/.test(t);
+        await clic(pg, '[data-act="doc-cerrar"]');
+      }
       if (!rutaVista && await hay(pg, '[data-act="ver-todo"]')) { await clic(pg, '[data-act="ver-todo"]'); await mirar("ruta completa"); await clic(pg, '[data-act="ver-todo"]'); rutaVista = true; }
       const h = await L.pantalla(pg, i + n, mirar); if (h === "cierre") break;
     }
     await mirar("cierre");
     await ctx.close();
   }
-  T.ok(!codigos.length && estados > 100, "en " + estados + " estados de la ruta (formularios vacíos y llenos, avisos, resultados, ruta completa y cierre) el participante no ve códigos ni nombres internos", codigos.slice(0, 6).join(" | "));
+  T.ok(!codigos.length && estados > 100, "en " + estados + " estados de la ruta (formularios vacíos y llenos, avisos, resultados, ruta completa, " + docs + " documentos y cierre) el participante no ve códigos ni nombres internos", codigos.slice(0, 6).join(" | "));
+  T.ok(docs >= 4 && tachadoVisto, "los documentos de las piezas que llegaron se abren desde el expediente del paso, y lo que no llegó a la entidad aparece tachado", "documentos abiertos: " + docs + " · tachado visto: " + tachadoVisto);
 }
 
 (async () => {

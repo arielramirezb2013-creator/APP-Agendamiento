@@ -17,8 +17,8 @@ CLAVE_DEMO = "DEMO-2026"
 ACTORES = ["tra", "emp", "ips", "eps", "arl", "afp", "jr", "jn", "mintrabajo", "minsalud", "supersalud", "jueces"]
 PREFIJO = {"tra": "trabajador", "emp": "empleador", "jr": "juntaregional", "jn": "juntanacional"}
 
-SIM = ["nucleo.js", "sim-1-estado.js", "sim-2-vistas.js", "exp-2-estado.js", "exp-3-vistas.js", "sim-3-eventos.js"]
-ADM = ["nucleo.js", "adm-1-proyecto.js", "adm-2-vistas.js", "adm-3-resultados.js", "adm-5-expediente.js", "adm-4-eventos.js"]
+SIM = ["nucleo.js", "doc-1-render.js", "sim-1-estado.js", "sim-2-vistas.js", "exp-2-estado.js", "exp-3-vistas.js", "sim-3-eventos.js"]
+ADM = ["nucleo.js", "doc-1-render.js", "adm-1-proyecto.js", "adm-2-vistas.js", "adm-3-resultados.js", "adm-5-expediente.js", "adm-4-eventos.js"]
 
 
 def leer(p):
@@ -79,7 +79,7 @@ def json_seguro(o):
 
 
 def estilos():
-    extra = "".join(leer(AQUI / f) for f in ("estilos.css", "estilos-adm.css", "estilos-informe.css") if (AQUI / f).exists())
+    extra = "".join(leer(AQUI / f) for f in ("estilos.css", "estilos-adm.css", "estilos-informe.css", "estilos-doc.css") if (AQUI / f).exists())
     return leer(MESA / "src/theme.css") + "\n  /* ===== Kit de iconos (iconos.css) ===== */\n  " + leer(MESA / "kit-iconos/iconos.css").strip() + "\n" + extra
 
 
@@ -91,12 +91,23 @@ def perfil_base():
     return "/* Perfil base del caso, desde perfiles/perfil-ejemplo-mp.json */\nconst PERFIL_BASE = " + json.dumps(d["perfiles"][0], ensure_ascii=False) + ";"
 
 
+def documentos():
+    """Los documentos sintéticos de los casos (src/docs/): base.js primero y luego cada caso, en orden fijo."""
+    d = AQUI / "docs"
+    if not (d / "base.js").exists():
+        return "const DOCS = { exp:{}, ruta:{} };"
+    otros = sorted(p for p in d.glob("*.js") if p.name != "base.js")
+    return "\n".join(leer(p).rstrip() for p in [d / "base.js"] + otros)
+
+
 def aplicacion(partes):
     datos = [MESA / "src/datos-blueprint.js", MESA / "src/datos-escenario.js", AQUI / "datos-guion.js"]
     cuerpo = "\n".join(leer(p).rstrip() for p in datos)
     cuerpo += "\n" + perfil_base() + "\n" + leer(AQUI / "datos-ramas.js").rstrip()
     cuerpo += "\n" + leer(AQUI / "datos-expedientes.js").rstrip() + "\n" + leer(AQUI / "exp-1-motor.js").rstrip()
-    cuerpo += "\n" + "\n".join(leer(AQUI / x).rstrip() for x in partes)
+    cuerpo += "\n" + documentos()
+    # El visor de documentos puede faltar mientras se generan: la construcción no se rompe por eso.
+    cuerpo += "\n" + "\n".join(leer(AQUI / x).rstrip() for x in partes if (AQUI / x).exists() or x != "doc-1-render.js")
     return '(function () {\n"use strict";\n' + cuerpo + "\n})();"
 
 
@@ -136,6 +147,8 @@ def main():
     # Su propio estudio: así su avance no se mezcla con el de la otra demostración en el mismo navegador.
     ruta = config_demo(con_otros_expedientes=False); ruta["estudio"].update({"id": "demostracion-ruta", "instrumento": "ruta"}); ruta["estudio"].pop("expediente", None)
     escribir(RAIZ / "simulador-ruta-demo.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=ruta))
+    # Para el investigador: todos los documentos sintéticos de los casos, con sus versiones. No va en el paquete.
+    if (AQUI / "doc-1-render.js").exists(): escribir(RAIZ / "documentos-sinteticos.html", pagina("head-docs.html", "skel-docs.html", ["nucleo.js", "doc-1-render.js", "anexo-docs.js"], rol="documentos", con_config=False))
     print("Uso real (sin cuentas de demostración):")
     # Archivo único sin configuración: el panel le pone las cuentas del estudio («Publicar → Simulador en un solo archivo»).
     escribir(RAIZ / "simulador.html", pagina("head-sim.html", "skel-sim.html", SIM, incluida=None))

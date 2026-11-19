@@ -42,6 +42,9 @@ src/
   exp-1-motor.js        motor del expediente (objeto EXPM): estado, actuaciones, completitud, acceso, H2 y H3, bloques
   sim-1-estado.js  sim-2-vistas.js  sim-3-eventos.js     simulador (los dos instrumentos)
   exp-2-estado.js  exp-3-vistas.js                       simulador: conducción y pantallas del expediente
+  docs/                 documentos sintéticos de los casos (objeto DOCS): base.js, exp-pi-l0N.js, ruta-mp.js; FORMATO.md
+  doc-1-render.js  estilos-doc.css                       visor de documentos: docHtml(doc, opc) y figuras SVG
+  anexo-docs.js  head-docs.html  skel-docs.html          documentos-sinteticos.html, para el investigador
   adm-1-proyecto.js  adm-2-vistas.js  adm-3-resultados.js  adm-5-expediente.js  adm-4-eventos.js   panel
   estilos.css  estilos-adm.css  estilos-informe.css      estilos propios (se suman a theme.css de la mesa)
   head-sim.html  skel-sim.html  head-adm.html  skel-adm.html
@@ -205,6 +208,10 @@ expediente: {
 }
 ```
 
+El bloque lleva además `reglaHoras: { costos, verificarCobra, tope }`: los costos con que se respondió, que verificar
+cobra lo de `verificar` y que las horas no pasan del corte. Así el informe distingue documentos respondidos con
+otra regla.
+
 Ese bloque es también lo que permite **continuar en otro dispositivo**: `restaurarDe(doc)` reconstruye con él
 el estado de cada condición (`expDesdeDoc`), de modo que al retomar desde el receptor o desde un archivo de
 avance vuelven los soportes conseguidos, las horas gastadas, los accesos y los puntos cerrados.
@@ -245,7 +252,7 @@ de un registro reemplazado (`payload.origenActividad`).
 | `respuesta` | sistema | `solicitud`, `de`, `a`, `respuesta`, `dias`, `origenActividad` (enlaza la respuesta del custodio) |
 | `decision` | sistema | `simulado`, `de` (el actor no conectado que decide), `paso`, `cual`, `valor`, `forzado`, `por: "sistema"`, `origenActividad`. Es lo que decide un actor simulado a raíz de la respuesta del participante; el participante lo lee como frase en «Lo que hicieron los actores que no están conectados» |
 | `inicio_ronda`, `avance`, `cierre_ronda` | sistema | conducción automática: `ronda`; `de[]`, `a`, `bloque` |
-| `punto` | participante | **expediente**: `cond`, `punto`, `como` (`decide` \| `aporta`), `decision`, `decisionTxt`, `porQue`, `obs`, `completitud { ok, total, conformes[], faltan[], pct }`, `horas`, `resuelve`, `soportes [{ k, estado, aceptado }]` |
+| `punto` | participante | **expediente**: `cond`, `punto`, `como` (`decide` \| `aporta`), `decision` (quien decide: `reconocer`, `negar`, `pendiente` en el punto que resuelve y `cerrado`, `requerir`, `sin_soporte` en los demás; quien aporta: `entregar`, `parcial`, `no_entregar`), `decisionTxt`, `porQue`, `obs`, `completitud { ok, total, conformes[], faltan[], pct }`, `horas`, `resuelve`, `soportes [{ k, estado, aceptado }]` |
 | `actuacion` | participante | **expediente**: `cond`, `punto`, `pieza`, `que` (`consultar` \| `solicitar` \| `devolver` \| `aceptar` \| `rechazar`), `finalidad`, `horas`, `denegado`, `texto`, `horasTotal` |
 | `h2` | participante | **expediente**: `expediente`, `respuestas { R01…R06 }`, `calificacion { ok, total, pct, detalle }`. `paso: "—"` |
 | `h3` | participante | **expediente**: `expediente`, `respuestas { A1…A4: { actor, pieza, momento, accion, resultado } }`, `calificacion { ok, total, pct, campos, camposTotal, detalle }`. `paso: "—"` |
@@ -258,6 +265,16 @@ Qué actividad tiene cada rol en cada paso lo decide `actividadDe(paso, actor, m
 un rol lo da `bloquesDe(actor, modo)`. Actividades esperadas por rol en el recorrido: trabajador 11,
 empleador 7, IPS 6, EPS 7, ARL 4, AFP 3, Junta Regional 4, Junta Nacional 1, MinTrabajo 4, MinSalud 2,
 SuperSalud 2, Jueces 2. Además, al cerrar, una `valoracion` y un registro `preguntas`.
+
+### Documentos sintéticos
+
+`DOCS.exp[caso].soportes[k][version]` y `DOCS.ruta[perfil].piezas[k]` (formato en `src/docs/FORMATO.md`) son los
+documentos que el participante abre con «Ver el documento». En el expediente, el botón aparece solo si el soporte
+está en el expediente (`llegado`) y el participante lo puede ver (lo consultó con una finalidad autorizada, ya
+estaba conforme o acaba de llegar al pedirlo), y abre la versión que tiene en la mano (`ver`). En la ruta, el visor
+recibe `visible(i)` con los campos que llegaron a la entidad del participante en ese paso y tacha los demás sin
+ponerlos en la página. Abrir un documento no es una actuación: no cuesta horas ni deja registro. Los documentos no
+traen códigos de análisis (`tests/documentos.js` lo verifica) y todos dicen en cada hoja que son sintéticos.
 
 ## 7. Receptor del servidor (opcional)
 

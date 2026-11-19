@@ -28,7 +28,7 @@ function crearMotor(config, opciones) {
   vm.createContext(ctx);
   const codigo = FUENTES.map(fuente).join("\n") + "\nfunction render() {}\n;globalThis.__M = { get S() { return S; }, set S(v) { S = v; }, CFG, CONS, ESC, BP, SIM, GUION, PASOS, PIDX, A, EV, ALM, entrar, salir, abrirCuenta, aceptarConsentimiento, iniciarRonda, avanzar, guardarActividad, guardarValoracion, guardarEncuesta, validarEncuesta, encuestaHecha, cerrarRonda, documentoRespuesta, validarRespuesta, validarConfig, huellaDoc, bloques, bloqueActual, posicion, rondaAct, pasoActual, modoActual, miActividad, actividadDe, bloquesDe, vigentes, regsDe, avance, minutosEstimados, guardarLocal, cargarLocal, restaurarDe, documentoRestaurable, cargarAvance, comprobarFinalidad, finalidadDe, vistaDe, RAMAS, casoActual, recomputarCaso, perfilActual, pasoNoOcurre, EXP, EXPM, esExpediente, casoExp, bloquesExp, bloqueExp, estadoExp, condActual, avanzarExp, actuarSobre, guardarPunto, guardarH2, guardarH3, puntoHecho, miPunto, expedienteDoc, instrumentoDelEstudio, expedienteHoy, expedienteModulo, camposQueAnade, huellaClave, enviar, retirar, valoracionHecha, diaVirtual, resumenActividad, nombreArchivo, empezarDeNuevo };";
   vm.runInContext(codigo, ctx, { filename:"simulador-motor.js" });
-  const M = ctx.__M; M.avisos = avisos; M.local = local; M.sesion = sesion;
+  const M = ctx.__M; M.avisos = avisos; M.local = local; M.sesion = sesion; M.ctx = ctx;   // para cargar más fuentes en el mismo contexto
   return M;
 }
 // Respuestas deterministas: `variante` desplaza las opciones para que dos participantes del mismo rol difieran.
@@ -117,7 +117,7 @@ function recorrerExpediente(M, usuario, clave, opc) {
         M.actuarSobre(k, "consultar");
         if (opc.pedir !== false && E.soportes[k].estado !== "conforme") { M.actuarSobre(k, "solicitar"); M.actuarSobre(k, "aceptar"); }
       });
-      const ops = EXPM.opcionesPunto(caso, p);
+      const ops = EXPM.opcionesPunto(caso, p, b.como);
       M.S.form = { decision:(ops[EXPM.completitud(E, caso, b.punto).faltan.length ? Math.min(2, ops.length - 1) : 0] || ops[0])[0],
         porQue:"Decidí con lo que quedó conforme en el expediente.",
         obs:opc.textos === false ? "" : "Lo que echo de menos en este punto es la trazabilidad de la versión." };

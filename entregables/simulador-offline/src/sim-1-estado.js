@@ -366,7 +366,7 @@ function guardarActividad() {
   const falta = validarForm(act);
   if (falta.length) { aviso("Antes de guardar falta responder " + listaFrase(falta) + ".", true); return null; }
   const payload = { tipo:act.tipo, obs:textoLimpio(f.obs, 2000) || null, abierto:S.abierto || null,
-    comparacion:{ decision:f.cmp || null, cual:textoLimpio(f.cmpCual, 600) || null, dias:f.cmpDias == null || String(f.cmpDias).trim() === "" ? null : num(f.cmpDias), seguridad:f.cmpSeg || null } };
+    comparacion:{ decision:f.cmp || null, cual:f.cmp === "otra" ? (textoLimpio(f.cmpCual, 600) || null) : null, dias:f.cmpDias == null || String(f.cmpDias).trim() === "" ? null : num(f.cmpDias), seguridad:f.cmpSeg || null } };
   if (act.tipo === "decide") {
     Object.assign(payload, { suficiencia:f.suficiencia, falta:f.suficiencia === "suficiente" ? [] : (f.falta || []).slice(), finalidad:f.finalidad, decision:f.decision, decisionTxt:etiqueta(act.ops, f.decision), responde:f.responde, dias:num(f.dias), notifica:modo === "propuesto" ? (f.notifica || []).slice() : [] });
     payload.comprobacion = comprobarFinalidad(yo, f.finalidad, ESC.entradas[p.id] || [], p.id);
@@ -397,6 +397,8 @@ function guardarActividad() {
   S.form = {};
   return reg;
 }
+// La pregunta pide «cuál» solo con ciertas respuestas: la misma regla para mostrar, guardar y leer.
+const cualVisible = (q, v) => !!q.cual && (q.tipo === "multi" ? (v[q.id] || []).length > 0 && (v[q.id] || []).indexOf("ninguna") < 0 : !!v[q.id] && v[q.id] !== "si");
 function validarValoracion() {
   const v = S.val, L = GUION.falta, falta = [];
   if (!v.semaforo) falta.push(L.semaforo);
@@ -412,8 +414,9 @@ function guardarValoracion() {
   if (falta.length) { aviso("Antes de guardar falta responder " + listaFrase(falta) + ".", true); return false; }
   const prevV = regsDe({ ronda:r, tipo:"valoracion", participanteId:S.yo.id })[0], prevP = regsDe({ ronda:r, tipo:"preguntas", participanteId:S.yo.id })[0];
   const rep = x => Object.assign({ paso:"—" }, x ? { reemplaza:x.id, version:(x.version || 1) + 1 } : {});
-  registrar("valoracion", { semaforo:v.semaforo, ajuste:textoLimpio(v.ajuste), mejora:v.mejora }, rep(prevV));
-  const pp = {}; ESC.preguntas.forEach(q => { pp[q.id] = q.tipo === "multi" ? (v[q.id] || []).slice() : q.tipo === "texto" ? textoLimpio(v[q.id], 800) : v[q.id]; if (textoLimpio(v[q.id + "cual"])) pp[q.id + "cual"] = textoLimpio(v[q.id + "cual"]); });
+  // Lo que el formulario dejó de mostrar al cambiar la respuesta («cuál», «qué cambiaría») no se guarda.
+  registrar("valoracion", { semaforo:v.semaforo, ajuste:v.semaforo === "aceptar" ? "" : textoLimpio(v.ajuste), mejora:v.mejora }, rep(prevV));
+  const pp = {}; ESC.preguntas.forEach(q => { pp[q.id] = q.tipo === "multi" ? (v[q.id] || []).slice() : q.tipo === "texto" ? textoLimpio(v[q.id], 800) : v[q.id]; if (cualVisible(q, v) && textoLimpio(v[q.id + "cual"])) pp[q.id + "cual"] = textoLimpio(v[q.id + "cual"]); });
   registrar("preguntas", pp, rep(prevP));
   S.val = {};
   return true;
@@ -465,7 +468,7 @@ function validarEncuesta() {
     if (!c.req) return;
     if (c.id === "formacionCual" && S.enc.formacion !== "otra") return;
     const v = S.enc[c.id];
-    if (v == null || String(v).trim() === "") falta.push(c.n.toLowerCase().replace(/^¿|\?$/g, ""));
+    if (v == null || String(v).trim() === "") falta.push(c.falta || c.n.toLowerCase().replace(/^¿|\?$/g, ""));
   });
   return falta;
 }

@@ -53,6 +53,7 @@ const llanoRuta = t => typeof t !== "string" ? t : t
   .replace(/\s*\((?:HC|APT|INC|HL|DIC)\)/g, "")
   .replace(/(\d+) d\.h\.(?=\s+[A-ZÁÉÍÓÚÑ¿¡]|$)/g, "$1 días hábiles.")
   .replace(/(\d+) d\.h\./g, "$1 días hábiles")
+  .replace(/\blogs\b/g, "registros").replace(/\b([Cc])hecklist\b/g, (m, c) => (c === "C" ? "L" : "l") + "ista de verificación")
   .replace(/\b(pasos?|Pasos?) ([A-Z]\d{1,2})(?![\w-])/g, (m, w, id) => typeof PIDX !== "undefined" && PIDX[id] != null ? w + " " + (PIDX[id] + 1) : m)
   .replace(/(^|[^\w-])(HC|APT|INC|HL|DIC)(?![\w-])/g, (m, a, c, pos, todo) => {
     const n = pzN(PZ_COD[c]), antes = (todo.slice(0, pos) + a).trim();

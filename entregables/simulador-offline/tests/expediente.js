@@ -227,6 +227,14 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
     T.ok(/Se envió la solicitud a ARL SURA/.test(trasPedir) && /Llegó, sin verificar/.test(trasPedir) && /Verificar y aceptar/.test(trasPedir), "pedir un soporte lo hace llegar y queda por verificar");
     await L.clic(pg, '[data-act="exp-act"][data-arg="FIR"][data-v="aceptar"]');
     T.ok(/4 de 4 en regla/.test(await L.texto(pg, "#vista")), "aceptarlo lo hace contar para la completitud del punto");
+    // El documento del soporte que tiene en la mano: sintético, con el número y la fecha del instrumento, sin códigos.
+    await L.clic(pg, '[data-act="doc-ver"][data-arg="exp|FIR|v1"]');
+    const visorTxt = await L.texto(pg, ".doc-visor"), codsDoc = await L.codigosVisibles(pg);
+    T.ok(/FIR-L01/.test(visorTxt) && /08\/04\/2026/.test(visorTxt) && /sint[ée]tic/i.test(visorTxt) && !codsDoc.length && (await pg.evaluate(() => document.activeElement && document.activeElement.id)) === "doc-visor-t",
+      "«Ver el documento» abre la constancia de firmeza que llegó: sintética, con su número y su fecha, sin códigos de análisis y con el foco en su título", codsDoc.slice(0, 3).join(" | ") || visorTxt.slice(0, 160));
+    await pg.keyboard.press("Escape"); await L.w(pg, 150);
+    T.ok(!(await L.hay(pg, ".doc-visor")) && (await pg.evaluate(() => document.activeElement && document.activeElement.getAttribute("data-act"))) === "doc-ver",
+      "Escape cierra el documento y devuelve el foco al botón que lo abrió");
     // Pausa y regreso a mitad del expediente.
     await L.clic(pg, '[data-act="salir"]'); await L.clic(pg, '[data-act="salir-si"]', 150);
     await L.entrarDemo(pg, "demo-arl");
@@ -236,7 +244,7 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
     T.ok(/4 de 4 en regla/.test(await L.texto(pg, "#vista")), "y conserva lo que ya había conseguido del expediente");
     await ctx.close();
     // Recorrido completo de tres cuentas (dos expedientes y un observador): el participante no ve los códigos de análisis.
-    const codigos = []; let pantallas = 0;
+    const codigos = []; let pantallas = 0, docsAbiertos = 0;
     for (const u of ["demo-arl", "demo-arl-l03", "demo-trabajador"]) {
       const cx = await br.newContext({ viewport:{ width:1280, height:900 } }), pq = await L.pagina(cx, errores);
       const mirar = async donde => { pantallas++; (await L.codigosVisibles(pq)).forEach(c => codigos.push(u + " " + donde + ": " + c)); };
@@ -256,6 +264,10 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
           const devolver = await pq.evaluate(() => Array.from(document.querySelectorAll('[data-act="exp-act"][data-v="devolver"]')).map(b => b.getAttribute("data-arg")));
           if (devolver.length) { await L.clic(pq, '[data-act="exp-act"][data-arg="' + devolver[0] + '"][data-v="devolver"]'); await mirar("pantalla " + n + " tras devolver"); }
           await L.clic(pq, '[data-act="exp-guardar-punto"]'); await mirar("pantalla " + n + " punto guardado sin decidir");
+          for (const arg of await pq.evaluate(() => Array.from(document.querySelectorAll('[data-act="doc-ver"]')).map(b => b.getAttribute("data-arg")))) {
+            await L.clic(pq, '[data-act="doc-ver"][data-arg="' + arg + '"]'); docsAbiertos++; await mirar("pantalla " + n + " documento " + arg.split("|").slice(1).join(" "));
+            await L.clic(pq, '[data-act="doc-cerrar"]');
+          }
           if (await L.hay(pq, '[data-act="f"][data-arg="decision"]')) await L.clic(pq, '[data-act="f"][data-arg="decision"]');
           if (await L.hay(pq, '[data-in="f-porQue"]')) await pq.fill('[data-in="f-porQue"]', "Con lo que hay en el expediente.");
           await L.clic(pq, '[data-act="exp-guardar-punto"]');
@@ -273,7 +285,7 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
       if (!(await L.hay(pq, "#titulo-cierre"))) codigos.push(u + ": el recorrido no llegó al cierre");
       await cx.close();
     }
-    T.ok(!codigos.length && pantallas > 40, "en " + pantallas + " pantallas del expediente el participante no ve códigos de análisis (hipótesis, puntos, soportes, caso, marco), ni siquiera en lo plegado", codigos.slice(0, 6).join(" | "));
+    T.ok(!codigos.length && pantallas > 40 && docsAbiertos > 5, "en " + pantallas + " pantallas del expediente, con " + docsAbiertos + " documentos abiertos, el participante no ve códigos de análisis (hipótesis, puntos, soportes, caso, marco), ni siquiera en lo plegado", codigos.slice(0, 6).join(" | "));
   } catch (e) { T.ok(false, "la prueba de interfaz se interrumpió", e.stack || e); }
   await br.close();
   T.ok(!errores.length, "sin errores de consola ni excepciones", errores.slice(0, 4).join(" | "));
