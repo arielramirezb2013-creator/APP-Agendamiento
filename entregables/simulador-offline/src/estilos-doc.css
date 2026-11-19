@@ -1,0 +1,142 @@
+  /* ===== Documentos sintéticos (src/doc-1-render.js): hojas de papel, marca de agua, tachado, figuras y visor =====
+     Los colores de la hoja son explícitos: el documento conserva el aspecto de papel aunque la interfaz cambie de tema. */
+  .doc { color-scheme:light; display:block; width:100%; margin:8px 0 12px; padding:16px; border-radius:8px; background:#e6e8ec; color:#1d2330; font:13.5px/1.5 Arial, Helvetica, sans-serif; text-align:left; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .doc-hoja { container:doc-hoja / inline-size; position:relative; max-width:816px; margin:0 auto; padding:34px 44px 24px; background:#ffffff; color:#1d2330; border:1px solid #d3d7de; box-shadow:0 1px 2px rgba(15,27,51,.12), 0 8px 22px rgba(15,27,51,.10); overflow-wrap:break-word; }
+  .doc-hoja + .doc-hoja { margin-top:18px; }
+  .doc p { max-width:none; }
+  .doc :is(h3, h4) { text-wrap:balance; }
+
+  /* Marca de agua: texto diagonal repetido a lo largo de la hoja, encima del contenido pero sin estorbar. */
+  .doc-marca { position:absolute; inset:0; z-index:2; overflow:hidden; display:flex; flex-direction:column; justify-content:space-around; align-items:center; pointer-events:none; -webkit-user-select:none; user-select:none; }
+  .doc-marca span { display:block; white-space:nowrap; transform:rotate(-28deg); font-family:Arial, Helvetica, sans-serif; font-weight:700; font-size:30px; font-size:clamp(14px, 5.1cqi, 40px); line-height:1; letter-spacing:.06em; color:rgba(178,47,41,.09); }
+
+  /* Encabezado de control: emisor | título | número, fecha, versión y hoja. */
+  .doc-cab { position:relative; display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1.9fr) minmax(0,.95fr); margin:0 0 14px; border:1px solid #5b6472; }
+  .doc-cab > * { min-width:0; margin:0; padding:8px 10px; }
+  .doc-cab > * + * { border-left:1px solid #5b6472; }
+  .doc-emisor p { margin:0; font-size:11.5px; line-height:1.4; color:#3a4150; }
+  .doc-emisor .doc-emisor-n { margin-bottom:2px; font-size:12.5px; font-weight:700; line-height:1.3; letter-spacing:.02em; text-transform:uppercase; color:#111827; }
+  .doc-cab-t { display:flex; flex-direction:column; justify-content:center; text-align:center; }
+  .doc .doc-titulo { margin:0; font:700 14px/1.3 Arial, Helvetica, sans-serif; letter-spacing:.02em; text-transform:uppercase; color:#111827; }
+  .doc .doc-subtitulo { margin:5px 0 0; font-size:12px; line-height:1.35; color:#3a4150; }
+  .doc .doc-meta { display:flex; flex-direction:column; justify-content:center; gap:1px; font-size:11.5px; line-height:1.4; color:#1d2330; }
+  .doc-meta-k { color:#5b6472; }
+  .doc-meta-sep { display:none; }
+  .doc .doc-estado { position:relative; margin:0 0 14px; padding:7px 10px; border:1px dashed #9a6b12; background:#fff8e6; color:#4a3608; font-size:12px; line-height:1.45; }
+
+  /* Bloques */
+  .doc-cuerpo { position:relative; }
+  .doc .doc-h { margin:18px 0 7px; padding-bottom:3px; border-bottom:1.5px solid #1d2330; font:700 12.5px/1.35 Arial, Helvetica, sans-serif; letter-spacing:.04em; text-transform:uppercase; color:#111827; }
+  .doc-cuerpo > .doc-h:first-child { margin-top:2px; }
+  .doc .doc-p { margin:0 0 9px; text-align:justify; -webkit-hyphens:auto; hyphens:auto; }
+  .doc-kv { margin:0 0 12px; border:1px solid #b9c0ca; border-bottom:0; font-size:12.5px; line-height:1.45; }
+  .doc-kv-f { display:grid; grid-template-columns:minmax(120px,34%) minmax(0,1fr); border-bottom:1px solid #b9c0ca; }
+  .doc-kv dt { padding:4px 8px; background:#f1f3f6; border-right:1px solid #b9c0ca; font-weight:700; color:#3a4150; }
+  .doc-kv dd { min-width:0; margin:0; padding:4px 8px; color:#1d2330; }
+  .doc-tabla { max-width:100%; margin:4px 0 12px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .doc-tabla table { width:100%; border-collapse:collapse; background:#ffffff; font-size:12px; line-height:1.4; }
+  .doc-tabla th, .doc-tabla td { padding:4px 6px; border:1px solid #9aa3ae; text-align:left; vertical-align:top; color:#1d2330; }
+  .doc-tabla th { background:#e6eaf0; font-weight:700; }
+  .doc-tabla tbody tr:nth-child(even) td { background:#f8f9fb; }
+  .doc .doc-tabla-nota { margin:-6px 0 12px; font-size:11.5px; line-height:1.45; font-style:italic; color:#4a5260; }
+  .doc-lista { margin:0 0 10px; padding-left:22px; } .doc-lista li { margin:3px 0; }
+  .doc .doc-nota { margin:6px 0 10px; padding-left:8px; border-left:2px solid #c3c9d1; font-size:11.5px; line-height:1.45; color:#4a5260; }
+  .doc-vacio { margin:-4px 0 12px; padding:6px 10px; border:1.5px dashed #b3261e; background:repeating-linear-gradient(-45deg, #ffffff 0 6px, #fdecec 6px 12px); color:#8a1f19; font-size:12.5px; font-style:italic; }
+
+  /* Lo que no está a la vista: barra de tachado; el valor no viaja en el HTML. */
+  .doc-tachado { display:inline-block; min-width:9em; padding:1px 10px; border-radius:2px; background:#16181d repeating-linear-gradient(-45deg, rgba(255,255,255,.06) 0 4px, transparent 4px 8px); color:#f2f2f2; font:600 11px/1.6 Arial, Helvetica, sans-serif; letter-spacing:.04em; text-align:center; font-style:normal; }
+  .doc-b-tachado { margin:6px 0 12px; } .doc-b-tachado .doc-tachado { display:block; padding:7px 10px; }
+
+  /* Firmas electrónicas sintéticas */
+  .doc-firmas { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:18px 28px; margin:22px 0 12px; }
+  .doc-firma { font-size:11.5px; line-height:1.4; color:#3a4150; break-inside:avoid; }
+  .doc .doc-firma p { margin:0; }
+  .doc .doc-firma .doc-firma-sello { display:inline-block; margin:0 0 8px 6px; padding:3px 8px; border:1.5px solid #1f4e8c; border-radius:3px; color:#1f4e8c; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; transform:rotate(-2deg); }
+  .doc .doc-firma .doc-firma-n { padding-top:4px; border-top:1px solid #1d2330; font-size:12.5px; font-weight:700; color:#1d2330; }
+  .doc .doc-firma .doc-firma-cod { margin-top:4px; font-size:10.5px; color:#5b6472; } .doc-firma-cod span { font-family:"Roboto Mono", Consolas, monospace; color:#1d2330; white-space:nowrap; }
+
+  /* Figuras */
+  .doc-figura { margin:12px 0 14px; padding:10px 12px; border:1px solid #c9ced6; background:#ffffff; break-inside:avoid; }
+  .doc .doc-fig-t { margin:0 0 8px; font-size:12px; font-weight:700; color:#1d2330; }
+  .doc-figura figcaption { margin-top:8px; font-size:11.5px; line-height:1.45; font-style:italic; color:#4a5260; }
+  .doc-svg { display:block; width:100%; height:auto; margin:0 auto; }
+  .doc-svg-audiograma { max-width:520px; } .doc-svg-imagen { max-width:420px; } .doc-svg-serie { max-width:640px; } .doc-svg-mitad { max-width:440px; }
+  .doc-fig-par { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap:10px; }
+  .doc-fig-tarjetas { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap:8px; }
+  .doc .doc-fig-rotulo { max-width:420px; margin:0 auto; padding:4px 8px; background:#2b2b2b; color:#f1f1f1; font-size:10.5px; line-height:1.35; text-align:center; }
+  .doc .doc-fig-leyenda { margin:8px 0 0; font-size:11.5px; line-height:1.5; color:#3a4150; }
+  .doc .doc-fig-imagen .doc-fig-leyenda { max-width:420px; margin-left:auto; margin-right:auto; }
+  .doc .doc-fig-falta { margin:0; padding:10px; border:1px dashed #9aa3ae; color:#4a5260; font-size:12px; }
+  .doc-sw { display:inline-block; width:12px; height:8px; margin:0 4px 0 10px; } .doc-sw:first-child { margin-left:0; }
+  .doc-sw-ok { background:#3d6aa6; } .doc-sw-mal { background:#c0392b; } .doc-sw-rango { background:#dcefe2; outline:1px solid #b9d9c3; } .doc-sw-linea { width:14px; height:0; border-top:1.5px dashed #1d2330; vertical-align:3px; }
+  .doc-tabla-fig { max-width:640px; margin:10px auto 0; } .doc-tabla-fig table { font-size:11.5px; }
+  .doc-t-num td:not(:first-child) { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .doc-t-num th:not(:first-child) { text-align:right; white-space:nowrap; }
+
+  .doc .doc-pie { position:relative; margin-top:18px; padding-top:7px; border-top:1px solid #c3c9d1; font-size:10.5px; line-height:1.4; color:#5b6472; text-align:center; }
+
+  /* Hoja angosta (teléfono o panel estrecho): encabezado y datos en una columna. */
+  @container doc-hoja (max-width:560px) {
+    .doc-cab { grid-template-columns:minmax(0,1fr); }
+    .doc-cab > * + * { border-left:0; border-top:1px solid #5b6472; }
+    .doc-cab-t { text-align:left; }
+    .doc .doc-meta { flex-direction:row; flex-wrap:wrap; }
+    .doc-meta-sep { display:inline; white-space:pre; }
+    .doc-kv-f { grid-template-columns:minmax(0,1fr); }
+    .doc-kv dt { border-right:0; padding-bottom:2px; }
+    .doc .doc-p { text-align:left; }
+  }
+  @media (max-width:600px) {
+    .doc { padding:8px; }
+    .doc-hoja { padding:16px 14px 14px; }
+    .doc-cab { grid-template-columns:minmax(0,1fr); }
+    .doc-cab > * + * { border-left:0; border-top:1px solid #5b6472; }
+    .doc-cab-t { text-align:left; }
+    .doc .doc-meta { flex-direction:row; flex-wrap:wrap; }
+    .doc-meta-sep { display:inline; white-space:pre; }
+    .doc-kv-f { grid-template-columns:minmax(0,1fr); }
+    .doc-kv dt { border-right:0; padding-bottom:2px; }
+    .doc .doc-p { text-align:left; }
+    .doc-figura { padding:8px; }
+  }
+
+  /* Visor: capa a pantalla completa con barra fija y las hojas desplazables. */
+  body.doc-abierto { overflow:hidden; }
+  .doc-visor { position:fixed; inset:0; z-index:65; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; background:rgba(30,34,42,.95); }
+  .doc-visor-barra { position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; padding:10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); background:var(--surface, #ffffff); border-bottom:1px solid var(--line, #dcdfe5); box-shadow:0 2px 12px rgba(0,0,0,.3); }
+  .doc-visor-barra h2 { flex:1 1 260px; min-width:0; margin:0; font-size:16px; line-height:22px; color:var(--text, #2d313f); overflow-wrap:anywhere; }
+  .doc-visor-barra h2:focus { outline:none; } .doc-visor-barra h2:focus-visible { outline:2px solid var(--tint-border, #4b82b8); outline-offset:3px; border-radius:3px; }
+  .doc-visor-barra .sp { flex:1 1 0; }
+  .doc-visor-cuerpo { width:100%; max-width:880px; margin:0 auto; padding:18px 16px 56px; }
+  .doc-visor p.doc-visor-aviso { max-width:816px; margin:0 auto 14px; padding:8px 12px; border-left:4px solid #b7791f; border-radius:6px; background:#fff6dc; color:#5a4100; font-size:13px; line-height:19px; }
+  .doc-visor .doc { margin:0; padding:0; border-radius:0; background:transparent; }
+  .doc-visor .doc-hoja { border-color:transparent; box-shadow:0 2px 6px rgba(0,0,0,.35), 0 14px 34px rgba(0,0,0,.28); }
+  @media (max-width:600px) {
+    .doc-visor-barra { padding-top:8px; padding-bottom:8px; }
+    .doc-visor-barra h2 { flex-basis:100%; font-size:15px; line-height:20px; }
+    .doc-visor-cuerpo { padding:12px 8px 40px; }
+  }
+
+  /* Impresión: las hojas sin sombra, una por página. Con el visor abierto se imprimen solo sus hojas. */
+  @media print {
+    .doc { margin:0; padding:0; border-radius:0; background:none; }
+    .doc-hoja { max-width:none; padding:0; border:0; box-shadow:none; }
+    .doc-hoja + .doc-hoja { margin-top:0; break-before:page; }
+    .doc-figura, .doc-firma, .doc-kv-f, .doc-tabla tr, .doc-vacio, .doc-estado { break-inside:avoid; }
+    .doc .doc-h { break-after:avoid; }
+    .doc-tabla { overflow:visible; }
+    body.doc-abierto { display:block !important; min-height:0 !important; overflow:visible !important; background:#ffffff !important; }
+    body.doc-abierto *:not(:has(.doc-visor)):not(.doc-visor):not(.doc-visor *) { display:none !important; }
+    body.doc-abierto :has(.doc-visor) { margin:0 !important; padding:0 !important; border:0 !important; max-width:none !important; background:#ffffff !important; box-shadow:none !important; animation:none !important; transform:none !important; }
+    .doc-visor { position:static !important; overflow:visible !important; background:#ffffff !important; }
+    .doc-visor-barra, .doc-visor p.doc-visor-aviso { display:none !important; }
+    .doc-visor-cuerpo { max-width:none !important; padding:0 !important; }
+    .doc-visor .doc-hoja { box-shadow:none; }
+  }
+  @supports not selector(:has(*)) {
+    @media print {
+      body.doc-abierto { visibility:hidden; }
+      body.doc-abierto .doc-visor-cuerpo { visibility:visible; }
+      body.doc-abierto .doc-visor { position:absolute !important; top:0; left:0; right:0; }
+    }
+  }
