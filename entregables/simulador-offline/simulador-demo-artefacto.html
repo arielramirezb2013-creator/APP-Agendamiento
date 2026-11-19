@@ -1786,7 +1786,17 @@ const RAMAS = {
    documento. Lo único añadido son las claves con las que el motor los lee.
 
    La trayectoria, los datos clínicos, los porcentajes, las empresas y los desenlaces se crearon
-   para la simulación. SURA cumple la función de organización ancla. */
+   para la simulación. SURA cumple la función de organización ancla.
+
+   Ajuste del investigador (19/11/2026). Un dictamen de 50 % o más ya en firme da por sí mismo el derecho a la
+   pensión, y la simulación perdería su objeto. Por eso, en PI-L01, PI-L03 y PI-L04 la calificación de 50 % o
+   más todavía NO está en firme cuando se radica la solicitud: en PI-L01 el solicitante objetó la fecha de
+   estructuración y el caso está en la Junta Regional; en PI-L03 la calificación integral de 52,40 % es la de la
+   Junta Regional, apelada por ARL SURA y sin decisión de la Junta Nacional (el soporte DIC es ahora la constancia
+   del estado de ese recurso); en PI-L04 la solicitud se radica
+   mientras corre el término de inconformidad. Si hay pensión depende de la evidencia y de la instancia: con el
+   expediente completo, la pauta prevé dejar pendiente el reconocimiento. PI-L02 se conserva: la Junta Nacional
+   redujo la PCL a 44,30 % y ese dictamen sí está en firme. */
 
 const EXP = {
 
@@ -1869,8 +1879,8 @@ const EXP = {
 
   /* ======================= PI-L01 ======================= */
   {
-    id:"PI-L01", origen:"laboral", titulo:"Montacarguista con firmeza sin verificar",
-    resumenTabla:"La PCL supera el umbral. Falta la firmeza del dictamen y, para liquidar, debe recuperarse un período de IBC.",
+    id:"PI-L01", origen:"laboral", titulo:"Montacarguista con dictamen aún sin firmeza",
+    resumenTabla:"La PCL supera el umbral, pero el dictamen no está en firme: el solicitante objetó la fecha de estructuración y el caso está en la Junta Regional. Para liquidar, además, falta un período de IBC.",
     persona:{
       nombre:"Mateo Roldán Vega", edad:52, edadNota:"52 años al radicar", sexo:"masculino",
       ciudad:"Bello, Antioquia", nacimiento:"19/09/1973",
@@ -1878,7 +1888,7 @@ const EXP = {
       situacion:"Solicitante y operador de montacargas reubicado a inventario",
       vinculo:"Contrato vigente con funciones de inventario adaptadas e incapacidades intermitentes",
       convivencia:"Vive con su pareja",
-      pide:"Él radica la solicitud y pide saber a quién corresponde el siguiente paso."
+      pide:"Él radica la solicitud y pide saber a quién corresponde el siguiente paso y si su inconformidad con la fecha detiene la pensión."
     },
     trayectoria:[
       { periodo:"01/02/1996 a 31/01/2004", dur:"8 a", empresa:"Bodegas Travesía Norte", centro:"Bello, bodega de despachos", ciiu:"5210", cargo:"Auxiliar de despachos", trabajo:"Paletiza 35 a 45 cajas por turno, de 12 a 22 kg. La manipulación ocupa 2,5 h acumuladas de un turno de 8 h.", vinculo:"Indefinido", arl:"ARL histórica A" },
@@ -1911,7 +1921,7 @@ const EXP = {
       { a:"jn", n:"Junta Nacional", rol:"Junta Nacional", custodia:["ORI"] },
       { a:"tra", n:"Solicitante", rol:"Mateo Roldán, solicitante", custodia:["SOL"] }
     ],
-    perspectiva:"Mateo quiere confirmar que la ARL recibió su dictamen y saber qué soporte sigue pendiente.",
+    perspectiva:"Mateo quiere saber si su inconformidad con la fecha de estructuración detiene la pensión y qué soporte sigue pendiente.",
     apertura:"Usted tramita una solicitud de pensión de un operario reubicado. Tiene un dictamen de PCL. Identifique qué falta para resolver, dónde está y cómo se verifica.",
     cronologia:[
       ["18/05/2023", "Consulta por dolor cervical, torpeza al agarrar herramientas y parestesias. Se solicita estudio."],
@@ -1921,41 +1931,42 @@ const EXP = {
       ["01/10/2024", "EPS SURA califica origen laboral en primera oportunidad. La ARL manifiesta inconformidad el 04/10/2024."],
       ["12/02/2025", "Junta Regional determina origen laboral. Tras apelación, la Junta Nacional confirma el origen el 31/03/2025."],
       ["10/12/2025", "Fecha de estructuración consignada en la calificación posterior de PCL."],
-      ["18/03/2026", "ARL SURA emite dictamen de PCL de 56,80 %. Notificación el 19/03 y constancia de firmeza del 08/04."],
-      ["21/04/2026", "Mateo solicita pensión a ARL SURA. El paquete de revisión llega sin la constancia de firmeza."]
+      ["18/03/2026", "ARL SURA emite dictamen de PCL de 56,80 %, estructuración 10/12/2025. Notificación el 19/03."],
+      ["31/03/2026", "Mateo manifiesta inconformidad con la fecha de estructuración: pide que sea la de la cirugía. ARL SURA remite el expediente a la Junta Regional de Antioquia el 07/04/2026."],
+      ["21/04/2026", "Mateo solicita pensión a ARL SURA. El paquete de revisión llega sin constancia sobre el estado del dictamen."]
     ],
     puntos:[
       { id:"P1", n:"Verificar dictamen y cobertura", decide:"arl", decideN:"ARL SURA", requiere:["ORI", "DIC", "FIR", "AFI"], inicio:"3/4" },
       { id:"P2", n:"Resolver solicitud pensional", decide:"arl", decideN:"ARL SURA", requiere:["SOL", "ORI", "DIC", "FIR", "AFI"], inicio:"4/5", resuelve:true },
       { id:"P3", n:"Preparar liquidación ilustrativa", decide:"arl", decideN:"ARL SURA", requiere:["DIC", "FIR", "IBC"], inicio:"1/3" }
     ],
-    flujoActual:"Mateo adjunta lo que tiene. Prestaciones encuentra el DIC en su bandeja documental, pide la firmeza a medicina laboral y solicita por correo a nómina el mes de IBC faltante. Devuelve el certificado v1 si llega incompleto.",
-    flujoPropuesto:"Prestaciones consulta el índice con finalidad pensional, vincula FIR al DIC y solicita a nómina la versión certificada del IBC. Las vistas muestran únicamente los campos autorizados para la decisión.",
-    criterio:"Con DIC firme de 56,80 % laboral y cobertura verificada, la pauta prevé reconocimiento al completar P2. Si falta FIR, se requiere ese soporte. Si falta IBC tras resolver el derecho, la liquidación ilustrativa de P3 queda pendiente.",
+    flujoActual:"Mateo adjunta lo que tiene. Prestaciones encuentra el DIC en su bandeja documental, pide a medicina laboral la constancia de firmeza —y así se entera de que el dictamen está en la Junta Regional— y solicita por correo a nómina el mes de IBC faltante. Devuelve el certificado v1 si llega incompleto.",
+    flujoPropuesto:"Prestaciones consulta el índice con finalidad pensional y ve que DIC-L01 está en recurso ante la Junta Regional, con la fecha de remisión. Solicita a nómina la versión certificada del IBC. Las vistas muestran únicamente los campos autorizados para la decisión.",
+    criterio:"Con el expediente completo, DIC-L01 (56,80 % laboral) no está en firme: la inconformidad sobre la fecha de estructuración está en la Junta Regional. La pauta prevé dejar pendiente el reconocimiento hasta el dictamen de la Junta y comunicárselo a Mateo. Reconocer con un dictamen sin firmeza sería un error, y negar también, porque la PCL supera el umbral. Si falta la constancia del estado del dictamen, se requiere. Si falta IBC, la liquidación ilustrativa de P3 queda pendiente.",
     notas:["El análisis de puesto y el resumen clínico explican la calificación previa y pueden revisarse en el ejercicio. El punto P2 evalúa el expediente de reconocimiento de la prestación."],
     soportes:[
       { k:"SOL", n:"Solicitud e identidad", cust:"tra", custN:"Solicitante", estado:"conforme", ver:"v1", notaEstado:"Radicado e identificación del caso visibles.", verRef:"v1", contenido:"RAD-L01, 21/04/2026. Solicitud de pensión e identificación sintética verificadas.", criterio:"Mismo titular, tipo de prestación y radicado." },
       { k:"ORI", n:"Confirmación del origen", cust:"jn", custN:"Junta Nacional", estado:"conforme", ver:"v1", notaEstado:"Providencia de calificación de origen identificable.", verRef:"v1", contenido:"ORI-L01, 31/03/2025. La Junta Nacional confirma origen laboral de M50.0.", criterio:"Emisor, caso, diagnóstico, sentido y fecha verificables." },
       { k:"DIC", n:"Dictamen de PCL", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v1", notaEstado:"Constan PCL, fecha de estructuración y emisor.", verRef:"v1", contenido:"DIC-L01, 18/03/2026. PCL 56,80 %, origen laboral, estructuración 10/12/2025.", criterio:"Documento firmado, trazado al ORI y con origen, PCL y estructuración." },
-      { k:"FIR", n:"Constancia de firmeza", cust:"arl", custN:"ARL SURA", estado:"ausente", ver:"", notaEstado:"En el paquete solo está el dictamen.", verRef:"v1", contenido:"FIR-L01, 08/04/2026. Dictamen DIC-L01 firme, con fecha de notificación verificada.", criterio:"Firmeza vinculada al identificador y la versión del DIC." },
-      { k:"AFI", n:"Afiliación y cobertura", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v2", notaEstado:"Certificado que identifica la ARL a la fecha de exigibilidad del caso.", verRef:"v2", contenido:"Cobertura ARL SURA desde 01/02/2013. Vigente al quedar firme DIC-L01 y al radicar.", criterio:"Identifica titular, ARL y vigencia en fecha relevante." },
+      { k:"FIR", n:"Constancia del estado de firmeza", cust:"arl", custN:"ARL SURA", estado:"ausente", ver:"", notaEstado:"En el paquete solo está el dictamen.", verRef:"v1", contenido:"FIR-L01, 08/04/2026. DIC-L01 no está en firme: inconformidad del 31/03/2026 sobre la fecha de estructuración, remitida a la Junta Regional de Antioquia el 07/04/2026.", criterio:"Estado de firmeza de DIC-L01 verificable: en firme, o recurso con instancia y fecha." },
+      { k:"AFI", n:"Afiliación y cobertura", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v2", notaEstado:"Certificado que identifica la ARL a la fecha de exigibilidad del caso.", verRef:"v2", contenido:"Cobertura ARL SURA desde 01/02/2013. Vigente a la fecha de estructuración y al radicar.", criterio:"Identifica titular, ARL y vigencia en fecha relevante." },
       { k:"IBC", n:"Certificado de IBC", cust:"emp", custN:"Empleador", estado:"no_conforme", ver:"v1", notaEstado:"Falta septiembre de 2024.", verRef:"v2", contenido:"Período 01/10/2023–30/09/2024. Oct.–dic. de 2023: $3.280.000 mensuales. Ene.–sep. de 2024: $3.460.000 mensuales.", criterio:"Doce meses del escenario, legibles y certificados para verificar la base de liquidación." },
       { k:"APT", n:"Análisis de puesto y vibración", cust:"emp", custN:"Empleador", estado:"conforme", ver:"v2", notaEstado:"Informe técnico disponible en SG-SST.", verRef:"v2", contenido:"Medición 30/08/2023. Montacargas retráctil. A(8) 0,58 m/s². Factor de cresta 10,2.", criterio:"Identifica tarea, equipo, período observado y origen del dato." },
       { k:"HC", n:"Resumen clínico de columna", cust:"ips", custN:"IPS", estado:"conforme", ver:"v2", notaEstado:"Resumen clínico firmado en la IPS.", verRef:"v2", contenido:"M50.0. Resonancia 14/03/2024, cirugía 22/05/2024 y seguimiento funcional.", criterio:"Evolución y pruebas pertinentes con fecha y firma." }
     ],
-    subsanacion:"Solicitar FIR a medicina laboral de la ARL. Para la liquidación ilustrativa, devolver el IBC incompleto a nómina indicando el mes faltante.",
-    requerimiento:"Verificar con los actores cómo se traspasa a prestaciones una calificación generada en medicina laboral, cómo se enlaza la prueba de firmeza y quién corrige los períodos de IBC.",
+    subsanacion:"Solicitar a medicina laboral la constancia del estado de DIC-L01, que está en recurso ante la Junta Regional, y dejar pendiente el reconocimiento. Para la liquidación ilustrativa, devolver el IBC incompleto a nómina indicando el mes faltante.",
+    requerimiento:"Verificar con los actores cómo se traspasa a prestaciones una calificación generada en medicina laboral, cómo conoce prestaciones que el dictamen está en recurso y quién corrige los períodos de IBC.",
     h2:[
       { id:"R01", tarea:"Aportar la solicitud e identificar el radicado", funcion:"Aporta", ref:"tra", refN:"Solicitante" },
       { id:"R02", tarea:"Suministrar y certificar los 12 meses de IBC", funcion:"Aporta", ref:"emp", refN:"Empleador · Nómina" },
       { id:"R03", tarea:"Emitir el dictamen que resuelve la apelación de origen", funcion:"Decide calificación", ref:"jn", refN:"Junta Nacional" },
-      { id:"R04", tarea:"Certificar la firmeza del dictamen de PCL", funcion:"Aporta", ref:"arl", refN:"ARL SURA · Medicina laboral" },
+      { id:"R04", tarea:"Certificar el estado de firmeza del dictamen de PCL", funcion:"Aporta", ref:"arl", refN:"ARL SURA · Medicina laboral" },
       { id:"R05", tarea:"Verificar la cobertura y suficiencia del expediente", funcion:"Revisa", ref:"arl", refN:"ARL SURA · Prestaciones" },
       { id:"R06", tarea:"Resolver el reconocimiento pensional laboral", funcion:"Decide prestación", ref:"arl", refN:"ARL SURA · Prestaciones" }
     ],
     h3:[
       { momento:"+2 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"ORI", accion:"Consultar", finalidad:"Verificar origen definitivo", resultado:"Entrega de origen y fecha", denegado:false },
-      { momento:"+8 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"FIR", accion:"Consultar", finalidad:"Confirmar firmeza del dictamen", resultado:"Constancia vinculada al DIC", denegado:false },
+      { momento:"+8 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"FIR", accion:"Consultar", finalidad:"Confirmar firmeza del dictamen", resultado:"Constancia: dictamen en recurso ante la Junta Regional", denegado:false },
       { momento:"+28 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"IBC", accion:"Consultar", finalidad:"Verificar la base de liquidación prevista en P3", resultado:"Vista de doce meses", denegado:false },
       { momento:"+30 h", actor:"emp", actorN:"Empleador · Administración", pieza:"HC", accion:"Consultar", finalidad:"Control administrativo de asistencia", resultado:"Denegado. Se pueden comunicar restricciones funcionales por una finalidad pertinente.", denegado:true }
     ],
@@ -2065,8 +2076,8 @@ const EXP = {
 
   /* ======================= PI-L03 ======================= */
   {
-    id:"PI-L03", origen:"laboral", titulo:"Operadora minera con tres dictámenes",
-    resumenTabla:"Un dictamen parcial previo y una decisión regional apelada conviven con una calificación integral en firme. El error de versión cambia el sentido de la decisión.",
+    id:"PI-L03", origen:"laboral", titulo:"Operadora minera con calificación integral apelada",
+    resumenTabla:"Un dictamen parcial previo y una calificación integral regional de 52,40 % apelada por la ARL conviven en el expediente, junto a una constancia de firmeza del dictamen de 2022. Ninguno permite reconocer todavía.",
     persona:{
       nombre:"Mónica Beltrán Rivas", edad:53, edadNota:"53 años al radicar", sexo:"femenino",
       ciudad:"Sogamoso, Boyacá", nacimiento:"10/11/1972",
@@ -2074,7 +2085,7 @@ const EXP = {
       situacion:"Solicitante y operadora reubicada",
       vinculo:"Vínculo vigente. Desde febrero de 2024 realiza control de pesaje",
       convivencia:"",
-      pide:"Solicita que prestaciones confirme cuál de los tres documentos de calificación corresponde a su caso."
+      pide:"Solicita que prestaciones confirme cuál de los documentos de calificación corresponde a su caso y si la apelación de la ARL detiene su pensión."
     },
     trayectoria:[
       { periodo:"01/01/1993 a 31/12/2002", dur:"10 a", empresa:"Carbones Cuesta de Niebla", centro:"Sogamoso, patio de acopio", ciiu:"0510", cargo:"Auxiliar de patio", trabajo:"Ordena material, usa herramientas manuales y mueve sacos de 10 a 18 kg. La manipulación ocupa 2 h acumuladas de un turno de 8 h.", vinculo:"Indefinido", arl:"ISS y luego ARL histórica A" },
@@ -2088,7 +2099,7 @@ const EXP = {
     exposicion:"En 2023, el informe de puesto de Tópaga consignó A(8) de 0,61 m/s² de vibración de cuerpo entero, con equipo, piso y turno identificados. El análisis del puesto describe agarre repetido de palancas y flexión sostenida de muñeca. Las fichas de los dos primeros empleadores permiten reconstruir las tareas. Las mediciones históricas solo cubren el puesto de 2023.",
     clinica:{
       diagnostico:"Síndrome del túnel carpiano bilateral (G56.0) y discopatía lumbar degenerativa (M51.3)",
-      detalle:"Túnel carpiano bilateral laboral, con cirugía en mano derecha, residual sensitivo y PCL de 16,20 % en dictamen previo. Discopatía lumbar degenerativa con dolor persistente y limitación para sedestación y desplazamiento. El dictamen integral de origen laboral consigna una PCL del 52,40 %. Gonartrosis leve en seguimiento, documentada como antecedente común. El dictamen final deja identificados el alcance y los antecedentes considerados.",
+      detalle:"Túnel carpiano bilateral laboral, con cirugía en mano derecha, residual sensitivo y PCL de 16,20 % en dictamen previo. Discopatía lumbar degenerativa con dolor persistente y limitación para sedestación y desplazamiento. La calificación integral regional de origen laboral consigna una PCL del 52,40 %, apelada por ARL SURA. Gonartrosis leve en seguimiento, documentada como antecedente común. La calificación regional deja identificados el alcance y los antecedentes considerados; la Junta Nacional no ha decidido el recurso.",
       funcion:"La cirugía de mano derecha y la rehabilitación de columna dejan limitaciones residuales para prensión, sedestación prolongada y marcha. El control de pesaje reduce las tareas de conducción y levantamiento.",
       rehabilitacion:"Después de la intervención de mano derecha en 2021 el expediente registra 30 días de incapacidad y 12 sesiones de terapia de mano. En 2024 realiza 16 sesiones de rehabilitación lumbar. La reubicación a báscula se mantiene al radicar.",
       pcl:52.40, pclOrigen:"laboral", estructuracion:"18/06/2025"
@@ -2096,15 +2107,15 @@ const EXP = {
     referenciasTemporales:[
       ["Primer síntoma registrado", "48 años", "12/11/2020"],
       ["Diagnóstico inicial", "48 años", "09/02/2021"],
-      ["Estructuración en el dictamen final", "52 años", "18/06/2025"]
+      ["Estructuración en la calificación integral regional", "52 años", "18/06/2025"]
     ],
     actores:[
       { a:"arl", n:"ARL SURA", rol:"ARL SURA, medicina laboral y prestaciones", custodia:["CAR", "AFI"] },
       { a:"eps", n:"EPS SURA", rol:"EPS SURA, medicina laboral", custodia:[] },
       { a:"ips", n:"IPS", rol:"IPS de neurología, ortopedia y rehabilitación", custodia:["FUN"] },
       { a:"emp", n:"Empleador", rol:"SG-SST y nómina de Carbones Mesa Umbral", custodia:["IBC", "APT"] },
-      { a:"jr", n:"Junta Regional", rol:"Junta Regional de Boyacá", custodia:["REG"] },
-      { a:"jn", n:"Junta Nacional", rol:"Junta Nacional", custodia:["DIC", "FIR"] },
+      { a:"jr", n:"Junta Regional", rol:"Junta Regional de Boyacá", custodia:["REG", "FIR"] },
+      { a:"jn", n:"Junta Nacional", rol:"Junta Nacional", custodia:["DIC"] },
       { a:"tra", n:"Solicitante", rol:"Mónica Beltrán, solicitante", custodia:["SOL"] }
     ],
     perspectiva:"Mónica pide que le indiquen la versión que decide su pensión y qué pasa con la calificación anterior de la mano.",
@@ -2115,45 +2126,44 @@ const EXP = {
       ["21/06/2023", "Consulta por dolor lumbar con síntomas persistentes. Medición de vibración del puesto el 23/08/2023."],
       ["01/02/2024", "Se formaliza la reubicación a la báscula. La IPS documenta evolución y rehabilitación de la columna."],
       ["01/08/2024", "EPS SURA califica origen laboral de M51.3 en primera oportunidad. ARL SURA manifiesta inconformidad el 05/08."],
-      ["16/09/2025", "La Junta Regional ratifica origen laboral lumbar y establece PCL integral de 47,60 %, estructuración 18/06/2025."],
-      ["22/09/2025", "Mónica apela. El expediente de segunda instancia incorpora el informe funcional del 30/10/2025."],
-      ["31/03/2026", "La Junta Nacional expide PCL integral laboral de 52,40 %, estructuración 18/06/2025. Notifica el 01/04 y emite firmeza el 17/04."],
-      ["29/04/2026", "Mónica radica pensión. El índice local conserva el dictamen anterior de 16,20 % y la decisión regional apelada."]
+      ["16/09/2025", "La Junta Regional ratifica origen laboral lumbar y establece PCL integral de 52,40 %, estructuración 18/06/2025."],
+      ["22/09/2025", "ARL SURA apela. La Junta Regional concede el recurso el 03/10/2025 y remite el expediente a la Junta Nacional el 07/10/2025; el expediente de segunda instancia incorpora el informe funcional del 30/10/2025."],
+      ["29/04/2026", "Mónica radica pensión. La Junta Nacional no ha decidido. El índice local conserva el dictamen de 16,20 %, la calificación regional apelada y una constancia de firmeza de 2022."]
     ],
     puntos:[
       { id:"P1", n:"Distinguir alcances y versiones de dictamen", decide:"arl", decideN:"ARL SURA", requiere:["CAR", "REG", "DIC", "FIR"], inicio:"2/4" },
       { id:"P2", n:"Resolver solicitud pensional", decide:"arl", decideN:"ARL SURA", requiere:["SOL", "DIC", "FIR", "AFI"], inicio:"2/4", resuelve:true },
       { id:"P3", n:"Preparar liquidación ilustrativa", decide:"arl", decideN:"ARL SURA", requiere:["DIC", "FIR", "IBC"], inicio:"0/3" }
     ],
-    flujoActual:"Prestaciones encuentra CAR y REG en distintas carpetas y recibe una constancia asociada al dictamen de 2022. Pide a Junta Nacional el dictamen integral y la firmeza correspondiente. Nómina verifica el período del IBC solicitado.",
-    flujoPropuesto:"El índice enlaza cada calificación con su alcance, etapa, recurso y firmeza. Prestaciones consulta el dictamen válido, rechaza la firmeza mal asociada y solicita el certificado de IBC del período previsto.",
-    criterio:"Con DIC-L03 firme de 52,40 % laboral, cobertura y soportes verificados, la pauta prevé reconocimiento en P2. La serie IBC se verifica en P3. El dictamen de 2022 y la IPP previa se conservan como antecedentes para eventual revisión separada. Si llega la constancia de 2022, se devuelve por discordancia y se solicita la de 2026.",
-    notas:["El guion trae una calificación integral emitida. Los dictámenes previos se conservan como antecedentes. La pauta utiliza la PCL del dictamen integral para decidir. Las reubicaciones se documentan en el expediente."],
+    flujoActual:"Prestaciones encuentra CAR y REG en distintas carpetas y recibe una constancia asociada al dictamen de 2022. Pide a la Junta Regional la constancia del estado de REG-L03 y a la Junta Nacional el estado del recurso, que sigue sin decisión. Nómina verifica el período del IBC solicitado.",
+    flujoPropuesto:"El índice enlaza cada calificación con su alcance, etapa, recurso y firmeza. Prestaciones ve que REG-L03 está en recurso ante la Junta Nacional, rechaza la firmeza mal asociada y solicita el certificado de IBC del período previsto.",
+    criterio:"Con el expediente completo, la calificación integral vigente es REG-L03 (52,40 %), apelada por ARL SURA y sin decisión de la Junta Nacional: no está en firme. La pauta prevé dejar pendiente el reconocimiento hasta la segunda instancia e informar a Mónica. Reconocer con REG-L03 o con el dictamen de 2022 sería un error, y negar también. La serie IBC se verifica en P3. El dictamen de 2022 y la IPP previa se conservan como antecedentes para eventual revisión separada. Si llega la constancia de 2022, se devuelve por discordancia y se solicita la del estado de REG-L03.",
+    notas:["El expediente trae una calificación integral regional apelada y aún sin decisión de segunda instancia. Los dictámenes previos se conservan como antecedentes. La pauta no reconoce con una calificación que no está en firme. Las reubicaciones se documentan en el expediente."],
     soportes:[
       { k:"SOL", n:"Solicitud e identidad", cust:"tra", custN:"Solicitante", estado:"conforme", ver:"v1", notaEstado:"Radicado registrado.", verRef:"v1", contenido:"RAD-L03, 29/04/2026. Solicitud de pensión e identificación sintética.", criterio:"Titular, prestación y radicado inequívocos." },
       { k:"CAR", n:"Dictamen previo de túnel carpiano", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v1", notaEstado:"Está disponible como antecedente.", verRef:"v1", contenido:"CAR-L03, 19/04/2022. G56.0 laboral, PCL 16,20 %, estructuración 19/01/2022. Firme el 06/05/2022.", criterio:"Identifica patología, alcance, decisión previa y su estado." },
-      { k:"REG", n:"Dictamen integral regional", cust:"jr", custN:"Junta Regional", estado:"conforme", ver:"v1", notaEstado:"Copia auténtica de la instancia apelada.", verRef:"v1", contenido:"REG-L03, 16/09/2025. PCL integral laboral 47,60 %, estructuración 18/06/2025. Apelado el 22/09.", criterio:"Emisor, fecha, alcance integral y marca de instancia." },
-      { k:"DIC", n:"Dictamen integral nacional", cust:"jn", custN:"Junta Nacional", estado:"ausente", ver:"", notaEstado:"Solo circula REG-L03 en la bandeja de prestaciones.", verRef:"v1", contenido:"DIC-L03, 31/03/2026. PCL integral laboral 52,40 %, estructuración 18/06/2025. Resuelve recurso de REG-L03.", criterio:"Dictamen nacional autenticado, con alcance y versión claramente vinculados." },
-      { k:"FIR", n:"Constancia de firmeza", cust:"jn", custN:"Junta Nacional", estado:"no_conforme", ver:"v0", notaEstado:"Constancia que corresponde a CAR-L03 de 2022.", verRef:"v1", contenido:"FIR-L03, 17/04/2026. Firmeza de DIC-L03 tras la notificación del 01/04.", criterio:"Debe enlazar DIC-L03 de 2026, con fechas y emisor verificables." },
-      { k:"AFI", n:"Afiliación y cobertura", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v2", notaEstado:"Certificado vigente.", verRef:"v2", contenido:"ARL SURA desde 01/01/2013. Cubre fecha de firmeza y de radicación.", criterio:"Titular y vigencia trazados al último vínculo." },
+      { k:"REG", n:"Dictamen integral regional", cust:"jr", custN:"Junta Regional", estado:"conforme", ver:"v1", notaEstado:"Copia auténtica de la calificación apelada.", verRef:"v1", contenido:"REG-L03, 16/09/2025. PCL integral laboral 52,40 %, estructuración 18/06/2025. Apelado por ARL SURA el 22/09/2025.", criterio:"Emisor, fecha, alcance integral, PCL, estructuración y recurso identificables." },
+      { k:"DIC", n:"Estado del recurso ante la Junta Nacional", cust:"jn", custN:"Junta Nacional", estado:"ausente", ver:"", notaEstado:"En la bandeja de prestaciones no hay noticia de la segunda instancia.", verRef:"v1", contenido:"JN-L03, 30/04/2026. Recurso de ARL SURA contra REG-L03 recibido el 07/10/2025, en trámite y sin dictamen nacional a la fecha.", criterio:"Constancia de la Junta Nacional sobre el recurso: radicado, fecha y estado, decidido o en trámite." },
+      { k:"FIR", n:"Constancia del estado de firmeza", cust:"jr", custN:"Junta Regional", estado:"no_conforme", ver:"v0", notaEstado:"Constancia que corresponde a CAR-L03 de 2022.", verRef:"v1", contenido:"FIR-L03, 30/04/2026. REG-L03 no está en firme: recurso de apelación de ARL SURA concedido el 03/10/2025 y remitido a la Junta Nacional el 07/10/2025, sin decisión a la fecha.", criterio:"Debe referirse a REG-L03, con su estado de firmeza, el recurso, la instancia y las fechas." },
+      { k:"AFI", n:"Afiliación y cobertura", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v2", notaEstado:"Certificado vigente.", verRef:"v2", contenido:"ARL SURA desde 01/01/2013. Cubre la fecha de estructuración y la de radicación.", criterio:"Titular y vigencia trazados al último vínculo." },
       { k:"IBC", n:"Certificado histórico de IBC", cust:"emp", custN:"Empleador", estado:"no_conforme", ver:"v1", notaEstado:"Exportación reciente con corte de 2026.", verRef:"v2", contenido:"Período 01/08/2023–31/07/2024, corte previo a primera calificación de origen lumbar según el guion. Ago. 2023–ene. 2024: $3.040.000 mensuales. Feb.–jul. 2024: $3.200.000 mensuales.", criterio:"Serie del período fijado para la liquidación ilustrativa, con firma y desglose mensual." },
       { k:"APT", n:"Análisis del puesto y reubicación", cust:"emp", custN:"Empleador", estado:"conforme", ver:"v2", notaEstado:"Versión con cronología del cambio.", verRef:"v2", contenido:"Vibración A(8) 0,61 m/s² en 2023 y constancia de paso a báscula desde 01/02/2024.", criterio:"Documenta condiciones medidas y fecha de reubicación." },
       { k:"FUN", n:"Resumen funcional de mano y columna", cust:"ips", custN:"IPS", estado:"conforme", ver:"v2", notaEstado:"Extracto firmado en la IPS.", verRef:"v2", contenido:"Constan secuelas de mano, restricción de sedestación prolongada, marcha con pausas e informe funcional usado en el recurso.", criterio:"Indica procedencia, fecha y alcance de las evaluaciones." }
     ],
-    subsanacion:"Marcar CAR y REG como antecedentes de distinto alcance. Devolver FIR de 2022 y pedir su versión de 2026; para P3, solicitar la serie IBC del período correcto.",
-    requerimiento:"Verificar cómo se identifican patologías y versiones, quién autoriza el extracto funcional y qué referencias preserva el motor para impedir el uso de una constancia del dictamen equivocado.",
+    subsanacion:"Marcar CAR como antecedente de distinto alcance y REG como calificación apelada. Devolver la constancia de 2022 y pedir a la Junta Regional la del estado de REG-L03 y a la Junta Nacional la del estado del recurso; para P3, solicitar la serie IBC del período correcto.",
+    requerimiento:"Verificar cómo se identifican patologías, versiones y recursos, quién autoriza el extracto funcional y qué referencias preserva el motor para impedir el uso de una constancia del dictamen equivocado.",
     h2:[
       { id:"R01", tarea:"Aportar el análisis de puesto y la fecha de reubicación", funcion:"Aporta", ref:"emp", refN:"Empleador · SG-SST" },
       { id:"R02", tarea:"Aportar el extracto funcional de mano y columna", funcion:"Aporta", ref:"ips", refN:"IPS · Rehabilitación" },
       { id:"R03", tarea:"Emitir el dictamen integral de segunda instancia", funcion:"Decide calificación", ref:"jn", refN:"Junta Nacional" },
-      { id:"R04", tarea:"Aportar la constancia de firmeza de la segunda instancia", funcion:"Aporta", ref:"jn", refN:"Junta Nacional" },
+      { id:"R04", tarea:"Certificar el estado de firmeza de la calificación regional", funcion:"Aporta", ref:"jr", refN:"Junta Regional" },
       { id:"R05", tarea:"Verificar alcance, versión y vigencia de los dictámenes", funcion:"Revisa", ref:"arl", refN:"ARL SURA · Prestaciones" },
       { id:"R06", tarea:"Resolver el reconocimiento pensional laboral", funcion:"Decide prestación", ref:"arl", refN:"ARL SURA · Prestaciones" }
     ],
     h3:[
       { momento:"+2 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"CAR", accion:"Consultar", finalidad:"Identificar alcance de la calificación previa", resultado:"Antecedente G56.0, con su alcance", denegado:false },
-      { momento:"+6 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"DIC", accion:"Consultar", finalidad:"Verificar la PCL integral vigente", resultado:"Dictamen nacional con su versión", denegado:false },
-      { momento:"+25 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"FIR", accion:"Consultar", finalidad:"Verificar firmeza de la versión vigente", resultado:"Constancia asociada a DIC-L03", denegado:false },
+      { momento:"+6 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"DIC", accion:"Consultar", finalidad:"Verificar si la Junta Nacional decidió el recurso", resultado:"Recurso en trámite, sin dictamen nacional", denegado:false },
+      { momento:"+25 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"FIR", accion:"Consultar", finalidad:"Verificar firmeza de la versión vigente", resultado:"Constancia: REG-L03 apelada, sin firmeza", denegado:false },
       { momento:"+32 h", actor:"emp", actorN:"Empleador · Administración", pieza:"FUN", accion:"Consultar", finalidad:"Administrar turnos de báscula", resultado:"Denegado el extracto clínico. Solo vista de restricciones si se habilita para ese fin.", denegado:true }
     ],
     procedencia:"La T-364 aporta la sucesión de dictámenes sobre columna. La SU-111 aporta el antecedente separado de túnel carpiano bilateral. El fallo de Medellín aporta la prueba técnica de vibración. Se inventaron la biografía, los dictámenes, la PCL integral y el desenlace.",
@@ -2166,8 +2176,8 @@ const EXP = {
 
   /* ======================= PI-L04 ======================= */
   {
-    id:"PI-L04", origen:"laboral", titulo:"Operaria de prensas con cobertura histórica incompleta",
-    resumenTabla:"Una exoperaria de prensas tiene PCL laboral en firme. Su solicitud exige verificar la última ARL y vincular la exposición a un período cubierto.",
+    id:"PI-L04", origen:"laboral", titulo:"Operaria de prensas con dictamen sin firmeza y cobertura incompleta",
+    resumenTabla:"Una exoperaria de prensas radica la pensión con un dictamen de 51 % que aún no está en firme: corre el término de inconformidad. Su solicitud exige además verificar la última ARL y vincular la exposición a un período cubierto.",
     persona:{
       nombre:"Elena Marín Cuéllar", edad:55, edadNota:"55 años al radicar", sexo:"femenino",
       ciudad:"Dosquebradas, Risaralda", nacimiento:"12/02/1971",
@@ -2176,7 +2186,7 @@ const EXP = {
       vinculo:"Retirada desde el 01/10/2025",
       convivencia:"Vive con su hija adulta",
       ajustes:"Usa audífonos y pide recibir por escrito las solicitudes y decisiones",
-      pide:"Solicita una respuesta escrita. Quiere saber si su fecha de retiro cambia quién debe resolver su pensión."
+      pide:"Solicita una respuesta escrita. Quiere saber si su fecha de retiro cambia quién debe resolver su pensión y desde cuándo se la pagarían."
     },
     trayectoria:[
       { periodo:"01/01/1996 a 31/12/2003", dur:"8 a", empresa:"Fundición Quebrada Larga", centro:"Pereira, área de acabado", ciiu:"2431", cargo:"Auxiliar de desmoldeo y acabado", trabajo:"Retira arena y rebabas con herramientas neumáticas. Pasa cerca de 4 h por turno de 8 h junto al desmoldeo y esmerilado.", vinculo:"Indefinido", arl:"ARL histórica A" },
@@ -2208,7 +2218,7 @@ const EXP = {
       { a:"tra", n:"Solicitante", rol:"Elena Marín, solicitante", custodia:["SOL"] }
     ],
     perspectiva:"Elena solicita una respuesta escrita. Quiere saber si su fecha de retiro cambia quién debe resolver su pensión.",
-    apertura:"Usted recibe un dictamen laboral en firme y una consulta de afiliación que muestra estado inactivo. Verifique qué administradora corresponde y qué soportes permiten decidir.",
+    apertura:"Usted recibe un dictamen laboral de 51 % notificado hace una semana y una consulta de afiliación que muestra estado inactivo. Verifique en qué estado está el dictamen, qué administradora corresponde y qué soportes permiten decidir.",
     cronologia:[
       ["11/11/2021", "Reporta tinnitus y dificultad para seguir instrucciones en la nave durante el control periódico."],
       ["22/08/2023", "Dosimetría personal en la prensa. SG-SST archiva el informe con el período y la tarea."],
@@ -2217,27 +2227,27 @@ const EXP = {
       ["24/06/2025", "EPS SURA califica el origen laboral en primera oportunidad. Su firmeza consta el 14/07/2025."],
       ["12/09/2025", "Evaluación funcional de cierre. El dictamen posterior fija su estructuración en esta fecha."],
       ["30/09/2025", "Finaliza el vínculo. ARL SURA es la última administradora en el expediente."],
-      ["28/04/2026", "ARL SURA fija PCL laboral de 51,00 %. Notifica el 29/04 y certifica firmeza el 15/05."],
-      ["22/05/2026", "Elena radica la pensión. El expediente digital muestra un estado inactivo y carece del anexo que liga la exposición al período de afiliación."]
+      ["28/04/2026", "ARL SURA fija PCL laboral de 51,00 %. Notifica a Elena el 29/04; el término para manifestar inconformidad corre hasta el 14/05."],
+      ["06/05/2026", "Elena radica la pensión una semana después de la notificación, antes de que el dictamen quede en firme. El expediente digital muestra un estado inactivo y carece del anexo que liga la exposición al período de afiliación."]
     ],
     puntos:[
       { id:"P1", n:"Verificar última cobertura y nexo", decide:"arl", decideN:"ARL SURA", requiere:["ORI", "AFI", "NEX"], inicio:"1/3" },
-      { id:"P2", n:"Resolver solicitud pensional", decide:"arl", decideN:"ARL SURA", requiere:["SOL", "ORI", "DIC", "FIR", "AFI", "NEX"], inicio:"4/6", resuelve:true }
+      { id:"P2", n:"Resolver solicitud pensional", decide:"arl", decideN:"ARL SURA", requiere:["SOL", "ORI", "DIC", "FIR", "AFI", "NEX"], inicio:"3/6", resuelve:true }
     ],
-    flujoActual:"Prestaciones ve el estado inactivo y pide a Afiliaciones la vigencia histórica. Solicita a SG-SST el anexo citado y coteja la exposición con el origen calificado y la cobertura.",
-    flujoPropuesto:"El índice permite consultar por separado el estado actual y el histórico de afiliación. Prestaciones vincula al dictamen la vista pertinente del anexo de puesto para verificar la cobertura.",
-    criterio:"Con DIC-L04 firme de 51,00 % laboral, última afiliación a ARL SURA y nexo con un período cubierto verificados, la pauta prevé reconocer la pensión. Si falta AFI o NEX, se requiere el soporte y se informa por escrito a Elena.",
+    flujoActual:"Prestaciones ve el estado inactivo y pide a Afiliaciones la vigencia histórica. Pide a medicina laboral la constancia de firmeza y encuentra que el término sigue corriendo. Solicita a SG-SST el anexo citado y coteja la exposición con el origen calificado y la cobertura.",
+    flujoPropuesto:"El índice permite consultar por separado el estado actual y el histórico de afiliación, y muestra que DIC-L04 está en término de inconformidad. Prestaciones vincula al dictamen la vista pertinente del anexo de puesto para verificar la cobertura.",
+    criterio:"Con el expediente completo, DIC-L04 (51,00 % laboral) todavía no está en firme: el término de inconformidad corre hasta el 14/05/2026. La pauta prevé dejar pendiente la decisión, pedir la constancia de firmeza cuando venza el término e informar por escrito a Elena; con firmeza, última afiliación a ARL SURA y nexo con un período cubierto verificados, procedería el reconocimiento. Reconocer antes de la firmeza, o negar por el estado «inactivo», serían errores. Si falta AFI o NEX, se requiere el soporte.",
     notas:["La comprobación de cobertura se hace respecto de los períodos pertinentes del caso. El eventual recobro entre administradoras sigue su trámite propio."],
     soportes:[
-      { k:"SOL", n:"Solicitud e identidad", cust:"tra", custN:"Solicitante", estado:"conforme", ver:"v1", notaEstado:"Identificación, radicado y canal escrito visibles.", verRef:"v1", contenido:"RAD-L04, 22/05/2026. Solicitud de pensión y canal de notificación escrito.", criterio:"Mismo titular, radicado, prestación y canal registrado." },
+      { k:"SOL", n:"Solicitud e identidad", cust:"tra", custN:"Solicitante", estado:"conforme", ver:"v1", notaEstado:"Identificación, radicado y canal escrito visibles.", verRef:"v1", contenido:"RAD-L04, 06/05/2026. Solicitud de pensión y canal de notificación escrito.", criterio:"Mismo titular, radicado, prestación y canal registrado." },
       { k:"ORI", n:"Calificación del origen", cust:"eps", custN:"EPS SURA", estado:"conforme", ver:"v1", notaEstado:"Copia firmada con constancia de origen laboral.", verRef:"v1", contenido:"ORI-L04, 24/06/2025. H83.3 laboral. Firmeza de origen 14/07/2025.", criterio:"Titular, diagnóstico, origen, emisor y firmeza identificados." },
       { k:"DIC", n:"Dictamen de PCL", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v1", notaEstado:"PCL, origen y estructuración verificables.", verRef:"v1", contenido:"DIC-L04, 28/04/2026. PCL 51,00 % laboral. Estructuración 12/09/2025.", criterio:"Firmado y vinculado a ORI-L04. Titular, PCL, origen y fecha verificables." },
-      { k:"FIR", n:"Constancia de firmeza de PCL", cust:"arl", custN:"ARL SURA", estado:"conforme", ver:"v1", notaEstado:"Constancia vinculada al dictamen de PCL.", verRef:"v1", contenido:"FIR-L04, 15/05/2026. DIC-L04 notificado el 29/04/2026.", criterio:"Identifica el dictamen, la fecha de notificación y el estado en firme." },
+      { k:"FIR", n:"Constancia del estado de firmeza de PCL", cust:"arl", custN:"ARL SURA", estado:"ausente", ver:"", notaEstado:"En el expediente no hay constancia sobre el estado del dictamen.", verRef:"v1", contenido:"FIR-L04, 08/05/2026. DIC-L04 notificado el 29/04/2026; el término de inconformidad corre hasta el 14/05/2026, sin inconformidades radicadas a la fecha. No está en firme.", criterio:"Identifica el dictamen, la fecha de notificación y su estado: en firme, o el término o recurso pendiente." },
       { k:"AFI", n:"Certificación histórica de cobertura", cust:"arl", custN:"ARL SURA", estado:"no_conforme", ver:"v1", notaEstado:"Consulta «inactiva» sin fechas ni identificación del último vínculo.", verRef:"v2", contenido:"Última afiliación a ARL SURA del 01/09/2012 al 30/09/2025. Historial cotejado sin afiliación posterior.", criterio:"Acredita empleador, última ARL, fechas de inicio y retiro, y titular." },
       { k:"NEX", n:"Anexo de exposición fechado", cust:"emp", custN:"Empleador", estado:"ausente", ver:"", notaEstado:"El resumen de origen cita el informe. Falta el anexo con puesto y fechas.", verRef:"v1", contenido:"SG-SST. Dosimetría 22/08/2023 en estampado. Vincula tarea y turno a la ficha de puesto de 2012 a 2024.", criterio:"Relaciona el riesgo con el puesto, el período cubierto y ORI-L04." },
       { k:"AUD", n:"Extracto audiológico", cust:"ips", custN:"IPS", estado:"conforme", ver:"v1", notaEstado:"Valoración clínica y funcional firmada.", verRef:"v1", contenido:"Audiometría seriada y cierre funcional del 12/09/2025. Ayudas auditivas y barreras de comunicación.", criterio:"Emisor, identificación, fechas y pruebas pertinentes autenticadas." }
     ],
-    subsanacion:"Solicitar AFI v2 a Afiliaciones y el anexo NEX v1 a SG-SST. Cotejar el puesto y la fecha del informe con el período cubierto y el origen calificado.",
+    subsanacion:"Pedir a medicina laboral la constancia del estado de DIC-L04 y dejar pendiente la decisión hasta que venza el término. Solicitar AFI v2 a Afiliaciones y el anexo NEX v1 a SG-SST. Cotejar el puesto y la fecha del informe con el período cubierto y el origen calificado.",
     requerimiento:"Precisar quién verifica la afiliación después del retiro, cómo se vincula el informe de exposición al dictamen y qué datos puede consultar cada parte.",
     h2:[
       { id:"R01", tarea:"Aportar el anexo fechado de exposición a ruido", funcion:"Aporta", ref:"emp", refN:"Empleador · SG-SST" },
@@ -2248,7 +2258,7 @@ const EXP = {
       { id:"R06", tarea:"Resolver y comunicar la solicitud de pensión laboral", funcion:"Decide prestación", ref:"arl", refN:"ARL SURA · Prestaciones" }
     ],
     h3:[
-      { momento:"+3 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"DIC", accion:"Consultar", finalidad:"Verificar PCL y estructuración", resultado:"Dictamen vigente firmado", denegado:false },
+      { momento:"+3 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"DIC", accion:"Consultar", finalidad:"Verificar PCL y estructuración", resultado:"Dictamen firmado; término de inconformidad en curso", denegado:false },
       { momento:"+16 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"AFI", accion:"Consultar", finalidad:"Verificar última ARL y fechas de cobertura", resultado:"Historial certificado con inicio y retiro", denegado:false },
       { momento:"+24 h", actor:"arl", actorN:"ARL SURA · Prestaciones", pieza:"NEX", accion:"Consultar", finalidad:"Vincular la exposición al período cubierto", resultado:"Vista autorizada del anexo fechado", denegado:false },
       { momento:"+30 h", actor:"emp", actorN:"Empleador · Administración", pieza:"AUD", accion:"Consultar", finalidad:"Actualizar registro de retiro", resultado:"Denegado. El registro de retiro utiliza la constancia laboral.", denegado:true }

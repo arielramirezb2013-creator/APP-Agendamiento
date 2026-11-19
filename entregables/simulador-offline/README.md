@@ -81,12 +81,14 @@ El sistema hace de los actores que no están conectados: pide evidencia al custo
 
 El catálogo está en `src/datos-expedientes.js`, transcrito del documento del instrumento: el marco (pregunta, problema, tres subpreguntas y tres hipótesis con su variable y su regla), el protocolo (aplicación, reinicio, corte de 48 horas virtuales y las dos condiciones), las catorce piezas de soporte, los tres estados de conformidad y los cuatro expedientes.
 
-| Expediente | Quién solicita | Puntos | Punto que resuelve | Conformes al radicar |
-|---|---|---|---|---|
-| PI-L01 | Mateo Roldán Vega, montacarguista | P1 · P2 · P3 | P2 | 4 de 5 |
-| PI-L02 | Javier Pardo Navas | P1 · P2 | P2 | 2 de 4 |
-| PI-L03 | Mónica Beltrán Rivas | P1 · P2 · P3 | P2 | 2 de 4 |
-| PI-L04 | Elena Marín Cuéllar | P1 · P2 | P2 | 4 de 6 |
+| Expediente | Quién solicita | Puntos | Punto que resuelve | Conformes al radicar | Estado de la calificación al radicar |
+|---|---|---|---|---|---|
+| PI-L01 | Mateo Roldán Vega, montacarguista | P1 · P2 · P3 | P2 | 4 de 5 | 56,80 % sin firmeza: él objetó la fecha de estructuración y el caso está en la Junta Regional |
+| PI-L02 | Javier Pardo Navas | P1 · P2 | P2 | 2 de 4 | 44,30 % en firme: la Junta Nacional redujo el 51,40 % de la Junta Regional |
+| PI-L03 | Mónica Beltrán Rivas | P1 · P2 · P3 | P2 | 2 de 4 | 52,40 % de la Junta Regional, apelado por ARL SURA y sin decisión de la Junta Nacional |
+| PI-L04 | Elena Marín Cuéllar | P1 · P2 | P2 | 3 de 6 | 51,00 % sin firmeza: radica mientras corre el término de inconformidad |
+
+**Ningún caso llega con un dictamen de 50 % o más en firme.** Ese dictamen daría por sí solo el derecho a la pensión y la simulación perdería su objeto. Por decisión del investigador, en PI-L01, PI-L03 y PI-L04 la calificación de 50 % o más todavía no está en firme cuando se radica la solicitud: si hay pensión depende de la evidencia y de la instancia, y con el expediente completo la pauta prevé dejar pendiente el reconocimiento. El ajuste está anotado en la cabecera de `src/datos-expedientes.js`.
 
 Cómo se miden las tres hipótesis:
 
