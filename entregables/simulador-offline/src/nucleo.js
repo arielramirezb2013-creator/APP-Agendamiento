@@ -39,7 +39,25 @@ function pintar(id, h, conservar) { const el = $(id); return el ? setHtml(el, h,
 /* ---------- Texto ---------- */
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 const A = {}; BP.actores.forEach(a => { A[a.id] = a; });
-const EV = BP.evidencia, CIRC = ["", "①", "②", "③", "④", "⑤"];
+const EV = BP.evidencia;
+/* Lo que ve el participante nombra piezas y pasos en lenguaje llano. Los códigos del blueprint (HC, APT, A1,
+   E4…) siguen en los datos y en el panel del investigador, que los usa para asociar los resultados. */
+const PZN = { hc:"historia clínica", apt:"matriz de exposición", inc:"certificados de incapacidad", hl:"historia laboral", dic:"dictamen" };
+const pzN = k => PZN[k] || (EV[k] ? EV[k].n.toLowerCase() : String(k));
+const PZ_COD = { HC:"hc", APT:"apt", INC:"inc", HL:"hl", DIC:"dic" };
+/* Lo que lee el participante de la ruta va sin siglas de piezas ni abreviaturas de plazo: «la APT» se lee
+   «la matriz de exposición», «(INC)» detrás del nombre sobra, «10 d.h.» es «10 días hábiles» y «el paso E3»
+   se lee con el número del paso. Los datos compartidos con la mesa (datos-blueprint.js) y el perfil sintético
+   no se tocan: la traducción ocurre al pintar, y los registros y el panel conservan los códigos. */
+const llanoRuta = t => typeof t !== "string" ? t : t
+  .replace(/\s*\((?:HC|APT|INC|HL|DIC)\)/g, "")
+  .replace(/(\d+) d\.h\.(?=\s+[A-ZÁÉÍÓÚÑ¿¡]|$)/g, "$1 días hábiles.")
+  .replace(/(\d+) d\.h\./g, "$1 días hábiles")
+  .replace(/\b(pasos?|Pasos?) ([A-Z]\d{1,2})(?![\w-])/g, (m, w, id) => typeof PIDX !== "undefined" && PIDX[id] != null ? w + " " + (PIDX[id] + 1) : m)
+  .replace(/(^|[^\w-])(HC|APT|INC|HL|DIC)(?![\w-])/g, (m, a, c, pos, todo) => {
+    const n = pzN(PZ_COD[c]), antes = (todo.slice(0, pos) + a).trim();
+    return a + (!antes || /[.!?¿¡]$/.test(antes) ? n.charAt(0).toUpperCase() + n.slice(1) : n);
+  });
 const FIN = {}; ESC.finalidades.forEach(f => { FIN[f.id] = f; });
 const nom = id => id === "modulo" ? "Módulo" : id === "sistema" ? "Sistema" : A[id] ? A[id].corto : (id || "—");
 const nomL = id => id === "modulo" ? "Índice + reglas + logs" : A[id] ? A[id].n : nom(id);

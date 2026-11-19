@@ -365,6 +365,12 @@ Acciones que el informe pone en sus botones y que atiende `adm-4-eventos.js`:
   las tres del expediente, como están en `EXP.marco.hipotesis` (H1 completitud de la evidencia, H2
   identificación de responsabilidades, H3 trazabilidad de los accesos), con su variable y su regla de medida.
   No se mezclan ni se numeran de nuevo: son dos conjuntos distintos, de dos instrumentos distintos.
+- El participante no ve los códigos de análisis: hipótesis, subpreguntas, notas de medida y puntajes no
+  aparecen en sus pantallas; puntos, pasos, soportes, piezas, tareas, accesos, rupturas, reglas y preguntas se
+  nombran o se numeran en lenguaje llano (`casoVista()`/`llano()` en el expediente, `llanoRuta()`/`pzN()` en la
+  ruta). Los registros, el documento de respuestas, el panel y el informe conservan los códigos sin cambio.
+  `tests/simulador.js` y `tests/expediente.js` recorren las pantallas del participante buscándolos, también en
+  lo plegado, en las opciones y en los títulos y etiquetas accesibles.
 - Los accesos de administración están protegidos y sus credenciales no aparecen en ninguna exportación.
 - Los iconos son pictogramas del kit; no se dibujan logotipos de marcas reales.
 - Ningún nombre, correo o dato personal del investigador se escribe en el código: se configura en el panel.

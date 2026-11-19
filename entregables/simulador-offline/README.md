@@ -43,7 +43,24 @@ Con el **instrumento del expediente**, entre la encuesta y la entrega:
 
 Con el **recorrido de la ruta**, en su lugar:
 
-- **Un recorrido de los once pasos.** Donde su rol interviene responde una actividad corta y compara, en el mismo paso, lo que haría hoy con lo que haría con el módulo; donde no interviene, lee el contexto y puede dejar una observación. Al cerrar valora el contrato de datos de su rol y responde P1 a P4.
+- **Un recorrido de los once pasos.** Donde su rol interviene responde una actividad corta y compara, en el mismo paso, lo que haría hoy con lo que haría con el módulo; donde no interviene, lee el contexto y puede dejar una observación. Al cerrar valora el contrato de datos de su rol y responde cuatro preguntas de cierre (P1 a P4 en los datos).
+
+**Lo que ve el participante y lo que queda para el investigador.** Los códigos con que se asocian y analizan los resultados no aparecen en las pantallas del participante, ni siquiera en lo plegado, en las listas o en las etiquetas accesibles. En su lugar se lee lenguaje llano:
+
+| En los datos y en el panel | Lo que lee el participante |
+|---|---|
+| Hipótesis H1–H3 (y H1–H4 de la ruta), subpreguntas SP, notas de medida y puntajes | Nada: la medida es asunto del investigador |
+| Identificadores del caso y del marco (PI-L01, DGIT-PENSION-R1) | «El expediente de Mateo Roldán Vega» |
+| Puntos P1, P2, P3 | «Punto 1 · Verificar dictamen y cobertura» |
+| Soportes FIR, DIC, HC, AUD… | Su nombre: «la constancia de firmeza», «el dictamen de PCL» |
+| Tareas y accesos R01, A1… de las preguntas de cierre | Numerados 1, 2, 3 |
+| Pasos de la ruta A1–A3, E1–E5, D1–D3 | «Paso 7 · Apelación · validación experta» |
+| Piezas de la ruta HC, APT, INC, HL, DIC | «historia clínica», «matriz de exposición»… |
+| Rupturas r1–r5 y reglas ①–⑤ | El texto de la ruptura o el nombre de la regla |
+| Preguntas de cierre P1–P4 | El enunciado de cada pregunta |
+| «10 d.h.» | «10 días hábiles» |
+
+Se mantienen las siglas del sector que el participante conoce (EPS, ARL, AFP, IPS, PCL, IBC, SG-SST, CIIU), los códigos diagnósticos CIE-10, los números de documento dentro de los soportes sintéticos (DIC-L02, RAD-L01), las iniciales «M.P.» de la persona del caso de la ruta y las referencias de jurisprudencia (T-…, SU-…). Los registros, el archivo de respuestas, el panel y el informe conservan todos los códigos. La traducción ocurre al pintar (`casoVista()` y `llano()` en el expediente; `llanoRuta()` y `pzN()` en la ruta), sin tocar los datos compartidos con la mesa ni el perfil sintético.
 
 Al cerrar la ronda 1 el contrato de datos todavía no se ha vivido: la pantalla lo presenta como lo que el módulo propondría para su rol y le pide decir si lo aceptaría. Al cerrar la ronda 2 lo valora ya recorrido. La misma pregunta de comparación se repite en las dos rondas, con una nota que explica por qué.
 

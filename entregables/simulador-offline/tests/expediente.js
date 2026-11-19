@@ -217,7 +217,7 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
     await L.entrarDemo(pg, "demo-arl");
     await L.pasarOrientacion(pg); await L.aceptarDeclaracion(pg, null); await L.llenarEncuesta(pg, 0);
     const caso1 = await L.texto(pg, "#vista");
-    T.ok(/PI-L01/.test(caso1) && /Mateo Roldán/.test(caso1) && /Montacarguista/.test(caso1), "la interfaz presenta el expediente con su ficha", caso1.slice(0, 120));
+    T.ok(/Mateo Roldán/.test(caso1) && /Montacarguista/.test(caso1) && !/PI-L0\d|DGIT-|\bH[1-3]\b/.test(caso1), "la interfaz presenta el expediente con su ficha, sin códigos de análisis", caso1.slice(0, 120));
     await L.clic(pg, '[data-act="exp-seguir"]');   // caso → intro de la condición
     await L.clic(pg, '[data-act="exp-seguir"]');   // intro → primer punto
     T.ok(await L.hay(pg, '[data-act="exp-guardar-punto"]'), "llega al primer punto de decisión");
@@ -226,15 +226,43 @@ T.ok(r2.doc.expediente.h2.ok === 0 && r2.doc.expediente.h3.ok === 0,
     const trasPedir = await L.texto(pg, "#vista");
     T.ok(/Solicitud enviada/.test(trasPedir) && /Verificar y aceptar/.test(trasPedir), "pedir un soporte lo hace llegar y queda por verificar");
     await L.clic(pg, '[data-act="exp-act"][data-arg="FIR"][data-v="aceptar"]');
-    T.ok(/4 de 4 requeridos conformes/.test(await L.texto(pg, "#vista")), "aceptarlo lo hace contar para la completitud del punto");
+    T.ok(/4 de 4 en regla/.test(await L.texto(pg, "#vista")), "aceptarlo lo hace contar para la completitud del punto");
     // Pausa y regreso a mitad del expediente.
     await L.clic(pg, '[data-act="salir"]'); await L.clic(pg, '[data-act="salir-si"]', 150);
     await L.entrarDemo(pg, "demo-arl");
     const vuelta = await L.texto(pg, "#vista");
-    T.ok(/Bienvenido de nuevo/.test(vuelta) && /punto P1/.test(vuelta), "al volver retoma en el punto donde quedó", vuelta.slice(0, 140));
+    T.ok(/Bienvenido de nuevo/.test(vuelta) && /punto 1 de \d/.test(vuelta) && !/\bP\d\b/.test(vuelta), "al volver retoma en el punto donde quedó", vuelta.slice(0, 140));
     await L.clic(pg, '[data-act="retomar-continuar"]');
-    T.ok(/4 de 4 requeridos conformes/.test(await L.texto(pg, "#vista")), "y conserva lo que ya había conseguido del expediente");
+    T.ok(/4 de 4 en regla/.test(await L.texto(pg, "#vista")), "y conserva lo que ya había conseguido del expediente");
     await ctx.close();
+    // Recorrido completo de tres cuentas (dos expedientes y un observador): el participante no ve los códigos de análisis.
+    const codigos = []; let pantallas = 0;
+    for (const u of ["demo-arl", "demo-arl-l03", "demo-trabajador"]) {
+      const cx = await br.newContext({ viewport:{ width:1280, height:900 } }), pq = await L.pagina(cx, errores);
+      const mirar = async donde => { pantallas++; (await L.codigosVisibles(pq)).forEach(c => codigos.push(u + " " + donde + ": " + c)); };
+      await pq.goto(ARCHIVO); await L.entrarDemo(pq, u);
+      for (let i = 1; i <= 4; i++) { await mirar("orientación " + i); await L.clic(pq, '[data-act="orient"][data-arg="' + i + '"]'); }
+      await L.aceptarDeclaracion(pq, null); await L.llenarEncuesta(pq, 0);
+      const elegirTodas = async campo => { for (const s of await pq.locator('[data-in="' + campo + '"]').all()) await s.selectOption({ index:1 }); };
+      for (let n = 0; n < 80 && !(await L.hay(pq, "#titulo-cierre")); n++) {
+        await mirar("pantalla " + n);
+        if (await L.hay(pq, '[data-act="exp-guardar-punto"]')) {
+          await pq.selectOption('[data-in="u-finalidad"]', { index:1 }).catch(() => {});
+          const pide = await pq.evaluate(() => Array.from(document.querySelectorAll('[data-act="exp-act"][data-v="solicitar"]')).map(b => b.getAttribute("data-arg")));
+          if (pide.length) { await L.clic(pq, '[data-act="exp-act"][data-arg="' + pide[0] + '"][data-v="solicitar"]'); await mirar("pantalla " + n + " tras pedir"); }
+          if (await L.hay(pq, '[data-act="f"][data-arg="decision"]')) await L.clic(pq, '[data-act="f"][data-arg="decision"]');
+          if (await L.hay(pq, '[data-in="f-porQue"]')) await pq.fill('[data-in="f-porQue"]', "Con lo que hay en el expediente.");
+          await L.clic(pq, '[data-act="exp-guardar-punto"]');
+        } else if (await L.hay(pq, '[data-act="exp-guardar-h2"]')) { await elegirTodas("h2"); await L.clic(pq, '[data-act="exp-guardar-h2"]'); }
+        else if (await L.hay(pq, '[data-act="exp-guardar-h3"]')) { await elegirTodas("h3"); await L.clic(pq, '[data-act="exp-guardar-h3"]'); }
+        else if (await L.hay(pq, '[data-act="exp-seguir"]')) await L.clic(pq, '[data-act="exp-seguir"]');
+        else break;
+      }
+      await mirar("cierre");
+      if (!(await L.hay(pq, "#titulo-cierre"))) codigos.push(u + ": el recorrido no llegó al cierre");
+      await cx.close();
+    }
+    T.ok(!codigos.length && pantallas > 40, "en " + pantallas + " pantallas del expediente el participante no ve códigos de análisis (hipótesis, puntos, soportes, caso, marco), ni siquiera en lo plegado", codigos.slice(0, 6).join(" | "));
   } catch (e) { T.ok(false, "la prueba de interfaz se interrumpió", e.stack || e); }
   await br.close();
   T.ok(!errores.length, "sin errores de consola ni excepciones", errores.slice(0, 4).join(" | "));

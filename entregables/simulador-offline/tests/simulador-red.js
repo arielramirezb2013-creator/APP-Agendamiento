@@ -76,7 +76,7 @@ const actividades = d => (d ? d.registros.filter(r => r.tipo === "actividad").le
     const pasoEn = (await pg.evaluate(() => JSON.parse(localStorage.getItem(Object.keys(localStorage).filter(k => k.endsWith(":eps-01"))[0])))).ses.pasoActual;
     const ctxB = await br.newContext({ viewport:{ width:1280, height:900 } }), pgB = await L.pagina(ctxB, errores, local);
     await pgB.goto(A.url); await L.entrarDemo(pgB, "eps-01", CLAVE);
-    T.ok(await esperar(async () => /Bienvenido de nuevo/.test(await texto(pgB, "#vista"))) && /servidor del estudio/.test(await texto(pgB, "#vista")) && new RegExp("paso " + pasoEn).test(await texto(pgB, "#vista")), "en otro dispositivo, con el mismo usuario y contraseña, recupera el avance desde el servidor", await texto(pgB, "#vista"));
+    T.ok(await esperar(async () => /Bienvenido de nuevo/.test(await texto(pgB, "#vista"))) && /servidor del estudio/.test(await texto(pgB, "#vista")) && new RegExp("paso " + (motor.PIDX[pasoEn] + 1) + " · ").test(await texto(pgB, "#vista")), "en otro dispositivo, con el mismo usuario y contraseña, recupera el avance desde el servidor", await texto(pgB, "#vista"));
     await clic(pgB, '[data-act="retomar-continuar"]');
     const gB = await pgB.evaluate(() => JSON.parse(localStorage.getItem(Object.keys(localStorage).filter(k => k.endsWith(":eps-01"))[0])));
     T.ok(gB.yo.id === guardadoLocal.yo.id && gB.consent.datos.nombre === "Persona Uno" && gB.regs.filter(r => r.tipo === "actividad").length === 5, "con la misma participación, sus datos y sus respuestas");
@@ -176,16 +176,16 @@ const actividades = d => (d ? d.registros.filter(r => r.tipo === "actividad").le
     await clic(pgExp, '[data-act="exp-act"][data-arg="FIR"][data-v="solicitar"]');
     await clic(pgExp, '[data-act="exp-act"][data-arg="FIR"][data-v="aceptar"]');
     const antesE = await texto(pgExp, "#vista");
-    T.ok(/4 de 4 requeridos conformes/.test(antesE), "con el instrumento de expediente, conseguir un soporte lo hace contar", antesE.slice(0, 160));
+    T.ok(/4 de 4 en regla/.test(antesE), "con el instrumento de expediente, conseguir un soporte lo hace contar", antesE.slice(0, 160));
     T.ok(await esperar(() => { const d = docDe(E.R, "arl-01"); return !!(d && d.expediente && d.expediente.condiciones); }),
       "y el documento que llega al servidor trae el estado del expediente");
     const ctxExp2 = await br.newContext({ viewport:{ width:1280, height:900 } }), pgExp2 = await L.pagina(ctxExp2, errores, u => u.startsWith(E.base));
     await pgExp2.goto(E.url); await L.entrarDemo(pgExp2, "arl-01", CLAVE);
-    T.ok(await esperar(async () => /Bienvenido de nuevo/.test(await texto(pgExp2, "#vista"))) && /servidor del estudio/.test(await texto(pgExp2, "#vista")) && /punto P1/.test(await texto(pgExp2, "#vista")),
+    T.ok(await esperar(async () => /Bienvenido de nuevo/.test(await texto(pgExp2, "#vista"))) && /servidor del estudio/.test(await texto(pgExp2, "#vista")) && /punto 1 de \d/.test(await texto(pgExp2, "#vista")),
       "en otro dispositivo recupera el expediente desde el servidor, en el punto donde quedó", (await texto(pgExp2, "#vista")).slice(0, 180));
     await clic(pgExp2, '[data-act="retomar-continuar"]');
     const trasE = await texto(pgExp2, "#vista");
-    T.ok(/4 de 4 requeridos conformes/.test(trasE) && /Verificado y aceptado|Conforme/.test(trasE),
+    T.ok(/4 de 4 en regla/.test(trasE) && /Verificado y aceptado|Conforme/.test(trasE),
       "y el soporte conseguido y las horas gastadas vuelven como estaban", trasE.slice(0, 200));
     await ctxExp.close(); await ctxExp2.close(); await E.cerrar();
 

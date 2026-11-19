@@ -107,7 +107,7 @@ async function llenarValoracion(pg, n) {
   const s = await opcion(pg, "v", "semaforo", n);
   if (s !== "aceptar") await pg.fill('[data-in="v-ajuste"]', "Ajuste " + n);
   await opcion(pg, "v", "mejora", n);
-  for (const q of ["P1", "P2"]) { const v = await opcion(pg, "v", q, n); if (v !== "si") await pg.fill('[data-in="v-p"][data-arg="' + q + 'cual"]', "Detalle " + q); }
+  for (const q of ["P1", "P2"]) { const v = await opcion(pg, "v", q, n); if (v !== "si") await pg.fill('[data-in="v-p"][data-arg="' + q + 'cual"]', "Detalle de la pregunta " + q.slice(1)); }
   const p3 = await opcion(pg, "vm", "P3", n); if (p3 !== "ninguna") await pg.fill('[data-in="v-p"][data-arg="P3cual"]', "La principal");
   await pg.fill('[data-in="v-p"][data-arg="P4"]', "Requisito " + n);
 }
@@ -141,4 +141,19 @@ async function recorrerInterfaz(pg, variante, parar) {
   }
   return hechos;
 }
-module.exports = { chromium, servir, lanzar, pagina, w, clic, hay, texto, descargar, contador, temporal, entrarDemo, pasarOrientacion, aceptarDeclaracion, opcion, llenarActividad, llenarValoracion, llenarEncuesta, pantalla, recorrerInterfaz, RAIZ, SALIDA, fs, path };
+/* Los códigos con que el investigador asocia y analiza los resultados no se le muestran al participante:
+   hipótesis (H1–H3), subpreguntas (SP), preguntas de cierre (P1–P4, R01…), pasos de la ruta (A1, E3, D2),
+   rupturas (r1–r5) y reglas (①–⑤), piezas y soportes (HC, APT, FIR, DIC…), puntos (P1…) e identificadores
+   del caso y del marco (PI-L01, DGIT-…). Se busca en todo el texto de la página, también en lo plegado,
+   en las opciones de las listas y en los títulos y etiquetas accesibles. Devuelve cada código con su contexto. */
+const COD_ANALISIS = /(?<![\w-])(?:H[1-3]|SP\d|R\d{2}|P\d{1,2}|r[1-5]|[AED]\d|PI-L\d+|DGIT-[\w-]+|SOL|ORI|REG|CAR|FIR|AFI|APT|EXP|NEX|FUN|AUD|HC|INC|HL|DIC|SL)(?![\w-])|[①②③④⑤]/g;
+const codigosVisibles = pg => pg.evaluate(src => {
+  const re = new RegExp(src, "g"), out = [], visto = {};
+  const mirar = (t, donde) => { String(t || "").replace(re, (m, pos) => { const k = m + "|" + donde; if (!visto[k]) { visto[k] = 1; out.push(m + " en «" + String(t).slice(Math.max(0, pos - 40), pos + 30).replace(/\s+/g, " ").trim() + "»"); } return m; }); };
+  const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode:n => n.parentElement && /^(SCRIPT|STYLE)$/.test(n.parentElement.tagName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+  let n; while ((n = tw.nextNode())) mirar(n.nodeValue, "texto");
+  document.querySelectorAll("[title],[aria-label],[placeholder],[alt]").forEach(e => ["title", "aria-label", "placeholder", "alt"].forEach(a => mirar(e.getAttribute(a), a)));
+  return out;
+}, COD_ANALISIS.source);
+
+module.exports = { codigosVisibles, COD_ANALISIS, chromium, servir, lanzar, pagina, w, clic, hay, texto, descargar, contador, temporal, entrarDemo, pasarOrientacion, aceptarDeclaracion, opcion, llenarActividad, llenarValoracion, llenarEncuesta, pantalla, recorrerInterfaz, RAIZ, SALIDA, fs, path };

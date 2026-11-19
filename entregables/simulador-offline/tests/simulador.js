@@ -78,7 +78,7 @@ async function sesion(br, errores) {
   await clic(pg, '[data-act="salir"]'); await clic(pg, '[data-act="salir-si"]', 150);
   T.ok((await etapa(pg)) === "acceso", "pausar vuelve a la pantalla de acceso");
   await L.entrarDemo(pg, "demo-arl");
-  T.ok(/Bienvenido de nuevo/.test(await texto(pg, "#vista h1")) && /paso E4/.test(await texto(pg, "#vista")) && /1 de 5/.test(await texto(pg, "#vista")), "al volver a entrar muestra dónde quedó y cuánto lleva", await texto(pg, "#vista"));
+  T.ok(/Bienvenido de nuevo/.test(await texto(pg, "#vista h1")) && /paso 7 · /.test(await texto(pg, "#vista")) && !/\bE\d\b/.test(await texto(pg, "#vista")) && /1 de 5/.test(await texto(pg, "#vista")), "al volver a entrar muestra dónde quedó y cuánto lleva", await texto(pg, "#vista"));
   await clic(pg, '[data-act="retomar-continuar"]');
   T.ok((await pg.inputValue('[data-in="f-obs"]')) === "borrador a medias", "continúa en el mismo formulario con su borrador");
   // Cierre inesperado del navegador: se cierra la página sin avisar y se abre otra
@@ -151,8 +151,8 @@ const revisar = pg => pg.evaluate(() => {
   return { p, foco:document.activeElement ? document.activeElement.tagName + (document.activeElement.id ? "#" + document.activeElement.id : "") : "", h:titulos[0] ? titulos[0].textContent.trim() : "" };
 });
 async function accesible(br, errores) {
-  const problemas = [], vistas = new Set();
-  const anotar = async (pg, donde, pideFoco) => { const r = await revisar(pg); vistas.add(r.h); r.p.forEach(x => problemas.push(donde + ": " + x)); if (pideFoco && !/^(H1|DIV#titulo-cierre)/.test(r.foco)) problemas.push(donde + ": el foco no fue al título (" + r.foco + ")"); };
+  const problemas = [], vistas = new Set(), codigos = [];
+  const anotar = async (pg, donde, pideFoco) => { (await L.codigosVisibles(pg)).forEach(c => codigos.push(donde + ": " + c)); const r = await revisar(pg); vistas.add(r.h); r.p.forEach(x => problemas.push(donde + ": " + x)); if (pideFoco && !/^(H1|DIV#titulo-cierre)/.test(r.foco)) problemas.push(donde + ": el foco no fue al título (" + r.foco + ")"); };
   for (const [u, ancho] of [["demo-eps", 360], ["demo-trabajador", 320], ["demo-mintrabajo", 390]]) {
     const ctx = await br.newContext({ viewport:{ width:ancho, height:780 }, acceptDownloads:true }), pg = await L.pagina(ctx, errores);
     await pg.goto(ARCHIVO); await anotar(pg, u + " acceso", false);
@@ -170,6 +170,7 @@ async function accesible(br, errores) {
   }
   T.ok(!problemas.length, "en teléfono (390, 360 y 320 px) cada pantalla tiene un título, nombres accesibles, foco en el título al cambiar y no desborda", problemas.slice(0, 8).join(" | "));
   T.ok(vistas.size >= 12, "se revisaron " + vistas.size + " pantallas distintas");
+  T.ok(!codigos.length, "ninguna pantalla de la ruta le muestra al participante los códigos de análisis (pasos, piezas, rupturas, reglas, preguntas, hipótesis), ni siquiera en lo plegado", codigos.slice(0, 6).join(" | "));
   // Teclado: entrar con Enter y responder una actividad sin ratón
   const ctx = await br.newContext({ viewport:{ width:1280, height:900 } }), pg = await L.pagina(ctx, errores);
   await pg.goto(ARCHIVO); await pg.focus('[data-in="a-u"]'); await pg.keyboard.type("demo-jueces"); await pg.keyboard.press("Tab"); await pg.keyboard.type("DEMO-2026"); await pg.keyboard.press("Enter");

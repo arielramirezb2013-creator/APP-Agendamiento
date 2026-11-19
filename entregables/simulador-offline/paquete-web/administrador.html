@@ -1020,8 +1020,8 @@ const GUION = {
     decidirTitulo:"Su decisión en este punto",
     decidirAyuda:"Decida con lo que tiene ahora, no con lo que debería tener. Si le falta algo, dígalo: que falte es un resultado del estudio.",
     porQue:"¿Por qué decidió así? Si requiere algo, diga qué y a quién.",
-    completitudTitulo:"Completitud de este punto",
-    completitudAyuda:"Requeridos disponibles y conformes sobre el total de requeridos. Es la medida de H1 y se calcula en el punto que resuelve.",
+    completitudTitulo:"Soportes en regla",
+    completitudAyuda:"Cuántos de los soportes que exige esta decisión están en el expediente y cumplen su criterio. Un soporte que pidió cuenta cuando llega, lo verifica y lo acepta.",
     horas:"Horas virtuales consumidas",
     instantanea:"Instantánea guardada justo antes de la decisión que resuelve, como pide el protocolo.",
     contextoTitulo:"Lo que ocurre en los puntos donde su rol no actúa",
@@ -1189,9 +1189,10 @@ const GUION = {
   cierre: {
     titulo:"Terminó la simulación",
     gracias:"Gracias por recorrer la ruta completa y por compartir su criterio. Lo que respondió es la evidencia que esta investigación necesita.",
+    graciasExp:"Gracias por recorrer el expediente en las dos condiciones y por compartir su criterio. Lo que respondió es la evidencia que esta investigación necesita.",
     comentario:"¿Quiere añadir algo para el investigador? (opcional)",
     archivoTitulo:"Entregue su archivo de respuestas",
-    archivoPasos:["Descargue el archivo con el botón.","Envíelo al investigador por el medio que él le indicó.","Cuando el investigador confirme que lo recibió, puede borrar sus datos de este dispositivo."],
+    archivoPasos:["Descargue el archivo con el botón.","Envíelo al investigador por el medio que le indicaron.","Cuando el investigador confirme que lo recibió, puede borrar sus datos de este dispositivo."],
     enviadoTitulo:"Sus respuestas fueron enviadas",
     enviadoTexto:"El investigador ya las recibió. Puede descargar una copia para usted.",
     errorTitulo:"No fue posible enviar sus respuestas",
@@ -1541,7 +1542,7 @@ const RAMAS = {
   },
   faltaTxt: function (E, pasoId) {
     const f = RAMAS.piezasDe(pasoId || "E3").filter(k => !E.piezas[k].llego);
-    return f.length ? listaFrase(f.map(k => EV[k].n.toLowerCase() + " (" + EV[k].sl + ")")) : "nada";
+    return f.length ? listaFrase(f.map(k => EV[k].n.toLowerCase())) : "nada";
   },
   // ¿Llegó un campo concreto de una pieza?
   campoLlego: function (E, pieza, i) {
@@ -1569,7 +1570,7 @@ const RAMAS = {
     const out = [];
     out.push(["Origen de la dolencia", E.origen ? "calificado " + ORI[E.origen] : "sin definir"]);
     const falta = Object.keys(EV).filter(k => !E.piezas[k].llego && k !== "dic");
-    out.push(["Expediente", falta.length ? "falta " + listaFrase(falta.map(k => EV[k].sl)) : "completo con lo que la ruta ha producido"]);
+    out.push(["Expediente", falta.length ? "falta " + listaFrase(falta.map(pzN)) : "completo con lo que la ruta ha producido"]);
     if (E.controversia) out.push(["Controversia", E.controversia === "abierta" ? "abierta ante la Junta Regional" : "no se abrió"]);
     if (E.dictamen) out.push(["Dictamen", "origen " + ORI[E.dictamen.origen] + (E.dictamen.conVacios ? ", con vacíos en el expediente" : ", con el expediente completo")]);
     if (E.apelacion != null) out.push(["Apelación", E.apelacion ? "radicada" : "no hubo"]);
@@ -2272,7 +2273,7 @@ const EXPM = {
     E.horas += H.decidir;
     if (p.resuelve && !E.instantanea) E.instantanea = { h:E.horas, completitud:c, soportes:clone(E.soportes) };
     E.puntos[puntoId] = { cerrado:true, decision:decision, cual:textoLimpio(cual, 600) || "", completitud:c, horas:E.horas };
-    E.historia.push({ punto:puntoId, que:"decidir", texto:"Punto " + puntoId + " cerrado: " + decision, horas:H.decidir });
+    E.historia.push({ punto:puntoId, que:"decidir", texto:"Decisión registrada", horas:H.decidir });
     return { completitud:c, horas:E.horas };
   },
 
@@ -2294,7 +2295,7 @@ const EXPM = {
     const momentos = [["0-8", "En las primeras 8 horas"], ["8-24", "Entre 8 y 24 horas"], ["24-48", "Entre 24 y 48 horas"], ["no_se", "No lo sé"]];
     return {
       actor:caso.actores.map(a => [a.a, a.n]).concat([["no_se", "No lo sé"]]),
-      pieza:caso.soportes.map(s => [s.k, s.k + " · " + s.n]).concat([["no_se", "No lo sé"]]),
+      pieza:caso.soportes.map(s => [s.k, s.n]).concat([["no_se", "No lo sé"]]),
       momento:momentos,
       accion:[["consultar", "Consultar"], ["solicitar", "Solicitar"], ["entregar", "Entregar"], ["no_se", "No lo sé"]],
       resultado:[["entregado", "Se entregó lo pedido"], ["parcial", "Se entregó solo una parte"], ["denegado", "Se denegó"], ["no_se", "No lo sé"]]
@@ -2405,7 +2406,25 @@ function pintar(id, h, conservar) { const el = $(id); return el ? setHtml(el, h,
 /* ---------- Texto ---------- */
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 const A = {}; BP.actores.forEach(a => { A[a.id] = a; });
-const EV = BP.evidencia, CIRC = ["", "①", "②", "③", "④", "⑤"];
+const EV = BP.evidencia;
+/* Lo que ve el participante nombra piezas y pasos en lenguaje llano. Los códigos del blueprint (HC, APT, A1,
+   E4…) siguen en los datos y en el panel del investigador, que los usa para asociar los resultados. */
+const PZN = { hc:"historia clínica", apt:"matriz de exposición", inc:"certificados de incapacidad", hl:"historia laboral", dic:"dictamen" };
+const pzN = k => PZN[k] || (EV[k] ? EV[k].n.toLowerCase() : String(k));
+const PZ_COD = { HC:"hc", APT:"apt", INC:"inc", HL:"hl", DIC:"dic" };
+/* Lo que lee el participante de la ruta va sin siglas de piezas ni abreviaturas de plazo: «la APT» se lee
+   «la matriz de exposición», «(INC)» detrás del nombre sobra, «10 d.h.» es «10 días hábiles» y «el paso E3»
+   se lee con el número del paso. Los datos compartidos con la mesa (datos-blueprint.js) y el perfil sintético
+   no se tocan: la traducción ocurre al pintar, y los registros y el panel conservan los códigos. */
+const llanoRuta = t => typeof t !== "string" ? t : t
+  .replace(/\s*\((?:HC|APT|INC|HL|DIC)\)/g, "")
+  .replace(/(\d+) d\.h\.(?=\s+[A-ZÁÉÍÓÚÑ¿¡]|$)/g, "$1 días hábiles.")
+  .replace(/(\d+) d\.h\./g, "$1 días hábiles")
+  .replace(/\b(pasos?|Pasos?) ([A-Z]\d{1,2})(?![\w-])/g, (m, w, id) => typeof PIDX !== "undefined" && PIDX[id] != null ? w + " " + (PIDX[id] + 1) : m)
+  .replace(/(^|[^\w-])(HC|APT|INC|HL|DIC)(?![\w-])/g, (m, a, c, pos, todo) => {
+    const n = pzN(PZ_COD[c]), antes = (todo.slice(0, pos) + a).trim();
+    return a + (!antes || /[.!?¿¡]$/.test(antes) ? n.charAt(0).toUpperCase() + n.slice(1) : n);
+  });
 const FIN = {}; ESC.finalidades.forEach(f => { FIN[f.id] = f; });
 const nom = id => id === "modulo" ? "Módulo" : id === "sistema" ? "Sistema" : A[id] ? A[id].corto : (id || "—");
 const nomL = id => id === "modulo" ? "Índice + reglas + logs" : A[id] ? A[id].n : nom(id);

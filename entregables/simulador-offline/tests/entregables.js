@@ -137,13 +137,13 @@ T.ok(Object.keys(casos).length === 3 && Object.keys(casos).every(u => casos[u] =
     await pgD.goto("file://" + path.join(L.RAIZ, "simulador-demo.html"));
     const v3 = await texto(pgD, "#vista");
     T.ok(/Cuentas de demostración/.test(v3) && /DEMO-2026/.test(v3) && (await pgD.locator(".demo-cta").count()) === 15
-      && /PI-L02/.test(v3) && /PI-L03/.test(v3) && /PI-L04/.test(v3) && /no entran al análisis/.test(v3),
+      && /Javier Pardo Navas/.test(v3) && /Mónica Beltrán Rivas/.test(v3) && /Elena Marín Cuéllar/.test(v3) && !/PI-L0\d/.test(v3) && /no entran al análisis/.test(v3),
       "la demostración muestra sus quince cuentas, el expediente de las que tienen uno propio y que no cuentan para el estudio");
     T.ok(!/\{[a-z]+\}/i.test(await texto(pgD, ".acceso")) && /Trae 15 cuentas/.test(v3), "el acceso no muestra marcas sin resolver y dice cuántas cuentas trae");
     await L.entrarDemo(pgD, "demo-arl-l03", "DEMO-2026");
     await clic(pgD, '[data-act="orient"][data-arg="1"]');
     const o2 = await texto(pgD, "#vista");
-    T.ok(/El expediente con el que va a trabajar/.test(o2) && /PI-L03/.test(o2) && /Mónica Beltrán Rivas/.test(o2) && !/M\.P\./.test(o2) && !/once pasos/.test(o2),
+    T.ok(/El expediente con el que va a trabajar/.test(o2) && !/PI-L0\d|DGIT-|\bH[1-3]\b/.test(o2) && /Mónica Beltrán Rivas/.test(o2) && !/M\.P\./.test(o2) && !/once pasos/.test(o2),
       "la orientación presenta el expediente de la cuenta, no el caso de la ruta", o2.slice(0, 200));
     await clic(pgD, '[data-act="orient"][data-arg="2"]');
     const o3 = await texto(pgD, "#vista");
@@ -155,7 +155,7 @@ T.ok(Object.keys(casos).length === 3 && Object.keys(casos).every(u => casos[u] =
     await clic(pgD, '[data-act="orient"][data-arg="4"]');
     await L.aceptarDeclaracion(pgD, null); await L.llenarEncuesta(pgD, 0);
     const v4 = await texto(pgD, "#vista");
-    T.ok(/PI-L03/.test(v4) && /Mónica Beltrán Rivas/.test(v4), "y una cuenta de la demostración entra en su propio expediente sintético", v4.slice(0, 160));
+    T.ok(!/PI-L0\d/.test(v4) && /Mónica Beltrán Rivas/.test(v4), "y una cuenta de la demostración entra en su propio expediente sintético", v4.slice(0, 160));
     // La otra demostración, en el mismo navegador y con un usuario que existe en las dos, empieza de cero.
     // demo-arl avanza en la demostración del expediente…
     const pgR0 = await L.pagina(ctx, errores);

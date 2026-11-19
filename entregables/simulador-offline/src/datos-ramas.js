@@ -315,7 +315,7 @@ const RAMAS = {
   },
   faltaTxt: function (E, pasoId) {
     const f = RAMAS.piezasDe(pasoId || "E3").filter(k => !E.piezas[k].llego);
-    return f.length ? listaFrase(f.map(k => EV[k].n.toLowerCase() + " (" + EV[k].sl + ")")) : "nada";
+    return f.length ? listaFrase(f.map(k => EV[k].n.toLowerCase())) : "nada";
   },
   // ¿Llegó un campo concreto de una pieza?
   campoLlego: function (E, pieza, i) {
@@ -343,7 +343,7 @@ const RAMAS = {
     const out = [];
     out.push(["Origen de la dolencia", E.origen ? "calificado " + ORI[E.origen] : "sin definir"]);
     const falta = Object.keys(EV).filter(k => !E.piezas[k].llego && k !== "dic");
-    out.push(["Expediente", falta.length ? "falta " + listaFrase(falta.map(k => EV[k].sl)) : "completo con lo que la ruta ha producido"]);
+    out.push(["Expediente", falta.length ? "falta " + listaFrase(falta.map(pzN)) : "completo con lo que la ruta ha producido"]);
     if (E.controversia) out.push(["Controversia", E.controversia === "abierta" ? "abierta ante la Junta Regional" : "no se abrió"]);
     if (E.dictamen) out.push(["Dictamen", "origen " + ORI[E.dictamen.origen] + (E.dictamen.conVacios ? ", con vacíos en el expediente" : ", con el expediente completo")]);
     if (E.apelacion != null) out.push(["Apelación", E.apelacion ? "radicada" : "no hubo"]);

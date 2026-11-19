@@ -149,7 +149,7 @@ const EXPM = {
     E.horas += H.decidir;
     if (p.resuelve && !E.instantanea) E.instantanea = { h:E.horas, completitud:c, soportes:clone(E.soportes) };
     E.puntos[puntoId] = { cerrado:true, decision:decision, cual:textoLimpio(cual, 600) || "", completitud:c, horas:E.horas };
-    E.historia.push({ punto:puntoId, que:"decidir", texto:"Punto " + puntoId + " cerrado: " + decision, horas:H.decidir });
+    E.historia.push({ punto:puntoId, que:"decidir", texto:"Decisión registrada", horas:H.decidir });
     return { completitud:c, horas:E.horas };
   },
 
@@ -171,7 +171,7 @@ const EXPM = {
     const momentos = [["0-8", "En las primeras 8 horas"], ["8-24", "Entre 8 y 24 horas"], ["24-48", "Entre 24 y 48 horas"], ["no_se", "No lo sé"]];
     return {
       actor:caso.actores.map(a => [a.a, a.n]).concat([["no_se", "No lo sé"]]),
-      pieza:caso.soportes.map(s => [s.k, s.k + " · " + s.n]).concat([["no_se", "No lo sé"]]),
+      pieza:caso.soportes.map(s => [s.k, s.n]).concat([["no_se", "No lo sé"]]),
       momento:momentos,
       accion:[["consultar", "Consultar"], ["solicitar", "Solicitar"], ["entregar", "Entregar"], ["no_se", "No lo sé"]],
       resultado:[["entregado", "Se entregó lo pedido"], ["parcial", "Se entregó solo una parte"], ["denegado", "Se denegó"], ["no_se", "No lo sé"]]
