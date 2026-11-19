@@ -49,7 +49,7 @@ const EXP = {
       { id:"SP3", t:"Registrar completitud, reprocesos, tiempos de simulación y dificultades de viabilidad, con el soporte y el actor afectados." }
     ],
     conjunto:"Este conjunto de cuatro expedientes aplica la formulación doctoral a las solicitudes de pensión por enfermedad laboral.",
-    nota:"Los cocientes iniciales de las fichas describen el estado del guion al radicar. La completitud observada se calcula sobre las ejecuciones. Un expediente completo puede sustentar tanto un reconocimiento como una negativa motivada."
+    nota:"Los cocientes iniciales de las fichas describen el estado del guion al radicar. La completitud observada se calcula sobre las ejecuciones. Un expediente completo sustenta una decisión motivada: reconocer, negar o dejar pendiente el reconocimiento mientras el dictamen no esté en firme."
   },
 
   /* ---------- Protocolo de comparación, del documento ---------- */
