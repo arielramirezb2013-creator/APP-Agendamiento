@@ -10,9 +10,11 @@
    Aritmética (Decreto 1507 de 2014: deficiencia combinada ponderada al 50 % + Título II):
      Dictamen de 2022 ....... manos 5 y 4 → 8,80 → 4,40 + rol 6,50 + otras áreas 5,30 = 16,20 %
      Junta Regional ......... lumbar 29, manos 6 y 5 → 33,26 → 36,60 (36,597) → 18,30 + 23,50 + 10,60 = 52,40 %
-   Recurso de ARL SURA (sin decisión): clase 3 en historia y examen → lumbar 25 (grado A); mano izquierda por la tabla
-     de atrapamiento o sin calificar; otras áreas menores. Con lumbar 25 y mano izquierda en 4 la cuenta da 49,90 %:
-     el argumento de «por debajo del 50 %» es aritméticamente posible, pero el documento no da cifra ni decisión.
+   Recurso de ARL SURA (sin decisión): clase 3 en historia y examen → lumbar 25 (grado A); mano izquierda sin calificar
+     o, en subsidio, por la tabla de atrapamiento; otras áreas menores. Con lumbar 25, mano izquierda en 4 (7 % de la
+     extremidad) y el Título II sin cambio: 25, 5 y 4 combinados = 31,60 → 15,80 + 34,10 = 49,90 %; sin calificar la izquierda,
+     48,48 %; con la izquierda en 5 (9 %), 50,26 %; solo con lumbar 25, 50,62 %. El argumento de «por debajo del 50 %»
+     es aritméticamente posible, pero el documento no da cifra ni decisión.
    Extremidad superior a global: factor 0,6 redondeado al entero (8 → 5, 6 → 4, 10 → 6).
    Manos por atrapamiento (promedio de pruebas, historia y examen; la escala funcional fija el valor del rango):
      derecha 2022 y 2025: pérdida axonal residual, síntomas constantes, debilidad → rango 7–9; QuickDASH 63,6 / 65,9 → 8.
@@ -420,7 +422,7 @@ DOCS.exp["PI-L03"] = {
               ["Mano izquierda", "Atrofia tenar leve; abductor corto del pulgar 4/5; Phalen y Tinel positivos; monofilamento 4,31; discriminación de dos puntos de 9 mm"],
               ["Rodillas", "Crepitación leve, sin derrame ni inestabilidad; arcos completos"],
               ["Marcha y postura", "Marcha antálgica, independiente. Se pone de pie a los 25 minutos de la entrevista por dolor irradiado. Recorre el corredor de la sede, unos 120 m, con una pausa"],
-              ["Funcionalidad referida", "Camina unos 300 m antes de detenerse. Independiente para el autocuidado, con dificultad para ponerse medias y calzado y para lavarse los pies; apoyo familiar para las tareas domésticas pesadas"]
+              ["Funcionalidad referida", "Camina unos 300 m antes de detenerse y permanece de pie unos 30 minutos; no levanta del piso más de unos 5 kg por el dolor lumbar. Independiente para el autocuidado, con dificultad para ponerse medias y calzado y para lavarse los pies; apoyo familiar para las tareas domésticas pesadas"]
             ] },
             { tabla: { cols: ["Cuestionario o prueba", "Resultado", "Referencia"], filas: [
               ["Índice de discapacidad de Oswestry", "64 %", "0 %"],
@@ -448,10 +450,10 @@ DOCS.exp["PI-L03"] = {
             { h: "Columna lumbar" },
             { p: "La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral crónica y S1 izquierda: discopatía en varios niveles con radiculopatía en más de un nivel, que corresponde a la clase 4." },
             { p: "En la valoración del 26/08/2025 la terapeuta ocupacional de la Sala aplicó el índice de Oswestry (64 %) y observó una tolerancia a la sedestación de 25 minutos; la persona refiere caminar unos 300 m antes de detenerse: la historia funcional corresponde a la clase 4. El examen registra Lasègue bilateral, hipoestesia L5 bilateral, debilidad del extensor largo del hallux izquierdo (4/5) y reflejo aquiliano izquierdo disminuido: clase 4. Son los signos que corresponden a la radiculopatía L5 bilateral y S1 izquierda que la electromiografía documentó el 05/06/2025. El ajuste neto es 0 y la deficiencia queda en el grado C de la clase 4 (29,00 %)." },
-            { p: "La diferencia con el índice de Oswestry de junio de 2025 (46 %) y con las tolerancias de 40 minutos sentada y 500 m de marcha anotadas entonces obedece a la forma de medir: en junio el cuestionario se diligenció en una consulta de control y las tolerancias fueron las que refirió la paciente, sin medirlas; en esta valoración el cuestionario lo aplicó la terapeuta ocupacional de la Sala y la sedestación se observó durante la entrevista. Los signos del lado derecho, que no se anotaron en junio, corresponden a la radiculopatía L5 bilateral que la electromiografía ya documentaba. La Sala da mayor peso a su valoración, que concuerda con el examen físico y con la electromiografía." },
+            { p: "La diferencia con el índice de Oswestry de junio de 2025 (46 %) y con las tolerancias de 40 minutos sentada y 500 m de marcha anotadas entonces obedece a la forma de medir: en junio el cuestionario se diligenció en una consulta de control y las tolerancias fueron las que refirió la paciente, sin medirlas; en esta valoración el cuestionario lo aplicó la terapeuta ocupacional de la Sala y la sedestación se observó durante la entrevista. Los signos del lado derecho, que no se anotaron en junio, corresponden a la radiculopatía L5 bilateral que la electromiografía ya documentaba. La Sala da mayor peso a su valoración: el cuestionario y la tolerancia observada concuerdan con el examen físico y con la electromiografía." },
             { h: "Manos" },
             { p: "La neuroconducción del 14/08/2025 muestra en la mano izquierda neuropatía severa del mediano en el carpo, con pérdida axonal: latencia motora distal de 6,6 ms, amplitud motora de 2,4 mV, potencial sensitivo de 5 µV y actividad de denervación en el abductor corto del pulgar. El examen de la Sala registra atrofia tenar, abductor corto del pulgar 4/5, monofilamento 4,31 y discriminación de dos puntos de 9 mm. La atrofia tenar y la debilidad ya constaban en la valoración por fisiatría del 18/06/2025." },
-            { p: "Con pérdida axonal y déficit motor objetivo, la tabla de neuropatías por atrapamiento no recoge la magnitud de la deficiencia de la mano izquierda. La Sala la valora como deficiencia del nervio periférico afectado (mediano por debajo del antebrazo, capítulo 14), combinando el déficit sensitivo, moderado, y el déficit motor, leve: extremidad superior 10 %, deficiencia global 6 %. La paciente ha aplazado la liberación quirúrgica de esa mano, propuesta desde 2022, y con la pérdida axonal la recuperación esperada sería parcial; la Sala califica el estado actual, como lo hizo ARL SURA en 2022." },
+            { p: "Con pérdida axonal y déficit motor objetivo, la tabla de neuropatías por atrapamiento no recoge la magnitud de la deficiencia de la mano izquierda. La Sala la valora como deficiencia del nervio periférico afectado (mediano por debajo de la mitad del antebrazo, capítulo 14), combinando el déficit sensitivo, moderado, y el déficit motor, leve: extremidad superior 10 %, deficiencia global 6 %. La paciente ha aplazado la liberación quirúrgica de esa mano, propuesta desde 2022, y con la pérdida axonal la recuperación esperada sería parcial; la Sala califica el estado actual, como lo hizo ARL SURA en 2022." },
             { p: "La mano derecha operada conserva, estable, la secuela de 2022: hipoestesia constante en los dedos 1 a 3, abductor corto del pulgar 4+/5, amplitud sensitiva disminuida (15 µV) y reinervación crónica del abductor corto del pulgar, con QuickDASH de 65,9. Por la tabla de neuropatías por atrapamiento: extremidad superior 8 %, deficiencia global 5 %, el mismo valor de 2022." },
             { h: "Rol laboral y otras áreas ocupacionales" },
             { p: "No puede volver a su oficio de operadora de maquinaria pesada y conserva el empleo por la reubicación en la báscula: restricciones del rol laboral 20,00 %, autosuficiencia económica 1,50 % y edad 2,00 %." },
@@ -554,7 +556,7 @@ DOCS.exp["PI-L03"] = {
             { h: "Síntesis del recurso de ARL SURA" },
             { lista: [
               "Columna lumbar: controvierte la clase 4 asignada a la historia funcional y al examen físico. Sostiene que se apoya en una sola valoración en la Junta, que no concuerda con la valoración por fisiatría del 18/06/2025 —la que la Sala tomó como fecha de estructuración—, con índice de Oswestry de 46 %, tolerancias referidas de 40 minutos sentada y 500 m de marcha y signos radiculares solo izquierdos. Pide la clase 3 en ambos factores y el grado A de la clase 4 (25,00 %).",
-              "Mano izquierda: sostiene que el síndrome del túnel carpiano debe calificarse con la tabla de neuropatías por atrapamiento y no como deficiencia del nervio periférico, y que esa mano no ha alcanzado la mejoría médica máxima mientras esté pendiente la liberación quirúrgica que la paciente ha aplazado.",
+              "Mano izquierda: sostiene que esa mano no ha alcanzado la mejoría médica máxima mientras esté pendiente la liberación quirúrgica que la paciente ha aplazado y, en subsidio, que el síndrome del túnel carpiano debe calificarse con la tabla de neuropatías por atrapamiento y no como deficiencia del nervio periférico.",
               "Otras áreas ocupacionales: sostiene que se valoraron con las tolerancias observadas en la misma sesión del 26/08/2025.",
               "Pide modificar el porcentaje y afirma que, con esos ajustes, la pérdida de capacidad laboral queda por debajo del 50 %. No controvierte el origen laboral ni pide cambiar la fecha de estructuración."
             ] },
@@ -700,7 +702,7 @@ DOCS.exp["PI-L03"] = {
               ["Puntos que controvierte", "La clase y el grado de la columna lumbar, la valoración de la mano izquierda y las otras áreas ocupacionales; pide modificar el porcentaje. No controvierte el origen laboral ni pide cambiar la fecha de estructuración"],
               ["Concesión", "03/10/2025, vencido el término de todos los interesados y acreditado por ARL SURA el pago de los honorarios de la Junta Nacional"],
               ["Remisión", "Expediente remitido por medio electrónico a la Junta Nacional de Calificación de Invalidez el 07/10/2025 (oficio SIM-JRCIB-OF-2025-1187), con acuse de recibo del mismo día"],
-              ["Pruebas remitidas después", "Extracto funcional SIM-IPS-RF-2025-0311 de la IPS Neuroeje Peñas Altas, con el informe funcional del 30/10/2025, radicado en esta Junta por la persona calificada el 10/11/2025 y enviado a la Junta Nacional el 12/11/2025 para el expediente de segunda instancia"],
+              ["Pruebas remitidas después", "Extracto funcional SIM-IPS-RF-2025-0311 de la IPS Neuroeje Peñas Altas, con el informe funcional del 30/10/2025, radicado en esta Junta por la persona calificada el 10/11/2025 y enviado por competencia a la Junta Nacional el 12/11/2025 para el expediente de segunda instancia"],
               ["Decisión de la segunda instancia", "A la fecha esta Junta no ha recibido la decisión del recurso ni la devolución del expediente"]
             ] },
             { h: "Constancia" },
@@ -1127,7 +1129,7 @@ DOCS.exp["PI-L03"] = {
               ["Ocupación", "Operadora de cargador frontal y retroexcavadora hasta el 31/01/2024; auxiliar de control de pesaje desde el 01/02/2024"],
               ["Dominancia", "Diestra"],
               ["Atención en la IPS", "Desde el 09/02/2021: electrodiagnóstico, cirugía de mano, terapia de mano, columna y rehabilitación"],
-              ["Solicitado por", "La paciente, para aportarlo en el trámite del recurso de apelación que ARL SURA interpuso contra la calificación de la Junta Regional, ante la Junta Nacional de Calificación de Invalidez (autorización escrita del 04/11/2025)"],
+              ["Solicitado por", "La paciente, para aportarlo a la Junta Nacional de Calificación de Invalidez, que tramita en segunda instancia el recurso de apelación interpuesto por ARL SURA contra la calificación de la Junta Regional de Boyacá (autorización escrita del 04/11/2025)"],
               ["Alcance", "Extracto limitado a mano, columna lumbar y antecedentes considerados en la calificación. No incluye el resto de la historia clínica"]
             ] },
             { h: "Procedencia de la información" },
@@ -1414,7 +1416,7 @@ DOCS.exp["PI-L03"] = {
             { kv: [
               ["Informe", "SIM-IPS-EF-2025-1030"],
               ["Fecha", "30/10/2025"],
-              ["Orden", "Fisiatría, 25/09/2025, a solicitud de la paciente, para aportarlo en el trámite de la apelación de ARL SURA ante la Junta Nacional"],
+              ["Orden", "Fisiatría, 25/09/2025, a solicitud de la paciente, para aportarlo en la segunda instancia del recurso de apelación de ARL SURA contra la calificación de la Junta Regional, que resuelve la Junta Nacional"],
               ["Profesionales", "Adriana Marcela Vargas Holguín, fisiatra; Lina Fernanda Chaparro Ávila, terapeuta ocupacional"],
               ["Duración de la valoración", "3 horas, con pausas"],
               ["Componentes", "Entrevista, cuestionarios estandarizados, pruebas de tolerancia postural y de marcha, pruebas de mano, examen neurológico y revisión de la neuroconducción de control del 14/08/2025"]
