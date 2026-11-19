@@ -77,7 +77,7 @@ const abrirArchivo = id => { const i = $(id); if (i) { i.value = ""; i.click(); 
 function invitacionesHtml() {
   const e = estudioEfectivo();
   const css = "body{font:13px/19px 'Segoe UI',Roboto,Arial,sans-serif;color:#2D313F;margin:0;padding:12mm}h1{font-size:16px;color:#162546;margin:0 0 2mm}.inv{border:1px solid #DCDFE5;border-radius:6px;padding:6mm;margin:0 0 6mm;break-inside:avoid}.inv h2{font-size:14px;margin:0 0 2mm;color:#162546}pre{white-space:pre-wrap;font:inherit;margin:0}@page{size:A4;margin:0}";
-  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Invitaciones · ${esc(e.titulo)}</title><style>${css}</style></head><body><h1>Invitaciones · ${esc(e.titulo)}</h1>${PROY.cuentas.map(q => `<div class="inv"><h2>${esc(nomL(q.a))} · ${esc(q.u)}${q.etiqueta ? " · " + esc(q.etiqueta) : ""}</h2><pre>${esc(textoInvitacion(q))}</pre></div>`).join("")}</body></html>`;
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Invitaciones · ${esc(e.titulo)}</title><style>${css}</style></head><body><h1>Invitaciones · ${esc(e.titulo)}</h1>${PROY.cuentas.map(q => `<div class="inv"><h2>${esc(rolCuentaL(q.a))} · ${esc(q.u)}${q.etiqueta ? " · " + esc(q.etiqueta) : ""}</h2><pre>${esc(textoInvitacion(q))}</pre></div>`).join("")}</body></html>`;
 }
 
 /* ---------- Acciones ---------- */

@@ -195,7 +195,7 @@ function expedienteDetalleHtml(c) {
 }
 // Los documentos sintéticos del expediente, por soporte y versión: lo que el participante abre con «Ver el documento».
 function docsExpedienteHtml(c) {
-  const D = typeof DOCS !== "undefined" && DOCS.exp[c.id]; if (!D) return "";
+  const D = typeof DOCS !== "undefined" && typeof docHtml === "function" && DOCS.exp[c.id]; if (!D) return "";
   const filas = c.soportes.map(s => Object.keys((D.soportes || {})[s.k] || {}).map(v => {
     const doc = D.soportes[s.k][v], papel = v === s.verRef ? (v === s.ver ? "la que llega al radicar y la de referencia" : "la de referencia, cuando se pide") : "la que llega al radicar: " + s.notaEstado;
     return `<details data-det="doc-${esc(c.id)}-${esc(s.k)}-${esc(v)}"><summary><b>${esc(s.k)} · ${esc(v)}</b> ${esc(doc.titulo)} <span class="mini">· ${esc(papel)}</span></summary>${docHtml(doc, {})}</details>`; }).join("")).join("");
@@ -211,7 +211,7 @@ function perfilDetalleHtml(p) {
   return `<div class="panel"><div class="row"><h3 style="margin-right:auto">${esc(p.persona.nombre || p.id)}</h3>${btn("perfil-cerrar", "", "Cerrar", "sm outline", "acciones-cerrar")}</div>
     <p>${esc(p.caso.resumen || "")}</p><div class="kv">${fichas}</div>${piezas}
     ${p.caso.fuente ? `<p class="mini">Origen del caso: ${esc(p.caso.fuente)}</p>` : ""}
-    ${typeof DOCS !== "undefined" && DOCS.ruta[p.id] ? `<h4>${ico("documentos-expediente", "sm")}Documentos sintéticos del caso</h4><p class="mini">Lo que el participante abre desde cada pieza que llegó a su entidad; lo que no llegó aparece tachado.</p>${Object.keys(DOCS.ruta[p.id].piezas || {}).map(k => `<details data-det="doc-ruta-${esc(p.id)}-${esc(k)}"><summary><b>${esc(EV[k] ? EV[k].sl : k)}</b> ${esc(DOCS.ruta[p.id].piezas[k].titulo)}</summary>${docHtml(DOCS.ruta[p.id].piezas[k], {})}</details>`).join("")}` : ""}</div>`;
+    ${typeof DOCS !== "undefined" && typeof docHtml === "function" && DOCS.ruta[p.id] ? `<h4>${ico("documentos-expediente", "sm")}Documentos sintéticos del caso</h4><p class="mini">Lo que el participante abre desde cada pieza que llegó a su entidad; lo que no llegó aparece tachado.</p>${Object.keys(DOCS.ruta[p.id].piezas || {}).map(k => `<details data-det="doc-ruta-${esc(p.id)}-${esc(k)}"><summary><b>${esc(EV[k] ? EV[k].sl : k)}</b> ${esc(DOCS.ruta[p.id].piezas[k].titulo)}</summary>${docHtml(DOCS.ruta[p.id].piezas[k], {})}</details>`).join("")}` : ""}</div>`;
 }
 
 // Lo que ve el perfil técnico en «Estudio»: a qué estudio pertenece el sitio, dónde se publica y el receptor.
@@ -316,7 +316,7 @@ function vistaCuentas() {
     const ver = UI.verTodas || UI.verClave[q.u];
     return `<tr${UI.foco === q.u ? ' class="nueva"' : ""}>
       <td class="nw"><span class="avatar sm">${icoActor(q.a)}</span></td>
-      <td><b>${esc(nomL(q.a))}</b><div class="mono mini">${campoTexto("q-usuario", q.u, q.u, 'size="16" maxlength="40" aria-label="Usuario" autocapitalize="none" spellcheck="false"')}</div></td>
+      <td><b>${esc(rolCuentaL(q.a))}</b><div class="mono mini">${campoTexto("q-usuario", q.u, q.u, 'size="16" maxlength="40" aria-label="Usuario" autocapitalize="none" spellcheck="false"')}</div></td>
       <td>${campoTexto("q-etiqueta", q.u, q.etiqueta, 'maxlength="120" placeholder="¿Para quién es?" aria-label="Para quién es"')}</td>
       <td class="nw"><span class="mono clave-valor">${esc(ver ? q.clave : "••••••••")}</span>
         <div class="acc">${btn("ver-clave", q.u, ver ? "Ocultar" : "Ver", "sm outline")}${copiar("clave-cuenta", q.u)}${btn("cuenta-clave", q.u, "Otra", "sm outline", "acciones-reiniciar")}</div></td>
@@ -379,7 +379,7 @@ function vistaRespuestas() {
     const d = e.doc, g = seguimientoDe(d), av = avisosDe(e), dentro = entraAlAnalisis(e);
     return `<tr class="${dentro ? "" : "fuera"}">
       <td class="nw"><span class="avatar sm">${icoActor(d.cuenta.actor)}</span></td>
-      <td><b class="mono">${esc(d.cuenta.usuario)}</b><div class="mini">${esc(nomL(d.cuenta.actor))}${esDePrueba(e) ? " · " + esc(d.cuenta.demo ? "demostración" : "prueba") : ""}</div>${av.length ? `<div class="mini aviso-fila">${ico("estados-advertencia", "sm")}${esc(av.map(x => x.t).join(" · "))}</div>` : ""}</td>
+      <td><b class="mono">${esc(d.cuenta.usuario)}</b><div class="mini">${esc(g.exp ? rolExpL(d.cuenta.actor, g.caso) : nomL(d.cuenta.actor))}${esDePrueba(e) ? " · " + esc(d.cuenta.demo ? "demostración" : "prueba") : ""}</div>${av.length ? `<div class="mini aviso-fila">${ico("estados-advertencia", "sm")}${esc(av.map(x => x.t).join(" · "))}</div>` : ""}</td>
       <td class="nw">${g.completa ? chipEstado("ch-teal", "completa", "estados-completado") : chipEstado("ch-navy", "parcial", "estados-en-curso")}<div class="mini">${g.hechas} de ${g.total}</div></td>
       <td class="nw">${esc(fecha(fechaIso(d.generado)))}<div class="mini">${esc(e.origen === "servidor" ? "del servidor" : "archivo")}${e.recibido ? " · " + esc(fecha(fechaIso(e.recibido))) : ""}</div></td>
       <td class="nw">${chipEstado("ch-teal", "íntegra", "gobernanza-trazabilidad")}</td>
@@ -418,10 +418,10 @@ function informeImportacion(imp) {
 function vistaSeguimiento() {
   if (UI.ficha) return fichaParticipante(UI.ficha);
   const cuentas = PROY.cuentas, sueltas = respuestasOrdenadas().filter(e => !cuentaDe(e.doc.cuenta.usuario));
-  const tira = g => `<div class="rondas-tira">${g.rondas.map(r => `<div class="ronda-tira"><span class="mini">${esc(r.r.id)}</span><span class="mini-strip">${r.pasos.map(x => `<span class="ms ${x.estado}" title="${esc(x.p.id + " · " + x.p.n + (x.act ? " · " + x.act.titulo : " · su rol no interviene"))}">${esc(x.p.id)}</span>`).join("")}</span>${r.pre ? ico("estados-completado", "sm") : ""}</div>`).join("")}</div>`;
+  const tira = g => g.sinCatalogo ? `<div class="mini aviso-fila">${ico("estados-advertencia", "sm")}Este expediente no está en el catálogo de este panel: no se puede ubicar punto por punto.</div>` : `<div class="rondas-tira">${g.rondas.map(r => `<div class="ronda-tira"><span class="mini">${esc(r.r.id)}</span><span class="mini-strip">${r.pasos.map(x => `<span class="ms ${x.estado}" title="${esc(x.p.id + " · " + x.p.n + (x.act ? " · " + x.act.titulo : " · su rol no interviene"))}">${esc(x.p.id)}</span>`).join("")}</span>${r.pre ? ico("estados-completado", "sm") : ""}</div>`).join("")}</div>`;
   const filaCuenta = q => {
     const rs = respuestasDeCuenta(q.u);
-    if (!rs.length) return `<tr class="sin"><td class="nw"><span class="avatar sm">${icoActor(q.a)}</span></td><td><b>${esc(nomL(q.a))}</b><div class="mini mono">${esc(q.u)}${q.etiqueta ? " · " + esc(q.etiqueta) : ""}</div></td><td colspan="4">${chipEstado("ch-grey", "sin respuesta", "estados-pendiente")}<span class="mini"> Todavía no ha entregado nada.</span></td></tr>`;
+    if (!rs.length) return `<tr class="sin"><td class="nw"><span class="avatar sm">${icoActor(q.a)}</span></td><td><b>${esc(rolCuentaL(q.a))}</b><div class="mini mono">${esc(q.u)}${q.etiqueta ? " · " + esc(q.etiqueta) : ""}</div></td><td colspan="4">${chipEstado("ch-grey", "sin respuesta", "estados-pendiente")}<span class="mini"> Todavía no ha entregado nada.</span></td></tr>`;
     return rs.map(e => filaSeg(e, q)).join("");
   };
   const filaSeg = (e, q) => {
@@ -429,7 +429,7 @@ function vistaSeguimiento() {
     const probl = {}; g.problemas.forEach(p => { probl[p.n] = (probl[p.n] || 0) + 1; });
     return `<tr>
       <td class="nw"><span class="avatar sm">${icoActor(d.cuenta.actor)}</span></td>
-      <td><b>${esc(nomL(d.cuenta.actor))}</b><div class="mini mono">${esc(d.cuenta.usuario)}${q && q.etiqueta ? " · " + esc(q.etiqueta) : ""}</div>${esDePrueba(e) ? `<span class="chip ch-grey">${esc(d.cuenta.demo ? "demostración" : "prueba")}</span>` : ""}</td>
+      <td><b>${esc(g.exp ? rolExpL(d.cuenta.actor, g.caso) : nomL(d.cuenta.actor))}</b><div class="mini mono">${esc(d.cuenta.usuario)}${q && q.etiqueta ? " · " + esc(q.etiqueta) : ""}</div>${esDePrueba(e) ? `<span class="chip ch-grey">${esc(d.cuenta.demo ? "demostración" : "prueba")}</span>` : ""}</td>
       <td><div class="donde">${g.completa ? ico("estados-completado", "sm") : ico("estados-en-curso", "sm")}${esc(g.donde.texto)}</div><div class="meter"><span style="width:${g.pct}%"></span></div><div class="mini">${g.hechas} de ${g.total} respuestas</div>${tira(g)}</td>
       <td>${ult ? (g.exp ? `<div class="mini">${esc(g.ultDonde)}</div><div>${esc(g.ultTexto)}</div>` : `<div class="mini">${esc(ult.ronda)} · ${esc(ult.paso)}</div><div>${esc(resumenActividad(ult.payload))}</div>`) + (ult.payload.obs ? `<div class="mini">«${esc(ult.payload.obs)}»</div>` : "") : nada("Sin actividades todavía")}</td>
       <td>${Object.keys(probl).length ? `<ul class="lista mini">${Object.keys(probl).map(k => `<li>${esc(k)}${probl[k] > 1 ? " ×" + probl[k] : ""}</li>`).join("")}</ul>` : `<span class="mini">—</span>`}${g.observaciones.length ? `<div class="mini">${esc(plural(g.observaciones.length, "observación", "observaciones"))}</div>` : ""}</td>
@@ -455,26 +455,38 @@ function fichaExpediente(e, g) {
     if (!x.act) return `<td class="na"><span class="mini">${x.ilustra ? "tramo ilustrativo" : "no interviene"}</span></td>`;
     if (!x.reg) return `<td class="pend"><span class="mini">sin responder</span></td>`;
     const pl = x.reg.payload, c = esObjeto(pl.completitud) ? pl.completitud : null;
-    return `<td><b>${esc(pl.decisionTxt || pl.decision)}</b>${c ? `<div class="mini">${c.ok} de ${c.total} en regla${(c.faltan || []).length ? " · faltó " + esc(c.faltan.join(", ")) : ""}</div>` : ""}${pl.porQue ? `<div class="mini">«${esc(pl.porQue)}»</div>` : ""}${typeof pl.horas === "number" ? `<div class="mini">${esc(String(pl.horas).replace(".", ","))} h</div>` : ""}</td>`;
+    return `<td><b>${esc(pl.decisionTxt || etiqueta(EXPM.opcionesPunto(caso, x.p, pl.como), pl.decision))}</b>${c ? `<div class="mini">${c.ok} de ${c.total} en regla${(c.faltan || []).length ? " · faltó " + esc(c.faltan.join(", ")) : ""}</div>` : ""}${pl.porQue ? `<div class="mini">«${esc(pl.porQue)}»</div>` : ""}${typeof pl.horas === "number" ? `<div class="mini">${esc(String(pl.horas).replace(".", ","))} h</div>` : ""}</td>`;
   };
-  const filas = caso.puntos.map((p, j) => `<tr><td class="nw"><span class="step-tag sm">${esc(p.id)}</span></td><td class="mini">${esc(p.n)}${p.resuelve ? " · resuelve" : ""}</td>${g.rondas.map(r => celda(r.pasos[j])).join("")}</tr>`).join("");
+  const filas = caso ? caso.puntos.map((p, j) => `<tr><td class="nw"><span class="step-tag sm">${esc(p.id)}</span></td><td class="mini">${esc(p.n)}${p.resuelve ? " · resuelve" : ""}</td>${g.rondas.map(r => celda(r.pasos[j])).join("")}</tr>`).join("") : "";
+  // Un expediente que no está en el catálogo no se describe con otro caso: se dice, y el documento sigue disponible.
+  const puntos = caso
+    ? `<div class="twrap"><table class="t ficha-tabla"><thead><tr><th scope="col">Punto</th><th scope="col">Nombre</th>${g.rondas.map(r => `<th scope="col">${ico(ICO.modo[r.r.modo], "sm")}${esc(r.r.id)}${r.i === 0 ? " · primera" : " · segunda"}</th>`).join("")}</tr></thead><tbody>${filas}</tbody></table></div>`
+    : `<div class="guia">${ico("estados-advertencia")}<div>El expediente <b>${esc(g.sinCatalogo)}</b> de esta respuesta no está en el catálogo de este panel: no se puede mostrar punto por punto ni compararlo con un caso. Sus registros siguen en el documento: descárguelo para revisarlos.</div></div>`;
   const cal = (rec, et) => rec && esObjeto(rec.payload.calificacion) ? `<b>${esc(et)}</b><span>${rec.payload.calificacion.ok} de ${rec.payload.calificacion.total}${typeof rec.payload.calificacion.campos === "number" ? " · " + rec.payload.calificacion.campos + " elementos de " + (4 * 5) : ""}</span>` : `<b>${esc(et)}</b><span class="mini">sin responder</span>`;
   return `<div class="hoja"><div class="card ficha-part">
     <div class="row"><button type="button" class="btn sm outline" data-act="ficha-cerrar">${ico("acciones-anterior", "sm")}Volver</button><span class="sp"></span>${btn("resp-ficha-json", pid, "Descargar esta respuesta", "sm sec", "investigacion-archivo-json")}</div>
-    <div class="ficha-cab"><div class="avatar xl">${icoActor(d.cuenta.actor)}</div><div><h1 tabindex="-1">${esc(nomL(d.cuenta.actor))}</h1>
-      <div class="kv"><b>Cuenta</b><span class="mono">${esc(d.cuenta.usuario)}</span><b>Participación</b><span class="mono">${esc(pid)}</span><b>Expediente</b><span>${esc(caso.id)} · ${esc(caso.persona.nombre)}</span><b>Estado</b><span>${esc(g.completa ? "completa" : "parcial")} · ${g.hechas} de ${g.total} respuestas · ${esc(g.donde.texto)}</span><b>Declaración</b><span>aceptada el ${esc(fecha(d.consentimiento.t))} (versión ${esc(d.consentimiento.version)})</span><b>Documento</b><span>${esc(fecha(fechaIso(d.generado)))} · ${esc(e.origen === "servidor" ? "recibido por el servidor" : "importado de un archivo")}</span></div></div></div>
+    <div class="ficha-cab"><div class="avatar xl">${icoActor(d.cuenta.actor)}</div><div><h1 tabindex="-1">${esc(rolExpL(d.cuenta.actor, caso))}</h1>
+      <div class="kv"><b>Cuenta</b><span class="mono">${esc(d.cuenta.usuario)}</span><b>Participación</b><span class="mono">${esc(pid)}</span><b>Expediente</b><span>${caso ? esc(caso.id) + " · " + esc(caso.persona.nombre) : esc(g.sinCatalogo) + " · fuera del catálogo del instrumento"}</span><b>Estado</b><span>${esc(g.completa ? "completa" : "parcial")} · ${g.hechas} de ${g.total} respuestas · ${esc(g.donde.texto)}</span><b>Declaración</b><span>aceptada el ${esc(fecha(d.consentimiento.t))} (versión ${esc(d.consentimiento.version)})</span><b>Documento</b><span>${esc(fecha(fechaIso(d.generado)))} · ${esc(e.origen === "servidor" ? "recibido por el servidor" : "importado de un archivo")}</span></div></div></div>
     ${campos.length ? `<details data-det="ficha-datos"><summary>Datos personales que esta persona decidió dar</summary><div class="kv">${campos.map(c => `<b>${esc(c.n)}</b><span>${esc(dt[c.id])}</span>`).join("")}</div><p class="mini">Úselos solo para contactarle sobre el estudio. No aparecen en el informe.</p></details>` : `<p class="mini">${ico("gobernanza-etica", "sm")}Participó sin dar sus datos personales.</p>`}
     <h2>${ico("navegacion-blueprint")}Qué decidió, punto por punto</h2>
-    <div class="twrap"><table class="t ficha-tabla"><thead><tr><th scope="col">Punto</th><th scope="col">Nombre</th>${g.rondas.map(r => `<th scope="col">${ico(ICO.modo[r.r.modo], "sm")}${esc(r.r.id)}${r.i === 0 ? " · primera" : " · segunda"}</th>`).join("")}</tr></thead><tbody>${filas}</tbody></table></div>
+    ${puntos}
     <h2>${ico("capitulos-validacion-contratos")}Preguntas de cierre</h2><div class="kv">${cal(g.h2, "H2 · responsabilidades")}${cal(g.h3, "H3 · accesos completos")}</div>
     ${g.problemas.length ? `<h2>${ico("investigacion-barreras")}Qué problemas registró</h2><div class="twrap"><table class="t"><thead><tr><th scope="col">Condición</th><th scope="col">Punto</th><th scope="col">Qué ocurrió</th></tr></thead><tbody>${g.problemas.map(p => `<tr><td class="nw">${esc(p.ronda)}</td><td class="nw">${esc(p.paso)}</td><td>${esc(p.t)}</td></tr>`).join("")}</tbody></table></div>` : ""}
-    ${g.observaciones.length ? `<h2>${ico("acciones-observar")}Sus observaciones</h2><ul class="lista obs-lista">${g.observaciones.map(o => `<li><span class="mini">${esc(o.ronda || "")} ${esc(o.paso || "")}</span> «${esc(o.texto)}»</li>`).join("")}</ul>` : ""}
+    ${g.observaciones.length ? `<h2>${ico("acciones-observar")}Sus observaciones</h2><ul class="lista obs-lista">${g.observaciones.map(o => `<li><span class="mini">${esc([o.ronda, o.paso].filter(Boolean).join(" · "))}</span> «${esc(o.texto)}»</li>`).join("")}</ul>` : ""}
     <h2>${ico("documentos-evidencia")}Registros</h2>
-    <p class="mini">${g.nParticipante} de la persona · ${g.nSistema} del sistema${g.corregidas ? " · " + g.corregidas + " reemplazados por una corrección" : ""}.</p>
+    <p class="mini">${g.nParticipante} de la persona · ${g.nSistema} del sistema${g.corregidas ? " · " + esc(plural(g.corregidas, "reemplazado", "reemplazados")) + " por una corrección" : ""}.</p>
   </div></div>`;
 }
 
 /* ---------- Ficha de un participante ---------- */
+// La comparación con el módulo que la persona respondió en un paso de la ruta, en una línea.
+function comparacionTxt(c) {
+  const C = GUION.comparacion;
+  if (!esObjeto(c) || typeof c.decision !== "string" || !c.decision) return "";
+  const dias = typeof c.dias === "number" && isFinite(c.dias) && c.dias >= 0 ? String(Math.round(c.dias * 10) / 10).replace(".", ",") : "";
+  return etiqueta(C.ops, c.decision) + (typeof c.cual === "string" && c.cual.trim() ? " · «" + c.cual.trim() + "»" : "")
+    + (dias ? " · " + dias + (dias === "1" ? " día" : " días") : "") + (typeof c.seguridad === "string" && c.seguridad ? " · " + etiqueta(C.seguridadOps, c.seguridad).toLowerCase() : "");
+}
 function fichaParticipante(pid) {
   const e = entradaDe(pid);
   if (!e) return `<div class="hoja">${seccion("Ficha", "actores-participante", nada("Esa respuesta ya no está en el panel.") + btn("ficha-cerrar", "", "Volver", "sec", "acciones-anterior"))}</div>`;
@@ -484,7 +496,8 @@ function fichaParticipante(pid) {
     if (!x.act) return `<td class="na"><span class="mini">no interviene</span></td>`;
     if (!x.reg) return `<td class="pend"><span class="mini">sin responder</span></td>`;
     const pl = x.reg.payload;
-    return `<td><b>${esc(resumenActividad(pl))}</b>${pl.obs ? `<div class="mini">«${esc(pl.obs)}»</div>` : ""}${pl.comprobacion && !pl.comprobacion.finalidadAutorizada ? `<div class="mini regla-no">finalidad no autorizada</div>` : ""}${num(x.reg.version) > 1 ? `<div class="mini">corregida</div>` : ""}</td>`;
+    const cmp = comparacionTxt(pl.comparacion);
+    return `<td><b>${esc(resumenActividad(pl))}</b>${cmp ? `<div class="mini"><b>Con el módulo:</b> ${esc(cmp)}</div>` : ""}${pl.obs ? `<div class="mini">«${esc(pl.obs)}»</div>` : ""}${pl.comprobacion && !pl.comprobacion.finalidadAutorizada ? `<div class="mini regla-no">finalidad no autorizada</div>` : ""}${num(x.reg.version) > 1 ? `<div class="mini">corregida</div>` : ""}</td>`;
   };
   if (g.exp) return fichaExpediente(e, g);
   const filasPasos = PASOS.map(p => {
@@ -501,9 +514,9 @@ function fichaParticipante(pid) {
     <h2>${ico("navegacion-blueprint")}Qué respondió, paso a paso</h2>
     <div class="twrap"><table class="t ficha-tabla"><thead><tr><th scope="col">Paso</th><th scope="col">Nombre</th>${g.rondas.map(r => `<th scope="col">${ico(ICO.modo[r.r.modo], "sm")}${esc(r.r.id)} · ${esc(r.r.modo === "actual" ? "hoy" : "con el módulo")}</th>`).join("")}</tr></thead><tbody>${filasPasos}${cierres}</tbody></table></div>
     ${g.problemas.length ? `<h2>${ico("investigacion-barreras")}Qué problemas registró</h2><div class="twrap"><table class="t"><thead><tr><th scope="col">Ronda</th><th scope="col">Paso</th><th scope="col">Qué ocurrió</th></tr></thead><tbody>${g.problemas.map(p => `<tr><td class="nw">${esc(p.ronda)}</td><td class="nw">${esc(p.paso)}</td><td>${esc(p.t)}</td></tr>`).join("")}</tbody></table></div>` : ""}
-    ${g.observaciones.length ? `<h2>${ico("acciones-observar")}Sus observaciones</h2><ul class="lista obs-lista">${g.observaciones.map(o => `<li><span class="mini">${esc(o.ronda || "")} ${esc(o.paso || "")}</span> «${esc(o.texto)}»</li>`).join("")}</ul>` : ""}
+    ${g.observaciones.length ? `<h2>${ico("acciones-observar")}Sus observaciones</h2><ul class="lista obs-lista">${g.observaciones.map(o => `<li><span class="mini">${esc([o.ronda, o.paso].filter(Boolean).join(" · "))}</span> «${esc(o.texto)}»</li>`).join("")}</ul>` : ""}
     <h2>${ico("documentos-evidencia")}Registros</h2>
-    <p class="mini">${g.nParticipante} de la persona · ${g.nSimulados} simulados por el sistema · ${g.nSistema - g.nSimulados} de conducción${g.corregidas ? " · " + g.corregidas + " reemplazados por una corrección" : ""}.</p>
+    <p class="mini">${g.nParticipante} de la persona · ${g.nSimulados} simulados por el sistema · ${g.nSistema - g.nSimulados} de conducción${g.corregidas ? " · " + esc(plural(g.corregidas, "reemplazado", "reemplazados")) + " por una corrección" : ""}.</p>
   </div></div>`;
 }
 

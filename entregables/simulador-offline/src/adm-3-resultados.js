@@ -53,6 +53,17 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
 
   /* ---------- Escenario: rondas, pasos, roles y etiquetas legibles ---------- */
   const R = RONDAS, RID = R.map(r => r.id), REQ = lst(ESC.requeridos);
+  /* Esta versión recorre la ruta UNA sola vez y pone la comparación con el módulo dentro de cada paso.
+     Los textos del informe se escriben para el número de rondas que haya: con una sola, no se habla de rondas. */
+  const UNA = R.length === 1, iModo = m => R.findIndex(r => r.modo === m), HAY_HOY = iModo("actual") >= 0, HAY_MOD = iModo("propuesto") >= 0;
+  const rondaDeModo = m => "la ronda " + (iModo(m) + 1);
+  const enTodas = R.length === 2 ? "en las dos rondas" : "en las " + R.length + " rondas";
+  const cierreR = UNA ? "el cierre del recorrido" : "el cierre de la ronda";
+  // La comparación con el módulo que el participante responde en cada paso: { decision, cual, dias, seguridad }.
+  const CMP = obj(typeof GUION !== "undefined" && GUION ? GUION.comparacion : null), CMP_OPS = lst(CMP.ops), CMP_SEG = lst(CMP.seguridadOps);
+  const cmpDe = x => { const c = obj(obj(x.payload).comparacion); return typeof c.decision === "string" && c.decision ? c : null; };
+  const cmpTxt = c => { if (!c) return ""; const d = diasDe(c.dias);
+    return (txt(etiqueta(CMP_OPS, c.decision), 80) || "—") + (txt(c.cual) ? " · «" + txt(c.cual, 600) + "»" : "") + (d != null ? " · " + fmtN(d) + (d === 1 ? " día" : " días") : "") + (txt(c.seguridad) ? " · " + txt(etiqueta(CMP_SEG, c.seguridad), 80).toLowerCase() : ""); };
   const esRol = a => !!own(A, a);
   const idxPaso = id => { const i = own(PIDX, id); return typeof i === "number" ? i : -1; };
   const rondaC = id => { const i = RID.indexOf(id); return i < 0 ? "—" : "Ronda " + (i + 1) + " · " + (R[i].modo === "propuesto" ? "con el módulo" : "hoy"); };
@@ -68,7 +79,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
   const mayus = s => s.charAt(0).toUpperCase() + s.slice(1);
   const LETRA = { decide:"D", custodia:"C", focal:"M", soporte:"V" };
   const SUF_CORTA = { suficiente:"Suficiente", parcial:"Parcial", insuficiente:"Insuficiente" };
-  const TIPO_REG = { valoracion:"Valoración del contrato", preguntas:"Preguntas de cierre", solicitud:"Solicitud de evidencia", consulta:"Consulta por el módulo", notificacion:"Notificación", acuse:"Acuse de recibo", respuesta:"Respuesta enlazada a una solicitud", inicio_ronda:"Inicio de ronda", avance:"Avance", cierre_ronda:"Cierre de ronda" };
+  const TIPO_REG = { valoracion:"Valoración del contrato", preguntas:"Preguntas de cierre", solicitud:"Solicitud de evidencia", consulta:"Consulta por el módulo", notificacion:"Notificación", acuse:"Acuse de recibo", respuesta:"Respuesta enlazada a una solicitud", inicio_ronda:UNA ? "Inicio del recorrido" : "Inicio de ronda", avance:"Avance", cierre_ronda:UNA ? "Cierre del recorrido" : "Cierre de ronda" };
   // Lo que le corresponde a cada rol en cada ronda: sus actividades, en el orden del recorrido.
   const ESP = {};
   BP.actores.forEach(a => { ESP[a.id] = {}; R.forEach(r => { ESP[a.id][r.id] = bloquesDe(a.id, r.modo).filter(b => b.tipo === "actividad").map(b => ({ paso:b.pasos[0], act:b.act })); }); });
@@ -146,7 +157,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     const s = obj(P.doc.sesion), rid = RID.indexOf(s.rondaActual) >= 0 ? s.rondaActual : null;
     if (!rid) return "—";
     const e = obj(own(obj(s.rondas), rid)).estado;
-    return rondaC(rid) + ": " + (e === "pendiente" ? "sin comenzar" : e === "valoracion" ? "cierre de la ronda" : idxPaso(s.pasoActual) >= 0 ? "paso " + s.pasoActual : "en curso");
+    return rondaC(rid) + ": " + (e === "pendiente" ? "sin comenzar" : e === "valoracion" ? (UNA ? "cierre del recorrido" : "cierre de la ronda") : idxPaso(s.pasoActual) >= 0 ? "paso " + s.pasoActual : "en curso");
   }
   // Comprobación de la finalidad frente al contrato del rol: la que quedó registrada o, si no viene, la del escenario.
   function comprobacion(o) {
@@ -172,8 +183,8 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     return rows;
   }
   const COLS_PERFIL = ["Participante", "Rol", "Edad", "Profesión o formación", "Cuál", "Estudios complementarios", "Años en el rol", "Rol actual hoy", "Trayectoria declarada", "Con qué frecuencia participa en la ruta", "Otros roles"];
-  const filasPerfil = PS => PS.filter(P => P.enc).map(P => { const d = obj(P.enc.payload), n2 = numEnc(d.experiencia);
-    return [P.alias, rolL(P.actor), etqEnc("edad", d.edad), etqEnc("formacion", d.formacion), txt(d.formacionCual, 160) || "—", txt(d.complementarios, 300) || "—",
+  const filasPerfil = (PS, rotulo) => PS.filter(P => P.enc).map(P => { const d = obj(P.enc.payload), n2 = numEnc(d.experiencia);
+    return [P.alias, rotulo ? rotulo(P) : rolL(P.actor), etqEnc("edad", d.edad), etqEnc("formacion", d.formacion), txt(d.formacionCual, 160) || "—", txt(d.complementarios, 300) || "—",
       n2 == null ? "—" : celN(n2), txt(d.rolActual, 160) || "—", txt(d.trayectoria, 900) || "—", etqEnc("frecuencia", d.frecuencia), txt(d.otrosRoles, 300) || "—"]; });
   const NOTA_PERFIL = "La responde cada participante antes del recorrido, después de la declaración de participación. No se le pide su nombre ni el de su entidad: la encuesta describe su experiencia profesional para poder leer sus respuestas.";
 
@@ -199,7 +210,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
   }
   function contenido(x) {
     const pl = x.payload, piezas = () => piezasC(pl.piezas) || "información del trámite";
-    if (x.tipo === "actividad") return txt(resumenActividad(pl), 300) + (txt(pl.obs) ? " · «" + txt(pl.obs, 600) + "»" : "");
+    if (x.tipo === "actividad") return txt(resumenActividad(pl), 300) + (cmpDe(x) ? " · con el módulo: " + cmpTxt(cmpDe(x)) : "") + (txt(pl.obs) ? " · «" + txt(pl.obs, 600) + "»" : "");
     if (x.tipo === "valoracion") return txt(etiqueta(ESC.valoracion.semaforo, pl.semaforo), 80) + " · " + txt(etiqueta(ESC.valoracion.mejora, pl.mejora), 80) + (txt(pl.ajuste) ? " · «" + txt(pl.ajuste, 600) + "»" : "");
     if (x.tipo === "preguntas") return ESC.preguntas.map(q => q.id + ": " + preguntaTxt(q, pl)).join(" · ");
     if (x.tipo === "observacion") return txt(pl.texto) || "(sin texto)";
@@ -212,9 +223,9 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     if (x.tipo === "notificacion") return pl.acuse === true ? "Notificación con acuse de " + rolC(pl.de) + " a " + (lst(pl.a).map(rolC).join(", ") || "—") : "Notificación sin acuse de " + rolC(pl.de);
     if (x.tipo === "acuse") return rolC(pl.de) + " confirma el recibo a " + rolC(pl.a);
     if (x.tipo === "respuesta") return "Respuesta de " + rolC(pl.de) + " a la solicitud de " + rolC(pl.a) + ": " + (txt(etiqueta(ESC.respCustodia, pl.respuesta), 80) || "—") + (diasDe(pl.dias) != null ? " · " + fmtN(diasDe(pl.dias)) + " d." : "");
-    if (x.tipo === "inicio_ronda") return "Comienza la ronda";
-    if (x.tipo === "cierre_ronda") return "Cierra la ronda";
-    if (x.tipo === "avance") return "Termina " + (lst(pl.de).map(k => txt(k, 4)).join(", ") || "el tramo") + " y sigue " + (pl.a === "valoracion" ? "el cierre de la ronda" : "el paso " + txt(pl.a, 4));
+    if (x.tipo === "inicio_ronda") return UNA ? "Comienza el recorrido" : "Comienza la ronda";
+    if (x.tipo === "cierre_ronda") return UNA ? "Cierra el recorrido" : "Cierra la ronda";
+    if (x.tipo === "avance") return "Termina " + (lst(pl.de).map(k => txt(k, 4)).join(", ") || "el tramo") + " y sigue " + (pl.a === "valoracion" ? cierreR : "el paso " + txt(pl.a, 4));
     return "";
   }
 
@@ -259,7 +270,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     ].concat([["Investigador responsable", est.investigador], ["Director de la investigación", est.director], ["Comité de ética", est.comite]].filter(x => x[1]), [
       ["Identificador del estudio", est.id || "—"],
       ["Escenario", ESC.n], ["Nota del escenario", ESC.nota],
-      ["Recorrido", PASOS.length + " pasos en " + SB.fases.length + " fases, en " + R.length + " rondas: " + R.map(r => r.n).join("; ")],
+      ["Recorrido", PASOS.length + " pasos en " + SB.fases.length + " fases, " + (UNA ? "recorridos una sola vez, con la comparación con el módulo dentro de cada paso" : "en " + R.length + " rondas: " + R.map(r => r.n).join("; "))],
       ["Respuestas recibidas", PS.length], ["Completas", nComp], ["Parciales", PS.length - nComp],
       ["De cuentas de prueba o de demostración", nPrueba],
       ["Roles con al menos una respuesta", rolesCon + " de " + BP.actores.length],
@@ -269,10 +280,10 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     T("participacion_rol", "Respuestas recibidas por rol", ["Rol", "Grupo", "Requerido por el escenario", "Cuentas invitadas", "Respuestas recibidas", "Completas", "Parciales", "De cuentas de prueba"],
       BP.actores.map(a => { const ps = porRol[a.id]; return [nomL(a.id), a.grupo, REQ.indexOf(a.id) >= 0 ? "Sí" : "No", ctas.length ? invitadas.filter(q => q.a === a.id).length : "—", ps.length, ps.filter(P => P.completa).length, ps.filter(P => !P.completa).length, ps.filter(P => P.prueba).length]; })
         .concat([["Total", "", "", ctas.length ? invitadas.length : "—", PS.length, nComp, PS.length - nComp, nPrueba]]),
-      "Una respuesta es un documento de un participante. Es completa si la persona cerró las dos rondas; si no, es parcial. Las cuentas invitadas son las del proyecto que no están marcadas como de prueba. Las respuestas de cuentas de prueba se cuentan en las columnas anteriores y se muestran aparte en la última.");
+      "Una respuesta es un documento de un participante. Es completa si la persona " + (UNA ? "terminó el recorrido y respondió el cierre" : "cerró las " + R.length + " rondas") + "; si no, es parcial. Las cuentas invitadas son las del proyecto que no están marcadas como de prueba. Las respuestas de cuentas de prueba se cuentan en las columnas anteriores y se muestran aparte en la última.");
     T("participantes", "Participaciones analizadas", ["Participante", "Rol", "Estado", "Avance", "Quedó en", "Tipo de cuenta", "Fecha del documento", "Registros vigentes"],
       PS.map(P => [P.alias, rolL(P.actor), P.completa ? "Completa" : "Parcial", P.hechas + " de " + P.total, quedoEn(P), tipoCuenta(P), P.generado ? fechaSegura(P.generado) : "—", P.regs.length]),
-      "Cada fila es una participación. El participante aparece con el usuario de su cuenta, nunca con su nombre. El avance cuenta las actividades del rol y el cierre de cada ronda, como lo hace el simulador. Los registros vigentes no incluyen los reemplazados por una corrección.");
+      "Cada fila es una participación. El participante aparece con el usuario de su cuenta, nunca con su nombre. El avance cuenta las actividades del rol y " + (UNA ? "el cierre del recorrido" : "el cierre de cada ronda") + ", como lo hace el simulador. Los registros vigentes no incluyen los reemplazados por una corrección.");
     const usuariosCon = contar(PS.map(P => P.usuario));
     T("cuentas", "Cuentas invitadas frente a respuestas", ["Usuario", "Rol", "Tipo de cuenta", "Respuestas recibidas", "Estado"],
       ctas.map(q => { const ps = PS.filter(P => P.usuario === q.u); return [q.u, rolL(q.a), q.p ? "De prueba" : "Invitada", ps.length, mejorEstado(ps)]; })
@@ -281,7 +292,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     T("perfil", "Perfil profesional de quienes respondieron", ["Dato", "Lo que declararon"], filasPerfilResumen(PS), NOTA_PERFIL);
     T("perfil_detalle", "Perfil declarado, participación por participación", COLS_PERFIL, filasPerfil(PS), NOTA_PERFIL + " Cada fila es una participación, con el usuario de su cuenta.");
     cap("participacion", "Qué se examinó y quiénes participaron", "actores-participante",
-      "Se examinó el recorrido de la ruta de incapacidad (" + PASOS.length + " pasos en " + SB.fases.length + " fases) en " + R.length + " rondas: " + R.map(r => r.n).join(" y ") + ". Cada persona entró sola con la cuenta de su rol. Los demás actores fueron simulados por el sistema.\n"
+      "Se examinó el recorrido de la ruta de incapacidad (" + PASOS.length + " pasos en " + SB.fases.length + " fases)" + (UNA ? ", una sola vez: en cada paso la persona respondió lo que haría hoy y, después, si con lo que le habría llegado con el módulo su decisión sería la misma." : " en " + R.length + " rondas: " + R.map(r => r.n).join(" y ") + ".") + " Cada persona entró sola con la cuenta de su rol. Los demás actores fueron simulados por el sistema.\n"
       + "Se analizaron " + plural(PS.length, "respuesta", "respuestas") + ": " + nComp + " " + (nComp === 1 ? "completa" : "completas") + " y " + (PS.length - nComp) + " " + (PS.length - nComp === 1 ? "parcial" : "parciales") + ", de " + rolesCon + " de los " + BP.actores.length + " roles. " + (nDatos === 1 ? "1 participante dio" : nDatos + " participantes dieron") + " datos personales; este informe solo muestra el usuario de cada cuenta.\n" + ESC.nota,
       ["estudio", "participacion_rol", "participantes", "cuentas", "perfil", "perfil_detalle"]);
 
@@ -293,19 +304,19 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
       return comp.length ? "Con respuesta completa, solo de cuentas de prueba" : ps.length ? "Solo respuestas parciales" : "Sin respuestas";
     }
     const pendientes = REQ.filter(a => esRol(a) && !porRol[a].some(P => P.completa && !P.prueba));
-    T("cobertura", "Cobertura por rol y ronda", ["Rol", "Requerido por el escenario", "Participaciones", "Actividades por ronda (" + RID.map((x, i) => i + 1).join(" + ") + ")"].concat(...R.map(r => [rondaC(r.id) + " · actividades", rondaC(r.id) + " · valoración", rondaC(r.id) + " · preguntas"]), ["Estado"]),
+    T("cobertura", UNA ? "Cobertura por rol" : "Cobertura por rol y ronda", ["Rol", "Requerido por el escenario", "Participaciones", UNA ? "Actividades esperadas" : "Actividades por ronda (" + RID.map((x, i) => i + 1).join(" + ") + ")"].concat(...R.map(r => [rondaC(r.id) + " · actividades", rondaC(r.id) + " · valoración", rondaC(r.id) + " · preguntas"]), ["Estado"]),
       BP.actores.map(a => { const ps = porRol[a.id], n = ps.length;
         return [nomL(a.id), REQ.indexOf(a.id) >= 0 ? "Sí" : "No", n, R.map(r => esperadas(a.id, r.id)).join(" + ")].concat(
           ...R.map(r => [cuantos(ps.reduce((k, P) => k + Object.keys(P.act[r.id]).length, 0), n * esperadas(a.id, r.id)), cuantos(ps.filter(P => P.val[r.id]).length, n), cuantos(ps.filter(P => P.preg[r.id]).length, n)]), [estadoRol(a.id)]); }),
-      "Actividades: respondidas de esperadas. Las esperadas son las actividades que el recorrido le asigna al rol en la ronda, por el número de participaciones del rol. Valoración y preguntas: participaciones que las respondieron, de las participaciones del rol. Un rol requerido por el escenario queda «pendiente de evidencia» si no tiene ninguna respuesta completa de una cuenta que no sea de prueba.");
+      "Actividades: respondidas de esperadas. Las esperadas son las actividades que el recorrido le asigna al rol" + (UNA ? "" : " en la ronda") + ", por el número de participaciones del rol. Valoración y preguntas: participaciones que las respondieron, de las participaciones del rol. Un rol requerido por el escenario queda «pendiente de evidencia» si no tiene ninguna respuesta completa de una cuenta que no sea de prueba.");
     T("cobertura_pasos", "Cobertura paso a paso", ["Rol", "Ronda"].concat(PASOS.map(p => p.id)),
       [].concat(...BP.actores.map(a => R.map(r => [nomL(a.id), rondaC(r.id)].concat(PASOS.map(p => { const s = slotDe(a.id, r.id, p.id), n = porRol[a.id].length; return s ? LETRA[s.act.tipo] + " " + (n ? porRol[a.id].filter(P => P.act[r.id][p.id]).length + "/" + n : "—") : "·"; }))))),
       "Cada celda dice qué le corresponde al rol en ese paso y cuántas participaciones respondieron: D decide, C responde por evidencia que custodia, M vive el paso como M.P., V vigila o apoya. «2/3» significa que respondieron 2 de 3 participaciones del rol; «—», que el rol no tiene participaciones; «·», que el rol no interviene en ese paso.");
     cap("cobertura", "Cobertura por rol", "capitulos-gestion-actores",
-      "Qué respondió cada rol frente a lo que le correspondía. Las actividades esperadas salen del recorrido de cada rol en cada ronda." + (pendientes.length ? "\nRoles requeridos por el escenario que siguen pendientes de evidencia: " + pendientes.map(nomL).join(", ") + "." : REQ.length ? "\nTodos los roles requeridos por el escenario tienen al menos una respuesta completa." : ""),
+      "Qué respondió cada rol frente a lo que le correspondía. Las actividades esperadas salen del recorrido de cada rol" + (UNA ? "." : " en cada ronda.") + (pendientes.length ? "\nRoles requeridos por el escenario que siguen pendientes de evidencia: " + pendientes.map(nomL).join(", ") + "." : REQ.length ? "\nTodos los roles requeridos por el escenario tienen al menos una respuesta completa." : ""),
       ["cobertura", "cobertura_pasos"]);
 
-    /* 3. Decisiones por paso y ronda */
+    /* 3. Decisiones por paso */
     const sitDec = situaciones("decide"), filasDec = [];
     sitDec.forEach(s => {
       const ops = s.act.ops, base = [pasoTxt(s.paso), rolL(s.rol)];
@@ -314,7 +325,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
       if (raras.some(Boolean)) filasDec.push(base.concat(["Respuesta no reconocida"], s.resp.map((os, i) => deN(raras[i], os.length))));
     });
     T("decisiones", "Distribución de las decisiones", ["Paso", "Rol que decide", "Decisión"].concat(colsR()), filasDec,
-      "Para cada paso con decisión se cuentan las respuestas vigentes de los participantes del rol que decide. Cada celda dice cuántos eligieron esa opción, de cuántos respondieron el paso en la ronda. En E4 deciden dos roles: la Junta Nacional valida el paquete y la ARL decide si apela." + SOLO_CON);
+      "Para cada paso con decisión se cuentan las respuestas vigentes de los participantes del rol que decide. Cada celda dice cuántos eligieron esa opción, de cuántos respondieron el paso" + (UNA ? "" : " en la ronda") + ". En E4 deciden dos roles: la Junta Nacional valida el paquete y la ARL decide si apela." + SOLO_CON);
     T("decisiones_informacion", "Con qué información se decidió", ["Paso", "Rol que decide", "Ronda", "Decisiones"].concat(ESC.suficiencia.map(o => o[1]), ["Piezas que faltaron"]),
       porRonda(sitDec, (s, os, r) => { const c = contar(valores(os, "suficiencia")), falta = contar([].concat(...os.map(faltaDe)));
         return [pasoTxt(s.paso), rolL(s.rol), rondaC(r.id), os.length].concat(ESC.suficiencia.map(o => c[o[0]] || 0), [Object.keys(EV).filter(k => falta[k]).map(k => EV[k].sl + ": " + falta[k]).join(" · ") || "—"]); }),
@@ -325,12 +336,28 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
           distTxt(ESC.finalidades.map(f => [f.id, f.n]), fin, o => o[1] + (finAutorizada(o[0], s.rol) ? "" : " (no autorizada)")),
           deN(os.filter(o => comprobacion(o).autorizada).length, os.length),
           Object.keys(resp).sort().map(k => k + ": " + resp[k]).join(" · ")].concat(diasCeldas(diasDeLos(os))); }),
-      "La finalidad es la que declaró quien decide. Está autorizada si el contrato de datos del escenario la permite para ese rol; se comprueba igual en las dos rondas, aunque hoy nadie hace esa comprobación. Los días son los que declaró cada persona: se resumen con mínimo, mediana y máximo y no se suman." + SOLO_CON);
-    cap("decisiones", "Decisiones por paso y ronda", "acciones-decidir",
+      "La finalidad es la que declaró quien decide. Está autorizada si el contrato de datos del escenario la permite para ese rol; se comprueba" + (UNA ? "" : " igual " + enTodas) + ", aunque hoy nadie hace esa comprobación. Los días son los que declaró cada persona: se resumen con mínimo, mediana y máximo y no se suman." + SOLO_CON);
+    cap("decisiones", UNA ? "Decisiones por paso" : "Decisiones por paso y ronda", "acciones-decidir",
       "Qué decidieron los participantes del rol que decide en cada paso, con qué información, con qué finalidad y en cuántos días. Los días son los que declaró cada persona.",
       ["decisiones", "decisiones_informacion", "decisiones_finalidad"]);
 
-    /* 4. Información que faltó y reprocesos */
+    /* 4. Comparación con el módulo, paso por paso */
+    const conCmp = os => os.filter(o => cmpDe(o.x)), CMP_TODAS = conCmp(ACT);
+    const filaCmp = (pasoCel, rolCel, actCel, ridCel, os) => { const cs = os.map(o => cmpDe(o.x)), d = contar(cs.map(c => c.decision)), sg = contar(cs.map(c => c.seguridad));
+      return [pasoCel, rolCel, actCel].concat(UNA ? [] : [ridCel], [cs.length], CMP_OPS.map(o => d[o[0]] || 0), diasCeldas(cs.map(c => diasDe(c.dias)).filter(v => v != null)), CMP_SEG.map(o => sg[o[0]] || 0)); };
+    const filasCmp = [];
+    R.forEach(r => PASOS.forEach(p => BP.actores.forEach(a => { const os = conCmp(ACT.filter(o => o.rid === r.id && o.paso === p.id && o.P.actor === a.id)); if (os.length) filasCmp.push(filaCmp(pasoTxt(p.id), rolL(a.id), mayus(TIPO_ACT[os[0].act.tipo] || "—"), rondaC(r.id), os)); })));
+    if (filasCmp.length > 1) filasCmp.push(filaCmp("Todos los pasos", "Todos los roles", "—", "—", CMP_TODAS));
+    T("comparacion", "Comparación con el módulo, paso por paso", ["Paso", "Rol", "Lo que hace en el paso"].concat(UNA ? [] : ["Ronda"], ["Respuestas"], CMP_OPS.map(o => "Decisión con el módulo: " + o[1].toLowerCase()),
+        ["Días con esa información: respuestas", "Días con esa información: mínimo", "Días con esa información: mediana", "Días con esa información: máximo"], CMP_SEG.map(o => "Seguridad: " + o[1].toLowerCase())), filasCmp,
+      "En cada paso, después de responder lo que haría hoy, el participante vio lo que el módulo le habría abierto y respondió si con esa información su decisión sería la misma, en cuántos días haría el mismo trámite y con cuánta seguridad decidiría. Cada celda es el número de respuestas con esa opción; «Respuestas» cuenta las actividades con la comparación respondida. Los días son los que declaró cada persona: se resumen con mínimo, mediana y máximo y no se suman. La última fila reúne todos los pasos y roles. Lo que escribió cuando su decisión sería otra está en el capítulo de observaciones textuales. Es lo que la persona declara que haría con esa información, no un uso real del módulo.");
+    const capCmp = cap("comparacion", "Comparación con el módulo, paso por paso", "investigacion-cambio-observado",
+      (UNA ? "Esta versión recorre la ruta una sola vez y pone la comparación con el módulo dentro de cada paso: es la medida del módulo en este instrumento. " : "")
+      + "Cuando ya había respondido lo que haría hoy, cada participante vio qué le habría llegado con el módulo propuesto y respondió tres preguntas: «" + txt(CMP.pregunta, 200) + "», «" + txt(CMP.dias, 200) + "» y «" + txt(CMP.seguridad, 200) + "»."
+      + "\nSe analizaron " + plural(CMP_TODAS.length, "comparación", "comparaciones") + " de " + plural(ACT.length, "actividad respondida", "actividades respondidas") + ".",
+      ["comparacion"]);
+
+    /* 5. Información que faltó y reprocesos */
     const decs = actos("decide");
     function faltaDe(o) { const s = o.x.payload.suficiencia; return s === "parcial" || s === "insuficiente" ? lst(o.x.payload.falta).filter((k, i, a) => own(EV, k) && a.indexOf(k) === i) : []; }
     const conVacios = o => o.x.payload.suficiencia === "parcial" || o.x.payload.suficiencia === "insuficiente";
@@ -339,26 +366,29 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
       decs.filter(conVacios).map(o => { const sols = solicitudesDe(o);
         return [rondaC(o.rid), pasoTxt(o.paso), rolL(o.P.actor), o.P.alias, SUF_CORTA[o.x.payload.suficiencia], piezasC(faltaDe(o)) || "Ninguna", txt(etiqueta(o.act.ops, o.x.payload.decision), 120) || "—",
           sols.length ? sols.map(s => "a " + rolC(s.payload.a) + ": " + (piezasC(s.payload.piezas) || "información del trámite")).join("; ") + " (simulado)" : "Ninguna", faltaDe(o).length ? "Sí" : "No"]; }),
-      "Decisiones en que quien decide declaró información parcial o insuficiente. Cuenta como reproceso si además señaló al menos una pieza faltante. Las solicitudes las simula el sistema en la ronda 1, una por cada custodio de las piezas señaladas; en la ronda 2 no hay solicitudes: el módulo simulado atiende o deniega consultas.");
+      "Decisiones en que quien decide declaró información parcial o insuficiente. Cuenta como reproceso si además señaló al menos una pieza faltante."
+        + (HAY_HOY ? " Las solicitudes las simula el sistema" + (UNA ? "" : " en " + rondaDeModo("actual")) + ", una por cada custodio de las piezas señaladas." : "")
+        + (HAY_MOD ? (UNA ? " Con el módulo" : " En " + rondaDeModo("propuesto")) + " no hay solicitudes: el módulo simulado atiende o deniega consultas." : ""));
     T("piezas_faltantes", "Piezas de evidencia que faltaron", ["Pieza", "Custodio"].concat(...R.map(r => [rondaC(r.id) + " · menciones", rondaC(r.id) + " · quién la señaló"])),
       Object.keys(EV).map(k => [EV[k].sl + " · " + EV[k].n, rolL(EV[k].cust)].concat(...R.map(r => { const os = decs.filter(o => o.rid === r.id && faltaDe(o).indexOf(k) >= 0), c = contar(os.map(o => o.P.actor)); return [os.length, BP.actores.filter(a => c[a.id]).map(a => nom(a.id) + " (" + c[a.id] + ")").join(", ") || "—"]; }))),
       "Menciones: decisiones con información parcial o insuficiente que señalaron la pieza como faltante. Entre paréntesis, cuántas decisiones de cada rol la señalaron.");
     T("solicitudes_simuladas", "Solicitudes simuladas que nacieron de esas decisiones", ["Ronda", "Paso", "Quién pide", "Participante", "A quién se le pide", "Piezas", "Finalidad declarada", "Finalidad autorizada", "Origen"],
       [].concat(...decs.map(o => solicitudesDe(o).map(s => [rondaC(o.rid), pasoTxt(o.paso), rolL(o.P.actor), o.P.alias, rolL(s.payload.a) + " (actor simulado)", piezasC(s.payload.piezas) || "información del trámite", finTxt(s.payload.finalidad), s.payload.autorizada === true ? "Sí" : "No", "Simulado por el sistema"]))),
-      "Registros que generó el sistema, no los participantes: cuando una decisión de la ronda 1 señala piezas faltantes, el sistema simula la solicitud al custodio de cada pieza. Solo se cuentan las que nacen de una decisión vigente; las de una respuesta corregida se descartan.", true);
+      "Registros que generó el sistema, no los participantes: cuando una decisión" + (UNA ? "" : " de " + rondaDeModo("actual")) + " señala piezas faltantes, el sistema simula la solicitud al custodio de cada pieza. Solo se cuentan las que nacen de una decisión vigente; las de una respuesta corregida se descartan.", true);
     cap("faltantes", "Información que faltó y reprocesos", "investigacion-reprocesos",
-      "Decisiones tomadas con información parcial o insuficiente y piezas de evidencia que se echaron de menos. Cuando esto ocurre en la ronda 1, el sistema simula la solicitud al custodio: esas solicitudes van rotuladas como simuladas.",
+      "Decisiones tomadas con información parcial o insuficiente y piezas de evidencia que se echaron de menos." + (HAY_HOY ? " Cuando esto ocurre" + (UNA ? "" : " en " + rondaDeModo("actual")) + ", el sistema simula la solicitud al custodio: esas solicitudes van rotuladas como simuladas." : ""),
       ["reprocesos", "piezas_faltantes", "solicitudes_simuladas"]);
 
-    /* 5. Custodia */
+    /* 6. Custodia */
     T("custodia", "Qué respondieron los custodios", ["Paso", "Rol que custodia", "Pieza", "Quién la pide (simulado)", "Ronda", "Respuestas"].concat(ESC.respCustodia.map(o => o[1]), COLS_DIAS),
       porRonda(situaciones("custodia"), (s, os, r, def) => { const c = contar(valores(os, "respuesta"));
         return [pasoTxt(s.paso), rolL(s.rol), piezasC(def.piezas) || "Información del trámite", rolC(def.pide), rondaC(r.id), os.length].concat(ESC.respCustodia.map(o => c[o[0]] || 0), diasCeldas(diasDeLos(os))); }),
-      "Respuestas de quienes custodian evidencia que otro actor necesita en el paso. Quien la pide es el actor que decide en ese paso, simulado por el sistema: en la ronda 1 hace la solicitud; en la ronda 2 el custodio responde después de ver lo que el módulo simulado entregó con la vista mínima. Los días son los que declaró cada custodio y no se suman." + SOLO_CON);
+      "Respuestas de quienes custodian evidencia que otro actor necesita en el paso. Quien la pide es el actor que decide en ese paso, simulado por el sistema: "
+        + [HAY_HOY ? (UNA ? "" : "en " + rondaDeModo("actual") + " ") + "hace la solicitud" : "", HAY_MOD ? (UNA ? "" : "en " + rondaDeModo("propuesto") + " ") + "el custodio responde después de ver lo que el módulo simulado entregó con la vista mínima" : ""].filter(Boolean).join("; ") + ". Los días son los que declaró cada custodio y no se suman." + SOLO_CON);
     cap("custodia", "Custodia", "gobernanza-custodia",
       "Qué respondieron los custodios cuando otro actor necesitó su evidencia: entregar todo, entregar solo lo pertinente o denegar, y cuántos días les toma.", ["custodia"]);
 
-    /* 6. Experiencia de M.P. */
+    /* 7. Experiencia de M.P. */
     T("mp", "Lo que vive M.P. en cada paso", ["Paso", "Ronda", "Respuestas"].concat(ESC.focal.sabe.map(o => o[1]), ["Quién le responde", "Gestiones que tuvo que hacer"], COLS_DIAS),
       porRonda(situaciones("focal"), (s, os, r) => { const c = contar(valores(os, "sabe")), resp = contar(valores(os, "responde").map(v => respondeTxt(v, true))), hizo = contar([].concat(...os.map(o => lst(o.x.payload.hizo))));
         return [pasoTxt(s.paso), rondaC(r.id), os.length].concat(ESC.focal.sabe.map(o => c[o[0]] || 0), [Object.keys(resp).sort().map(k => k + ": " + resp[k]).join(" · "), distTxt(ESC.focal.hizo, hizo)], diasCeldas(diasDeLos(os))); }),
@@ -366,15 +396,15 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     cap("mp", "Experiencia de M.P.", "actores-trabajador",
       "Lo que respondieron quienes representaron a la trabajadora: qué sabe de su caso en cada paso, quién le responde y qué gestiones le tocó hacer.", ["mp"]);
 
-    /* 7. Vigilancia y apoyo */
+    /* 8. Vigilancia y apoyo */
     T("vigilancia", "Qué ven y qué hacen quienes vigilan o apoyan", ["Paso", "Rol", "Ronda", "Respuestas"].concat(ESC.soporte.ve.map(o => o[1]), ESC.soporte.accion.map(o => "Acción: " + o[1].toLowerCase())),
       porRonda(situaciones("soporte"), (s, os, r) => { const ve = contar(valores(os, "ve")), ac = contar(valores(os, "accion"));
         return [pasoTxt(s.paso), rolL(s.rol), rondaC(r.id), os.length].concat(ESC.soporte.ve.map(o => ve[o[0]] || 0), ESC.soporte.accion.map(o => ac[o[0]] || 0)); }),
       "Respuestas de los roles que vigilan o apoyan el paso: qué alcanzan a ver del caso y qué acción toman. Cada celda es el número de respuestas con esa opción." + SOLO_CON);
     cap("vigilancia", "Vigilancia y apoyo", "acciones-vigilar",
-      "Qué alcanzan a ver del caso los actores que vigilan o apoyan y qué acción toman, por actor, paso y ronda.", ["vigilancia"]);
+      "Qué alcanzan a ver del caso los actores que vigilan o apoyan y qué acción toman, por actor, paso" + (UNA ? "." : " y ronda."), ["vigilancia"]);
 
-    /* 8. Desacuerdos entre representantes de un mismo rol */
+    /* 9. Desacuerdos entre representantes de un mismo rol */
     const ASPECTOS = {
       decide:[["decision", "La decisión", (v, act) => etiqueta(act.ops, v)]],
       custodia:[["respuesta", "La respuesta del custodio", v => etiqueta(ESC.respCustodia, v)]],
@@ -392,49 +422,53 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
         comparar(r.id, "—", a.id, asp[1], porRol[a.id].filter(P => P.val[r.id]).map(P => [P.alias, P.val[r.id].payload[asp[0]], etiqueta(asp[2], P.val[r.id].payload[asp[0]])]))));
     });
     T("desacuerdos", "Respuestas distintas dentro de un mismo rol", ["Ronda", "Paso", "Rol", "Qué difiere", "Respuestas"],
-      desac.map(d => [rondaC(d.rid), d.paso === "—" ? "Cierre de la ronda" : pasoTxt(d.paso), rolL(d.rol), d.que, d.detalle]),
-      "Hay un desacuerdo cuando dos o más participaciones del mismo rol respondieron distinto en la misma ronda y el mismo paso, o valoraron distinto al cierre de la ronda. Se compara la decisión, la respuesta del custodio, lo que sabe M.P., lo que ve y hace quien vigila, la valoración del contrato y la percepción frente a hoy.");
-    cap("desacuerdos", "Desacuerdos entre representantes de un mismo rol", "investigacion-claridad-roles",
+      desac.map(d => [rondaC(d.rid), d.paso === "—" ? mayus(cierreR.replace(/^el /, "")) : pasoTxt(d.paso), rolL(d.rol), d.que, d.detalle]),
+      "Hay un desacuerdo cuando dos o más participaciones del mismo rol respondieron distinto en " + (UNA ? "el mismo paso" : "la misma ronda y el mismo paso") + ", o valoraron distinto al " + cierreR.replace(/^el /, "") + ". Se compara la decisión, la respuesta del custodio, lo que sabe M.P., lo que ve y hace quien vigila, la valoración del contrato y la percepción frente a hoy.");
+    const capDesac = cap("desacuerdos", "Desacuerdos entre representantes de un mismo rol", "investigacion-claridad-roles",
       "Situaciones en que dos o más personas que representaron el mismo rol respondieron distinto. Solo puede haber desacuerdos en los roles con más de una participación" + (BP.actores.some(a => porRol[a.id].length > 1) ? ": " + BP.actores.filter(a => porRol[a.id].length > 1).map(a => nomL(a.id) + " (" + porRol[a.id].length + ")").join(", ") + "." : "; en este análisis ningún rol tiene más de una."),
       ["desacuerdos"]);
 
-    /* 9. Valoración del contrato y percepción frente a hoy */
+    /* 10. Valoración del contrato y percepción frente a hoy */
     const SEM = ESC.valoracion.semaforo, MEJ = ESC.valoracion.mejora;
     const filaVal = (nombre, ps, r) => { const vs = ps.filter(P => P.val[r.id]).map(P => P.val[r.id].payload), s = contar(vs.map(v => v.semaforo)), m = contar(vs.map(v => v.mejora)); return vs.length ? [[nombre, rondaC(r.id), vs.length].concat(SEM.map(o => s[o[0]] || 0), MEJ.map(o => m[o[0]] || 0))] : []; };
     T("valoracion", "Valoración del contrato y percepción frente a hoy", ["Rol", "Ronda", "Valoraciones"].concat(SEM.map(o => o[1]), MEJ.map(o => "Frente a hoy: " + o[1].toLowerCase())),
       [].concat(...BP.actores.map(a => [].concat(...R.map(r => filaVal(nomL(a.id), porRol[a.id], r)))), ...R.map(r => filaVal("Todos los roles", PS, r))),
-      "Al cerrar cada ronda cada participante valora el contrato de datos de su rol y dice si esa forma de trabajar es mejor, igual o peor que hoy. Cada celda es el número de participaciones con esa respuesta. Es percepción, no comportamiento observado. Solo aparecen los roles con alguna valoración.");
+      (UNA ? "Al terminar el recorrido" : "Al cerrar cada ronda") + ", cada participante valora el contrato de datos de su rol y dice si esa forma de trabajar es mejor, igual o peor que hoy. Cada celda es el número de participaciones con esa respuesta. Es percepción, no comportamiento observado. Solo aparecen los roles con alguna valoración.");
     T("ajustes", "Ajustes propuestos al contrato", ["Ronda", "Rol", "Participante", "Valoración del contrato", "Frente a hoy", "Ajuste propuesto"],
       [].concat(...R.map(r => PS.filter(P => P.val[r.id] && txt(P.val[r.id].payload.ajuste)).map(P => { const v = P.val[r.id].payload; return [rondaC(r.id), rolL(P.actor), P.alias, txt(etiqueta(SEM, v.semaforo), 80), txt(etiqueta(MEJ, v.mejora), 80), txt(v.ajuste, 600)]; }))),
       "Texto que escribió cada participante cuando propuso un ajuste o rechazó el contrato. Se transcribe tal como se escribió.");
     cap("valoracion", "Valoración del contrato y percepción frente a hoy", "capitulos-validacion-contratos",
-      "Al cerrar cada ronda, cada participante valoró el contrato de datos de su rol y dijo si esa forma de trabajar es mejor, igual o peor que hoy. Es percepción de los participantes.", ["valoracion", "ajustes"]);
+      (UNA ? "Al terminar el recorrido" : "Al cerrar cada ronda") + ", cada participante valoró el contrato de datos de su rol y dijo si esa forma de trabajar es mejor, igual o peor que hoy. Es percepción de los participantes.", ["valoracion", "ajustes"]);
 
-    /* 10. Preguntas P1 a P4 */
+    /* 11. Preguntas P1 a P4 */
     const Q = ESC.preguntas, Q_OPC = Q.filter(q => !q.tipo), Q_MULTI = Q.filter(q => q.tipo === "multi"), Q_TEXTO = Q.filter(q => q.tipo === "texto");
     const conPreg = [].concat(...R.map(r => PS.filter(P => P.preg[r.id]).map(P => ({ P, rid:r.id, pl:P.preg[r.id].payload }))));
     const filaPreg = (nombre, ps, r) => { const pls = ps.filter(P => P.preg[r.id]).map(P => P.preg[r.id].payload); return pls.length ? [[nombre, rondaC(r.id), pls.length].concat(...Q_OPC.map(q => { const c = contar(pls.map(pl => pl[q.id])); return q.ops.map(o => c[o[0]] || 0); }))] : []; };
-    T("preguntas_rol", "Respuestas a " + Q_OPC.map(q => q.id).join(" y ") + " por rol y ronda", ["Rol", "Ronda", "Respuestas"].concat(...Q_OPC.map(q => q.ops.map(o => q.id + ": " + o[1]))),
+    T("preguntas_rol", "Respuestas a " + Q_OPC.map(q => q.id).join(" y ") + (UNA ? " por rol" : " por rol y ronda"), ["Rol", "Ronda", "Respuestas"].concat(...Q_OPC.map(q => q.ops.map(o => q.id + ": " + o[1]))),
       [].concat(...BP.actores.map(a => [].concat(...R.map(r => filaPreg(nomL(a.id), porRol[a.id], r)))), ...R.map(r => filaPreg("Todos los roles", PS, r))),
       "Número de participaciones con cada respuesta. " + Q_OPC.map(q => q.id + ": «" + q.t + "»").join(" ") + " Solo aparecen los roles con alguna respuesta.");
     T("preguntas", "Respuestas de cada participante", ["Ronda", "Rol", "Participante"].concat(Q.map(q => q.id)),
       conPreg.map(z => [rondaC(z.rid), rolL(z.P.actor), z.P.alias].concat(Q.map(q => preguntaTxt(q, z.pl)))),
-      "Lo que respondió cada participante al cierre de cada ronda. Entre comillas va lo que escribió cuando la pregunta pedía un detalle.");
+      "Lo que respondió cada participante " + (UNA ? "al terminar el recorrido" : "al cierre de cada ronda") + ". Entre comillas va lo que escribió cuando la pregunta pedía un detalle.");
     const filasDif = [];
     Q_MULTI.forEach(q => q.ops.map((o, i) => { const zs = conPreg.filter(z => lst(z.pl[q.id]).indexOf(o[0]) >= 0);
-      return { i, n:zs.length, fila:[o[1], zs.length].concat(R.map(r => zs.filter(z => z.rid === r.id).length), [zs.map(z => z.P.alias + " (" + rolC(z.P.actor) + ", ronda " + (RID.indexOf(z.rid) + 1) + ")").join("; ") || "—", zs.filter(z => txt(z.pl[q.id + "cual"])).map(z => "«" + txt(z.pl[q.id + "cual"], 600) + "» (" + z.P.alias + ", ronda " + (RID.indexOf(z.rid) + 1) + ")").join(" / ") || "—"]) }; })
+      return { i, n:zs.length, fila:[o[1], zs.length].concat(R.map(r => zs.filter(z => z.rid === r.id).length), [zs.map(z => z.P.alias + " (" + rolC(z.P.actor) + (UNA ? "" : ", ronda " + (RID.indexOf(z.rid) + 1)) + ")").join("; ") || "—", zs.filter(z => txt(z.pl[q.id + "cual"])).map(z => "«" + txt(z.pl[q.id + "cual"], 600) + "» (" + z.P.alias + (UNA ? "" : ", ronda " + (RID.indexOf(z.rid) + 1)) + ")").join(" / ") || "—"]) }; })
       .sort((a, b) => b.n - a.n || a.i - b.i).forEach(z => filasDif.push(z.fila)));
     T("dificultades", "Dificultades al recorrer el escenario (" + Q_MULTI.map(q => q.id).join(", ") + ")", ["Dificultad", "Menciones"].concat(colsR(" · menciones"), ["Quién la señaló", "Descripción de la dificultad principal"]), filasDif,
-      "Una mención es un participante que marcó la dificultad al cierre de una ronda; quien la marca en las dos rondas cuenta dos veces. La descripción es de la dificultad principal de cada participante: si marcó varias, la misma descripción aparece en cada una.");
+      (UNA ? "Una mención es un participante que marcó la dificultad al terminar el recorrido." : "Una mención es un participante que marcó la dificultad al cierre de una ronda; quien la marca en varias rondas cuenta una vez por cada una.") + " La descripción es de la dificultad principal de cada participante: si marcó varias, la misma descripción aparece en cada una.");
     T("requisitos", "Requisitos para el siguiente prototipo (" + Q_TEXTO.map(q => q.id).join(", ") + ")", ["Ronda", "Rol", "Participante", "Requisito"],
       [].concat(...Q_TEXTO.map(q => conPreg.filter(z => txt(z.pl[q.id])).map(z => [rondaC(z.rid), rolL(z.P.actor), z.P.alias, txt(z.pl[q.id], 800)]))),
       "Texto que escribió cada participante. Se transcribe tal como se escribió.");
     const capPreg = cap("preguntas", "Preguntas " + Q[0].id + " a " + Q[Q.length - 1].id, "investigacion-pregunta-investigacion",
-      "Respuestas a las preguntas de cierre de cada ronda.\n" + Q.map(q => q.id + ". " + q.t).join(" "), ["preguntas_rol", "preguntas", "dificultades", "requisitos"]);
+      "Respuestas a las preguntas de cierre " + (UNA ? "del recorrido" : "de cada ronda") + ".\n" + Q.map(q => q.id + ". " + q.t).join(" "), ["preguntas_rol", "preguntas", "dificultades", "requisitos"]);
 
-    /* 11. Observaciones textuales */
+    /* 12. Observaciones textuales */
     const filasObs = [];
-    ACT.forEach(o => { if (txt(o.x.payload.obs)) filasObs.push({ r:RID.indexOf(o.rid), p:idxPaso(o.paso), fila:[rondaC(o.rid), pasoTxt(o.paso), rolL(o.P.actor), o.P.alias, "Actividad: " + TIPO_ACT[o.act.tipo].toLowerCase(), txt(o.x.payload.obs, 600)] }); });
+    ACT.forEach(o => {
+      if (txt(o.x.payload.obs)) filasObs.push({ r:RID.indexOf(o.rid), p:idxPaso(o.paso), fila:[rondaC(o.rid), pasoTxt(o.paso), rolL(o.P.actor), o.P.alias, "Actividad: " + TIPO_ACT[o.act.tipo].toLowerCase(), txt(o.x.payload.obs, 600)] });
+      const c = cmpDe(o.x);
+      if (c && txt(c.cual)) filasObs.push({ r:RID.indexOf(o.rid), p:idxPaso(o.paso), fila:[rondaC(o.rid), pasoTxt(o.paso), rolL(o.P.actor), o.P.alias, "Comparación con el módulo: " + (txt(etiqueta(CMP_OPS, c.decision), 80) || "—").toLowerCase(), txt(c.cual, 600)] });
+    });
     PS.forEach(P => P.obs.forEach(x => {
       if (!txt(x.payload.texto)) return;
       if (x.payload.final === true) { filasObs.push({ r:R.length, p:0, fila:["Al terminar", "—", rolL(P.actor), P.alias, "Comentario final", txt(x.payload.texto, 2000)] }); return; }
@@ -444,27 +478,31 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     filasObs.forEach((z, i) => { z.i = i; });
     T("observaciones", "Observaciones de los participantes", ["Ronda", "Paso", "Rol", "Participante", "Dónde la escribió", "Observación"],
       filasObs.sort((a, b) => a.r - b.r || a.p - b.p || a.i - b.i).map(z => z.fila),
-      "Texto libre de los participantes, tal como lo escribieron: la observación opcional de cada actividad, la de los tramos de contexto (pasos seguidos en que el rol no interviene) y el comentario final. No se corrige ni se resume.");
+      "Texto libre de los participantes, tal como lo escribieron: la observación opcional de cada actividad, lo que escribieron en la comparación con el módulo cuando su decisión sería otra, la de los tramos de contexto (pasos seguidos en que el rol no interviene) y el comentario final. No se corrige ni se resume.");
     cap("observaciones", "Observaciones textuales", "acciones-observar",
-      "Lo que los participantes escribieron con sus palabras en las actividades, en los tramos de contexto y al terminar.", ["observaciones"]);
+      "Lo que los participantes escribieron con sus palabras en las actividades, en la comparación con el módulo, en los tramos de contexto y al terminar.", ["observaciones"]);
 
-    /* 12. Indicadores comparados entre rondas */
+    /* 13. Indicadores */
     const IR = {};
     R.forEach(r => { const dec = actos("decide", r.id), foc = actos("focal", r.id);
       IR[r.id] = { dec, cus:actos("custodia", r.id), foc, sop:actos("soporte", r.id), comp:dec.map(comprobacion), vals:PS.filter(P => P.val[r.id]).map(P => P.val[r.id].payload), sim:[].concat(...PS.map(P => P.sim.filter(x => x.ronda === r.id))),
+        cmp:conCmp(ACT.filter(o => o.rid === r.id)),
         gestiones:foc.reduce((n, o) => n + lst(o.x.payload.hizo).filter((k, i, a) => k !== "nada" && ESC.focal.hizo.some(h => h[0] === k) && a.indexOf(k) === i).length, 0) }; });
     const fila = (nombre, f, formula) => [nombre].concat(R.map(r => f(IR[r.id], r.id)), [formula]);
     const proporcion = (lista, k, v) => deN(lista.filter(o => o.x.payload[k] === v).length, lista.length);
     const NO_SUMA = " No se suman: son de pasos y personas distintos.";
     const indP = [
-      fila("Participaciones con respuestas en la ronda", (I, rid) => PS.filter(P => Object.keys(P.act[rid]).length || P.val[rid] || P.preg[rid]).length, "Participaciones con al menos una actividad, una valoración o un juego de preguntas vigente en la ronda."),
+      fila(UNA ? "Participaciones con respuestas" : "Participaciones con respuestas en la ronda", (I, rid) => PS.filter(P => Object.keys(P.act[rid]).length || P.val[rid] || P.preg[rid]).length, "Participaciones con al menos una actividad, una valoración o un juego de preguntas vigente" + (UNA ? "." : " en la ronda.")),
       fila("Actividades respondidas", (I, rid) => deN(ACT.filter(o => o.rid === rid).length, PS.reduce((n, P) => n + esperadas(P.actor, rid), 0)), "Actividades con respuesta vigente ÷ actividades que el recorrido le asigna al rol de cada participación."),
       fila("Decisiones registradas", I => I.dec.length, "Actividades de decisión con respuesta vigente.")
     ].concat(
+      CMP_OPS.map(o => fila("Con el módulo, su decisión sería: " + o[1].toLowerCase(), I => deN(I.cmp.filter(z => cmpDe(z.x).decision === o[0]).length, I.cmp.length), "Actividades con esa respuesta en la comparación con el módulo ÷ actividades con la comparación respondida. Es lo que la persona declara que haría con esa información.")),
+      [fila("Días declarados con la información del módulo", I => diasTxt(I.cmp.map(z => diasDe(cmpDe(z.x).dias)).filter(v => v != null)), "Mediana y rango de los días en que cada persona dice que haría el mismo trámite si la evidencia le llegara con el módulo." + NO_SUMA)],
+      CMP_SEG.map(o => fila("Con el módulo decidiría: " + o[1].toLowerCase(), I => deN(I.cmp.filter(z => cmpDe(z.x).seguridad === o[0]).length, I.cmp.length), "Actividades con esa respuesta sobre la seguridad con que decidiría ÷ actividades con la comparación respondida.")),
       ESC.suficiencia.map(o => fila("Información al decidir: " + o[1].toLowerCase(), I => proporcion(I.dec, "suficiencia", o[0]), "Decisiones con esa respuesta ÷ decisiones registradas.")),
       [
-        fila("Decisiones con finalidad no autorizada", I => deN(I.comp.filter(c => !c.autorizada).length, I.dec.length), "Decisiones cuya finalidad declarada no está autorizada para el rol en el contrato del escenario ÷ decisiones registradas. Se comprueba igual en las dos rondas; hoy nadie hace esa comprobación."),
-        fila("Piezas fuera de contrato", I => I.comp.reduce((n, c) => n + c.denegadas, 0), "Suma, en las decisiones de la ronda, de las piezas del paso que el rol no puede consultar con la finalidad que declaró."),
+        fila("Decisiones con finalidad no autorizada", I => deN(I.comp.filter(c => !c.autorizada).length, I.dec.length), "Decisiones cuya finalidad declarada no está autorizada para el rol en el contrato del escenario ÷ decisiones registradas. " + (UNA ? "Se comprueba" : "Se comprueba igual " + enTodas) + ", aunque hoy nadie hace esa comprobación."),
+        fila("Piezas fuera de contrato", I => I.comp.reduce((n, c) => n + c.denegadas, 0), "Suma, en las decisiones " + (UNA ? "registradas" : "de la ronda") + ", de las piezas del paso que el rol no puede consultar con la finalidad que declaró."),
         fila("Reprocesos", I => deN(I.dec.filter(o => faltaDe(o).length).length, I.dec.length), "Decisiones con información parcial o insuficiente que señalan al menos una pieza faltante ÷ decisiones registradas."),
         fila("Días declarados al decidir", I => diasTxt(diasDeLos(I.dec)), "Mediana y rango de los días que declaró cada persona en cada decisión." + NO_SUMA),
         fila("Días declarados por los custodios", I => diasTxt(diasDeLos(I.cus)), "Mediana y rango de los días que declaró cada custodio en cada respuesta." + NO_SUMA),
@@ -476,38 +514,44 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
       ESC.respCustodia.map(o => fila("Custodia: " + o[1].toLowerCase(), I => proporcion(I.cus, "respuesta", o[0]), "Respuestas de custodia con esa opción ÷ respuestas de custodia.")),
       ESC.soporte.ve.map(o => fila("Vigilancia: " + o[1].toLowerCase(), I => proporcion(I.sop, "ve", o[0]), "Respuestas de vigilancia o apoyo con esa opción ÷ respuestas de vigilancia o apoyo.")),
       [fila("Vigilancia: toma alguna acción", I => deN(I.sop.filter(o => ESC.soporte.accion.some(a => a[0] !== "ninguna" && a[0] === o.x.payload.accion)).length, I.sop.length), "Respuestas de vigilancia o apoyo con una acción distinta de «ninguna» ÷ respuestas de vigilancia o apoyo.")],
-      SEM.map(o => fila("Contrato: " + o[1].toLowerCase(), I => deN(I.vals.filter(v => v.semaforo === o[0]).length, I.vals.length), "Valoraciones con esa respuesta ÷ valoraciones de la ronda. Es percepción.")),
-      MEJ.map(o => fila("Frente a hoy: " + o[1].toLowerCase(), I => deN(I.vals.filter(v => v.mejora === o[0]).length, I.vals.length), "Valoraciones con esa respuesta ÷ valoraciones de la ronda. Es percepción.")),
-      [fila("Desacuerdos dentro de un mismo rol", (I, rid) => desac.filter(d => d.rid === rid).length, "Situaciones del capítulo 8: mismo rol, misma ronda y mismo paso con respuestas distintas, o valoraciones distintas al cierre.")]
+      SEM.map(o => fila("Contrato: " + o[1].toLowerCase(), I => deN(I.vals.filter(v => v.semaforo === o[0]).length, I.vals.length), "Valoraciones con esa respuesta ÷ valoraciones " + (UNA ? "registradas" : "de la ronda") + ". Es percepción.")),
+      MEJ.map(o => fila("Frente a hoy: " + o[1].toLowerCase(), I => deN(I.vals.filter(v => v.mejora === o[0]).length, I.vals.length), "Valoraciones con esa respuesta ÷ valoraciones " + (UNA ? "registradas" : "de la ronda") + ". Es percepción.")),
+      [fila("Desacuerdos dentro de un mismo rol", (I, rid) => desac.filter(d => d.rid === rid).length, "Situaciones del capítulo " + capDesac.n + ": mismo rol" + (UNA ? "" : ", misma ronda") + " y mismo paso con respuestas distintas, o valoraciones distintas al cierre.")]
     );
     T("indicadores_participantes", "Lo que respondieron los participantes", ["Indicador"].concat(colsR(), ["Cómo se calcula"]), indP,
       "Todos los indicadores de esta tabla salen de las respuestas vigentes de los participantes. Las proporciones van con su numerador y su denominador. Ningún registro simulado por el sistema entra aquí.");
     const simN = (I, f) => I.sim.filter(f).length;
+    // Cada indicador simulado ocurre con un solo modo: con el flujo de hoy o con el módulo. Solo aparecen los de los modos que se recorren.
+    const soloEn = m => UNA ? "" : " Solo ocurren en " + rondaDeModo(m) + ".";
+    const filaSim = (m, nombre, f, formula) => m && iModo(m) < 0 ? null : fila(nombre, f, formula + (m ? soloEn(m) : ""));
     T("indicadores_sistema", "Lo que simuló el sistema", ["Indicador (simulado)"].concat(colsR(), ["Cómo se calcula"]), [
-      fila("Solicitudes de evidencia al participante que custodia", I => simN(I, x => x.tipo === "solicitud" && x.payload.guion === true), "Solicitudes que el sistema hace en nombre de quien decide para que el custodio responda. Solo ocurren en la ronda 1."),
-      fila("Solicitudes que nacen de una decisión", I => simN(I, x => x.tipo === "solicitud" && x.payload.guion !== true), "Solicitudes que el sistema simula cuando quien decide señala piezas faltantes: una por cada custodio. Solo ocurren en la ronda 1."),
-      fila("Consultas por el módulo atendidas", I => simN(I, x => x.tipo === "consulta" && !x.payload.denegada), "Consultas que el módulo simulado atiende con la vista mínima del contrato, incluidas las de estado y fechas. Solo ocurren en la ronda 2."),
-      fila("Consultas por el módulo denegadas", I => simN(I, x => x.tipo === "consulta" && !!x.payload.denegada), "Consultas que el módulo simulado deniega porque la finalidad no está autorizada o la pieza está fuera del contrato. Solo ocurren en la ronda 2."),
-      fila("Notificaciones con acuse", I => simN(I, x => x.tipo === "notificacion" && x.payload.acuse === true), "Notificaciones de una decisión a los actores que el participante eligió, con acuse del módulo simulado. Solo ocurren en la ronda 2."),
-      fila("Notificaciones sin acuse", I => simN(I, x => x.tipo === "notificacion" && x.payload.acuse !== true), "Una por cada decisión de la ronda 1: representa que hoy la decisión se notifica sin acuse."),
-      fila("Acuses de recibo", I => simN(I, x => x.tipo === "acuse"), "Acuses que genera el módulo simulado: uno por cada actor notificado en la ronda 2."),
-      fila("Total de registros simulados", I => I.sim.length, "Todos los registros vigentes que el sistema generó en nombre de actores que no estaban conectados.")
-    ], "Estos registros no son respuestas de participantes: los genera el sistema para representar a los actores que no estaban conectados y al módulo propuesto. Siguen las reglas del escenario, por eso cambian con lo que cada participante responde, pero no miden una integración real. Se cuentan aparte y no entran en la tabla anterior.", true);
+      filaSim("actual", "Solicitudes de evidencia al participante que custodia", I => simN(I, x => x.tipo === "solicitud" && x.payload.guion === true), "Solicitudes que el sistema hace en nombre de quien decide para que el custodio responda."),
+      filaSim("actual", "Solicitudes que nacen de una decisión", I => simN(I, x => x.tipo === "solicitud" && x.payload.guion !== true), "Solicitudes que el sistema simula cuando quien decide señala piezas faltantes: una por cada custodio."),
+      filaSim("propuesto", "Consultas por el módulo atendidas", I => simN(I, x => x.tipo === "consulta" && !x.payload.denegada), "Consultas que el módulo simulado atiende con la vista mínima del contrato, incluidas las de estado y fechas."),
+      filaSim("propuesto", "Consultas por el módulo denegadas", I => simN(I, x => x.tipo === "consulta" && !!x.payload.denegada), "Consultas que el módulo simulado deniega porque la finalidad no está autorizada o la pieza está fuera del contrato."),
+      filaSim("propuesto", "Notificaciones con acuse", I => simN(I, x => x.tipo === "notificacion" && x.payload.acuse === true), "Notificaciones de una decisión a los actores que el participante eligió, con acuse del módulo simulado."),
+      filaSim("actual", "Notificaciones sin acuse", I => simN(I, x => x.tipo === "notificacion" && x.payload.acuse !== true), "Una por cada decisión: representa que hoy la decisión se notifica sin acuse."),
+      filaSim("propuesto", "Acuses de recibo", I => simN(I, x => x.tipo === "acuse"), "Acuses que genera el módulo simulado: uno por cada actor notificado."),
+      filaSim(null, "Total de registros simulados", I => I.sim.length, "Todos los registros vigentes que el sistema generó en nombre de actores que no estaban conectados.")
+    ].filter(Boolean), "Estos registros no son respuestas de participantes: los genera el sistema para representar a los actores que no estaban conectados" + (HAY_MOD ? " y al módulo propuesto" : "") + ". Siguen las reglas del escenario, por eso cambian con lo que cada participante responde, pero no miden una integración real. Se cuentan aparte y no entran en la tabla anterior."
+      + (HAY_MOD ? "" : " En esta versión el módulo no se recorre como ronda aparte: lo que el participante compara con él está en el capítulo " + capCmp.n + "."), true);
     const sitDias = [].concat(situaciones("decide"), situaciones("custodia"), situaciones("focal")).filter(s => s.resp.some(os => diasDeLos(os).length))
       .sort((a, b) => idxPaso(a.paso) - idxPaso(b.paso) || BP.actores.map(x => x.id).indexOf(a.rol) - BP.actores.map(x => x.id).indexOf(b.rol));
     T("indicadores_dias", "Días declarados por paso y rol", ["Paso", "Rol", "Actividad"].concat(colsR()),
       sitDias.map(s => [pasoTxt(s.paso), rolL(s.rol), TIPO_ACT[s.act.tipo]].concat(s.resp.map(os => diasTxt(diasDeLos(os))))),
       "Días que declaró cada persona en cada paso, resumidos por paso y rol con mediana, rango y número de respuestas. No se suman días de personas ni de pasos distintos: no forman una línea de tiempo. Los plazos del escenario son supuestos de simulación.");
-    const capInd = cap("indicadores", "Indicadores comparados entre rondas", "capitulos-indicadores",
-      "Conteos y proporciones por ronda, cada uno con su fórmula. Las dos rondas recorren el mismo caso y los mismos pasos. La primera tabla recoge lo que respondieron los participantes; la segunda, lo que simuló el sistema. No se mezclan.\nSi hay respuestas parciales, cada ronda tiene un número distinto de respuestas: mire siempre el denominador. Los días no se suman entre personas: se resumen con mediana y rango.",
+    const capInd = cap("indicadores", UNA ? "Indicadores del recorrido" : "Indicadores comparados entre rondas", "capitulos-indicadores",
+      (UNA ? "Conteos y proporciones del recorrido, cada uno con su fórmula. La primera tabla recoge lo que respondieron los participantes, incluida la comparación con el módulo que hicieron en cada paso; la segunda, lo que simuló el sistema. No se mezclan.\nSi hay respuestas parciales, mire siempre el denominador. Los días no se suman entre personas: se resumen con mediana y rango."
+        : "Conteos y proporciones por ronda, cada uno con su fórmula. Las " + R.length + " rondas recorren el mismo caso y los mismos pasos. La primera tabla recoge lo que respondieron los participantes; la segunda, lo que simuló el sistema. No se mezclan.\nSi hay respuestas parciales, cada ronda tiene un número distinto de respuestas: mire siempre el denominador. Los días no se suman entre personas: se resumen con mediana y rango."),
       ["indicadores_participantes", "indicadores_sistema", "indicadores_dias"]);
 
-    /* 13. Correspondencia con el proyecto doctoral */
+    /* 14. Correspondencia con el proyecto doctoral */
     const ADVERTENCIA = "Este informe recoge percepción y comportamiento en una simulación con un caso sintético. No es el resultado técnico del módulo ni una comparación operativa: eso requiere sus propios instrumentos.";
     const SUB = obj(ESC.subpreguntas), pregDe = sub => Q.filter(q => q.sub === sub).map(q => q.id).join(" y ");
     T("correspondencia", "De las respuestas a las subpreguntas del proyecto", ["Qué aporta este informe", "Subpregunta del proyecto", "Dónde está"], [
       ["Preguntas " + pregDe("caracterizacion"), SUB.caracterizacion || "—", "Capítulo " + capPreg.n],
       ["Preguntas " + pregDe("diseno"), SUB.diseno || "—", "Capítulo " + capPreg.n],
+      ["Comparación con el módulo, paso por paso", SUB.evaluacion || "—", "Capítulo " + capCmp.n],
       ["Indicadores observados en la simulación", SUB.evaluacion || "—", "Capítulo " + capInd.n]
     ], "Las subpreguntas se copian del escenario del proyecto. " + ADVERTENCIA);
     T("hipotesis", "Hipótesis del proyecto, tal como están formuladas", ["Hipótesis", "Formulación"], lst(ESC.hipotesis).map(h => [h[0], h[1]]),
@@ -516,10 +560,10 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
       "Cómo se relaciona lo recogido con las subpreguntas y las hipótesis del proyecto. Las hipótesis se transcriben tal como están formuladas; este informe no las interpreta.",
       ["correspondencia", "hipotesis"], ADVERTENCIA);
 
-    /* 14. Registro completo */
+    /* 15. Registro completo */
     T("registros", "Registros vigentes", ["Fecha y hora", "Participante", "Rol", "Ronda", "Paso", "Origen", "Tipo", "Contenido"],
       [].concat(...PS.map(P => P.regs.map(x => [fechaSegura(x.t), P.alias, rolL(P.actor), rondaC(x.ronda), idxPaso(x.paso) >= 0 ? x.paso : "—", origenTxt(x), tipoTxt(x), contenido(x)]))),
-      "Todos los registros vigentes de las participaciones analizadas, en el orden en que se anotaron. Origen «Participante»: lo que la persona respondió. «Sistema · simulado»: lo que el sistema generó a partir de la respuesta, tanto los actos de la propia entidad del participante (solicitudes, consultas y notificaciones) como la reacción de los actores que no estaban conectados. «Sistema · conducción»: inicio, avance y cierre de las rondas, y el enlace de una respuesta con su solicitud.");
+      "Todos los registros vigentes de las participaciones analizadas, en el orden en que se anotaron. Origen «Participante»: lo que la persona respondió. «Sistema · simulado»: lo que el sistema generó a partir de la respuesta, tanto los actos de la propia entidad del participante (solicitudes, consultas y notificaciones) como la reacción de los actores que no estaban conectados. «Sistema · conducción»: inicio, avance y cierre " + (UNA ? "del recorrido" : "de las rondas") + ", y el enlace de una respuesta con su solicitud. En las actividades, «con el módulo» es la comparación que respondió la persona en ese paso.");
     const nRegs = PS.reduce((n, P) => n + P.regs.length, 0), nDesc = PS.reduce((n, P) => n + P.descartados, 0);
     cap("registro", "Registro completo", "documentos-evidencia",
       "Los " + nRegs + " registros vigentes de las participaciones analizadas." + (nDesc ? " No aparecen " + plural(nDesc, "registro reemplazado por una corrección o nacido de una respuesta corregida", "registros reemplazados por una corrección o nacidos de una respuesta corregida") + "." : ""),
@@ -545,6 +589,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
       requeridos:{ total:REQ.length, conEvidencia:REQ.length - pendientes.length, pendientes:pendientes.slice(), pendientesTxt:pendientes.map(nomL) },
       cuentas:ctas.length ? { invitadas:invitadas.length, dePrueba:ctas.length - invitadas.length, conRespuesta:invitadas.filter(q => usuariosCon[q.u]).length, sinRespuesta:invitadas.filter(q => !usuariosCon[q.u]).length } : null,
       actividades:{ respondidas:ACT.length, esperadas:PS.reduce((n, P) => n + R.reduce((k, r) => k + esperadas(P.actor, r.id), 0), 0) },
+      comparaciones:{ respondidas:CMP_TODAS.length, porDecision:CMP_OPS.map(o => ({ id:o[0], n:o[1], respuestas:CMP_TODAS.filter(z => cmpDe(z.x).decision === o[0]).length })) },
       registros:{ vigentes:nRegs, deParticipantes:PS.reduce((n, P) => n + P.regs.filter(x => x.origen === "participante").length, 0), simulados:PS.reduce((n, P) => n + P.sim.length, 0), conduccion:PS.reduce((n, P) => n + P.cond.length, 0), descartados:nDesc },
       rondas:R.map(r => ({ id:r.id, n:r.n, modo:r.modo, participaciones:PS.filter(P => Object.keys(P.act[r.id]).length || P.val[r.id] || P.preg[r.id]).length, actividades:ACT.filter(o => o.rid === r.id).length, esperadas:PS.reduce((n, P) => n + esperadas(P.actor, r.id), 0), valoraciones:PS.filter(P => P.val[r.id]).length, preguntas:PS.filter(P => P.preg[r.id]).length, simulados:IR[r.id].sim.length })),
       desacuerdos:desac.length, avisos
@@ -582,7 +627,8 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     if (lst(r.cifras).length) return `<dl class="inf-cifras">${lst(r.cifras).map(x => `<div><dt>${esc(x[0])}</dt><dd>${esc(x[1])}</dd></div>`).join("")}</dl>`;
     const c = [["Respuestas analizadas", r.participaciones], ["Completas", r.completas], ["Parciales", r.parciales], ["Roles con respuesta", r.roles.conRespuesta + " de " + r.roles.total],
       ["Roles requeridos con respuesta completa", r.requeridos.conEvidencia + " de " + r.requeridos.total], ["Actividades respondidas", r.actividades.respondidas + " de " + r.actividades.esperadas],
-      ["Registros de los participantes", r.registros.deParticipantes], ["Registros simulados por el sistema", r.registros.simulados]];
+      ["Registros de los participantes", r.registros.deParticipantes], ["Registros simulados por el sistema", r.registros.simulados]]
+      .concat(r.comparaciones ? [["Pasos comparados con el módulo", r.comparaciones.respondidas + " de " + r.actividades.respondidas]] : []);
     return `<dl class="inf-cifras">${c.map(x => `<div><dt>${esc(x[0])}</dt><dd>${esc(x[1])}</dd></div>`).join("")}</dl>`;
   }
   const avisosHtml = r => lst(r.avisos).length ? `<div class="guia inf-avisos">${ico("estados-advertencia")}<div><b>Tenga presente</b><ul class="lista">${r.avisos.map(a => `<li>${esc(a)}</li>`).join("")}</ul></div></div>` : "";
@@ -646,7 +692,7 @@ const { analizar, vistaResultados, informeHtml, csvDeTabla, csvDeTodas, datosCon
     // La hoja de estilos es la de la propia página; se evita que un cierre de etiqueta corte el bloque.
     const css = (hoja && typeof hoja.textContent === "string" ? hoja.textContent : "").replace(/<\/(style)/gi, "<\\/$1");
     const ficha = [["Estudio", e.titulo], ["Programa", e.programa], ["Institución", e.institucion], ["Investigador responsable", e.investigador], ["Director de la investigación", e.director], ["Comité de ética", e.comite]]
-      .concat(lst(r.ficha).length ? lst(r.ficha) : [["Escenario", obj(r.escenario).n || ESC.n], ["Rondas", R.map(x => x.n).join(" · ")]], [["Análisis generado", fechaSegura(Date.parse(r.generado))]]).filter(x => x[1]);
+      .concat(lst(r.ficha).length ? lst(r.ficha) : [["Escenario", obj(r.escenario).n || ESC.n], UNA ? ["Recorrido", R[0].n + ", con la comparación con el módulo en cada paso"] : ["Rondas", R.map(x => x.n).join(" · ")]], [["Análisis generado", fechaSegura(Date.parse(r.generado))]]).filter(x => x[1]);
     const kicker = txt(r.kicker, 160) || "Simulación de la ruta de incapacidad · informe consolidado";
     const pie = txt(r.pie, 900) || (ESC.nota + " Lo marcado como «simulado» lo genera el sistema para representar a los actores que no estaban conectados y al módulo propuesto; no es una integración real. Los participantes aparecen con el usuario de su cuenta, sin nombres ni correos.");
     return `<!doctype html>

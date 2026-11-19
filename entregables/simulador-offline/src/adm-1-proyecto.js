@@ -435,13 +435,15 @@ function eliminarCuenta(u) {
 const enlaceCuenta = q => (urlPublica() || "index.html") + "#u=" + encodeURIComponent(q.u);
 // Igual que minutosEstimados() del simulador: duración que se informa al participante según su rol.
 function minutosDeRol(actor) {
+  // Con el instrumento del expediente, la duración es la del recorrido del expediente que trabajan todos.
+  if (esProyectoExpediente() && casoExpDelProyecto()) return EXPM.minutos(casoExpDelProyecto(), actor, "");
   const T = GUION.tiempos; let m = T.inicio + T.cierre;
   RONDAS.forEach(r => { bloquesDe(actor, r.modo).forEach(b => { m += b.tipo === "contexto" ? T.contexto * b.pasos.length : T[b.act.tipo]; }); m += T.valoracion; });
   return Math.max(10, Math.round(m / 5) * 5);
 }
 function textoInvitacion(q) {
   const e = estudioEfectivo();
-  const v = { url:urlPublica() ? enlaceCuenta(q) : "abra el archivo del simulador que acompaña este mensaje", usuario:q.u, clave:q.clave, rol:nomL(q.a), minutos:String(minutosDeRol(q.a)), titulo:e.titulo, investigador:e.investigador, contacto:e.contacto, cierre:e.cierre };
+  const v = { url:urlPublica() ? enlaceCuenta(q) : "abra el archivo del simulador que acompaña este mensaje", usuario:q.u, clave:q.clave, rol:rolCuentaL(q.a), minutos:String(minutosDeRol(q.a)), titulo:e.titulo, investigador:e.investigador, contacto:e.contacto, cierre:e.cierre };
   const llaves = l => (l.match(/\{(\w+)\}/g) || []).map(x => x.slice(1, -1)).filter(k => esPropia(v, k));
   return String(PROY.invitacion || INVITACION_BASE).split("\n")
     .filter(l => { const ks = llaves(l); return !ks.length || ks.some(k => String(v[k]).trim()); })
@@ -449,7 +451,7 @@ function textoInvitacion(q) {
 }
 function cuentasCsv() {
   const conUrl = !!urlPublica();
-  return csvTabla(["Usuario", "Rol", "Para quién es", "Contraseña", "Enlace", "Cuenta de prueba"], PROY.cuentas.map(q => [q.u, nomL(q.a), q.etiqueta, q.clave, conUrl ? enlaceCuenta(q) : "", q.p ? "sí" : "no"]));
+  return csvTabla(["Usuario", "Rol", "Para quién es", "Contraseña", "Enlace", "Cuenta de prueba"], PROY.cuentas.map(q => [q.u, rolCuentaL(q.a), q.etiqueta, q.clave, conUrl ? enlaceCuenta(q) : "", q.p ? "sí" : "no"]));
 }
 
 /* ---------- Perfiles del caso ----------
@@ -719,7 +721,7 @@ const conDatosPersonales = () => respuestasOrdenadas().filter(e => e.doc.partici
 function datosPersonalesCsv() {
   const campos = GUION.consentimiento.datos;
   return csvTabla(["Usuario", "Rol", "Participación"].concat(campos.map(c => c.n), ["Desea el resumen de resultados", "Estado", "Fecha del documento"]),
-    conDatosPersonales().map(e => { const d = e.doc, dt = d.participante.datos; return [d.cuenta.usuario, nomL(d.cuenta.actor), d.participante.id].concat(campos.map(c => (dt[c.id] == null ? "" : dt[c.id])), [d.participante.resumen ? "sí" : "no", d.estado === "completa" ? "completa" : "parcial", fecha(fechaIso(d.generado))]); }));
+    conDatosPersonales().map(e => { const d = e.doc, dt = d.participante.datos; return [d.cuenta.usuario, rolDocL(d), d.participante.id].concat(campos.map(c => (dt[c.id] == null ? "" : dt[c.id])), [d.participante.resumen ? "sí" : "no", d.estado === "completa" ? "completa" : "parcial", fecha(fechaIso(d.generado))]); }));
 }
 
 /* ---------- Receptor del servidor ---------- */
@@ -757,13 +759,47 @@ const memoSeguimiento = new Map();   // por huella del documento
 /* El seguimiento del expediente: en qué condición y en qué punto va, qué decidió en cada punto de cada
    condición y qué respondió en H2 y H3. El investigador ve los códigos (P1, H2, ORI…) para asociar. */
 const QUE_EXP = { consultar:"Consultó", solicitar:"Solicitó", devolver:"Devolvió", aceptar:"Verificó y aceptó", rechazar:"Verificó y rechazó" };
+// Horas virtuales con coma decimal, como el resto de cifras del panel: «0,5 h».
+const horasAdm = h => typeof h === "number" && isFinite(h) ? String(Math.round(h * 10) / 10).replace(".", ",") + " h" : "";
+/* En el expediente, la cuenta del trabajador es la persona solicitante del caso: «M.P. y su familia» es el
+   actor de la ruta de incapacidad. Los demás roles conservan su nombre. */
+const rolExpL = (a, caso) => { const c = caso && Array.isArray(caso.actores) ? caso : EXP.casos[0], x = a === "tra" && c ? EXPM.actorDe(c, "tra") : null; return a === "tra" ? (x && x.n) || "Solicitante" : nomL(a); };
+// El rol de una cuenta según el instrumento del estudio: en el expediente, con el nombre que le da el caso.
+const rolCuentaL = a => esProyectoExpediente() ? rolExpL(a, casoExpDelProyecto()) : nomL(a);
 function seguimientoExpDe(d) {
   const s = esObjeto(d.sesion) ? d.sesion : {}, actor = d.cuenta.actor, completa = d.estado === "completa";
   const regs = vigentesDoc(d), mios = regs.filter(r => r.origen === "participante" && esObjeto(r.payload));
-  const caso = EXPM.casoExacto(s.expediente || (esObjeto(d.expediente) ? d.expediente.caso : "")) || EXPM.casoDe("");
+  const idCaso = typeof s.expediente === "string" && s.expediente ? s.expediente : esObjeto(d.expediente) && typeof d.expediente.caso === "string" ? d.expediente.caso : "";
+  const caso = EXPM.casoExacto(idCaso);
+  const condN = id => EXPM.condDe(id).n, finN = f => (GUION.exp.finalidades.filter(o => o[0] === f)[0] || [f, f || "sin declarar"])[1];
+  const de = t => mios.filter(r => r.tipo === t).pop() || null, h2 = de("h2"), h3 = de("h3");
+  const av = esObjeto(d.avance) ? d.avance : {};
+  const problemas = [], observaciones = [];
+  mios.forEach(x => {
+    const pl = x.payload, cn = pl.cond ? condN(pl.cond) : "", aporta = pl.como === "aporta";
+    if (x.tipo === "actuacion" && pl.denegado) problemas.push({ ronda:cn, paso:pl.punto, k:"denegada", n:"consulta denegada", t:"consulta denegada de " + pl.pieza + " con la finalidad «" + finN(pl.finalidad) + "»" });
+    if (x.tipo === "punto" && esObjeto(pl.completitud) && (pl.completitud.faltan || []).length) problemas.push({ ronda:cn, paso:pl.punto, k:"incompleto", n:aporta ? "respondió sin todo en regla" : "decidió sin todo en regla", t:(aporta ? "respondió" : "decidió") + " con " + pl.completitud.ok + " de " + pl.completitud.total + " en regla; faltaba " + pl.completitud.faltan.join(", ") });
+    if (x.tipo === "punto" && pl.obs) observaciones.push({ ronda:cn, paso:pl.punto, texto:pl.obs, t:x.t });
+    // El comentario final se escribe al terminar: no es de ninguna condición ni de ningún punto.
+    if (x.tipo === "observacion" && pl.texto) observaciones.push(pl.final ? { ronda:"Al terminar", paso:"comentario final", texto:pl.texto, final:true, t:x.t } : { ronda:cn, paso:(pl.puntos || []).join(", ") || x.paso, texto:pl.texto, final:false, t:x.t });
+  });
+  const ult = mios.filter(r => ["punto", "actuacion", "h2", "h3"].indexOf(r.tipo) >= 0).pop() || null, up = ult ? ult.payload : {};
+  const ultTexto = !ult ? "" : ult.tipo === "punto" ? (up.como === "aporta" ? "Respondió: " : "Decidió: ") + (up.decisionTxt || (caso ? etiqueta(EXPM.opcionesPunto(caso, EXPM.puntoDe(caso, up.punto) || {}, up.como), up.decision) : up.decision) || "sin dato") + (esObjeto(up.completitud) ? " · " + up.completitud.ok + " de " + up.completitud.total + " en regla" : "")
+    : ult.tipo === "actuacion" ? (QUE_EXP[up.que] || up.que) + " " + up.pieza + (up.denegado ? " · denegada" : "") + (horasAdm(up.horas) ? " · " + horasAdm(up.horas) : "")
+    : (ult.tipo === "h2" ? "H2 · responsabilidades: " : "H3 · accesos: ") + (esObjeto(up.calificacion) ? up.calificacion.ok + " de " + up.calificacion.total : "respondida");
+  const comun = { exp:true, completa, problemas, observaciones, regs, mios, h2, h3,
+    ultAct:ult, ultTexto, ultDonde:ult ? (up.cond ? condN(up.cond) + " · " : "") + (up.punto || (ult.tipo === "h2" || ult.tipo === "h3" ? "cierre" : "")) : "", ult:mios[mios.length - 1] || null,
+    nParticipante:mios.length, nSistema:regs.length - mios.length, nSimulados:regs.filter(r => r.payload && r.payload.simulado === true).length, corregidas:d.registros.length - vigentesDe(d.registros).length };
+  /* Un expediente que no está en el catálogo de este panel (otra versión del instrumento, o un archivo
+     alterado) no se puede ubicar punto por punto: se dice así, con el avance que trae el documento,
+     en lugar de describirlo con otro caso. */
+  if (!caso) {
+    const idTxt = String(idCaso || "sin identificador").slice(0, 40);
+    const total = typeof av.total === "number" ? av.total : 0, hechas = typeof av.hechas === "number" ? av.hechas : 0;
+    return Object.assign(comun, { caso:null, sinCatalogo:idTxt, donde:{ etapa:completa ? "Entrega" : "Simulación", texto:"Expediente " + idTxt + " fuera del catálogo" }, rondas:[], total, hechas, pct:total ? Math.round(hechas * 100 / total) : 0 });
+  }
   const orden = Array.isArray(s.orden) && s.orden.length ? s.orden.filter(k => typeof k === "string") : EXPM.ordenCondiciones(d.cuenta.usuario);
   const bs = EXPM.bloques(caso, actor, d.cuenta.usuario), b = typeof s.bloque === "number" ? bs[s.bloque] : null;
-  const condN = id => EXPM.condDe(id).n, finN = f => (GUION.exp.finalidades.filter(o => o[0] === f)[0] || [f, f || "sin declarar"])[1];
   let iRes = -1; caso.puntos.forEach((p, j) => { if (p.resuelve) iRes = j; });
   const puntoReg = (cid, pid) => mios.filter(r => r.tipo === "punto" && r.payload.cond === cid && r.payload.punto === pid).pop() || null;
   let donde;
@@ -784,25 +820,9 @@ function seguimientoExpDe(d) {
     });
     return { r:{ id:condN(cid), modo:cid === "modulo" ? "propuesto" : "actual", cond:cid }, i, pasos, esperadas:pasos.filter(x => x.act).length, hechas:pasos.filter(x => x.act && x.reg).length, val:null, pre:null, estado:"" };
   });
-  const de = t => mios.filter(r => r.tipo === t).pop() || null, h2 = de("h2"), h3 = de("h3");
-  const av = esObjeto(d.avance) ? d.avance : {};
   const total = typeof av.total === "number" ? av.total : rondas.reduce((n, x) => n + x.esperadas, 0) + 2;
   const hechas = typeof av.hechas === "number" ? av.hechas : rondas.reduce((n, x) => n + x.hechas, 0) + (h2 ? 1 : 0) + (h3 ? 1 : 0);
-  const problemas = [], observaciones = [];
-  mios.forEach(x => {
-    const pl = x.payload, cn = pl.cond ? condN(pl.cond) : "";
-    if (x.tipo === "actuacion" && pl.denegado) problemas.push({ ronda:cn, paso:pl.punto, k:"denegada", n:"consulta denegada", t:"consulta denegada de " + pl.pieza + " con la finalidad «" + finN(pl.finalidad) + "»" });
-    if (x.tipo === "punto" && esObjeto(pl.completitud) && (pl.completitud.faltan || []).length) problemas.push({ ronda:cn, paso:pl.punto, k:"incompleto", n:"decidió sin todo en regla", t:"decidió con " + pl.completitud.ok + " de " + pl.completitud.total + " en regla; faltaba " + pl.completitud.faltan.join(", ") });
-    if (x.tipo === "punto" && pl.obs) observaciones.push({ ronda:cn, paso:pl.punto, texto:pl.obs, t:x.t });
-    if (x.tipo === "observacion" && pl.texto) observaciones.push({ ronda:cn, paso:pl.final ? "cierre" : (pl.puntos || []).join(", ") || x.paso, texto:pl.texto, final:!!pl.final, t:x.t });
-  });
-  const ult = mios.filter(r => ["punto", "actuacion", "h2", "h3"].indexOf(r.tipo) >= 0).pop() || null, up = ult ? ult.payload : {};
-  const ultTexto = !ult ? "" : ult.tipo === "punto" ? "Decidió: " + (up.decisionTxt || up.decision) + (esObjeto(up.completitud) ? " · " + up.completitud.ok + " de " + up.completitud.total + " en regla" : "")
-    : ult.tipo === "actuacion" ? (QUE_EXP[up.que] || up.que) + " " + up.pieza + (up.denegado ? " · denegada" : "") + " · " + up.horas + " h"
-    : (ult.tipo === "h2" ? "H2 · responsabilidades: " : "H3 · accesos: ") + (esObjeto(up.calificacion) ? up.calificacion.ok + " de " + up.calificacion.total : "respondida");
-  return { exp:true, caso, completa, donde, rondas, total, hechas, pct:total ? Math.round(hechas * 100 / total) : 0, problemas, observaciones, regs, mios, h2, h3,
-    ultAct:ult, ultTexto, ultDonde:ult ? (up.cond ? condN(up.cond) + " · " : "") + (up.punto || (ult.tipo === "h2" || ult.tipo === "h3" ? "cierre" : "")) : "", ult:mios[mios.length - 1] || null,
-    nParticipante:mios.length, nSistema:regs.length - mios.length, nSimulados:regs.filter(r => r.payload && r.payload.simulado === true).length, corregidas:d.registros.length - vigentesDe(d.registros).length };
+  return Object.assign(comun, { caso, donde, rondas, total, hechas, pct:total ? Math.round(hechas * 100 / total) : 0 });
 }
 function seguimientoDe(d) {
   if (memoSeguimiento.has(d.huella)) return memoSeguimiento.get(d.huella);
@@ -845,7 +865,7 @@ function seguimientoDe(d) {
   mios.forEach(x => {
     const pl = x.payload || {};
     if (x.tipo === "actividad" && pl.obs) observaciones.push({ ronda:x.ronda, paso:x.paso, texto:pl.obs, t:x.t });
-    if (x.tipo === "observacion" && pl.texto) observaciones.push({ ronda:x.ronda, paso:pl.final ? "cierre" : (pl.pasos || []).length ? pl.pasos.join(", ") : x.paso, texto:pl.texto, final:!!pl.final, t:x.t });
+    if (x.tipo === "observacion" && pl.texto) observaciones.push(pl.final ? { ronda:"Al terminar", paso:"comentario final", texto:pl.texto, final:true, t:x.t } : { ronda:x.ronda, paso:(pl.pasos || []).length ? pl.pasos.join(", ") : x.paso, texto:pl.texto, final:false, t:x.t });
   });
   const g = { completa, donde, rondas, total, hechas, pct:total ? Math.round(hechas * 100 / total) : 0, problemas, observaciones, regs, mios, ultAct:acts[acts.length - 1] || null, ult:mios[mios.length - 1] || null,
     nParticipante:mios.length, nSistema:regs.length - mios.length, nSimulados:regs.filter(r => r.payload && r.payload.simulado === true).length, corregidas:d.registros.length - vigentesDe(d.registros).length };
@@ -853,6 +873,8 @@ function seguimientoDe(d) {
   if (memoSeguimiento.size > 600) memoSeguimiento.delete(memoSeguimiento.keys().next().value);
   return g;
 }
+// El rol de un documento, con el nombre que le corresponde en su instrumento.
+const rolDocL = d => { const g = seguimientoDe(d); return g.exp ? rolExpL(d.cuenta.actor, g.caso) : nomL(d.cuenta.actor); };
 
 /* ---------- Copia de seguridad del proyecto ----------
    Lleva el estudio, las cuentas con sus contraseñas, la invitación y las respuestas. No lleva ninguna credencial de

@@ -80,7 +80,7 @@ function confirmarHtml() {
    versión que tiene en la mano; en la ruta, lo que no llegó a su entidad aparece tachado y no viaja en el
    HTML. Abrir un documento no es una actuación: no cuesta horas ni queda registrado. */
 function docDe(r) {
-  if (!r || typeof DOCS === "undefined") return null;
+  if (!r || typeof DOCS === "undefined" || typeof docHtml !== "function") return null;
   if (r.fuente === "exp") { const d = DOCS.exp[casoExp().id], s = d && d.soportes && d.soportes[r.k]; return (s && s[r.ver]) || null; }
   const p = perfilActual(), d = p && DOCS.ruta[p.id];
   return (d && d.piezas && d.piezas[r.k]) || null;

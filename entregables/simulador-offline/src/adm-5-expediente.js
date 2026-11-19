@@ -7,8 +7,13 @@
 
 const { analizarExp, datosExpConsolidados } = (() => {
   const { lst, obj, own, txt, fmtN, celN, cuantos, estad, contar, distTxt, fechaSegura,
-    estudioLimpio, cuentasLimpias, vigentesDoc, rolL, rolC, esRol, origenTxt,
+    estudioLimpio, cuentasLimpias, vigentesDoc, rolL:rolRuta, rolC:rolCRuta, esRol, origenTxt,
     filasPerfilResumen, COLS_PERFIL, filasPerfil, NOTA_PERFIL } = COMUN;
+  /* En el expediente, la cuenta del trabajador es la persona solicitante del caso: «M.P. y su familia» es el
+     actor de la ruta de incapacidad. Los demás roles se nombran igual que en la ruta. */
+  const solicitante = caso => { const c = caso && Array.isArray(caso.actores) ? caso : EXP.casos[0], x = c ? EXPM.actorDe(c, "tra") : null; return (x && x.n) || "Solicitante"; };
+  const rolL = (a, caso) => a === "tra" ? solicitante(caso) : rolRuta(a);
+  const rolC = (a, caso) => a === "tra" ? solicitante(caso) : rolCRuta(a);
 
   /* ---------- El marco, las condiciones y las etiquetas del expediente ---------- */
   const COND = lst(EXP.protocolo.condiciones), CID = COND.map(c => c.id), CORTE = EXP.protocolo.corteHoras;
@@ -20,9 +25,14 @@ const { analizarExp, datosExpConsolidados } = (() => {
   const estadoN = e => { const x = own(EXP.estados, e); return x ? x.n : e === "pendiente" ? "Llegó, sin verificar" : (txt(e, 30) || "—"); };
   const FIN_EXP = lst(obj(GUION.exp).finalidades);
   const finN = id => { const f = FIN_EXP.filter(x => x[0] === id)[0]; return f ? f[1] : (txt(id, 80) || "Sin declarar"); };
-  const OPS_PUNTO = { resuelve:EXPM.opcionesPunto({}, { resuelve:true }), normal:EXPM.opcionesPunto({}, { resuelve:false }) };
-  const opsPunto = p => p && p.resuelve ? OPS_PUNTO.resuelve : OPS_PUNTO.normal;
-  const decisionN = (p, v) => { const o = opsPunto(p).filter(x => x[0] === v)[0]; return o ? o[1] : (txt(v, 60) || "—"); };
+  /* Las opciones de un punto dependen de cómo interviene el rol: quien decide elige entre las del punto (las
+     del que resuelve son otras); quien solo aporta la evidencia que custodia responde si la entrega. Los
+     registros anteriores a esa distinción no traen `como` y usan las opciones de decidir. */
+  const OPS_PUNTO = { resuelve:EXPM.opcionesPunto({}, { resuelve:true }), normal:EXPM.opcionesPunto({}, { resuelve:false }), aporta:EXPM.opcionesPunto({}, {}, "aporta") };
+  const opsPunto = (p, como) => como === "aporta" ? OPS_PUNTO.aporta : p && p.resuelve ? OPS_PUNTO.resuelve : OPS_PUNTO.normal;
+  const decisionN = (p, v, como) => { const o = opsPunto(p, como).filter(x => x[0] === v)[0]; return o ? o[1] : (txt(v, 60) || "—"); };
+  // Cómo intervino la persona en un punto: lo dice el registro o, si es anterior, el rol que decide el punto.
+  const comoDe = (x, p, actor) => { const c = obj(x.payload).como; return c === "aporta" || c === "decide" ? c : p && p.decide === actor ? "decide" : "aporta"; };
   const QUE = { consultar:"Consultas", solicitar:"Solicitudes", devolver:"Devoluciones", aceptar:"Aceptaciones", rechazar:"Rechazos" };
   const ACTOR_H2 = (caso, a) => { const x = caso.actores.filter(y => y.a === a)[0]; return x ? x.n : a === "nadie" ? "Ninguno de los anteriores" : a === "no_se" ? "No lo sé" : (txt(a, 60) || "—"); };
   const CAMPO_H3 = { actor:"Quién accedió", pieza:"A qué pieza", momento:"En qué momento", accion:"Qué acción", resultado:"Con qué resultado" };
@@ -85,23 +95,35 @@ const { analizarExp, datosExpConsolidados } = (() => {
 
   /* ---------- H1: la completitud en el punto que resuelve, por condición ---------- */
   const puntoResuelve = caso => caso.puntos.filter(p => p.resuelve)[0] || null;
-  // La completitud que cuenta es la del momento en que cerró la decisión que resuelve; si no llegó
-  // a cerrarla, la de la instantánea del protocolo y, en último lugar, la del cierre de la condición.
+  /* La completitud que cuenta es la del momento en que la persona cerró, en esa condición, su intervención
+     en el punto que resuelve: la decisión o la entrega de la evidencia que custodia para ese punto. Una
+     condición en la que no lo cerró —porque la dejó a medias o porque su rol no interviene en ese punto—
+     no da dato: no se completa con el estado del expediente en el momento en que se guardó el documento. */
+  const SIGNO_H1 = "La diferencia es el módulo menos el flujo actual, en puntos porcentuales: positiva a favor del módulo interoperable, negativa a favor del flujo actual.";
+  const REGLA_H1 = "Una condición cuenta solo si la persona cerró en ella el punto que resuelve (su decisión, o la entrega de la evidencia que custodia para ese punto), y se toma la completitud de ese momento. Las condiciones en que no lo cerró, porque la participación quedó a medias o porque su rol no interviene en ese punto, no dan dato. La diferencia entre condiciones se calcula solo con quienes lo cerraron en las dos.";
   function h1De(P, cond) {
-    const pr = puntoResuelve(P.caso), reg = pr ? P.puntos[cond][pr.id] : null;
-    const c = reg ? obj(reg.payload.completitud) : obj(P.cond[cond]).instantanea ? obj(obj(P.cond[cond]).instantanea.completitud) : obj(obj(P.cond[cond]).completitud);
-    return typeof c.ok === "number" && typeof c.total === "number" && c.total > 0
-      ? { ok:c.ok, total:c.total, pct:Math.round(c.ok * 1000 / c.total) / 10, cerrada:!!reg } : null;
+    const pr = puntoResuelve(P.caso), reg = pr ? P.puntos[cond][pr.id] : null, c = reg ? obj(reg.payload.completitud) : {};
+    return reg && typeof c.ok === "number" && typeof c.total === "number" && c.total > 0
+      ? { ok:c.ok, total:c.total, pct:Math.round(c.ok * 1000 / c.total) / 10, cerrada:true } : null;
   }
   const horasDe = (P, cond) => { const h = obj(P.cond[cond]).horas; return typeof h === "number" && isFinite(h) ? h : null; };
   function decisionDe(P, cond) {
     const pr = puntoResuelve(P.caso), reg = pr ? P.puntos[cond][pr.id] : null;
-    return reg ? (txt(reg.payload.decisionTxt, 80) || decisionN(pr, reg.payload.decision)) : "No llegó a decidir";
+    if (reg) return txt(reg.payload.decisionTxt, 80) || decisionN(pr, reg.payload.decision, comoDe(reg, pr, P.actor));
+    const como = pr ? EXPM.participa(P.caso, P.actor, pr) : null;
+    return como === "decide" ? "No llegó a decidir" : como === "aporta" ? "No llegó a responder" : "Su rol no interviene en este punto";
   }
-  // Diferencia entre condiciones en puntos porcentuales, para una participación que hizo las dos.
+  // Diferencia entre condiciones en puntos porcentuales (módulo menos flujo actual), solo si cerró el punto que resuelve en las dos.
   function difDe(P) {
     const a = h1De(P, "actual"), m = h1De(P, "modulo");
-    return a && m ? Math.round((m.pct - a.pct) * 10) / 10 : null;
+    return a && m && a.cerrada && m.cerrada ? Math.round((m.pct - a.pct) * 10) / 10 : null;
+  }
+  // La diferencia, dicha según su signo y en valor absoluto: a favor de la condición con más completitud, o sin diferencia.
+  function aFavor(d) {
+    const r = Math.round(d * 10) / 10;
+    return r > 0 ? "es de " + fmtN(r) + " puntos porcentuales a favor del " + condN("modulo").toLowerCase()
+      : r < 0 ? "es de " + fmtN(-r) + " puntos porcentuales a favor del " + condN("actual").toLowerCase()
+      : "es nula: no hay diferencia entre las condiciones";
   }
 
   /* ---------- El informe ---------- */
@@ -120,7 +142,7 @@ const { analizarExp, datosExpConsolidados } = (() => {
     const rolesCon = BP.actores.filter(a => porRol[a.id].length).length;
     const invitadas = ctas.filter(q => !q.p);
     const H1 = {}; CID.forEach(k => { H1[k] = { pct:media(conH1(k).map(P => h1De(P, k).pct)), horas:media(PS.map(P => horasDe(P, k)).filter(x => x != null)) }; });
-    const difs = PS.map(difDe).filter(x => x != null);
+    const pares = PS.filter(P => difDe(P) != null), difs = pares.map(difDe);
     const h2ok = PS.filter(P => P.h2).map(P => obj(obj(P.h2.payload).calificacion).ok);
     const h3ok = PS.filter(P => P.h3).map(P => obj(obj(P.h3.payload).calificacion).ok);
     const h3campos = PS.filter(P => P.h3).map(P => obj(obj(P.h3.payload).calificacion).campos);
@@ -141,6 +163,11 @@ const { analizarExp, datosExpConsolidados } = (() => {
       ["Participantes que dieron datos personales", nDatos + " de " + PS.length],
       ["Análisis generado", fechaSegura(t0)]
     ]), "Los datos del estudio son los que el investigador definió en el panel. El marco, la pregunta y las condiciones son los del documento del instrumento. Los conteos salen de los documentos de respuestas analizados: uno por participación.");
+    // Las subpreguntas del marco, con la evidencia que el documento pide registrar para cada una.
+    const EVID_SUB = lst(EXP.marco.evidenciaSub);
+    T("subpreguntas", "Subpreguntas del marco", ["Código", "Subpregunta", "Evidencia que se registra"],
+      lst(EXP.marco.subpreguntas).map(q => [q.id, q.t, (EVID_SUB.filter(e => e.id === q.id)[0] || {}).t || "—"]),
+      "Textuales, del documento del instrumento (" + EXP.marco.id + "). Los códigos SP1, SP2 y SP3 son para el análisis; el participante no los ve.");
     // Las hipótesis tal como las formula el documento del instrumento, con su código: así viajan también en el CSV.
     T("hipotesis", "Hipótesis del marco, tal como están formuladas", ["Código", "Nombre", "Formulación", "Variable", "Regla de medida"],
       EXP.marco.hipotesis.map(h => [h.id, h.n || "", h.t, h.variable || "—", h.regla || "—"]),
@@ -152,16 +179,16 @@ const { analizarExp, datosExpConsolidados } = (() => {
         .concat([["Total", "", ctas.length ? invitadas.length : "—", PS.length, nComp, PS.length - nComp, nPrueba, casos.map(c => c.id).join(" · ") || "—"]]),
       "Una respuesta es un documento de un participante. Es completa si recorrió las dos condiciones y respondió las preguntas de cierre; si no, es parcial.");
     T("participantes", "Participaciones analizadas", ["Participante", "Rol", "Expediente", "Orden de las condiciones", "Estado", "Avance", "Tipo de cuenta", "Fecha del documento", "Registros vigentes"],
-      PS.map(P => [P.alias, rolL(P.actor), P.caso.id, P.orden.map(condN).join(" → ") || "—", P.completa ? "Completa" : "Parcial", P.hechas + " de " + P.total,
+      PS.map(P => [P.alias, rolL(P.actor, P.caso), P.caso.id, P.orden.map(condN).join(" → ") || "—", P.completa ? "Completa" : "Parcial", P.hechas + " de " + P.total,
         P.demo ? "De demostración" : P.prueba ? "De prueba" : ctas.length && !P.enLista ? "No figura en las cuentas del proyecto" : "Invitada",
         P.generado ? fechaSegura(P.generado) : "—", P.regs.length]),
       "Cada fila es una participación, con el usuario de su cuenta y nunca con su nombre. El orden de las condiciones lo alterna el simulador según la cuenta, como pide el protocolo. El avance cuenta los puntos de decisión de las dos condiciones más las dos preguntas de cierre.");
     T("perfil", "Perfil profesional de quienes respondieron", ["Dato", "Lo que declararon"], filasPerfilResumen(PS), NOTA_PERFIL);
-    T("perfil_detalle", "Perfil declarado, participación por participación", COLS_PERFIL, filasPerfil(PS), NOTA_PERFIL + " Cada fila es una participación, con el usuario de su cuenta.");
+    T("perfil_detalle", "Perfil declarado, participación por participación", COLS_PERFIL, filasPerfil(PS, P => rolL(P.actor, P.caso)), NOTA_PERFIL + " Cada fila es una participación, con el usuario de su cuenta.");
     cap("participacion", "Qué se examinó y quiénes participaron", "actores-participante",
       "Cada participante recorrió el mismo expediente dos veces: una con los canales reconstruidos del flujo actual y otra con el módulo interoperable, en el orden que le tocó por su cuenta y con el expediente reiniciado al empezar cada condición. En cada punto de decisión vio los soportes requeridos con su estado y su criterio de conformidad, declaró con qué finalidad consultaba y pudo consultar, solicitar o devolver, con un corte de " + CORTE + " horas virtuales.\n"
       + "Se analizaron " + plural(PS.length, "respuesta", "respuestas") + ": " + nComp + " " + (nComp === 1 ? "completa" : "completas") + " y " + (PS.length - nComp) + " " + (PS.length - nComp === 1 ? "parcial" : "parciales") + ", de " + rolesCon + " de los " + BP.actores.length + " roles, sobre " + plural(casos.length, "expediente", "expedientes") + ".\n" + EXP.marco.nota,
-      ["estudio", "hipotesis", "participacion_rol", "participantes", "perfil", "perfil_detalle"]);
+      ["estudio", "subpreguntas", "hipotesis", "participacion_rol", "participantes", "perfil", "perfil_detalle"]);
 
     /* 2. H1 · Completitud de la evidencia */
     const h1 = EXP.marco.hipotesis.filter(h => h.id === "H1")[0] || {};
@@ -169,36 +196,37 @@ const { analizarExp, datosExpConsolidados } = (() => {
       CID.map(k => { const ps = conH1(k), pcts = ps.map(P => h1De(P, k).pct), e = estad(pcts), hs = PS.map(P => horasDe(P, k)).filter(x => x != null), eh = estad(hs);
         return [condN(k), ps.length, pctTxt(media(pcts)), e ? pctTxt(e.med) : "—", e ? pctTxt(e.min) : "—", e ? pctTxt(e.max) : "—",
           eh ? fmtN(eh.med) : "—", eh ? fmtN(eh.max) : "—", hs.filter(h => h > CORTE - 2).length]; }),
-      "La completitud es la proporción de elementos de evidencia requeridos que, en el momento de cerrar la decisión que resuelve, estaban en el expediente y cumplían su criterio de conformidad: un soporte pedido no cuenta hasta que llega, se verifica y se acepta. «Se quedaron sin margen» cuenta las participaciones que terminaron la condición a menos de 2 horas del corte de " + CORTE + ".");
+      "La completitud es la proporción de elementos de evidencia requeridos que, en el momento de cerrar el punto que resuelve, estaban en el expediente y cumplían su criterio de conformidad: un soporte pedido no cuenta hasta que llega, se verifica y se acepta. " + REGLA_H1 + " «Se quedaron sin margen» cuenta las participaciones que terminaron la condición a menos de 2 horas del corte de " + CORTE + ".");
     T("h1_rol", "Completitud y horas por rol, en las dos condiciones", ["Rol", "Participaciones", COND[0].n + ": completitud", COND[1].n + ": completitud", "Diferencia (puntos porcentuales)", COND[0].n + ": horas", COND[1].n + ": horas"],
       BP.actores.filter(a => porRol[a.id].length).map(a => { const ps = porRol[a.id];
         const pa = media(ps.filter(P => h1De(P, CID[0])).map(P => h1De(P, CID[0]).pct)), pm = media(ps.filter(P => h1De(P, CID[1])).map(P => h1De(P, CID[1]).pct));
         const ds = ps.map(difDe).filter(x => x != null);
-        return [rolL(a.id), ps.length, pctTxt(pa), pctTxt(pm), ds.length ? ppTxt(media(ds)) : "—",
-          fmtN(media(ps.map(P => horasDe(P, CID[0])).filter(x => x != null)) || 0), fmtN(media(ps.map(P => horasDe(P, CID[1])).filter(x => x != null)) || 0)]; }),
-      "Promedios por rol. La diferencia se calcula participación por participación (módulo menos flujo actual) y solo con quienes tienen dato en las dos condiciones, de modo que cada persona es su propio control.");
+        const ha = media(ps.map(P => horasDe(P, CID[0])).filter(x => x != null)), hm = media(ps.map(P => horasDe(P, CID[1])).filter(x => x != null));
+        return [rolL(a.id), ps.length, pctTxt(pa), pctTxt(pm), ds.length ? ppTxt(media(ds)) : "—", ha == null ? "—" : fmtN(ha), hm == null ? "—" : fmtN(hm)]; }),
+      "Promedios por rol. La diferencia se calcula participación por participación, de modo que cada persona es su propio control. " + SIGNO_H1 + " " + REGLA_H1);
     T("h1_caso", "Completitud por expediente", ["Expediente", "Quién solicita", "Punto que resuelve", "Requeridos", "Conformes al radicar", "Participaciones", COND[0].n, COND[1].n, "Diferencia (pp)"],
       casos.map(c => { const pr = puntoResuelve(c), ps = PS.filter(P => P.caso.id === c.id), ds = ps.map(difDe).filter(x => x != null);
         return [c.id, c.persona.nombre, pr ? pr.id : "—", pr ? pr.requiere.length : "—", pr ? EXPM.inicioDe(c, pr.id) : "—", ps.length,
           pctTxt(media(ps.filter(P => h1De(P, CID[0])).map(P => h1De(P, CID[0]).pct))), pctTxt(media(ps.filter(P => h1De(P, CID[1])).map(P => h1De(P, CID[1]).pct))), ds.length ? ppTxt(media(ds)) : "—"]; }),
-      "«Conformes al radicar» es el cociente del documento del instrumento: cuántos de los soportes requeridos por el punto estaban conformes cuando se radicó el expediente, antes de cualquier actuación del participante.");
+      "«Conformes al radicar» es el cociente del documento del instrumento: cuántos de los soportes requeridos por el punto estaban conformes cuando se radicó el expediente, antes de cualquier actuación del participante. " + SIGNO_H1 + " " + REGLA_H1);
     T("h1_participacion", "Completitud, horas y decisión, participación por participación", ["Participante", "Rol", "Expediente", "Orden", COND[0].n + ": conformes", COND[0].n + ": horas", COND[0].n + ": decisión", COND[1].n + ": conformes", COND[1].n + ": horas", COND[1].n + ": decisión", "Diferencia (pp)"],
       PS.map(P => { const a = h1De(P, CID[0]), m = h1De(P, CID[1]), d = difDe(P);
-        return [P.alias, rolL(P.actor), P.caso.id, P.orden.map(condN).join(" → ") || "—",
+        return [P.alias, rolL(P.actor, P.caso), P.caso.id, P.orden.map(condN).join(" → ") || "—",
           a ? nOk(a.ok, a.total) : "—", horasDe(P, CID[0]) == null ? "—" : celN(horasDe(P, CID[0])), decisionDe(P, CID[0]),
           m ? nOk(m.ok, m.total) : "—", horasDe(P, CID[1]) == null ? "—" : celN(horasDe(P, CID[1])), decisionDe(P, CID[1]),
           d == null ? "—" : ppTxt(d)]; }),
-      "Una fila por participación. «Conformes» son los requeridos del punto que resuelve que estaban disponibles y conformes al cerrar esa decisión. La decisión es la que la persona tomó en ese punto.");
+      "Una fila por participación. «Conformes» son los requeridos del punto que resuelve que estaban disponibles y conformes cuando la persona lo cerró; la raya indica que en esa condición no lo cerró. La decisión es la que la persona tomó en ese punto, o la respuesta con que entregó su evidencia si su rol solo la aporta. " + SIGNO_H1 + " " + REGLA_H1);
     T("h1_soporte", "Dónde se rompe la completitud: soporte por soporte", ["Expediente", "Soporte", "Quién lo custodia", "Estado al radicar", "Conforme al decidir · " + COND[0].n, "Conforme al decidir · " + COND[1].n, "Participaciones"],
       [].concat(...casos.map(c => { const pr = puntoResuelve(c), ps = PS.filter(P => P.caso.id === c.id);
         return pr ? pr.requiere.map(k => { const s = EXPM.soporteDe(c, k);
           const cuenta = cond => ps.filter(P => { const reg = P.puntos[cond][pr.id]; const ss = reg ? lst(reg.payload.soportes).filter(x => x.k === k)[0] : null; return ss && ss.estado === "conforme" && ss.aceptado; }).length;
           return [c.id, piezaN(c, k), s ? s.custN : "—", s ? estadoN(s.estado) : "—", cuenta(CID[0]), cuenta(CID[1]), ps.length]; }) : []; })),
-      "Para cada soporte requerido por la decisión que resuelve, en cuántas participaciones quedó conforme y aceptado al cerrarla, en cada condición. Es la lectura fina de H1: muestra qué pieza queda fuera y con qué condición se consigue.");
+      "Para cada soporte requerido por el punto que resuelve, en cuántas participaciones quedó conforme y aceptado cuando la persona cerró ese punto, en cada condición; «Participaciones» son todas las del expediente. Es la lectura fina de H1: muestra qué pieza queda fuera y con qué condición se consigue.");
     cap("h1", "H1 · Completitud de la evidencia requerida", "capitulos-decision-avance",
       txt(h1.t, 1200) + "\nVariable: " + txt(h1.variable, 200) + ". Regla de medida: " + txt(h1.regla, 400) + "\n"
-      + (difs.length ? "En las " + difs.length + " participaciones con dato en las dos condiciones, la diferencia media es de " + ppTxt(media(difs)) + " puntos porcentuales a favor del módulo interoperable (" + pctTxt(H1[CID[1]].pct) + " frente a " + pctTxt(H1[CID[0]].pct) + ")."
-        : "Todavía no hay participaciones con dato en las dos condiciones: la comparación se podrá leer cuando las haya."),
+      + (difs.length ? (difs.length === 1 ? "En la única participación que cerró el punto que resuelve en las dos condiciones, la diferencia " : "En las " + difs.length + " participaciones que cerraron el punto que resuelve en las dos condiciones, la diferencia media ")
+          + aFavor(media(difs)) + " (completitud media de " + pctTxt(media(pares.map(P => h1De(P, "modulo").pct))) + " con el " + condN("modulo").toLowerCase() + " y de " + pctTxt(media(pares.map(P => h1De(P, "actual").pct))) + " con el " + condN("actual").toLowerCase() + " en esas mismas participaciones)."
+        : "Todavía no hay participaciones que hayan cerrado el punto que resuelve en las dos condiciones: la comparación se podrá leer cuando las haya."),
       ["h1_condicion", "h1_rol", "h1_caso", "h1_participacion", "h1_soporte"],
       "Son datos de una simulación con expedientes sintéticos y un corte de " + CORTE + " horas virtuales. Describen el comportamiento de los participantes en el instrumento, no el rendimiento de una integración real.");
 
@@ -217,12 +245,18 @@ const { analizarExp, datosExpConsolidados } = (() => {
     T("finalidades", "Con qué finalidad se consultó, y qué se denegó", ["Finalidad declarada", "Consultas", "Sobre piezas clínicas", "Denegadas", "Roles que la declararon"],
       FIN_EXP.map(f => { const os = ACTU.filter(o => o.x.payload.que === "consultar" && o.x.payload.finalidad === f[0]);
         return [f[1], os.length, os.filter(o => EXPM.clinicas.indexOf(o.x.payload.pieza) >= 0).length, os.filter(o => o.x.payload.denegado === true).length,
-          Object.keys(contar(os.map(o => o.P.actor))).map(rolC).join(" · ") || "—"]; }).filter(r => r[1] > 0),
+          Object.keys(contar(os.map(o => o.P.actor))).map(a => rolC(a)).join(" · ") || "—"]; }).filter(r => r[1] > 0),
       "Antes de consultar, el participante declara para qué lo hace. El módulo abre solo los campos que esa finalidad autoriza: una finalidad de control administrativo no abre las piezas clínicas (" + EXPM.clinicas.join(", ") + ") y la denegación queda registrada. Solo aparecen las finalidades que alguien declaró.");
-    T("decisiones", "Qué decidieron en cada punto", ["Expediente", "Punto", "Quién decide", "Condición", "Participaciones", "Lo que decidieron"],
-      [].concat(...casos.map(c => [].concat(...c.puntos.map(p => CID.map(k => { const regs = PS.filter(P => P.caso.id === c.id).map(P => P.puntos[k][p.id]).filter(Boolean);
-        return [c.id, puntoN(c, p.id), p.decideN, condN(k), regs.length, distTxt(opsPunto(p), contar(regs.map(r => r.payload.decision)))]; }))))).filter(r => r[4] > 0),
-      "Distribución de las decisiones en cada punto y condición. Solo aparecen los puntos con al menos una decisión registrada.");
+    // Quien decide un punto elige entre sus opciones; quien solo aporta la evidencia que custodia responde si la entrega.
+    T("decisiones", "Qué decidieron y qué entregaron en cada punto", ["Expediente", "Punto", "Quién decide", "Condición", "Cómo intervino", "Participaciones", "Lo que respondieron"],
+      [].concat(...casos.map(c => [].concat(...c.puntos.map(p => [].concat(...CID.map(k => {
+        const os = PS.filter(P => P.caso.id === c.id).map(P => ({ P, x:P.puntos[k][p.id] })).filter(o => o.x);
+        return ["decide", "aporta"].map(como => { const xs = os.filter(o => comoDe(o.x, p, o.P.actor) === como);
+          return [c.id, puntoN(c, p.id), p.decideN, condN(k),
+            como === "decide" ? "Decide" : "Aporta la evidencia que custodia" + (xs.length ? " (" + Object.keys(contar(xs.map(o => o.P.actor))).map(a => rolC(a, c)).join(" · ") + ")" : ""),
+            xs.length, distTxt(como === "aporta" ? OPS_PUNTO.aporta.concat(opsPunto(p)) : opsPunto(p), contar(xs.map(o => o.x.payload.decision)))]; });
+      })))))).filter(r => r[5] > 0),
+      "Distribución de las respuestas en cada punto y condición. Quien decide el punto elige entre las opciones de decidirlo; quien solo aporta la evidencia que custodia responde si la entrega toda, solo lo pertinente o no la entrega por ahora. Solo aparecen los puntos con al menos una respuesta registrada.");
     cap("actuaciones", "Cómo buscaron la evidencia y qué decidieron", "acciones-solicitar",
       "El instrumento registra cada actuación sobre los soportes —consultar, solicitar, devolver, verificar y aceptar o rechazar— con su finalidad declarada, su costo en horas virtuales y si el control de acceso la denegó. Esta es la parte que explica los resultados de H1: con qué actuaciones llegó cada participante al punto que resuelve y qué decidió allí.",
       ["actuaciones", "actuaciones_rol", "finalidades", "decisiones"]);
@@ -278,36 +312,43 @@ const { analizarExp, datosExpConsolidados } = (() => {
     /* 6. Lo que escribieron: la tabla buscable */
     const TEXTOS = [];
     PS.forEach(P => {
-      CID.forEach(k => Object.keys(P.puntos[k]).forEach(pid => { const x = P.puntos[k][pid], pl = obj(x.payload);
-        if (txt(pl.porQue)) TEXTOS.push([P.alias, rolL(P.actor), P.caso.id, condN(k), puntoN(P.caso, pid), "Por qué decidió así", txt(pl.porQue, 2000)]);
-        if (txt(pl.obs)) TEXTOS.push([P.alias, rolL(P.actor), P.caso.id, condN(k), puntoN(P.caso, pid), "Lo que quiso añadir del punto", txt(pl.obs, 2000)]);
+      CID.forEach(k => Object.keys(P.puntos[k]).forEach(pid => { const x = P.puntos[k][pid], pl = obj(x.payload), aporta = comoDe(x, EXPM.puntoDe(P.caso, pid), P.actor) === "aporta";
+        if (txt(pl.porQue)) TEXTOS.push([P.alias, rolL(P.actor, P.caso), P.caso.id, condN(k), puntoN(P.caso, pid), aporta ? "Por qué respondió así" : "Por qué decidió así", txt(pl.porQue, 2000)]);
+        if (txt(pl.obs)) TEXTOS.push([P.alias, rolL(P.actor, P.caso), P.caso.id, condN(k), puntoN(P.caso, pid), "Lo que quiso añadir del punto", txt(pl.obs, 2000)]);
       }));
+      // El comentario final se escribe al terminar el recorrido: no es de ninguna condición ni de ningún punto.
       P.obs.forEach(x => { const pl = obj(x.payload);
-        if (txt(pl.texto)) TEXTOS.push([P.alias, rolL(P.actor), P.caso.id, condN(pl.cond), lst(pl.puntos).join(" · ") || "—", "Observación sobre los puntos que no decide", txt(pl.texto, 2000)]); });
+        if (!txt(pl.texto)) return;
+        if (pl.final === true) TEXTOS.push([P.alias, rolL(P.actor, P.caso), P.caso.id, "Al terminar", "—", "Comentario final", txt(pl.texto, 2000)]);
+        else TEXTOS.push([P.alias, rolL(P.actor, P.caso), P.caso.id, condN(pl.cond), lst(pl.puntos).join(" · ") || "—", "Observación sobre los puntos que no decide", txt(pl.texto, 2000)]); });
     });
     T("textos", "Lo que escribieron los participantes", ["Participante", "Rol", "Expediente", "Condición", "Punto", "Qué se le preguntó", "Lo que escribió"], TEXTOS,
-      "Todo el texto libre del recorrido: la motivación de cada decisión, lo que quiso añadir en cada punto y las observaciones de los tramos que su rol no decide. La caja de búsqueda filtra lo que se ve en pantalla; la exportación a CSV lleva la tabla completa.");
+      "Todo el texto libre del recorrido: la motivación de cada decisión o entrega, lo que quiso añadir en cada punto, las observaciones de los tramos que su rol no decide y el comentario final que dejó al terminar. La caja de búsqueda filtra lo que se ve en pantalla; la exportación a CSV lleva la tabla completa.");
     cap("textos", "Lo que escribieron los participantes", "acciones-observar",
       "Cada paso del instrumento deja un espacio en blanco. Aquí está todo lo que escribieron, con su rol, su expediente, su condición y el punto en el que lo escribieron. Busque por palabras: la caja de arriba de la tabla filtra por cualquier columna, de modo que puede leer, por ejemplo, todo lo que dijo un rol sobre un soporte.",
       ["textos"]);
 
     /* 7. Registro completo */
+    // Cifras de un registro: solo si vienen como números; las horas con coma decimal.
+    const horasT = h => typeof h === "number" && isFinite(h) ? " · " + celN(h) + " h" : "";
+    const deT = (c, a, b) => { const o = obj(c); return typeof o[a] === "number" && typeof o[b] === "number" ? o[a] + " de " + o[b] : "sin dato"; };
     const DET = {
-      punto:pl => "Punto " + txt(pl.punto, 10) + " · " + (txt(pl.decisionTxt, 120) || txt(pl.decision, 40)) + " · conformes " + obj(pl.completitud).ok + " de " + obj(pl.completitud).total + " · " + celN(pl.horas) + " h",
-      actuacion:pl => (QUE[pl.que] || txt(pl.que, 20)) + " · " + txt(pl.pieza, 10) + " · finalidad: " + finN(pl.finalidad) + (pl.denegado ? " · DENEGADA" : "") + " · " + celN(pl.horas) + " h",
-      observacion:pl => "Observación sobre " + (lst(pl.puntos).join(", ") || "—"),
-      h2:pl => "Responsabilidades: " + obj(pl.calificacion).ok + " de " + obj(pl.calificacion).total,
-      h3:pl => "Accesos: " + obj(pl.calificacion).ok + " de " + obj(pl.calificacion).total + " completos, " + obj(pl.calificacion).campos + " de " + obj(pl.calificacion).camposTotal + " elementos",
+      punto:(pl, P) => "Punto " + txt(pl.punto, 10) + " · " + (txt(pl.decisionTxt, 120) || decisionN(EXPM.puntoDe(P.caso, pl.punto), pl.decision, pl.como)) + " · conformes " + deT(pl.completitud, "ok", "total") + horasT(pl.horas),
+      actuacion:pl => (QUE[pl.que] || txt(pl.que, 20)) + " · " + txt(pl.pieza, 10) + " · finalidad: " + finN(pl.finalidad) + (pl.denegado ? " · DENEGADA" : "") + horasT(pl.horas),
+      observacion:pl => pl.final === true ? "Comentario final, al terminar" : "Observación sobre " + (lst(pl.puntos).join(", ") || "—"),
+      h2:pl => "Responsabilidades: " + deT(pl.calificacion, "ok", "total"),
+      h3:pl => "Accesos: " + deT(pl.calificacion, "ok", "total") + " completos, " + deT(pl.calificacion, "campos", "camposTotal") + " elementos",
       encuesta:() => "Encuesta de perfil respondida",
       inicio_condicion:pl => "Comienza la condición " + condN(pl.cond),
-      cierre_condicion:pl => "Cierra la condición " + condN(pl.cond) + " con " + celN(pl.horas) + " h",
+      cierre_condicion:pl => "Cierra la condición " + condN(pl.cond) + horasT(pl.horas),
       cierre:() => "Cierra el recorrido"
     };
     const TIPO_REG_EXP = { punto:"Decisión en un punto", actuacion:"Actuación sobre un soporte", observacion:"Observación", h2:"Responsabilidades (H2)", h3:"Accesos (H3)", encuesta:"Encuesta de perfil", inicio_condicion:"Inicio de condición", cierre_condicion:"Cierre de condición", cierre:"Cierre", avance:"Avance" };
     T("registros", "Registro completo de los documentos analizados", ["Fecha", "Participante", "Rol", "Expediente", "Condición", "Punto", "Origen", "Tipo", "Detalle", "Versión"],
       [].concat(...PS.map(P => P.regs.map(x => { const pl = obj(x.payload), f = own(DET, x.tipo);
-        return [fechaSegura(x.t), P.alias, rolL(P.actor), P.caso.id, CID.indexOf(x.ronda) >= 0 ? condN(x.ronda) : "—", txt(x.paso, 10) || "—", origenTxt(x),
-          own(TIPO_REG_EXP, x.tipo) || txt(x.tipo, 30), f ? f(pl) : "—", typeof x.version === "number" ? x.version : 1]; }))),
+        const final = x.tipo === "observacion" && pl.final === true;
+        return [fechaSegura(x.t), P.alias, rolL(P.actor, P.caso), P.caso.id, final ? "Al terminar" : CID.indexOf(x.ronda) >= 0 ? condN(x.ronda) : "—", txt(x.paso, 10) || "—", origenTxt(x),
+          final ? "Comentario final" : x.tipo === "punto" && pl.como === "aporta" ? "Entrega de evidencia en un punto" : own(TIPO_REG_EXP, x.tipo) || txt(x.tipo, 30), f ? f(pl, P) : "—", typeof x.version === "number" ? x.version : 1]; }))),
       "Todos los registros vigentes, en el orden en que ocurrieron. No incluye los reemplazados por una corrección del participante. Los registros de conducción los escribe el simulador al abrir y cerrar cada condición.");
     cap("registros", "Registro completo", "documentos-evidencia",
       "El detalle de lo que quedó registrado en cada documento. Sirve para auditar cualquier cifra de este informe: cada fila de arriba se puede rastrear hasta estas líneas.",
@@ -321,7 +362,7 @@ const { analizarExp, datosExpConsolidados } = (() => {
     if (incompletas.length) avisos.push("Estas respuestas dicen estar completas pero les faltan puntos o preguntas de cierre: " + incompletas.map(P => P.alias).join(", ") + ".");
     const sinH2 = PS.filter(P => !P.h2).length, sinH3 = PS.filter(P => !P.h3).length;
     if (sinH2 || sinH3) avisos.push("Sin las preguntas de cierre: " + sinH2 + " sin responsabilidades (H2) y " + sinH3 + " sin accesos (H3).");
-    if (!difs.length && PS.length) avisos.push("Ninguna participación tiene dato en las dos condiciones todavía: la comparación de H1 queda pendiente.");
+    if (!difs.length && PS.length) avisos.push("Ninguna participación ha cerrado todavía el punto que resuelve en las dos condiciones: la comparación de H1 queda pendiente.");
     const nAjenos = PS.reduce((n, P) => n + P.ajenos, 0);
     if (nAjenos) avisos.push(plural(nAjenos, "registro no corresponde", "registros no corresponden") + " al recorrido del expediente; " + (nAjenos === 1 ? "aparece" : "aparecen") + " en el registro completo.");
     if (L.repetidos) avisos.push("Se " + (L.repetidos === 1 ? "recibió 1 versión repetida" : "recibieron " + L.repetidos + " versiones repetidas") + " de una misma participación: se usó la más reciente.");
@@ -360,10 +401,10 @@ const { analizarExp, datosExpConsolidados } = (() => {
     return {
       instrumento:INSTRUMENTO, formato:FORMATO, version:VERSION, tipo:"consolidado", subtipo:"expediente", fecha:an.resumen.generado,
       estudio:an.resumen.estudio,
-      marco:{ id:EXP.marco.id, pregunta:EXP.marco.pregunta, hipotesis:EXP.marco.hipotesis, condiciones:COND, corteHoras:CORTE },
+      marco:{ id:EXP.marco.id, pregunta:EXP.marco.pregunta, subpreguntas:lst(EXP.marco.subpreguntas), evidenciaSub:lst(EXP.marco.evidenciaSub), hipotesis:EXP.marco.hipotesis, condiciones:COND, corteHoras:CORTE, reglaH1:REGLA_H1 },
       resumen:an.resumen,
       participantes:L.PS.map(P => { const k = obj(P.doc.consentimiento), a = h1De(P, CID[0]), m = h1De(P, CID[1]);
-        return { id:P.id, usuario:P.usuario, alias:P.alias, actor:P.actor, rol:rolL(P.actor), expediente:P.caso.id, orden:P.orden,
+        return { id:P.id, usuario:P.usuario, alias:P.alias, actor:P.actor, rol:rolL(P.actor, P.caso), expediente:P.caso.id, orden:P.orden,
           estado:P.completa ? "completa" : "parcial", avance:{ hechas:P.hechas, total:P.total }, prueba:P.prueba, demo:P.demo, dioDatosPersonales:P.conDatos,
           consentimiento:{ aceptado:k.aceptado === true, t:typeof k.t === "number" ? k.t : null, version:txt(k.version, 20) },
           h1:{ actual:a, modulo:m, diferencia:difDe(P) }, horas:{ actual:horasDe(P, CID[0]), modulo:horasDe(P, CID[1]) },
