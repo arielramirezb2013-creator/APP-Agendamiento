@@ -70,7 +70,7 @@ const docR = (function () {
      ===================================================================================================== */
   const ROJO = "#c62828", AZUL = "#1f4fbf";
   function audiograma(d) {
-    const W = 360, H = 356, L = 50, R = 348, T = 46, B = 304;
+    const W = 360, H = 374, L = 50, R = 348, T = 46, B = 304;
     const fx = f => L + 16 + (R - L - 32) * Math.log2(f / 250) / 5;
     const dy = db => T + (B - T) * (Math.max(-10, Math.min(120, db)) + 10) / 130;
     const osea = /[óo]sea/i.test(d.via || ""), via = osea ? "vía ósea" : "vía aérea";
@@ -89,7 +89,6 @@ const docR = (function () {
     g += `<rect x="${L}" y="${T}" width="${R - L}" height="${B - T}" fill="none" stroke="#59616c" stroke-width="1"/>`;
     g += tx((L + R) / 2, 13, "Frecuencia (Hz)", 'font-size="10.5" text-anchor="middle" font-weight="bold" fill="#2a3039"');
     g += `<text transform="translate(13 ${r1((T + B) / 2)}) rotate(-90)" font-size="10.5" text-anchor="middle" font-weight="bold" fill="#2a3039">Nivel de audición (dB HL)</text>`;
-    g += tx(R - 5, dy(25) - 4, "Audición normal: hasta 25 dB HL", 'font-size="9" text-anchor="end" fill="#2e6b45"');
     const simbolo = (x, y, oido) => {
       if (osea) return oido === "od" ? `<path d="M${r1(x - 1)},${r1(y - 6)} L${r1(x - 7)},${r1(y)} L${r1(x - 1)},${r1(y + 6)}" fill="none" stroke="${ROJO}" stroke-width="2"/>` : `<path d="M${r1(x + 1)},${r1(y - 6)} L${r1(x + 7)},${r1(y)} L${r1(x + 1)},${r1(y + 6)}" fill="none" stroke="${AZUL}" stroke-width="2"/>`;
       return oido === "od" ? `<circle cx="${r1(x)}" cy="${r1(y)}" r="5" fill="#ffffff" stroke="${ROJO}" stroke-width="1.9"/>` : ln(x - 4.6, y - 4.6, x + 4.6, y + 4.6, AZUL, 2.1) + ln(x - 4.6, y + 4.6, x + 4.6, y - 4.6, AZUL, 2.1);
@@ -99,10 +98,11 @@ const docR = (function () {
       if (!osea && pts.length > 1) g += `<polyline points="${poli(pts)}" fill="none" stroke="${o === "od" ? ROJO : AZUL}" stroke-width="1.7"${o === "oi" ? ' stroke-dasharray="5 3"' : ""}/>`;
       pts.forEach(p => { g += simbolo(p[0], p[1], o); });
     });
-    const ly = B + 30;
+    const ly = B + 26;
     g += simbolo(L + 8, ly - 4, "od") + tx(L + 20, ly, "Oído derecho", 'font-size="10.5" fill="#2a3039"');
     g += simbolo(L + 128, ly - 4, "oi") + tx(L + 140, ly, "Oído izquierdo", 'font-size="10.5" fill="#2a3039"');
     g += tx(R, ly, via.charAt(0).toUpperCase() + via.slice(1), 'font-size="10.5" text-anchor="end" fill="#59616c"');
+    g += `<rect x="${L + 2}" y="${ly + 12}" width="12" height="9" fill="#e2f1e6" stroke="#9fcfae" stroke-width="0.8"/>` + tx(L + 20, ly + 20, "Audición normal: hasta 25 dB HL", 'font-size="10.5" fill="#2e6b45"');
     const lista = o => frecs(d[o]).map(f => f + " Hz " + fmt(d[o][f]) + " dB").join(", ");
     const etiqueta = "Audiograma, " + via + ", umbrales en dB HL. Oído derecho: " + (lista("od") || "sin datos") + ". Oído izquierdo: " + (lista("oi") || "sin datos") + ". Franja de audición normal hasta 25 dB HL.";
     const todas = frecs(d.od).concat(frecs(d.oi)).filter((f, i, a) => a.indexOf(f) === i).sort((a, b) => a - b);
@@ -122,8 +122,8 @@ const docR = (function () {
     obstructivo:{ sube:0.075, f:u => Math.pow(1 - u, 2.4) },
     mixto:{ sube:0.085, f:u => Math.pow(1 - u, 2.0) }
   };
-  function lazo(V, P, fm) {
-    const pts = [[0, 0]], vp = V * fm.sube, N = 50, I = P * 0.66;
+  function lazo(V, P, fm, I) {
+    const pts = [[0, 0]], vp = V * fm.sube, N = 50;
     for (let k = 1; k <= 8; k++) { const s = k / 8; pts.push([vp * s, P * (1 - Math.pow(1 - s, 2.2))]); }
     for (let k = 1; k <= N; k++) { const u = k / N; pts.push([vp + (V - vp) * u, P * fm.f(u)]); }
     for (let k = 1; k <= N; k++) { const u = k / N; pts.push([V * (1 - u), -I * Math.pow(Math.sin(Math.PI * u), 0.7)]); }
@@ -138,10 +138,13 @@ const docR = (function () {
     const ratio = fev1 / fvc, ratioP = fev1P / fvcP, pctF = fvc / fvcP;
     let patron = String(d.patron || "").toLowerCase();
     if (!FORMA_FV[patron]) patron = ratio < 0.7 ? (pctF < 0.8 ? "mixto" : "obstructivo") : (pctF < 0.8 ? "restrictivo" : "normal");
+    // La rama inspiratoria es esquemática: en la obstrucción se conserva mejor que la espiratoria.
+    const insp = (patron === "obstructivo" ? Math.max(pef, pefP * 0.8) : patron === "mixto" ? Math.max(pef, pefP * 0.6) : pef) * 0.64, inspP = pefP * 0.64;
     const L = 44, R = 330, T = 22, B = 250, W = 340, H = 292;
-    const vMax = Math.ceil(Math.max(fvc, fvcP) * 1.1 + 0.2), fPos = Math.ceil(Math.max(pef, pefP) * 1.1 / 2) * 2, fNeg = Math.ceil(Math.max(pef, pefP) * 0.66 * 1.15 / 2) * 2;
+    const vMax = Math.ceil(Math.max(fvc, fvcP) * 1.1 + 0.2), fPos = Math.ceil(Math.max(pef, pefP) * 1.1 / 2) * 2, fNeg = Math.ceil(Math.max(insp, inspP) * 1.25 / 2) * 2;
     const X = v => L + (R - L) * v / vMax, Y = f => T + (B - T) * (fPos - f) / (fPos + fNeg);
     const camino = pts => "M" + pts.map(p => r1(X(p[0])) + "," + r1(Y(p[1]))).join(" L") + " Z";
+    const halo = 'stroke="#ffffff" stroke-width="3" paint-order="stroke"';
     const ejes = (xMax, xPaso, yMin, yMax, yPaso, Xf, Yf, xt, yt, xFmt) => {
       let g = "";
       for (let y = yMin; y <= yMax + 1e-9; y += yPaso) { g += ln(L, Yf(y), R, Yf(y), Math.abs(y) < 1e-9 ? "#59616c" : "#e1e5ea", Math.abs(y) < 1e-9 ? 1.1 : 0.8); g += tx(L - 5, Yf(y) + 3.5, fmt(y), 'font-size="10" text-anchor="end" fill="#39404a"'); }
@@ -154,13 +157,14 @@ const docR = (function () {
     const leyenda = (x, y) => ln(x, y, x + 18, y, "#1f4e8c", 2.2) + tx(x + 23, y + 3.5, "Medida", 'font-size="10" fill="#2a3039"') + ln(x + 72, y, x + 90, y, "#7b8490", 1.5, 'stroke-dasharray="5 3"') + tx(x + 95, y + 3.5, "Predicha", 'font-size="10" fill="#2a3039"');
     // Flujo-volumen
     let g = `<rect x="0" y="0" width="${W}" height="${H}" fill="#ffffff"/>` + ejes(vMax, 1, -fNeg, fPos, 2, X, Y, "Volumen (L)", "Flujo (L/s)");
-    g += `<path d="${camino(lazo(fvcP, pefP, FORMA_FV.normal))}" fill="none" stroke="#7b8490" stroke-width="1.5" stroke-dasharray="5 3" stroke-linejoin="round"/>`;
-    const medido = lazo(fvc, pef, FORMA_FV[patron]);
+    g += `<path d="${camino(lazo(fvcP, pefP, FORMA_FV.normal, inspP))}" fill="none" stroke="#7b8490" stroke-width="1.5" stroke-dasharray="5 3" stroke-linejoin="round"/>`;
+    const medido = lazo(fvc, pef, FORMA_FV[patron], insp);
     g += `<path d="${camino(medido)}" fill="rgba(31,78,140,0.07)" stroke="#1f4e8c" stroke-width="2.2" stroke-linejoin="round"/>`;
     const pico = medido.reduce((m, p) => p[1] > m[1] ? p : m, [0, 0]);
-    if (hayPef) { g += `<circle cx="${r1(X(pico[0]))}" cy="${r1(Y(pico[1]))}" r="3" fill="#1f4e8c"/>`; g += tx(X(pico[0]) + 7, Y(pico[1]) - 4, "FEP " + fmt(pef) + " L/s", 'font-size="10" font-weight="bold" fill="#1f4e8c" stroke="#ffffff" stroke-width="3" paint-order="stroke"'); }
-    const cvfEt = "CVF " + fmt(fvc, 2) + " L", aDer = X(fvc) + 8 + ancho(cvfEt, 10) < R;
-    g += `<circle cx="${r1(X(fvc))}" cy="${r1(Y(0))}" r="3" fill="#1f4e8c"/>` + tx(aDer ? X(fvc) + 6 : X(fvc) - 6, Y(0) + 14, cvfEt, `font-size="10" font-weight="bold"${aDer ? "" : ' text-anchor="end"'} fill="#1f4e8c" stroke="#ffffff" stroke-width="3" paint-order="stroke"`);
+    if (hayPef) { g += `<circle cx="${r1(X(pico[0]))}" cy="${r1(Y(pico[1]))}" r="3" fill="#1f4e8c"/>`; g += tx(X(pico[0]) + 7, Y(pico[1]) - 4, "FEP " + fmt(pef) + " L/s", 'font-size="10" font-weight="bold" fill="#1f4e8c" ' + halo); }
+    // La CVF se rotula abajo, con una guía desde el final de la curva: así no tapa ninguna rama.
+    const cvfEt = "CVF " + fmt(fvc, 2) + " L", xc = X(fvc), anc = xc + ancho(cvfEt, 10) / 2 > R - 2 ? "end" : "middle";
+    g += ln(xc, Y(0), xc, B - 16, "#1f4e8c", 1, 'stroke-dasharray="2 2"') + `<circle cx="${r1(xc)}" cy="${r1(Y(0))}" r="3" fill="#1f4e8c"/>` + tx(anc === "end" ? Math.min(R - 3, xc + 12) : xc, B - 5, cvfEt, `font-size="10" font-weight="bold" text-anchor="${anc}" fill="#1f4e8c" ${halo}`);
     g += leyenda(R - 140, T + 10);
     const fv = svg(W, H, "Curva flujo-volumen: capacidad vital forzada medida " + fmt(fvc, 2) + " L frente a " + fmt(fvcP, 2) + " L predicha" + (hayPef ? "; flujo espiratorio pico " + fmt(pef) + " L/s frente a " + (hayPefP ? fmt(pefP) : "—") + " L/s predicho" : "") + ". La curva predicha va en línea discontinua.", "doc-svg-mitad", g);
     // Volumen-tiempo
@@ -172,9 +176,9 @@ const docR = (function () {
     h += `<path d="${curva(fvc, kM)}" fill="none" stroke="#1f4e8c" stroke-width="2.2"/>`;
     h += ln(Xt(1), Yv(fev1), Xt(1), B, "#1f4e8c", 1, 'stroke-dasharray="2 2"') + ln(L, Yv(fev1), Xt(1), Yv(fev1), "#1f4e8c", 1, 'stroke-dasharray="2 2"');
     h += `<circle cx="${r1(Xt(1))}" cy="${r1(Yv(fev1))}" r="3.2" fill="#1f4e8c"/>`;
-    h += `<text x="${r1(Xt(1) + 7)}" y="${r1(Yv(fev1) + 14)}" font-size="10" font-weight="bold" fill="#1f4e8c" stroke="#ffffff" stroke-width="3" paint-order="stroke">VEF<tspan font-size="8" dy="2">1</tspan><tspan dy="-2"> ${esc(fmt(fev1, 2))} L</tspan></text>`;
-    h += tx(R - 4, Yv(fvc) + 14, "CVF " + fmt(fvc, 2) + " L", 'font-size="10" font-weight="bold" text-anchor="end" fill="#1f4e8c" stroke="#ffffff" stroke-width="3" paint-order="stroke"');
-    if (Math.abs(fvcP - fvc) > vMax * 0.09) h += tx(R - 4, Yv(fvcP) - 5, "Predicha " + fmt(fvcP, 2) + " L", 'font-size="9.5" text-anchor="end" fill="#59616c" stroke="#ffffff" stroke-width="3" paint-order="stroke"');
+    h += `<text x="${r1(Xt(1) + 7)}" y="${r1(Yv(fev1) + 14)}" font-size="10" font-weight="bold" fill="#1f4e8c" ${halo}>VEF<tspan font-size="8" dy="2">1</tspan><tspan dy="-2"> ${esc(fmt(fev1, 2))} L</tspan></text>`;
+    h += tx(R - 4, Yv(fvc) + 14, cvfEt, 'font-size="10" font-weight="bold" text-anchor="end" fill="#1f4e8c" ' + halo);
+    if (Math.abs(fvcP - fvc) > vMax * 0.09) h += tx(R - 4, Yv(fvcP) - 5, "Predicha " + fmt(fvcP, 2) + " L", 'font-size="9.5" text-anchor="end" fill="#59616c" ' + halo);
     h += leyenda(R - 140, B - 10);
     const vt = svg(W, H, "Curva volumen-tiempo: volumen espiratorio forzado en el primer segundo " + fmt(fev1, 2) + " L frente a " + fmt(fev1P, 2) + " L predicho; capacidad vital forzada " + fmt(fvc, 2) + " L; relación " + fmt(Math.round(ratio * 100), 0) + " %.", "doc-svg-mitad", h);
     const pct = (a, b) => esNum(a) && esNum(b) && b > 0 ? fmt(Math.round(a / b * 100), 0) + " %" : "—";
@@ -191,26 +195,34 @@ const docR = (function () {
   /* =====================================================================================================
      Resonancia magnética de columna, corte sagital esquemático en escala de grises (T2: el líquido
      cefalorraquídeo claro, la médula gris, los discos sanos claros y los degenerados oscuros). Anterior a
-     la izquierda. Cada hallazgo se dibuja en su nivel.
+     la izquierda. Cada hallazgo se dibuja en su nivel; los niveles fusionados contiguos forman un solo montaje.
      ===================================================================================================== */
   const NOMBRE_HALLAZGO = { hernia:"Hernia discal", protrusion:"Protrusión discal", estenosis:"Estenosis del canal", artrodesis:"Artrodesis", mielopatia:"Mielopatía" };
   const normNivel = s => String(s || "").toUpperCase().replace(/\s+/g, "").replace(/[–—/]/g, "-");
   function rmColumna(d) {
     const lumbar = String(d.region || "").toLowerCase() === "lumbar";
     const NIV = lumbar ? ["T12", "L1", "L2", "L3", "L4", "L5", "S1"] : ["C2", "C3", "C4", "C5", "C6", "C7", "T1"];
-    const W = 340, H = 400, n = NIV.length;
+    const W = 340, H = 400, n = NIV.length, nc = lumbar ? n - 1 : n;   // en la lumbar, el sacro va aparte
     const bw = lumbar ? 48 : 40, hb = lumbar ? 33 : 30, hd = lumbar ? 11 : 9, cw = lumbar ? 17 : 15;
     const cc = bw / 2 + 2 + cw / 2, cpw = bw / 2 + 2 + cw;           // centro del canal y pared posterior, en el marco local
-    const total = n * hb + (n - 1) * hd + (lumbar ? hb * 0.7 : 0);
-    const y0 = (H - total) / 2 + hb / 2 + (lumbar ? 4 : 12), cx = 108, A = lumbar ? 17 : 15;
-    const yTop = y0 - hb / 2 - 14, yBot = y0 + (n - 1) * (hb + hd) + hb / 2 + 14;
+    const total = nc * hb + (nc - 1) * hd + (lumbar ? hd + hb * 2.1 : 0);
+    const y0 = (H - total) / 2 + hb / 2 + (lumbar ? 2 : 12), cx = 108, A = lumbar ? 17 : 15;
+    const yTop = y0 - hb / 2 - 14, yBot = y0 + (nc - 1) * (hb + hd) + hb / 2 + (lumbar ? 30 : 14);
     const dx = y => -A * Math.sin(Math.PI * (y - yTop) / (yBot - yTop));
     const ang = y => -Math.atan(-A * Math.PI / (yBot - yTop) * Math.cos(Math.PI * (y - yTop) / (yBot - yTop))) * 180 / Math.PI;
     const marco = y => ({ x:cx + dx(y), y, a:ang(y) });
-    const cuerpos = NIV.map((nv, i) => { const m = marco(y0 + i * (hb + hd)); if (nv === "S1") { m.a -= 28; m.x += 6; } return m; });
-    const discos = NIV.slice(0, -1).map((nv, i) => { const a = cuerpos[i], b = cuerpos[i + 1]; return { x:(a.x + b.x) / 2, y:(a.y + b.y) / 2, a:(a.a + b.a) / 2 + (NIV[i + 1] === "S1" ? 6 : 0) }; });
     const glob = (m, px, py) => { const r = m.a * Math.PI / 180; return [m.x + px * Math.cos(r) - py * Math.sin(r), m.y + px * Math.sin(r) + py * Math.cos(r)]; };
+    const enMarco = (m, px, py, da) => { const p = glob(m, px, py); return { x:p[0], y:p[1], a:m.a + (da || 0) }; };
     const tr = m => `transform="translate(${r1(m.x)} ${r1(m.y)}) rotate(${r1(m.a)})"`;
+    const cuerpos = [];
+    for (let i = 0; i < nc; i++) cuerpos.push(marco(y0 + i * (hb + hd)));
+    const discos = [];
+    for (let i = 0; i < nc - 1; i++) { const a = cuerpos[i], b = cuerpos[i + 1]; discos.push({ x:(a.x + b.x) / 2, y:(a.y + b.y) / 2, a:(a.a + b.a) / 2 }); }
+    if (lumbar) {   // disco L5-S1 en cuña y sacro inclinado (pendiente sacra)
+      const l5 = cuerpos[nc - 1], dsc = enMarco(l5, 0, hb / 2 + hd * 0.62, -12);
+      discos.push(dsc); cuerpos.push(enMarco(dsc, 0, hd * 0.62 + hb / 2, -14));
+    }
+    const S1 = lumbar ? cuerpos[n - 1] : null;
     // Hallazgos por disco (índice del disco entre NIV[i] y NIV[i+1]).
     const porDisco = NIV.slice(0, -1).map(() => []), fuera = [];
     (Array.isArray(d.hallazgos) ? d.hallazgos : []).forEach(h => {
@@ -221,28 +233,27 @@ const docR = (function () {
     const tiene = (i, t) => porDisco[i].indexOf(t) >= 0;
     let g = `<rect x="0" y="0" width="${W}" height="${H}" fill="#060606"/>`;
     // Partes blandas: prevertebrales y musculatura posterior con grasa subcutánea.
-    const ejes = [marco(yTop - 40)].concat(cuerpos.slice(0, lumbar ? -1 : n), [marco(yBot + 40)]);
-    const borde = (o) => ejes.map(m => glob(m, o, 0));
-    g += `<path d="${suave(borde(-bw / 2 - 16).concat(borde(cpw + 62).reverse()), true)}" fill="#262626"/>`;
-    g += `<path d="${suave(borde(cpw + 62).concat(borde(cpw + 74).reverse()), true)}" fill="#5b5b5b"/>`;
+    const ejes = []; for (let y = yTop - 80; y <= H + 80; y += 16) ejes.push(marco(y));
+    const borde = o => ejes.map(m => glob(m, o, 0));
+    g += `<path d="${suave(borde(-bw / 2 - 16).concat(borde(cpw + 64).reverse()), true)}" fill="#2a2a2a"/>`;
+    g += `<path d="${suave(borde(cpw + 64).concat(borde(cpw + 72).reverse()), true)}" fill="#4d4d4d"/>`;
     // Canal: líquido cefalorraquídeo (claro en T2).
     const canal = [glob(marco(yTop - 40), cc, 0)];
     cuerpos.forEach((m, i) => { canal.push(glob(m, cc, 0)); if (discos[i]) canal.push(glob(discos[i], cc, 0)); });
-    canal.push(glob(cuerpos[n - 1], cc, hb * (lumbar ? 1.6 : 1.2)));
-    if (!lumbar) canal.push(glob(marco(yBot + 40), cc, 0));
+    if (lumbar) canal.push(glob(S1, cc - 1, hb * 1.5)); else canal.push(glob(marco(yBot + 40), cc, 0));
     g += `<path d="${suave(canal)}" fill="none" stroke="#efefef" stroke-width="${cw}" stroke-linecap="butt" stroke-linejoin="round"/>`;
-    // Elementos posteriores (láminas y apófisis espinosas).
+    // Elementos posteriores (láminas y apófisis espinosas; en el sacro, la cresta sacra).
     const espinosa = lumbar ? [32, 34, 35, 35, 33, 30] : [30, 22, 22, 24, 28, 38, 36];
     cuerpos.forEach((m, i) => {
-      if (NIV[i] === "S1") return;
+      if (NIV[i] === "S1") { g += `<path ${tr(m)} d="M${r1(cpw + 1)},${r1(-hb * 0.4)} L${r1(cpw + 15)},${r1(-hb * 0.25)} L${r1(cpw + 9)},${r1(hb * 1.7)} L${r1(cpw - 3)},${r1(hb * 2)} Z" fill="#6e6e6e" stroke="#151515" stroke-width="1"/>`; return; }
       const e = espinosa[i] || 28, caida = lumbar ? hb * 0.1 : hb * 0.45;
       g += `<path ${tr(m)} d="M${r1(cpw + 1)},${r1(-hb * 0.36)} L${r1(cpw + e * 0.55)},${r1(-hb * 0.22 + caida * 0.3)} L${r1(cpw + e)},${r1(caida - 3)} L${r1(cpw + e - 3)},${r1(caida + 6)} L${r1(cpw + e * 0.5)},${r1(hb * 0.22 + caida * 0.5)} L${r1(cpw + 1)},${r1(hb * 0.3)} Z" fill="#6e6e6e" stroke="#151515" stroke-width="1"/>`;
     });
-    // Cuerpos vertebrales.
+    // Cuerpos vertebrales (C2 con la apófisis odontoides y los arcos del atlas; S1 con el resto del sacro).
     cuerpos.forEach((m, i) => {
       if (NIV[i] === "S1") {
-        g += `<path ${tr(m)} d="M${r1(-bw / 2 - 2)},${r1(-hb / 2)} L${r1(bw / 2 + 1)},${r1(-hb / 2 + 2)} L${r1(bw / 2 - 4)},${r1(hb * 1.25)} L${r1(-bw * 0.05)},${r1(hb * 1.35)} Z" fill="#878787" stroke="#141414" stroke-width="1.2" stroke-linejoin="round"/>`;
-        g += `<path ${tr(m)} d="M${r1(-bw / 2 + 4)},${r1(hb * 0.42)} L${r1(bw / 2 - 6)},${r1(hb * 0.46)}" stroke="#4a4a4a" stroke-width="2.2"/>`;
+        g += `<path ${tr(m)} d="M${r1(-bw / 2)},${r1(-hb / 2)} L${r1(bw / 2)},${r1(-hb / 2)} L${r1(bw / 2 - 1)},${r1(hb * 0.55)} L${r1(bw * 0.3)},${r1(hb * 1.6)} L${r1(bw * 0.1)},${r1(hb * 2.4)} Q${r1(-bw * 0.12)},${r1(hb * 2.3)} ${r1(-bw * 0.2)},${r1(hb * 1.9)} Q${r1(-bw * 0.42)},${r1(hb * 1.2)} ${r1(-bw / 2 + 1)},${r1(hb * 0.5)} Z" fill="#858585" stroke="#141414" stroke-width="1.2" stroke-linejoin="round"/>`;
+        g += `<path ${tr(m)} d="M${r1(-bw * 0.44)},${r1(hb * 0.62)} L${r1(bw * 0.44)},${r1(hb * 0.6)} M${r1(-bw * 0.3)},${r1(hb * 1.45)} L${r1(bw * 0.26)},${r1(hb * 1.45)}" stroke="#5a5a5a" stroke-width="2"/>`;
         return;
       }
       g += `<rect ${tr(m)} x="${r1(-bw / 2)}" y="${r1(-hb / 2)}" width="${bw}" height="${hb}" rx="4" fill="#8a8a8a" stroke="#141414" stroke-width="1.2"/>`;
@@ -254,10 +265,11 @@ const docR = (function () {
     });
     // Discos intervertebrales (o la caja de la artrodesis).
     discos.forEach((m, i) => {
+      const cuna = lumbar && NIV[i + 1] === "S1";
       if (tiene(i, "artrodesis")) { g += `<rect ${tr(m)} x="${r1(-bw / 2 + 4)}" y="${r1(-hd / 2 - 0.5)}" width="${bw - 8}" height="${hd + 1}" rx="1.5" fill="#2e2e2e" stroke="#cfd6de" stroke-width="1.3"/>` + `<path ${tr(m)} d="M${r1(-bw / 6)},${r1(-hd / 2)} V${r1(hd / 2)} M${r1(bw / 6)},${r1(-hd / 2)} V${r1(hd / 2)}" stroke="#cfd6de" stroke-width="0.9"/>`; return; }
-      const degen = tiene(i, "hernia") || tiene(i, "protrusion") || tiene(i, "estenosis"), h = degen ? hd * 0.82 : hd;
-      if (NIV[i + 1] === "S1") g += `<path ${tr(m)} d="M${r1(-bw / 2)},${r1(-h * 0.7)} L${r1(bw / 2)},${r1(-h * 0.35)} L${r1(bw / 2)},${r1(h * 0.35)} L${r1(-bw / 2)},${r1(h * 0.7)} Z" fill="${degen ? "#5e5e5e" : "#9a9a9a"}" stroke="#141414" stroke-width="0.8"/>`;
-      else g += `<rect ${tr(m)} x="${r1(-bw / 2 + 0.5)}" y="${r1(-h / 2)}" width="${bw - 1}" height="${r1(h)}" rx="${r1(h / 2)}" fill="${degen ? "#5e5e5e" : "#9a9a9a"}" stroke="#141414" stroke-width="0.8"/>`;
+      const degen = tiene(i, "hernia") || tiene(i, "protrusion") || tiene(i, "estenosis"), h = degen ? hd * 0.82 : hd, gris = degen ? "#5e5e5e" : "#9a9a9a";
+      if (cuna) g += `<path ${tr(m)} d="M${r1(-bw / 2)},${r1(-h * 0.72)} L${r1(bw / 2)},${r1(-h * 0.36)} L${r1(bw / 2)},${r1(h * 0.36)} L${r1(-bw / 2)},${r1(h * 0.72)} Z" fill="${gris}" stroke="#141414" stroke-width="0.8" stroke-linejoin="round"/>`;
+      else g += `<rect ${tr(m)} x="${r1(-bw / 2 + 0.5)}" y="${r1(-h / 2)}" width="${bw - 1}" height="${r1(h)}" rx="${r1(h / 2)}" fill="${gris}" stroke="#141414" stroke-width="0.8"/>`;
       g += `<ellipse ${tr(m)} cx="0" cy="0" rx="${r1(bw * 0.27)}" ry="${r1(h * 0.3)}" fill="${degen ? "#757575" : "#ececec"}"/>`;
     });
     // Médula (cervical) o cono medular y cola de caballo (lumbar).
@@ -265,56 +277,74 @@ const docR = (function () {
     else {
       const cono = canal.slice(0, 4), punta = glob(discos[1], cc + 1, 0);
       g += `<path d="${suave(cono)}" fill="none" stroke="#8f8f8f" stroke-width="${r1(cw * 0.5)}" stroke-linejoin="round"/>`;
-      const c3 = cono[3], m1 = cuerpos[1], rad = m1.a * Math.PI / 180, ox = Math.cos(rad) * cw * 0.25, oy = Math.sin(rad) * cw * 0.25;
+      const c3 = cono[3], rad = cuerpos[1].a * Math.PI / 180, ox = Math.cos(rad) * cw * 0.25, oy = Math.sin(rad) * cw * 0.25;
       g += `<path d="M${r1(c3[0] - ox)},${r1(c3[1] - oy)} L${r1(punta[0])},${r1(punta[1])} L${r1(c3[0] + ox)},${r1(c3[1] + oy)} Z" fill="#8f8f8f"/>`;
       [-0.3, -0.12, 0.06, 0.22, 0.34].forEach(o => {
         const pts = [punta];
         for (let i = 2; i < n; i++) { pts.push(glob(cuerpos[i], cc + o * cw, 0)); if (discos[i]) pts.push(glob(discos[i], cc + o * cw, 0)); }
-        pts.push(glob(cuerpos[n - 1], cc + o * cw, hb * 1.6));
+        pts.push(glob(S1, cc - 1 + o * cw, hb * 1.5));
         g += `<path d="${suave(pts)}" fill="none" stroke="#a5a5a5" stroke-width="0.9"/>`;
       });
     }
-    // Hallazgos.
+    // Hallazgos en el disco: señal medular, estenosis, hernia o protrusión.
     discos.forEach((m, i) => {
       const e = bw / 2 - 1;
       if (tiene(i, "mielopatia")) g += `<ellipse ${tr(m)} cx="${r1(cc)}" cy="0" rx="${r1(cw * 0.22)}" ry="${r1(hd / 2 + hb * 0.5)}" fill="#d9d9d9" opacity="0.6"/><ellipse ${tr(m)} cx="${r1(cc)}" cy="0" rx="${r1(cw * 0.13)}" ry="${r1(hd / 2 + hb * 0.32)}" fill="#ffffff"/>`;
       if (tiene(i, "estenosis")) {
-        g += `<path ${tr(m)} d="M${r1(cpw + 1)},${r1(-hd * 1.7)} Q${r1(cpw - cw * 0.55)},0 ${r1(cpw + 1)},${r1(hd * 1.7)} Z" fill="#444444" stroke="#111111" stroke-width="0.8"/>`;
-        if (!tiene(i, "hernia") && !tiene(i, "protrusion")) g += `<path ${tr(m)} d="M${r1(e)},${r1(-hd * 0.8)} Q${r1(e + cw * 0.55)},0 ${r1(e)},${r1(hd * 0.8)} Z" fill="#5a5a5a" stroke="#111111" stroke-width="0.8"/>`;
+        g += `<path ${tr(m)} d="M${r1(cpw + 1)},${r1(-hd * 1.7)} Q${r1(cpw - cw * 0.95)},0 ${r1(cpw + 1)},${r1(hd * 1.7)} Z" fill="#444444" stroke="#111111" stroke-width="0.8"/>`;
+        if (!tiene(i, "hernia") && !tiene(i, "protrusion")) g += `<path ${tr(m)} d="M${r1(e)},${r1(-hd * 0.8)} Q${r1(e + cw * 0.7)},0 ${r1(e)},${r1(hd * 0.8)} Z" fill="#5a5a5a" stroke="#111111" stroke-width="0.8"/>`;
       }
-      if (tiene(i, "hernia")) g += `<path ${tr(m)} d="M${r1(e)},${r1(-hd * 0.6)} C${r1(e + cw * 0.55)},${r1(-hd)} ${r1(e + cw * 0.8)},${r1(-hd * 0.3)} ${r1(e + cw * 0.76)},${r1(hd * 0.3)} C${r1(e + cw * 0.66)},${r1(hd * 1.15)} ${r1(e + cw * 0.25)},${r1(hd * 0.95)} ${r1(e)},${r1(hd * 0.6)} Z" fill="#555555" stroke="#111111" stroke-width="0.9"/>`;
-      else if (tiene(i, "protrusion")) g += `<path ${tr(m)} d="M${r1(e)},${r1(-hd * 0.62)} Q${r1(e + cw * 0.85)},0 ${r1(e)},${r1(hd * 0.62)} Z" fill="#5c5c5c" stroke="#111111" stroke-width="0.9"/>`;
-      if (tiene(i, "artrodesis")) {
-        const yS = hd / 2 + hb * 0.4;
-        if (!lumbar) {
-          g += `<rect ${tr(m)} x="${r1(-bw / 2 - 6)}" y="${r1(-(hd / 2 + hb * 0.62))}" width="4.5" height="${r1(2 * (hd / 2 + hb * 0.62))}" rx="1.5" fill="#cfd6de" stroke="#111111" stroke-width="0.8"/>`;
-          [-1, 1].forEach(s => { g += `<path ${tr(m)} d="M${r1(-bw / 2 - 2)},${r1(s * yS)} L${r1(-bw / 2 + bw * 0.62)},${r1(s * (yS - 3))}" stroke="#cfd6de" stroke-width="2.8" stroke-linecap="round"/>`; });
-        } else {
-          const xr = cpw + 16;
-          g += `<path ${tr(m)} d="M${r1(xr)},${r1(-(yS + 3))} L${r1(xr)},${r1(yS + 3)}" stroke="#cfd6de" stroke-width="3.6" stroke-linecap="round"/>`;
-          [-1, 1].forEach(s => { g += `<path ${tr(m)} d="M${r1(xr)},${r1(s * yS)} L${r1(-bw * 0.2)},${r1(s * yS)}" stroke="#cfd6de" stroke-width="2.6" stroke-linecap="round" opacity="0.75"/>`; });
-        }
+      if (tiene(i, "hernia")) g += `<path ${tr(m)} d="M${r1(e)},${r1(-hd * 0.6)} C${r1(e + cw * 0.55)},${r1(-hd)} ${r1(e + cw * 0.85)},${r1(-hd * 0.3)} ${r1(e + cw * 0.8)},${r1(hd * 0.3)} C${r1(e + cw * 0.7)},${r1(hd * 1.2)} ${r1(e + cw * 0.25)},${r1(hd * 0.95)} ${r1(e)},${r1(hd * 0.6)} Z" fill="#555555" stroke="#111111" stroke-width="0.9"/>`;
+      else if (tiene(i, "protrusion")) g += `<path ${tr(m)} d="M${r1(e)},${r1(-hd * 0.62)} Q${r1(e + cw * 0.9)},0 ${r1(e)},${r1(hd * 0.62)} Z" fill="#5c5c5c" stroke="#111111" stroke-width="0.9"/>`;
+    });
+    // Artrodesis: cada tramo de niveles fusionados contiguos es un montaje con un tornillo por vértebra.
+    const metal = (pts, w) => `<path d="M${poli(pts).replace(/ /g, " L")}" fill="none" stroke="#111111" stroke-width="${w + 1.8}" stroke-linecap="round" stroke-linejoin="round"/><path d="M${poli(pts).replace(/ /g, " L")}" fill="none" stroke="#cfd6de" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const tramos = [];
+    porDisco.forEach((t, i) => { if (t.indexOf("artrodesis") < 0) return; const u = tramos[tramos.length - 1]; if (u && u[1] === i - 1) u[1] = i; else tramos.push([i, i]); });
+    tramos.forEach(([a, b]) => {
+      const vs = []; for (let k = a; k <= b + 1; k++) vs.push(k);
+      if (!lumbar) {
+        const placa = [];
+        vs.forEach((k, j) => {
+          const y1 = j === 0 ? -hb * 0.05 : -hb / 2, y2 = j === vs.length - 1 ? hb * 0.05 : hb / 2;
+          placa.push(glob(cuerpos[k], -bw / 2 - 3.5, y1), glob(cuerpos[k], -bw / 2 - 3.5, y2));
+          if (discos[k] && k <= b) placa.push(glob(discos[k], -bw / 2 - 3.5, 0));
+        });
+        g += metal(placa, 4.2);
+        vs.forEach((k, j) => { const s = j === 0 ? 1 : j === vs.length - 1 ? -1 : 0; g += metal([glob(cuerpos[k], -bw / 2 - 2, s * hb * 0.24), glob(cuerpos[k], bw * 0.16, s * hb * 0.05)], 2.6); });
+      } else {
+        const xr = cpw + 16;
+        g += `<g opacity="0.85">` + metal(vs.map(k => glob(cuerpos[k], xr, NIV[k] === "S1" ? -hb * 0.15 : 0)), 3.6);
+        vs.forEach(k => { const y = NIV[k] === "S1" ? -hb * 0.15 : 0; g += metal([glob(cuerpos[k], xr, y), glob(cuerpos[k], -bw * 0.18, y)], 2.4); });
+        g += `</g>`;
       }
     });
-    // Rótulos: vértebras a la izquierda, hallazgos a la derecha con su línea guía.
-    cuerpos.forEach((m, i) => { const p = glob(m, -bw / 2 - (i && NIV[i] !== "S1" ? 12 : 14), 4); g += tx(p[0], p[1], NIV[i], 'font-size="10" text-anchor="end" fill="#d6d6d6"'); });
+    // Rótulos: vértebras a la izquierda; hallazgos a la derecha con su línea guía y sin encimarse.
+    cuerpos.forEach((m, i) => { const p = glob(m, -bw / 2 - 14, 4); g += tx(p[0], p[1], NIV[i], 'font-size="10" text-anchor="end" fill="#d6d6d6"'); });
     const LX = 230, rot = [];
-    discos.forEach((m, i) => { if (porDisco[i].length) rot.push({ i, ancla:glob(m, porDisco[i].length === 1 && porDisco[i][0] === "mielopatia" ? cc : cpw, 0), lineas:porDisco[i].map(t => NOMBRE_HALLAZGO[t] || t) }); });
-    let fondo = 16;
-    rot.forEach(r => { const alto = 13 + r.lineas.length * 12; r.y = Math.max(r.ancla[1] - 4, fondo + 10); fondo = r.y + alto - 10; });
-    if (fondo > H - 26) { const corr = fondo - (H - 26); rot.forEach(r => { r.y -= corr; }); }
+    porDisco.forEach((t, i) => {
+      if (!t.length) return;
+      const u = rot[rot.length - 1];
+      if (u && u.b === i - 1 && t.length === 1 && t[0] === "artrodesis" && u.tipos.length === 1 && u.tipos[0] === "artrodesis") { u.b = i; return; }
+      rot.push({ a:i, b:i, tipos:t, ancla:glob(discos[i], t.length === 1 && t[0] === "mielopatia" ? cc : cpw, 0) });
+    });
+    rot.forEach(r => { r.lineas = r.tipos.map(t => NOMBRE_HALLAZGO[t] || t); r.nivel = NIV[r.a] + "–" + NIV[r.b + 1]; if (r.b > r.a) r.ancla = glob(cuerpos[r.a + 1], cpw, 0); });
+    let sig = 30;
+    rot.forEach(r => { r.y = Math.max(r.ancla[1] + 4, sig); sig = r.y + 12 * r.lineas.length + 19; });
+    const exceso = sig - 19 - (H - 22);
+    if (exceso > 0) rot.forEach(r => { r.y -= exceso; });
     rot.forEach(r => {
       g += `<path d="M${r1(r.ancla[0])},${r1(r.ancla[1])} L${r1(LX - 22)},${r1(r.y - 4)} L${r1(LX - 4)},${r1(r.y - 4)}" fill="none" stroke="#ffd54a" stroke-width="1"/><circle cx="${r1(r.ancla[0])}" cy="${r1(r.ancla[1])}" r="1.8" fill="#ffd54a"/>`;
-      g += tx(LX, r.y, NIV[r.i] + "–" + NIV[r.i + 1], 'font-size="10.5" font-weight="bold" fill="#ffd54a"');
-      r.lineas.forEach((l, k) => { g += tx(LX, r.y + 13 + k * 12, l, 'font-size="10" fill="#f3e3a1"'); });
+      g += tx(LX, r.y, r.nivel, 'font-size="10.5" font-weight="bold" fill="#ffd54a"');
+      r.lineas.forEach((l, k) => { g += tx(LX, r.y + 12 * (k + 1), l, 'font-size="10" fill="#f3e3a1"'); });
     });
     const sec = String(d.secuencia || "T2 sagital");
     g += tx(8, 15, "RM · " + sec, 'font-size="10" fill="#cfcfcf"') + tx(W - 8, 15, "Columna " + (lumbar ? "lumbar" : "cervical"), 'font-size="10" text-anchor="end" fill="#cfcfcf"');
     g += tx(8, H / 2, "A", 'font-size="11" font-weight="bold" fill="#9a9a9a"') + tx(W - 8, H - 10, "P", 'font-size="11" font-weight="bold" text-anchor="end" fill="#9a9a9a"');
     if (!rot.length) g += tx(LX, H / 2, "Sin hallazgos focales", 'font-size="10" fill="#f3e3a1"');
-    const desc = rot.map(r => NIV[r.i] + "–" + NIV[r.i + 1] + ": " + r.lineas.join(", ").toLowerCase()).concat(fuera.map(h => normNivel(h.nivel) + ": " + String(NOMBRE_HALLAZGO[h.tipo] || h.tipo).toLowerCase()));
-    const etiqueta = "Esquema sagital de resonancia magnética de columna " + (lumbar ? "lumbar" : "cervical") + ", secuencia " + sec + ". " + (desc.length ? "Hallazgos: " + desc.join("; ") + "." : "Sin hallazgos focales.");
-    const nota = fuera.length ? `<p class="doc-fig-leyenda">Fuera del esquema: ${esc(desc.slice(rot.length).join("; "))}.</p>` : "";
+    const desc = rot.map(r => r.nivel + ": " + r.lineas.join(", ").toLowerCase()), descFuera = fuera.map(h => normNivel(h.nivel).replace("-", "–") + ": " + String(NOMBRE_HALLAZGO[h.tipo] || h.tipo).toLowerCase());
+    const etiqueta = "Esquema sagital de resonancia magnética de columna " + (lumbar ? "lumbar" : "cervical") + ", secuencia " + sec + ". " + (desc.length || descFuera.length ? "Hallazgos: " + desc.concat(descFuera).join("; ") + "." : "Sin hallazgos focales.");
+    const nota = descFuera.length ? `<p class="doc-fig-leyenda">Fuera del esquema: ${esc(descFuera.join("; "))}.</p>` : "";
     return { titulo:"Resonancia magnética de columna " + (lumbar ? "lumbar" : "cervical") + " · " + sec, html:svg(W, H, etiqueta, "doc-svg-imagen", g) + nota, imagen:true };
   }
 
@@ -325,7 +355,7 @@ const docR = (function () {
      ===================================================================================================== */
   const PULMON_D = [[118, 52], [100, 56], [84, 68], [72, 90], [64, 120], [60, 155], [58, 190], [58, 225], [60, 252], [64, 270], [80, 263], [100, 255], [120, 250], [138, 251], [150, 255], [151, 228], [149, 196], [146, 160], [145, 124], [141, 92], [135, 67], [127, 55]];
   const PULMON_I = [[222, 52], [240, 56], [256, 68], [268, 90], [276, 120], [280, 155], [282, 190], [282, 226], [280, 256], [276, 276], [262, 270], [246, 265], [232, 263], [222, 252], [214, 232], [206, 205], [199, 180], [195, 150], [195, 122], [199, 92], [205, 67], [213, 55]];
-  const CORAZON = [[150, 140], [141, 165], [137, 200], [140, 232], [150, 258], [190, 266], [226, 264], [236, 246], [238, 214], [228, 186], [212, 164], [204, 146], [206, 128], [200, 106], [188, 98], [174, 96], [158, 100]];
+  const CORAZON = [[150, 160], [142, 178], [137, 204], [139, 232], [147, 255], [172, 264], [205, 267], [230, 263], [240, 251], [239, 229], [231, 206], [218, 186], [204, 172], [188, 163], [168, 159]];
   function dentro(p, poly) { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const a = poly[i], b = poly[j]; if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; }
   const ZONA_ALT = { s:"superior", m:"media", i:"inferior" }, ZONA_LADO = { d:"derecha", i:"izquierda" };
   function zona(z) {
@@ -335,7 +365,7 @@ const docR = (function () {
     return alt && lado ? { alt, lado } : null;
   }
   function profusion(p) {
-    const m = /^\s*([0-3])\s*\/\s*([0-3+-])/.exec(String(p || "")), may = m ? Number(m[1]) : Number(String(p).charAt(0)) || 0;
+    const m = /^\s*([0-3])\s*\/\s*([0-3+-])/.exec(String(p || "")), may = m ? Number(m[1]) : Math.min(3, Number(String(p || "").charAt(0)) || 0);
     const men = !m ? may : m[2] === "+" ? Math.min(3, may + 1) : m[2] === "-" ? Math.max(0, may - 1) : Number(m[2]);
     const base = [0, 9, 20, 36];
     return Math.round(base[may] * 0.7 + base[men] * 0.3);
@@ -348,8 +378,8 @@ const docR = (function () {
     const nZona = profusion(d.profusion);
     let g = `<rect x="0" y="0" width="${W}" height="${H}" fill="#070707"/>`;
     g += `<path d="M138,0 L202,0 L206,30 Q250,40 316,56 L326,330 L14,330 L24,56 Q90,40 134,30 Z" fill="#3c3c3c"/>`;
-    g += `<rect x="24" y="238" width="292" height="92" fill="#a3a3a3"/>`;
-    g += `<rect x="160" y="0" width="20" height="${H}" fill="#7d7d7d" opacity="0.55"/>`;
+    g += `<path d="M24,286 L58,276 Q96,250 150,256 L190,268 Q236,256 284,280 L316,288 L316,330 L24,330 Z" fill="#a6a6a6"/>`;
+    g += `<rect x="160" y="0" width="20" height="${H}" fill="#e2e2e2" opacity="0.16"/>`;
     g += `<path d="${suave(PULMON_D, true)}" fill="#151515"/><path d="${suave(PULMON_I, true)}" fill="#151515"/>`;
     // Tramas vasculares desde los hilios.
     [[146, 150, 96, 120], [146, 156, 88, 175], [146, 162, 100, 220], [146, 146, 110, 92], [196, 150, 246, 120], [196, 158, 254, 178], [198, 164, 240, 226], [196, 146, 232, 92]].forEach(v => { g += `<path d="M${v[0]},${v[1]} Q${(v[0] + v[2]) / 2},${v[1] + (v[3] - v[1]) * 0.3} ${v[2]},${v[3]}" fill="none" stroke="#4a4a4a" stroke-width="1.4" opacity="0.7"/>`; });
@@ -360,20 +390,20 @@ const docR = (function () {
       g += `<path d="M178,${y} C222,${y - 16} 266,${y - 6} 290,${y + 26}" fill="none" stroke="#d2d2d2" stroke-width="4" opacity="0.32"/>`;
     }
     g += `<path d="M160,66 Q112,46 34,54" fill="none" stroke="#e3e3e3" stroke-width="6" stroke-linecap="round" opacity="0.85"/><path d="M180,66 Q228,46 306,54" fill="none" stroke="#e3e3e3" stroke-width="6" stroke-linecap="round" opacity="0.85"/>`;
-    // Mediastino, tráquea y corazón.
-    g += `<path d="M152,30 L150,140 L204,140 L190,30 Z" fill="#bdbdbd" opacity="0.9"/>`;
+    // Mediastino con el botón aórtico, tráquea con la carina y silueta cardíaca sobre el diafragma.
+    g += `<path d="M150,36 L149,104 Q141,128 147,166 L201,168 Q214,146 211,127 Q219,108 200,100 L191,36 Z" fill="#bdbdbd" opacity="0.92"/>`;
+    g += `<rect x="165" y="0" width="10" height="118" fill="#262626"/><path d="M170,116 L151,142 M170,116 L191,140" stroke="#262626" stroke-width="7" stroke-linecap="round"/>`;
     g += `<path d="${suave(CORAZON, true)}" fill="#cbcbcb"/>`;
-    g += `<rect x="165" y="0" width="10" height="118" fill="#262626"/><path d="M170,116 L150,142 M170,116 L192,142" stroke="#262626" stroke-width="7" stroke-linecap="round"/>`;
-    g += `<ellipse cx="236" cy="290" rx="17" ry="9" fill="#1b1b1b"/>`;
+    g += `<ellipse cx="236" cy="292" rx="17" ry="9" fill="#1b1b1b"/>`;
     // Zonas OIT: tercios de cada campo pulmonar entre el vértice y la cúpula diafragmática.
     const campo = { d:{ poly:PULMON_D, x0:56, x1:152, ap:52, base:262, lx:44, anchor:"end" }, i:{ poly:PULMON_I, x0:192, x1:284, ap:52, base:270, lx:296, anchor:"start" } };
     ["d", "i"].forEach(l => {
       const c = campo[l], t = (c.base - c.ap) / 3;
       [1, 2].forEach(k => { g += ln(c.x0, c.ap + k * t, c.x1, c.ap + k * t, "#ffd54a", 0.8, 'stroke-dasharray="3 3" opacity="0.45"'); });
-      ["s", "m", "i"].forEach((a, k) => { const on = zonas.some(z => z.alt === a && z.lado === l); g += tx(c.lx, c.ap + t * (k + 0.5) + 3, ZONA_ALT[a].slice(0, 3) + ".", `font-size="9" text-anchor="${c.anchor}" fill="${on ? "#ffd54a" : "#8c8c8c"}"${on ? ' font-weight="bold"' : ""}`); });
+      ["s", "m", "i"].forEach((a, k) => { const on = zonas.some(z => z.alt === a && z.lado === l); g += tx(c.lx, c.ap + t * (k + 0.5) + 3, ZONA_ALT[a].slice(0, 3) + ".", `font-size="9.5" text-anchor="${c.anchor}" fill="${on ? "#ffd54a" : "#8c8c8c"}"${on ? ' font-weight="bold"' : ""}`); });
     });
     // Opacidades pequeñas.
-    const tam = { p:1.1, q:1.8, r:3 }, irr = { s:3, t:5, u:8 };
+    const tam = { p:1.1, q:1.8, r:3 }, irr = { s:3.2, t:5, u:8 };
     zonas.forEach(z => {
       const c = campo[z.lado], t = (c.base - c.ap) / 3, ya = c.ap + t * (z.alt === "s" ? 0 : z.alt === "m" ? 1 : 2);
       let puestas = 0;
@@ -382,11 +412,11 @@ const docR = (function () {
         if (!dentro(p, c.poly) || dentro(p, CORAZON) || !dentro([p[0] - 4, p[1]], c.poly) || !dentro([p[0] + 4, p[1]], c.poly) || !dentro([p[0], p[1] + 4], c.poly)) continue;
         const f = formas[puestas % 10 < 7 || formas.length === 1 ? 0 : 1];
         if (tam[f]) g += `<circle cx="${r1(p[0])}" cy="${r1(p[1])}" r="${tam[f]}" fill="#e8e8e8" opacity="0.88"/>`;
-        else { const a = rnd() * Math.PI, l = irr[f] / 2; g += ln(p[0] - Math.cos(a) * l, p[1] - Math.sin(a) * l, p[0] + Math.cos(a) * l, p[1] + Math.sin(a) * l, "#e0e0e0", 1.3, 'opacity="0.85" stroke-linecap="round"'); }
+        else { const l = irr[f] / 2, a1 = rnd() * Math.PI * 2, a2 = a1 + 1.2 + rnd() * 1.6; g += `<path d="M${r1(p[0] + Math.cos(a1) * l)},${r1(p[1] + Math.sin(a1) * l)} L${r1(p[0])},${r1(p[1])} L${r1(p[0] + Math.cos(a2) * l)},${r1(p[1] + Math.sin(a2) * l)}" fill="none" stroke="#e0e0e0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>`; }
         puestas++;
       }
     });
-    // Opacidades grandes (A, B, C).
+    // Opacidades grandes (A, B, C), en los campos superiores.
     const gr = String(d.grandes == null ? "0" : d.grandes).trim().toUpperCase();
     const masas = { A:[[100, 98, 6, 8]], B:[[100, 100, 12, 16], [240, 104, 10, 13]], C:[[100, 104, 20, 28], [240, 106, 18, 25]] }[gr];
     (masas || []).forEach(m => { g += `<ellipse cx="${m[0]}" cy="${m[1]}" rx="${m[2]}" ry="${m[3]}" fill="#d8d8d8" opacity="0.9"/>`; });
@@ -414,33 +444,33 @@ const docR = (function () {
     const fuera = (m, f) => esNum(f[m.k]) && esNum(f[m.ref]) && (m.alto ? f[m.k] > f[m.ref] : f[m.k] < f[m.ref]);
     const W = 340, X0 = 72, X1 = 236;
     const tarjetas = filas.map(f => {
-      const tipo = /motor/i.test(f.tipo || "") ? "motor" : "sensitivo", alguna = MET.some(m => fuera(m, f));
-      const finCab = 12 + ancho(f.nervio || "Nervio", 12.4) + 6 + ancho("· " + tipo, 11);
-      let g = `<rect x="0.5" y="0.5" width="${W - 1}" height="101" rx="4" fill="#ffffff" stroke="#c9ced6"/><rect x="0.5" y="0.5" width="4" height="101" fill="${alguna ? "#c0392b" : "#3d6aa6"}"/>`;
-      g += tx(12, 18, String(f.nervio || "Nervio"), 'font-size="12" font-weight="bold" fill="#1d2330"') + tx(12 + ancho(f.nervio || "Nervio", 12.4) + 6, 18, "· " + tipo, 'font-size="11" fill="#59616c"');
+      const tipo = /motor/i.test(f.tipo || "") ? "motor" : "sensitivo", alguna = MET.some(m => fuera(m, f)), nervio = String(f.nervio || "Nervio");
+      const finCab = 12 + ancho(nervio, 12) * 1.05 + ancho(" · " + tipo, 11);
+      let g = `<rect x="0.5" y="0.5" width="${W - 1}" height="100" rx="4" fill="#ffffff" stroke="#c9ced6"/><rect x="0.5" y="0.5" width="4" height="100" fill="${alguna ? "#c0392b" : "#3d6aa6"}"/>`;
+      g += `<text x="12" y="18" font-size="12" fill="#1d2330"><tspan font-weight="bold">${esc(nervio)}</tspan><tspan font-size="11" fill="#59616c"> · ${tipo}</tspan></text>`;
       if (alguna && finCab < W - 108) g += `<rect x="${W - 104}" y="7" width="94" height="15" rx="7.5" fill="#fbe4e2"/>` + tx(W - 57, 18, "Fuera de referencia", 'font-size="9" font-weight="bold" text-anchor="middle" fill="#a3221c"');
       const partes = [];
       MET.forEach((m, j) => {
-        const y = 40 + j * 22, v = f[m.k], ref = f[m.ref], u = m.u(f), mx = maxDe(m, f), X = x => X0 + (X1 - X0) * Math.min(1, Math.max(0, x / mx));
+        const y = 40 + j * 22, v = f[m.k], ref = f[m.ref], u = m.u(f), mx = maxDe(m, f), X = x => X0 + (X1 - X0) * Math.min(1, Math.max(0, x / mx)), malo = fuera(m, f);
         g += tx(12, y + 4, m.n, 'font-size="10.5" fill="#39404a"');
         g += `<rect x="${X0}" y="${y - 6}" width="${X1 - X0}" height="12" fill="#f1f3f6"/>`;
         if (esNum(ref)) g += m.alto ? `<rect x="${X0}" y="${y - 6}" width="${r1(X(ref) - X0)}" height="12" fill="#dcefe2"/>` : `<rect x="${r1(X(ref))}" y="${y - 6}" width="${r1(X1 - X(ref))}" height="12" fill="#dcefe2"/>`;
-        if (esNum(v)) g += `<rect x="${X0}" y="${y - 3.5}" width="${r1(Math.max(1, X(v) - X0))}" height="7" fill="${fuera(m, f) ? "#c0392b" : "#3d6aa6"}"/>`;
+        if (esNum(v)) g += `<rect x="${X0}" y="${y - 3.5}" width="${r1(Math.max(1, X(v) - X0))}" height="7" fill="${malo ? "#c0392b" : "#3d6aa6"}"/>`;
         if (esNum(ref)) g += ln(X(ref), y - 8, X(ref), y + 8, "#1d2330", 1.3, 'stroke-dasharray="2 1.5"');
-        const malo = fuera(m, f);
         g += tx(X1 + 6, y + 4, esNum(v) ? fmt(v) + " " + u : "—", `font-size="10.5" font-weight="bold" fill="${malo ? "#a3221c" : "#1d2330"}"`);
         if (esNum(ref)) g += tx(W - 8, y + 4, (m.alto ? "≤ " : "≥ ") + fmt(ref), 'font-size="9" text-anchor="end" fill="#6a717b"');
         partes.push(m.n.toLowerCase() + " " + (esNum(v) ? fmt(v) + " " + u : "sin dato") + (esNum(ref) ? " (referencia " + (m.alto ? "hasta " : "desde ") + fmt(ref) + ")" + (malo ? ", fuera de referencia" : "") : ""));
       });
-      return svg(W, 102, String(f.nervio || "Nervio") + ", " + tipo + ": " + partes.join("; ") + ".", "doc-svg-tarjeta", g);
+      return svg(W, 101, nervio + ", " + tipo + ": " + partes.join("; ") + ".", "doc-svg-tarjeta", g);
     });
     const ley = `<p class="doc-fig-leyenda"><span class="doc-sw doc-sw-ok"></span>Dentro de la referencia <span class="doc-sw doc-sw-mal"></span>Fuera de la referencia <span class="doc-sw doc-sw-rango"></span>Rango normal <span class="doc-sw doc-sw-linea"></span>Límite de referencia (latencia: máximo; amplitud y velocidad: mínimo)</p>`;
-    const resumen = "Neuroconducción de " + filas.length + " nervio" + (filas.length === 1 ? "" : "s") + ": " + filas.map(f => f.nervio + " " + (/motor/i.test(f.tipo || "") ? "motor" : "sensitivo") + (MET.some(m => fuera(m, f)) ? ", con valores fuera de referencia" : ", dentro de referencia")).join("; ") + ".";
+    const resumen = "Neuroconducción de " + filas.length + " nervio" + (filas.length === 1 ? "" : "s") + ": " + filas.map(f => String(f.nervio || "Nervio") + " " + (/motor/i.test(f.tipo || "") ? "motor" : "sensitivo") + (MET.some(m => fuera(m, f)) ? ", con valores fuera de referencia" : ", dentro de referencia")).join("; ") + ".";
     return { titulo:"Estudio de neuroconducción · valores frente a la referencia", html:`<div class="doc-fig-tarjetas" role="group" aria-label="${esc(resumen)}">${tarjetas.join("")}</div>` + ley };
   }
 
   /* =====================================================================================================
      Serie: barras o línea con ejes rotulados, cifras en formato colombiano y línea de límite opcional.
+     Se dibuja dos veces, ancha y angosta: la hoja muestra la que cabe (consulta de contenedor en el CSS).
      ===================================================================================================== */
   function partir(s, max) {
     const ps = String(s).split(/\s+/), out = []; let l = "";
@@ -448,7 +478,7 @@ const docR = (function () {
     if (l) out.push(l);
     return out;
   }
-  function serie(d) {
+  function serieSvg(d, W, cls) {
     const pts = (Array.isArray(d.puntos) ? d.puntos : []).filter(p => Array.isArray(p) && esNum(p[1]));
     const unidad = String(d.unidad || ""), dinero = /^(pesos|cop|\$)$/i.test(unidad.trim());
     const lim = d.limite && esNum(d.limite.valor) ? d.limite : null, linea = d.forma === "linea";
@@ -461,45 +491,54 @@ const docR = (function () {
     const st = paso(hi - lo, 5); lo = Math.floor(lo / st + 1e-9) * st; hi = Math.ceil((hi + (hi - lo) * 0.04) / st - 1e-9) * st;
     const tf = v => Math.abs(v) < st * 1e-6 ? "0" : dinero ? pesos(v) : fmt(v, decs(st));
     const marcas = []; for (let v = lo; v <= hi + st * 1e-6; v += st) marcas.push(Math.round(v / st) * st);
-    const W = 360, fx = 9.5, L = Math.max(...marcas.map(v => ancho(tf(v), 10))) + 12, R = W - 10, T = 24;
+    const fs = W < 420 ? 10.5 : 10, fx = W < 420 ? 10 : 9.5;
+    const L = Math.max(...marcas.map(v => ancho(tf(v), fs))) + 12, R = W - 10, T = 26;
     const n = Math.max(1, pts.length), ranura = (R - L) / n;
-    let lineas = pts.map(p => partir(p[0], Math.max(3, Math.floor(ranura / (fx * 0.56)))));
+    const lineas = pts.map(p => partir(p[0], Math.max(3, Math.floor(ranura / (fx * 0.56)))));
     const girar = lineas.some(l => !l || l.length > 3);
-    const altoEt = girar ? Math.min(90, Math.max(...pts.map(p => ancho(p[0], fx))) * 0.62 + 14) : 8 + Math.max(1, ...lineas.map(l => l.length)) * 11;
-    const PH = 150, B = T + PH, H = B + altoEt + 6;
+    const altoEt = girar ? Math.min(96, Math.max(...pts.map(p => ancho(p[0], fx))) * 0.62 + 14) : 8 + Math.max(1, ...lineas.map(l => l.length)) * (fx + 1.5);
+    const PH = W < 420 ? 170 : 160, B = T + PH, H = B + altoEt + 6;
     const Y = v => B - (v - lo) / (hi - lo) * PH, X = i => L + ranura * (i + 0.5);
     let g = `<rect x="0" y="0" width="${W}" height="${r1(H)}" fill="#ffffff"/>`;
-    marcas.forEach(v => { g += ln(L, Y(v), R, Y(v), v === 0 ? "#59616c" : "#e1e5ea", v === 0 ? 1.1 : 0.8) + tx(L - 5, Y(v) + 3.5, tf(v), 'font-size="10" text-anchor="end" fill="#39404a"'); });
+    marcas.forEach(v => { g += ln(L, Y(v), R, Y(v), Math.abs(v) < st * 1e-6 ? "#59616c" : "#e1e5ea", Math.abs(v) < st * 1e-6 ? 1.1 : 0.8) + tx(L - 5, Y(v) + 3.5, tf(v), `font-size="${fs}" text-anchor="end" fill="#39404a"`); });
     g += ln(L, T, L, B, "#59616c", 1);
-    g += tx(L - 5, 12, dinero ? "Pesos" : unidad, 'font-size="10" font-weight="bold" text-anchor="start" fill="#2a3039"');
-    const valores = [];
+    g += tx(4, 13, dinero ? "Pesos" : unidad, `font-size="${fs}" font-weight="bold" fill="#2a3039"`);
+    const valores = [], cajas = [], halo = 'stroke="#ffffff" stroke-width="3" paint-order="stroke"';
     if (linea) {
+      pts.forEach((p, i) => { cajas.push([X(i) - 9, Y(p[1]) - 19, X(i) + 9, Y(p[1]) + 5]); });
       g += `<polyline points="${poli(pts.map((p, i) => [X(i), Y(p[1])]))}" fill="none" stroke="#2f5d8a" stroke-width="2"/>`;
       pts.forEach((p, i) => { g += `<circle cx="${r1(X(i))}" cy="${r1(Y(p[1]))}" r="3.4" fill="#ffffff" stroke="#2f5d8a" stroke-width="1.8"/>`; });
-      pts.forEach((p, i) => { if (ancho(f(p[1]), 9.5) < ranura - 2) valores.push(tx(X(i), Y(p[1]) - 7, f(p[1]), 'font-size="9.5" text-anchor="middle" fill="#1d2330" stroke="#ffffff" stroke-width="3" paint-order="stroke"')); });
+      pts.forEach((p, i) => { if (ancho(f(p[1]), fx) < ranura - 2) valores.push(tx(X(i), Y(p[1]) - 7, f(p[1]), `font-size="${fx}" text-anchor="middle" fill="#1d2330" ${halo}`)); });
     } else {
       const bwid = Math.min(46, ranura * 0.68);
       pts.forEach((p, i) => {
-        const y = Y(Math.max(p[1], lo)), y0 = Y(Math.max(0, lo)), top = Math.min(y, y0), alto = Math.abs(y0 - y);
+        const y = Y(Math.max(p[1], lo)), y0 = Y(Math.max(0, lo)), top = Math.min(y, y0), alto = Math.abs(y0 - y), et = f(p[1]);
         g += `<rect x="${r1(X(i) - bwid / 2)}" y="${r1(top)}" width="${r1(bwid)}" height="${r1(Math.max(0.5, alto))}" fill="#2f5d8a"/>`;
-        const et = f(p[1]);
-        if (ancho(et, 9.5) < ranura - 2) valores.push(tx(X(i), top - 4, et, 'font-size="9.5" text-anchor="middle" fill="#1d2330"'));
-        else if (alto > ancho(et, 9) + 8 && bwid >= 11) valores.push(`<text transform="translate(${r1(X(i) + 3.2)} ${r1(top + 5)}) rotate(90)" font-size="9" fill="#ffffff">${esc(et)}</text>`);
+        cajas.push([X(i) - bwid / 2, top - 16, X(i) + bwid / 2, top + alto]);
+        if (ancho(et, fx) < ranura - 2) valores.push(tx(X(i), top - 4, et, `font-size="${fx}" text-anchor="middle" fill="#1d2330" ${halo}`));
+        else if (alto > ancho(et, fx - 0.5) + 10 && bwid >= fx + 1) valores.push(`<text transform="translate(${r1(X(i) + (fx - 0.5) * 0.36)} ${r1(top + alto - 5)}) rotate(-90)" font-size="${fx - 0.5}" fill="#ffffff">${esc(et)}</text>`);
+        else if (alto <= 0.5) valores.push(tx(X(i), top - 4, et.length > 5 ? "0" : et, `font-size="${fx}" text-anchor="middle" fill="#1d2330"`));
       });
     }
     if (lim) {
-      const yl = Y(lim.valor);
+      const yl = Y(lim.valor), et = String(lim.etiqueta || ("Límite " + f(lim.valor))), we = ancho(et, fx) * 1.08;
       g += ln(L, yl, R, yl, "#b3261e", 1.4, 'stroke-dasharray="6 4"');
-      const et = String(lim.etiqueta || ("Límite " + f(lim.valor)));
-      g += tx(R - 2, yl - 5, et, 'font-size="9.5" font-weight="bold" text-anchor="end" fill="#b3261e" stroke="#ffffff" stroke-width="3" paint-order="stroke"');
+      // La etiqueta va donde menos estorbe: a la derecha o a la izquierda, encima o debajo de la línea.
+      const opciones = [[R - 2 - we, yl - 5, "end"], [R - 2 - we, yl + 13, "end"], [L + 4, yl - 5, "start"], [L + 4, yl + 13, "start"]];
+      const choques = o => cajas.filter(c => c[0] < o[0] + we && c[2] > o[0] && c[1] < o[1] + 2 && c[3] > o[1] - fx).length + (o[1] + 2 > B || o[1] - fx < T - 4 ? 9 : 0);
+      const mejor = opciones.reduce((a, o) => choques(o) < choques(a) ? o : a, opciones[0]);
+      g += tx(mejor[2] === "end" ? R - 2 : L + 4, mejor[1], et, `font-size="${fx}" font-weight="bold" text-anchor="${mejor[2]}" fill="#b3261e" ${halo}`);
     }
     g += valores.join("");
     pts.forEach((p, i) => {
-      if (girar) g += `<text transform="translate(${r1(X(i) + 3)} ${B + 10}) rotate(-38)" font-size="${fx}" text-anchor="end" fill="#39404a">${esc(p[0])}</text>`;
-      else lineas[i].forEach((l, k) => { g += tx(X(i), B + 13 + k * 11, l, `font-size="${fx}" text-anchor="middle" fill="#39404a"`); });
+      if (girar) g += `<text transform="translate(${r1(X(i) + 3)} ${B + 11}) rotate(-38)" font-size="${fx}" text-anchor="end" fill="#39404a">${esc(p[0])}</text>`;
+      else lineas[i].forEach((l, k) => { g += tx(X(i), B + 14 + k * (fx + 1.5), l, `font-size="${fx}" text-anchor="middle" fill="#39404a"`); });
     });
     const etiqueta = String(d.titulo || "Serie") + (unidad ? " (" + unidad + ")" : "") + ". " + pts.map(p => String(p[0]) + ": " + f(p[1]) + (dinero || !unidad ? "" : " " + unidad)).join("; ") + "." + (lim ? " " + String(lim.etiqueta || "Límite") + " (" + f(lim.valor) + ")." : "");
-    return { titulo:String(d.titulo || ""), html:svg(W, r1(H), etiqueta, "doc-svg-serie", g) };
+    return svg(W, r1(H), etiqueta, "doc-svg-serie " + cls, g);
+  }
+  function serie(d) {
+    return { titulo:String(d.titulo || ""), html:serieSvg(d, 560, "doc-svg-ancho") + serieSvg(d, 330, "doc-svg-angosto") };
   }
 
   const FIGURAS = { audiograma, espirometria, rm_columna:rmColumna, rx_torax:rxTorax, neuroconduccion, serie };
