@@ -3,8 +3,9 @@
    de papel; docFigura(fig) dibuja sus figuras en SVG en línea: audiograma, espirometría, resonancia de columna,
    radiografía de tórax con lectura OIT, neuroconducción y series.
    · Todo texto variable pasa por esc(). Ningún atributo id: varios documentos pueden estar en la misma página.
-   · Sin azar ni fechas: lo que parece variable (el código de verificación de la firma, la posición de las
-     opacidades de la radiografía) se deriva del contenido, de modo que el mismo documento se pinta igual.
+   · Sin azar ni fechas: lo que parece variable se deriva del documento, de modo que el mismo documento se pinta
+     igual. El código de verificación de la firma sale del encabezado de control y de la firma (nunca de lo que
+     se puede tachar); la posición de las opacidades de la radiografía, de los datos de la propia figura.
    · opc.visible(i) decide qué campos de la ruta están a la vista. Lo que no lo está se tacha y su valor no
      viaja en el HTML: ni en el texto, ni en etiquetas accesibles, ni en las figuras.
    · Colores explícitos: la hoja conserva el aspecto de papel aunque la interfaz esté en modo oscuro. */
@@ -60,19 +61,21 @@ const docR = (function () {
     const bruto = rango / (n || 5), e = Math.pow(10, Math.floor(Math.log10(bruto || 1))), f = bruto / e;
     return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e;
   }
+  // Tabla de valores de una figura (celdas ya escapadas): la primera columna rotula cada fila.
   function tablaFig(cols, filas, cls) {
-    return `<div class="doc-tabla doc-tabla-fig"><table${cls ? ` class="${cls}"` : ""}><thead><tr>${cols.map(c => `<th scope="col">${c}</th>`).join("")}</tr></thead><tbody>${filas.map(f => `<tr>${f.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+    return `<div class="doc-tabla doc-tabla-fig"><table${cls ? ` class="${cls}"` : ""}><thead><tr>${cols.map(c => `<th scope="col">${c}</th>`).join("")}</tr></thead><tbody>${filas.map(f => `<tr>${f.map((c, i) => i ? `<td>${c}</td>` : `<th scope="row">${c}</th>`).join("")}</tr>`).join("")}</tbody></table></div>`;
   }
 
   /* =====================================================================================================
      Audiograma: frecuencias en escala logarítmica arriba, dB HL de −10 a 120 hacia abajo, franja normal
      hasta 25 dB; oído derecho con círculos rojos unidos por línea continua, izquierdo con equis azules y
-     línea discontinua (vía ósea: < y >, sin unir).
+     línea discontinua (vía ósea: < y >, sin unir). Proporción de la convención (ASHA, ANSI S3.21): una
+     octava ocupa en horizontal lo mismo que 20 dB en vertical, para que la pendiente de la curva se lea bien.
      ===================================================================================================== */
   const ROJO = "#c62828", AZUL = "#1f4fbf";
   function audiograma(d) {
-    const W = 360, H = 374, L = 50, R = 348, T = 46, B = 304;
-    const fx = f => L + 16 + (R - L - 32) * Math.log2(f / 250) / 5;
+    const W = 360, L = 50, R = 346, T = 46, OCT = (R - L - 32) / 5, B = T + 130 * OCT / 20, H = Math.round(B + 60);
+    const fx = f => L + 16 + OCT * Math.log2(f / 250);
     const dy = db => T + (B - T) * (Math.max(-10, Math.min(120, db)) + 10) / 130;
     const osea = /[óo]sea/i.test(d.via || ""), via = osea ? "vía ósea" : "vía aérea";
     const frecs = v => Object.keys(v || {}).map(Number).filter(f => f >= 250 && f <= 8000 && esNum(v[f])).sort((a, b) => a - b);
@@ -87,7 +90,7 @@ const docR = (function () {
       g += ln(fx(f), T, fx(f), B, media ? "#c3c9d1" : "#bfc6ce", media ? 0.8 : 1, media ? 'stroke-dasharray="3 3"' : "");
       g += media ? tx(fx(f), T - 5, String(f), 'font-size="8.5" text-anchor="middle" fill="#6a717b"') : tx(fx(f), T - 16, String(f), 'font-size="10.5" text-anchor="middle" fill="#39404a"');
     });
-    g += `<rect x="${L}" y="${T}" width="${R - L}" height="${B - T}" fill="none" stroke="#59616c" stroke-width="1"/>`;
+    g += `<rect x="${L}" y="${T}" width="${R - L}" height="${r1(B - T)}" fill="none" stroke="#59616c" stroke-width="1"/>`;
     g += tx((L + R) / 2, 13, "Frecuencia (Hz)", 'font-size="10.5" text-anchor="middle" font-weight="bold" fill="#2a3039"');
     g += `<text transform="translate(13 ${r1((T + B) / 2)}) rotate(-90)" font-size="10.5" text-anchor="middle" font-weight="bold" fill="#2a3039">Nivel de audición (dB HL)</text>`;
     const simbolo = (x, y, oido) => {
@@ -137,8 +140,13 @@ const docR = (function () {
     const hayPef = esNum(d.pef), hayPefP = esNum(d.pefPred);
     const pef = hayPef ? d.pef : fev1 * 2.7, pefP = hayPefP ? d.pefPred : fev1P * 2.7;
     const ratio = fev1 / fvc, ratioP = fev1P / fvcP, pctF = fvc / fvcP;
-    let patron = String(d.patron || "").toLowerCase();
-    if (!FORMA_FV[patron]) patron = ratio < 0.7 ? (pctF < 0.8 ? "mixto" : "obstructivo") : (pctF < 0.8 ? "restrictivo" : "normal");
+    // La forma de la rama espiratoria la deciden los valores medidos: la concavidad de la obstrucción solo si
+    // VEF1/CVF está bajo. El patrón declarado se usa cuando los valores lo permiten (con margen para el límite
+    // inferior de la normalidad); si los contradice, la figura sigue a los valores y no al rótulo.
+    const porDatos = ratio < 0.7 ? (pctF < 0.8 ? "mixto" : "obstructivo") : (pctF < 0.8 ? "restrictivo" : "normal");
+    let patron = String(d.patron || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const obstr = patron === "obstructivo" || patron === "mixto";
+    if (!FORMA_FV[patron] || (obstr && ratio >= 0.75) || (!obstr && ratio < 0.65)) patron = porDatos;
     // La rama inspiratoria es esquemática: en la obstrucción se conserva mejor que la espiratoria.
     const insp = (patron === "obstructivo" ? Math.max(pef, pefP * 0.8) : patron === "mixto" ? Math.max(pef, pefP * 0.6) : pef) * 0.64, inspP = pefP * 0.64;
     const L = 44, R = 330, T = 22, B = 250, W = 340, H = 292;
@@ -360,7 +368,7 @@ const docR = (function () {
   function dentro(p, poly) { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const a = poly[i], b = poly[j]; if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; }
   const ZONA_ALT = { s:"superior", m:"media", i:"inferior" }, ZONA_LADO = { d:"derecha", i:"izquierda" };
   function zona(z) {
-    const c = String(z || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z]/g, "");
+    const c = String(z || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z]/g, "");
     if (c.length === 2 && ZONA_ALT[c[0]] && ZONA_LADO[c[1]]) return { alt:c[0], lado:c[1] };
     const alt = /sup/.test(c) ? "s" : /med/.test(c) ? "m" : /inf/.test(c) ? "i" : null, lado = /der/.test(c) ? "d" : /izq/.test(c) ? "i" : null;
     return alt && lado ? { alt, lado } : null;
@@ -574,9 +582,12 @@ const docR = (function () {
     const motivo = String(opc.motivo || "No está a la vista");
     const visible = i => { if (typeof i !== "number" || typeof opc.visible !== "function") return true; try { return !!opc.visible(i); } catch (e) { return false; } };
     const tachado = `<span class="doc-tachado">${esc(motivo)}</span>`, tachadoB = `<div class="doc-b-tachado">${tachado}</div>`;
-    let huella = ""; try { huella = String(hash(JSON.stringify(doc), 3)); } catch (e) { huella = String(hash(String(doc.numero) + doc.fecha, 3)); }
     const paginas = Array.isArray(doc.paginas) && doc.paginas.length ? doc.paginas : [{ bloques:[] }], n = paginas.length;
     const em = doc.emisor || {}, titulo = String(doc.titulo || "Documento");
+    // La huella del código de verificación sale solo de lo que toda hoja muestra siempre (el encabezado de control)
+    // y de la propia firma: nunca del cuerpo, que puede ir tachado. Así el código, que se calcula con este mismo
+    // archivo, no deja averiguar por tanteo ningún valor oculto.
+    const huella = String(hash([doc.tipo, doc.numero, doc.fecha, doc.version, titulo, em.n, em.area, em.id, em.ciudad].map(x => x == null ? "" : String(x)).join("|"), 3));
     const bloque = b => {
       if ("h" in b) return `<h4 class="doc-h">${txt(b.h)}</h4>`;
       if ("p" in b) return `<p class="doc-p">${txt(b.p)}</p>`;

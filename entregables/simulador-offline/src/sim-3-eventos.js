@@ -40,7 +40,7 @@ function render() {
   if (S.confirmar) { const b = vista.querySelector(".modal-caja .btn"); if (b) b.focus(); return; }
   // El visor de documentos toma el foco al abrirse y, al cerrarse, lo devuelve al botón que lo abrió.
   if (S.docVer) { const t = $("doc-visor-t"); if (t) { try { t.focus({ preventScroll:true }); } catch (e) {} } return; }
-  if (docVolver) { const b = vista.querySelector('[data-act="doc-ver"][data-arg="' + docVolver.replace(/"/g, "") + '"]'); docVolver = null; if (b) { try { b.focus({ preventScroll:true }); } catch (e) {} return; } }
+  if (docVolver) { const b = vista.querySelector('[data-act="doc-ver"][data-arg="' + docVolver.replace(/"/g, "") + '"]'); docVolver = null; if (b) { const d = b.closest("details"); if (d && !d.open) d.open = true; try { b.focus({ preventScroll:true }); } catch (e) {} return; } }
   if (primera) return;
   window.scrollTo(0, 0);
   const t = vista.querySelector("h1[tabindex='-1'], #titulo-cierre"); if (t) { try { t.focus({ preventScroll:true }); } catch (e) {} }

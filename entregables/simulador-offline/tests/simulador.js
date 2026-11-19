@@ -202,7 +202,7 @@ async function sinCodigos(br, errores) {
         const t = await texto(pg, ".doc-visor");
         if (!/sint[ée]tic/i.test(t)) codigos.push(u + " documento " + arg + ": sin la marca de sintético");
         if (arg.split("|")[1] === "hc" && u !== "demo-ips" && /fisiatría está programada/.test(t)) codigos.push(u + ": el resumen clínico muestra la valoración de fisiatría, que no llegó a su entidad");
-        if (arg.split("|")[1] === "hc" && u !== "demo-ips") tachadoVisto = tachadoVisto || /No llegó a su entidad/.test(t);
+        if (/No llegó a su entidad/.test(t)) tachadoVisto = true;   // p. ej. la matriz llega sin versión, fecha ni responsable
         await clic(pg, '[data-act="doc-cerrar"]');
       }
       if (!rutaVista && await hay(pg, '[data-act="ver-todo"]')) { await clic(pg, '[data-act="ver-todo"]'); await mirar("ruta completa"); await clic(pg, '[data-act="ver-todo"]'); rutaVista = true; }

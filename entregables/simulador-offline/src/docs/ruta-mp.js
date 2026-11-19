@@ -13,15 +13,20 @@
 
    Cada dato que corresponde a un campo de la pieza lleva `campo: i` (en la fila kv o en el bloque), y solo ese
    dato: el visor tacha lo que no llegó a la entidad del participante. Los bloques sin marca solo traen
-   identificación, encabezados y notas que no revelan ningún campo.
+   identificación, encabezados y notas que no revelan ningún campo, y ningún bloque repite el dato de otro campo:
+   la cronología clínica no trae el diagnóstico, la resonancia ni las prórrogas; el índice de NIOSH no trae el
+   peso de las cajas ni los levantamientos por turno; la liquidación del subsidio va por tramos legales, sin los
+   días del caso; la densidad no desglosa las semanas y la tabla de empleadores no trae días ni semanas.
 
    Aritmética:
    · NIOSH (ecuación revisada): LPR = LC × HM × VM × DM × AM × FM × CM. Camada 1: 23 × 0,56 × 0,93 × 0,95 × 0,90 ×
-     0,77 × 0,95 = 7,5 kg; IL = 18 / 7,5 = 2,4. Frecuencia 400 / 480 min = 0,83 por minuto; MF interpolado 0,77.
+     0,77 × 0,95 = 7,5 kg; IL = 18 / 7,5 = 2,4 (caja de la presentación de 3 kg). Frecuencia 400 / 480 min = 0,83 por
+     minuto; MF interpolado 0,77.
      Cajas observadas en el turno: 134 de 12 kg + 154 de 15 kg + 96 de 18 kg = 384 levantamientos; 5.646 kg.
    · Incapacidad: IBC de octubre de 2025 = 2 × $1.423.500 = $2.847.000; 2/3 = $1.898.000 al mes ($63.266,67 al día).
-     Días 1 y 2: $126.533 (empleador); días 3 a 30: $1.771.467.
-   · Historia laboral (días acreditados): 919 + 1.020 + 990 + 1.355 = 4.284 días = 612,00 semanas.
+     Días 91 a 180: 50 % del IBC = $1.423.500, igual al salario mínimo de 2025 y menor que el de 2026: se paga el mínimo.
+   · Historia laboral (días acreditados por empleador, en meses de 30 días): 919 + 1.020 + 990 + 1.355 = 4.284 días
+     = 612,00 semanas; el anexo los da por año.
      Últimos tres años (períodos 04/2023 a 03/2026): 6 + 330 = 336 días = 48,00 semanas.
      Últimos cinco años (04/2021 a 03/2026, 1.800 días): 630 acreditados + 540 en deuda presunta + 336 acreditados
      = 1.506 con vinculación vigente; 294 sin vinculación. Densidad = 1.506 / 1.800 = 0,84.
@@ -40,7 +45,7 @@ DOCS.ruta.mp = {
     nitAfp: "NIT SIM-830.517.904-6",
     resumenClinico: "SIM-IPS-RC-2025-2291",
     resonancia: "SIM-RM-2026-0388",
-    matrizExposicion: "SIM-SST-MEP-L3-017",
+    matrizExposicion: "SIM-SST-MEP-0417",
     certificadoIncapacidades: "SIM-EPS-PE-2026-05518",
     certificadoInicial: "SIM-INC-2025-118702",
     historiaLaboral: "SIM-AFP-CERT-2026-11873"
@@ -87,7 +92,7 @@ DOCS.ruta.mp = {
           { kv: [
             ["Estado", "Incapacidad continua desde el 19/11/2025, sin reintegro intermedio", 1],
             ["Días a la fecha de corte", "150 días continuos al 17/04/2026", 1],
-            ["Última prórroga expedida", "Del 18/04/2026 al 17/05/2026", 1]
+            ["Último certificado expedido", "Prórroga del 18/04/2026 al 17/05/2026", 1]
           ] },
 
           { h: "Restricciones funcionales" },
@@ -208,25 +213,24 @@ DOCS.ruta.mp = {
           { tabla: {
             cols: ["N.º", "Fecha", "Día", "Servicio", "Hallazgos y conducta"],
             filas: [
-              ["1", "19/11/2025", "1", "Medicina general, consulta prioritaria", "Dolor lumbar de tres semanas que en los últimos cuatro días se irradia por la cara posterior de la pierna izquierda hasta el borde lateral del pie; empeora durante el turno y al sentarse. Dolor 8/10. Marcha antálgica. Lasègue izquierdo positivo a 40°. Reflejo aquiliano izquierdo disminuido. Fuerza conservada. Diagnóstico M54.4. Inicia acetaminofén y naproxeno. Expide la incapacidad inicial de 30 días."],
+              ["1", "19/11/2025", "1", "Medicina general, consulta prioritaria", "Dolor lumbar de tres semanas que en los últimos cuatro días se irradia por la cara posterior de la pierna izquierda hasta el borde lateral del pie; empeora durante el turno y al sentarse. Dolor 8/10. Marcha antálgica. Lasègue izquierdo positivo a 40°. Reflejo aquiliano izquierdo disminuido. Fuerza conservada. Registra el diagnóstico (apartado «Diagnóstico»). Inicia acetaminofén y naproxeno."],
               ["2", "26/11/2025", "8", "Medicina general, control", "Dolor 7/10. Persisten el dolor irradiado y las parestesias en el borde lateral del pie izquierdo. Agrega pregabalina. Solicita radiografía de columna lumbosacra."],
-              ["", "28/11/2025", "10", "Radiología", "Radiografía de columna lumbosacra: rectificación de la lordosis lumbar por contractura muscular; espacios discales conservados; sin listesis ni lesiones óseas."],
+              ["", "28/11/2025", "10", "Radiología", "Radiografía de columna lumbosacra: rectificación de la lordosis lumbar por contractura muscular; espacios intervertebrales conservados; sin listesis ni lesiones óseas."],
               ["3", "10/12/2025", "22", "Medicina general, control", "Dolor 6/10. Lasègue izquierdo a 45°. Primera remisión a fisioterapia, 10 sesiones."],
-              ["4", "17/12/2025", "29", "Medicina general, control", "Dolor 6/10. Sin déficit motor. Expide la primera prórroga, del 19/12/2025 al 17/01/2026."],
+              ["4", "17/12/2025", "29", "Medicina general, control", "Dolor 6/10. Sin déficit motor. Continúa el manejo analgésico."],
               ["", "22/12/2025 a 13/01/2026", "34 a 56", "Fisioterapia", "Primer ciclo, 10 sesiones (anexo 2)."],
-              ["5", "14/01/2026", "57", "Medicina general, control", "Mejoría parcial: dolor 4/10, Lasègue izquierdo a 60°. Persiste la hipoestesia en el borde lateral del pie izquierdo. Suspende el naproxeno. Expide la segunda prórroga, del 18/01/2026 al 16/02/2026. Remite a ortopedia."],
-              ["6", "29/01/2026", "72", "Ortopedia", "Reaparece el dolor irradiado al aumentar la actividad en casa: dolor 6/10. Lasègue izquierdo a 45°, aquiliano izquierdo disminuido, flexión plantar izquierda 4+/5, hipoestesia en el dermatoma S1 izquierdo. Agrega tramadol. Solicita resonancia magnética de columna lumbosacra."],
-              ["7", "16/02/2026", "90", "Medicina general, control", "Dolor 6/10. Resonancia autorizada y programada. Expide la tercera prórroga, del 17/02/2026 al 18/03/2026."],
-              ["", "21/02/2026", "95", "Radiología", "Resonancia magnética de columna lumbosacra (anexo 1)."],
-              ["8", "02/03/2026", "104", "Ortopedia", "Revisa la resonancia: los hallazgos en L5-S1 corresponden al cuadro clínico de la raíz S1 izquierda. Sin déficit motor progresivo ni signos de alarma: manejo conservador, sin indicación quirúrgica. Segunda remisión a fisioterapia, 10 sesiones. Plan: reintegro con restricciones al terminar la tercera prórroga, previa prueba de trabajo."],
+              ["5", "14/01/2026", "57", "Medicina general, control", "Mejoría parcial: dolor 4/10, Lasègue izquierdo a 60°. Persiste la hipoestesia en el borde lateral del pie izquierdo. Suspende el naproxeno. Remite a ortopedia."],
+              ["6", "29/01/2026", "72", "Ortopedia", "Reaparece el dolor irradiado al aumentar la actividad en casa: dolor 6/10. Lasègue izquierdo a 45°, aquiliano izquierdo disminuido, flexión plantar izquierda 4+/5, hipoestesia en el borde lateral del pie izquierdo. Agrega tramadol. Solicita resonancia magnética de columna lumbosacra."],
+              ["7", "16/02/2026", "90", "Medicina general, control", "Dolor 6/10. Resonancia autorizada y programada. Continúa el manejo analgésico."],
+              ["8", "02/03/2026", "104", "Ortopedia", "Revisa el informe de la resonancia (anexo 1), que corresponde al cuadro clínico. Sin déficit motor progresivo ni signos de alarma: manejo conservador, sin indicación quirúrgica. Segunda remisión a fisioterapia, 10 sesiones. Plan: reintegro con restricciones el 19/03/2026, previa prueba de trabajo."],
               ["", "03/03/2026 a 14/03/2026", "105 a 116", "Fisioterapia", "Segundo ciclo, 10 sesiones (anexo 2). Al final, dolor 3/10."],
               ["", "16/03/2026", "118", "Terapia ocupacional", "Prueba de trabajo en el puesto (anexo 2): se suspende a los 40 minutos por dolor irradiado 8/10. No se hace el reintegro."],
               ["9", "16/03/2026", "118", "Medicina general, consulta prioritaria", "Recaída después de la prueba de trabajo: dolor 8/10, marcha antálgica, Lasègue izquierdo a 35°, sin déficit motor nuevo ni alteración de esfínteres. Analgesia en el servicio y reposo relativo."],
-              ["10", "18/03/2026", "120", "Medicina general, control", "Dolor 7/10. Aumenta la dosis de pregabalina. Actualiza las restricciones funcionales. Expide la cuarta prórroga, del 19/03/2026 al 17/04/2026."],
+              ["10", "18/03/2026", "120", "Medicina general, control", "Dolor 7/10, Oswestry 54 %. Aumenta la dosis de pregabalina. Actualiza las restricciones funcionales."],
               ["11", "01/04/2026", "134", "Ortopedia, control", "Dolor 6/10. Lasègue izquierdo a 45°. Sin signos de alarma. Mantiene el manejo conservador."],
-              ["12", "17/04/2026", "150", "Medicina general, control", "Mejoría parcial: dolor 5/10, Oswestry 42 %, Lasègue izquierdo a 50°. Expide la quinta prórroga, del 18/04/2026 al 17/05/2026. Actualiza este resumen."]
+              ["12", "17/04/2026", "150", "Medicina general, control", "Mejoría parcial: dolor 5/10, Oswestry 42 %, Lasègue izquierdo a 50°. Actualiza este resumen."]
             ],
-            nota: "Doce consultas médicas, numeradas. Sin número: una radiografía, dos ciclos de fisioterapia con 20 sesiones, una resonancia magnética y una prueba de trabajo. El dolor se registra en la escala visual análoga de 0 a 10."
+            nota: "Doce consultas médicas, numeradas. Sin número: una radiografía, dos ciclos de fisioterapia con 20 sesiones y una prueba de trabajo. El informe de la resonancia está en el anexo 1. El dolor se registra en la escala visual análoga de 0 a 10; el día se cuenta desde la primera consulta."
           }, campo: 4 }
         ] }
       ]
@@ -241,7 +245,7 @@ DOCS.ruta.mp = {
       tipo: "analisis_puesto",
       titulo: "Matriz de exposición y análisis de puesto de trabajo",
       emisor: { n: "Alimentos Andinos S.A.S.", area: "Sistema de gestión de seguridad y salud en el trabajo", ciudad: "Ciudad sintética", id: "NIT SIM-900.584.112-7" },
-      numero: "SIM-SST-MEP-L3-017",
+      numero: "SIM-SST-MEP-0417",
       fecha: "17/04/2026",
       estadoNota: "Copia expedida por el sistema de gestión de seguridad y salud en el trabajo el 17/04/2026.",
       paginas: [
@@ -295,26 +299,26 @@ DOCS.ruta.mp = {
               ["Ubicación en la camada 2", "45", "80", "5", "30°", "Regular"],
               ["Ubicación en la camada 3", "45", "110", "25", "30°", "Regular"]
             ],
-            nota: "Frecuencia: 400 levantamientos en 480 minutos, 0,83 por minuto (se toma el máximo del rango). Duración larga, más de 2 horas. Multiplicador de frecuencia interpolado entre 0,81 (0,5 por minuto) y 0,75 (1 por minuto): 0,77."
+            nota: "Frecuencia: 0,83 levantamientos por minuto, la máxima del registro de producción de la línea. Duración larga, de más de 2 y hasta 8 horas. Multiplicador de frecuencia interpolado entre 0,81 (0,5 por minuto) y 0,75 (1 por minuto): 0,77."
           }, campo: 2 },
           { tabla: {
-            cols: ["Punto de la tarea", "HM · VM · DM · AM · FM · CM", "LPR (kg)", "Índice con caja de 12 kg", "Índice con caja de 15 kg", "Índice con caja de 18 kg"],
+            cols: ["Punto de la tarea", "HM · VM · DM · AM · FM · CM", "LPR (kg)", "Índice, presentación de 500 g", "Índice, presentación de 1 kg", "Índice, presentación de 3 kg"],
             filas: [
               ["Toma en el transportador de rodillos", "0,83 · 0,97 · 0,95 · 1,00 · 0,77 · 1,00", "13,5", "0,9", "1,1", "1,3"],
               ["Ubicación en la camada 1", "0,56 · 0,93 · 0,95 · 0,90 · 0,77 · 0,95", "7,5", "1,6", "2,0", "2,4"],
               ["Ubicación en la camada 2", "0,56 · 0,99 · 1,00 · 0,90 · 0,77 · 1,00", "8,8", "1,4", "1,7", "2,0"],
               ["Ubicación en la camada 3", "0,56 · 0,90 · 1,00 · 0,90 · 0,77 · 1,00", "8,0", "1,5", "1,9", "2,2"]
             ],
-            nota: "Camada 1: LPR = 23 × 0,56 × 0,93 × 0,95 × 0,90 × 0,77 × 0,95 = 7,5 kg; índice = 18 kg / 7,5 kg = 2,4."
+            nota: "Índice = peso de la caja / LPR, con el peso medido de la caja de cada presentación. Camada 1: LPR = 23 × 0,56 × 0,93 × 0,95 × 0,90 × 0,77 × 0,95 = 7,5 kg; con la caja de la presentación de 3 kg, el índice es 2,4."
           }, campo: 2 },
           { kv: [
-            ["Índice de levantamiento de la tarea", "2,4 (NIOSH), con la caja de 18 kg ubicada en la primera camada", 2],
+            ["Índice de levantamiento de la tarea", "2,4 (NIOSH), con la caja de la presentación de 3 kg ubicada en la primera camada", 2],
             ["Límite recomendado", "1,0: la tarea lo supera", 2]
           ] },
           { figura: {
             tipo: "serie",
             datos: {
-              titulo: "Índice de levantamiento con la caja de 18 kg, por punto de la tarea",
+              titulo: "Índice de levantamiento con la caja de la presentación de 3 kg, por punto de la tarea",
               forma: "barras",
               puntos: [["Transportador", 1.3], ["Camada 1", 2.4], ["Camada 2", 2.0], ["Camada 3", 2.2]],
               limite: { valor: 1, etiqueta: "Límite recomendado: 1,0" }
@@ -324,15 +328,15 @@ DOCS.ruta.mp = {
           { tabla: {
             cols: ["Peligro", "Controles existentes", "Deficiencia", "Exposición", "Probabilidad", "Consecuencia", "Riesgo", "Aceptabilidad"],
             filas: [
-              ["Biomecánico: manipulación manual de cargas en el estibado", "Transportador de rodillos; base fija de 30 cm para la estiba; capacitación en manejo de cargas; pausas activas", "6 · alto", "4 · continua", "24 · muy alto", "25 · grave", "600 · nivel I", "No aceptable"],
-              ["Biomecánico: postura de pie prolongada y flexión repetida del tronco en el empaque", "Pausas activas; tapete antifatiga", "2 · medio", "4 · continua", "8 · medio", "25 · grave", "200 · nivel II", "No aceptable o aceptable con control específico"]
+              ["Biomecánico: manipulación manual de cargas", "Transportador de rodillos; base fija de 30 cm para la estiba; capacitación en manejo de cargas; pausas activas", "6 · alto", "4 · continua", "24 · muy alto", "25 · grave", "600 · nivel I", "No aceptable"],
+              ["Biomecánico: postura de pie prolongada y flexión repetida del tronco", "Pausas activas; tapete antifatiga", "2 · medio", "4 · continua", "8 · medio", "25 · grave", "200 · nivel II", "No aceptable o aceptable con control específico"]
             ],
             nota: "Valoración según la Guía Técnica Colombiana GTC 45: probabilidad = deficiencia × exposición; nivel de riesgo = probabilidad × consecuencia."
           }, campo: 2 },
           { lista: [
-            "Instalar una mesa elevadora de altura regulable para la estiba, de modo que cada camada quede entre 75 y 100 cm.",
-            "Reducir a 12 kg el peso de las cajas de las presentaciones de 1 kg y 3 kg o asignar el estibado de esas cajas a dos personas.",
-            "Rotar a las operarias entre empaque, sellado y estibado cada 2 horas.",
+            "Instalar una mesa elevadora giratoria para la estiba, de modo que cada camada quede entre 75 y 100 cm de altura y cerca del cuerpo.",
+            "Reducir el peso de las cajas de las presentaciones de 1 kg y 3 kg al de la caja de la presentación de 500 g, o asignar su levantamiento a dos personas, y recalcular el índice con la mesa instalada hasta que quede por debajo de 1,0.",
+            "Rotar a las operarias cada 2 horas entre las tareas con levantamiento de cargas y las tareas sin él.",
             "Incluir el puesto en el programa de vigilancia epidemiológica de desórdenes musculoesqueléticos (GATISO para dolor lumbar inespecífico y enfermedad discal relacionados con la manipulación manual de cargas)."
           ], campo: 2 },
 
@@ -340,17 +344,17 @@ DOCS.ruta.mp = {
           { kv: [
             ["Versión", "v.2", 3],
             ["Fecha", "14/03/2026", 3],
-            ["Responsable", "Sandra Lucía Quintero Álzate, ingeniera de seguridad y salud en el trabajo", 3]
+            ["Responsable", "Sandra Lucía Quintero Alzate, ingeniera de seguridad y salud en el trabajo", 3]
           ] },
           { tabla: {
             cols: ["Versión", "Fecha", "Alcance", "Responsable"],
             filas: [
-              ["v.1", "22/07/2025", "Matriz de peligros de la línea 3 (GTC 45), sin análisis individual del puesto", "Coordinación del sistema de gestión de seguridad y salud en el trabajo"],
-              ["v.2", "14/03/2026", "Análisis del puesto de la trabajadora con la ecuación de NIOSH, a solicitud de la EPS", "Ingeniera de seguridad y salud en el trabajo"]
+              ["v.1", "22/07/2025", "Matriz de identificación de peligros y valoración de riesgos de la planta, sin análisis individual del puesto", "Coordinación del sistema de gestión de seguridad y salud en el trabajo"],
+              ["v.2", "14/03/2026", "Análisis individual del puesto de la trabajadora, a solicitud de la EPS", "Ingeniera de seguridad y salud en el trabajo"]
             ],
             nota: "Matriz elaborada en el marco del sistema de gestión de seguridad y salud en el trabajo (Decreto 1072 de 2015)."
           }, campo: 3 },
-          { firma: { nombre: "Sandra Lucía Quintero Álzate", cargo: "Ingeniera de seguridad y salud en el trabajo, Alimentos Andinos S.A.S.", registro: "Licencia en SST SIM-LSST-2017-3318", fecha: "14/03/2026" }, campo: 3 },
+          { firma: { nombre: "Sandra Lucía Quintero Alzate", cargo: "Ingeniera de seguridad y salud en el trabajo, Alimentos Andinos S.A.S.", registro: "Licencia en SST SIM-LSST-2017-3318", fecha: "14/03/2026" }, campo: 3 },
 
           { h: "Historial disciplinario" },
           { p: "Dos llamados de atención por llegadas tarde en 2024: el 12/02/2024 y el 23/08/2024, por escrito, sin suspensión ni otra sanción. Información aportada por gestión humana.", campo: 4 },
@@ -414,7 +418,7 @@ DOCS.ruta.mp = {
           { kv: [
             ["Días de incapacidad a la fecha de corte", "150 días continuos de incapacidad", 0],
             ["Continuidad", "Sin interrupciones entre un certificado y el siguiente", 0],
-            ["Día 180 de incapacidad continua", "17/05/2026", 0]
+            ["Día 180", "17/05/2026, si la incapacidad sigue sin interrupción", 0]
           ] },
 
           { h: "Fecha de inicio" },
@@ -433,7 +437,7 @@ DOCS.ruta.mp = {
               ["Cuarta", "SIM-INC-2026-019447", "18/03/2026", "19/03/2026", "17/04/2026", "30", "M54.4", "Médica tratante"],
               ["Quinta", "SIM-INC-2026-026083", "17/04/2026", "18/04/2026", "17/05/2026", "30", "M54.4", "Médica tratante"]
             ],
-            nota: "Cinco prórrogas de 30 días, expedidas por la médica tratante de la IPS Salud Integral Los Cerezos, Paula Andrea Giraldo Cárdenas (registro médico SIM-05-311478), con el mismo diagnóstico y sin interrupción respecto del certificado anterior. La quinta prórroga se expidió en la fecha de corte y cubre los días 151 a 180."
+            nota: "Cinco prórrogas de 30 días, expedidas por la médica tratante de la IPS Salud Integral Los Cerezos, Paula Andrea Giraldo Cárdenas (registro médico SIM-05-311478), con el mismo diagnóstico. La quinta prórroga se expidió en la fecha de corte."
           }, campo: 1 },
 
           { h: "Origen" },
@@ -442,28 +446,24 @@ DOCS.ruta.mp = {
           { h: "Ingreso base de cotización y liquidación" },
           { kv: [
             ["Ingreso base de cotización", "$2.847.000 mensuales: 2 salarios mínimos de 2025", 3],
-            ["Período de referencia", "Octubre de 2025, mes anterior al inicio de la incapacidad", 3],
+            ["Mes de referencia", "Octubre de 2025, último mes cotizado completo antes de la incapacidad", 3],
             ["IBC diario", "$94.900", 3]
           ] },
           { tabla: {
-            cols: ["Certificado", "Días", "A cargo de", "Porcentaje del IBC", "Valor", "Estado"],
+            cols: ["Días de incapacidad", "A cargo de", "Liquidación", "Valor"],
             filas: [
-              ["Inicial", "1 y 2", "Empleador", "66,67 %", "$126.533", "Pagado por el empleador"],
-              ["Inicial", "3 a 30", "EPS", "66,67 %", "$1.771.467", "Reconocido y pagado"],
-              ["Primera prórroga", "31 a 60", "EPS", "66,67 %", "$1.898.000", "Reconocido y pagado"],
-              ["Segunda prórroga", "61 a 90", "EPS", "66,67 %", "$1.898.000", "Reconocido y pagado"],
-              ["Tercera prórroga", "91 a 120", "EPS", "50 %, ajustado al salario mínimo de 2026", "Un salario mínimo mensual de 2026", "Reconocido y pagado"],
-              ["Cuarta prórroga", "121 a 150", "EPS", "50 %, ajustado al salario mínimo de 2026", "Un salario mínimo mensual de 2026", "Reconocido; pago en trámite"],
-              ["Quinta prórroga", "151 a 180", "EPS", "50 %, ajustado al salario mínimo de 2026", "Un salario mínimo mensual de 2026", "Radicado; se liquida al vencimiento"]
+              ["1 y 2", "Empleador", "Dos tercios del IBC (66,67 %)", "$63.267 por día"],
+              ["3 a 90", "EPS", "Dos tercios del IBC (66,67 %)", "$63.267 por día; $1.898.000 por 30 días"],
+              ["91 a 180", "EPS", "La mitad del IBC (50 %), sin ser inferior al salario mínimo legal mensual vigente", "Un salario mínimo mensual vigente por 30 días: la mitad del IBC ($1.423.500) es igual al salario mínimo de 2025 y menor que el de 2026"]
             ],
-            nota: "Días 1 y 2 a cargo del empleador (Decreto 2943 de 2013). Desde el día 3, la EPS reconoce dos tercios del IBC hasta el día 90 y la mitad del día 91 al 180 (Código Sustantivo del Trabajo, artículo 227; Decreto 1427 de 2022), sin que el valor sea inferior al salario mínimo vigente: el 50 % del IBC ($1.423.500) es menor que el salario mínimo de 2026. La EPS paga al empleador, que paga a la trabajadora en la nómina."
+            nota: "Liquidación del subsidio por incapacidad de origen común: días 1 y 2 a cargo del empleador (Decreto 2943 de 2013); desde el día 3, a cargo de la EPS, dos tercios del IBC hasta el día 90 y la mitad del día 91 al 180 (Código Sustantivo del Trabajo, artículo 227; Decreto 1427 de 2022), sin que el valor sea inferior al salario mínimo legal mensual vigente. La EPS paga al empleador, que paga a la trabajadora en la nómina."
           }, campo: 3 },
 
           { firma: { nombre: "Mauricio Esteban Lopera Vélez", cargo: "Analista de prestaciones económicas, EPS SURA", registro: "", fecha: "17/04/2026" } },
           { nota: "Certificado expedido con la información registrada en la EPS a la fecha de corte. Los certificados originales los expide la IPS y permanecen en el registro de incapacidades de la EPS." }
         ] },
 
-        { titulo: "Anexo · Certificado inicial expedido por la IPS", bloques: [
+        { titulo: "Anexo · Certificado de incapacidad expedido por la IPS", bloques: [
           { kv: [
             ["Certificado de incapacidad", "SIM-INC-2025-118702", 2],
             ["Institución", "IPS Salud Integral Los Cerezos · NIT SIM-901.338.250-1", 2],
@@ -517,15 +517,13 @@ DOCS.ruta.mp = {
             ["Densidad de cotización de los últimos cinco años", "0,84 (períodos de abril de 2021 a marzo de 2026)", 1]
           ] },
           { tabla: {
-            cols: ["Períodos", "Días", "Situación en el registro", "Cuenta para la densidad"],
+            cols: ["Situación en el registro", "Períodos", "Días", "Cuenta para la densidad"],
             filas: [
-              ["Abril de 2021 a diciembre de 2022", "630", "Aportes pagados y acreditados", "Sí"],
-              ["Enero de 2023 a junio de 2024", "540", "Vinculación vigente sin pago recibido: deuda presunta del empleador, en gestión de cobro", "Sí"],
-              ["1 de julio de 2024 a 24 de abril de 2025", "294", "Sin vinculación vigente: novedad de retiro del subsistema de pensiones reportada por el empleador con fecha 30/06/2024", "No"],
-              ["25 de abril de 2025 a marzo de 2026", "336", "Aportes pagados y acreditados; reingreso reportado por el empleador el 25/04/2025", "Sí"],
-              ["Total", "1.800", "", "1.506"]
+              ["Vinculación vigente: aporte pagado o deuda presunta del empleador en gestión de cobro", "Abril de 2021 a junio de 2024 y 25 de abril de 2025 a marzo de 2026", "1.506", "Sí"],
+              ["Sin vinculación vigente: novedad de retiro del subsistema de pensiones reportada por el empleador con fecha 30/06/2024, hasta el reingreso que el mismo empleador reportó el 25/04/2025", "1 de julio de 2024 a 24 de abril de 2025", "294", "No"],
+              ["Total del período", "Abril de 2021 a marzo de 2026", "1.800", ""]
             ],
-            nota: "Densidad = días con vinculación vigente y aporte acreditado o exigible al empleador / días del período = 1.506 / 1.800 = 0,84. Los días en deuda presunta se acreditan como semanas cuando el empleador los pague."
+            nota: "Densidad = días con vinculación vigente / días del período = 1.506 / 1.800 = 0,84. Cuentan los días con aporte pagado y los días en deuda presunta, que el empleador debe y la administradora cobra; los días en deuda presunta no se acreditan como semanas cotizadas mientras el empleador no los pague."
           }, campo: 1 },
 
           { h: "Ingreso base de cotización histórico" },
@@ -540,7 +538,7 @@ DOCS.ruta.mp = {
               ["01/2023 a 06/2024", "$1.800.000, presunto", "1,6 en 2023 y 1,4 en 2024", "Deuda presunta: último IBC reportado"],
               ["07/2024 a 04/2025", "Sin registro hasta el reingreso del 25/04/2025", "", "Sin vinculación vigente"],
               ["04/2025 a 10/2025", "$2.847.000", "2,0", "Planillas pagadas"],
-              ["11/2025 a 03/2026", "Valor de la incapacidad", "1,0 a 1,7", "Planillas pagadas durante la incapacidad"]
+              ["11/2025 a 03/2026", "Valor de la incapacidad; en 11/2025, más el salario de los días trabajados", "1,0 a 1,7", "Planillas pagadas durante la incapacidad"]
             ],
             nota: "Valores en pesos de cada año, redondeados a miles, y su equivalencia en salarios mínimos del mismo año. Durante la incapacidad el IBC es el valor del subsidio."
           }, campo: 2 },
@@ -558,12 +556,12 @@ DOCS.ruta.mp = {
 
           { h: "Empleadores" },
           { tabla: {
-            cols: ["Empleador", "NIT", "Ingreso", "Retiro", "Días acreditados", "Semanas"],
+            cols: ["Empleador", "NIT", "Ingreso", "Retiro"],
             filas: [
-              ["Confecciones Hilo Sereno S.A.S.", "NIT SIM-900.214.567-3", "01/03/2011", "19/09/2013", "919", "131,29"],
-              ["Autoservicios Granero Central S.A.S.", "NIT SIM-900.663.018-9", "01/02/2014", "30/11/2016", "1.020", "145,71"],
-              ["Plegables y Cartones Altiplano S.A.S.", "NIT SIM-901.045.390-2", "01/06/2017", "29/02/2020", "990", "141,43"],
-              ["Alimentos Andinos S.A.S.", "NIT SIM-900.584.112-7", "02/03/2020", "Vigente; novedad de retiro del 30/06/2024 y reingreso del 25/04/2025", "1.355", "193,57"]
+              ["Confecciones Hilo Sereno S.A.S.", "NIT SIM-900.214.567-3", "01/03/2011", "19/09/2013"],
+              ["Autoservicios Granero Central S.A.S.", "NIT SIM-900.663.018-9", "01/02/2014", "30/11/2016"],
+              ["Plegables y Cartones Altiplano S.A.S.", "NIT SIM-901.045.390-2", "01/06/2017", "29/02/2020"],
+              ["Alimentos Andinos S.A.S.", "NIT SIM-900.584.112-7", "02/03/2020", "Vigente; reportó novedad de retiro con fecha 30/06/2024 y reingreso el 25/04/2025"]
             ],
             nota: "Cuatro empleadores. En Alimentos Andinos S.A.S., empleador actual, desde el 02/03/2020: seis años a la fecha de corte."
           }, campo: 3 },
@@ -585,7 +583,7 @@ DOCS.ruta.mp = {
               ["2017", "210", "30,00", "Desde junio"],
               ["2018", "360", "51,43", ""],
               ["2019", "360", "51,43", ""],
-              ["2020", "359", "51,29", "Cambio de empleador en marzo"],
+              ["2020", "359", "51,29", "Sin aporte el 1 de marzo"],
               ["2021", "360", "51,43", ""],
               ["2022", "360", "51,43", ""],
               ["2023", "0", "0,00", "Deuda presunta todo el año"],

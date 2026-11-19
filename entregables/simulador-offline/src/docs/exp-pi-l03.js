@@ -8,10 +8,14 @@
      Dictamen de 2022 ....... manos 5 y 4 → 8,80 → 4,40 + rol 6,50 + otras áreas 5,30 = 16,20 %
      Junta Regional ......... lumbar 25, manos 5 y 4 → 28,75 → 31,60 → 15,80 + 23,50 + 8,30 = 47,60 %
      Junta Nacional ......... lumbar 29, manos 6 y 5 → 33,26 → 36,60 (36,597) → 18,30 + 23,50 + 10,60 = 52,40 %
-   Extremidad superior a global: factor 0,6 redondeado al entero (8 → 5, 7 → 4, 10 → 6).
+   Extremidad superior a global: factor 0,6 redondeado al entero (8 → 5, 6 → 4, 10 → 6).
+   Manos por atrapamiento (promedio de pruebas, historia y examen; la escala funcional fija el valor del rango):
+     derecha 2022 y 2025: pérdida axonal residual, síntomas constantes, debilidad → rango 7–9; QuickDASH 63,6 / 68,2 → 8.
+     izquierda 2022: retardo de conducción, síntomas intermitentes, hipoestesia → rango 4–6; QuickDASH 63,6 → 6.
+     izquierda 2025: pérdida axonal con denervación y déficit motor → nervio periférico (mediano), sensitivo + motor → 10.
    IBC del período fijado (01/08/2023 a 31/07/2024): 6 × $3.040.000 + 6 × $3.200.000 = $37.440.000; promedio $3.120.000.
    Exportación de 2026 (01/04/2025 a 31/03/2026): 10 × $3.330.000 + 2 × $3.520.000 = $40.340.000.
-   Vibración (ISO 2631-1): a_w,z 0,77 m/s² durante 5 h → A(8) = 0,77 × √(5/8) = 0,61 m/s².
+   Vibración (ISO 2631-1): aw,z 0,77 m/s² durante 5 h → A(8) = 0,77 × √(5/8) = 0,61 m/s².
    Todo es sintético: ninguna persona, número, profesional ni documento es real. */
 DOCS.exp["PI-L03"] = {
   identidad: {
@@ -85,10 +89,10 @@ DOCS.exp["PI-L03"] = {
               "Trabajo en minería de carbón desde 1993: 10 años como auxiliar de patio en Carbones Cuesta de Niebla (Sogamoso), casi 10 años como operadora de cargador frontal en Carbones Ventana Alta (Nobsa) y, desde el 01/01/2013, en Carbones Mesa Umbral (Tópaga), donde operé cargador frontal y retroexcavadora hasta el 31/01/2024.",
               "En noviembre de 2020 empecé con adormecimiento y hormigueo en las dos manos. En febrero de 2021 la electromiografía mostró túnel carpiano en ambas manos y en abril de 2021 me operaron la mano derecha.",
               "ARL SURA me calificó el túnel carpiano el 19/04/2022 con 16,20 % de pérdida de capacidad laboral, de origen laboral. Ese dictamen quedó en firme y en junio de 2022 recibí la indemnización por incapacidad permanente parcial.",
-              "Desde junio de 2023 tengo dolor en la parte baja de la espalda que me baja a las piernas. Desde el 01/02/2024 trabajo en la báscula, con restricciones para manejar maquinaria y levantar peso.",
+              "Desde comienzos de 2023 tengo dolor en la parte baja de la espalda que me baja a las piernas; consulté por eso en junio de 2023. Desde el 01/02/2024 trabajo en la báscula, con restricciones para manejar maquinaria y levantar peso.",
               "EPS SURA calificó de origen laboral la enfermedad de la columna el 01/08/2024. ARL SURA no estuvo de acuerdo y el caso pasó a la Junta Regional de Calificación de Invalidez de Boyacá, que el 16/09/2025 confirmó el origen laboral y me calificó de manera integral con 47,60 %.",
               "Apelé ese dictamen el 22/09/2025. La Junta Nacional de Calificación de Invalidez resolvió la apelación en marzo de 2026 y me notificó por medio electrónico el 01/04/2026. No tengo copia impresa de ese dictamen; por eso no lo anexo.",
-              "Tengo documentos de tres calificaciones con porcentajes distintos y una constancia de firmeza que me entregó ARL SURA en 2022. No sé cuál de ellos es el que sirve para la pensión."
+              "Me han hecho tres calificaciones con porcentajes distintos y tengo una constancia de firmeza que me entregó ARL SURA en 2022. No sé cuál de ellas es la que sirve para la pensión."
             ] },
             { h: "Peticiones" },
             { lista: [
@@ -195,7 +199,7 @@ DOCS.exp["PI-L03"] = {
             ], nota: "Sin vínculo registrado en enero y febrero de 2003. Las tareas de los dos primeros empleadores se reconstruyen con sus fichas de cargo; no hay mediciones de esos puestos." } },
             { h: "Fundamentos de hecho" },
             { p: "Mujer de 49 años, diestra, con 29 años de trabajo en minería de carbón: 10 como auxiliar de patio con herramientas manuales y 19 como operadora de cargador frontal y retroexcavadora. Consultó el 12/11/2020 por adormecimiento y hormigueo nocturno en ambas manos, de predominio derecho. La electromiografía y las neuroconducciones del 09/02/2021 mostraron neuropatía del nervio mediano en el carpo bilateral: moderada a severa a la derecha y moderada a la izquierda." },
-            { p: "El 13/04/2021 se practicó liberación abierta del túnel del carpo derecho, con 30 días de incapacidad (13/04/2021 a 12/05/2021) y 12 sesiones de terapia de mano entre mayo y junio de 2021. La neuroconducción de control del 12/01/2022 muestra mejoría a la derecha, con compromiso residual leve, y compromiso moderado persistente a la izquierda. La fisiatría del 19/01/2022 documenta secuela sensitiva en los dedos 1 a 3 de la mano derecha y síntomas activos en la izquierda; la paciente aplaza la cirugía izquierda y se considera alcanzada la mejoría médica máxima con el tratamiento instaurado (férula nocturna y ajustes de la tarea)." },
+            { p: "El 13/04/2021 se practicó liberación abierta del túnel del carpo derecho, con 30 días de incapacidad (13/04/2021 a 12/05/2021) y 12 sesiones de terapia de mano entre mayo y junio de 2021. La neuroconducción de control del 12/01/2022 muestra mejoría a la derecha, con compromiso residual leve y secuela axonal (amplitud sensitiva disminuida y reinervación crónica del abductor corto del pulgar), y compromiso moderado persistente a la izquierda. La fisiatría del 19/01/2022 documenta secuela sensitiva en los dedos 1 a 3 de la mano derecha y síntomas activos en la izquierda; la paciente aplaza la cirugía izquierda y se considera alcanzada la mejoría médica máxima con el tratamiento instaurado (férula nocturna y ajustes de la tarea)." },
             { p: "Continúa como operadora de cargador frontal con recomendaciones: pausas activas cada hora, rotación con tareas sin agarre sostenido y no usar herramientas manuales vibrátiles." },
             { h: "Diagnósticos" },
             { tabla: { cols: ["CIE-10", "Diagnóstico", "Origen", "Se califica"], filas: [
@@ -214,9 +218,9 @@ DOCS.exp["PI-L03"] = {
           ] },
           { titulo: "Título I · Valoración de las deficiencias", bloques: [
             { tabla: { cols: ["Deficiencia", "Capítulo", "Hallazgos que la sustentan", "Extremidad superior (%)", "Global (%)"], filas: [
-              ["Mano derecha (dominante): neuropatía del mediano en el carpo, operada", "14 · Extremidades superiores, neuropatía por atrapamiento", "Neuroconducción del 12/01/2022 con latencias residuales (sensitiva 3,9 ms, motora 4,6 ms); síntomas sensitivos constantes en los dedos 1 a 3; monofilamento 3,61; abductor corto del pulgar 4+/5; QuickDASH 45,5", "8", "5,00"],
-              ["Mano izquierda: neuropatía del mediano en el carpo, no operada", "14 · Extremidades superiores, neuropatía por atrapamiento", "Neuroconducción del 12/01/2022 con compromiso moderado (latencia sensitiva 4,3 ms, motora 5,2 ms); síntomas nocturnos frecuentes; Phalen y Tinel positivos; monofilamento 3,61", "7", "4,00"]
-            ], nota: "La deficiencia de la extremidad superior se convierte a deficiencia global con el factor 0,6, redondeado al entero: 8 % → 5 %; 7 % → 4 %." } },
+              ["Mano derecha (dominante): neuropatía del mediano en el carpo, operada", "14 · Extremidades superiores, neuropatía por atrapamiento", "Pruebas: pérdida axonal residual en el control del 12/01/2022 (latencias de 3,9 y 4,6 ms, amplitud sensitiva de 14 µV, reinervación crónica del abductor corto del pulgar). Historia: síntomas sensitivos constantes en los dedos 1 a 3. Examen: abductor corto del pulgar 4+/5; monofilamento 3,61. Escala funcional: QuickDASH 63,6", "8", "5,00"],
+              ["Mano izquierda: neuropatía del mediano en el carpo, no operada", "14 · Extremidades superiores, neuropatía por atrapamiento", "Pruebas: retardo de la conducción sensitiva y motora en el control del 12/01/2022 (latencias de 4,3 y 5,2 ms; amplitud sensitiva de 11 µV). Historia: síntomas nocturnos frecuentes, intermitentes. Examen: hipoestesia en el territorio del mediano, Phalen y Tinel positivos, fuerza conservada. Escala funcional: QuickDASH 63,6", "6", "4,00"]
+            ], nota: "En la tabla de neuropatías por atrapamiento, la severidad resulta del promedio de los hallazgos en las pruebas, la historia y el examen físico, y la escala funcional fija el valor dentro del rango: la derecha queda en el rango más alto con su valor central (8 %) y la izquierda en el rango intermedio con su valor superior (6 %). La deficiencia de la extremidad superior se convierte a deficiencia global con el factor 0,6, redondeado al entero: 8 % → 5 % (4,8); 6 % → 4 % (3,6)." } },
             { h: "Combinación de las deficiencias" },
             { tabla: { cols: ["Paso", "Valores que se combinan", "Cálculo", "Resultado (%)"], filas: [
               ["1", "5,00 y 4,00", "5,00 + 4,00 × (100 − 5,00) / 100", "8,80"]
@@ -283,7 +287,7 @@ DOCS.exp["PI-L03"] = {
               ["Certificado de incapacidad SIM-IT-2021-208114", "13/04/2021", "IPS Neuroeje Peñas Altas", "30 días, del 13/04/2021 al 12/05/2021"],
               ["Informe de terapia de mano", "25/06/2021", "IPS Neuroeje Peñas Altas", "12 sesiones; mejoría parcial de fuerza y sensibilidad"],
               ["Análisis de puesto de trabajo cualitativo", "30/06/2021", "Carbones Mesa Umbral, SG-SST", "Operación de mandos 5 h por turno; agarre repetido y flexión de muñeca"],
-              ["Neuroconducción de control", "12/01/2022", "IPS Neuroeje Peñas Altas", "Derecho residual leve; izquierdo moderado"],
+              ["Neuroconducción de control", "12/01/2022", "IPS Neuroeje Peñas Altas", "Derecho residual leve, con secuela axonal; izquierdo moderado"],
               ["Valoración por fisiatría", "19/01/2022", "IPS Neuroeje Peñas Altas", "Mejoría médica máxima; secuela sensitiva derecha; síntomas activos izquierdos"],
               ["Fichas de cargo de empleadores anteriores", "Sin fecha", "Carbones Cuesta de Niebla y Carbones Ventana Alta", "Tareas descritas, sin mediciones"],
               ["Valoración presencial y de terapia ocupacional", "28/03/2022", "ARL SURA, medicina laboral", "Examen y pruebas funcionales (anexo 2)"]
@@ -304,9 +308,9 @@ DOCS.exp["PI-L03"] = {
               ["Monofilamento de Semmes-Weinstein, territorio del mediano", "3,61", "3,61", "2,83"],
               ["Discriminación de dos puntos (mm)", "7", "6", "Menos de 6"]
             ] } },
-            { kv: [["QuickDASH (0 a 100)", "45,5"]] },
+            { kv: [["QuickDASH (0 a 100)", "63,6"]] },
             { h: "Entrevista ocupacional" },
-            { p: "Opera cargador frontal con pausas activas cada hora y alterna con tareas de registro en el patio. Refiere adormecimiento de ambas manos al final del turno y al despertar; usa férula nocturna en la mano izquierda. En casa tiene dificultad para escurrir ropa, picar alimentos y abotonarse." },
+            { p: "Opera cargador frontal con pausas activas cada hora y alterna con tareas de registro en el patio. Refiere adormecimiento constante de los dedos de la mano derecha, adormecimiento de la izquierda al final del turno y al despertar, y que el dolor la despierta varias noches por semana; usa férula nocturna en la mano izquierda. En casa tiene dificultad para escurrir ropa, picar alimentos, abrir frascos, cargar las bolsas del mercado y abotonarse." },
             { firma: { nombre: "Claudia Patricia Avendaño Mesa", cargo: "Terapeuta ocupacional · ARL SURA", registro: "Tarjeta profesional SIM-TO-3307", fecha: "28/03/2022" } }
           ] },
           { titulo: "Anotaciones del archivo de medicina laboral", bloques: [
@@ -344,7 +348,7 @@ DOCS.exp["PI-L03"] = {
               ["Motivo", "Inconformidad de ARL SURA, del 05/08/2024, con la calificación del origen en primera oportunidad de EPS SURA (SIM-EPS-ML-2024-05126, del 01/08/2024), que definió como laboral la discopatía lumbar (M51.3)"],
               ["Entidad que remite", "EPS SURA · Medicina laboral, 21/08/2024"],
               ["Radicación en la Junta", "26/08/2024"],
-              ["Solicitud acumulada", "Calificación integral de la pérdida de capacidad laboral pedida directamente por la persona calificada el 22/07/2025, pasados 30 días desde la mejoría médica máxima sin calificación en primera oportunidad (Decreto 1352 de 2013)"],
+              ["Solicitud acumulada", "Calificación integral de la pérdida de capacidad laboral pedida directamente a la Junta por la persona calificada el 22/07/2025: pasados 30 días calendario desde la terminación del proceso de rehabilitación (mejoría médica máxima del 18/06/2025) y más de 540 días desde el diagnóstico de la enfermedad lumbar, sin calificación de la pérdida de capacidad laboral en primera oportunidad (Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015). La Sala acumuló la solicitud al expediente de origen"],
               ["Trámite", "El 20/11/2024 la Sala pidió a la persona calificada las fichas de cargo de los empleadores anteriores y a la IPS la historia clínica completa de columna; se allegaron el 28/02/2025"],
               ["Valoración presencial", "26/08/2025, Tunja"]
             ] },
@@ -382,12 +386,12 @@ DOCS.exp["PI-L03"] = {
               "Dictamen de origen SIM-EPS-ML-2024-05126 de EPS SURA, del 01/08/2024, y escrito de inconformidad de ARL SURA del 05/08/2024.",
               "Dictamen CAR-L03 de ARL SURA, del 19/04/2022, con su anotación de firmeza.",
               "Análisis de puesto de trabajo SIM-SST-APT-2024-019 de Carbones Mesa Umbral, versión 2 del 12/07/2024, con el informe de medición de vibración de cuerpo entero SIM-HI-2023-0412 (23/08/2023).",
-              "Historia clínica de la IPS Neuroeje Peñas Altas: consultas de columna desde el 21/06/2023, resonancia magnética lumbar del 22/09/2023, rehabilitación lumbar de 2024, electromiografía de miembros inferiores del 05/06/2025 y valoración por fisiatría del 18/06/2025.",
+              "Historia clínica de EPS SURA y de la IPS Neuroeje Peñas Altas: consultas de columna desde el 21/06/2023, resonancia magnética lumbar del 22/09/2023, rehabilitación lumbar de 2024, concepto de cirugía de columna del 08/04/2025, electromiografía de miembros inferiores del 05/06/2025 y valoración por fisiatría del 18/06/2025.",
               "Recomendaciones laborales de EPS SURA del 15/01/2024 y del 28/06/2024, y constancia de reubicación del empleador.",
               "Fichas de cargo de Carbones Cuesta de Niebla y Carbones Ventana Alta."
             ] },
             { h: "Historia clínica pertinente" },
-            { p: "Columna. Consultó el 21/06/2023 por dolor lumbar de cinco meses con irradiación a la pierna izquierda. La resonancia magnética del 22/09/2023 mostró discopatía degenerativa de L3–L4 a L5–S1, con hernia discal L4–L5 que estrecha ambos recesos laterales y los forámenes, y protrusión L5–S1 con contacto de la raíz S1 izquierda. Tuvo incapacidades de 5 y 7 días en junio y noviembre de 2023. Desde el 01/02/2024 trabaja en la báscula, con restricciones. Entre febrero y abril de 2024 cumplió 16 sesiones de rehabilitación lumbar. La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral crónica, de predominio izquierdo, y radiculopatía S1 izquierda leve. En la valoración por fisiatría del 18/06/2025 se considera alcanzada la mejoría médica máxima: índice de Oswestry de 46 %, tolerancia a la sedestación de 40 minutos y marcha de 500 m." },
+            { p: "Columna. Consultó el 21/06/2023 por dolor lumbar de cinco meses con irradiación a la pierna izquierda. La resonancia magnética del 22/09/2023 mostró discopatía degenerativa de L3–L4 a L5–S1, con hernia discal L4–L5 que estrecha ambos recesos laterales y los forámenes, y protrusión L5–S1 con contacto de la raíz S1 izquierda. Tuvo incapacidades de 5 y 7 días en junio y noviembre de 2023. Desde el 01/02/2024 trabaja en la báscula, con restricciones. Entre febrero y abril de 2024 cumplió 16 sesiones de rehabilitación lumbar. El 08/04/2025 cirugía de columna no indicó tratamiento quirúrgico. La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral crónica, de predominio izquierdo, y radiculopatía S1 izquierda leve. En la valoración por fisiatría del 18/06/2025 se considera alcanzada la mejoría médica máxima: índice de Oswestry de 46 %; la paciente refiere tolerar 40 minutos sentada y caminar unos 500 m." },
             { p: "Manos. Túnel carpiano bilateral calificado por ARL SURA en 2022, con la mano derecha operada en 2021. El expediente no contiene estudios de las manos posteriores a la neuroconducción del 12/01/2022; la nota de fisiatría del 18/06/2025 menciona atrofia tenar izquierda incipiente y la orden de una neuroconducción de control, sin resultado aportado." },
             { p: "Otros. Gonartrosis primaria bilateral leve (radiografía del 12/03/2024, grado 2 de Kellgren y Lawrence), en seguimiento por ortopedia con ejercicio, sin limitación de los arcos de movilidad. Sin otras enfermedades crónicas." },
             { h: "Valoración presencial del 26/08/2025" },
@@ -416,17 +420,17 @@ DOCS.exp["PI-L03"] = {
             { tabla: { cols: ["Diagnóstico", "CIE-10", "Origen", "Capítulo", "Clase o valor de la extremidad", "Deficiencia global"], filas: [
               ["Discopatía lumbar degenerativa L3–L4 a L5–S1 con radiculopatía", "M51.3", "Laboral", "15 · Columna lumbar", "Clase 4, grado A", "25,00 %"],
               ["Síndrome del túnel carpiano, mano derecha operada", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 8 %", "5,00 %"],
-              ["Síndrome del túnel carpiano, mano izquierda", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 7 %", "4,00 %"],
+              ["Síndrome del túnel carpiano, mano izquierda", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 6 %", "4,00 %"],
               ["Gonartrosis primaria bilateral leve", "M17.0", "Común", "14 · Extremidades inferiores", "Clase 0", "0,00 %"]
             ] } },
             { h: "Columna lumbar: clase y factores moduladores" },
             { tabla: { cols: ["Elemento", "Hallazgo", "Clase"], filas: [
               ["Diagnóstico y estudios (definen la clase)", "Discopatía en tres niveles con radiculopatía L5 bilateral y S1 izquierda documentada por electromiografía", "4"],
-              ["Historia funcional", "Índice de Oswestry de 46 % (fisiatría, 18/06/2025); tolerancia a la sedestación de 40 minutos", "3"],
+              ["Historia funcional", "Índice de Oswestry de 46 % (fisiatría, 18/06/2025); tolerancia referida a la sedestación de 40 minutos", "3"],
               ["Examen físico", "Lasègue izquierdo positivo; hipoestesia L5 izquierda; extensor largo del hallux izquierdo 4/5", "3"]
             ], nota: "Ajuste neto: (3 − 4) + (3 − 4) = −2. Grado A de la clase 4: 25,00 %." } },
             { h: "Manos" },
-            { p: "Sin estudios de las manos posteriores a 2022 en el expediente, la Sala acoge la valoración del dictamen CAR-L03: extremidad superior derecha 8 % e izquierda 7 %, que equivalen a 5 % y 4 % de deficiencia global." },
+            { p: "Sin estudios de las manos posteriores a 2022 en el expediente, la Sala acoge la valoración del dictamen CAR-L03: extremidad superior derecha 8 % e izquierda 6 %, que equivalen a 5 % y 4 % de deficiencia global." },
             { h: "Combinación de las deficiencias" },
             { tabla: { cols: ["Paso", "Valores que se combinan", "Cálculo", "Resultado (%)"], filas: [
               ["1", "25,00 y 5,00", "25,00 + 5,00 × (100 − 25,00) / 100", "28,75"],
@@ -497,7 +501,7 @@ DOCS.exp["PI-L03"] = {
               ["Dictamen", "REG-L03 · 16/09/2025"],
               ["Notificación a la persona calificada", "18/09/2025"],
               ["Recurso interpuesto", "Apelación de la persona calificada, radicada el 22/09/2025, dentro del término. Pide que se valoren las limitaciones funcionales de la columna y la progresión de la mano izquierda"],
-              ["Otros interesados", "ARL SURA, EPS SURA y el empleador no interpusieron recursos"],
+              ["Otros interesados", "ARL SURA, EPS SURA, Cordillera Pensiones y Cesantías y el empleador no interpusieron recursos"],
               ["Trámite del recurso", "Apelación concedida el 03/10/2025, vencido el término de los demás interesados; expediente remitido a la Junta Nacional de Calificación de Invalidez el 07/10/2025"],
               ["Estado del dictamen", "No está en firme: la decisión sobre el recurso corresponde a la Junta Nacional"],
               ["Copia expedida a solicitud de", "Mónica Beltrán Rivas, persona calificada"],
@@ -560,7 +564,7 @@ DOCS.exp["PI-L03"] = {
               "No se midieron con pruebas las limitaciones para permanecer sentada y para caminar, que son las que más afectan su trabajo en la báscula y su vida diaria.",
               "Pide una valoración funcional y la modificación del porcentaje. No controvierte el origen ni la fecha de estructuración."
             ] },
-            { p: "ARL SURA, EPS SURA y el empleador no se pronunciaron sobre el recurso." },
+            { p: "ARL SURA, EPS SURA, Cordillera Pensiones y Cesantías y el empleador no se pronunciaron sobre el recurso." },
             { h: "Pruebas incorporadas en esta instancia" },
             { p: "El 10/11/2025 la recurrente allegó el extracto firmado SIM-IPS-RF-2025-0311 de la IPS Neuroeje Peñas Altas, del 06/11/2025, con el informe funcional del 30/10/2025 y la neuroconducción de control del 21/10/2025. La Sala lo incorporó el 18/11/2025 y corrió traslado a ARL SURA, que no se pronunció." }
           ] },
@@ -572,22 +576,25 @@ DOCS.exp["PI-L03"] = {
             { p: "No fue objeto del recurso. Se confirma el origen laboral de la discopatía lumbar ratificado por la Junta Regional, con exposición medida a vibración de cuerpo entero (A(8) de 0,61 m/s² en 2023) y 21 años de operación de maquinaria. El origen laboral del túnel carpiano está en firme desde 2022." },
             { h: "Columna lumbar" },
             { p: "La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral crónica y S1 izquierda: discopatía en varios niveles con radiculopatía en más de un nivel, que corresponde a la clase 4, como lo estableció la Junta Regional." },
-            { p: "El informe funcional del 30/10/2025 mide con pruebas estandarizadas un índice de Oswestry de 62 %, una tolerancia a la sedestación de 25 minutos y una marcha de 360 m en 6 minutos con dos pausas: la historia funcional corresponde a la clase 4. El examen del informe registra Lasègue bilateral, hipoestesia L5 bilateral, debilidad del extensor largo del hallux izquierdo (4/5) y reflejo aquiliano izquierdo disminuido: clase 4. El ajuste neto es 0 y la deficiencia queda en el grado C de la clase 4 (29,00 %)." },
-            { p: "La diferencia con el índice de Oswestry de junio de 2025 (46 %) obedece a que aquel se aplicó en consulta, sin pruebas de tolerancia. La Sala da mayor peso a la valoración estandarizada de octubre, que concuerda con el examen físico." },
+            { p: "El informe funcional del 30/10/2025 mide con pruebas estandarizadas un índice de Oswestry de 62 %, una tolerancia a la sedestación de 25 minutos y una marcha de 360 m en 6 minutos con dos pausas: la historia funcional corresponde a la clase 4. El examen del informe registra Lasègue bilateral, hipoestesia L5 bilateral, debilidad del extensor largo del hallux izquierdo (4/5) y reflejo aquiliano izquierdo disminuido: clase 4. Son los signos que corresponden a la radiculopatía L5 bilateral y S1 izquierda que la electromiografía documentó desde el 05/06/2025; en la valoración de la Junta Regional solo se encontraron los del lado izquierdo. El ajuste neto es 0 y la deficiencia queda en el grado C de la clase 4 (29,00 %)." },
+            { p: "La diferencia con el índice de Oswestry de junio de 2025 (46 %) y con las tolerancias de 40 minutos sentada y 500 m de marcha anotadas entonces obedece a la forma de medir: en junio el cuestionario se diligenció en una consulta de control y las tolerancias fueron las que refirió la paciente; en octubre se aplicó dentro de una valoración estandarizada de tres horas, con pruebas medidas de sedestación, marcha y carga. La Sala da mayor peso a la valoración de octubre, que concuerda con el examen físico y con la electromiografía." },
             { h: "Manos" },
-            { p: "La neuroconducción del 21/10/2025 muestra en la mano izquierda neuropatía severa del mediano en el carpo, con pérdida axonal: latencia motora distal de 6,6 ms, amplitud motora de 2,4 mV y actividad de denervación en el abductor corto del pulgar, con atrofia tenar y debilidad 4/5. La Sala la valora por el déficit sensitivo y motor del mediano: extremidad superior 10 %, deficiencia global 6 %. La mano derecha operada mantiene la secuela leve de 2022 (latencias residuales, monofilamento 3,61): extremidad superior 8 %, deficiencia global 5 %." },
+            { p: "La neuroconducción del 21/10/2025 muestra en la mano izquierda neuropatía severa del mediano en el carpo, con pérdida axonal: latencia motora distal de 6,6 ms, amplitud motora de 2,4 mV, potencial sensitivo de 5 µV y actividad de denervación en el abductor corto del pulgar. El examen registra atrofia tenar, abductor corto del pulgar 4/5, monofilamento 4,31 y discriminación de dos puntos de 9 mm. La atrofia tenar y la debilidad ya constaban en la valoración por fisiatría del 18/06/2025." },
+            { p: "Con pérdida axonal y déficit motor objetivo, la tabla de neuropatías por atrapamiento no recoge la magnitud de la deficiencia de la mano izquierda. La Sala la valora como deficiencia del nervio periférico afectado (mediano por debajo del antebrazo, capítulo 14), combinando el déficit sensitivo, moderado, y el déficit motor, leve: extremidad superior 10 %, deficiencia global 6 %. La paciente ha aplazado la liberación quirúrgica de esa mano, propuesta desde 2022, y con la pérdida axonal la recuperación esperada sería parcial; la Sala califica el estado actual, como lo hizo ARL SURA en 2022." },
+            { p: "La mano derecha operada conserva, estable, la secuela de 2022: hipoestesia constante en los dedos 1 a 3, abductor corto del pulgar 4+/5, amplitud sensitiva disminuida (15 µV) y reinervación crónica del abductor corto del pulgar, con QuickDASH de 68,2. Por la tabla de neuropatías por atrapamiento: extremidad superior 8 %, deficiencia global 5 %, el mismo valor de 2022." },
             { h: "Rol laboral y otras áreas ocupacionales" },
             { p: "Se confirman las restricciones del rol laboral (20,00 %), la autosuficiencia económica (1,50 %) y la edad (2,00 %): no puede volver a su oficio y conserva el empleo por la reubicación en la báscula." },
-            { p: "El informe funcional documenta dificultades mayores que las registradas por la Junta Regional en movilidad (sedestación, marcha y carga), autocuidado (calzado y aseo de los pies) y vida doméstica, y en la comunicación escrita y telefónica por la debilidad de la mano izquierda. La Sala ajusta las otras áreas ocupacionales a 10,60 %." },
+            { p: "El informe funcional documenta dificultades mayores que las registradas por la Junta Regional en movilidad (sedestación, marcha y carga), autocuidado (calzado y aseo de los pies) y vida doméstica, y en la comunicación por teléfono y por mensajes escritos por la debilidad de la mano izquierda. La Sala ajusta las otras áreas ocupacionales a 10,60 %." },
             { h: "Fecha de estructuración" },
-            { p: "Se mantiene el 18/06/2025. Esa valoración documenta la mejoría médica máxima de la columna, la radiculopatía bilateral y la atrofia tenar izquierda; la evaluación de octubre de 2025 mide con más precisión esas mismas limitaciones y no muestra un hecho clínico nuevo que justifique otra fecha." }
+            { p: "Con una pérdida del 52,40 %, la fecha de estructuración corresponde al momento en que la persona alcanzó el 50 % de pérdida de capacidad laboral y debe soportarse en la historia clínica y en los exámenes (Decreto 1507 de 2014). La Sala mantiene el 18/06/2025: a esa fecha ya constaban la mejoría médica máxima de la columna, sin indicación quirúrgica; la radiculopatía L5 bilateral y S1 izquierda en la electromiografía del 05/06/2025; y la atrofia tenar con debilidad del abductor corto del pulgar izquierdo. Son los hallazgos que sustentan esta calificación." },
+            { p: "Entre junio y octubre de 2025 no hubo tratamiento, intervención ni accidente que cambiara el cuadro. La valoración de octubre mide con pruebas estandarizadas las mismas limitaciones y no muestra un hecho clínico nuevo que justifique otra fecha. La recurrente no controvirtió la fecha de estructuración." }
           ] },
           { titulo: "Calificación · Título I · Deficiencias", bloques: [
             { p: "Calificación integral según el Manual Único para la Calificación de la Pérdida de la Capacidad Laboral y Ocupacional (Decreto 1507 de 2014)." },
             { tabla: { cols: ["Diagnóstico", "CIE-10", "Origen", "Capítulo", "Clase o valor de la extremidad", "Deficiencia global"], filas: [
               ["Discopatía lumbar degenerativa L3–L4 a L5–S1 con radiculopatía L5 bilateral y S1 izquierda", "M51.3", "Laboral", "15 · Columna lumbar", "Clase 4, grado C", "29,00 %"],
-              ["Síndrome del túnel carpiano izquierdo, severo, con pérdida axonal", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 10 %", "6,00 %"],
-              ["Síndrome del túnel carpiano derecho, operado, secuela leve", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 8 %", "5,00 %"],
+              ["Síndrome del túnel carpiano izquierdo, severo, con pérdida axonal (valorado como deficiencia del nervio mediano)", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 10 %", "6,00 %"],
+              ["Síndrome del túnel carpiano derecho, operado, secuela estable (neuropatía por atrapamiento)", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 8 %", "5,00 %"],
               ["Gonartrosis primaria bilateral leve", "M17.0", "Común", "14 · Extremidades inferiores", "Clase 0", "0,00 %"]
             ] } },
             { h: "Columna lumbar: clase y factores moduladores" },
@@ -618,7 +625,7 @@ DOCS.exp["PI-L03"] = {
             { h: "Otras áreas ocupacionales" },
             { tabla: { cols: ["Área", "Dificultades que se valoran", "Valor"], filas: [
               ["Aprendizaje y aplicación del conocimiento", "Escribir a mano por tiempo prolongado; sostener la atención con dolor", "0,40 %"],
-              ["Comunicación", "Escribir mensajes y sostener el teléfono con la mano izquierda; conversaciones largas de pie", "0,80 %"],
+              ["Comunicación", "Escribir mensajes en el teléfono y sostenerlo con la mano izquierda; conversaciones largas de pie", "0,80 %"],
               ["Movilidad", "Permanecer sentada más de 25 minutos, caminar más de 300 m, subir pendientes, levantar más de 5 kg, uso fino de ambas manos, conducir", "3,60 %"],
               ["Autocuidado", "Ponerse medias y calzado, lavarse los pies, abotonarse, cortar alimentos duros", "2,60 %"],
               ["Vida doméstica", "Barrer, trapear, lavar ropa, cargar compras, cocinar de pie por tiempo prolongado", "3,20 %"],
@@ -758,7 +765,7 @@ DOCS.exp["PI-L03"] = {
               ["Carbones Mesa Umbral", "Empleador", "Comunicación electrónica sin acuse de recibo; reenvío por correo certificado el 08/04/2026", "01/04/2026", "17/04/2026"],
               ["Junta Regional de Calificación de Invalidez de Boyacá", "Instancia que profirió el dictamen apelado", "Comunicación y devolución del expediente", "06/04/2026", "07/04/2026"]
             ] } },
-            { p: "Contra los dictámenes de la Junta Nacional no procede recurso en vía administrativa. Acreditadas la notificación a la persona calificada y las comunicaciones a las partes interesadas, la última el 17/04/2026, el dictamen DIC-L03 quedó en firme el 17/04/2026." },
+            { p: "Contra los dictámenes de la Junta Nacional no procede recurso en vía administrativa. Conforme al Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015, el dictamen que resuelve los recursos queda en firme cuando ha sido notificado o comunicado en su totalidad. Acreditadas la notificación a la persona calificada y las comunicaciones a las partes interesadas, la última el 17/04/2026 con la prueba de entrega del correo certificado al empleador, el dictamen DIC-L03 quedó en firme el 17/04/2026." },
             { p: "Esta constancia se refiere solo al dictamen DIC-L03 del 31/03/2026. El dictamen REG-L03 de la Junta Regional fue modificado por él y no adquirió firmeza. El dictamen CAR-L03 de ARL SURA, del 19/04/2022, tiene su propia constancia de firmeza (06/05/2022) y no está cubierto por esta." },
             { p: "Se expide para las partes interesadas el 17/04/2026." },
             { firma: { nombre: "Natalia Forero Lozano", cargo: "Secretaria técnica · Junta Nacional de Calificación de Invalidez", fecha: "17/04/2026" } },
@@ -872,7 +879,7 @@ DOCS.exp["PI-L03"] = {
               ["Abril de 2025", "30", "$3.330.000", "SIM-PL-2505-0633", "08/05/2025", "Ninguna"],
               ["Mayo de 2025", "30", "$3.330.000", "SIM-PL-2506-0619", "06/06/2025", "Ninguna"],
               ["Junio de 2025", "30", "$3.330.000", "SIM-PL-2507-0627", "08/07/2025", "Ninguna"],
-              ["Julio de 2025", "30", "$3.330.000", "SIM-PL-2508-0641", "07/08/2025", "Ninguna"],
+              ["Julio de 2025", "30", "$3.330.000", "SIM-PL-2508-0641", "08/08/2025", "Ninguna"],
               ["Agosto de 2025", "30", "$3.330.000", "SIM-PL-2509-0608", "05/09/2025", "Ninguna"],
               ["Septiembre de 2025", "30", "$3.330.000", "SIM-PL-2510-0615", "07/10/2025", "Ninguna"],
               ["Octubre de 2025", "30", "$3.330.000", "SIM-PL-2511-0622", "07/11/2025", "Ninguna"],
@@ -1003,7 +1010,7 @@ DOCS.exp["PI-L03"] = {
               ["Jornada", "Turnos de 8 horas (06:00 a 14:00 y 14:00 a 22:00)"],
               ["Equipos", "Cargador frontal sobre llantas SIM-CF-03 (cucharón de 3,1 m³, palanca de mando y volante, asiento con suspensión mecánica) y retroexcavadora SIM-RX-02 (dos palancas de mando)"],
               ["Solicitado por", "EPS SURA, medicina laboral, para la calificación del origen de la discopatía lumbar"],
-              ["Fuentes", "Observación directa el 23/08/2023, durante el turno de la medición, y el 02/07/2024 en el cargo actual; entrevista a la trabajadora (01/07/2024) y al jefe de patio (02/07/2024); registro de horómetros de 2019 a 2023; informe de vibración SIM-HI-2023-0412; análisis de puesto cualitativo del 30/06/2021, elaborado para la calificación del túnel carpiano; fichas de cargo de los empleadores anteriores"]
+              ["Fuentes", "Observación directa el 23/08/2023, durante el turno de la medición, y el 02/07/2024 en el cargo actual; entrevista a la trabajadora y al jefe de patio (02/07/2024); registro de horómetros de 2019 a 2023; informe de vibración SIM-HI-2023-0412; análisis de puesto cualitativo del 30/06/2021, elaborado para la calificación del túnel carpiano; fichas de cargo de los empleadores anteriores"]
             ] },
             { h: "Descripción del cargo" },
             { p: "Carga carbón desde las pilas del patio a las volquetas y a la tolva de despacho, y alterna con la retroexcavadora para conformar pilas y limpiar cunetas. El patio tiene piso granular irregular, con baches, y rampas de acceso a la tolva de 10 % a 12 % de pendiente. Cada ciclo de cargue dura de 40 a 50 segundos: avance, llenado del cucharón, reversa con giro de tronco y cuello, avance y descargue. Para subir y bajar de la cabina usa tres peldaños." },
@@ -1056,18 +1063,18 @@ DOCS.exp["PI-L03"] = {
               ["Tiempo de exposición diaria", "5 horas en el cargador SIM-CF-03, según el registro de horómetros de agosto de 2023; ese mes la retroexcavadora estuvo asignada a otro frente y la operadora trabajó solo en el cargador"]
             ] },
             { h: "Resultados por eje" },
-            { tabla: { cols: ["Eje", "a_w (m/s²)", "k", "k · a_w (m/s²)", "A(8) (m/s²)", "Factor de cresta", "Dosis medida (m/s^1,75)", "Dosis diaria (m/s^1,75)"], filas: [
+            { tabla: { cols: ["Eje", "Aceleración ponderada aw (m/s²)", "k", "k · aw (m/s²)", "A(8) (m/s²)", "Factor de cresta", "Dosis medida (m/s¹,⁷⁵)", "Dosis diaria (m/s¹,⁷⁵)"], filas: [
               ["x", "0,29", "1,4", "0,41", "0,32", "6,2", "4,1", "4,7"],
               ["y", "0,33", "1,4", "0,46", "0,37", "6,5", "4,6", "5,2"],
               ["z", "0,77", "1,0", "0,77", "0,61", "7,6", "9,8", "11,1"]
             ], nota: "Eje dominante: z. Las dosis de vibración incluyen el factor k de cada eje." } },
             { h: "Cálculo" },
-            { p: "A(8) = k · a_w · √(T / 8 h) = 1,0 × 0,77 × √(5 / 8) = 0,61 m/s² en el eje z." },
-            { p: "Dosis diaria = dosis medida × (tiempo de exposición / tiempo de medición) elevado a 1/4 = 9,8 × (300 / 180) elevado a 1/4 = 11,1 m/s^1,75." },
+            { p: "A(8) = k · aw · √(T / 8 h) = 1,0 × 0,77 × √(5 / 8) = 0,61 m/s² en el eje z." },
+            { p: "Dosis diaria = dosis medida × (tiempo de exposición / tiempo de medición) elevado a 1/4 = 9,8 × (300 / 180) elevado a 1/4 = 11,1 m/s¹,⁷⁵." },
             { h: "Comparación con los criterios de referencia" },
             { tabla: { cols: ["Indicador", "Valor de acción", "Valor límite", "Resultado"], filas: [
               ["A(8) del eje dominante", "0,5 m/s²", "1,15 m/s²", "0,61 m/s²: supera el valor de acción; no supera el valor límite"],
-              ["Dosis de vibración diaria", "9,1 m/s^1,75", "21 m/s^1,75", "11,1 m/s^1,75: supera el valor de acción; no supera el valor límite"]
+              ["Dosis de vibración diaria", "9,1 m/s¹,⁷⁵", "21 m/s¹,⁷⁵", "11,1 m/s¹,⁷⁵: supera el valor de acción; no supera el valor límite"]
             ], nota: "Colombia no tiene un valor límite reglamentario específico para vibración de cuerpo entero. El informe toma como criterio técnico la norma ISO 2631-1:1997 y los valores de la Directiva 2002/44/CE." } },
             { figura: {
               tipo: "serie",
@@ -1175,7 +1182,7 @@ DOCS.exp["PI-L03"] = {
               ["Ocupación", "Operadora de cargador frontal y retroexcavadora hasta el 31/01/2024; auxiliar de control de pesaje desde el 01/02/2024"],
               ["Dominancia", "Diestra"],
               ["Atención en la IPS", "Desde el 09/02/2021: electrodiagnóstico, cirugía de mano, terapia de mano, columna y rehabilitación"],
-              ["Solicitado por", "La paciente, para el recurso de apelación ante la Junta Nacional de Calificación de Invalidez (autorización escrita del 03/11/2025)"],
+              ["Solicitado por", "La paciente, para el recurso de apelación ante la Junta Nacional de Calificación de Invalidez (autorización escrita del 04/11/2025)"],
               ["Alcance", "Extracto limitado a mano, columna lumbar y antecedentes considerados en la calificación. No incluye el resto de la historia clínica"]
             ] },
             { h: "Procedencia de la información" },
@@ -1187,17 +1194,18 @@ DOCS.exp["PI-L03"] = {
               ["Resonancia magnética de columna lumbar", "22/09/2023", "Unidad de imágenes · Mauricio Esteban Pineda Ortiz", "Informe radiológico (anexo 5)"],
               ["Rehabilitación lumbar, 16 sesiones", "12/02/2024 a 05/04/2024", "Fisioterapia · Edwin Alexander Higuera Plazas", "Informe de egreso (anexo 6)"],
               ["Radiografía de rodillas", "12/03/2024", "Unidad de imágenes y ortopedia", "Antecedente común (anexo 9)"],
+              ["Concepto de cirugía de columna", "08/04/2025", "Cirugía de columna · Ramiro Esteban Quintero Ladino", "Historia clínica de la IPS (anexo 1)"],
               ["Electromiografía de miembros inferiores", "05/06/2025", "Electrodiagnóstico · Germán Darío Patarroyo Sierra", "Historia clínica de la IPS (anexo 7)"],
               ["Valoración de mejoría médica máxima", "18/06/2025", "Fisiatría · Adriana Marcela Vargas Holguín", "Historia clínica de la IPS (anexo 7)"],
               ["Neuroconducción de control de miembros superiores", "21/10/2025", "Electrodiagnóstico · Germán Darío Patarroyo Sierra", "Informe funcional (anexo 8)"],
               ["Informe funcional SIM-IPS-EF-2025-1030", "30/10/2025", "Fisiatría y terapia ocupacional", "Anexo 8"]
             ], nota: "Las consultas de medicina general y de medicina laboral de EPS SURA se transcriben de las remisiones y de los soportes aportados por la paciente." } },
             { h: "Evolución" },
-            { p: "Manos. Consultó el 12/11/2020 por adormecimiento nocturno de ambas manos. La electromiografía del 09/02/2021 confirmó neuropatía del mediano en el carpo bilateral, moderada a severa a la derecha y moderada a la izquierda. El 13/04/2021 se practicó liberación del túnel del carpo derecho, con 30 días de incapacidad y 12 sesiones de terapia de mano. Desde 2022 la mano derecha conserva una secuela sensitiva leve y estable. La mano izquierda, no operada, progresó: en junio de 2025 se observó atrofia tenar incipiente y la neuroconducción del 21/10/2025 muestra compromiso severo con pérdida axonal." },
-            { p: "Columna lumbar. Dolor lumbar desde comienzos de 2023, con irradiación a la pierna izquierda y luego a ambas. La resonancia del 22/09/2023 muestra discopatía degenerativa de L3–L4 a L5–S1 con hernia discal L4–L5 y compresión de las raíces L5. Incapacidades de 5 y 7 días en 2023. Reubicada en la báscula desde el 01/02/2024. Cumplió 16 sesiones de rehabilitación lumbar en 2024, con mejoría parcial. La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral y S1 izquierda. Mejoría médica máxima el 18/06/2025." },
+            { p: "Manos. Consultó el 12/11/2020 por adormecimiento nocturno de ambas manos. La electromiografía del 09/02/2021 confirmó neuropatía del mediano en el carpo bilateral, moderada a severa a la derecha y moderada a la izquierda. El 13/04/2021 se practicó liberación del túnel del carpo derecho, con 30 días de incapacidad y 12 sesiones de terapia de mano. Desde 2022 la mano derecha conserva una secuela sensitiva constante y estable, leve en el electrodiagnóstico. La mano izquierda, no operada, progresó: en junio de 2025 se observó atrofia tenar incipiente y la neuroconducción del 21/10/2025 muestra compromiso severo con pérdida axonal." },
+            { p: "Columna lumbar. Dolor lumbar desde comienzos de 2023, con irradiación a la pierna izquierda y luego a ambas. La resonancia del 22/09/2023 muestra discopatía degenerativa de L3–L4 a L5–S1 con hernia discal L4–L5 y compresión de las raíces L5. Incapacidades de 5 y 7 días en 2023. Reubicada en la báscula desde el 01/02/2024. Cumplió 16 sesiones de rehabilitación lumbar en 2024, con mejoría parcial. En abril de 2025 cirugía de columna no indicó tratamiento quirúrgico. La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral y S1 izquierda. Mejoría médica máxima el 18/06/2025." },
             { h: "Diagnósticos" },
             { tabla: { cols: ["CIE-10", "Diagnóstico", "Tipo", "Estado"], filas: [
-              ["G56.0", "Síndrome del túnel carpiano bilateral", "Principal", "Mano derecha operada (2021) con secuela sensitiva leve; mano izquierda severa, con pérdida axonal"],
+              ["G56.0", "Síndrome del túnel carpiano bilateral", "Principal", "Mano derecha operada (2021) con secuela sensitiva estable; mano izquierda severa, con pérdida axonal"],
               ["M51.3", "Otras degeneraciones especificadas de disco intervertebral: discopatía lumbar L3–L4 a L5–S1", "Principal", "Crónica, con radiculopatía L5 bilateral y S1 izquierda"],
               ["M54.1", "Radiculopatía, asociada a la discopatía lumbar", "Relacionado", "Crónica, sin denervación activa"],
               ["M17.0", "Gonartrosis primaria bilateral, leve", "Antecedente común", "En seguimiento por ortopedia"]
@@ -1211,7 +1219,7 @@ DOCS.exp["PI-L03"] = {
               ["Levantamiento ocasional del piso a la cintura", "5 kg", "Cerca de 15 kg"],
               ["Dinamometría de agarre", "Derecha 15 kg · izquierda 10 kg", "Cerca de 25 kg"],
               ["Prueba de las nueve clavijas", "Derecha 23 s · izquierda 28 s", "Cerca de 18 s"],
-              ["QuickDASH", "56,8", "0"]
+              ["QuickDASH", "68,2", "0"]
             ] } },
             { h: "Restricciones y recomendaciones" },
             { lista: [
@@ -1220,10 +1228,10 @@ DOCS.exp["PI-L03"] = {
               "Alternar sentada y de pie cada 20 a 30 minutos, con silla de soporte lumbar.",
               "No caminar por terreno irregular ni subir a vehículos o plataformas.",
               "Evitar el agarre sostenido y las herramientas vibrátiles; escáner de mano con soporte.",
-              "Valoración por cirugía de mano para la mano izquierda; continuar el programa de ejercicio en casa."
+              "Valoración por cirugía de mano para la mano izquierda, que la paciente ha aplazado; con la pérdida axonal, la recuperación esperada después de la liberación sería parcial. Continuar el programa de ejercicio en casa."
             ] },
             { h: "Concepto" },
-            { p: "Discopatía lumbar degenerativa en tres niveles con radiculopatía L5 bilateral y S1 izquierda, en mejoría médica máxima desde el 18/06/2025, con limitación para permanecer sentada más de 25 minutos, caminar más de 300 m sin pausa y levantar cargas. Síndrome del túnel carpiano bilateral con secuela leve en la mano derecha operada y compromiso severo con pérdida axonal en la izquierda, con disminución de la fuerza de agarre y de la destreza en ambas manos. Las limitaciones son permanentes." },
+            { p: "Discopatía lumbar degenerativa en tres niveles con radiculopatía L5 bilateral y S1 izquierda, en mejoría médica máxima desde el 18/06/2025, con limitación para permanecer sentada más de 25 minutos, caminar más de 300 m sin pausa y levantar cargas. Síndrome del túnel carpiano bilateral con secuela sensitiva estable en la mano derecha operada y compromiso severo con pérdida axonal en la izquierda, con disminución de la fuerza de agarre y de la destreza en ambas manos. Las limitaciones son permanentes." },
             { firma: { nombre: "Adriana Marcela Vargas Holguín", cargo: "Médica fisiatra", registro: "Registro médico SIM-RM-15-1452", fecha: "06/11/2025" } },
             { firma: { nombre: "Lina Fernanda Chaparro Ávila", cargo: "Terapeuta ocupacional", registro: "Tarjeta profesional SIM-TO-2215", fecha: "06/11/2025" } },
             { nota: "Extracto expedido con autorización de la paciente y solo para la finalidad indicada (Resolución 1995 de 1999). La historia clínica completa permanece bajo custodia de la IPS. Las restricciones laborales se comunican al empleador por separado, sin información clínica." }
@@ -1247,6 +1255,7 @@ DOCS.exp["PI-L03"] = {
               ["12/03/2024", "Ortopedia", "Dolor mecánico de rodillas al subir escaleras. Radiografía con gonartrosis leve (anexo 9)."],
               ["05/04/2024", "Fisioterapia", "Egreso de la rehabilitación lumbar."],
               ["28/06/2024", "Medicina laboral, EPS SURA", "Recomendaciones laborales permanentes."],
+              ["08/04/2025", "Cirugía de columna", "Discopatía en tres niveles sin inestabilidad segmentaria. No indica cirugía por el beneficio limitado que se espera; continuar manejo conservador y remitir a fisiatría para el cierre de la rehabilitación."],
               ["05/06/2025", "Electrodiagnóstico", "Electromiografía de miembros inferiores (anexo 7)."],
               ["18/06/2025", "Fisiatría", "Mejoría médica máxima de la columna (anexo 7). Atrofia tenar izquierda incipiente: ordena neuroconducción de control de miembros superiores."],
               ["25/09/2025", "Fisiatría", "A solicitud de la paciente, ordena una valoración funcional integral para el recurso ante la Junta Nacional."],
@@ -1291,7 +1300,8 @@ DOCS.exp["PI-L03"] = {
               ["Mediano izquierdo", "Sensitivo", "4,3", "11 µV", "38", "Sin mejoría"],
               ["Mediano izquierdo", "Motor", "5,2", "6,2 mV", "51", "Leve progresión"]
             ] } },
-            { p: "Conclusión: mediano derecho con compromiso residual leve después de la liberación; mediano izquierdo con compromiso moderado persistente." },
+            { p: "Electromiografía de aguja del abductor corto del pulgar derecho: sin actividad espontánea; unidades motoras de amplitud aumentada, de reinervación crónica." },
+            { p: "Conclusión: mediano derecho con compromiso residual leve después de la liberación, con secuela axonal (amplitud sensitiva disminuida y reinervación crónica); mediano izquierdo con compromiso moderado persistente." },
             { firma: { nombre: "Germán Darío Patarroyo Sierra", cargo: "Médico fisiatra, electrodiagnóstico", registro: "Registro médico SIM-RM-15-0774", fecha: "12/01/2022" } }
           ] },
           { titulo: "Anexo 3 · Cirugía de la mano derecha e incapacidad", bloques: [
@@ -1360,7 +1370,7 @@ DOCS.exp["PI-L03"] = {
               "Lordosis lumbar conservada. Altura de los cuerpos vertebrales conservada. Cambios de tipo 2 de Modic en los platillos de L4–L5.",
               "Deshidratación discal de L3–L4 a L5–S1 (grados III a IV de Pfirrmann), con disminución de la altura del disco L4–L5.",
               "L3–L4: protrusión discal posterocentral leve, sin compromiso radicular.",
-              "L4–L5: hernia discal posterocentral de base amplia que, con la hipertrofia facetaria y del ligamento amarillo, estrecha ambos recesos laterales y comprime las raíces L5 descendentes, de predominio izquierdo. Estenosis foraminal bilateral moderada. Diámetro anteroposterior del canal de 9 mm.",
+              "L4–L5: hernia discal posterocentral de base amplia que, con la hipertrofia facetaria y del ligamento amarillo, estrecha ambos recesos laterales y comprime las raíces L5 descendentes, de predominio izquierdo. Estenosis foraminal bilateral moderada. Canal central de 11 mm en el diámetro anteroposterior (estenosis central relativa).",
               "L5–S1: protrusión discal posterolateral izquierda que contacta la raíz S1 izquierda; forámenes de amplitud conservada.",
               "Cono medular en L1, de señal normal."
             ] },
@@ -1379,7 +1389,7 @@ DOCS.exp["PI-L03"] = {
               pie: "Esquema sintético dibujado a partir de los hallazgos del informe; no es la imagen del estudio."
             } },
             { h: "Conclusión" },
-            { p: "Discopatía degenerativa de L3–L4 a L5–S1. Hernia discal L4–L5 con estenosis de los recesos laterales y foraminal bilateral, y compresión de las raíces L5. Protrusión L5–S1 con contacto de la raíz S1 izquierda." },
+            { p: "Discopatía degenerativa de L3–L4 a L5–S1. Hernia discal L4–L5 con estenosis central relativa, de los recesos laterales y foraminal bilateral, y compresión de las raíces L5. Protrusión L5–S1 con contacto de la raíz S1 izquierda." },
             { firma: { nombre: "Mauricio Esteban Pineda Ortiz", cargo: "Médico radiólogo", registro: "Registro médico SIM-RM-15-1029", fecha: "22/09/2023" } }
           ] },
           { titulo: "Anexo 6 · Rehabilitación lumbar (2024) e incapacidades por columna", bloques: [
@@ -1407,8 +1417,8 @@ DOCS.exp["PI-L03"] = {
           { titulo: "Anexo 7 · Electromiografía de miembros inferiores y mejoría médica máxima", bloques: [
             { h: "Electromiografía y neuroconducciones de miembros inferiores · 05/06/2025" },
             { tabla: { cols: ["Nervio", "Tipo", "Latencia (ms)", "Amplitud", "Velocidad (m/s)", "Interpretación"], filas: [
-              ["Peroneo profundo derecho", "Motor", "4,9", "3,6 mV", "43", "Amplitud en el límite inferior"],
-              ["Peroneo profundo izquierdo", "Motor", "5,1", "2,7 mV", "42", "Amplitud disminuida"],
+              ["Peroneo profundo derecho", "Motor", "4,9", "2,6 mV", "43", "Amplitud en el límite inferior"],
+              ["Peroneo profundo izquierdo", "Motor", "5,1", "1,8 mV", "42", "Amplitud disminuida"],
               ["Tibial posterior derecho", "Motor", "4,2", "9,8 mV", "46", "Normal"],
               ["Tibial posterior izquierdo", "Motor", "4,4", "8,1 mV", "45", "Normal"],
               ["Sural derecho", "Sensitivo", "3,1", "12 µV", "46", "Normal"],
@@ -1427,7 +1437,7 @@ DOCS.exp["PI-L03"] = {
             { p: "Conclusión: radiculopatía L5 bilateral, crónica, de predominio izquierdo, y radiculopatía S1 izquierda leve, sin signos de denervación activa. Sin polineuropatía." },
             { firma: { nombre: "Germán Darío Patarroyo Sierra", cargo: "Médico fisiatra, electrodiagnóstico", registro: "Registro médico SIM-RM-15-0774", fecha: "05/06/2025" } },
             { h: "Valoración por fisiatría · 18/06/2025" },
-            { p: "Refiere dolor lumbar continuo (6 de 10) con irradiación a ambas piernas, mayor en la izquierda, sin cambios desde la rehabilitación pese al tratamiento farmacológico. Trabaja en la báscula con las adaptaciones indicadas. Al examen: Lasègue izquierdo positivo a 50°, hipoestesia L5 izquierda, extensor largo del hallux izquierdo 4/5, reflejos aquilianos simétricos. Índice de Oswestry de 46 %, aplicado en consulta; tolera 40 minutos sentada y camina unos 500 m antes de detenerse." },
+            { p: "Refiere dolor lumbar continuo (6 de 10) con irradiación a ambas piernas, mayor en la izquierda, sin cambios desde la rehabilitación pese al tratamiento farmacológico. Trabaja en la báscula con las adaptaciones indicadas. Al examen: Lasègue izquierdo positivo a 50°, hipoestesia L5 izquierda, extensor largo del hallux izquierdo 4/5, reflejos aquilianos simétricos. Índice de Oswestry de 46 %, diligenciado en la consulta; refiere que tolera unos 40 minutos sentada y que camina unos 500 m antes de detenerse (no medidos). Concepto de cirugía de columna del 08/04/2025: no indica tratamiento quirúrgico." },
             { p: "Manos: mano derecha con hipoestesia en los dedos 1 a 3 y cicatriz sana. Mano izquierda con Phalen y Tinel positivos, atrofia tenar incipiente y abductor corto del pulgar 4/5." },
             { p: "Concepto: discopatía lumbar con radiculopatía bilateral en mejoría médica máxima; restricciones permanentes. Se ordena neuroconducción de control de miembros superiores por la progresión de la mano izquierda y se sugiere calificación integral." },
             { firma: { nombre: "Adriana Marcela Vargas Holguín", cargo: "Médica fisiatra", registro: "Registro médico SIM-RM-15-1452", fecha: "18/06/2025" } }
@@ -1444,7 +1454,7 @@ DOCS.exp["PI-L03"] = {
             { h: "Neuroconducción de control de miembros superiores · 21/10/2025" },
             { tabla: { cols: ["Nervio", "Tipo", "Latencia (ms)", "Amplitud", "Velocidad (m/s)", "Interpretación"], filas: [
               ["Mediano derecho", "Sensitivo", "3,8", "15 µV", "43", "Compromiso residual leve, estable desde 2022"],
-              ["Mediano derecho", "Motor", "4,5", "6,3 mV", "52", "Latencia en el límite superior"],
+              ["Mediano derecho", "Motor", "4,5", "6,3 mV", "52", "Latencia distal levemente prolongada"],
               ["Mediano izquierdo", "Sensitivo", "5,0", "5 µV", "31", "Compromiso severo"],
               ["Mediano izquierdo", "Motor", "6,6", "2,4 mV", "48", "Latencia prolongada, amplitud disminuida: pérdida axonal"],
               ["Cubital izquierdo", "Motor", "2,9", "8,4 mV", "57", "Normal"],
@@ -1482,7 +1492,7 @@ DOCS.exp["PI-L03"] = {
               ["Monofilamento de Semmes-Weinstein", "3,61", "4,31", "2,83"],
               ["Discriminación de dos puntos (mm)", "7", "9", "Menos de 6"]
             ] } },
-            { kv: [["QuickDASH (0 a 100)", "56,8"]] },
+            { kv: [["QuickDASH (0 a 100)", "68,2"]] },
             { figura: {
               tipo: "serie",
               datos: {
@@ -1500,7 +1510,8 @@ DOCS.exp["PI-L03"] = {
               "Hipoestesia en el dermatoma L5 bilateral, mayor a la izquierda.",
               "Extensor largo del hallux 4/5 a la izquierda y 4+/5 a la derecha.",
               "Reflejo aquiliano izquierdo disminuido; rotulianos simétricos.",
-              "Mano izquierda: atrofia tenar leve; abductor corto del pulgar 4/5; Phalen y Tinel positivos."
+              "Mano izquierda: atrofia tenar leve; abductor corto del pulgar 4/5; Phalen y Tinel positivos.",
+              "Mano derecha: cicatriz sana; hipoestesia constante en los dedos 1 a 3; abductor corto del pulgar 4+/5; sin atrofia."
             ] },
             { h: "Conclusión" },
             { p: "Limitación funcional permanente para permanecer sentada más de 25 minutos, caminar más de 300 m sin pausa, levantar más de 5 kg y realizar tareas de agarre sostenido y de destreza fina, mayor con la mano izquierda. Los hallazgos son compatibles con los estudios de imagen y de electrodiagnóstico. El cargo de control de pesaje es compatible si se mantienen las restricciones." },
