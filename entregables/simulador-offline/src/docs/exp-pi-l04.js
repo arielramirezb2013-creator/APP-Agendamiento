@@ -5,9 +5,9 @@
    estructuración el 12/09/2025 (DIC-L04, 28/04/2026), notificado el miércoles 29/04/2026 a la persona y a los
    demás interesados. El término de 10 días hábiles para manifestar inconformidad corre del 30/04/2026 al
    14/05/2026 (no se cuentan el festivo del viernes 01/05/2026 ni los fines de semana; la Ascensión se traslada al
-   lunes 18/05/2026, fuera del término). Elena radica la solicitud el miércoles 06/05/2026 (RAD-L04), cuando han
-   transcurrido 4 de los 10 días hábiles: el dictamen no está en firme. Al radicar no hay constancia sobre su
-   estado; la de referencia (FIR-L04, viernes 08/05/2026, con 6 días hábiles transcurridos) dice que no hay
+   lunes 18/05/2026, fuera del término). Elena radica la solicitud el miércoles 06/05/2026 (RAD-L04), en el cuarto
+   de los 10 días hábiles: el dictamen no está en firme. Al radicar no hay constancia sobre su
+   estado; la de referencia (FIR-L04, viernes 08/05/2026, sexto día hábil del término) dice que no hay
    inconformidades a esa fecha y que el dictamen no está en firme.
    Cronología después de la radicación: impresión de la consulta de estado «inactiva» en la ventanilla (06/05/2026,
    09:52); requerimientos de Prestaciones económicas (07/05/2026) a Medicina laboral, a Afiliaciones y novedades y
@@ -90,7 +90,7 @@ DOCS.exp["PI-L04"] = {
               "En el control periódico del 11/11/2021 informé que tenía zumbido en los oídos y que no entendía las instrucciones en la nave. El 05/03/2024 otorrinolaringología confirmó que tengo hipoacusia neurosensorial bilateral. Uso audífonos en los dos oídos desde abril de 2024.",
               "Desde el 01/01/2025 la empresa me reubicó en el almacén como auxiliar de inventario de repuestos. El 30/09/2025 terminé mi contrato por retiro voluntario. Desde entonces no trabajo y no estoy afiliada a ninguna ARL.",
               "EPS SURA calificó el origen laboral de mi enfermedad el 24/06/2025 (dictamen ORI-L04). Ese dictamen quedó en firme el 14/07/2025.",
-              "ARL SURA me calificó con una pérdida de capacidad laboral de 51,00 %, de origen laboral, con fecha de estructuración del 12/09/2025 (dictamen DIC-L04 del 28/04/2026). Me lo notificaron por escrito el 29/04/2026, y ese mismo día se lo comunicaron a EPS SURA, a mi fondo de pensiones y a la empresa.",
+              "ARL SURA me calificó con una pérdida de capacidad laboral de 51,00 %, de origen laboral, con fecha de estructuración del 12/09/2025 (dictamen DIC-L04 del 28/04/2026). Me lo notificaron por escrito el 29/04/2026, y en la notificación me informaron que el dictamen también se comunica a EPS SURA, a mi fondo de pensiones y a la empresa.",
               "En el acta de notificación me explicaron por escrito que tengo 10 días hábiles para manifestar inconformidad, es decir, hasta el 14/05/2026. No he presentado inconformidad. Sé que el término todavía está corriendo, pero radico desde ahora porque desde mi retiro no tengo ingresos y dependo de mi hija.",
               "ARL SURA fue la última ARL a la que estuve afiliada. Con mis empleadores anteriores estuve afiliada a otras administradoras. Entre el 01/08/2012 y el 31/08/2012 no trabajé."
             ] },
@@ -595,7 +595,7 @@ DOCS.exp["PI-L04"] = {
                 ["No se cuenta", "01/05/2026 (viernes)", "Festivo, Día del Trabajo"],
                 ["2", "04/05/2026 (lunes)", ""],
                 ["3", "05/05/2026 (martes)", ""],
-                ["4", "06/05/2026 (miércoles)", ""],
+                ["4", "06/05/2026 (miércoles)", "Radicación de la solicitud de pensión RAD-L04"],
                 ["5", "07/05/2026 (jueves)", "Solicitud de esta constancia"],
                 ["6", "08/05/2026 (viernes)", "Expedición de esta constancia"],
                 ["7", "11/05/2026 (lunes)", "Por transcurrir"],
@@ -603,7 +603,7 @@ DOCS.exp["PI-L04"] = {
                 ["9", "13/05/2026 (miércoles)", "Por transcurrir"],
                 ["10", "14/05/2026 (jueves)", "Último día del término; por transcurrir"]
               ],
-              nota: "No se cuentan sábados, domingos ni festivos. El jueves 14/05/2026 es día hábil: el festivo de la Ascensión del Señor se traslada al lunes 18/05/2026. Al 08/05/2026 han transcurrido 6 de los 10 días hábiles y faltan 4."
+              nota: "No se cuentan sábados, domingos ni festivos. El jueves 14/05/2026 es día hábil: el festivo de la Ascensión del Señor se traslada al lunes 18/05/2026. El 08/05/2026 corre el sexto de los 10 días hábiles; quedan 4, del 11/05/2026 al 14/05/2026."
             } },
             { h: "Verificación de inconformidades" },
             { kv: [
@@ -619,8 +619,8 @@ DOCS.exp["PI-L04"] = {
             { p: "Esta constancia corresponde únicamente a la versión v1 del dictamen DIC-L04, identificada con el código de verificación SIM-VER-6K2T-94QX, y refleja su estado en la fecha y hora del corte. No acredita la firmeza del dictamen." },
             { h: "Fundamento" },
             { lista: [
-              "Ley 100 de 1993, art. 41, modificado por el Decreto Ley 019 de 2012, art. 142: quien no esté de acuerdo con la calificación en primera oportunidad debe manifestar su inconformidad dentro de los 10 días siguientes a la notificación, y la entidad remite el expediente a la junta regional de calificación de invalidez dentro de los 5 días siguientes; vencido el término sin inconformidad, el dictamen queda en firme.",
-              "Ley 4 de 1913, art. 62: en los plazos de días que señalan las leyes no se cuentan los feriados ni los de vacancia; por eso los 10 días se cuentan como días hábiles.",
+              "Ley 100 de 1993, art. 41, modificado por el Decreto Ley 019 de 2012, art. 142: si el interesado no está de acuerdo con la calificación en primera oportunidad, debe manifestar su inconformidad dentro de los 10 días siguientes, y la entidad debe remitir el caso a la junta regional de calificación de invalidez dentro de los 5 días siguientes; la decisión de la junta regional es apelable ante la Junta Nacional.",
+              "Ley 4 de 1913, art. 62: en los plazos de días que señalan las leyes y los actos oficiales se entienden suprimidos los feriados y los de vacante; por eso los 10 días se cuentan como días hábiles.",
               "Ley 51 de 1983: traslado de algunos festivos, entre ellos la Ascensión del Señor, al lunes siguiente.",
               "Decreto 1072 de 2015, Libro 2, Parte 2, Título 5, que compiló el Decreto 1352 de 2013: trámite ante las juntas de calificación de invalidez."
             ] },

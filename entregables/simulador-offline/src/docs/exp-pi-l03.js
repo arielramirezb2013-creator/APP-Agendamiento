@@ -1,18 +1,27 @@
-/* ============ Documentos sintéticos · operadora minera con tres dictámenes ============
+/* ============ Documentos sintéticos · operadora minera con calificación integral apelada ============
    Expediente de Mónica Beltrán Rivas, operadora de cargador frontal reubicada en la báscula de Tópaga.
    Túnel carpiano bilateral (G56.0), calificado por ARL SURA en 2022 (CAR-L03, 16,20 %, firme el 06/05/2022,
    con indemnización por incapacidad permanente parcial), y discopatía lumbar degenerativa (M51.3), calificada de
-   forma integral por la Junta Regional de Boyacá (REG-L03, 47,60 %, apelado) y por la Junta Nacional
-   (DIC-L03, 52,40 %, firme el 17/04/2026 según FIR-L03). Solicitud RAD-L03 del 29/04/2026.
+   forma integral por la Junta Regional de Boyacá (REG-L03, 16/09/2025, 52,40 %, estructuración 18/06/2025).
+   ARL SURA apeló el 22/09/2025; la Junta Regional concedió el recurso el 03/10/2025 y remitió el expediente a la
+   Junta Nacional el 07/10/2025, que lo recibió ese día y no ha decidido (constancia de trámite JN-L03, 30/04/2026).
+   REG-L03 no está en firme (constancia FIR-L03 de la Junta Regional, 30/04/2026). La constancia que llega con la
+   solicitud es la de 2022, del dictamen CAR-L03. Solicitud RAD-L03 del 29/04/2026.
    Aritmética (Decreto 1507 de 2014: deficiencia combinada ponderada al 50 % + Título II):
      Dictamen de 2022 ....... manos 5 y 4 → 8,80 → 4,40 + rol 6,50 + otras áreas 5,30 = 16,20 %
-     Junta Regional ......... lumbar 25, manos 5 y 4 → 28,75 → 31,60 → 15,80 + 23,50 + 8,30 = 47,60 %
-     Junta Nacional ......... lumbar 29, manos 6 y 5 → 33,26 → 36,60 (36,597) → 18,30 + 23,50 + 10,60 = 52,40 %
+     Junta Regional ......... lumbar 29, manos 6 y 5 → 33,26 → 36,60 (36,597) → 18,30 + 23,50 + 10,60 = 52,40 %
+   Recurso de ARL SURA (sin decisión): clase 3 en historia y examen → lumbar 25 (grado A); mano izquierda por la tabla
+     de atrapamiento o sin calificar; otras áreas menores. Con lumbar 25 y mano izquierda en 4 la cuenta da 49,90 %:
+     el argumento de «por debajo del 50 %» es aritméticamente posible, pero el documento no da cifra ni decisión.
    Extremidad superior a global: factor 0,6 redondeado al entero (8 → 5, 6 → 4, 10 → 6).
    Manos por atrapamiento (promedio de pruebas, historia y examen; la escala funcional fija el valor del rango):
-     derecha 2022 y 2025: pérdida axonal residual, síntomas constantes, debilidad → rango 7–9; QuickDASH 63,6 / 68,2 → 8.
+     derecha 2022 y 2025: pérdida axonal residual, síntomas constantes, debilidad → rango 7–9; QuickDASH 63,6 / 65,9 → 8.
      izquierda 2022: retardo de conducción, síntomas intermitentes, hipoestesia → rango 4–6; QuickDASH 63,6 → 6.
-     izquierda 2025: pérdida axonal con denervación y déficit motor → nervio periférico (mediano), sensitivo + motor → 10.
+     izquierda 2025 (neuroconducción del 14/08/2025): pérdida axonal con denervación y déficit motor → nervio
+     periférico (mediano), sensitivo + motor → 10.
+   Columna 2025: fisiatría 18/06/2025 (Oswestry 46 %, tolerancias referidas, signos izquierdos) → clase 3; valoración
+     de la Junta Regional 26/08/2025 (Oswestry 64 %, sedestación observada 25 min, signos bilaterales) → clase 4;
+     informe funcional de la IPS 30/10/2025, aportado en la segunda instancia (Oswestry 62 %) → clase 4.
    IBC del período fijado (01/08/2023 a 31/07/2024): 6 × $3.040.000 + 6 × $3.200.000 = $37.440.000; promedio $3.120.000.
    Exportación de 2026 (01/04/2025 a 31/03/2026): 10 × $3.330.000 + 2 × $3.520.000 = $40.340.000.
    Vibración (ISO 2631-1): aw,z 0,77 m/s² durante 5 h → A(8) = 0,77 × √(5/8) = 0,61 m/s².
@@ -33,12 +42,15 @@ DOCS.exp["PI-L03"] = {
     higiene: "Higiene Industrial Cordillera Oriental S.A.S. · NIT SIM-901.338.150-2",
     expedienteRegional: "SIM-JRCIB-2024-0873",
     expedienteNacional: "SIM-JNCI-2025-11408",
+    radicadoRecursoArl: "SIM-JRCIB-REC-2025-0412",
+    oficioRemision: "SIM-JRCIB-OF-2025-1187",
+    radicadoJuntaNacional: "SIM-JNCI-RAD-2025-20731",
     dictamenOrigenEps: "SIM-EPS-ML-2024-05126",
     actaNotificacion2022: "SIM-NOT-2022-01562",
     constanciaFirmeza2022: "SIM-ARL-CF-2022-0587",
     resolucionIpp: "SIM-ARL-IPP-2022-0731",
     verificacionDictamen2022: "SIM-VER-3C81-0D44",
-    verificacionDictamenNacional: "SIM-VER-JN-5B27-9E13",
+    verificacionDictamenRegional: "SIM-VER-JR-4A19-7C52",
     analisisPuesto: "SIM-SST-APT-2024-019",
     informeVibracion: "SIM-HI-2023-0412",
     resumenFuncional: "SIM-IPS-RF-2025-0311",
@@ -90,14 +102,15 @@ DOCS.exp["PI-L03"] = {
               "En noviembre de 2020 empecé con adormecimiento y hormigueo en las dos manos. En febrero de 2021 la electromiografía mostró túnel carpiano en ambas manos y en abril de 2021 me operaron la mano derecha.",
               "ARL SURA me calificó el túnel carpiano el 19/04/2022 con 16,20 % de pérdida de capacidad laboral, de origen laboral. Ese dictamen quedó en firme y en junio de 2022 recibí la indemnización por incapacidad permanente parcial.",
               "Desde comienzos de 2023 tengo dolor en la parte baja de la espalda que me baja a las piernas; consulté por eso en junio de 2023. Desde el 01/02/2024 trabajo en la báscula, con restricciones para manejar maquinaria y levantar peso.",
-              "EPS SURA calificó de origen laboral la enfermedad de la columna el 01/08/2024. ARL SURA no estuvo de acuerdo y el caso pasó a la Junta Regional de Calificación de Invalidez de Boyacá, que el 16/09/2025 confirmó el origen laboral y me calificó de manera integral con 47,60 %.",
-              "Apelé ese dictamen el 22/09/2025. La Junta Nacional de Calificación de Invalidez resolvió la apelación en marzo de 2026 y me notificó por medio electrónico el 01/04/2026. No tengo copia impresa de ese dictamen; por eso no lo anexo.",
-              "Me han hecho tres calificaciones con porcentajes distintos y tengo una constancia de firmeza que me entregó ARL SURA en 2022. No sé cuál de ellas es la que sirve para la pensión."
+              "EPS SURA calificó de origen laboral la enfermedad de la columna el 01/08/2024. ARL SURA no estuvo de acuerdo y el caso pasó a la Junta Regional de Calificación de Invalidez de Boyacá, que el 16/09/2025 confirmó el origen laboral y me calificó de manera integral, columna y manos, con 52,40 % y fecha de estructuración del 18/06/2025.",
+              "ARL SURA apeló ese dictamen el 22/09/2025. La Junta Regional me informó que concedió el recurso y que el 07/10/2025 envió el expediente a la Junta Nacional de Calificación de Invalidez. En noviembre de 2025 llevé a la Junta Regional un informe funcional de la IPS para que lo enviaran a la Junta Nacional. Hasta hoy no me han notificado ninguna decisión.",
+              "Tengo dos calificaciones con porcentajes distintos y una constancia de firmeza que me entregó ARL SURA en 2022. No sé cuál de ellas sirve para la pensión ni si la apelación de ARL SURA detiene mi pensión mientras decide la Junta Nacional."
             ] },
             { h: "Peticiones" },
             { lista: [
               "Que se estudie y se reconozca la pensión de invalidez de origen laboral a que tenga derecho, conforme a la Ley 776 de 2002.",
               "Que se me informe por escrito cuál dictamen de calificación se tiene en cuenta para resolver esta solicitud y qué pasa con la calificación de las manos de 2022 y con la indemnización que recibí.",
+              "Que se me informe si la apelación que presentó ARL SURA contra el dictamen de la Junta Regional impide resolver la pensión mientras decide la Junta Nacional y, en ese caso, qué sigue y qué debo hacer.",
               "Que, si falta algún documento, se me indique quién debe aportarlo o se pida directamente a la entidad que lo tiene."
             ] },
             { h: "Documentos que anexo" },
@@ -105,7 +118,7 @@ DOCS.exp["PI-L03"] = {
               ["1", "Copia del documento de identidad", "1"],
               ["2", "Copia del dictamen CAR-L03 de ARL SURA, del 19/04/2022", "6"],
               ["3", "Constancia de firmeza expedida por ARL SURA el 10/05/2022", "2"],
-              ["4", "Copia auténtica del dictamen REG-L03 de la Junta Regional de Boyacá, del 16/09/2025, con constancia del estado del trámite", "7"],
+              ["4", "Copia auténtica del dictamen REG-L03 de la Junta Regional de Boyacá, del 16/09/2025, con constancia del estado del trámite del 08/10/2025", "9"],
               ["5", "Reporte de ingreso base de cotización descargado del portal de nómina de Carbones Mesa Umbral (corte 31/03/2026)", "2"]
             ], nota: "Folios contados por la ventanilla al recibir." } },
             { p: "Declaro que la información de esta solicitud es cierta. Autorizo a ARL SURA a consultar y a pedir a otras entidades los dictámenes, las constancias y los soportes clínicos y laborales necesarios para resolverla, solo con esa finalidad." },
@@ -118,14 +131,14 @@ DOCS.exp["PI-L03"] = {
               ["Fecha y hora", "29/04/2026, 09:42"],
               ["Trámite", "Pensión de invalidez de origen laboral"],
               ["Solicitante", "Mónica Beltrán Rivas · C.C. SIM-46.372.518"],
-              ["Folios recibidos", "20 (solicitud, 2; anexos, 18)"]
+              ["Folios recibidos", "22 (solicitud, 2; anexos, 20)"]
             ] },
             { h: "Lista de verificación al recibir" },
             { tabla: { cols: ["Documento", "Estado al radicar", "Observación"], filas: [
               ["Solicitud firmada", "Recibida", "Mismo titular del documento de identidad"],
               ["Documento de identidad", "Recibido", "Copia simple"],
-              ["Dictamen de calificación", "Recibidas dos copias", "Dictamen CAR-L03 de ARL SURA (19/04/2022, 16,20 %) y dictamen REG-L03 de la Junta Regional de Boyacá (16/09/2025, 47,60 %); la constancia de este último indica que fue apelado"],
-              ["Dictamen que resolvió la apelación", "No aportado", "La solicitante informa que la Junta Nacional la notificó por medio electrónico el 01/04/2026"],
+              ["Dictamen de calificación", "Recibidas dos copias", "Dictamen CAR-L03 de ARL SURA (19/04/2022, 16,20 %) y dictamen REG-L03 de la Junta Regional de Boyacá (16/09/2025, 52,40 %); la constancia anexa a este último indica que ARL SURA lo apeló"],
+              ["Decisión de la apelación", "No aportada", "La solicitante informa que la Junta Nacional no le ha notificado decisión sobre la apelación de ARL SURA"],
               ["Constancia de firmeza", "Recibida", "Constancia SIM-ARL-CF-2022-0587 de ARL SURA, del 10/05/2022"],
               ["Certificado de ingreso base de cotización", "Recibido reporte", "Reporte del portal de autoservicio de nómina, corte 31/03/2026, sin firma"]
             ], nota: "La verificación del dictamen vigente, de su firmeza y del período de cotización corresponde a Prestaciones económicas. Esta lista no es una decisión sobre la solicitud." } },
@@ -327,7 +340,7 @@ DOCS.exp["PI-L03"] = {
       }
     },
 
-    /* ---------------------------------------------------------------- Dictamen integral de la Junta Regional (copia auténtica, apelado) */
+    /* ---------------------------------------------------------------- Dictamen integral de la Junta Regional (copia auténtica, apelado por ARL SURA) */
     REG: {
       v1: {
         tipo: "dictamen",
@@ -336,12 +349,14 @@ DOCS.exp["PI-L03"] = {
         numero: "REG-L03",
         fecha: "16/09/2025",
         version: "v1",
-        estadoNota: "Copia auténtica expedida el 08/10/2025, con constancia del estado del trámite: apelado por la persona calificada el 22/09/2025, sin firmeza.",
+        estadoNota: "Copia auténtica expedida el 08/10/2025 a solicitud de la persona calificada, con constancia del estado del trámite: apelado por ARL SURA el 22/09/2025, recurso concedido el 03/10/2025 y expediente remitido a la Junta Nacional el 07/10/2025. No está en firme.",
         paginas: [
           { titulo: "Dictamen · información general", bloques: [
             { kv: [
               ["Dictamen", "REG-L03"],
+              ["Versión", "v1 · única versión expedida"],
               ["Fecha del dictamen", "16/09/2025"],
+              ["Código de verificación", "SIM-VER-JR-4A19-7C52"],
               ["Expediente", "SIM-JRCIB-2024-0873"],
               ["Tipo de calificación", "Origen de la discopatía lumbar; pérdida de capacidad laboral y ocupacional integral; fecha de estructuración"],
               ["Instancia", "Junta Regional · primera instancia"],
@@ -349,8 +364,9 @@ DOCS.exp["PI-L03"] = {
               ["Entidad que remite", "EPS SURA · Medicina laboral, 21/08/2024"],
               ["Radicación en la Junta", "26/08/2024"],
               ["Solicitud acumulada", "Calificación integral de la pérdida de capacidad laboral pedida directamente a la Junta por la persona calificada el 22/07/2025: pasados 30 días calendario desde la terminación del proceso de rehabilitación (mejoría médica máxima del 18/06/2025) y más de 540 días desde el diagnóstico de la enfermedad lumbar, sin calificación de la pérdida de capacidad laboral en primera oportunidad (Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015). La Sala acumuló la solicitud al expediente de origen"],
-              ["Trámite", "El 20/11/2024 la Sala pidió a la persona calificada las fichas de cargo de los empleadores anteriores y a la IPS la historia clínica completa de columna; se allegaron el 28/02/2025"],
-              ["Valoración presencial", "26/08/2025, Tunja"]
+              ["Trámite", "El 20/11/2024 la Sala pidió a la persona calificada las fichas de cargo de los empleadores anteriores y a la IPS la historia clínica completa de columna; se allegaron el 28/02/2025. El 19/08/2025 la persona calificada allegó la neuroconducción de control de miembros superiores del 14/08/2025"],
+              ["Valoración presencial", "26/08/2025, Tunja · médico ponente y terapeuta ocupacional de la Sala"],
+              ["Alcance", "Calificación integral: columna lumbar (M51.3) y túnel carpiano bilateral (G56.0), de origen laboral. Gonartrosis bilateral leve (M17.0), de origen común, como antecedente considerado"]
             ] },
             { h: "Datos de la persona calificada" },
             { kv: [
@@ -376,7 +392,7 @@ DOCS.exp["PI-L03"] = {
             ], nota: "Sin vínculo registrado en enero y febrero de 2003. Las mediciones disponibles corresponden solo al puesto de Tópaga en 2023." } },
             { h: "Calificaciones anteriores" },
             { tabla: { cols: ["Entidad", "Documento", "Fecha", "Objeto", "Resultado", "Estado"], filas: [
-              ["ARL SURA", "CAR-L03", "19/04/2022", "Origen y pérdida de capacidad laboral del túnel carpiano bilateral (G56.0)", "Laboral · 16,20 % · estructuración 19/01/2022", "En firme desde el 06/05/2022"],
+              ["ARL SURA", "CAR-L03", "19/04/2022", "Origen y pérdida de capacidad laboral del túnel carpiano bilateral (G56.0)", "Laboral · 16,20 % · estructuración 19/01/2022", "En firme desde el 06/05/2022; indemnización por incapacidad permanente parcial reconocida en 2022"],
               ["EPS SURA", "SIM-EPS-ML-2024-05126", "01/08/2024", "Origen de la discopatía lumbar (M51.3)", "Laboral", "Controvertido por ARL SURA el 05/08/2024"]
             ] } }
           ] },
@@ -387,22 +403,32 @@ DOCS.exp["PI-L03"] = {
               "Dictamen CAR-L03 de ARL SURA, del 19/04/2022, con su anotación de firmeza.",
               "Análisis de puesto de trabajo SIM-SST-APT-2024-019 de Carbones Mesa Umbral, versión 2 del 12/07/2024, con el informe de medición de vibración de cuerpo entero SIM-HI-2023-0412 (23/08/2023).",
               "Historia clínica de EPS SURA y de la IPS Neuroeje Peñas Altas: consultas de columna desde el 21/06/2023, resonancia magnética lumbar del 22/09/2023, rehabilitación lumbar de 2024, concepto de cirugía de columna del 08/04/2025, electromiografía de miembros inferiores del 05/06/2025 y valoración por fisiatría del 18/06/2025.",
+              "Neuroconducción de control de miembros superiores de la IPS Neuroeje Peñas Altas, del 14/08/2025, ordenada por fisiatría el 18/06/2025.",
               "Recomendaciones laborales de EPS SURA del 15/01/2024 y del 28/06/2024, y constancia de reubicación del empleador.",
               "Fichas de cargo de Carbones Cuesta de Niebla y Carbones Ventana Alta."
             ] },
             { h: "Historia clínica pertinente" },
-            { p: "Columna. Consultó el 21/06/2023 por dolor lumbar de cinco meses con irradiación a la pierna izquierda. La resonancia magnética del 22/09/2023 mostró discopatía degenerativa de L3–L4 a L5–S1, con hernia discal L4–L5 que estrecha ambos recesos laterales y los forámenes, y protrusión L5–S1 con contacto de la raíz S1 izquierda. Tuvo incapacidades de 5 y 7 días en junio y noviembre de 2023. Desde el 01/02/2024 trabaja en la báscula, con restricciones. Entre febrero y abril de 2024 cumplió 16 sesiones de rehabilitación lumbar. El 08/04/2025 cirugía de columna no indicó tratamiento quirúrgico. La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral crónica, de predominio izquierdo, y radiculopatía S1 izquierda leve. En la valoración por fisiatría del 18/06/2025 se considera alcanzada la mejoría médica máxima: índice de Oswestry de 46 %; la paciente refiere tolerar 40 minutos sentada y caminar unos 500 m." },
-            { p: "Manos. Túnel carpiano bilateral calificado por ARL SURA en 2022, con la mano derecha operada en 2021. El expediente no contiene estudios de las manos posteriores a la neuroconducción del 12/01/2022; la nota de fisiatría del 18/06/2025 menciona atrofia tenar izquierda incipiente y la orden de una neuroconducción de control, sin resultado aportado." },
+            { p: "Columna. Consultó el 21/06/2023 por dolor lumbar de cinco meses con irradiación a la pierna izquierda. La resonancia magnética del 22/09/2023 mostró discopatía degenerativa de L3–L4 a L5–S1, con hernia discal L4–L5 que estrecha ambos recesos laterales y los forámenes, y protrusión L5–S1 con contacto de la raíz S1 izquierda. Tuvo incapacidades de 5 y 7 días en junio y noviembre de 2023. Desde el 01/02/2024 trabaja en la báscula, con restricciones. Entre febrero y abril de 2024 cumplió 16 sesiones de rehabilitación lumbar. El 08/04/2025 cirugía de columna no indicó tratamiento quirúrgico. La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral crónica, de predominio izquierdo, y radiculopatía S1 izquierda leve. En la valoración por fisiatría del 18/06/2025 se considera alcanzada la mejoría médica máxima; el índice de Oswestry, diligenciado en esa consulta, fue de 46 %, y la paciente refirió tolerar 40 minutos sentada y caminar unos 500 m." },
+            { p: "Manos. Túnel carpiano bilateral calificado por ARL SURA en 2022, con la mano derecha operada en 2021. La valoración por fisiatría del 18/06/2025 registró atrofia tenar izquierda incipiente y abductor corto del pulgar izquierdo 4/5, y ordenó una neuroconducción de control. La neuroconducción del 14/08/2025 muestra en la mano izquierda neuropatía severa del mediano en el carpo, con pérdida axonal (latencia motora distal de 6,6 ms, amplitud motora de 2,4 mV, potencial sensitivo de 5 µV y actividad de denervación en el abductor corto del pulgar), y en la derecha una secuela leve, estable desde 2022 (amplitud sensitiva de 15 µV y reinervación crónica del abductor corto del pulgar)." },
             { p: "Otros. Gonartrosis primaria bilateral leve (radiografía del 12/03/2024, grado 2 de Kellgren y Lawrence), en seguimiento por ortopedia con ejercicio, sin limitación de los arcos de movilidad. Sin otras enfermedades crónicas." },
             { h: "Valoración presencial del 26/08/2025" },
             { kv: [
-              ["Síntomas", "Dolor lumbar continuo (6 de 10 en la escala visual análoga) con irradiación a ambas piernas, mayor en la izquierda; adormecimiento de las manos al despertar"],
-              ["Columna lumbar", "Flexión 40° y extensión 10°, con dolor. Lasègue izquierdo positivo a 50°, derecho negativo. Hipoestesia en el dorso del pie izquierdo. Extensor largo del hallux izquierdo 4/5. Reflejos aquilianos simétricos"],
-              ["Manos", "Cicatriz palmar derecha sana; hipoestesia en los dedos 1 a 3 de ambas manos; Phalen positivo a la izquierda; atrofia tenar izquierda leve"],
+              ["Duración y método", "Dos horas. Entrevista, examen físico por el médico ponente, cuestionarios estandarizados y observación de la sedestación, la marcha y el manejo de objetos por la terapeuta ocupacional de la Sala"],
+              ["Síntomas", "Dolor lumbar continuo (7 de 10 en la escala visual análoga) con irradiación a ambas piernas, mayor en la izquierda; adormecimiento constante de los dedos de la mano derecha; debilidad para agarrar con la izquierda"],
+              ["Columna lumbar", "Flexión 30° y extensión 10°, con dolor. Lasègue positivo a 45° a la izquierda y a 60° a la derecha. Hipoestesia en el dermatoma L5 bilateral, mayor a la izquierda. Extensor largo del hallux 4/5 a la izquierda y 4+/5 a la derecha. Reflejo aquiliano izquierdo disminuido; rotulianos simétricos"],
+              ["Mano derecha", "Cicatriz palmar sana; hipoestesia constante en los dedos 1 a 3; abductor corto del pulgar 4+/5; sin atrofia"],
+              ["Mano izquierda", "Atrofia tenar leve; abductor corto del pulgar 4/5; Phalen y Tinel positivos; monofilamento 4,31; discriminación de dos puntos de 9 mm"],
               ["Rodillas", "Crepitación leve, sin derrame ni inestabilidad; arcos completos"],
-              ["Marcha y postura", "Marcha antálgica, independiente. Se pone de pie a los 35 minutos de la entrevista por dolor"],
-              ["Funcionalidad referida", "Independiente para el autocuidado, con dificultad para ponerse medias y calzado; apoyo familiar para las tareas domésticas pesadas"]
-            ] }
+              ["Marcha y postura", "Marcha antálgica, independiente. Se pone de pie a los 25 minutos de la entrevista por dolor irradiado. Recorre el corredor de la sede, unos 120 m, con una pausa"],
+              ["Funcionalidad referida", "Camina unos 300 m antes de detenerse. Independiente para el autocuidado, con dificultad para ponerse medias y calzado y para lavarse los pies; apoyo familiar para las tareas domésticas pesadas"]
+            ] },
+            { tabla: { cols: ["Cuestionario o prueba", "Resultado", "Referencia"], filas: [
+              ["Índice de discapacidad de Oswestry", "64 %", "0 %"],
+              ["Tolerancia a la sedestación, observada", "25 minutos", "Más de 60 minutos"],
+              ["Dinamometría de agarre", "Derecha 15 kg · izquierda 11 kg", "Cerca de 25 kg"],
+              ["Prueba de las nueve clavijas", "Derecha 23 s · izquierda 27 s", "Cerca de 18 s"],
+              ["QuickDASH (0 a 100)", "65,9", "0"]
+            ], nota: "Aplicados por la terapeuta ocupacional de la Sala durante la valoración presencial." } }
           ] },
           { titulo: "Origen de la discopatía lumbar", bloques: [
             { p: "La discopatía lumbar figura en la tabla de enfermedades laborales del Decreto 1477 de 2014 en relación con la vibración de cuerpo entero y la manipulación manual de cargas. La guía de atención integral basada en la evidencia para dolor lumbar inespecífico y enfermedad discal relacionados con la manipulación manual de cargas y otros factores de riesgo en el lugar de trabajo (Resolución 2844 de 2007) incluye la conducción de maquinaria con vibración de cuerpo entero entre esos factores." },
@@ -415,30 +441,49 @@ DOCS.exp["PI-L03"] = {
             ] } },
             { p: "La Sala ratifica el origen laboral de la discopatía lumbar, conforme al artículo 4 de la Ley 1562 de 2012. El origen laboral del túnel carpiano bilateral quedó en firme con el dictamen CAR-L03 y no es objeto de esta controversia. La gonartrosis bilateral leve es de origen común." }
           ] },
+          { titulo: "Consideraciones de la Sala", bloques: [
+            { h: "Alcance de la calificación" },
+            { p: "La Sala califica de manera integral el estado actual de la persona: la discopatía lumbar degenerativa (M51.3) y el síndrome del túnel carpiano bilateral (G56.0), ambos de origen laboral. La gonartrosis primaria bilateral leve (M17.0), de origen común, se registra como antecedente considerado: no genera deficiencia calificable y no modifica el resultado." },
+            { p: "El dictamen CAR-L03 de 2022 calificó solo el túnel carpiano y está en firme. Su porcentaje no se suma: las secuelas de las manos se valoran aquí en su estado actual, dentro de la calificación integral. Este dictamen no revoca ni modifica el CAR-L03. La indemnización por incapacidad permanente parcial pagada con base en aquel dictamen es un antecedente que la Sala registra; su relación con las prestaciones que se deriven de esta calificación corresponde a la administradora de riesgos laborales." },
+            { h: "Columna lumbar" },
+            { p: "La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral crónica y S1 izquierda: discopatía en varios niveles con radiculopatía en más de un nivel, que corresponde a la clase 4." },
+            { p: "En la valoración del 26/08/2025 la terapeuta ocupacional de la Sala aplicó el índice de Oswestry (64 %) y observó una tolerancia a la sedestación de 25 minutos; la persona refiere caminar unos 300 m antes de detenerse: la historia funcional corresponde a la clase 4. El examen registra Lasègue bilateral, hipoestesia L5 bilateral, debilidad del extensor largo del hallux izquierdo (4/5) y reflejo aquiliano izquierdo disminuido: clase 4. Son los signos que corresponden a la radiculopatía L5 bilateral y S1 izquierda que la electromiografía documentó el 05/06/2025. El ajuste neto es 0 y la deficiencia queda en el grado C de la clase 4 (29,00 %)." },
+            { p: "La diferencia con el índice de Oswestry de junio de 2025 (46 %) y con las tolerancias de 40 minutos sentada y 500 m de marcha anotadas entonces obedece a la forma de medir: en junio el cuestionario se diligenció en una consulta de control y las tolerancias fueron las que refirió la paciente, sin medirlas; en esta valoración el cuestionario lo aplicó la terapeuta ocupacional de la Sala y la sedestación se observó durante la entrevista. Los signos del lado derecho, que no se anotaron en junio, corresponden a la radiculopatía L5 bilateral que la electromiografía ya documentaba. La Sala da mayor peso a su valoración, que concuerda con el examen físico y con la electromiografía." },
+            { h: "Manos" },
+            { p: "La neuroconducción del 14/08/2025 muestra en la mano izquierda neuropatía severa del mediano en el carpo, con pérdida axonal: latencia motora distal de 6,6 ms, amplitud motora de 2,4 mV, potencial sensitivo de 5 µV y actividad de denervación en el abductor corto del pulgar. El examen de la Sala registra atrofia tenar, abductor corto del pulgar 4/5, monofilamento 4,31 y discriminación de dos puntos de 9 mm. La atrofia tenar y la debilidad ya constaban en la valoración por fisiatría del 18/06/2025." },
+            { p: "Con pérdida axonal y déficit motor objetivo, la tabla de neuropatías por atrapamiento no recoge la magnitud de la deficiencia de la mano izquierda. La Sala la valora como deficiencia del nervio periférico afectado (mediano por debajo del antebrazo, capítulo 14), combinando el déficit sensitivo, moderado, y el déficit motor, leve: extremidad superior 10 %, deficiencia global 6 %. La paciente ha aplazado la liberación quirúrgica de esa mano, propuesta desde 2022, y con la pérdida axonal la recuperación esperada sería parcial; la Sala califica el estado actual, como lo hizo ARL SURA en 2022." },
+            { p: "La mano derecha operada conserva, estable, la secuela de 2022: hipoestesia constante en los dedos 1 a 3, abductor corto del pulgar 4+/5, amplitud sensitiva disminuida (15 µV) y reinervación crónica del abductor corto del pulgar, con QuickDASH de 65,9. Por la tabla de neuropatías por atrapamiento: extremidad superior 8 %, deficiencia global 5 %, el mismo valor de 2022." },
+            { h: "Rol laboral y otras áreas ocupacionales" },
+            { p: "No puede volver a su oficio de operadora de maquinaria pesada y conserva el empleo por la reubicación en la báscula: restricciones del rol laboral 20,00 %, autosuficiencia económica 1,50 % y edad 2,00 %." },
+            { p: "La valoración de terapia ocupacional documenta dificultades en movilidad (sedestación, marcha y carga), autocuidado (calzado y aseo de los pies), vida doméstica, y comunicación por teléfono y por mensajes escritos por la debilidad de la mano izquierda: otras áreas ocupacionales 10,60 %." },
+            { h: "Fecha de estructuración" },
+            { p: "Con una pérdida del 52,40 %, la fecha de estructuración corresponde al momento en que la persona alcanzó el 50 % de pérdida de capacidad laboral y debe soportarse en la historia clínica y en los exámenes (Decreto 1507 de 2014). La Sala la fija el 18/06/2025: a esa fecha ya constaban la mejoría médica máxima de la columna, sin indicación quirúrgica; la radiculopatía L5 bilateral y S1 izquierda en la electromiografía del 05/06/2025; y la atrofia tenar con debilidad del abductor corto del pulgar izquierdo. Son los hallazgos que sustentan esta calificación." },
+            { p: "Entre junio y agosto de 2025 no hubo tratamiento, intervención ni accidente que cambiara el cuadro. La neuroconducción del 14/08/2025 y la valoración del 26/08/2025 miden esas mismas deficiencias y no muestran un hecho clínico nuevo que justifique otra fecha." }
+          ] },
           { titulo: "Calificación · Título I · Deficiencias", bloques: [
             { p: "Calificación integral según el Manual Único para la Calificación de la Pérdida de la Capacidad Laboral y Ocupacional (Decreto 1507 de 2014). Se valoran todas las deficiencias actuales; no se suma el porcentaje del dictamen CAR-L03." },
             { tabla: { cols: ["Diagnóstico", "CIE-10", "Origen", "Capítulo", "Clase o valor de la extremidad", "Deficiencia global"], filas: [
-              ["Discopatía lumbar degenerativa L3–L4 a L5–S1 con radiculopatía", "M51.3", "Laboral", "15 · Columna lumbar", "Clase 4, grado A", "25,00 %"],
-              ["Síndrome del túnel carpiano, mano derecha operada", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 8 %", "5,00 %"],
-              ["Síndrome del túnel carpiano, mano izquierda", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 6 %", "4,00 %"],
+              ["Discopatía lumbar degenerativa L3–L4 a L5–S1 con radiculopatía L5 bilateral y S1 izquierda", "M51.3", "Laboral", "15 · Columna lumbar", "Clase 4, grado C", "29,00 %"],
+              ["Síndrome del túnel carpiano izquierdo, severo, con pérdida axonal (valorado como deficiencia del nervio mediano)", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 10 %", "6,00 %"],
+              ["Síndrome del túnel carpiano derecho, operado, secuela estable (neuropatía por atrapamiento)", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 8 %", "5,00 %"],
               ["Gonartrosis primaria bilateral leve", "M17.0", "Común", "14 · Extremidades inferiores", "Clase 0", "0,00 %"]
             ] } },
             { h: "Columna lumbar: clase y factores moduladores" },
             { tabla: { cols: ["Elemento", "Hallazgo", "Clase"], filas: [
-              ["Diagnóstico y estudios (definen la clase)", "Discopatía en tres niveles con radiculopatía L5 bilateral y S1 izquierda documentada por electromiografía", "4"],
-              ["Historia funcional", "Índice de Oswestry de 46 % (fisiatría, 18/06/2025); tolerancia referida a la sedestación de 40 minutos", "3"],
-              ["Examen físico", "Lasègue izquierdo positivo; hipoestesia L5 izquierda; extensor largo del hallux izquierdo 4/5", "3"]
-            ], nota: "Ajuste neto: (3 − 4) + (3 − 4) = −2. Grado A de la clase 4: 25,00 %." } },
-            { h: "Manos" },
-            { p: "Sin estudios de las manos posteriores a 2022 en el expediente, la Sala acoge la valoración del dictamen CAR-L03: extremidad superior derecha 8 % e izquierda 6 %, que equivalen a 5 % y 4 % de deficiencia global." },
+              ["Diagnóstico y estudios (definen la clase)", "Discopatía en tres niveles; radiculopatía L5 bilateral y S1 izquierda en la electromiografía del 05/06/2025", "4"],
+              ["Historia funcional", "Oswestry 64 %; sedestación observada de 25 minutos; marcha referida de unos 300 m (26/08/2025)", "4"],
+              ["Examen físico", "Lasègue bilateral; hipoestesia L5 bilateral; extensor largo del hallux izquierdo 4/5; aquiliano izquierdo disminuido (26/08/2025)", "4"]
+            ], nota: "Ajuste neto: (4 − 4) + (4 − 4) = 0. Grado C de la clase 4: 29,00 %." } },
+            { h: "Conversión de las extremidades superiores" },
+            { p: "Factor 0,6 redondeado al entero: mano izquierda 10 % → 6 %; mano derecha 8 % → 5 %." },
             { h: "Combinación de las deficiencias" },
             { tabla: { cols: ["Paso", "Valores que se combinan", "Cálculo", "Resultado (%)"], filas: [
-              ["1", "25,00 y 5,00", "25,00 + 5,00 × (100 − 25,00) / 100", "28,75"],
-              ["2", "28,75 y 4,00", "28,75 + 4,00 × (100 − 28,75) / 100", "31,60"]
-            ], nota: "Fórmula de combinación del Decreto 1507 de 2014: A + B × (100 − A) / 100, de mayor a menor valor. La gonartrosis no aporta deficiencia." } },
+              ["1", "29,00 y 6,00", "29,00 + 6,00 × (100 − 29,00) / 100", "33,26"],
+              ["2", "33,26 y 5,00", "33,26 + 5,00 × (100 − 33,26) / 100", "36,60"]
+            ], nota: "Fórmula de combinación del Decreto 1507 de 2014: A + B × (100 − A) / 100, de mayor a menor valor. El paso 2 da 36,597, redondeado a dos decimales. La gonartrosis no aporta deficiencia." } },
             { kv: [
-              ["Deficiencia global (Título I)", "31,60 %"],
-              ["Valor ponderado de las deficiencias (50 %)", "15,80 %"]
+              ["Deficiencia global (Título I)", "36,60 %"],
+              ["Valor ponderado de las deficiencias (50 %)", "18,30 %"]
             ] }
           ] },
           { titulo: "Calificación · Título II · Rol laboral, rol ocupacional y otras áreas ocupacionales", bloques: [
@@ -451,180 +496,6 @@ DOCS.exp["PI-L03"] = {
             { h: "Otras áreas ocupacionales" },
             { tabla: { cols: ["Área", "Dificultades registradas", "Valor"], filas: [
               ["Aprendizaje y aplicación del conocimiento", "Escribir a mano por tiempo prolongado; sostener la atención con dolor", "0,40 %"],
-              ["Comunicación", "Uso prolongado del teléfono y del teclado", "0,60 %"],
-              ["Movilidad", "Mantener la posición sentada, caminar distancias largas, levantar y llevar objetos, uso fino de la mano, conducir", "3,00 %"],
-              ["Autocuidado", "Ponerse medias y calzado, lavarse los pies, abotonarse", "1,80 %"],
-              ["Vida doméstica", "Barrer y trapear, lavar ropa, cargar compras, picar alimentos", "2,50 %"],
-              ["Total otras áreas ocupacionales", "Suma de las cinco áreas", "8,30 %"]
-            ] } },
-            { kv: [
-              ["Rol laboral", "23,50 %"],
-              ["Otras áreas ocupacionales", "8,30 %"],
-              ["Total Título II", "31,80 %"]
-            ] }
-          ] },
-          { titulo: "Concepto final y decisión", bloques: [
-            { kv: [
-              ["Valor ponderado de las deficiencias (Título I)", "15,80 %"],
-              ["Rol laboral, rol ocupacional y otras áreas ocupacionales (Título II)", "31,80 %"],
-              ["Pérdida de capacidad laboral y ocupacional integral", "47,60 %"],
-              ["Origen", "Enfermedad laboral · M51.3 y G56.0"],
-              ["Antecedente común considerado", "Gonartrosis primaria bilateral leve (M17.0), sin deficiencia calificable"],
-              ["Fecha de estructuración", "18/06/2025"],
-              ["Requiere ayuda de terceros para las actividades básicas", "No"],
-              ["Requiere ayuda de terceros para tomar decisiones", "No"]
-            ] },
-            { h: "Sustentación" },
-            { p: "Fecha de estructuración. Se fija el 18/06/2025, fecha de la valoración por fisiatría que documenta la mejoría médica máxima de la columna lumbar con radiculopatía bilateral, terminada la rehabilitación. A esa fecha concurren las deficiencias de la columna y de ambas manos que integran esta calificación." },
-            { p: "Relación con el dictamen de 2022. El dictamen CAR-L03 calificó solo el túnel carpiano bilateral, con 16,20 %, y está en firme. Esta calificación es integral: valora el estado actual de todas las deficiencias y no suma ni reemplaza aquel porcentaje." },
-            { h: "Fundamentos de derecho" },
-            { lista: [
-              "Ley 100 de 1993, artículo 41, modificado por el artículo 142 del Decreto Ley 019 de 2012.",
-              "Ley 776 de 2002 y Ley 1562 de 2012.",
-              "Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015: organización y funcionamiento de las juntas de calificación de invalidez.",
-              "Decreto 1477 de 2014: tabla de enfermedades laborales.",
-              "Decreto 1507 de 2014: Manual Único para la Calificación de la Pérdida de la Capacidad Laboral y Ocupacional."
-            ] },
-            { h: "Decisión" },
-            { p: "Primero. Ratificar el origen laboral de la discopatía lumbar degenerativa (M51.3) calificado en primera oportunidad por EPS SURA." },
-            { p: "Segundo. Calificar a Mónica Beltrán Rivas con una pérdida de capacidad laboral y ocupacional integral de 47,60 %, de origen laboral, con fecha de estructuración del 18/06/2025." },
-            { p: "Tercero. Notificar este dictamen a la persona calificada y comunicarlo a ARL SURA, a EPS SURA, a Carbones Mesa Umbral y a Cordillera Pensiones y Cesantías." },
-            { p: "Cuarto. Contra este dictamen proceden los recursos de reposición y de apelación, que pueden presentarse ante esta Junta dentro de los 10 días hábiles siguientes a su notificación. La apelación la resuelve la Junta Nacional de Calificación de Invalidez." },
-            { firma: { nombre: "Álvaro Enrique Pesca Salamanca", cargo: "Médico ponente · Sala de Decisión Dos", registro: "Registro médico SIM-RM-15-0912", fecha: "16/09/2025" } },
-            { firma: { nombre: "Luz Marina Cárdenas Ochoa", cargo: "Médica integrante · Sala de Decisión Dos", registro: "Registro médico SIM-RM-15-1236", fecha: "16/09/2025" } },
-            { firma: { nombre: "Yolanda Patricia Rincón Fagua", cargo: "Terapeuta ocupacional integrante · Sala de Decisión Dos", registro: "Tarjeta profesional SIM-TO-0861", fecha: "16/09/2025" } },
-            { nota: "Notificado a la persona calificada el 18/09/2025. Comunicado a ARL SURA, a EPS SURA y a Cordillera Pensiones y Cesantías el 17/09/2025 y a Carbones Mesa Umbral el 18/09/2025." }
-          ] },
-          { titulo: "Constancia de autenticidad y estado del trámite", bloques: [
-            { p: "La Secretaría de la Junta Regional de Calificación de Invalidez de Boyacá hace constar que la presente es copia auténtica y completa del dictamen REG-L03 del 16/09/2025, que reposa en el expediente SIM-JRCIB-2024-0873." },
-            { kv: [
-              ["Dictamen", "REG-L03 · 16/09/2025"],
-              ["Notificación a la persona calificada", "18/09/2025"],
-              ["Recurso interpuesto", "Apelación de la persona calificada, radicada el 22/09/2025, dentro del término. Pide que se valoren las limitaciones funcionales de la columna y la progresión de la mano izquierda"],
-              ["Otros interesados", "ARL SURA, EPS SURA, Cordillera Pensiones y Cesantías y el empleador no interpusieron recursos"],
-              ["Trámite del recurso", "Apelación concedida el 03/10/2025, vencido el término de los demás interesados; expediente remitido a la Junta Nacional de Calificación de Invalidez el 07/10/2025"],
-              ["Estado del dictamen", "No está en firme: la decisión sobre el recurso corresponde a la Junta Nacional"],
-              ["Copia expedida a solicitud de", "Mónica Beltrán Rivas, persona calificada"],
-              ["Fecha de expedición de la copia", "08/10/2025"]
-            ] },
-            { firma: { nombre: "Martha Cecilia Niño Corredor", cargo: "Secretaria · Junta Regional de Calificación de Invalidez de Boyacá", fecha: "08/10/2025" } },
-            { nota: "Esta constancia certifica el estado del trámite en la fecha de expedición. Las decisiones posteriores sobre el recurso deben verificarse con la Junta Nacional de Calificación de Invalidez." }
-          ] }
-        ]
-      }
-    },
-
-    /* ---------------------------------------------------------------- Dictamen integral de la Junta Nacional (resuelve la apelación) */
-    DIC: {
-      v1: {
-        tipo: "dictamen",
-        titulo: "Dictamen de la Junta Nacional de Calificación de Invalidez · recurso de apelación",
-        emisor: { n: "Junta Nacional de Calificación de Invalidez", area: "Sala de Decisión Uno", ciudad: "Bogotá D.C.", id: "NIT SIM-830.512.447-0" },
-        numero: "DIC-L03",
-        fecha: "31/03/2026",
-        version: "v1",
-        estadoNota: "Ejemplar oficial firmado por la Sala, con código de verificación y sello de notificación del 01/04/2026.",
-        paginas: [
-          { titulo: "Dictamen · información general", bloques: [
-            { kv: [
-              ["Dictamen", "DIC-L03"],
-              ["Versión", "v1 · única versión expedida"],
-              ["Fecha", "31/03/2026"],
-              ["Código de verificación", "SIM-VER-JN-5B27-9E13"],
-              ["Expediente de la Junta Nacional", "SIM-JNCI-2025-11408"],
-              ["Sala", "Sala de Decisión Uno"],
-              ["Asunto", "Recurso de apelación contra el dictamen REG-L03 del 16/09/2025 de la Junta Regional de Calificación de Invalidez de Boyacá (expediente SIM-JRCIB-2024-0873)"],
-              ["Recurrente", "Mónica Beltrán Rivas, persona calificada · recurso radicado el 22/09/2025"],
-              ["Recibo del expediente en la Junta Nacional", "15/10/2025"],
-              ["Pruebas allegadas en esta instancia", "Extracto SIM-IPS-RF-2025-0311 de la IPS Neuroeje Peñas Altas, con el informe funcional SIM-IPS-EF-2025-1030 del 30/10/2025 y la neuroconducción de control del 21/10/2025"],
-              ["Alcance", "Calificación integral: columna lumbar (M51.3) y túnel carpiano bilateral (G56.0), de origen laboral. Gonartrosis bilateral leve (M17.0), de origen común, como antecedente considerado"]
-            ] },
-            { h: "Datos de la persona calificada" },
-            { kv: [
-              ["Nombre", "Mónica Beltrán Rivas"],
-              ["Identificación", "C.C. SIM-46.372.518"],
-              ["Fecha de nacimiento", "10/11/1972"],
-              ["Edad a la fecha del dictamen", "53 años"],
-              ["Sexo", "Femenino"],
-              ["Dominancia", "Diestra"],
-              ["Ocupación habitual", "Operadora de cargador frontal y retroexcavadora"],
-              ["Ocupación actual", "Auxiliar de control de pesaje, en reubicación desde el 01/02/2024"],
-              ["Empleador", "Carbones Mesa Umbral · NIT SIM-900.618.274-3"],
-              ["Administradora de riesgos laborales", "ARL SURA"]
-            ] },
-            { h: "Calificaciones anteriores" },
-            { tabla: { cols: ["Instancia", "Documento", "Fecha", "Alcance", "Resultado", "Estado"], filas: [
-              ["ARL SURA · primera oportunidad", "CAR-L03", "19/04/2022", "Solo túnel carpiano bilateral (G56.0)", "Laboral · 16,20 % · estructuración 19/01/2022", "En firme desde el 06/05/2022; indemnización por incapacidad permanente parcial reconocida en 2022"],
-              ["EPS SURA · primera oportunidad", "SIM-EPS-ML-2024-05126", "01/08/2024", "Origen de la discopatía lumbar (M51.3)", "Laboral", "Controvertido por ARL SURA el 05/08/2024"],
-              ["Junta Regional de Boyacá", "REG-L03", "16/09/2025", "Integral: origen de M51.3 y pérdida de capacidad laboral por M51.3 y G56.0", "Laboral · 47,60 % · estructuración 18/06/2025", "Apelado por la persona calificada el 22/09/2025"]
-            ] } },
-            { h: "Argumentos del recurso" },
-            { lista: [
-              "La Junta Regional calificó las manos con los estudios de 2022, aunque la nota de fisiatría del 18/06/2025 ya registraba atrofia tenar izquierda.",
-              "No se midieron con pruebas las limitaciones para permanecer sentada y para caminar, que son las que más afectan su trabajo en la báscula y su vida diaria.",
-              "Pide una valoración funcional y la modificación del porcentaje. No controvierte el origen ni la fecha de estructuración."
-            ] },
-            { p: "ARL SURA, EPS SURA, Cordillera Pensiones y Cesantías y el empleador no se pronunciaron sobre el recurso." },
-            { h: "Pruebas incorporadas en esta instancia" },
-            { p: "El 10/11/2025 la recurrente allegó el extracto firmado SIM-IPS-RF-2025-0311 de la IPS Neuroeje Peñas Altas, del 06/11/2025, con el informe funcional del 30/10/2025 y la neuroconducción de control del 21/10/2025. La Sala lo incorporó el 18/11/2025 y corrió traslado a ARL SURA, que no se pronunció." }
-          ] },
-          { titulo: "Consideraciones de la Sala", bloques: [
-            { h: "Alcance de la calificación" },
-            { p: "La Sala califica de manera integral el estado actual de la persona: la discopatía lumbar degenerativa (M51.3) y el síndrome del túnel carpiano bilateral (G56.0), ambos de origen laboral. La gonartrosis primaria bilateral leve (M17.0), de origen común, se registra como antecedente considerado: no genera deficiencia calificable y no modifica el resultado." },
-            { p: "El dictamen CAR-L03 de 2022 calificó solo el túnel carpiano y está en firme. Su porcentaje no se suma: las secuelas de las manos se valoran aquí en su estado actual, dentro de la calificación integral. Este dictamen no revoca ni modifica el CAR-L03. La indemnización por incapacidad permanente parcial pagada con base en aquel dictamen es un antecedente que la Sala registra; su relación con las prestaciones que se deriven de esta calificación corresponde a la administradora de riesgos laborales." },
-            { h: "Origen" },
-            { p: "No fue objeto del recurso. Se confirma el origen laboral de la discopatía lumbar ratificado por la Junta Regional, con exposición medida a vibración de cuerpo entero (A(8) de 0,61 m/s² en 2023) y 21 años de operación de maquinaria. El origen laboral del túnel carpiano está en firme desde 2022." },
-            { h: "Columna lumbar" },
-            { p: "La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral crónica y S1 izquierda: discopatía en varios niveles con radiculopatía en más de un nivel, que corresponde a la clase 4, como lo estableció la Junta Regional." },
-            { p: "El informe funcional del 30/10/2025 mide con pruebas estandarizadas un índice de Oswestry de 62 %, una tolerancia a la sedestación de 25 minutos y una marcha de 360 m en 6 minutos con dos pausas: la historia funcional corresponde a la clase 4. El examen del informe registra Lasègue bilateral, hipoestesia L5 bilateral, debilidad del extensor largo del hallux izquierdo (4/5) y reflejo aquiliano izquierdo disminuido: clase 4. Son los signos que corresponden a la radiculopatía L5 bilateral y S1 izquierda que la electromiografía documentó desde el 05/06/2025; en la valoración de la Junta Regional solo se encontraron los del lado izquierdo. El ajuste neto es 0 y la deficiencia queda en el grado C de la clase 4 (29,00 %)." },
-            { p: "La diferencia con el índice de Oswestry de junio de 2025 (46 %) y con las tolerancias de 40 minutos sentada y 500 m de marcha anotadas entonces obedece a la forma de medir: en junio el cuestionario se diligenció en una consulta de control y las tolerancias fueron las que refirió la paciente; en octubre se aplicó dentro de una valoración estandarizada de tres horas, con pruebas medidas de sedestación, marcha y carga. La Sala da mayor peso a la valoración de octubre, que concuerda con el examen físico y con la electromiografía." },
-            { h: "Manos" },
-            { p: "La neuroconducción del 21/10/2025 muestra en la mano izquierda neuropatía severa del mediano en el carpo, con pérdida axonal: latencia motora distal de 6,6 ms, amplitud motora de 2,4 mV, potencial sensitivo de 5 µV y actividad de denervación en el abductor corto del pulgar. El examen registra atrofia tenar, abductor corto del pulgar 4/5, monofilamento 4,31 y discriminación de dos puntos de 9 mm. La atrofia tenar y la debilidad ya constaban en la valoración por fisiatría del 18/06/2025." },
-            { p: "Con pérdida axonal y déficit motor objetivo, la tabla de neuropatías por atrapamiento no recoge la magnitud de la deficiencia de la mano izquierda. La Sala la valora como deficiencia del nervio periférico afectado (mediano por debajo del antebrazo, capítulo 14), combinando el déficit sensitivo, moderado, y el déficit motor, leve: extremidad superior 10 %, deficiencia global 6 %. La paciente ha aplazado la liberación quirúrgica de esa mano, propuesta desde 2022, y con la pérdida axonal la recuperación esperada sería parcial; la Sala califica el estado actual, como lo hizo ARL SURA en 2022." },
-            { p: "La mano derecha operada conserva, estable, la secuela de 2022: hipoestesia constante en los dedos 1 a 3, abductor corto del pulgar 4+/5, amplitud sensitiva disminuida (15 µV) y reinervación crónica del abductor corto del pulgar, con QuickDASH de 68,2. Por la tabla de neuropatías por atrapamiento: extremidad superior 8 %, deficiencia global 5 %, el mismo valor de 2022." },
-            { h: "Rol laboral y otras áreas ocupacionales" },
-            { p: "Se confirman las restricciones del rol laboral (20,00 %), la autosuficiencia económica (1,50 %) y la edad (2,00 %): no puede volver a su oficio y conserva el empleo por la reubicación en la báscula." },
-            { p: "El informe funcional documenta dificultades mayores que las registradas por la Junta Regional en movilidad (sedestación, marcha y carga), autocuidado (calzado y aseo de los pies) y vida doméstica, y en la comunicación por teléfono y por mensajes escritos por la debilidad de la mano izquierda. La Sala ajusta las otras áreas ocupacionales a 10,60 %." },
-            { h: "Fecha de estructuración" },
-            { p: "Con una pérdida del 52,40 %, la fecha de estructuración corresponde al momento en que la persona alcanzó el 50 % de pérdida de capacidad laboral y debe soportarse en la historia clínica y en los exámenes (Decreto 1507 de 2014). La Sala mantiene el 18/06/2025: a esa fecha ya constaban la mejoría médica máxima de la columna, sin indicación quirúrgica; la radiculopatía L5 bilateral y S1 izquierda en la electromiografía del 05/06/2025; y la atrofia tenar con debilidad del abductor corto del pulgar izquierdo. Son los hallazgos que sustentan esta calificación." },
-            { p: "Entre junio y octubre de 2025 no hubo tratamiento, intervención ni accidente que cambiara el cuadro. La valoración de octubre mide con pruebas estandarizadas las mismas limitaciones y no muestra un hecho clínico nuevo que justifique otra fecha. La recurrente no controvirtió la fecha de estructuración." }
-          ] },
-          { titulo: "Calificación · Título I · Deficiencias", bloques: [
-            { p: "Calificación integral según el Manual Único para la Calificación de la Pérdida de la Capacidad Laboral y Ocupacional (Decreto 1507 de 2014)." },
-            { tabla: { cols: ["Diagnóstico", "CIE-10", "Origen", "Capítulo", "Clase o valor de la extremidad", "Deficiencia global"], filas: [
-              ["Discopatía lumbar degenerativa L3–L4 a L5–S1 con radiculopatía L5 bilateral y S1 izquierda", "M51.3", "Laboral", "15 · Columna lumbar", "Clase 4, grado C", "29,00 %"],
-              ["Síndrome del túnel carpiano izquierdo, severo, con pérdida axonal (valorado como deficiencia del nervio mediano)", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 10 %", "6,00 %"],
-              ["Síndrome del túnel carpiano derecho, operado, secuela estable (neuropatía por atrapamiento)", "G56.0", "Laboral", "14 · Extremidades superiores", "Extremidad superior 8 %", "5,00 %"],
-              ["Gonartrosis primaria bilateral leve", "M17.0", "Común", "14 · Extremidades inferiores", "Clase 0", "0,00 %"]
-            ] } },
-            { h: "Columna lumbar: clase y factores moduladores" },
-            { tabla: { cols: ["Elemento", "Hallazgo", "Clase"], filas: [
-              ["Diagnóstico y estudios (definen la clase)", "Discopatía en tres niveles; radiculopatía L5 bilateral y S1 izquierda en la electromiografía del 05/06/2025", "4"],
-              ["Historia funcional", "Oswestry 62 %; sedestación tolerada 25 minutos; marcha de 360 m en 6 minutos con dos pausas (30/10/2025)", "4"],
-              ["Examen físico", "Lasègue bilateral; hipoestesia L5 bilateral; extensor largo del hallux izquierdo 4/5; aquiliano izquierdo disminuido", "4"]
-            ], nota: "Ajuste neto: (4 − 4) + (4 − 4) = 0. Grado C de la clase 4: 29,00 %." } },
-            { h: "Conversión de las extremidades superiores" },
-            { p: "Factor 0,6 redondeado al entero: mano izquierda 10 % → 6 %; mano derecha 8 % → 5 %." },
-            { h: "Combinación de las deficiencias" },
-            { tabla: { cols: ["Paso", "Valores que se combinan", "Cálculo", "Resultado (%)"], filas: [
-              ["1", "29,00 y 6,00", "29,00 + 6,00 × (100 − 29,00) / 100", "33,26"],
-              ["2", "33,26 y 5,00", "33,26 + 5,00 × (100 − 33,26) / 100", "36,60"]
-            ], nota: "El paso 2 da 36,597, redondeado a dos decimales. La gonartrosis no aporta deficiencia." } },
-            { kv: [
-              ["Deficiencia global (Título I)", "36,60 %"],
-              ["Valor ponderado de las deficiencias (50 %)", "18,30 %"]
-            ] }
-          ] },
-          { titulo: "Calificación · Título II · Rol laboral, rol ocupacional y otras áreas ocupacionales", bloques: [
-            { tabla: { cols: ["Componente", "Criterio aplicado", "Valor"], filas: [
-              ["Restricciones del rol laboral", "No puede desempeñar su oficio de operadora de maquinaria pesada; reubicada en un cargo distinto, con restricciones permanentes", "20,00 %"],
-              ["Autosuficiencia económica", "Conserva el salario por la reubicación, con gastos adicionales de transporte y tratamiento", "1,50 %"],
-              ["Edad", "53 años", "2,00 %"],
-              ["Subtotal rol laboral", "Suma de los tres componentes", "23,50 %"]
-            ] } },
-            { h: "Otras áreas ocupacionales" },
-            { tabla: { cols: ["Área", "Dificultades que se valoran", "Valor"], filas: [
-              ["Aprendizaje y aplicación del conocimiento", "Escribir a mano por tiempo prolongado; sostener la atención con dolor", "0,40 %"],
               ["Comunicación", "Escribir mensajes en el teléfono y sostenerlo con la mano izquierda; conversaciones largas de pie", "0,80 %"],
               ["Movilidad", "Permanecer sentada más de 25 minutos, caminar más de 300 m, subir pendientes, levantar más de 5 kg, uso fino de ambas manos, conducir", "3,60 %"],
               ["Autocuidado", "Ponerse medias y calzado, lavarse los pies, abotonarse, cortar alimentos duros", "2,60 %"],
@@ -635,20 +506,9 @@ DOCS.exp["PI-L03"] = {
               ["Rol laboral", "23,50 %"],
               ["Otras áreas ocupacionales", "10,60 %"],
               ["Total Título II", "34,10 %"]
-            ] },
-            { h: "Comparación con la calificación de la Junta Regional" },
-            { tabla: { cols: ["Componente", "Junta Regional REG-L03", "Junta Nacional DIC-L03"], filas: [
-              ["Columna lumbar", "25,00 % · clase 4, grado A", "29,00 % · clase 4, grado C"],
-              ["Mano izquierda", "4,00 % (valoración de 2022)", "6,00 % (neuroconducción del 21/10/2025)"],
-              ["Mano derecha", "5,00 %", "5,00 %"],
-              ["Deficiencia global combinada", "31,60 %", "36,60 %"],
-              ["Valor ponderado (50 %)", "15,80 %", "18,30 %"],
-              ["Rol laboral", "23,50 %", "23,50 %"],
-              ["Otras áreas ocupacionales", "8,30 %", "10,60 %"],
-              ["Pérdida de capacidad laboral", "47,60 %", "52,40 %"]
-            ] } }
+            ] }
           ] },
-          { titulo: "Decisión", bloques: [
+          { titulo: "Concepto final y decisión", bloques: [
             { kv: [
               ["Valor ponderado de las deficiencias (Título I)", "18,30 %"],
               ["Rol laboral, rol ocupacional y otras áreas ocupacionales (Título II)", "34,10 %"],
@@ -662,27 +522,98 @@ DOCS.exp["PI-L03"] = {
             ] },
             { h: "Fundamentos de derecho" },
             { lista: [
-              "Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015: competencia de la Junta Nacional para resolver la apelación de los dictámenes de las juntas regionales.",
-              "Decreto 1507 de 2014: Manual Único para la Calificación de la Pérdida de la Capacidad Laboral y Ocupacional.",
-              "Ley 1562 de 2012, artículo 4, y Decreto 1477 de 2014: enfermedad laboral y tabla de enfermedades laborales.",
-              "Ley 776 de 2002."
+              "Ley 100 de 1993, artículo 41, modificado por el artículo 142 del Decreto Ley 019 de 2012.",
+              "Ley 776 de 2002 y Ley 1562 de 2012.",
+              "Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015: organización y funcionamiento de las juntas de calificación de invalidez.",
+              "Decreto 1477 de 2014: tabla de enfermedades laborales.",
+              "Decreto 1507 de 2014: Manual Único para la Calificación de la Pérdida de la Capacidad Laboral y Ocupacional."
             ] },
-            { h: "Resuelve" },
-            { p: "Primero. Modificar el dictamen REG-L03 del 16/09/2025 de la Junta Regional de Calificación de Invalidez de Boyacá en cuanto al porcentaje: la pérdida de capacidad laboral y ocupacional integral de Mónica Beltrán Rivas se fija en 52,40 %." },
-            { p: "Segundo. Confirmar el origen laboral de la discopatía lumbar (M51.3) y del síndrome del túnel carpiano bilateral (G56.0), y la fecha de estructuración del 18/06/2025." },
-            { p: "Tercero. Dejar constancia de que este dictamen califica de manera integral el estado actual y no modifica el dictamen CAR-L03 de 2022, que se conserva como antecedente." },
-            { p: "Cuarto. Notificar este dictamen a la persona calificada, comunicarlo a ARL SURA, a EPS SURA, a Carbones Mesa Umbral y a Cordillera Pensiones y Cesantías, y devolver el expediente a la Junta Regional de Calificación de Invalidez de Boyacá." },
-            { p: "Contra este dictamen no procede recurso en vía administrativa. Las controversias sobre el dictamen en firme corresponden a la justicia laboral ordinaria." },
-            { firma: { nombre: "Jaime Orlando Castañeda Ruiz", cargo: "Médico ponente · Sala de Decisión Uno", registro: "Registro médico SIM-RM-11-2741", fecha: "31/03/2026" } },
-            { firma: { nombre: "Beatriz Elena Quintana Lozano", cargo: "Médica integrante · Sala de Decisión Uno", registro: "Registro médico SIM-RM-11-3368", fecha: "31/03/2026" } },
-            { firma: { nombre: "Fernando Andrés Moya Téllez", cargo: "Terapeuta ocupacional integrante · Sala de Decisión Uno", registro: "Tarjeta profesional SIM-TO-1342", fecha: "31/03/2026" } },
-            { nota: "Sello de notificación: notificado a la persona calificada el 01/04/2026 por medio electrónico con acuse de recibo; comunicaciones enviadas a ARL SURA, a EPS SURA, a Cordillera Pensiones y Cesantías y a Carbones Mesa Umbral el 01/04/2026." }
+            { h: "Decisión" },
+            { p: "Primero. Ratificar el origen laboral de la discopatía lumbar degenerativa (M51.3) calificado en primera oportunidad por EPS SURA." },
+            { p: "Segundo. Calificar a Mónica Beltrán Rivas con una pérdida de capacidad laboral y ocupacional integral de 52,40 %, de origen laboral, con fecha de estructuración del 18/06/2025." },
+            { p: "Tercero. Dejar constancia de que esta calificación integral no modifica el dictamen CAR-L03 de 2022, que se conserva como antecedente." },
+            { p: "Cuarto. Notificar este dictamen a la persona calificada y comunicarlo a ARL SURA, a EPS SURA, a Carbones Mesa Umbral y a Cordillera Pensiones y Cesantías." },
+            { p: "Quinto. Contra este dictamen proceden los recursos de reposición y de apelación, que pueden presentarse ante esta Junta dentro de los 10 días hábiles siguientes a su notificación. La apelación la resuelve la Junta Nacional de Calificación de Invalidez." },
+            { firma: { nombre: "Álvaro Enrique Pesca Salamanca", cargo: "Médico ponente · Sala de Decisión Dos", registro: "Registro médico SIM-RM-15-0912", fecha: "16/09/2025" } },
+            { firma: { nombre: "Luz Marina Cárdenas Ochoa", cargo: "Médica integrante · Sala de Decisión Dos", registro: "Registro médico SIM-RM-15-1236", fecha: "16/09/2025" } },
+            { firma: { nombre: "Yolanda Patricia Rincón Fagua", cargo: "Terapeuta ocupacional integrante · Sala de Decisión Dos", registro: "Tarjeta profesional SIM-TO-0861", fecha: "16/09/2025" } },
+            { nota: "Notificado a la persona calificada el 18/09/2025 por medio electrónico con acuse de recibo. Comunicado a ARL SURA, a EPS SURA y a Cordillera Pensiones y Cesantías el 17/09/2025 y a Carbones Mesa Umbral el 18/09/2025." }
+          ] },
+          { titulo: "Constancia de autenticidad y estado del trámite", bloques: [
+            { p: "La Secretaría de la Junta Regional de Calificación de Invalidez de Boyacá hace constar que la presente es copia auténtica y completa del dictamen REG-L03 del 16/09/2025, tomada del archivo de esta Junta (expediente SIM-JRCIB-2024-0873, cuyo original se remitió a la Junta Nacional el 07/10/2025)." },
+            { kv: [
+              ["Dictamen", "REG-L03 · 16/09/2025 · versión v1"],
+              ["Notificación a la persona calificada", "18/09/2025"],
+              ["Recurso interpuesto", "Apelación de ARL SURA, medicina laboral, radicada el 22/09/2025 (SIM-JRCIB-REC-2025-0412), dentro del término"],
+              ["Otros interesados", "La persona calificada, EPS SURA, Cordillera Pensiones y Cesantías y Carbones Mesa Umbral no interpusieron recursos"],
+              ["Trámite del recurso", "Concedido el 03/10/2025, vencido el término de todos los interesados el 02/10/2025 y acreditado por ARL SURA el pago de los honorarios de la Junta Nacional; expediente remitido a la Junta Nacional de Calificación de Invalidez el 07/10/2025"],
+              ["Estado del dictamen", "No está en firme: la decisión sobre el recurso corresponde a la Junta Nacional"],
+              ["Copia expedida a solicitud de", "Mónica Beltrán Rivas, persona calificada"],
+              ["Fecha de expedición de la copia", "08/10/2025"]
+            ] },
+            { h: "Síntesis del recurso de ARL SURA" },
+            { lista: [
+              "Columna lumbar: controvierte la clase 4 asignada a la historia funcional y al examen físico. Sostiene que se apoya en una sola valoración en la Junta, que no concuerda con la valoración por fisiatría del 18/06/2025 —la que la Sala tomó como fecha de estructuración—, con índice de Oswestry de 46 %, tolerancias referidas de 40 minutos sentada y 500 m de marcha y signos radiculares solo izquierdos. Pide la clase 3 en ambos factores y el grado A de la clase 4 (25,00 %).",
+              "Mano izquierda: sostiene que el síndrome del túnel carpiano debe calificarse con la tabla de neuropatías por atrapamiento y no como deficiencia del nervio periférico, y que esa mano no ha alcanzado la mejoría médica máxima mientras esté pendiente la liberación quirúrgica que la paciente ha aplazado.",
+              "Otras áreas ocupacionales: sostiene que se valoraron con las tolerancias observadas en la misma sesión del 26/08/2025.",
+              "Pide modificar el porcentaje y afirma que, con esos ajustes, la pérdida de capacidad laboral queda por debajo del 50 %. No controvierte el origen laboral ni pide cambiar la fecha de estructuración."
+            ] },
+            { firma: { nombre: "Martha Cecilia Niño Corredor", cargo: "Secretaria · Junta Regional de Calificación de Invalidez de Boyacá", fecha: "08/10/2025" } },
+            { nota: "Esta constancia certifica el estado del trámite en la fecha de expedición y resume el recurso sin valorarlo. La decisión sobre el recurso corresponde a la Junta Nacional de Calificación de Invalidez y debe verificarse con ella." }
           ] }
         ]
       }
     },
 
-    /* ---------------------------------------------------------------- Constancia de firmeza: la de 2022 y la de 2026 */
+    /* ---------------------------------------------------------------- Estado del recurso ante la Junta Nacional (constancia de trámite; no hay dictamen nacional) */
+    DIC: {
+      v1: {
+        tipo: "constancia",
+        titulo: "Constancia del estado del recurso de apelación",
+        emisor: { n: "Junta Nacional de Calificación de Invalidez", area: "Secretaría Técnica", ciudad: "Bogotá D.C.", id: "NIT SIM-830.512.447-0" },
+        numero: "JN-L03",
+        fecha: "30/04/2026",
+        version: "v1",
+        estadoNota: "Constancia expedida por la Secretaría Técnica a solicitud de Prestaciones económicas de ARL SURA; certifica el estado del recurso en la fecha de expedición.",
+        paginas: [
+          { titulo: "Constancia", bloques: [
+            { p: "La Secretaría Técnica de la Junta Nacional de Calificación de Invalidez, con base en el expediente que se identifica a continuación, hace constar:" },
+            { kv: [
+              ["Constancia", "JN-L03"],
+              ["Fecha de expedición", "30/04/2026"],
+              ["Expediente de la Junta Nacional", "SIM-JNCI-2025-11408"],
+              ["Radicado de entrada", "SIM-JNCI-RAD-2025-20731 · 07/10/2025"],
+              ["Persona calificada", "Mónica Beltrán Rivas · C.C. SIM-46.372.518"],
+              ["Dictamen apelado", "REG-L03 del 16/09/2025, Junta Regional de Calificación de Invalidez de Boyacá, Sala de Decisión Dos (expediente SIM-JRCIB-2024-0873): origen laboral, pérdida de capacidad laboral integral de 52,40 %, fecha de estructuración del 18/06/2025"],
+              ["Recurrente", "ARL SURA · recurso de apelación radicado en la Junta Regional el 22/09/2025 y concedido por ella el 03/10/2025"],
+              ["Recibo del expediente", "07/10/2025, por medio electrónico, remitido por la Junta Regional de Calificación de Invalidez de Boyacá con el recurso y la constancia del pago de honorarios"],
+              ["Reparto", "Sala de Decisión Uno, 14/10/2025 · médico ponente Jaime Orlando Castañeda Ruiz"],
+              ["Estado a la fecha", "En trámite: en sustanciación en la Sala de Decisión Uno, pendiente de decisión"],
+              ["Dictamen de la Junta Nacional", "No se ha emitido"],
+              ["Solicitada por", "ARL SURA, Prestaciones económicas, el 29/04/2026, para el trámite de la solicitud RAD-L03"]
+            ] },
+            { h: "Actuaciones registradas" },
+            { tabla: { cols: ["Fecha", "Actuación"], filas: [
+              ["07/10/2025", "Se recibe el expediente remitido por la Junta Regional de Calificación de Invalidez de Boyacá, con el recurso de apelación de ARL SURA contra el dictamen REG-L03. Radicado SIM-JNCI-RAD-2025-20731."],
+              ["14/10/2025", "Reparto a la Sala de Decisión Uno y asignación del médico ponente."],
+              ["13/11/2025", "Se recibe, remitido por la Junta Regional el 12/11/2025, el extracto funcional SIM-IPS-RF-2025-0311 de la IPS Neuroeje Peñas Altas, con el informe funcional SIM-IPS-EF-2025-1030 del 30/10/2025, aportado por la persona calificada."],
+              ["20/11/2025", "Auto de sustanciación: se incorpora el extracto funcional al expediente y se pone en conocimiento de ARL SURA."],
+              ["30/04/2026", "El expediente continúa en sustanciación en la Sala de Decisión Uno. No se ha emitido dictamen."]
+            ] } },
+            { h: "Constancia" },
+            { p: "La Secretaría Técnica hace constar que, a la fecha, la Junta Nacional de Calificación de Invalidez no ha emitido dictamen sobre el recurso de apelación interpuesto por ARL SURA contra el dictamen REG-L03 del 16/09/2025 de la Junta Regional de Calificación de Invalidez de Boyacá. El recurso se encuentra en trámite." },
+            { p: "Mientras la Junta Nacional no resuelva el recurso y su decisión no se notifique y comunique a todos los interesados, el dictamen REG-L03 no está en firme. La decisión se notificará a la persona calificada y se comunicará a ARL SURA, a EPS SURA, a Cordillera Pensiones y Cesantías, a Carbones Mesa Umbral y a la Junta Regional de Calificación de Invalidez de Boyacá." },
+            { p: "Esta constancia certifica el estado del trámite en la fecha de expedición. No anticipa el sentido de la decisión ni se pronuncia sobre prestaciones económicas." },
+            { h: "Fundamento" },
+            { p: "Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015: competencia de la Junta Nacional de Calificación de Invalidez para resolver los recursos de apelación contra los dictámenes de las juntas regionales." },
+            { firma: { nombre: "Natalia Forero Lozano", cargo: "Secretaria técnica · Junta Nacional de Calificación de Invalidez", fecha: "30/04/2026" } },
+            { nota: "Constancia verificable en la Secretaría Técnica con el número JN-L03 y el expediente SIM-JNCI-2025-11408." }
+          ] }
+        ]
+      }
+    },
+
+    /* ---------------------------------------------------------------- Constancia del estado de firmeza: la de 2022 (otro dictamen) y la de la Junta Regional */
     FIR: {
       v0: {
         tipo: "constancia",
@@ -736,58 +667,73 @@ DOCS.exp["PI-L03"] = {
       },
       v1: {
         tipo: "constancia",
-        titulo: "Constancia de firmeza del dictamen",
-        emisor: { n: "Junta Nacional de Calificación de Invalidez", area: "Secretaría Técnica", ciudad: "Bogotá D.C.", id: "NIT SIM-830.512.447-0" },
+        titulo: "Constancia del estado de firmeza del dictamen",
+        emisor: { n: "Junta Regional de Calificación de Invalidez de Boyacá", area: "Secretaría", ciudad: "Tunja", id: "NIT SIM-820.004.316-8" },
         numero: "FIR-L03",
-        fecha: "17/04/2026",
+        fecha: "30/04/2026",
         version: "v1",
-        estadoNota: "Constancia expedida por la Secretaría Técnica; se refiere al dictamen DIC-L03 de 2026.",
+        estadoNota: "Constancia expedida por la Secretaría de la Junta Regional a solicitud de Prestaciones económicas de ARL SURA; se refiere al dictamen REG-L03 del 16/09/2025.",
         paginas: [
           { titulo: "Constancia", bloques: [
-            { p: "La Secretaría Técnica de la Junta Nacional de Calificación de Invalidez hace constar:" },
+            { p: "La Secretaría de la Junta Regional de Calificación de Invalidez de Boyacá, con base en el expediente SIM-JRCIB-2024-0873, hace constar:" },
             { kv: [
-              ["Dictamen", "DIC-L03 del 31/03/2026, versión v1"],
-              ["Código de verificación del dictamen", "SIM-VER-JN-5B27-9E13"],
-              ["Sala", "Sala de Decisión Uno"],
-              ["Expediente", "SIM-JNCI-2025-11408"],
+              ["Constancia", "FIR-L03"],
+              ["Fecha de expedición", "30/04/2026"],
+              ["Dictamen al que se refiere", "REG-L03 del 16/09/2025, versión v1 (única versión expedida), Sala de Decisión Dos"],
+              ["Código de verificación del dictamen", "SIM-VER-JR-4A19-7C52"],
               ["Persona calificada", "Mónica Beltrán Rivas · C.C. SIM-46.372.518"],
-              ["Decisión", "Resolvió la apelación de la persona calificada contra el dictamen REG-L03 del 16/09/2025 de la Junta Regional de Calificación de Invalidez de Boyacá"],
-              ["Resultado", "PCL integral 52,40 % · origen laboral (M51.3 y G56.0) · fecha de estructuración 18/06/2025"],
-              ["Notificación a la persona calificada", "01/04/2026"],
-              ["Fecha de firmeza", "17/04/2026"]
+              ["Contenido del dictamen", "Origen laboral de la discopatía lumbar (M51.3); pérdida de capacidad laboral y ocupacional integral de 52,40 %, de origen laboral (M51.3 y G56.0); fecha de estructuración del 18/06/2025"],
+              ["Estado de firmeza", "No está en firme: apelado por ARL SURA; recurso pendiente de decisión en la Junta Nacional de Calificación de Invalidez"],
+              ["Solicitada por", "ARL SURA, Prestaciones económicas, el 29/04/2026, para el trámite de la solicitud RAD-L03"]
             ] },
-            { h: "Notificaciones y comunicaciones" },
-            { tabla: { cols: ["Destinatario", "Calidad", "Medio", "Enviada", "Acreditada"], filas: [
-              ["Mónica Beltrán Rivas", "Persona calificada y recurrente", "Notificación electrónica con acuse de recibo", "01/04/2026", "01/04/2026"],
-              ["ARL SURA", "Administradora de riesgos laborales", "Comunicación electrónica", "01/04/2026", "01/04/2026"],
-              ["EPS SURA", "Entidad promotora de salud", "Comunicación electrónica", "01/04/2026", "01/04/2026"],
-              ["Cordillera Pensiones y Cesantías", "Administradora de pensiones", "Comunicación electrónica", "01/04/2026", "06/04/2026"],
-              ["Carbones Mesa Umbral", "Empleador", "Comunicación electrónica sin acuse de recibo; reenvío por correo certificado el 08/04/2026", "01/04/2026", "17/04/2026"],
-              ["Junta Regional de Calificación de Invalidez de Boyacá", "Instancia que profirió el dictamen apelado", "Comunicación y devolución del expediente", "06/04/2026", "07/04/2026"]
-            ] } },
-            { p: "Contra los dictámenes de la Junta Nacional no procede recurso en vía administrativa. Conforme al Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015, el dictamen que resuelve los recursos queda en firme cuando ha sido notificado o comunicado en su totalidad. Acreditadas la notificación a la persona calificada y las comunicaciones a las partes interesadas, la última el 17/04/2026 con la prueba de entrega del correo certificado al empleador, el dictamen DIC-L03 quedó en firme el 17/04/2026." },
-            { p: "Esta constancia se refiere solo al dictamen DIC-L03 del 31/03/2026. El dictamen REG-L03 de la Junta Regional fue modificado por él y no adquirió firmeza. El dictamen CAR-L03 de ARL SURA, del 19/04/2022, tiene su propia constancia de firmeza (06/05/2022) y no está cubierto por esta." },
-            { p: "Se expide para las partes interesadas el 17/04/2026." },
-            { firma: { nombre: "Natalia Forero Lozano", cargo: "Secretaria técnica · Junta Nacional de Calificación de Invalidez", fecha: "17/04/2026" } },
-            { nota: "Constancia verificable en la Secretaría Técnica con el número FIR-L03 y el expediente SIM-JNCI-2025-11408." }
+            { h: "Notificaciones, términos y recursos" },
+            { tabla: { cols: ["Interesado", "Notificación o comunicación", "Término", "Vencimiento", "Recurso"], filas: [
+              ["Mónica Beltrán Rivas, persona calificada", "Notificación electrónica con acuse de recibo, 18/09/2025", "10 días hábiles", "02/10/2025", "No interpuso"],
+              ["ARL SURA", "Comunicación electrónica con acuse de recibo, 17/09/2025", "10 días hábiles", "01/10/2025", "Apelación radicada el 22/09/2025"],
+              ["EPS SURA", "Comunicación electrónica con acuse de recibo, 17/09/2025", "10 días hábiles", "01/10/2025", "No interpuso"],
+              ["Cordillera Pensiones y Cesantías", "Comunicación electrónica con acuse de recibo, 17/09/2025", "10 días hábiles", "01/10/2025", "No interpuso"],
+              ["Carbones Mesa Umbral, empleador", "Comunicación electrónica con acuse de recibo, 18/09/2025", "10 días hábiles", "02/10/2025", "No interpuso"]
+            ], nota: "Los términos corrieron entre el 18/09/2025 y el 02/10/2025; no hubo días festivos en ese lapso." } },
+            { h: "Recurso de apelación" },
+            { kv: [
+              ["Recurrente", "ARL SURA, medicina laboral · escrito radicado el 22/09/2025 (SIM-JRCIB-REC-2025-0412), dentro del término"],
+              ["Puntos que controvierte", "La clase y el grado de la columna lumbar, la valoración de la mano izquierda y las otras áreas ocupacionales; pide modificar el porcentaje. No controvierte el origen laboral ni pide cambiar la fecha de estructuración"],
+              ["Concesión", "03/10/2025, vencido el término de todos los interesados y acreditado por ARL SURA el pago de los honorarios de la Junta Nacional"],
+              ["Remisión", "Expediente remitido por medio electrónico a la Junta Nacional de Calificación de Invalidez el 07/10/2025 (oficio SIM-JRCIB-OF-2025-1187), con acuse de recibo del mismo día"],
+              ["Pruebas remitidas después", "Extracto funcional SIM-IPS-RF-2025-0311 de la IPS Neuroeje Peñas Altas, con el informe funcional del 30/10/2025, radicado en esta Junta por la persona calificada el 10/11/2025 y enviado a la Junta Nacional el 12/11/2025 para el expediente de segunda instancia"],
+              ["Decisión de la segunda instancia", "A la fecha esta Junta no ha recibido la decisión del recurso ni la devolución del expediente"]
+            ] },
+            { h: "Constancia" },
+            { p: "La Secretaría hace constar que el dictamen REG-L03 del 16/09/2025 no está en firme. ARL SURA interpuso recurso de apelación dentro del término; el recurso se concedió el 03/10/2025 y el expediente se remitió a la Junta Nacional de Calificación de Invalidez el 07/10/2025. A la fecha de esta constancia la Junta Nacional no ha decidido el recurso." },
+            { p: "Cuando la Junta Nacional resuelva el recurso y su decisión se notifique y comunique a todos los interesados, quedará en firme lo que ella decida, sea que confirme o que modifique el dictamen REG-L03." },
+            { p: "Esta constancia se refiere solo al dictamen REG-L03 del 16/09/2025. No se refiere al dictamen CAR-L03 de ARL SURA, del 19/04/2022, que calificó solo el túnel carpiano bilateral (16,20 %) y cuya firmeza consta en la constancia SIM-ARL-CF-2022-0587 expedida por esa administradora." },
+            { h: "Fundamento" },
+            { p: "Decreto 1352 de 2013, compilado en el Decreto 1072 de 2015: los dictámenes de las juntas regionales quedan en firme cuando, notificados y comunicados a todos los interesados, no se interponen recursos dentro del término, o cuando se resuelven los recursos interpuestos y la decisión se notifica y comunica. La apelación la resuelve la Junta Nacional de Calificación de Invalidez." },
+            { p: "Se expide el 30/04/2026 y certifica el estado del trámite en esa fecha. Esta Junta no se pronuncia sobre prestaciones económicas." },
+            { firma: { nombre: "Martha Cecilia Niño Corredor", cargo: "Secretaria · Junta Regional de Calificación de Invalidez de Boyacá", fecha: "30/04/2026" } },
+            { nota: "Constancia verificable en la Secretaría de la Junta Regional con el número FIR-L03 y el expediente SIM-JRCIB-2024-0873." }
           ] },
           { titulo: "Anexo · Trazabilidad del trámite", bloques: [
             { tabla: { cols: ["Fecha", "Actuación"], filas: [
               ["01/08/2024", "EPS SURA califica en primera oportunidad el origen laboral de la discopatía lumbar."],
               ["05/08/2024", "ARL SURA manifiesta su inconformidad con el origen."],
-              ["26/08/2024", "La Junta Regional de Boyacá radica el expediente."],
-              ["22/07/2025", "La persona calificada pide la calificación integral de la pérdida de capacidad laboral."],
-              ["16/09/2025", "La Junta Regional emite el dictamen REG-L03: origen laboral, PCL integral 47,60 %."],
-              ["18/09/2025", "Notificación a la persona calificada."],
-              ["22/09/2025", "La persona calificada interpone recurso de apelación."],
-              ["07/10/2025", "La Junta Regional remite el expediente."],
-              ["15/10/2025", "La Junta Nacional recibe el expediente y lo reparte a la Sala de Decisión Uno."],
-              ["10/11/2025", "La recurrente allega el informe funcional del 30/10/2025."],
-              ["31/03/2026", "La Sala de Decisión Uno emite el dictamen DIC-L03: PCL integral 52,40 %."],
-              ["01/04/2026", "Notificación a la persona calificada y comunicaciones a las partes."],
-              ["17/04/2026", "Última comunicación acreditada. El dictamen DIC-L03 queda en firme."]
+              ["26/08/2024", "Esta Junta radica el expediente remitido por EPS SURA el 21/08/2024."],
+              ["22/07/2025", "La persona calificada pide la calificación integral de la pérdida de capacidad laboral; la Sala la acumula al expediente."],
+              ["19/08/2025", "La persona calificada allega la neuroconducción de control de miembros superiores del 14/08/2025."],
+              ["26/08/2025", "Valoración presencial por la Sala de Decisión Dos."],
+              ["16/09/2025", "La Sala emite el dictamen REG-L03: origen laboral; pérdida de capacidad laboral integral de 52,40 %; estructuración del 18/06/2025."],
+              ["17/09/2025", "Comunicaciones a ARL SURA, EPS SURA y Cordillera Pensiones y Cesantías."],
+              ["18/09/2025", "Notificación a la persona calificada y comunicación al empleador."],
+              ["22/09/2025", "ARL SURA interpone recurso de apelación."],
+              ["02/10/2025", "Vence el término de los interesados."],
+              ["03/10/2025", "Se concede el recurso de apelación."],
+              ["07/10/2025", "Se remite el expediente a la Junta Nacional de Calificación de Invalidez."],
+              ["10/11/2025", "La persona calificada radica el extracto funcional con el informe funcional del 30/10/2025."],
+              ["12/11/2025", "Se envía ese documento a la Junta Nacional para el expediente de segunda instancia."],
+              ["29/04/2026", "ARL SURA, Prestaciones económicas, pide constancia del estado del dictamen."],
+              ["30/04/2026", "Sin decisión de la Junta Nacional recibida en esta Junta. Se expide esta constancia."]
             ] } },
-            { nota: "Trazabilidad tomada del expediente SIM-JNCI-2025-11408." }
+            { nota: "Trazabilidad tomada del expediente SIM-JRCIB-2024-0873." }
           ] }
         ]
       }
@@ -802,7 +748,7 @@ DOCS.exp["PI-L03"] = {
         numero: "SIM-ARL-CA-2026-10214",
         fecha: "30/04/2026",
         version: "v2",
-        estadoNota: "Segunda versión del certificado: actualiza la expedida el 12/08/2024 para la controversia del origen y certifica la vigencia en las fechas de la firmeza y de la radicación.",
+        estadoNota: "Segunda versión del certificado: actualiza la expedida el 12/08/2024 para la controversia del origen y certifica la vigencia en la fecha de estructuración de la calificación integral y en la de radicación.",
         paginas: [
           { titulo: "Certificado", bloques: [
             { p: "ARL SURA certifica que la persona identificada a continuación está afiliada al Sistema General de Riesgos Laborales por medio de esta administradora, con los siguientes datos:" },
@@ -827,9 +773,8 @@ DOCS.exp["PI-L03"] = {
             { tabla: { cols: ["Fecha", "Hecho", "Cobertura de ARL SURA"], filas: [
               ["19/01/2022", "Fecha de estructuración del dictamen CAR-L03", "Vigente"],
               ["01/08/2024", "Calificación del origen de la discopatía lumbar en primera oportunidad", "Vigente"],
-              ["18/06/2025", "Fecha de estructuración de la calificación integral", "Vigente"],
-              ["31/03/2026", "Dictamen DIC-L03 de la Junta Nacional", "Vigente"],
-              ["17/04/2026", "Firmeza del dictamen DIC-L03", "Vigente"],
+              ["18/06/2025", "Fecha de estructuración de la calificación integral (dictamen REG-L03 de la Junta Regional de Boyacá)", "Vigente"],
+              ["16/09/2025", "Dictamen REG-L03 de la Junta Regional de Boyacá", "Vigente"],
               ["29/04/2026", "Radicación de la solicitud RAD-L03", "Vigente"]
             ] } },
             { h: "Antecedentes con otras administradoras" },
@@ -1182,7 +1127,7 @@ DOCS.exp["PI-L03"] = {
               ["Ocupación", "Operadora de cargador frontal y retroexcavadora hasta el 31/01/2024; auxiliar de control de pesaje desde el 01/02/2024"],
               ["Dominancia", "Diestra"],
               ["Atención en la IPS", "Desde el 09/02/2021: electrodiagnóstico, cirugía de mano, terapia de mano, columna y rehabilitación"],
-              ["Solicitado por", "La paciente, para el recurso de apelación ante la Junta Nacional de Calificación de Invalidez (autorización escrita del 04/11/2025)"],
+              ["Solicitado por", "La paciente, para aportarlo en el trámite del recurso de apelación que ARL SURA interpuso contra la calificación de la Junta Regional, ante la Junta Nacional de Calificación de Invalidez (autorización escrita del 04/11/2025)"],
               ["Alcance", "Extracto limitado a mano, columna lumbar y antecedentes considerados en la calificación. No incluye el resto de la historia clínica"]
             ] },
             { h: "Procedencia de la información" },
@@ -1197,11 +1142,11 @@ DOCS.exp["PI-L03"] = {
               ["Concepto de cirugía de columna", "08/04/2025", "Cirugía de columna · Ramiro Esteban Quintero Ladino", "Historia clínica de la IPS (anexo 1)"],
               ["Electromiografía de miembros inferiores", "05/06/2025", "Electrodiagnóstico · Germán Darío Patarroyo Sierra", "Historia clínica de la IPS (anexo 7)"],
               ["Valoración de mejoría médica máxima", "18/06/2025", "Fisiatría · Adriana Marcela Vargas Holguín", "Historia clínica de la IPS (anexo 7)"],
-              ["Neuroconducción de control de miembros superiores", "21/10/2025", "Electrodiagnóstico · Germán Darío Patarroyo Sierra", "Informe funcional (anexo 8)"],
+              ["Neuroconducción de control de miembros superiores", "14/08/2025", "Electrodiagnóstico · Germán Darío Patarroyo Sierra", "Historia clínica de la IPS (anexo 7)"],
               ["Informe funcional SIM-IPS-EF-2025-1030", "30/10/2025", "Fisiatría y terapia ocupacional", "Anexo 8"]
             ], nota: "Las consultas de medicina general y de medicina laboral de EPS SURA se transcriben de las remisiones y de los soportes aportados por la paciente." } },
             { h: "Evolución" },
-            { p: "Manos. Consultó el 12/11/2020 por adormecimiento nocturno de ambas manos. La electromiografía del 09/02/2021 confirmó neuropatía del mediano en el carpo bilateral, moderada a severa a la derecha y moderada a la izquierda. El 13/04/2021 se practicó liberación del túnel del carpo derecho, con 30 días de incapacidad y 12 sesiones de terapia de mano. Desde 2022 la mano derecha conserva una secuela sensitiva constante y estable, leve en el electrodiagnóstico. La mano izquierda, no operada, progresó: en junio de 2025 se observó atrofia tenar incipiente y la neuroconducción del 21/10/2025 muestra compromiso severo con pérdida axonal." },
+            { p: "Manos. Consultó el 12/11/2020 por adormecimiento nocturno de ambas manos. La electromiografía del 09/02/2021 confirmó neuropatía del mediano en el carpo bilateral, moderada a severa a la derecha y moderada a la izquierda. El 13/04/2021 se practicó liberación del túnel del carpo derecho, con 30 días de incapacidad y 12 sesiones de terapia de mano. Desde 2022 la mano derecha conserva una secuela sensitiva constante y estable, leve en el electrodiagnóstico. La mano izquierda, no operada, progresó: en junio de 2025 se observó atrofia tenar incipiente y la neuroconducción del 14/08/2025 muestra compromiso severo con pérdida axonal." },
             { p: "Columna lumbar. Dolor lumbar desde comienzos de 2023, con irradiación a la pierna izquierda y luego a ambas. La resonancia del 22/09/2023 muestra discopatía degenerativa de L3–L4 a L5–S1 con hernia discal L4–L5 y compresión de las raíces L5. Incapacidades de 5 y 7 días en 2023. Reubicada en la báscula desde el 01/02/2024. Cumplió 16 sesiones de rehabilitación lumbar en 2024, con mejoría parcial. En abril de 2025 cirugía de columna no indicó tratamiento quirúrgico. La electromiografía del 05/06/2025 documenta radiculopatía L5 bilateral y S1 izquierda. Mejoría médica máxima el 18/06/2025." },
             { h: "Diagnósticos" },
             { tabla: { cols: ["CIE-10", "Diagnóstico", "Tipo", "Estado"], filas: [
@@ -1258,8 +1203,8 @@ DOCS.exp["PI-L03"] = {
               ["08/04/2025", "Cirugía de columna", "Discopatía en tres niveles sin inestabilidad segmentaria. No indica cirugía por el beneficio limitado que se espera; continuar manejo conservador y remitir a fisiatría para el cierre de la rehabilitación."],
               ["05/06/2025", "Electrodiagnóstico", "Electromiografía de miembros inferiores (anexo 7)."],
               ["18/06/2025", "Fisiatría", "Mejoría médica máxima de la columna (anexo 7). Atrofia tenar izquierda incipiente: ordena neuroconducción de control de miembros superiores."],
-              ["25/09/2025", "Fisiatría", "A solicitud de la paciente, ordena una valoración funcional integral para el recurso ante la Junta Nacional."],
-              ["21/10/2025", "Electrodiagnóstico", "Neuroconducción de control de miembros superiores (anexo 8)."],
+              ["14/08/2025", "Electrodiagnóstico", "Neuroconducción de control de miembros superiores (anexo 7)."],
+              ["25/09/2025", "Fisiatría", "La paciente informa que ARL SURA apeló la calificación de la Junta Regional; a su solicitud, ordena una valoración funcional integral para aportarla en la segunda instancia."],
               ["30/10/2025", "Fisiatría y terapia ocupacional", "Informe funcional (anexo 8)."]
             ] } }
           ] },
@@ -1414,7 +1359,7 @@ DOCS.exp["PI-L03"] = {
               ["SIM-IT-2023-472660", "14/11/2023", "14/11/2023", "20/11/2023", "7", "M51.3 · Otras degeneraciones especificadas de disco intervertebral", "Enfermedad general, origen en estudio"]
             ], nota: "Las incapacidades por columna se expidieron como de origen común. El origen laboral de la discopatía se calificó el 01/08/2024." } }
           ] },
-          { titulo: "Anexo 7 · Electromiografía de miembros inferiores y mejoría médica máxima", bloques: [
+          { titulo: "Anexo 7 · Electrodiagnóstico de 2025 y mejoría médica máxima", bloques: [
             { h: "Electromiografía y neuroconducciones de miembros inferiores · 05/06/2025" },
             { tabla: { cols: ["Nervio", "Tipo", "Latencia (ms)", "Amplitud", "Velocidad (m/s)", "Interpretación"], filas: [
               ["Peroneo profundo derecho", "Motor", "4,9", "2,6 mV", "43", "Amplitud en el límite inferior"],
@@ -1440,18 +1385,8 @@ DOCS.exp["PI-L03"] = {
             { p: "Refiere dolor lumbar continuo (6 de 10) con irradiación a ambas piernas, mayor en la izquierda, sin cambios desde la rehabilitación pese al tratamiento farmacológico. Trabaja en la báscula con las adaptaciones indicadas. Al examen: Lasègue izquierdo positivo a 50°, hipoestesia L5 izquierda, extensor largo del hallux izquierdo 4/5, reflejos aquilianos simétricos. Índice de Oswestry de 46 %, diligenciado en la consulta; refiere que tolera unos 40 minutos sentada y que camina unos 500 m antes de detenerse (no medidos). Concepto de cirugía de columna del 08/04/2025: no indica tratamiento quirúrgico." },
             { p: "Manos: mano derecha con hipoestesia en los dedos 1 a 3 y cicatriz sana. Mano izquierda con Phalen y Tinel positivos, atrofia tenar incipiente y abductor corto del pulgar 4/5." },
             { p: "Concepto: discopatía lumbar con radiculopatía bilateral en mejoría médica máxima; restricciones permanentes. Se ordena neuroconducción de control de miembros superiores por la progresión de la mano izquierda y se sugiere calificación integral." },
-            { firma: { nombre: "Adriana Marcela Vargas Holguín", cargo: "Médica fisiatra", registro: "Registro médico SIM-RM-15-1452", fecha: "18/06/2025" } }
-          ] },
-          { titulo: "Anexo 8 · Informe funcional del 30/10/2025", bloques: [
-            { kv: [
-              ["Informe", "SIM-IPS-EF-2025-1030"],
-              ["Fecha", "30/10/2025"],
-              ["Orden", "Fisiatría, 25/09/2025, a solicitud de la paciente para el recurso ante la Junta Nacional"],
-              ["Profesionales", "Adriana Marcela Vargas Holguín, fisiatra; Lina Fernanda Chaparro Ávila, terapeuta ocupacional"],
-              ["Duración de la valoración", "3 horas, con pausas"],
-              ["Componentes", "Entrevista, cuestionarios estandarizados, pruebas de tolerancia postural y de marcha, pruebas de mano, examen neurológico y neuroconducción de control del 21/10/2025"]
-            ] },
-            { h: "Neuroconducción de control de miembros superiores · 21/10/2025" },
+            { firma: { nombre: "Adriana Marcela Vargas Holguín", cargo: "Médica fisiatra", registro: "Registro médico SIM-RM-15-1452", fecha: "18/06/2025" } },
+            { h: "Neuroconducción de control de miembros superiores · 14/08/2025" },
             { tabla: { cols: ["Nervio", "Tipo", "Latencia (ms)", "Amplitud", "Velocidad (m/s)", "Interpretación"], filas: [
               ["Mediano derecho", "Sensitivo", "3,8", "15 µV", "43", "Compromiso residual leve, estable desde 2022"],
               ["Mediano derecho", "Motor", "4,5", "6,3 mV", "52", "Latencia distal levemente prolongada"],
@@ -1470,10 +1405,20 @@ DOCS.exp["PI-L03"] = {
                 { nervio: "Cubital izquierdo", tipo: "motor", latencia: 2.9, latRef: 3.3, amplitud: 8.4, ampRef: 6, velocidad: 57, velRef: 50 },
                 { nervio: "Cubital derecho", tipo: "sensitivo", latencia: 2.8, latRef: 3.1, amplitud: 17, ampRef: 10, velocidad: 55, velRef: 50 }
               ] },
-              pie: "Neuroconducciones del 21/10/2025: secuela leve a la derecha y compromiso severo del mediano izquierdo, con caída de la amplitud motora."
+              pie: "Neuroconducciones del 14/08/2025: secuela leve a la derecha y compromiso severo del mediano izquierdo, con caída de la amplitud motora."
             } },
             { p: "Electromiografía de aguja: abductor corto del pulgar izquierdo con fibrilaciones y ondas positivas (1+), unidades motoras de gran amplitud y reclutamiento reducido; abductor corto del pulgar derecho sin actividad espontánea, con unidades motoras de reinervación crónica. Conclusión: neuropatía del mediano en el carpo severa a la izquierda, con pérdida axonal; secuela leve estable a la derecha." },
-            { firma: { nombre: "Germán Darío Patarroyo Sierra", cargo: "Médico fisiatra, electrodiagnóstico", registro: "Registro médico SIM-RM-15-0774", fecha: "21/10/2025" } },
+            { firma: { nombre: "Germán Darío Patarroyo Sierra", cargo: "Médico fisiatra, electrodiagnóstico", registro: "Registro médico SIM-RM-15-0774", fecha: "14/08/2025" } }
+          ] },
+          { titulo: "Anexo 8 · Informe funcional del 30/10/2025", bloques: [
+            { kv: [
+              ["Informe", "SIM-IPS-EF-2025-1030"],
+              ["Fecha", "30/10/2025"],
+              ["Orden", "Fisiatría, 25/09/2025, a solicitud de la paciente, para aportarlo en el trámite de la apelación de ARL SURA ante la Junta Nacional"],
+              ["Profesionales", "Adriana Marcela Vargas Holguín, fisiatra; Lina Fernanda Chaparro Ávila, terapeuta ocupacional"],
+              ["Duración de la valoración", "3 horas, con pausas"],
+              ["Componentes", "Entrevista, cuestionarios estandarizados, pruebas de tolerancia postural y de marcha, pruebas de mano, examen neurológico y revisión de la neuroconducción de control del 14/08/2025"]
+            ] },
             { h: "Pruebas de tolerancia, marcha y carga" },
             { tabla: { cols: ["Prueba", "Resultado", "Observación"], filas: [
               ["Tolerancia a la sedestación", "25 minutos", "Se pone de pie por dolor lumbar irradiado"],
